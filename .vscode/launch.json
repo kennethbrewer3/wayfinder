@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Wayfinder Server",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/wayfinder_server",
+      "program": "bin/main.dart",
+      "args": [
+        "--apply-migrations"
+      ],
+      "preLaunchTask": "docker_compose_up",
+      "env": {
+        "SERVERPOD_PASSWORD_database": "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"
+      },
+      "presentation": {
+        "group": "wayfinder",
+        "order": 1
+      }
+    },
+    {
+      "name": "Wayfinder Web",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/wayfinder_flutter",
+      "program": "lib/main.dart",
+      "deviceId": "chrome",
+      "args": [
+        "--web-port",
+        "8092"
+      ],
+      "presentation": {
+        "group": "wayfinder",
+        "order": 2
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Wayfinder (Server + Web)",
+      "configurations": [
+        "Wayfinder Server",
+        "Wayfinder Web"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "wayfinder",
+        "order": 1
+      }
+    }
+  ]
+}

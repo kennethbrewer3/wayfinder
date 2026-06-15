@@ -1,0 +1,31 @@
+emailIdp:
+  - login:
+  - startRegistration:
+  - verifyRegistrationCode:
+  - finishRegistration:
+  - startPasswordReset:
+  - verifyPasswordResetCode:
+  - finishPasswordReset:
+  - hasAccount:
+jwtRefresh:
+  - refreshAccessToken:
+category:
+  - listCategories:
+  - getCategory:
+  - createCategory:
+  - updateCategory:
+  - deleteCategory:
+greeting:
+  - hello:
+mapMarker:
+  - listMarkers:
+  - getMarker:
+  - createMarker:
+  - updateMarker:
+  - deleteMarker:
+mapZone:
+  - listZones:
+  - getZone:
+  - createZone:
+  - updateZone:
+  - deleteZone:

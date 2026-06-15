@@ -1,0 +1,49 @@
+services:
+  # Development services
+  # NOTE: Local dev ports use 18090+ to avoid conflicts. Revert to 8090/8091 before publishing.
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "18090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: wayfinder
+      POSTGRES_PASSWORD: "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"
+    volumes:
+      - wayfinder_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "18091:6379"
+    command: redis-server --requirepass "jZSPtad_20Z4JmPOazsDurPauqOk9FlM"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  # Test services (not started during normal dev — use: docker compose --profile test up -d)
+  postgres_test:
+    profiles:
+      - test
+    image: pgvector/pgvector:pg16
+    ports:
+      - "19090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: wayfinder_test
+      POSTGRES_PASSWORD: "mA8uwnnQaPPF-RJuCw0xBQ8qV5ol7EH-"
+    volumes:
+      - wayfinder_test_data:/var/lib/postgresql/data
+
+  redis_test:
+    profiles:
+      - test
+    image: redis:6.2.6
+    ports:
+      - "19091:6379"
+    command: redis-server --requirepass "68i8nW9rJ80VZ_UEGd9xKshW1FvTdP0a"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+volumes:
+  wayfinder_data:
+  wayfinder_test_data:

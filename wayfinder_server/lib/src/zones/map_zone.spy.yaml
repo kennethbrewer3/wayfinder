@@ -1,0 +1,20 @@
+class: MapZone
+table: map_zone
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  type: String
+  color: String
+  borderColor: String
+  borderPattern: String
+  fillColor: String
+  visible: bool
+  geometryJson: String
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  map_zone_name_idx:
+    fields: name
+  map_zone_type_idx:
+    fields: type

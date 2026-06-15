@@ -1,0 +1,17 @@
+class: MapMarker
+table: map_marker
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  notes: String?
+  latitude: double
+  longitude: double
+  color: String
+  icon: String
+  visible: bool
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  map_marker_name_idx:
+    fields: name

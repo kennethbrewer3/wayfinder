@@ -1,0 +1,12 @@
+class: PmtilesFile
+table: pmtiles_file
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  sizeBytes: int
+  isActive: bool
+  addedAt: DateTime
+
+indexes:
+  pmtiles_file_name_idx:
+    fields: name

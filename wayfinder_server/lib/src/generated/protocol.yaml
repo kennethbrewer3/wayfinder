@@ -23,6 +23,12 @@ mapMarker:
   - createMarker:
   - updateMarker:
   - deleteMarker:
+pmtiles:
+  - listFiles:
+  - activeFileId:
+  - setActiveFile:
+  - clearActiveFile:
+  - deleteFile:
 mapZone:
   - listZones:
   - getZone:

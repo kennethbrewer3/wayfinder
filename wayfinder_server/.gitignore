@@ -14,5 +14,9 @@ doc/api/
 # Passwords file
 config/passwords.yaml
 
+# Uploaded PMTiles archives (served over HTTP)
+storage/pmtiles/*
+!storage/pmtiles/.gitkeep
+
 # Firebase service account key for Firebase auth
 config/firebase_service_account_key.json

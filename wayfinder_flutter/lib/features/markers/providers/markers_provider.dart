@@ -21,23 +21,6 @@ final markersProvider = FutureProvider<List<MapMarker>>((ref) async {
   }
 });
 
-final zonesProvider = FutureProvider<List<MapZone>>((ref) async {
-  AppLogger.logZones.debug('📡 Fetching zones from server');
-  try {
-    final client = ref.watch(serverClientProvider);
-    final zones = await client.mapZone.listZones();
-    AppLogger.logZones.success('📡 Zones loaded', data: 'count=${zones.length}');
-    return zones;
-  } catch (error, stackTrace) {
-    AppLogger.logZones.error(
-      '📡 Failed to load zones',
-      error: error,
-      stackTrace: stackTrace,
-    );
-    rethrow;
-  }
-});
-
 final categoriesProvider = FutureProvider<List<Category>>((ref) async {
   AppLogger.logZones.debug('📡 Fetching categories from server');
   try {

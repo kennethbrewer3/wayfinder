@@ -69,6 +69,7 @@ class SidebarState {
     this.markerSort = MarkerSortField.name,
     this.zoneSort = ZoneSortField.name,
     this.searchQuery = '',
+    this.expanded = true,
   });
 
   final SidebarViewMode viewMode;
@@ -76,6 +77,7 @@ class SidebarState {
   final MarkerSortField markerSort;
   final ZoneSortField zoneSort;
   final String searchQuery;
+  final bool expanded;
 
   SidebarState copyWith({
     SidebarViewMode? viewMode,
@@ -83,6 +85,7 @@ class SidebarState {
     MarkerSortField? markerSort,
     ZoneSortField? zoneSort,
     String? searchQuery,
+    bool? expanded,
   }) {
     return SidebarState(
       viewMode: viewMode ?? this.viewMode,
@@ -90,6 +93,7 @@ class SidebarState {
       markerSort: markerSort ?? this.markerSort,
       zoneSort: zoneSort ?? this.zoneSort,
       searchQuery: searchQuery ?? this.searchQuery,
+      expanded: expanded ?? this.expanded,
     );
   }
 }
@@ -115,6 +119,14 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
 
   void setSearchQuery(String query) {
     state = state.copyWith(searchQuery: query);
+  }
+
+  void setExpanded(bool expanded) {
+    state = state.copyWith(expanded: expanded);
+  }
+
+  void toggleExpanded() {
+    state = state.copyWith(expanded: !state.expanded);
   }
 }
 

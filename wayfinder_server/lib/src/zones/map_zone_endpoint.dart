@@ -13,7 +13,7 @@ class MapZoneEndpoint extends Endpoint with EndpointLogging {
       'listZones',
       () => MapZone.db.find(
         session,
-        orderBy: (t) => t.name,
+        orderByList: (t) => [Order(column: t.name), Order(column: t.id)],
       ),
       onSuccess: (zones) => 'count=${zones.length}',
     );

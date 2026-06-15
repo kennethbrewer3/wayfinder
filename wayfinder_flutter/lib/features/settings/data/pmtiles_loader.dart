@@ -17,6 +17,10 @@ Future<PmTilesArchive> openPmtilesArchive(PmtilesSource source) async {
           log.debug('🗺️ Opening from path', data: path);
           return PmTilesArchive.from(path);
         }(),
+      PmtilesSourceUrl(:final url) => () async {
+          log.debug('🗺️ Opening from URL', data: url);
+          return PmTilesArchive.from(url);
+        }(),
       PmtilesSourceBytes(:final bytes) => () async {
           log.debug(
             '🗺️ Opening from memory',

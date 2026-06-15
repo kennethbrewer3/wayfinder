@@ -16,14 +16,15 @@ import '../auth/jwt_refresh_endpoint.dart' as _i3;
 import '../categories/category_endpoint.dart' as _i4;
 import '../greetings/greeting_endpoint.dart' as _i5;
 import '../map/map_marker_endpoint.dart' as _i6;
-import '../zones/map_zone_endpoint.dart' as _i7;
-import 'package:wayfinder_server/src/generated/categories/category.dart' as _i8;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i9;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i10;
+import '../pmtiles/pmtiles_endpoint.dart' as _i7;
+import '../zones/map_zone_endpoint.dart' as _i8;
+import 'package:wayfinder_server/src/generated/categories/category.dart' as _i9;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i10;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i11;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i11;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i12;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i13;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -59,7 +60,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'mapMarker',
           null,
         ),
-      'mapZone': _i7.MapZoneEndpoint()
+      'pmtiles': _i7.PmtilesEndpoint()
+        ..initialize(
+          server,
+          'pmtiles',
+          null,
+        ),
+      'mapZone': _i8.MapZoneEndpoint()
         ..initialize(
           server,
           'mapZone',
@@ -308,7 +315,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i8.Category>(),
+              type: _i1.getType<_i9.Category>(),
               nullable: false,
             ),
           },
@@ -327,7 +334,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i8.Category>(),
+              type: _i1.getType<_i9.Category>(),
               nullable: false,
             ),
           },
@@ -424,7 +431,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i9.MapMarker>(),
+              type: _i1.getType<_i10.MapMarker>(),
               nullable: false,
             ),
           },
@@ -443,7 +450,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i9.MapMarker>(),
+              type: _i1.getType<_i10.MapMarker>(),
               nullable: false,
             ),
           },
@@ -478,6 +485,80 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['pmtiles'] = _i1.EndpointConnector(
+      name: 'pmtiles',
+      endpoint: endpoints['pmtiles']!,
+      methodConnectors: {
+        'listFiles': _i1.MethodConnector(
+          name: 'listFiles',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i7.PmtilesEndpoint)
+                  .listFiles(session),
+        ),
+        'activeFileId': _i1.MethodConnector(
+          name: 'activeFileId',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i7.PmtilesEndpoint)
+                  .activeFileId(session),
+        ),
+        'setActiveFile': _i1.MethodConnector(
+          name: 'setActiveFile',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i7.PmtilesEndpoint).setActiveFile(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'clearActiveFile': _i1.MethodConnector(
+          name: 'clearActiveFile',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i7.PmtilesEndpoint)
+                  .clearActiveFile(session),
+        ),
+        'deleteFile': _i1.MethodConnector(
+          name: 'deleteFile',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i7.PmtilesEndpoint).deleteFile(
+                    session,
+                    params['id'],
+                  ),
+        ),
+      },
+    );
     connectors['mapZone'] = _i1.EndpointConnector(
       name: 'mapZone',
       endpoint: endpoints['mapZone']!,
@@ -489,7 +570,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapZone'] as _i7.MapZoneEndpoint)
+              ) async => (endpoints['mapZone'] as _i8.MapZoneEndpoint)
                   .listZones(session),
         ),
         'getZone': _i1.MethodConnector(
@@ -505,7 +586,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapZone'] as _i7.MapZoneEndpoint).getZone(
+              ) async => (endpoints['mapZone'] as _i8.MapZoneEndpoint).getZone(
                 session,
                 params['id'],
               ),
@@ -515,7 +596,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i10.MapZone>(),
+              type: _i1.getType<_i11.MapZone>(),
               nullable: false,
             ),
           },
@@ -524,7 +605,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i7.MapZoneEndpoint).createZone(
+                  (endpoints['mapZone'] as _i8.MapZoneEndpoint).createZone(
                     session,
                     params['zone'],
                   ),
@@ -534,7 +615,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i10.MapZone>(),
+              type: _i1.getType<_i11.MapZone>(),
               nullable: false,
             ),
           },
@@ -543,7 +624,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i7.MapZoneEndpoint).updateZone(
+                  (endpoints['mapZone'] as _i8.MapZoneEndpoint).updateZone(
                     session,
                     params['zone'],
                   ),
@@ -562,16 +643,16 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i7.MapZoneEndpoint).deleteZone(
+                  (endpoints['mapZone'] as _i8.MapZoneEndpoint).deleteZone(
                     session,
                     params['id'],
                   ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i11.Endpoints()
+    modules['serverpod_auth_idp'] = _i12.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i12.Endpoints()
+    modules['serverpod_auth_core'] = _i13.Endpoints()
       ..initializeEndpoints(server);
   }
 }

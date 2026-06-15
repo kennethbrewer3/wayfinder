@@ -6,10 +6,9 @@ import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
 import 'app/app.dart';
+import 'core/app_globals.dart';
 import 'core/logging/app_logger.dart';
-
-/// Global Serverpod client used across the app.
-late final Client client;
+import 'core/server_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,13 +18,16 @@ void main() async {
 
   AppLogger.logApp.info('🚀 Wayfinder app starting');
 
-  final serverUrl = await getServerUrl();
+  appServerConfig = await loadAppServerConfig();
   AppLogger.logServer.info(
-    '🔌 Server URL resolved',
-    data: {'url': serverUrl},
+    '🔌 Server URLs resolved',
+    data: {
+      'apiUrl': appServerConfig.apiUrl,
+      'webUrl': appServerConfig.webUrl,
+    },
   );
 
-  client = Client(serverUrl)
+  client = Client(appServerConfig.apiUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();
 

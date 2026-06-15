@@ -1,6 +1,7 @@
 services:
   # Development services
-  # NOTE: Local dev ports use 18090+ to avoid conflicts. Revert to 8090/8091 before publishing.
+  # NOTE: Local dev ports use 18090+ to avoid conflicts with other Docker stacks
+  # (e.g. forge_rack on 8080/8090). API server uses 18080-18082 in development.yaml.
   postgres:
     image: pgvector/pgvector:pg16
     ports:

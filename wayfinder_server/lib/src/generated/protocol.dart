@@ -19,13 +19,18 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'categories/category.dart' as _i5;
 import 'greetings/greeting.dart' as _i6;
 import 'map/map_marker.dart' as _i7;
-import 'zones/map_zone.dart' as _i8;
-import 'package:wayfinder_server/src/generated/categories/category.dart' as _i9;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i10;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i11;
+import 'pmtiles/pmtiles_file.dart' as _i8;
+import 'zones/map_zone.dart' as _i9;
+import 'package:wayfinder_server/src/generated/categories/category.dart'
+    as _i10;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i11;
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
+    as _i12;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i13;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'map/map_marker.dart';
+export 'pmtiles/pmtiles_file.dart';
 export 'zones/map_zone.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
@@ -316,6 +321,75 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
+    _i2.TableDefinition(
+      name: 'pmtiles_file',
+      dartName: 'PmtilesFile',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'gen_random_uuid()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sizeBytes',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isActive',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _i2.ColumnDefinition(
+          name: 'addedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'pmtiles_file_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'pmtiles_file_name_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
     ..._i4.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
@@ -357,8 +431,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i7.MapMarker) {
       return _i7.MapMarker.fromJson(data) as T;
     }
-    if (t == _i8.MapZone) {
-      return _i8.MapZone.fromJson(data) as T;
+    if (t == _i8.PmtilesFile) {
+      return _i8.PmtilesFile.fromJson(data) as T;
+    }
+    if (t == _i9.MapZone) {
+      return _i9.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Category?>()) {
       return (data != null ? _i5.Category.fromJson(data) : null) as T;
@@ -369,19 +446,28 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i7.MapMarker?>()) {
       return (data != null ? _i7.MapMarker.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.MapZone?>()) {
-      return (data != null ? _i8.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.PmtilesFile?>()) {
+      return (data != null ? _i8.PmtilesFile.fromJson(data) : null) as T;
     }
-    if (t == List<_i9.Category>) {
-      return (data as List).map((e) => deserialize<_i9.Category>(e)).toList()
+    if (t == _i1.getType<_i9.MapZone?>()) {
+      return (data != null ? _i9.MapZone.fromJson(data) : null) as T;
+    }
+    if (t == List<_i10.Category>) {
+      return (data as List).map((e) => deserialize<_i10.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i10.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i10.MapMarker>(e)).toList()
+    if (t == List<_i11.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i11.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i11.MapZone>) {
-      return (data as List).map((e) => deserialize<_i11.MapZone>(e)).toList()
+    if (t == List<_i12.PmtilesFile>) {
+      return (data as List)
+              .map((e) => deserialize<_i12.PmtilesFile>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i13.MapZone>) {
+      return (data as List).map((e) => deserialize<_i13.MapZone>(e)).toList()
           as T;
     }
     try {
@@ -401,7 +487,8 @@ class Protocol extends _i1.SerializationManagerServer {
       _i5.Category => 'Category',
       _i6.Greeting => 'Greeting',
       _i7.MapMarker => 'MapMarker',
-      _i8.MapZone => 'MapZone',
+      _i8.PmtilesFile => 'PmtilesFile',
+      _i9.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -422,7 +509,9 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'Greeting';
       case _i7.MapMarker():
         return 'MapMarker';
-      case _i8.MapZone():
+      case _i8.PmtilesFile():
+        return 'PmtilesFile';
+      case _i9.MapZone():
         return 'MapZone';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -455,8 +544,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'MapMarker') {
       return deserialize<_i7.MapMarker>(data['data']);
     }
+    if (dataClassName == 'PmtilesFile') {
+      return deserialize<_i8.PmtilesFile>(data['data']);
+    }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i8.MapZone>(data['data']);
+      return deserialize<_i9.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -498,8 +590,10 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i5.Category.t;
       case _i7.MapMarker:
         return _i7.MapMarker.t;
-      case _i8.MapZone:
-        return _i8.MapZone.t;
+      case _i8.PmtilesFile:
+        return _i8.PmtilesFile.t;
+      case _i9.MapZone:
+        return _i9.MapZone.t;
     }
     return null;
   }

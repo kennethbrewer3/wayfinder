@@ -19,7 +19,9 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'package:wayfinder_server/src/generated/categories/category.dart' as _i5;
 import 'package:wayfinder_server/src/generated/greetings/greeting.dart' as _i6;
 import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i7;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i8;
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
+    as _i8;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i9;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -144,6 +146,8 @@ class TestEndpoints {
 
   late final _MapMarkerEndpoint mapMarker;
 
+  late final _PmtilesEndpoint pmtiles;
+
   late final _MapZoneEndpoint mapZone;
 }
 
@@ -171,6 +175,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     mapMarker = _MapMarkerEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    pmtiles = _PmtilesEndpoint(
       endpoints,
       serializationManager,
     );
@@ -871,6 +879,169 @@ class _MapMarkerEndpoint {
   }
 }
 
+class _PmtilesEndpoint {
+  _PmtilesEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i8.PmtilesFile>> listFiles(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'listFiles',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'listFiles',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i8.PmtilesFile>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i2.UuidValue?> activeFileId(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'activeFileId',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'activeFileId',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i2.UuidValue?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> setActiveFile(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'setActiveFile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'setActiveFile',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> clearActiveFile(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'clearActiveFile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'clearActiveFile',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteFile(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'deleteFile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'deleteFile',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _MapZoneEndpoint {
   _MapZoneEndpoint(
     this._endpointDispatch,
@@ -881,7 +1052,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i8.MapZone>> listZones(
+  _i3.Future<List<_i9.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -903,7 +1074,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i8.MapZone>>);
+                as _i3.Future<List<_i9.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -911,7 +1082,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i8.MapZone?> getZone(
+  _i3.Future<_i9.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -934,7 +1105,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i8.MapZone?>);
+                as _i3.Future<_i9.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -942,9 +1113,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i8.MapZone> createZone(
+  _i3.Future<_i9.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.MapZone zone,
+    _i9.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -965,7 +1136,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i8.MapZone>);
+                as _i3.Future<_i9.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -973,9 +1144,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i8.MapZone> updateZone(
+  _i3.Future<_i9.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.MapZone zone,
+    _i9.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -996,7 +1167,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i8.MapZone>);
+                as _i3.Future<_i9.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

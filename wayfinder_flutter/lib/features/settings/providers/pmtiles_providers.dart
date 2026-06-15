@@ -1,13 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/serverpod_client.dart';
 import '../data/pmtiles_loader.dart';
 import '../data/pmtiles_repository.dart';
 import '../models/pmtiles_file.dart';
 import '../models/pmtiles_map_layer.dart';
 
 final pmtilesRepositoryProvider = Provider<PmtilesRepository>(
-  (ref) => PmtilesRepository(),
+  (ref) => PmtilesRepository(
+    client: ref.watch(serverClientProvider),
+    webServerUrl: appServerConfig.webUrl,
+  ),
 );
 
 final pmtilesRevisionProvider = StateProvider<int>((ref) => 0);

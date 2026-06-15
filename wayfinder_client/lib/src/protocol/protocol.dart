@@ -14,17 +14,20 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'categories/category.dart' as _i2;
 import 'greetings/greeting.dart' as _i3;
 import 'map/map_marker.dart' as _i4;
-import 'zones/map_zone.dart' as _i5;
-import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i6;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i7;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i8;
+import 'pmtiles/pmtiles_file.dart' as _i5;
+import 'zones/map_zone.dart' as _i6;
+import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i7;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i8;
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart' as _i9;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i10;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i9;
+    as _i11;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i10;
+    as _i12;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'map/map_marker.dart';
+export 'pmtiles/pmtiles_file.dart';
 export 'zones/map_zone.dart';
 export 'client.dart';
 
@@ -71,8 +74,11 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i4.MapMarker) {
       return _i4.MapMarker.fromJson(data) as T;
     }
-    if (t == _i5.MapZone) {
-      return _i5.MapZone.fromJson(data) as T;
+    if (t == _i5.PmtilesFile) {
+      return _i5.PmtilesFile.fromJson(data) as T;
+    }
+    if (t == _i6.MapZone) {
+      return _i6.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Category?>()) {
       return (data != null ? _i2.Category.fromJson(data) : null) as T;
@@ -83,26 +89,33 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i4.MapMarker?>()) {
       return (data != null ? _i4.MapMarker.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.MapZone?>()) {
-      return (data != null ? _i5.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.PmtilesFile?>()) {
+      return (data != null ? _i5.PmtilesFile.fromJson(data) : null) as T;
     }
-    if (t == List<_i6.Category>) {
-      return (data as List).map((e) => deserialize<_i6.Category>(e)).toList()
+    if (t == _i1.getType<_i6.MapZone?>()) {
+      return (data != null ? _i6.MapZone.fromJson(data) : null) as T;
+    }
+    if (t == List<_i7.Category>) {
+      return (data as List).map((e) => deserialize<_i7.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i7.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i7.MapMarker>(e)).toList()
+    if (t == List<_i8.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i8.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i8.MapZone>) {
-      return (data as List).map((e) => deserialize<_i8.MapZone>(e)).toList()
+    if (t == List<_i9.PmtilesFile>) {
+      return (data as List).map((e) => deserialize<_i9.PmtilesFile>(e)).toList()
+          as T;
+    }
+    if (t == List<_i10.MapZone>) {
+      return (data as List).map((e) => deserialize<_i10.MapZone>(e)).toList()
           as T;
     }
     try {
-      return _i9.Protocol().deserialize<T>(data, t);
+      return _i11.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i10.Protocol().deserialize<T>(data, t);
+      return _i12.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -112,7 +125,8 @@ class Protocol extends _i1.SerializationManager {
       _i2.Category => 'Category',
       _i3.Greeting => 'Greeting',
       _i4.MapMarker => 'MapMarker',
-      _i5.MapZone => 'MapZone',
+      _i5.PmtilesFile => 'PmtilesFile',
+      _i6.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -133,14 +147,16 @@ class Protocol extends _i1.SerializationManager {
         return 'Greeting';
       case _i4.MapMarker():
         return 'MapMarker';
-      case _i5.MapZone():
+      case _i5.PmtilesFile():
+        return 'PmtilesFile';
+      case _i6.MapZone():
         return 'MapZone';
     }
-    className = _i9.Protocol().getClassNameForObject(data);
+    className = _i11.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i10.Protocol().getClassNameForObject(data);
+    className = _i12.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -162,16 +178,19 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'MapMarker') {
       return deserialize<_i4.MapMarker>(data['data']);
     }
+    if (dataClassName == 'PmtilesFile') {
+      return deserialize<_i5.PmtilesFile>(data['data']);
+    }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i5.MapZone>(data['data']);
+      return deserialize<_i6.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i9.Protocol().deserializeByClassName(data);
+      return _i11.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i10.Protocol().deserializeByClassName(data);
+      return _i12.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -186,10 +205,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i9.Protocol().mapRecordToJson(record);
+      return _i11.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i10.Protocol().mapRecordToJson(record);
+      return _i12.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

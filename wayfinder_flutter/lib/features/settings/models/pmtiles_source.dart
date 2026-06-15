@@ -11,6 +11,12 @@ class PmtilesSourcePath extends PmtilesSource {
   final String path;
 }
 
+class PmtilesSourceUrl extends PmtilesSource {
+  const PmtilesSourceUrl(this.url);
+
+  final String url;
+}
+
 class PmtilesSourceBytes extends PmtilesSource {
   const PmtilesSourceBytes(this.bytes);
 

@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../search/models/search_result.dart';
+import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../search/presentation/map_search_bar.dart';
 import '../../sidebar/presentation/sidebar_panel.dart';
 import '../models/map_viewport.dart';
@@ -63,10 +64,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _handleSearchResult(SearchResult result) async {
+    final currentZoom = ref.read(mapViewportProvider).valueOrNull?.zoom ??
+        AppConstants.defaultZoom;
     await ref.read(mapViewportProvider.notifier).moveTo(
           center: result.location,
-          zoom: result.zoom,
+          zoom: currentZoom,
         );
+    final searchCoordinateMarker =
+        ref.read(searchCoordinateMarkerProvider.notifier);
+    if (result.type == SearchResultType.coordinate) {
+      searchCoordinateMarker.set(result.location, result.label);
+    } else {
+      searchCoordinateMarker.clear();
+    }
     ref.read(sidebarProvider.notifier).setSearchQuery('');
   }
 
@@ -85,10 +95,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final viewportAsync = ref.watch(mapViewportProvider);
+    final searchResults = watchMapSearchResults(ref);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppConstants.appName),
+        titleSpacing: 0,
+        title: MapSearchField(onResultSelected: _handleSearchResult),
+        bottom: searchResults.isNotEmpty
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(240),
+                child: MapSearchResults(onResultSelected: _handleSearchResult),
+              )
+            : null,
         actions: [
           IconButton(
             tooltip: 'Home (debug)',
@@ -110,6 +128,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         error: (error, _) => Center(child: Text('Failed to load map: $error')),
         data: (viewport) {
           final isWide = MediaQuery.sizeOf(context).width >= 960;
+          final sidebarExpanded = ref.watch(
+            sidebarProvider.select((state) => state.expanded),
+          );
+          const sidebarWidth = 320.0;
+          const sidebarHeightExpanded = 280.0;
+          const sidebarHeightCollapsed = 56.0;
 
           final mapSection = Stack(
             children: [
@@ -119,14 +143,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   onViewportChanged: _handleViewportChanged,
                 ),
               ),
-              Positioned(
-                top: 16,
-                left: 16,
-                right: isWide ? 360 : 16,
-                child: MapSearchBar(
-                  onResultSelected: _handleSearchResult,
+              if (isWide && !sidebarExpanded)
+                Positioned(
+                  top: 16,
+                  right: 8,
+                  child: Material(
+                    elevation: 2,
+                    borderRadius: BorderRadius.circular(8),
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: IconButton(
+                      tooltip: 'Show map objects',
+                      icon: const Icon(Icons.chevron_left),
+                      onPressed: () {
+                        ref.read(sidebarProvider.notifier).setExpanded(true);
+                      },
+                    ),
+                  ),
                 ),
-              ),
             ],
           );
 
@@ -136,9 +169,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             return Row(
               children: [
                 Expanded(child: mapSection),
-                SizedBox(
-                  width: 320,
-                  child: sidebar,
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  width: sidebarExpanded ? sidebarWidth : 0,
+                  child: sidebarExpanded
+                      ? SizedBox(width: sidebarWidth, child: sidebar)
+                      : const SizedBox.shrink(),
                 ),
               ],
             );
@@ -147,8 +184,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           return Column(
             children: [
               Expanded(child: mapSection),
-              SizedBox(
-                height: 280,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                height: sidebarExpanded
+                    ? sidebarHeightExpanded
+                    : sidebarHeightCollapsed,
                 child: sidebar,
               ),
             ],

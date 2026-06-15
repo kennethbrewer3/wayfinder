@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../lines/models/measurement_units.dart';
+import '../../lines/providers/measurement_units_provider.dart';
 import '../models/pmtiles_file.dart';
 import '../providers/pmtiles_providers.dart';
 
@@ -31,7 +33,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: const ['pmtiles'],
-      withData: true,
+      withData: false,
+      withReadStream: true,
     );
 
     if (result == null || result.files.isEmpty) {
@@ -118,6 +121,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final filesAsync = ref.watch(pmtilesCatalogProvider);
     final activeIdAsync = ref.watch(activePmtilesIdProvider);
+    final measurementUnits = ref.watch(measurementUnitsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -126,6 +130,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(
+            'Measurements',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Choose how line distances are displayed on the map.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          SegmentedButton<MeasurementUnits>(
+            segments: MeasurementUnits.values
+                .map(
+                  (units) => ButtonSegment(
+                    value: units,
+                    label: Text(units.label),
+                    tooltip: units.shortLabel,
+                  ),
+                )
+                .toList(),
+            selected: {measurementUnits},
+            onSelectionChanged: (selection) {
+              ref
+                  .read(measurementUnitsProvider.notifier)
+                  .setUnits(selection.first);
+            },
+          ),
+          const SizedBox(height: 32),
           Text(
             'PMTiles Maps',
             style: Theme.of(context).textTheme.titleLarge,

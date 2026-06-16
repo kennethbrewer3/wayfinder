@@ -4,16 +4,25 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/serverpod_client.dart';
+import '../../circles/models/circle_geometry.dart';
+import '../../circles/models/circle_size_display.dart';
+import '../../circles/presentation/create_circle_dialog.dart';
+import '../../circles/utils/circle_distance.dart';
+import '../../rectangles/models/rectangle_geometry.dart';
+import '../../rectangles/models/rectangle_size_display.dart';
+import '../../rectangles/presentation/create_rectangle_dialog.dart';
+import '../../rectangles/utils/rectangle_dimensions.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/providers/measurement_units_provider.dart';
-import '../../lines/providers/selected_line_provider.dart';
+import '../../map/providers/selected_map_object_provider.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -303,12 +312,25 @@ class _MarkerListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final notesPreview = marker.notes?.trim();
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected = selected?.kind == SelectedMapObjectKind.marker &&
+        selected?.id == marker.id;
 
-    return Column(
+    return ColoredBox(
+      color: _selectionHighlightColor(theme, isSelected),
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         InkWell(
-          onTap: () => onZoomTo(LatLng(marker.latitude, marker.longitude)),
+          onTap: () {
+            final notifier = ref.read(selectedMapObjectProvider.notifier);
+            if (isSelected) {
+              notifier.clear();
+            } else {
+              notifier.selectMarker(marker.id);
+            }
+            onZoomTo(LatLng(marker.latitude, marker.longitude));
+          },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             child: Row(
@@ -341,12 +363,7 @@ class _MarkerListTile extends ConsumerWidget {
                       ),
                       if (notesPreview != null && notesPreview.isNotEmpty) ...[
                         const SizedBox(height: 4),
-                        Text(
-                          notesPreview.split('\n').first,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall,
-                        ),
+                        MapObjectNotesPreview(markdown: notesPreview),
                       ],
                     ],
                   ),
@@ -391,6 +408,7 @@ class _MarkerListTile extends ConsumerWidget {
           ],
         ),
       ],
+    ),
     );
   }
 }
@@ -410,6 +428,22 @@ class _ZoneListTile extends ConsumerWidget {
     final isLine = zone.type == lineZoneType;
     if (isLine) {
       return _LineZoneListTile(
+        key: ValueKey(zone.id),
+        zone: zone,
+        onZoomTo: onZoomTo,
+      );
+    }
+    final isCircle = zone.type == circleZoneType;
+    if (isCircle) {
+      return _CircleZoneListTile(
+        key: ValueKey(zone.id),
+        zone: zone,
+        onZoomTo: onZoomTo,
+      );
+    }
+    final isRectangle = zone.type == rectangleZoneType;
+    if (isRectangle) {
+      return _RectangleZoneListTile(
         key: ValueKey(zone.id),
         zone: zone,
         onZoomTo: onZoomTo,
@@ -439,8 +473,9 @@ class _LineZoneListTile extends ConsumerWidget {
     final zoneId = zone.id;
     final geometry = LineGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
-    final selectedLineId = ref.watch(selectedLineProvider);
-    final isSelected = selectedLineId == zone.id;
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
+        selected?.id == zone.id;
     final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
@@ -461,11 +496,11 @@ class _LineZoneListTile extends ConsumerWidget {
         children: [
           InkWell(
             onTap: () {
-              final notifier = ref.read(selectedLineProvider.notifier);
+              final notifier = ref.read(selectedMapObjectProvider.notifier);
               if (isSelected) {
                 notifier.clear();
               } else {
-                notifier.select(zone.id);
+                notifier.selectZone(zone.id);
               }
               final center = lineZoneCenter(zone);
               if (center != null) {
@@ -506,14 +541,9 @@ class _LineZoneListTile extends ConsumerWidget {
                         ),
                         if (notesPreview != null && notesPreview.isNotEmpty) ...[
                           const SizedBox(height: 6),
-                          const SizedBox(height: 6),
-                          Text(
-                            notesPreview.split('\n').first,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
+                          MapObjectNotesPreview(
+                            markdown: notesPreview,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ],
                       ],
@@ -585,6 +615,324 @@ class _LineZoneListTile extends ConsumerWidget {
   }
 }
 
+class _CircleZoneListTile extends ConsumerWidget {
+  const _CircleZoneListTile({
+    super.key,
+    required this.zone,
+    required this.onZoomTo,
+  });
+
+  final MapZone zone;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final zoneId = zone.id;
+    final geometry = CircleGeometry.fromZone(zone);
+    final measurementUnits = ref.watch(measurementUnitsProvider);
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
+        selected?.id == zone.id;
+    final notesPreview = geometry?.notes?.trim();
+
+    if (geometry == null || !geometry.isValid) {
+      return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
+    }
+
+    final radiusLabel = formatCircleSize(
+      geometry.radiusMeters,
+      measurementUnits,
+      CircleSizeDisplay.radius,
+    );
+    final mapSizeLabel = formatCircleSizeForMapLabel(
+      geometry.radiusMeters,
+      measurementUnits,
+      geometry.sizeDisplay,
+    );
+
+    return ColoredBox(
+      color: _selectionHighlightColor(theme, isSelected),
+      child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InkWell(
+          onTap: () {
+            final notifier = ref.read(selectedMapObjectProvider.notifier);
+            if (isSelected) {
+              notifier.clear();
+            } else {
+              notifier.selectZone(zone.id);
+            }
+            onZoomTo(geometry.center);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundColor: _parseColor(zone.borderColor),
+                  radius: 18,
+                  child: const Icon(
+                    Icons.radio_button_unchecked,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        zone.name,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        mapSizeLabel == null
+                            ? 'R $radiusLabel · no map label'
+                            : '${geometry.sizeDisplay.shortLabel} $mapSizeLabel',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      if (notesPreview != null && notesPreview.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        MapObjectNotesPreview(
+                          markdown: notesPreview,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        _MapObjectActionBar(
+          actions: [
+            _MapObjectIconAction(
+              tooltip: geometry.showNameLabel
+                  ? 'Hide name on map'
+                  : 'Show name on map',
+              icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
+              toggled: geometry.showNameLabel,
+              isToggle: true,
+              onPressed: () => toggleCircleNameLabel(ref: ref, zoneId: zoneId),
+            ),
+            _MapObjectIconAction(
+              tooltip: circleSizeDisplayToggleTooltip(geometry.sizeDisplay),
+              icon: geometry.sizeDisplay == CircleSizeDisplay.none
+                  ? Icons.straighten_outlined
+                  : Icons.straighten,
+              toggled: geometry.sizeDisplay != CircleSizeDisplay.none,
+              isToggle: true,
+              onPressed: () => toggleCircleSizeLabel(ref: ref, zoneId: zoneId),
+            ),
+            _MapObjectIconAction(
+              tooltip: zone.visible ? 'Hide circle' : 'Show circle',
+              icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+              toggled: zone.visible,
+              isToggle: true,
+              onPressed: () async {
+                final client = ref.read(serverClientProvider);
+                await client.mapZone.updateZone(
+                  zone.copyWith(visible: !zone.visible),
+                );
+                ref.read(zonesProvider.notifier).reload();
+              },
+            ),
+            _MapObjectIconAction(
+              tooltip: 'Edit circle',
+              icon: Icons.edit_outlined,
+              onPressed: () => updateCircleFromForm(
+                context: context,
+                ref: ref,
+                zone: zone,
+              ),
+            ),
+            _MapObjectIconAction(
+              tooltip: 'Delete circle',
+              icon: Icons.delete_outline,
+              onPressed: () async {
+                final client = ref.read(serverClientProvider);
+                await client.mapZone.deleteZone(zoneId);
+                ref.read(zonesProvider.notifier).reload();
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+    );
+  }
+}
+
+class _RectangleZoneListTile extends ConsumerWidget {
+  const _RectangleZoneListTile({
+    super.key,
+    required this.zone,
+    required this.onZoomTo,
+  });
+
+  final MapZone zone;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final zoneId = zone.id;
+    final geometry = RectangleGeometry.fromZone(zone);
+    final measurementUnits = ref.watch(measurementUnitsProvider);
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
+        selected?.id == zone.id;
+    final notesPreview = geometry?.notes?.trim();
+
+    if (geometry == null || !geometry.isValid) {
+      return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
+    }
+
+    final dimensionsLabel = formatRectangleDimensions(
+      geometry.bounds,
+      measurementUnits,
+    );
+    final mapSizeLabel = formatRectangleSizeForMapLabel(
+      geometry.bounds,
+      measurementUnits,
+      geometry.sizeDisplay,
+    );
+
+    return ColoredBox(
+      color: _selectionHighlightColor(theme, isSelected),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              final notifier = ref.read(selectedMapObjectProvider.notifier);
+              if (isSelected) {
+                notifier.clear();
+              } else {
+                notifier.selectZone(zone.id);
+              }
+              onZoomTo(geometry.bounds.center);
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _parseColor(zone.borderColor),
+                    radius: 18,
+                    child: const Icon(
+                      Icons.crop_square,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          zone.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          mapSizeLabel == null
+                              ? '$dimensionsLabel · no map label'
+                              : '${geometry.sizeDisplay.shortLabel} $mapSizeLabel',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (notesPreview != null && notesPreview.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          MapObjectNotesPreview(
+                            markdown: notesPreview,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: geometry.showNameLabel
+                    ? 'Hide name on map'
+                    : 'Show name on map',
+                icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
+                toggled: geometry.showNameLabel,
+                isToggle: true,
+                onPressed: () =>
+                    toggleRectangleNameLabel(ref: ref, zoneId: zoneId),
+              ),
+              _MapObjectIconAction(
+                tooltip:
+                    rectangleSizeDisplayToggleTooltip(geometry.sizeDisplay),
+                icon: geometry.sizeDisplay == RectangleSizeDisplay.none
+                    ? Icons.straighten_outlined
+                    : Icons.straighten,
+                toggled: geometry.sizeDisplay != RectangleSizeDisplay.none,
+                isToggle: true,
+                onPressed: () =>
+                    toggleRectangleSizeLabel(ref: ref, zoneId: zoneId),
+              ),
+              _MapObjectIconAction(
+                tooltip: zone.visible ? 'Hide rectangle' : 'Show rectangle',
+                icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: zone.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.updateZone(
+                    zone.copyWith(visible: !zone.visible),
+                  );
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: 'Edit rectangle',
+                icon: Icons.edit_outlined,
+                onPressed: () => updateRectangleFromForm(
+                  context: context,
+                  ref: ref,
+                  zone: zone,
+                ),
+              ),
+              _MapObjectIconAction(
+                tooltip: 'Delete rectangle',
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.deleteZone(zoneId);
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _GenericZoneListTile extends ConsumerWidget {
   const _GenericZoneListTile({
     super.key,
@@ -598,14 +946,26 @@ class _GenericZoneListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
+        selected?.id == zone.id;
 
-    return Column(
+    return ColoredBox(
+      color: _selectionHighlightColor(theme, isSelected),
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         InkWell(
           onTap: () {
-            ref.read(selectedLineProvider.notifier).clear();
-            final center = lineZoneCenter(zone);
+            final notifier = ref.read(selectedMapObjectProvider.notifier);
+            if (isSelected) {
+              notifier.clear();
+            } else {
+              notifier.selectZone(zone.id);
+            }
+            final center = rectangleZoneCenter(zone) ??
+                circleZoneCenter(zone) ??
+                lineZoneCenter(zone);
             if (center != null) {
               onZoomTo(center);
             }
@@ -676,6 +1036,7 @@ class _GenericZoneListTile extends ConsumerWidget {
           ],
         ),
       ],
+    ),
     );
   }
 }
@@ -787,3 +1148,9 @@ int _compareZones(MapZone a, MapZone b, ZoneSortField sort) {
 }
 
 Color _parseColor(String value) => parseMarkerColor(value);
+
+Color _selectionHighlightColor(ThemeData theme, bool isSelected) {
+  return isSelected
+      ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
+      : Colors.transparent;
+}

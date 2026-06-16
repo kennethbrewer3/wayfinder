@@ -24,12 +24,21 @@ class MapRadialMenu extends StatelessWidget {
   final Offset center;
   final List<MapRadialMenuAction> actions;
 
-  static const _radius = 56.0;
-  static const _buttonSize = 56.0;
+  static const _buttonSize = 48.0;
+  static const _labelWidth = 84.0;
+
+  double _radiusForCount(int count) {
+    return switch (count) {
+      <= 3 => 56.0,
+      <= 5 => 72.0,
+      _ => 80.0,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final radius = _radiusForCount(actions.length);
 
     return Stack(
       fit: StackFit.expand,
@@ -56,8 +65,9 @@ class MapRadialMenu extends StatelessWidget {
           _RadialMenuButton(
             action: actions[index],
             angle: _angleForIndex(index, actions.length),
-            radius: _radius,
+            radius: radius,
             buttonSize: _buttonSize,
+            labelWidth: _labelWidth,
             center: center,
           ),
       ],
@@ -80,6 +90,7 @@ class _RadialMenuButton extends StatelessWidget {
     required this.angle,
     required this.radius,
     required this.buttonSize,
+    required this.labelWidth,
     required this.center,
   });
 
@@ -87,53 +98,70 @@ class _RadialMenuButton extends StatelessWidget {
   final double angle;
   final double radius;
   final double buttonSize;
+  final double labelWidth;
   final Offset center;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dx = center.dx + math.cos(angle) * radius - buttonSize / 2;
-    final dy = center.dy + math.sin(angle) * radius - buttonSize / 2;
+    final buttonCenter = Offset(
+      center.dx + math.cos(angle) * radius,
+      center.dy + math.sin(angle) * radius,
+    );
 
     return Positioned(
-      left: dx,
-      top: dy,
+      left: buttonCenter.dx - labelWidth / 2,
+      top: buttonCenter.dy - buttonSize / 2,
+      width: labelWidth,
       child: Tooltip(
         message: action.label,
-        child: Material(
-          elevation: 4,
-          borderRadius: BorderRadius.circular(buttonSize / 2),
-          color: theme.colorScheme.surface,
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: action.onSelected,
-            borderRadius: BorderRadius.circular(buttonSize / 2),
-            child: SizedBox(
-              width: buttonSize,
-              height: buttonSize,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    action.icon,
-                    size: 24,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    action.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontSize: 10,
-                      height: 1,
-                      fontWeight: FontWeight.w600,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(buttonSize / 2),
+                color: theme.colorScheme.surface,
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: action.onSelected,
+                  borderRadius: BorderRadius.circular(buttonSize / 2),
+                  child: SizedBox(
+                    width: buttonSize,
+                    height: buttonSize,
+                    child: Icon(
+                      action.icon,
+                      size: 24,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 4),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface.withValues(alpha: 0.92),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: Text(
+                  action.label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontSize: 10,
+                    height: 1.15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

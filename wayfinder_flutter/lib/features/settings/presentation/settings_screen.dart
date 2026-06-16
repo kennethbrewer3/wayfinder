@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../circles/models/circle_size_display.dart';
+import '../../circles/providers/circle_size_display_provider.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
@@ -125,6 +127,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final activeIdAsync = ref.watch(activePmtilesIdProvider);
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
+    final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -187,6 +190,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ref
                   .read(angleDisplayFormatProvider.notifier)
                   .setFormat(selection.first);
+            },
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Circles',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Choose the default size label shown on new circular zones.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          SegmentedButton<CircleSizeDisplay>(
+            segments: CircleSizeDisplay.values
+                .map(
+                  (display) => ButtonSegment(
+                    value: display,
+                    label: Text(display.shortLabel),
+                    tooltip: display.label,
+                  ),
+                )
+                .toList(),
+            selected: {circleSizeDisplay},
+            onSelectionChanged: (selection) {
+              ref
+                  .read(circleSizeDisplayProvider.notifier)
+                  .setDisplay(selection.first);
             },
           ),
           const SizedBox(height: 32),

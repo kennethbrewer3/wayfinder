@@ -46,6 +46,18 @@ String formatLineDistance(double meters, MeasurementUnits units) {
   };
 }
 
+String formatArea(double squareMeters, MeasurementUnits units) {
+  if (squareMeters.isNaN || squareMeters.isInfinite || squareMeters < 0) {
+    return '—';
+  }
+
+  return switch (units) {
+    MeasurementUnits.metric => _formatMetricArea(squareMeters),
+    MeasurementUnits.imperial => _formatImperialArea(squareMeters),
+    MeasurementUnits.nautical => _formatNauticalArea(squareMeters),
+  };
+}
+
 String _formatMetric(double meters) {
   if (meters < 1000) {
     final precision = meters < 100 ? 1 : 0;
@@ -73,4 +85,45 @@ String _formatNautical(double meters) {
     return '${yards.toStringAsFixed(0)} yd';
   }
   return '${nauticalMiles.toStringAsFixed(2)} nm';
+}
+
+String _formatMetricArea(double squareMeters) {
+  const squareMetersPerHectare = 10000.0;
+  const squareMetersPerSquareKilometer = 1000000.0;
+
+  if (squareMeters < squareMetersPerHectare) {
+    final precision = squareMeters < 100 ? 1 : 0;
+    return '${squareMeters.toStringAsFixed(precision)} m²';
+  }
+  if (squareMeters < squareMetersPerSquareKilometer) {
+    return '${(squareMeters / squareMetersPerHectare).toStringAsFixed(2)} ha';
+  }
+  return '${(squareMeters / squareMetersPerSquareKilometer).toStringAsFixed(2)} km²';
+}
+
+String _formatImperialArea(double squareMeters) {
+  const squareMetersPerSquareFoot = 0.092903;
+  const squareFeetPerAcre = 43560.0;
+  const acresPerSquareMile = 640.0;
+
+  final squareFeet = squareMeters / squareMetersPerSquareFoot;
+  if (squareFeet < squareFeetPerAcre) {
+    final precision = squareFeet < 100 ? 1 : 0;
+    return '${squareFeet.toStringAsFixed(precision)} ft²';
+  }
+  final acres = squareFeet / squareFeetPerAcre;
+  if (acres < acresPerSquareMile) {
+    return '${acres.toStringAsFixed(2)} ac';
+  }
+  return '${(acres / acresPerSquareMile).toStringAsFixed(2)} mi²';
+}
+
+String _formatNauticalArea(double squareMeters) {
+  const squareMetersPerSquareNauticalMile = 1852.0 * 1852.0;
+
+  if (squareMeters < squareMetersPerSquareNauticalMile * 0.01) {
+    final precision = squareMeters < 100 ? 1 : 0;
+    return '${squareMeters.toStringAsFixed(precision)} m²';
+  }
+  return '${(squareMeters / squareMetersPerSquareNauticalMile).toStringAsFixed(2)} nm²';
 }

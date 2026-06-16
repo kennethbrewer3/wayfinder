@@ -11,6 +11,7 @@ import '../../search/presentation/map_search_bar.dart';
 import '../../sidebar/presentation/sidebar_panel.dart';
 import '../models/map_viewport.dart';
 import '../providers/map_providers.dart';
+import 'map_object_selection_listener.dart';
 import 'map_view.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -123,7 +124,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         ],
       ),
-      body: viewportAsync.when(
+      body: MapObjectSelectionListener(
+        child: viewportAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Failed to load map: $error')),
         data: (viewport) {
@@ -195,6 +197,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ],
           );
         },
+      ),
       ),
     );
   }

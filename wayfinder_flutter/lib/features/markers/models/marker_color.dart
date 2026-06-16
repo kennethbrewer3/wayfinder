@@ -15,3 +15,8 @@ String formatMarkerColorHex(Color color) {
   final value = color.toARGB32() & 0xFFFFFF;
   return '#${value.toRadixString(16).padLeft(6, '0').toUpperCase()}';
 }
+
+String formatMarkerColorHexWithAlpha(Color color) {
+  final value = color.toARGB32();
+  return '#${value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
+}

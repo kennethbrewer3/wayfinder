@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/constants.dart';
+import 'selected_map_object_provider.dart';
 import '../data/map_viewport_storage.dart';
 import '../models/map_viewport.dart';
 
@@ -123,6 +124,21 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
 
   void setExpanded(bool expanded) {
     state = state.copyWith(expanded: expanded);
+  }
+
+  void revealMapObject({
+    required SelectedMapObjectKind kind,
+  }) {
+    final tab = kind == SelectedMapObjectKind.marker
+        ? SidebarPanelTab.markers
+        : SidebarPanelTab.zones;
+    if (state.expanded && state.activeTab == tab) {
+      return;
+    }
+    state = state.copyWith(
+      expanded: true,
+      activeTab: tab,
+    );
   }
 
   void toggleExpanded() {

@@ -22,4 +22,5 @@ class AppConstants {
   static const pmtilesDirectoryName = 'pmtiles';
   static const measurementUnitsStorageKey = 'wayfinder.settings.measurementUnits';
   static const angleDisplayFormatStorageKey = 'wayfinder.settings.angleDisplayFormat';
+  static const circleSizeDisplayStorageKey = 'wayfinder.settings.circleSizeDisplay';
 }

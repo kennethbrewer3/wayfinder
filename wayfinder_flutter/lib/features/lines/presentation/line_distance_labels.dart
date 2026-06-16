@@ -6,6 +6,13 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../markers/models/marker_color.dart';
+import '../../circles/models/circle_geometry.dart';
+import '../../circles/models/circle_size_display.dart';
+import '../../circles/presentation/map_circle_layer.dart';
+import '../../circles/utils/circle_distance.dart';
+import '../../rectangles/models/rectangle_geometry.dart';
+import '../../rectangles/utils/rectangle_bounds.dart';
+import '../../rectangles/utils/rectangle_dimensions.dart';
 import '../models/line_geometry.dart';
 import '../models/measurement_units.dart';
 import '../utils/line_distance.dart';
@@ -38,6 +45,137 @@ class LineMapLabelContent {
     final height = rowCount * _singleRowHeight + (rowCount - 1) * _rowSpacing;
     return Size(_labelMaxWidth, height);
   }
+}
+
+List<LineMapLabelContent> collectCircleMapLabelContents(
+  List<MapZone> zones,
+  MeasurementUnits units,
+) {
+  final contents = <LineMapLabelContent>[];
+  for (final zone in zones) {
+    if (!zone.visible || zone.type != circleZoneType) {
+      continue;
+    }
+    final content = circleMapLabelContentForZone(zone, units);
+    if (content != null) {
+      contents.add(content);
+    }
+  }
+  return contents;
+}
+
+LineMapLabelContent? circleMapLabelContentForZone(
+  MapZone zone,
+  MeasurementUnits units,
+) {
+  final geometry = CircleGeometry.fromZone(zone);
+  if (geometry == null || !geometry.isValid) {
+    return null;
+  }
+
+  final name = geometry.showNameLabel ? zone.name : null;
+  final size = formatCircleSizeForMapLabel(
+    geometry.radiusMeters,
+    units,
+    geometry.sizeDisplay,
+  );
+  if (name == null && size == null) {
+    return null;
+  }
+
+  return LineMapLabelContent(
+    id: zone.id.uuid,
+    point: circleSizeLineMidpoint(geometry),
+    color: parseMarkerColor(zone.borderColor),
+    name: name,
+    distance: size,
+  );
+}
+
+LineMapLabelContent? previewCircleMapLabelContent({
+  required LatLng center,
+  required double? radiusMeters,
+  required Color color,
+  required MeasurementUnits units,
+  required CircleSizeDisplay sizeDisplay,
+}) {
+  if (radiusMeters == null || radiusMeters < 1) {
+    return null;
+  }
+
+  final geometry = CircleGeometry(
+    center: center,
+    radiusMeters: radiusMeters,
+  );
+
+  return LineMapLabelContent(
+    id: 'preview-circle-label',
+    point: circleSizeLineMidpoint(geometry),
+    color: color,
+    distance: formatCircleSize(radiusMeters, units, sizeDisplay),
+  );
+}
+
+List<LineMapLabelContent> collectRectangleMapLabelContents(
+  List<MapZone> zones,
+  MeasurementUnits units,
+) {
+  final contents = <LineMapLabelContent>[];
+  for (final zone in zones) {
+    if (!zone.visible || zone.type != rectangleZoneType) {
+      continue;
+    }
+    final content = rectangleMapLabelContentForZone(zone, units);
+    if (content != null) {
+      contents.add(content);
+    }
+  }
+  return contents;
+}
+
+LineMapLabelContent? rectangleMapLabelContentForZone(
+  MapZone zone,
+  MeasurementUnits units,
+) {
+  final geometry = RectangleGeometry.fromZone(zone);
+  if (geometry == null || !geometry.isValid) {
+    return null;
+  }
+
+  final name = geometry.showNameLabel ? zone.name : null;
+  final size = formatRectangleSizeForMapLabel(
+    geometry.bounds,
+    units,
+    geometry.sizeDisplay,
+  );
+  if (name == null && size == null) {
+    return null;
+  }
+
+  return LineMapLabelContent(
+    id: zone.id.uuid,
+    point: geometry.labelPoint,
+    color: parseMarkerColor(zone.borderColor),
+    name: name,
+    distance: size,
+  );
+}
+
+LineMapLabelContent? previewRectangleMapLabelContent({
+  required RectangleBounds bounds,
+  required Color color,
+  required MeasurementUnits units,
+}) {
+  if (!bounds.isValid) {
+    return null;
+  }
+
+  return LineMapLabelContent(
+    id: 'preview-rectangle-label',
+    point: bounds.center,
+    color: color,
+    distance: formatRectangleDimensions(bounds, units),
+  );
 }
 
 List<LineMapLabelContent> collectSavedLineMapLabelContents(
@@ -147,6 +285,11 @@ class LineMapLabelsOverlay extends StatefulWidget {
     this.bearingPreviewEnd,
     this.bearingPreviewColor,
     this.bearingPreviewAngle,
+    this.previewCircleCenter,
+    this.previewCircleRadiusMeters,
+    this.previewCircleColor,
+    this.previewRectangleBounds,
+    this.previewRectangleColor,
   });
 
   final List<MapZone> zones;
@@ -159,6 +302,11 @@ class LineMapLabelsOverlay extends StatefulWidget {
   final LatLng? bearingPreviewEnd;
   final Color? bearingPreviewColor;
   final String? bearingPreviewAngle;
+  final LatLng? previewCircleCenter;
+  final double? previewCircleRadiusMeters;
+  final Color? previewCircleColor;
+  final RectangleBounds? previewRectangleBounds;
+  final Color? previewRectangleColor;
 
   @override
   State<LineMapLabelsOverlay> createState() => _LineMapLabelsOverlayState();
@@ -200,7 +348,17 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
   Widget build(BuildContext context) {
     final camera = widget.mapController.camera;
     final mapSize = camera.size;
-    final labels = collectSavedLineMapLabelContents(widget.zones, widget.units);
+    final labels = [
+      ...collectSavedLineMapLabelContents(widget.zones, widget.units),
+      ...collectCircleMapLabelContents(
+        widget.zones,
+        widget.units,
+      ),
+      ...collectRectangleMapLabelContents(
+        widget.zones,
+        widget.units,
+      ),
+    ];
 
     if (widget.previewStart case final start? when widget.previewColor != null) {
       final preview = previewLineMapLabelContent(
@@ -222,6 +380,32 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
         color: widget.bearingPreviewColor!,
         units: widget.units,
         angleLabel: widget.bearingPreviewAngle,
+      );
+      if (preview != null) {
+        labels.add(preview);
+      }
+    }
+
+    if (widget.previewCircleCenter case final center?
+        when widget.previewCircleColor != null) {
+      final preview = previewCircleMapLabelContent(
+        center: center,
+        radiusMeters: widget.previewCircleRadiusMeters,
+        color: widget.previewCircleColor!,
+        units: widget.units,
+        sizeDisplay: CircleSizeDisplay.radius,
+      );
+      if (preview != null) {
+        labels.add(preview);
+      }
+    }
+
+    if (widget.previewRectangleBounds case final bounds?
+        when widget.previewRectangleColor != null) {
+      final preview = previewRectangleMapLabelContent(
+        bounds: bounds,
+        color: widget.previewRectangleColor!,
+        units: widget.units,
       );
       if (preview != null) {
         labels.add(preview);

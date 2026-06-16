@@ -54,6 +54,7 @@ dependencies:
   flutter_quill: ^11.5.1
   markdown_quill: ^4.3.0
   flex_color_picker: ^3.8.0
+  url_launcher: ^6.3.2
   flutter_localizations:
     sdk: flutter
   markdown: ^7.3.1

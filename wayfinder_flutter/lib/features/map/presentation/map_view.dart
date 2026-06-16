@@ -13,6 +13,15 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../../core/browser_context_menu.dart';
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../circles/presentation/create_circle_dialog.dart';
+import '../../circles/presentation/map_circle_layer.dart';
+import '../../circles/providers/circle_drawing_provider.dart';
+import '../../rectangles/models/rectangle_geometry.dart';
+import '../../rectangles/presentation/create_rectangle_dialog.dart';
+import '../../rectangles/presentation/map_rectangle_layer.dart';
+import '../../rectangles/providers/rectangle_drawing_provider.dart';
+import '../../rectangles/utils/rectangle_bounds.dart';
+import '../../rectangles/utils/rectangle_hit_test.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/bearing_plot_overlay.dart';
 import '../../lines/presentation/create_line_dialog.dart';
@@ -20,10 +29,13 @@ import '../../lines/presentation/line_distance_labels.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
+import '../../circles/utils/circle_hit_test.dart';
 import '../../lines/providers/bearing_plot_provider.dart';
 import '../../lines/providers/line_drawing_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
-import '../../lines/providers/selected_line_provider.dart';
+import '../../map/providers/map_providers.dart';
+import '../../map/providers/selected_map_object_provider.dart';
+import '../../markers/utils/marker_hit_test.dart';
 import '../../lines/utils/bearing_utils.dart';
 import '../../lines/utils/line_arrows.dart';
 import '../../lines/utils/line_distance.dart';
@@ -177,6 +189,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Offset? _tapDownLocal;
   bool _longPressTriggered = false;
   bool _lineDrawingPressActive = false;
+  bool _circleDrawingPressActive = false;
+  bool _rectangleDrawingPressActive = false;
   LatLng? _pendingSnapStart;
   bool _primaryPointerGestureHandled = false;
   bool _activePointerDown = false;
@@ -215,7 +229,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _pendingSelectionTapOnUp = false;
 
     if (ref.read(bearingPlotProvider).active ||
-        ref.read(lineDrawingProvider).active) {
+        ref.read(lineDrawingProvider).active ||
+        ref.read(circleDrawingProvider).active ||
+        ref.read(rectangleDrawingProvider).active) {
       return;
     }
     if (_selectedLineSnapTarget(point) != null) {
@@ -246,6 +262,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final shouldApply = !_longPressTriggered &&
         !ref.read(bearingPlotProvider).active &&
         !ref.read(lineDrawingProvider).active &&
+        !ref.read(circleDrawingProvider).active &&
+        !ref.read(rectangleDrawingProvider).active &&
         _pendingSelectionTapOnUp &&
         _isSelectionClick(event);
 
@@ -298,24 +316,26 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
 
     _updateLinePreviewEnd(point);
+    _updateCirclePreviewRadius(point);
+    _updateRectanglePreview(point);
     if (ref.read(bearingPlotProvider).active) {
       _updateBearingPlotPreview(point);
     }
   }
 
   LatLng? _selectedLineSnapTarget(LatLng point) {
-    final selectedLineId = ref.read(selectedLineProvider);
-    if (selectedLineId == null) {
+    final selected = ref.read(selectedMapObjectProvider);
+    if (selected?.kind != SelectedMapObjectKind.zone) {
       return null;
     }
 
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
-    final selected = findZoneById(zones, selectedLineId);
-    if (selected == null) {
+    final selectedZone = findZoneById(zones, selected!.id);
+    if (selectedZone == null || selectedZone.type != lineZoneType) {
       return null;
     }
 
-    final geometry = LineGeometry.fromZone(selected);
+    final geometry = LineGeometry.fromZone(selectedZone);
     if (geometry == null || !geometry.isValid) {
       return null;
     }
@@ -343,6 +363,25 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       camera: _mapController.camera,
       candidates: _lineSnapCandidates(),
     );
+  }
+
+  void _updateCirclePreviewRadius(LatLng point) {
+    final circleDrawing = ref.read(circleDrawingProvider);
+    final center = circleDrawing.center;
+    if (!circleDrawing.awaitingRadius || center == null) {
+      return;
+    }
+    ref
+        .read(circleDrawingProvider.notifier)
+        .setPreviewRadius(lineLengthMeters(center, point));
+  }
+
+  void _updateRectanglePreview(LatLng point) {
+    final rectangleDrawing = ref.read(rectangleDrawingProvider);
+    if (!rectangleDrawing.awaitingSecondPoint) {
+      return;
+    }
+    ref.read(rectangleDrawingProvider.notifier).setPreviewPoint(point);
   }
 
   void _updateLinePreviewEnd(LatLng point) {
@@ -399,21 +438,70 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
   }
 
-  UuidValue? _hitLineAtPoint(LatLng point) {
+  SelectedMapObject? _hitMapObjectAtPoint(LatLng point) {
+    final markers = widget.markersAsync.valueOrNull;
+    if (markers != null) {
+      final markerId = hitTestMarkerAtPoint(
+        point: point,
+        markers: markers,
+        camera: _mapController.camera,
+      );
+      if (markerId != null) {
+        return SelectedMapObject(
+          kind: SelectedMapObjectKind.marker,
+          id: markerId,
+        );
+      }
+    }
+
     final zones = widget.zonesAsync.valueOrNull;
     if (zones == null) {
       return null;
     }
-    return hitTestLineAtPoint(
+
+    final lineId = hitTestLineAtPoint(
       point: point,
       zones: zones,
       camera: _mapController.camera,
     );
+    if (lineId != null) {
+      return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: lineId);
+    }
+
+    final circleId = hitTestCircleAtPoint(point: point, zones: zones);
+    if (circleId != null) {
+      return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: circleId);
+    }
+
+    final rectangleId = hitTestRectangleAtPoint(
+      point: point,
+      zones: zones,
+      camera: _mapController.camera,
+    );
+    if (rectangleId != null) {
+      return SelectedMapObject(
+        kind: SelectedMapObjectKind.zone,
+        id: rectangleId,
+      );
+    }
+
+    return null;
+  }
+
+  void _revealSelectedObjectInSidebar(SelectedMapObject selection) {
+    ref.read(sidebarProvider.notifier).revealMapObject(kind: selection.kind);
+  }
+
+  void _selectMapObject(SelectedMapObject selection) {
+    ref.read(selectedMapObjectProvider.notifier).select(selection);
+    _revealSelectedObjectInSidebar(selection);
   }
 
   void _handleSecondaryMapTap(TapPosition tapPosition, LatLng point) {
     if (ref.read(lineDrawingProvider).active ||
-        ref.read(bearingPlotProvider).active) {
+        ref.read(bearingPlotProvider).active ||
+        ref.read(circleDrawingProvider).active ||
+        ref.read(rectangleDrawingProvider).active) {
       return;
     }
 
@@ -451,6 +539,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(lineDrawingProvider).awaitingEnd) {
         _lineDrawingPressActive = true;
+      }
+      return;
+    }
+
+    if (ref.read(circleDrawingProvider).active) {
+      _cancelPendingLongPress();
+      if (ref.read(circleDrawingProvider).awaitingRadius) {
+        _circleDrawingPressActive = true;
+      }
+      return;
+    }
+
+    if (ref.read(rectangleDrawingProvider).active) {
+      _cancelPendingLongPress();
+      if (ref.read(rectangleDrawingProvider).awaitingSecondPoint) {
+        _rectangleDrawingPressActive = true;
       }
       return;
     }
@@ -496,6 +600,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       ref
           .read(lineDrawingProvider.notifier)
           .setPreviewEnd(_snapLinePoint(point));
+    }
+
+    if (ref.read(circleDrawingProvider).awaitingRadius &&
+        _circleDrawingPressActive) {
+      _updateCirclePreviewRadius(point);
+    }
+
+    if (ref.read(rectangleDrawingProvider).awaitingSecondPoint &&
+        _rectangleDrawingPressActive) {
+      _updateRectanglePreview(point);
     }
 
     final pendingLocal = _pendingLongPressLocal;
@@ -558,6 +672,35 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final circleDrawing = ref.read(circleDrawingProvider);
+    if (circleDrawing.active && !_longPressTriggered) {
+      if (circleDrawing.awaitingRadius && _circleDrawingPressActive) {
+        unawaited(_finalizeCircleDrawing(point));
+      } else if (_isShortPress(event)) {
+        _cancelCircleDrawing();
+      }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
+    final rectangleDrawing = ref.read(rectangleDrawingProvider);
+    if (rectangleDrawing.active && !_longPressTriggered) {
+      if (rectangleDrawing.awaitingSecondPoint &&
+          _rectangleDrawingPressActive) {
+        unawaited(_finalizeRectangleDrawing(point));
+      } else if (_isShortPress(event)) {
+        _cancelRectangleDrawing();
+      }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
   }
@@ -570,7 +713,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
     if (ref.read(bearingPlotProvider).active ||
-        ref.read(lineDrawingProvider).active) {
+        ref.read(lineDrawingProvider).active ||
+        ref.read(circleDrawingProvider).active ||
+        ref.read(rectangleDrawingProvider).active) {
       return;
     }
     _applyMapSelectionAt(point);
@@ -579,6 +724,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _resetLineDrawGestureState() {
     _lineDrawingPressActive = false;
+    _circleDrawingPressActive = false;
+    _rectangleDrawingPressActive = false;
     _pendingSnapStart = null;
     _tapDownLocal = null;
   }
@@ -586,11 +733,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void _dismissLineInteraction() {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
-    ref.read(selectedLineProvider.notifier).clear();
+    ref.read(selectedMapObjectProvider.notifier).clear();
   }
 
   void _beginBearingPlot(LatLng anchor) {
-    final selectedLineId = ref.read(selectedLineProvider);
+    final selectedLineId = ref.read(selectedMapObjectProvider).selectedZoneId;
     if (selectedLineId == null) {
       return;
     }
@@ -671,32 +818,34 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _applyMapSelectionAt(LatLng point) {
     if (ref.read(bearingPlotProvider).active ||
-        ref.read(lineDrawingProvider).active) {
+        ref.read(lineDrawingProvider).active ||
+        ref.read(circleDrawingProvider).active ||
+        ref.read(rectangleDrawingProvider).active) {
       return;
     }
 
-    final hitLineId = _hitLineAtPoint(point);
-    final selectedId = ref.read(selectedLineProvider);
-    final notifier = ref.read(selectedLineProvider.notifier);
+    final hit = _hitMapObjectAtPoint(point);
+    final current = ref.read(selectedMapObjectProvider);
+    final notifier = ref.read(selectedMapObjectProvider.notifier);
 
-    if (selectedId == null) {
-      if (hitLineId != null) {
-        notifier.select(hitLineId);
+    if (current == null) {
+      if (hit != null) {
+        _selectMapObject(hit);
       }
       return;
     }
 
-    if (hitLineId == null) {
+    if (hit == null) {
       notifier.clear();
       return;
     }
 
-    if (hitLineId == selectedId) {
+    if (hit == current) {
       notifier.clear();
       return;
     }
 
-    notifier.select(hitLineId);
+    _selectMapObject(hit);
   }
 
   Future<void> _finalizeLineDrawing(LatLng endPoint) async {
@@ -721,16 +870,82 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     );
   }
 
+  Future<void> _finalizeCircleDrawing(LatLng edgePoint) async {
+    final drawing = ref.read(circleDrawingProvider);
+    final center = drawing.center;
+    if (center == null) {
+      return;
+    }
+
+    final radiusMeters = lineLengthMeters(center, edgePoint);
+    ref.read(circleDrawingProvider.notifier).reset();
+    _circleDrawingPressActive = false;
+
+    if (radiusMeters < 1) {
+      return;
+    }
+
+    await createCircleAtCenter(
+      context: context,
+      ref: ref,
+      center: center,
+      radiusMeters: radiusMeters,
+    );
+  }
+
+  Future<void> _finalizeRectangleDrawing(LatLng point) async {
+    final drawing = ref.read(rectangleDrawingProvider);
+    final anchor = drawing.anchor;
+    final mode = drawing.mode;
+    if (anchor == null || mode == null) {
+      return;
+    }
+
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    _rectangleDrawingPressActive = false;
+
+    final bounds = switch (mode) {
+      RectangleCreationMode.centerExtent =>
+        boundsFromCenterExtent(anchor, point),
+      RectangleCreationMode.corners => boundsFromCorners(anchor, point),
+    };
+    if (!bounds.isValid) {
+      return;
+    }
+
+    switch (mode) {
+      case RectangleCreationMode.centerExtent:
+        await createCenterExtentRectangle(
+          context: context,
+          ref: ref,
+          center: anchor,
+          extentPoint: point,
+        );
+      case RectangleCreationMode.corners:
+        await createCornersRectangle(
+          context: context,
+          ref: ref,
+          cornerA: anchor,
+          cornerB: point,
+        );
+    }
+  }
+
   void _handlePointerCancel() {
     _clearPointerDownSelectionState();
     _resetLineDrawGestureState();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
     _cancelPendingLongPress();
   }
 
   void _beginLineDrawing() {
     final point = _radialMenuPoint;
     _closeRadialMenu();
-    ref.read(selectedLineProvider.notifier).clear();
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
     final notifier = ref.read(lineDrawingProvider.notifier);
     if (point != null) {
       notifier.setStart(point);
@@ -745,6 +960,66 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void _cancelLineDrawing() {
     _resetLineDrawGestureState();
     _dismissLineInteraction();
+  }
+
+  void _beginCircleDrawing() {
+    final point = _radialMenuPoint;
+    _closeRadialMenu();
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    final notifier = ref.read(circleDrawingProvider.notifier);
+    if (point != null) {
+      notifier.setCenter(point);
+      if (_cursorLocation != null) {
+        notifier.setPreviewRadius(lineLengthMeters(point, _cursorLocation!));
+      }
+    } else {
+      notifier.begin();
+    }
+  }
+
+  void _cancelCircleDrawing() {
+    _resetLineDrawGestureState();
+    ref.read(circleDrawingProvider.notifier).reset();
+  }
+
+  void _beginCenterRectDrawing() {
+    final point = _radialMenuPoint;
+    _closeRadialMenu();
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    final notifier = ref.read(rectangleDrawingProvider.notifier);
+    if (point != null) {
+      notifier.beginCenterExtent(point);
+      if (_cursorLocation != null) {
+        notifier.setPreviewPoint(_cursorLocation!);
+      }
+    }
+  }
+
+  void _beginCornersRectDrawing() {
+    final point = _radialMenuPoint;
+    _closeRadialMenu();
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    final notifier = ref.read(rectangleDrawingProvider.notifier);
+    if (point != null) {
+      notifier.beginCorners(point);
+      if (_cursorLocation != null) {
+        notifier.setPreviewPoint(_cursorLocation!);
+      }
+    }
+  }
+
+  void _cancelRectangleDrawing() {
+    _resetLineDrawGestureState();
+    ref.read(rectangleDrawingProvider.notifier).reset();
   }
 
   void _openRadialMenuAt(Offset center, LatLng point) {
@@ -927,17 +1202,110 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     );
   }
 
+  Widget _circleDrawingBanner(CircleDrawingState circleDrawing) {
+    final theme = Theme.of(context);
+    const message =
+        'Click or drag to set the circle radius, or use Cancel to exit';
+
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.radio_button_unchecked,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  message,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _cancelCircleDrawing,
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _rectangleDrawingBanner(RectangleDrawingState rectangleDrawing) {
+    final theme = Theme.of(context);
+    final message = switch (rectangleDrawing.mode) {
+      RectangleCreationMode.centerExtent =>
+        'Click or drag to set the rectangle size from center, or use Cancel to exit',
+      RectangleCreationMode.corners =>
+        'Click or drag to set the opposite corner, or use Cancel to exit',
+      null => 'Click or drag to define the rectangle, or use Cancel to exit',
+    };
+
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.crop_square,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  message,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _cancelRectangleDrawing,
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mapLayer = widget.mapLayer;
     final minZoom = mapLayer?.minZoom.toDouble() ?? 2;
     final maxZoom = _maxInteractionZoom(mapLayer?.maxZoom);
     final lineDrawing = ref.watch(lineDrawingProvider);
+    final circleDrawing = ref.watch(circleDrawingProvider);
+    final rectangleDrawing = ref.watch(rectangleDrawingProvider);
     final bearingPlot = ref.watch(bearingPlotProvider);
-    final selectedLineId = ref.watch(selectedLineProvider);
+    final selectedMapObject = ref.watch(selectedMapObjectProvider);
+    final selectedLineId = selectedMapObject.selectedZoneId;
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final previewColor = Theme.of(context).colorScheme.primary;
+    final previewFillColor = previewColor.withValues(alpha: 0.25);
     final referenceColor = Theme.of(context).colorScheme.secondary;
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
     final selectedLine =
@@ -945,6 +1313,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final bearingAnchor =
         bearingPlot.active ? bearingPlot.anchor : null;
     final bearingReference = bearingPlot.referenceBearing;
+    final activeRectanglePreviewBounds = rectangleDrawing.mode == null ||
+            rectangleDrawing.anchor == null ||
+            rectangleDrawing.previewPoint == null
+        ? null
+        : previewRectangleBounds(
+            RectangleDrawingPreview(
+              mode: rectangleDrawing.mode!,
+              anchor: rectangleDrawing.anchor,
+              previewPoint: rectangleDrawing.previewPoint,
+            ),
+          );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -984,7 +1363,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   minZoom: minZoom,
                   maxZoom: maxZoom,
                   interactionOptions: InteractionOptions(
-                    flags: lineDrawing.active || bearingPlot.active
+                    flags: lineDrawing.active ||
+                            bearingPlot.active ||
+                            circleDrawing.active ||
+                            rectangleDrawing.active
                         ? InteractiveFlag.all & ~InteractiveFlag.drag
                         : InteractiveFlag.all,
                   ),
@@ -1041,9 +1423,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               width: mapMarkerWidth,
                               height: mapMarkerHeight,
                               alignment: mapMarkerAnchorAlignment,
-                              child: MapMarkerIcon(
-                                color: parseMarkerColor(marker.color),
-                                iconName: marker.icon,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: () => _selectMapObject(
+                                  SelectedMapObject(
+                                    kind: SelectedMapObjectKind.marker,
+                                    id: marker.id,
+                                  ),
+                                ),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: MapMarkerIcon(
+                                    color: parseMarkerColor(marker.color),
+                                    iconName: marker.icon,
+                                  ),
+                                ),
                               ),
                             ),
                           )
@@ -1073,6 +1467,24 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                  if (widget.zonesAsync case AsyncData(:final value))
+                    PolygonLayer(
+                      polygons: [
+                        ...buildSavedCirclePolygons(value),
+                        ...buildSavedRectanglePolygons(value),
+                      ],
+                    ),
+                  if (widget.zonesAsync case AsyncData(:final value))
+                    PolylineLayer(
+                      polylines: buildSavedCircleRadiusLines(value),
+                    ),
+                  if (widget.zonesAsync case AsyncData(:final value))
+                    MarkerLayer(
+                      markers: [
+                        ...buildSavedCircleCenterMarkers(value),
+                        ...buildSavedRectangleCenterMarkers(value),
                       ],
                     ),
                   if (widget.zonesAsync case AsyncData(:final value))
@@ -1128,6 +1540,76 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           ),
                       ],
                     ),
+                  if (circleDrawing.center case final center?)
+                    PolygonLayer(
+                      polygons: [
+                        if (buildPreviewCirclePolygon(
+                              center: center,
+                              radiusMeters: circleDrawing.previewRadiusMeters,
+                              borderColor: previewColor,
+                              fillColor: previewFillColor,
+                            )
+                            case final preview?)
+                          preview,
+                      ],
+                    ),
+                  if (circleDrawing.center case final center?)
+                    PolylineLayer(
+                      polylines: [
+                        if (buildPreviewCircleRadiusLine(
+                              center: center,
+                              radiusMeters: circleDrawing.previewRadiusMeters,
+                              color: previewColor,
+                            )
+                            case final preview?)
+                          preview,
+                      ],
+                    ),
+                  if (circleDrawing.center case final center?)
+                    MarkerLayer(
+                      markers: [
+                        buildPreviewCircleCenterMarker(
+                          center: center,
+                          color: previewColor,
+                        ),
+                      ],
+                    ),
+                  if (activeRectanglePreviewBounds case final bounds?)
+                    PolygonLayer(
+                      polygons: [
+                        if (buildPreviewRectanglePolygon(
+                              bounds: bounds,
+                              borderColor: previewColor,
+                              fillColor: previewFillColor,
+                            )
+                            case final preview?)
+                          preview,
+                      ],
+                    ),
+                  if (rectangleDrawing.mode ==
+                          RectangleCreationMode.centerExtent &&
+                      rectangleDrawing.anchor != null)
+                    MarkerLayer(
+                      markers: [
+                        if (buildPreviewRectangleCenterMarker(
+                              center: rectangleDrawing.anchor,
+                              color: previewColor,
+                            )
+                            case final preview?)
+                          preview,
+                      ],
+                    ),
+                  if (rectangleDrawing.mode == RectangleCreationMode.corners &&
+                      rectangleDrawing.anchor != null)
+                    MarkerLayer(
+                      markers: [
+                        ...buildLineEndpointMarkers(
+                          start: rectangleDrawing.anchor!,
+                          end: rectangleDrawing.previewPoint,
+                          color: previewColor,
+                        ),
+                      ],
+                    ),
                   if (lineDrawing.start case final start?)
                     PolylineLayer(
                       polylines: [
@@ -1181,6 +1663,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             bearingPlot.relativeBearing!,
                             angleDisplayFormat,
                           ),
+                    previewCircleCenter:
+                        circleDrawing.active ? circleDrawing.center : null,
+                    previewCircleRadiusMeters: circleDrawing.previewRadiusMeters,
+                    previewCircleColor:
+                        circleDrawing.active ? previewColor : null,
+                    previewRectangleBounds: rectangleDrawing.active
+                        ? activeRectanglePreviewBounds
+                        : null,
+                    previewRectangleColor:
+                        rectangleDrawing.active ? previewColor : null,
                   ),
                 ),
               ),
@@ -1213,6 +1705,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     label: 'Line',
                     onSelected: _beginLineDrawing,
                   ),
+                  MapRadialMenuAction(
+                    icon: Icons.radio_button_unchecked,
+                    label: 'Circle',
+                    onSelected: _beginCircleDrawing,
+                  ),
+                  MapRadialMenuAction(
+                    icon: Icons.crop_square,
+                    label: 'Rect center',
+                    onSelected: _beginCenterRectDrawing,
+                  ),
+                  MapRadialMenuAction(
+                    icon: Icons.select_all,
+                    label: 'Rect corners',
+                    onSelected: _beginCornersRectDrawing,
+                  ),
                 ],
               ),
             if (bearingPlot.active)
@@ -1228,6 +1735,20 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 right: 0,
                 top: 0,
                 child: _lineDrawingBanner(lineDrawing),
+              ),
+            if (circleDrawing.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _circleDrawingBanner(circleDrawing),
+              ),
+            if (rectangleDrawing.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _rectangleDrawingBanner(rectangleDrawing),
               ),
           ],
         );

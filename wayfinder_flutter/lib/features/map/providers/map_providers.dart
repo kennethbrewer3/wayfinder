@@ -59,9 +59,27 @@ enum SidebarViewMode { list, tree }
 
 enum SidebarPanelTab { markers, zones }
 
-enum MarkerSortField { name, hue, icon }
+enum MarkerSortField { name, hue, icon, visibility }
 
-enum ZoneSortField { name, hue, type }
+enum ZoneSortField { name, hue, type, visibility }
+
+extension MarkerSortFieldLabel on MarkerSortField {
+  String get label => switch (this) {
+        MarkerSortField.name => 'Name',
+        MarkerSortField.hue => 'Hue',
+        MarkerSortField.icon => 'Icon',
+        MarkerSortField.visibility => 'Visibility',
+      };
+}
+
+extension ZoneSortFieldLabel on ZoneSortField {
+  String get label => switch (this) {
+        ZoneSortField.name => 'Name',
+        ZoneSortField.hue => 'Hue',
+        ZoneSortField.type => 'Type',
+        ZoneSortField.visibility => 'Visibility',
+      };
+}
 
 class SidebarState {
   const SidebarState({

@@ -26,6 +26,7 @@ import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../utils/map_object_sort.dart';
 
 class SidebarPanel extends ConsumerWidget {
   const SidebarPanel({
@@ -184,21 +185,14 @@ class _MarkersPanel extends ConsumerWidget {
         onRetry: () => ref.invalidate(markersProvider),
       ),
       data: (markers) {
-        final visibleMarkers = markers.where((marker) {
+        final filteredMarkers = markers.where((marker) {
           if (sidebar.searchQuery.isEmpty) return true;
           return marker.name
               .toLowerCase()
               .contains(sidebar.searchQuery.toLowerCase());
-        }).toList()
-          ..sort((a, b) => _compareMarkers(a, b, sidebar.markerSort));
+        }).toList();
 
-        if (sidebar.viewMode == SidebarViewMode.tree) {
-          return _TreePlaceholder(
-            message: 'Tree view for markers will organize categories here.',
-          );
-        }
-
-        if (visibleMarkers.isEmpty) {
+        if (filteredMarkers.isEmpty) {
           if (sidebar.searchQuery.isNotEmpty) {
             return const MapObjectsEmptyState(
               icon: Icons.search_off,
@@ -214,17 +208,27 @@ class _MarkersPanel extends ConsumerWidget {
           );
         }
 
-        return ListView.separated(
-          itemCount: visibleMarkers.length,
-          separatorBuilder: (_, __) => const Divider(height: 1),
-          itemBuilder: (context, index) {
-            final marker = visibleMarkers[index];
-            return _MarkerListTile(
-              key: ValueKey(marker.id),
-              marker: marker,
-              onZoomTo: onZoomTo,
-            );
-          },
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _MarkerSortSelector(
+              value: sidebar.markerSort,
+              onChanged: (sort) {
+                ref.read(sidebarProvider.notifier).setMarkerSort(sort);
+              },
+            ),
+            Expanded(
+              child: sidebar.viewMode == SidebarViewMode.tree
+                  ? _MarkerTreeView(
+                      groups: groupMarkers(filteredMarkers, sidebar.markerSort),
+                      onZoomTo: onZoomTo,
+                    )
+                  : _MarkerListView(
+                      markers: sortMarkers(filteredMarkers, sidebar.markerSort),
+                      onZoomTo: onZoomTo,
+                    ),
+            ),
+          ],
         );
       },
     );
@@ -252,21 +256,14 @@ class _ZonesPanel extends ConsumerWidget {
         onRetry: () => ref.read(zonesProvider.notifier).reload(),
       ),
       data: (zones) {
-        final visibleZones = zones.where((zone) {
+        final filteredZones = zones.where((zone) {
           if (sidebar.searchQuery.isEmpty) return true;
           return zone.name
               .toLowerCase()
               .contains(sidebar.searchQuery.toLowerCase());
-        }).toList()
-          ..sort((a, b) => _compareZones(a, b, sidebar.zoneSort));
+        }).toList();
 
-        if (sidebar.viewMode == SidebarViewMode.tree) {
-          return _TreePlaceholder(
-            message: 'Tree view for zones will organize categories here.',
-          );
-        }
-
-        if (visibleZones.isEmpty) {
+        if (filteredZones.isEmpty) {
           if (sidebar.searchQuery.isNotEmpty) {
             return const MapObjectsEmptyState(
               icon: Icons.search_off,
@@ -282,16 +279,274 @@ class _ZonesPanel extends ConsumerWidget {
           );
         }
 
-        return ListView.separated(
-          itemCount: visibleZones.length,
-          separatorBuilder: (_, __) => const Divider(height: 1),
-          itemBuilder: (context, index) {
-            final zone = visibleZones[index];
-            return _ZoneListTile(
-              zone: zone,
-              onZoomTo: onZoomTo,
-            );
-          },
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _ZoneSortSelector(
+              value: sidebar.zoneSort,
+              onChanged: (sort) {
+                ref.read(sidebarProvider.notifier).setZoneSort(sort);
+              },
+            ),
+            Expanded(
+              child: sidebar.viewMode == SidebarViewMode.tree
+                  ? _ZoneTreeView(
+                      groups: groupZones(filteredZones, sidebar.zoneSort),
+                      onZoomTo: onZoomTo,
+                    )
+                  : _ZoneListView(
+                      zones: sortZones(filteredZones, sidebar.zoneSort),
+                      onZoomTo: onZoomTo,
+                    ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _MarkerSortSelector extends StatelessWidget {
+  const _MarkerSortSelector({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final MarkerSortField value;
+  final ValueChanged<MarkerSortField> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SortFieldSelector<MarkerSortField>(
+      label: 'Sort markers',
+      value: value,
+      items: MarkerSortField.values,
+      itemLabel: (field) => field.label,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class _ZoneSortSelector extends StatelessWidget {
+  const _ZoneSortSelector({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final ZoneSortField value;
+  final ValueChanged<ZoneSortField> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SortFieldSelector<ZoneSortField>(
+      label: 'Sort zones',
+      value: value,
+      items: ZoneSortField.values,
+      itemLabel: (field) => field.label,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class _SortFieldSelector<T> extends StatelessWidget {
+  const _SortFieldSelector({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.itemLabel,
+    required this.onChanged,
+  });
+
+  final String label;
+  final T value;
+  final List<T> items;
+  final String Function(T item) itemLabel;
+  final ValueChanged<T> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<T>(
+            isExpanded: true,
+            value: value,
+            style: theme.textTheme.bodyMedium,
+            items: [
+              for (final item in items)
+                DropdownMenuItem(
+                  value: item,
+                  child: Text(itemLabel(item)),
+                ),
+            ],
+            onChanged: (selection) {
+              if (selection != null) {
+                onChanged(selection);
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MarkerListView extends StatelessWidget {
+  const _MarkerListView({
+    required this.markers,
+    required this.onZoomTo,
+  });
+
+  final List<MapMarker> markers;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      itemCount: markers.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (context, index) {
+        final marker = markers[index];
+        return _MarkerListTile(
+          key: ValueKey(marker.id),
+          marker: marker,
+          onZoomTo: onZoomTo,
+        );
+      },
+    );
+  }
+}
+
+class _ZoneListView extends StatelessWidget {
+  const _ZoneListView({
+    required this.zones,
+    required this.onZoomTo,
+  });
+
+  final List<MapZone> zones;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      itemCount: zones.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (context, index) {
+        final zone = zones[index];
+        return _ZoneListTile(
+          key: ValueKey(zone.id),
+          zone: zone,
+          onZoomTo: onZoomTo,
+        );
+      },
+    );
+  }
+}
+
+class _MarkerTreeView extends StatelessWidget {
+  const _MarkerTreeView({
+    required this.groups,
+    required this.onZoomTo,
+  });
+
+  final List<MapObjectTreeGroup<MapMarker>> groups;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context) {
+    return _MapObjectTreeScaffold(
+      groups: groups,
+      itemBuilder: (marker) => _MarkerListTile(
+        key: ValueKey(marker.id),
+        marker: marker,
+        onZoomTo: onZoomTo,
+      ),
+    );
+  }
+}
+
+class _ZoneTreeView extends StatelessWidget {
+  const _ZoneTreeView({
+    required this.groups,
+    required this.onZoomTo,
+  });
+
+  final List<MapObjectTreeGroup<MapZone>> groups;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context) {
+    return _MapObjectTreeScaffold(
+      groups: groups,
+      itemBuilder: (zone) => _ZoneListTile(
+        key: ValueKey(zone.id),
+        zone: zone,
+        onZoomTo: onZoomTo,
+      ),
+    );
+  }
+}
+
+class _MapObjectTreeScaffold<T> extends StatelessWidget {
+  const _MapObjectTreeScaffold({
+    required this.groups,
+    required this.itemBuilder,
+  });
+
+  final List<MapObjectTreeGroup<T>> groups;
+  final Widget Function(T item) itemBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListView.separated(
+      itemCount: groups.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (context, index) {
+        final group = groups[index];
+        return Theme(
+          data: theme.copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            key: PageStorageKey('tree-group-${group.key}'),
+            initiallyExpanded: true,
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+            childrenPadding: EdgeInsets.zero,
+            leading: group.leading,
+            title: Text(
+              group.label,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: Text(
+              '${group.items.length} item${group.items.length == 1 ? '' : 's'}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            children: [
+              for (final (itemIndex, item) in group.items.indexed)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (itemIndex > 0) const Divider(height: 1),
+                    itemBuilder(item),
+                  ],
+                ),
+            ],
+          ),
         );
       },
     );
@@ -1105,46 +1360,6 @@ class _MapObjectIconAction extends StatelessWidget {
       icon: Icon(icon, size: 20),
     );
   }
-}
-
-class _TreePlaceholder extends StatelessWidget {
-  const _TreePlaceholder({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-    );
-  }
-}
-
-int _compareMarkers(MapMarker a, MapMarker b, MarkerSortField sort) {
-  return switch (sort) {
-    MarkerSortField.name => a.name.compareTo(b.name),
-    MarkerSortField.hue => a.color.compareTo(b.color),
-    MarkerSortField.icon => a.icon.compareTo(b.icon),
-  };
-}
-
-int _compareZones(MapZone a, MapZone b, ZoneSortField sort) {
-  final primary = switch (sort) {
-    ZoneSortField.name => a.name.compareTo(b.name),
-    ZoneSortField.hue => a.color.compareTo(b.color),
-    ZoneSortField.type => a.type.compareTo(b.type),
-  };
-  if (primary != 0) {
-    return primary;
-  }
-  return a.id.uuid.compareTo(b.id.uuid);
 }
 
 Color _parseColor(String value) => parseMarkerColor(value);

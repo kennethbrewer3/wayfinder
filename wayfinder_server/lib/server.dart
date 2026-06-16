@@ -9,9 +9,11 @@ import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
+import 'src/web/middleware/rest_cors_middleware.dart';
 import 'src/web/routes/app_config_route.dart';
 import 'src/web/routes/pmtiles_upload_route.dart';
 import 'src/web/routes/root.dart';
+import 'src/web/rest/rest_api_route.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
@@ -78,6 +80,10 @@ void run(List<String> args) async {
       ),
       '/pmtiles/files',
     );
+
+    pod.webServer.addMiddleware(const RestCorsMiddleware(), '/api');
+    pod.webServer.addRoute(RestApiRoute(), '/api');
+    WfLog.info(null, 'server', '🌐 REST API available at /api');
   }
 
   // Checks if the flutter web app has been built and serves it if it has.

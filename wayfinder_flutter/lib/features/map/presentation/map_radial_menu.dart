@@ -14,36 +14,18 @@ class MapRadialMenuAction {
   final VoidCallback onSelected;
 }
 
-class MapRadialMenu extends StatefulWidget {
+class MapRadialMenu extends StatelessWidget {
   const MapRadialMenu({
     super.key,
     required this.center,
     required this.actions,
-    required this.onDismiss,
   });
 
   final Offset center;
   final List<MapRadialMenuAction> actions;
-  final VoidCallback onDismiss;
 
   static const _radius = 56.0;
   static const _buttonSize = 56.0;
-
-  @override
-  State<MapRadialMenu> createState() => _MapRadialMenuState();
-}
-
-class _MapRadialMenuState extends State<MapRadialMenu> {
-  bool _dismissEnabled = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      setState(() => _dismissEnabled = true);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +34,14 @@ class _MapRadialMenuState extends State<MapRadialMenu> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        GestureDetector(
-          onTap: _dismissEnabled ? widget.onDismiss : null,
-          behavior: HitTestBehavior.opaque,
+        IgnorePointer(
           child: ColoredBox(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: Colors.black.withValues(alpha: 0.12),
           ),
         ),
         Positioned(
-          left: widget.center.dx - 6,
-          top: widget.center.dy - 6,
+          left: center.dx - 6,
+          top: center.dy - 6,
           child: Container(
             width: 12,
             height: 12,
@@ -72,13 +52,13 @@ class _MapRadialMenuState extends State<MapRadialMenu> {
             ),
           ),
         ),
-        for (var index = 0; index < widget.actions.length; index++)
+        for (var index = 0; index < actions.length; index++)
           _RadialMenuButton(
-            action: widget.actions[index],
-            angle: _angleForIndex(index, widget.actions.length),
-            radius: MapRadialMenu._radius,
-            buttonSize: MapRadialMenu._buttonSize,
-            center: widget.center,
+            action: actions[index],
+            angle: _angleForIndex(index, actions.length),
+            radius: _radius,
+            buttonSize: _buttonSize,
+            center: center,
           ),
       ],
     );

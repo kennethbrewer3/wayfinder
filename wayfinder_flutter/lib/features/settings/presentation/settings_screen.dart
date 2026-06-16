@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../lines/models/angle_display_format.dart';
 import '../../lines/models/measurement_units.dart';
+import '../../lines/providers/angle_display_format_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../models/pmtiles_file.dart';
 import '../providers/pmtiles_providers.dart';
@@ -122,6 +124,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final filesAsync = ref.watch(pmtilesCatalogProvider);
     final activeIdAsync = ref.watch(activePmtilesIdProvider);
     final measurementUnits = ref.watch(measurementUnitsProvider);
+    final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -155,6 +158,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ref
                   .read(measurementUnitsProvider.notifier)
                   .setUnits(selection.first);
+            },
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Angles',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Choose how relative angles are displayed on the map and in '
+            'bearing plots.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          SegmentedButton<AngleDisplayFormat>(
+            segments: AngleDisplayFormat.values
+                .map(
+                  (format) => ButtonSegment(
+                    value: format,
+                    label: Text(format.shortLabel),
+                    tooltip: format.label,
+                  ),
+                )
+                .toList(),
+            selected: {angleDisplayFormat},
+            onSelectionChanged: (selection) {
+              ref
+                  .read(angleDisplayFormatProvider.notifier)
+                  .setFormat(selection.first);
             },
           ),
           const SizedBox(height: 32),

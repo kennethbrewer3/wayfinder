@@ -10,7 +10,7 @@ import '../models/line_geometry.dart';
 import '../models/measurement_units.dart';
 import '../utils/line_distance.dart';
 
-const _labelMaxWidth = 128.0;
+const _labelMaxWidth = 168.0;
 const _singleRowHeight = 22.0;
 const _rowSpacing = 2.0;
 
@@ -21,6 +21,7 @@ class LineMapLabelContent {
     required this.color,
     this.name,
     this.distance,
+    this.angle,
   });
 
   final String id;
@@ -28,9 +29,12 @@ class LineMapLabelContent {
   final Color color;
   final String? name;
   final String? distance;
+  final String? angle;
 
   Size get size {
-    final rowCount = (name != null ? 1 : 0) + (distance != null ? 1 : 0);
+    final rowCount = (name != null ? 1 : 0) +
+        (distance != null ? 1 : 0) +
+        (angle != null ? 1 : 0);
     final height = rowCount * _singleRowHeight + (rowCount - 1) * _rowSpacing;
     return Size(_labelMaxWidth, height);
   }
@@ -82,6 +86,29 @@ LineMapLabelContent? lineMapLabelContentForZone(
   );
 }
 
+LineMapLabelContent? bearingPreviewLineMapLabelContent({
+  required LatLng start,
+  required LatLng? previewEnd,
+  required Color color,
+  required MeasurementUnits units,
+  required String? angleLabel,
+}) {
+  if (previewEnd == null) {
+    return null;
+  }
+  if (lineLengthMeters(start, previewEnd) < 1) {
+    return null;
+  }
+
+  return LineMapLabelContent(
+    id: 'bearing-preview-line-label',
+    point: lineSegmentMidpoint(start, previewEnd),
+    color: color,
+    distance: formatLineDistance(lineLengthMeters(start, previewEnd), units),
+    angle: angleLabel,
+  );
+}
+
 LineMapLabelContent? previewLineMapLabelContent({
   required LatLng start,
   required LatLng? previewEnd,
@@ -116,6 +143,10 @@ class LineMapLabelsOverlay extends StatefulWidget {
     this.previewStart,
     this.previewEnd,
     this.previewColor,
+    this.bearingPreviewStart,
+    this.bearingPreviewEnd,
+    this.bearingPreviewColor,
+    this.bearingPreviewAngle,
   });
 
   final List<MapZone> zones;
@@ -124,6 +155,10 @@ class LineMapLabelsOverlay extends StatefulWidget {
   final LatLng? previewStart;
   final LatLng? previewEnd;
   final Color? previewColor;
+  final LatLng? bearingPreviewStart;
+  final LatLng? bearingPreviewEnd;
+  final Color? bearingPreviewColor;
+  final String? bearingPreviewAngle;
 
   @override
   State<LineMapLabelsOverlay> createState() => _LineMapLabelsOverlayState();
@@ -179,6 +214,20 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
       }
     }
 
+    if (widget.bearingPreviewStart case final start?
+        when widget.bearingPreviewColor != null) {
+      final preview = bearingPreviewLineMapLabelContent(
+        start: start,
+        previewEnd: widget.bearingPreviewEnd,
+        color: widget.bearingPreviewColor!,
+        units: widget.units,
+        angleLabel: widget.bearingPreviewAngle,
+      );
+      if (preview != null) {
+        labels.add(preview);
+      }
+    }
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -187,7 +236,7 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
               case final screen?)
             Positioned(
               key: ValueKey<String>(
-                'line-label-${label.id}-${label.name ?? ''}-${label.distance ?? ''}',
+                'line-label-${label.id}-${label.name ?? ''}-${label.distance ?? ''}-${label.angle ?? ''}',
               ),
               left: screen.dx,
               top: screen.dy,
@@ -196,6 +245,7 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
               child: LineMapLabelStack(
                 name: label.name,
                 distance: label.distance,
+                angle: label.angle,
                 color: label.color,
               ),
             ),
@@ -230,11 +280,13 @@ class LineMapLabelStack extends StatelessWidget {
     super.key,
     this.name,
     this.distance,
+    this.angle,
     required this.color,
   });
 
   final String? name;
   final String? distance;
+  final String? angle;
   final Color color;
 
   @override
@@ -248,8 +300,15 @@ class LineMapLabelStack extends StatelessWidget {
             color: color,
             emphasized: true,
           ),
-        if (name != null && distance != null) SizedBox(height: _rowSpacing),
+        if (name != null && (distance != null || angle != null))
+          SizedBox(height: _rowSpacing),
         if (distance case final value?)
+          LineMapLabelChip(
+            text: value,
+            color: color,
+          ),
+        if (distance != null && angle != null) SizedBox(height: _rowSpacing),
+        if (angle case final value?)
           LineMapLabelChip(
             text: value,
             color: color,

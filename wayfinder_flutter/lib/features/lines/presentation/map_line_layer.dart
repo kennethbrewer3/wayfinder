@@ -5,7 +5,9 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../markers/models/marker_color.dart';
 import '../models/line_geometry.dart';
+import '../utils/bearing_utils.dart';
 import '../utils/line_arrows.dart';
+import '../utils/line_distance.dart';
 
 List<Polyline<UuidValue>> buildSavedLinePolylines(
   List<MapZone> zones, {
@@ -77,7 +79,7 @@ Marker _snapPointMarker({required LatLng point}) {
     alignment: Alignment.center,
     child: IgnorePointer(
       child: Tooltip(
-        message: 'Snap point — press here to draw from this endpoint',
+        message: 'Click to plot bearing · drag to draw line',
         child: DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -146,6 +148,32 @@ Polyline? buildPreviewLinePolyline({
     color: color.withValues(alpha: 0.85),
     borderPattern: 'dashed',
     strokeWidth: 3,
+  );
+}
+
+Polyline? buildReferenceCoursePolyline({
+  required LatLng anchor,
+  required double referenceBearing,
+  required LatLng? previewEnd,
+  required Color color,
+}) {
+  if (previewEnd == null) {
+    return null;
+  }
+  final length = lineLengthMeters(anchor, previewEnd);
+  if (length < 1) {
+    return null;
+  }
+  final end = pointAtTrueBearing(
+    anchor: anchor,
+    bearingDegrees: referenceBearing,
+    distanceMeters: length,
+  );
+  return _polylineForLine(
+    points: [anchor, end],
+    color: color.withValues(alpha: 0.55),
+    borderPattern: 'dashed',
+    strokeWidth: 2,
   );
 }
 

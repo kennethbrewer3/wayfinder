@@ -21,4 +21,5 @@ class AppConstants {
   static const activePmtilesIdKey = 'wayfinder.pmtiles.activeId';
   static const pmtilesDirectoryName = 'pmtiles';
   static const measurementUnitsStorageKey = 'wayfinder.settings.measurementUnits';
+  static const angleDisplayFormatStorageKey = 'wayfinder.settings.angleDisplayFormat';
 }

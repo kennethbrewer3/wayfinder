@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,16 +10,23 @@ import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../../core/browser_context_menu.dart';
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../lines/models/line_geometry.dart';
+import '../../lines/presentation/bearing_plot_overlay.dart';
 import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/presentation/line_distance_labels.dart';
 import '../../lines/presentation/map_line_layer.dart';
+import '../../lines/models/angle_display_format.dart';
+import '../../lines/providers/angle_display_format_provider.dart';
+import '../../lines/providers/bearing_plot_provider.dart';
 import '../../lines/providers/line_drawing_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/selected_line_provider.dart';
+import '../../lines/utils/bearing_utils.dart';
 import '../../lines/utils/line_arrows.dart';
+import '../../lines/utils/line_distance.dart';
 import '../../lines/utils/line_snap.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
@@ -150,8 +158,9 @@ class _MapCanvas extends ConsumerStatefulWidget {
 }
 
 class _MapCanvasState extends ConsumerState<_MapCanvas> {
-  static const _longPressDuration = Duration(milliseconds: 450);
-  static const _longPressMoveTolerance = 12.0;
+  static const _longPressDuration = Duration(milliseconds: 550);
+  static const _longPressMoveTolerance = 18.0;
+  static const _selectionClickSlop = 24.0;
   static const _cursorLabelOffset = Offset(16, 16);
 
   late final MapController _mapController;
@@ -169,17 +178,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _longPressTriggered = false;
   bool _lineDrawingPressActive = false;
   LatLng? _pendingSnapStart;
-  bool _clearedSelectionOnPointerDown = false;
+  bool _primaryPointerGestureHandled = false;
+  bool _activePointerDown = false;
+  bool _pendingSelectionTapOnUp = false;
+  Offset? _selectionPointerDownLocal;
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+    setBrowserContextMenuEnabled(false);
   }
 
   @override
   void dispose() {
     _longPressTimer?.cancel();
+    setBrowserContextMenuEnabled(true);
     super.dispose();
   }
 
@@ -194,6 +208,54 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   RenderBox? get _mapRenderBox =>
       _mapHostKey.currentContext?.findRenderObject() as RenderBox?;
+
+  void _beginSelectionPointer(PointerDownEvent event, LatLng point) {
+    _activePointerDown = true;
+    _selectionPointerDownLocal = event.localPosition;
+    _pendingSelectionTapOnUp = false;
+
+    if (ref.read(bearingPlotProvider).active ||
+        ref.read(lineDrawingProvider).active) {
+      return;
+    }
+    if (_selectedLineSnapTarget(point) != null) {
+      return;
+    }
+    _pendingSelectionTapOnUp = true;
+  }
+
+  void _clearPointerDownSelectionState() {
+    _pendingSelectionTapOnUp = false;
+    _activePointerDown = false;
+    _selectionPointerDownLocal = null;
+  }
+
+  bool _isSelectionClick(PointerUpEvent event) {
+    final downLocal = _selectionPointerDownLocal;
+    if (downLocal == null) {
+      return true;
+    }
+    return (event.localPosition - downLocal).distance <= _selectionClickSlop;
+  }
+
+  bool _finishSelectionPointer(PointerUpEvent event, LatLng point) {
+    if (!_activePointerDown) {
+      return false;
+    }
+
+    final shouldApply = !_longPressTriggered &&
+        !ref.read(bearingPlotProvider).active &&
+        !ref.read(lineDrawingProvider).active &&
+        _pendingSelectionTapOnUp &&
+        _isSelectionClick(event);
+
+    if (shouldApply) {
+      _applyMapSelectionAt(point);
+    }
+
+    _clearPointerDownSelectionState();
+    return shouldApply;
+  }
 
   void _clearCursor() {
     if (_cursorLocation == null && _cursorScreenPosition == null) {
@@ -236,6 +298,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
 
     _updateLinePreviewEnd(point);
+    if (ref.read(bearingPlotProvider).active) {
+      _updateBearingPlotPreview(point);
+    }
   }
 
   LatLng? _selectedLineSnapTarget(LatLng point) {
@@ -255,17 +320,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return null;
     }
 
-    final candidates = [geometry.start!, geometry.end!];
-    final snapped = snapLinePoint(
-      point: point,
-      camera: _mapController.camera,
-      candidates: candidates,
-    );
-
     final tapScreen = _mapController.camera.latLngToScreenOffset(point);
-    final snapScreen = _mapController.camera.latLngToScreenOffset(snapped);
-    if ((tapScreen - snapScreen).distance <= lineSnapRadiusPx) {
-      return snapped;
+    for (final candidate in [geometry.start!, geometry.end!]) {
+      final candidateScreen =
+          _mapController.camera.latLngToScreenOffset(candidate);
+      if ((tapScreen - candidateScreen).distance <= lineSnapRadiusPx) {
+        return candidate;
+      }
     }
 
     return null;
@@ -350,30 +411,42 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     );
   }
 
-  void _clearLineSelectionIfPointerMissedLine(LatLng point) {
-    if (ref.read(lineDrawingProvider).active) {
+  void _handleSecondaryMapTap(TapPosition tapPosition, LatLng point) {
+    if (ref.read(lineDrawingProvider).active ||
+        ref.read(bearingPlotProvider).active) {
       return;
     }
-    if (_hitLineAtPoint(point) != null) {
+
+    _cancelPendingLongPress();
+    final local = tapPosition.relative ??
+        _mapRenderBox?.globalToLocal(tapPosition.global);
+    if (local == null) {
       return;
     }
-    if (ref.read(selectedLineProvider) != null) {
-      ref.read(selectedLineProvider.notifier).clear();
-      _clearedSelectionOnPointerDown = true;
-    }
+    _openRadialMenuAt(local, point);
   }
 
   void _handlePointerDown(PointerDownEvent event, LatLng point) {
+    _longPressTriggered = false;
+    _pendingSnapStart = null;
+    _tapDownLocal = event.localPosition;
+    _updateCursor(event.position, point);
+
     final box = _mapRenderBox;
     if (box == null) {
       return;
     }
-    final local = box.globalToLocal(event.position);
-    _tapDownLocal = local;
-    _longPressTriggered = false;
-    _pendingSnapStart = null;
-    _clearedSelectionOnPointerDown = false;
-    _updateCursor(event.position, point);
+
+    if (_radialMenuCenter != null && event.buttons == kPrimaryMouseButton) {
+      _closeRadialMenu();
+    }
+
+    if (ref.read(bearingPlotProvider).active) {
+      _cancelPendingLongPress();
+      _updateBearingPlotPreview(point);
+      return;
+    }
+
     if (ref.read(lineDrawingProvider).active) {
       _cancelPendingLongPress();
       if (ref.read(lineDrawingProvider).awaitingEnd) {
@@ -389,24 +462,33 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    _clearLineSelectionIfPointerMissedLine(point);
-    _startLongPressTimer(local, point);
+    if (event.buttons == kPrimaryMouseButton) {
+      _startLongPressTimer(event.localPosition, point);
+    }
   }
 
   void _handlePointerMove(PointerMoveEvent event, LatLng point) {
     _updateCursor(event.position, point);
 
+    if (_radialMenuCenter != null && _tapDownLocal != null) {
+      if ((event.localPosition - _tapDownLocal!).distance >
+          _longPressMoveTolerance) {
+        _closeRadialMenu();
+      }
+    }
+
+    if (ref.read(bearingPlotProvider).active) {
+      _updateBearingPlotPreview(point);
+    }
+
     if (_pendingSnapStart != null &&
         _tapDownLocal != null &&
         !ref.read(lineDrawingProvider).active) {
-      final box = _mapRenderBox;
-      if (box != null) {
-        final local = box.globalToLocal(event.position);
-        if ((local - _tapDownLocal!).distance > _longPressMoveTolerance) {
-          ref.read(lineDrawingProvider.notifier).setStart(_pendingSnapStart!);
-          _lineDrawingPressActive = true;
-          _pendingSnapStart = null;
-        }
+      if ((event.localPosition - _tapDownLocal!).distance >
+          _longPressMoveTolerance) {
+        ref.read(lineDrawingProvider.notifier).setStart(_pendingSnapStart!);
+        _lineDrawingPressActive = true;
+        _pendingSnapStart = null;
       }
     }
 
@@ -421,25 +503,43 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    final box = _mapRenderBox;
-    if (box == null) {
-      return;
-    }
-
-    final local = box.globalToLocal(event.position);
-    if ((local - pendingLocal).distance > _longPressMoveTolerance) {
+    if ((event.localPosition - pendingLocal).distance > _longPressMoveTolerance) {
       _cancelPendingLongPress();
     }
   }
 
   void _handlePointerUp(PointerUpEvent event, LatLng point) {
+    _primaryPointerGestureHandled = false;
     final lineDrawing = ref.read(lineDrawingProvider);
+    final bearingPlot = ref.read(bearingPlotProvider);
 
     if (_pendingSnapStart != null && !lineDrawing.active) {
+      final snapAnchor = _pendingSnapStart!;
       _pendingSnapStart = null;
-      if (_isShortPress(event.position)) {
-        _handleMapSelectionTap(point);
+      if (_isShortPress(event)) {
+        _beginBearingPlot(snapAnchor);
       }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
+    if (bearingPlot.active && !_longPressTriggered) {
+      if (_isShortPress(event)) {
+        _updateBearingPlotPreview(point);
+        final updated = ref.read(bearingPlotProvider);
+        final anchor = updated.anchor;
+        final previewEnd = updated.previewEnd;
+        if (anchor != null &&
+            previewEnd != null &&
+            !areLinePointsTooClose(anchor, previewEnd)) {
+          unawaited(_finalizeBearingPlot());
+        }
+      }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
       return;
@@ -448,62 +548,155 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (lineDrawing.active && !_longPressTriggered) {
       if (lineDrawing.awaitingEnd && _lineDrawingPressActive) {
         unawaited(_finalizeLineDrawing(point));
-      } else if (lineDrawing.awaitingStart && _isShortPress(event.position)) {
+      } else if (lineDrawing.awaitingStart && _isShortPress(event)) {
         _dismissLineInteraction();
       }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
       return;
-    }
-
-    if (!_longPressTriggered &&
-        _tapDownLocal != null &&
-        _isShortPress(event.position)) {
-      _handleMapSelectionTap(point);
     }
 
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
   }
 
+  void _handleMapTap(TapPosition tapPosition, LatLng point) {
+    if (_primaryPointerGestureHandled) {
+      return;
+    }
+    if (_longPressTriggered || _radialMenuCenter != null) {
+      return;
+    }
+    if (ref.read(bearingPlotProvider).active ||
+        ref.read(lineDrawingProvider).active) {
+      return;
+    }
+    _applyMapSelectionAt(point);
+    _clearPointerDownSelectionState();
+  }
+
   void _resetLineDrawGestureState() {
     _lineDrawingPressActive = false;
     _pendingSnapStart = null;
-    _clearedSelectionOnPointerDown = false;
     _tapDownLocal = null;
   }
 
   void _dismissLineInteraction() {
     ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
     ref.read(selectedLineProvider.notifier).clear();
   }
 
-  bool _isShortPress(Offset globalPosition) {
-    final box = _mapRenderBox;
-    if (box == null || _tapDownLocal == null) {
-      return false;
+  void _beginBearingPlot(LatLng anchor) {
+    final selectedLineId = ref.read(selectedLineProvider);
+    if (selectedLineId == null) {
+      return;
     }
-    final local = box.globalToLocal(globalPosition);
-    return (local - _tapDownLocal!).distance <= _longPressMoveTolerance;
-  }
 
-  void _handleMapSelectionTap(LatLng point) {
-    final hitLineId = _hitLineAtPoint(point);
-    final currentSelection = ref.read(selectedLineProvider);
-    final clearedOnDown = _clearedSelectionOnPointerDown;
+    final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+    final selectedLine = findZoneById(zones, selectedLineId);
+    if (selectedLine == null) {
+      return;
+    }
+
+    final referenceBearing = referenceLineBearingAtAnchor(
+      zone: selectedLine,
+      anchor: anchor,
+    );
+    if (referenceBearing == null) {
+      return;
+    }
 
     ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).begin(
+          anchor: anchor,
+          referenceBearing: referenceBearing,
+          referenceLineId: selectedLine.id,
+        );
 
-    final selectedLine = ref.read(selectedLineProvider.notifier);
-    if (hitLineId == null || clearedOnDown) {
-      selectedLine.clear();
+    if (_cursorLocation != null) {
+      _updateBearingPlotPreview(_cursorLocation!);
+    }
+  }
+
+  void _updateBearingPlotPreview(LatLng point) {
+    final bearingPlot = ref.read(bearingPlotProvider);
+    final anchor = bearingPlot.anchor;
+    if (!bearingPlot.active || anchor == null) {
       return;
     }
-    if (currentSelection == hitLineId) {
-      selectedLine.clear();
+
+    final previewEnd = _snapLinePoint(point);
+    final plotBearing = lineGeodesicCalculator.bearing(anchor, previewEnd);
+    ref.read(bearingPlotProvider.notifier).updatePlot(
+          plotBearing: plotBearing,
+          previewEnd: previewEnd,
+        );
+  }
+
+  Future<void> _finalizeBearingPlot() async {
+    final bearingPlot = ref.read(bearingPlotProvider);
+    final anchor = bearingPlot.anchor;
+    final previewEnd = bearingPlot.previewEnd;
+    ref.read(bearingPlotProvider.notifier).reset();
+
+    if (anchor == null || previewEnd == null) {
       return;
     }
-    selectedLine.select(hitLineId);
+    if (areLinePointsTooClose(anchor, previewEnd)) {
+      return;
+    }
+
+    await createLineBetweenPoints(
+      context: context,
+      ref: ref,
+      start: anchor,
+      end: previewEnd,
+    );
+  }
+
+  void _cancelBearingPlot() {
+    ref.read(bearingPlotProvider.notifier).reset();
+  }
+
+  bool _isShortPress(PointerUpEvent event) {
+    final tapDown = _tapDownLocal;
+    if (tapDown == null) {
+      return false;
+    }
+    return (event.localPosition - tapDown).distance <= _longPressMoveTolerance;
+  }
+
+  void _applyMapSelectionAt(LatLng point) {
+    if (ref.read(bearingPlotProvider).active ||
+        ref.read(lineDrawingProvider).active) {
+      return;
+    }
+
+    final hitLineId = _hitLineAtPoint(point);
+    final selectedId = ref.read(selectedLineProvider);
+    final notifier = ref.read(selectedLineProvider.notifier);
+
+    if (selectedId == null) {
+      if (hitLineId != null) {
+        notifier.select(hitLineId);
+      }
+      return;
+    }
+
+    if (hitLineId == null) {
+      notifier.clear();
+      return;
+    }
+
+    if (hitLineId == selectedId) {
+      notifier.clear();
+      return;
+    }
+
+    notifier.select(hitLineId);
   }
 
   Future<void> _finalizeLineDrawing(LatLng endPoint) async {
@@ -529,6 +722,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _handlePointerCancel() {
+    _clearPointerDownSelectionState();
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
   }
@@ -594,10 +788,106 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return Offset(left, top);
   }
 
+  Widget _bearingPlotBanner(
+    BearingPlotState bearingPlot,
+    AngleDisplayFormat angleFormat,
+  ) {
+    final theme = Theme.of(context);
+    final reference = bearingPlot.referenceBearing;
+    final plot = bearingPlot.plotBearing;
+    final relative = bearingPlot.relativeBearing;
+
+    final details = StringBuffer('Bearing plot · ');
+    if (reference != null) {
+      details.write('Ref ${formatTrueBearing(reference)}');
+    }
+    if (plot != null) {
+      details.write(' · Brg ${formatTrueBearing(plot)}');
+    }
+    if (relative != null) {
+      details.write(' · ${formatRelativeAngle(relative, angleFormat)}');
+    }
+    details.write(' · Click to plot line');
+
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.explore_outlined,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  details.toString(),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 72,
+                child: TextField(
+                  decoration: InputDecoration(
+                    isDense: true,
+                    labelText: 'Rel°',
+                    labelStyle: TextStyle(
+                      color: theme.colorScheme.onInverseSurface
+                          .withValues(alpha: 0.8),
+                      fontSize: 11,
+                    ),
+                    filled: true,
+                    fillColor: theme.colorScheme.surface.withValues(alpha: 0.15),
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontSize: 13,
+                  ),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(signed: true),
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (value) {
+                    final angle = double.tryParse(value.trim());
+                    if (angle == null) {
+                      return;
+                    }
+                    ref
+                        .read(bearingPlotProvider.notifier)
+                        .setRelativeBearing(angle);
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: _cancelBearingPlot,
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _lineDrawingBanner(LineDrawingState lineDrawing) {
     final theme = Theme.of(context);
     final message = lineDrawing.awaitingStart
-        ? 'Tap a snap point or long-press the map to start a line'
+        ? 'Drag a snap point to draw freely, or click one to plot a bearing'
         : 'Click or drag to the end point, or use Cancel to exit';
 
     return Material(
@@ -643,12 +933,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final minZoom = mapLayer?.minZoom.toDouble() ?? 2;
     final maxZoom = _maxInteractionZoom(mapLayer?.maxZoom);
     final lineDrawing = ref.watch(lineDrawingProvider);
+    final bearingPlot = ref.watch(bearingPlotProvider);
     final selectedLineId = ref.watch(selectedLineProvider);
     final measurementUnits = ref.watch(measurementUnitsProvider);
+    final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final previewColor = Theme.of(context).colorScheme.primary;
+    final referenceColor = Theme.of(context).colorScheme.secondary;
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
     final selectedLine =
         selectedLineId == null ? null : findZoneById(zones, selectedLineId);
+    final bearingAnchor =
+        bearingPlot.active ? bearingPlot.anchor : null;
+    final bearingReference = bearingPlot.referenceBearing;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -660,12 +956,27 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         return Stack(
           fit: StackFit.expand,
           children: [
-            MouseRegion(
-              key: _mapHostKey,
-              cursor: SystemMouseCursors.precise,
-              onHover: (event) => _updateCursorFromGlobalPosition(event.position),
-              onExit: (_) => _clearCursor(),
-              child: FlutterMap(
+            Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (event) {
+                final point = _mapController.camera
+                    .screenOffsetToLatLng(event.localPosition);
+                _beginSelectionPointer(event, point);
+              },
+              onPointerUp: (event) {
+                final point = _mapController.camera
+                    .screenOffsetToLatLng(event.localPosition);
+                if (_finishSelectionPointer(event, point)) {
+                  _primaryPointerGestureHandled = true;
+                }
+              },
+              child: MouseRegion(
+                key: _mapHostKey,
+                cursor: SystemMouseCursors.precise,
+                onHover: (event) =>
+                    _updateCursorFromGlobalPosition(event.position),
+                onExit: (_) => _clearCursor(),
+                child: FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
                   initialCenter: widget.viewport.center,
@@ -673,7 +984,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   minZoom: minZoom,
                   maxZoom: maxZoom,
                   interactionOptions: InteractionOptions(
-                    flags: lineDrawing.active
+                    flags: lineDrawing.active || bearingPlot.active
                         ? InteractiveFlag.all & ~InteractiveFlag.drag
                         : InteractiveFlag.all,
                   ),
@@ -686,6 +997,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       ),
                     );
                   },
+                  onSecondaryTap: _handleSecondaryMapTap,
+                  onTap: _handleMapTap,
                   onPointerDown: _handlePointerDown,
                   onPointerMove: _handlePointerMove,
                   onPointerUp: _handlePointerUp,
@@ -773,9 +1086,47 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     MarkerLayer(
                       markers: buildSavedLineArrowMarkers(value),
                     ),
-                  if (selectedLine case final line? when !lineDrawing.active)
+                  if (selectedLine case final line?
+                      when !lineDrawing.active && !bearingPlot.active)
                     MarkerLayer(
                       markers: buildLineSnapPointMarkers(zone: line),
+                    ),
+                  if (bearingAnchor case final anchor?)
+                    PolylineLayer(
+                      polylines: [
+                        if (bearingReference case final reference?)
+                          if (buildReferenceCoursePolyline(
+                                anchor: anchor,
+                                referenceBearing: reference,
+                                previewEnd: bearingPlot.previewEnd,
+                                color: referenceColor,
+                              )
+                              case final referenceLine?)
+                            referenceLine,
+                        if (buildPreviewLinePolyline(
+                              start: anchor,
+                              previewEnd: bearingPlot.previewEnd,
+                              color: previewColor,
+                            )
+                            case final preview?)
+                          preview,
+                      ],
+                    ),
+                  if (bearingAnchor case final anchor?)
+                    MarkerLayer(
+                      markers: [
+                        ...buildLineEndpointMarkers(
+                          start: anchor,
+                          end: bearingPlot.previewEnd,
+                          color: previewColor,
+                        ),
+                        if (bearingPlot.previewEnd case final previewEnd?)
+                          ...buildDirectionArrowMarkers(
+                            start: anchor,
+                            end: previewEnd,
+                            color: previewColor,
+                          ),
+                      ],
                     ),
                   if (lineDrawing.start case final start?)
                     PolylineLayer(
@@ -808,6 +1159,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 ],
               ),
             ),
+            ),
             if (widget.zonesAsync case AsyncData(:final value))
               Positioned.fill(
                 child: IgnorePointer(
@@ -818,8 +1170,26 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     previewStart: lineDrawing.start,
                     previewEnd: lineDrawing.previewEnd,
                     previewColor: lineDrawing.active ? previewColor : null,
+                    bearingPreviewStart:
+                        bearingPlot.active ? bearingPlot.anchor : null,
+                    bearingPreviewEnd: bearingPlot.previewEnd,
+                    bearingPreviewColor:
+                        bearingPlot.active ? previewColor : null,
+                    bearingPreviewAngle: bearingPlot.relativeBearing == null
+                        ? null
+                        : formatRelativeAngle(
+                            bearingPlot.relativeBearing!,
+                            angleDisplayFormat,
+                          ),
                   ),
                 ),
+              ),
+            if (bearingAnchor case final anchor? when bearingReference != null)
+              BearingPlotOverlay(
+                anchor: anchor,
+                referenceBearing: bearingReference,
+                plotBearing: bearingPlot.plotBearing,
+                mapController: _mapController,
               ),
             if (_cursorLocation case final location? when labelPosition != null)
               Positioned(
@@ -832,7 +1202,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             if (_radialMenuCenter case final center? when _radialMenuPoint != null)
               MapRadialMenu(
                 center: center,
-                onDismiss: _closeRadialMenu,
                 actions: [
                   MapRadialMenuAction(
                     icon: Icons.add_location_alt,
@@ -845,6 +1214,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     onSelected: _beginLineDrawing,
                   ),
                 ],
+              ),
+            if (bearingPlot.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _bearingPlotBanner(bearingPlot, angleDisplayFormat),
               ),
             if (lineDrawing.active)
               Positioned(

@@ -17,6 +17,16 @@ category:
   - deleteCategory:
 greeting:
   - hello:
+mapLayer:
+  - listLayers:
+  - getLayer:
+  - createLayer:
+  - updateLayer:
+  - deleteLayer:
+  - reorderLayers:
+mapData:
+  - exportMapData:
+  - restoreMapData:
 mapMarker:
   - listMarkers:
   - getMarker:

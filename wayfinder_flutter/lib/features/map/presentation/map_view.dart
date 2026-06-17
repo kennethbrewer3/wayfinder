@@ -22,6 +22,9 @@ import '../../rectangles/presentation/map_rectangle_layer.dart';
 import '../../rectangles/providers/rectangle_drawing_provider.dart';
 import '../../rectangles/utils/rectangle_bounds.dart';
 import '../../rectangles/utils/rectangle_hit_test.dart';
+import '../../layers/presentation/map_object_layer_stack.dart';
+import '../../layers/providers/layers_provider.dart';
+import '../../layers/utils/map_layer_utils.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/bearing_plot_overlay.dart';
 import '../../lines/presentation/create_line_dialog.dart';
@@ -39,8 +42,8 @@ import '../../markers/utils/marker_hit_test.dart';
 import '../../lines/utils/bearing_utils.dart';
 import '../../lines/utils/line_arrows.dart';
 import '../../lines/utils/line_distance.dart';
+import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_snap.dart';
-import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../lines/providers/zones_provider.dart';
@@ -66,6 +69,8 @@ class MapView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final markersAsync = ref.watch(markersProvider);
     final zonesAsync = ref.watch(zonesProvider);
+    final layersResultAsync = ref.watch(layersProvider);
+    final layersAsync = layersResultAsync.whenData((result) => result.layers);
     final searchCoordinateMarker = ref.watch(searchCoordinateMarkerProvider);
     final mapLayerAsync = ref.watch(activePmtilesMapLayerProvider);
 
@@ -97,6 +102,7 @@ class MapView extends ConsumerWidget {
           mapLayer: mapLayer,
           markersAsync: markersAsync,
           zonesAsync: zonesAsync,
+          layersAsync: layersAsync,
           searchCoordinateMarker: searchCoordinateMarker,
           onCreateMarker: (point) => _createMarker(context, ref, point),
           onSaveSearchCoordinateMarker: (marker) =>
@@ -148,6 +154,7 @@ class _MapCanvas extends ConsumerStatefulWidget {
     required this.mapLayer,
     required this.markersAsync,
     required this.zonesAsync,
+    required this.layersAsync,
     required this.searchCoordinateMarker,
     required this.onCreateMarker,
     required this.onSaveSearchCoordinateMarker,
@@ -159,6 +166,7 @@ class _MapCanvas extends ConsumerStatefulWidget {
   final PmtilesMapLayerConfig? mapLayer;
   final AsyncValue<List<MapMarker>> markersAsync;
   final AsyncValue<List<MapZone>> zonesAsync;
+  final AsyncValue<List<MapLayer>> layersAsync;
   final SearchCoordinateMarker? searchCoordinateMarker;
   final Future<void> Function(LatLng point) onCreateMarker;
   final Future<void> Function(SearchCoordinateMarker marker)
@@ -196,6 +204,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _activePointerDown = false;
   bool _pendingSelectionTapOnUp = false;
   Offset? _selectionPointerDownLocal;
+  int? _draggingLineControlIndex;
+  LineGeometry? _lineEditPreviewGeometry;
 
   @override
   void initState() {
@@ -352,9 +362,174 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return null;
   }
 
-  List<LatLng> _lineSnapCandidates() {
+  MapZone? _selectedLineZone() {
+    final selected = ref.read(selectedMapObjectProvider);
+    if (selected?.kind != SelectedMapObjectKind.zone) {
+      return null;
+    }
+
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
-    return collectLineEndpointSnapCandidates(zones);
+    final zone = findZoneById(zones, selected!.id);
+    if (zone == null || zone.type != lineZoneType) {
+      return null;
+    }
+    return zone;
+  }
+
+  LineGeometry? _selectedLineGeometry() {
+    final zone = _selectedLineZone();
+    if (zone == null) {
+      return null;
+    }
+    return LineGeometry.fromZone(zone);
+  }
+
+  Map<UuidValue, LineGeometry>? _lineGeometryOverrides() {
+    final zone = _selectedLineZone();
+    final preview = _lineEditPreviewGeometry;
+    if (zone == null || preview == null) {
+      return null;
+    }
+    return {zone.id: preview};
+  }
+
+  int? _interiorControlPointIndexAt(LatLng point) {
+    final geometry = _selectedLineGeometry();
+    if (geometry == null) {
+      return null;
+    }
+
+    final index = hitTestLineControlPointIndex(
+      geometry: geometry,
+      tap: point,
+      camera: _mapController.camera,
+    );
+    if (index == null || !isInteriorLineControlPoint(geometry, index)) {
+      return null;
+    }
+    return index;
+  }
+
+  Future<void> _persistLineGeometry(LineGeometry geometry) async {
+    final zone = _selectedLineZone();
+    if (zone == null) {
+      return;
+    }
+
+    await ref.read(zonesProvider.notifier).updateLineGeometry(
+          zoneId: zone.id,
+          geometry: geometry,
+        );
+  }
+
+  Future<void> _insertLineControlPointAt(LatLng point) async {
+    final geometry = _selectedLineGeometry();
+    if (geometry == null) {
+      return;
+    }
+
+    final updated = insertLineControlPoint(
+      geometry: geometry,
+      tap: point,
+      camera: _mapController.camera,
+    );
+    if (updated == null) {
+      return;
+    }
+
+    await _persistLineGeometry(updated);
+  }
+
+  bool _removeLineControlPointAt(LatLng point) {
+    final geometry = _selectedLineGeometry();
+    if (geometry == null) {
+      return false;
+    }
+
+    final index = hitTestLineControlPointIndex(
+      geometry: geometry,
+      tap: point,
+      camera: _mapController.camera,
+    );
+    if (index == null || !isInteriorLineControlPoint(geometry, index)) {
+      return false;
+    }
+
+    final updated = removeLineControlPoint(
+      geometry: geometry,
+      controlPointIndex: index,
+    );
+    if (updated == null) {
+      return false;
+    }
+
+    unawaited(_persistLineGeometry(updated));
+    return true;
+  }
+
+  Future<void> _commitLineControlPointDrag(LatLng point) async {
+    final index = _draggingLineControlIndex;
+    final geometry = _selectedLineGeometry();
+    if (index == null || geometry == null) {
+      _resetLineEditGestureState();
+      return;
+    }
+
+    final updated = moveLineControlPoint(
+      geometry: geometry,
+      controlPointIndex: index,
+      point: point,
+    );
+    _resetLineEditGestureState();
+    if (updated == null) {
+      return;
+    }
+
+    await _persistLineGeometry(updated);
+  }
+
+  void _resetLineEditGestureState() {
+    if (_draggingLineControlIndex == null && _lineEditPreviewGeometry == null) {
+      return;
+    }
+    setState(() {
+      _draggingLineControlIndex = null;
+      _lineEditPreviewGeometry = null;
+    });
+  }
+
+  void _updateLineControlPointDrag(LatLng point) {
+    final index = _draggingLineControlIndex;
+    final geometry = _selectedLineGeometry();
+    if (index == null || geometry == null) {
+      return;
+    }
+
+    final updated = moveLineControlPoint(
+      geometry: geometry,
+      controlPointIndex: index,
+      point: point,
+    );
+    if (updated == null) {
+      return;
+    }
+
+    setState(() {
+      _lineEditPreviewGeometry = updated;
+    });
+  }
+
+  List<LatLng> _lineSnapCandidates() {
+    return collectLineEndpointSnapCandidates(_zonesOnMap);
+  }
+
+  Map<UuidValue, MapLayer> get _layersById => mapLayersById(
+        widget.layersAsync.valueOrNull ?? const <MapLayer>[],
+      );
+
+  List<MapZone> get _zonesOnMap {
+    final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+    return filterZonesForMap(zones, _layersById);
   }
 
   LatLng _snapLinePoint(LatLng point) {
@@ -434,16 +609,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         return;
       }
       _longPressTriggered = true;
+      if (_removeLineControlPointAt(menuPoint)) {
+        _cancelPendingLongPress();
+        return;
+      }
       _openRadialMenuAt(center, menuPoint);
     });
   }
 
   SelectedMapObject? _hitMapObjectAtPoint(LatLng point) {
     final markers = widget.markersAsync.valueOrNull;
+    final layers = widget.layersAsync.valueOrNull ?? const <MapLayer>[];
+    final layersById = mapLayersById(layers);
     if (markers != null) {
       final markerId = hitTestMarkerAtPoint(
         point: point,
-        markers: markers,
+        markers: filterMarkersForMap(markers, layersById),
         camera: _mapController.camera,
       );
       if (markerId != null) {
@@ -459,16 +640,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return null;
     }
 
+    final visibleZones = filterZonesForMap(zones, layersById);
+
     final lineId = hitTestLineAtPoint(
       point: point,
-      zones: zones,
+      zones: visibleZones,
       camera: _mapController.camera,
     );
     if (lineId != null) {
       return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: lineId);
     }
 
-    final circleId = hitTestCircleAtPoint(point: point, zones: zones);
+    final circleId = hitTestCircleAtPoint(point: point, zones: visibleZones);
     if (circleId != null) {
       return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: circleId);
     }
@@ -489,7 +672,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _revealSelectedObjectInSidebar(SelectedMapObject selection) {
-    ref.read(sidebarProvider.notifier).revealMapObject(kind: selection.kind);
+    final layerId = switch (selection.kind) {
+      SelectedMapObjectKind.marker => widget.markersAsync.valueOrNull
+          ?.where((marker) => marker.id == selection.id)
+          .map((marker) => marker.layerId)
+          .firstOrNull,
+      SelectedMapObjectKind.zone => widget.zonesAsync.valueOrNull
+          ?.where((zone) => zone.id == selection.id)
+          .map((zone) => zone.layerId)
+          .firstOrNull,
+    };
+
+    ref.read(sidebarProvider.notifier).revealMapObject(
+          kind: selection.kind,
+          layerId: layerId,
+        );
   }
 
   void _selectMapObject(SelectedMapObject selection) {
@@ -566,6 +763,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final interiorControlPoint = _interiorControlPointIndexAt(point);
+    if (interiorControlPoint != null) {
+      setState(() {
+        _draggingLineControlIndex = interiorControlPoint;
+        _lineEditPreviewGeometry = _selectedLineGeometry();
+      });
+      _cancelPendingLongPress();
+      return;
+    }
+
     if (event.buttons == kPrimaryMouseButton) {
       _startLongPressTimer(event.localPosition, point);
     }
@@ -612,6 +819,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _updateRectanglePreview(point);
     }
 
+    if (_draggingLineControlIndex != null) {
+      _updateLineControlPointDrag(point);
+    }
+
     final pendingLocal = _pendingLongPressLocal;
     if (pendingLocal == null || _longPressTimer == null) {
       return;
@@ -626,6 +837,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _primaryPointerGestureHandled = false;
     final lineDrawing = ref.read(lineDrawingProvider);
     final bearingPlot = ref.read(bearingPlotProvider);
+
+    if (_draggingLineControlIndex != null) {
+      unawaited(_commitLineControlPointDrag(point));
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
 
     if (_pendingSnapStart != null && !lineDrawing.active) {
       final snapAnchor = _pendingSnapStart!;
@@ -728,6 +948,41 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _rectangleDrawingPressActive = false;
     _pendingSnapStart = null;
     _tapDownLocal = null;
+  }
+
+  Widget _lineEditingBanner() {
+    final theme = Theme.of(context);
+    const message =
+        'Tap the line to add a curve point · drag points to move · long-press a point to remove';
+
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.ssid_chart,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  message,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _dismissLineInteraction() {
@@ -841,6 +1096,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (hit == current) {
+      if (current.kind == SelectedMapObjectKind.zone) {
+        final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+        final zone = findZoneById(zones, current.id);
+        if (zone?.type == lineZoneType) {
+          unawaited(_insertLineControlPointAt(point));
+          return;
+        }
+      }
       notifier.clear();
       return;
     }
@@ -1307,9 +1570,30 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final previewColor = Theme.of(context).colorScheme.primary;
     final previewFillColor = previewColor.withValues(alpha: 0.25);
     final referenceColor = Theme.of(context).colorScheme.secondary;
+    final allMarkers = widget.markersAsync.valueOrNull;
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+    final layers = widget.layersAsync.valueOrNull ?? const <MapLayer>[];
+    final layersById = mapLayersById(layers);
     final selectedLine =
         selectedLineId == null ? null : findZoneById(zones, selectedLineId);
+    final lineGeometryOverrides = _lineGeometryOverrides();
+    final mapObjectLayerChildren = allMarkers == null
+        ? const <Widget>[]
+        : buildStackedMapLayerChildren(
+            layers: layers,
+            markers: allMarkers,
+            zones: zones,
+            selectedLineId: selectedLineId,
+            geometryOverrides: lineGeometryOverrides,
+            onMarkerTap: (marker) => _selectMapObject(
+              SelectedMapObject(
+                kind: SelectedMapObjectKind.marker,
+                id: marker.id,
+              ),
+            ),
+          );
+    final selectedLinePreviewGeometry = _lineEditPreviewGeometry ??
+        (selectedLine == null ? null : LineGeometry.fromZone(selectedLine));
     final bearingAnchor =
         bearingPlot.active ? bearingPlot.anchor : null;
     final bearingReference = bearingPlot.referenceBearing;
@@ -1366,7 +1650,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     flags: lineDrawing.active ||
                             bearingPlot.active ||
                             circleDrawing.active ||
-                            rectangleDrawing.active
+                            rectangleDrawing.active ||
+                            _draggingLineControlIndex != null
                         ? InteractiveFlag.all & ~InteractiveFlag.drag
                         : InteractiveFlag.all,
                   ),
@@ -1413,36 +1698,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         ),
                       ],
                   },
-                  if (widget.markersAsync case AsyncData(:final value))
-                    MarkerLayer(
-                      markers: value
-                          .where((marker) => marker.visible)
-                          .map(
-                            (marker) => Marker(
-                              point: LatLng(marker.latitude, marker.longitude),
-                              width: mapMarkerWidth,
-                              height: mapMarkerHeight,
-                              alignment: mapMarkerAnchorAlignment,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () => _selectMapObject(
-                                  SelectedMapObject(
-                                    kind: SelectedMapObjectKind.marker,
-                                    id: marker.id,
-                                  ),
-                                ),
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: MapMarkerIcon(
-                                    color: parseMarkerColor(marker.color),
-                                    iconName: marker.icon,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
+                  ...mapObjectLayerChildren,
                   if (widget.searchCoordinateMarker case final marker?)
                     MarkerLayer(
                       markers: [
@@ -1469,39 +1725,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         ),
                       ],
                     ),
-                  if (widget.zonesAsync case AsyncData(:final value))
-                    PolygonLayer(
-                      polygons: [
-                        ...buildSavedCirclePolygons(value),
-                        ...buildSavedRectanglePolygons(value),
-                      ],
-                    ),
-                  if (widget.zonesAsync case AsyncData(:final value))
-                    PolylineLayer(
-                      polylines: buildSavedCircleRadiusLines(value),
-                    ),
-                  if (widget.zonesAsync case AsyncData(:final value))
-                    MarkerLayer(
-                      markers: [
-                        ...buildSavedCircleCenterMarkers(value),
-                        ...buildSavedRectangleCenterMarkers(value),
-                      ],
-                    ),
-                  if (widget.zonesAsync case AsyncData(:final value))
-                    PolylineLayer(
-                      polylines: buildSavedLinePolylines(
-                        value,
-                        selectedLineId: selectedLineId,
-                      ),
-                    ),
-                  if (widget.zonesAsync case AsyncData(:final value))
-                    MarkerLayer(
-                      markers: buildSavedLineArrowMarkers(value),
-                    ),
                   if (selectedLine case final line?
                       when !lineDrawing.active && !bearingPlot.active)
                     MarkerLayer(
-                      markers: buildLineSnapPointMarkers(zone: line),
+                      markers: buildLineSnapPointMarkers(
+                        zone: line,
+                        geometryOverride: selectedLinePreviewGeometry,
+                      ),
                     ),
                   if (bearingAnchor case final anchor?)
                     PolylineLayer(
@@ -1642,11 +1872,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
             ),
             ),
-            if (widget.zonesAsync case AsyncData(:final value))
+            if (widget.zonesAsync.valueOrNull case final value?)
               Positioned.fill(
                 child: IgnorePointer(
                   child: LineMapLabelsOverlay(
-                    zones: value,
+                    zones: filterZonesForMap(value, layersById),
                     units: measurementUnits,
                     mapController: _mapController,
                     previewStart: lineDrawing.start,
@@ -1735,6 +1965,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 right: 0,
                 top: 0,
                 child: _lineDrawingBanner(lineDrawing),
+              ),
+            if (selectedLine != null &&
+                !lineDrawing.active &&
+                !bearingPlot.active &&
+                !circleDrawing.active &&
+                !rectangleDrawing.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _lineEditingBanner(),
               ),
             if (circleDrawing.active)
               Positioned(

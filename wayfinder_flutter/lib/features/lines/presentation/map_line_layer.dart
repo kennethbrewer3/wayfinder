@@ -8,24 +8,27 @@ import '../models/line_geometry.dart';
 import '../utils/bearing_utils.dart';
 import '../utils/line_arrows.dart';
 import '../utils/line_distance.dart';
+import '../utils/line_path.dart';
 
 List<Polyline<UuidValue>> buildSavedLinePolylines(
   List<MapZone> zones, {
   UuidValue? selectedLineId,
+  Map<UuidValue, LineGeometry>? geometryOverrides,
 }) {
   final polylines = <Polyline<UuidValue>>[];
   for (final zone in zones) {
     if (!zone.visible || zone.type != lineZoneType) {
       continue;
     }
-    final geometry = LineGeometry.fromZone(zone);
+    final geometry =
+        geometryOverrides?[zone.id] ?? LineGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
       continue;
     }
     final isSelected = selectedLineId == zone.id;
     polylines.add(
       _polylineForLine(
-        points: geometry.points,
+        points: geometry.renderPoints,
         color: parseMarkerColor(zone.color),
         borderPattern: zone.borderPattern,
         strokeWidth: isSelected ? 6 : 4,
@@ -36,20 +39,23 @@ List<Polyline<UuidValue>> buildSavedLinePolylines(
   return polylines;
 }
 
-List<Marker> buildSavedLineArrowMarkers(List<MapZone> zones) {
+List<Marker> buildSavedLineArrowMarkers(
+  List<MapZone> zones, {
+  Map<UuidValue, LineGeometry>? geometryOverrides,
+}) {
   final markers = <Marker>[];
   for (final zone in zones) {
     if (!zone.visible || zone.type != lineZoneType) {
       continue;
     }
-    final geometry = LineGeometry.fromZone(zone);
+    final geometry =
+        geometryOverrides?[zone.id] ?? LineGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid || !geometry.showArrows) {
       continue;
     }
     markers.addAll(
-      buildDirectionArrowMarkers(
-        start: geometry.start!,
-        end: geometry.end!,
+      buildDirectionArrowMarkersForPath(
+        renderPoints: geometry.renderPoints,
         color: parseMarkerColor(zone.color),
       ),
     );
@@ -59,19 +65,29 @@ List<Marker> buildSavedLineArrowMarkers(List<MapZone> zones) {
 
 List<Marker> buildLineSnapPointMarkers({
   required MapZone zone,
+  LineGeometry? geometryOverride,
 }) {
-  final geometry = LineGeometry.fromZone(zone);
+  final geometry = geometryOverride ?? LineGeometry.fromZone(zone);
   if (geometry == null || !geometry.isValid) {
     return const [];
   }
 
-  return [
-    _snapPointMarker(point: geometry.start!),
-    _snapPointMarker(point: geometry.end!),
+  final markers = <Marker>[
+    _endpointSnapPointMarker(point: geometry.start!, isStart: true),
+    _endpointSnapPointMarker(point: geometry.end!, isStart: false),
   ];
+
+  for (var index = 1; index < geometry.points.length - 1; index++) {
+    markers.add(_interiorControlPointMarker(point: geometry.points[index]));
+  }
+
+  return markers;
 }
 
-Marker _snapPointMarker({required LatLng point}) {
+Marker _endpointSnapPointMarker({
+  required LatLng point,
+  required bool isStart,
+}) {
   return Marker(
     point: point,
     width: 28,
@@ -79,7 +95,9 @@ Marker _snapPointMarker({required LatLng point}) {
     alignment: Alignment.center,
     child: IgnorePointer(
       child: Tooltip(
-        message: 'Click to plot bearing · drag to draw line',
+        message: isStart
+            ? 'Click to plot bearing · drag to draw line'
+            : 'Click to plot bearing · drag to draw line',
         child: DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -98,6 +116,41 @@ Marker _snapPointMarker({required LatLng point}) {
               Icons.circle,
               size: 10,
               color: Color(0xFF1B4965),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Marker _interiorControlPointMarker({required LatLng point}) {
+  return Marker(
+    point: point,
+    width: 24,
+    height: 24,
+    alignment: Alignment.center,
+    child: IgnorePointer(
+      child: Tooltip(
+        message: 'Drag to move · long-press to remove',
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF1B4965),
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x44000000),
+                blurRadius: 4,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.adjust,
+              size: 12,
+              color: Colors.white,
             ),
           ),
         ),

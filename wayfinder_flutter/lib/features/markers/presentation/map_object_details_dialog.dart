@@ -7,13 +7,14 @@ import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/utils/circle_distance.dart';
+import '../../layers/presentation/layer_assignment_row.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
-import '../../lines/utils/line_distance.dart';
+import '../../lines/utils/line_path.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
@@ -162,8 +163,20 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           value: _formatCoordinates(marker.latitude, marker.longitude),
         ),
         _DetailRow(
+          label: 'Elevation',
+          value: _formatElevation(marker.elevation),
+        ),
+        _DetailRow(
           label: 'Visibility',
           value: marker.visible ? 'Visible' : 'Hidden',
+        ),
+        LayerAssignmentRow(
+          layerId: marker.layerId,
+          onChanged: (layerId) => updateMarkerLayer(
+            ref,
+            marker: marker,
+            layerId: layerId,
+          ),
         ),
         if (notes != null && notes.isNotEmpty)
           _NotesSection(markdown: notes),
@@ -193,33 +206,48 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     return switch (zone.type) {
       lineZoneType => _lineDetails(
+          ref: ref,
           zone: zone,
           measurementUnits: measurementUnits,
         ),
       circleZoneType => _circleDetails(
+          ref: ref,
           zone: zone,
           measurementUnits: measurementUnits,
         ),
       rectangleZoneType => _rectangleDetails(
+          ref: ref,
           zone: zone,
           measurementUnits: measurementUnits,
         ),
-      _ => _genericZoneDetails(zone: zone),
+      _ => _genericZoneDetails(ref: ref, zone: zone),
     };
   }
 
+  Widget _zoneLayerAssignment(WidgetRef ref, MapZone zone) {
+    return LayerAssignmentRow(
+      layerId: zone.layerId,
+      onChanged: (layerId) => updateZoneLayer(
+        ref,
+        zone: zone,
+        layerId: layerId,
+      ),
+    );
+  }
+
   Widget _lineDetails({
+    required WidgetRef ref,
     required MapZone zone,
     required MeasurementUnits measurementUnits,
   }) {
     final geometry = LineGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
-      return _genericZoneDetails(zone: zone);
+      return _genericZoneDetails(ref: ref, zone: zone);
     }
 
     final notes = geometry.notes?.trim();
     final distance = formatLineDistance(
-      lineLengthMeters(geometry.start!, geometry.end!),
+      geometry.pathLengthMeters,
       measurementUnits,
     );
 
@@ -245,6 +273,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           label: 'Visibility',
           value: zone.visible ? 'Visible' : 'Hidden',
         ),
+        _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
           _NotesSection(markdown: notes),
       ],
@@ -252,12 +281,13 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   }
 
   Widget _circleDetails({
+    required WidgetRef ref,
     required MapZone zone,
     required MeasurementUnits measurementUnits,
   }) {
     final geometry = CircleGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
-      return _genericZoneDetails(zone: zone);
+      return _genericZoneDetails(ref: ref, zone: zone);
     }
 
     final notes = geometry.notes?.trim();
@@ -300,6 +330,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           label: 'Visibility',
           value: zone.visible ? 'Visible' : 'Hidden',
         ),
+        _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
           _NotesSection(markdown: notes),
       ],
@@ -307,12 +338,13 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   }
 
   Widget _rectangleDetails({
+    required WidgetRef ref,
     required MapZone zone,
     required MeasurementUnits measurementUnits,
   }) {
     final geometry = RectangleGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
-      return _genericZoneDetails(zone: zone);
+      return _genericZoneDetails(ref: ref, zone: zone);
     }
 
     final notes = geometry.notes?.trim();
@@ -350,13 +382,17 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           label: 'Visibility',
           value: zone.visible ? 'Visible' : 'Hidden',
         ),
+        _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
           _NotesSection(markdown: notes),
       ],
     );
   }
 
-  Widget _genericZoneDetails({required MapZone zone}) {
+  Widget _genericZoneDetails({
+    required WidgetRef ref,
+    required MapZone zone,
+  }) {
     return _DetailsDialogShell(
       title: zone.name,
       leading: _ZoneTypeAvatar(
@@ -370,6 +406,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           label: 'Visibility',
           value: zone.visible ? 'Visible' : 'Hidden',
         ),
+        _zoneLayerAssignment(ref, zone),
       ],
     );
   }
@@ -548,6 +585,13 @@ class _ZoneTypeAvatar extends StatelessWidget {
 
 String _formatCoordinates(double latitude, double longitude) {
   return '${latitude.toStringAsFixed(5)}, ${longitude.toStringAsFixed(5)}';
+}
+
+String _formatElevation(double elevation) {
+  if (elevation == elevation.roundToDouble()) {
+    return '${elevation.toInt()} m';
+  }
+  return '${elevation.toStringAsFixed(1)} m';
 }
 
 String _formatLatLng(LatLng point) {

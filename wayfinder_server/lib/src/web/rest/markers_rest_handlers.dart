@@ -110,9 +110,13 @@ abstract final class MarkersRestHandlers {
       notes: body['notes'] as String?,
       latitude: latitude.toDouble(),
       longitude: longitude.toDouble(),
+      elevation: body['elevation'] is num
+          ? (body['elevation'] as num).toDouble()
+          : 0,
       color: color,
       icon: icon,
       visible: body['visible'] is bool ? body['visible'] as bool : true,
+      layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdAt: now,
       updatedAt: now,
     );
@@ -134,9 +138,15 @@ abstract final class MarkersRestHandlers {
       longitude: body['longitude'] is num
           ? (body['longitude'] as num).toDouble()
           : existing.longitude,
+      elevation: body['elevation'] is num
+          ? (body['elevation'] as num).toDouble()
+          : existing.elevation,
       color: body['color'] is String ? body['color'] as String : existing.color,
       icon: body['icon'] is String ? body['icon'] as String : existing.icon,
       visible: body['visible'] is bool ? body['visible'] as bool : existing.visible,
+      layerId: body.containsKey('layerId')
+          ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
+          : existing.layerId,
       createdAt: existing.createdAt,
       updatedAt: DateTime.now().toUtc(),
     );

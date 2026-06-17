@@ -7,6 +7,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../models/angle_display_format.dart';
 import '../models/line_geometry.dart';
 import 'line_distance.dart';
+import 'line_path.dart';
 
 const _pointMatchToleranceMeters = 2.0;
 
@@ -102,10 +103,13 @@ double? referenceLineBearingAtAnchor({
   final end = geometry.end!;
 
   if (arePointsNear(anchor, start)) {
-    return lineGeodesicCalculator.bearing(start, end);
+    return linePathBearingAtPoint(geometry, start) ??
+        lineGeodesicCalculator.bearing(start, end);
   }
   if (arePointsNear(anchor, end)) {
-    return lineGeodesicCalculator.bearing(end, start);
+    final forward = linePathBearingAtPoint(geometry, end) ??
+        lineGeodesicCalculator.bearing(start, end);
+    return normalizeBearing(forward + 180);
   }
   return null;
 }

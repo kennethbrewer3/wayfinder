@@ -2,7 +2,9 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../layers/presentation/layer_picker_field.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
@@ -19,6 +21,7 @@ class CircleFormData {
     required this.fillColor,
     required this.sizeDisplay,
     required this.showNameLabel,
+    required this.layerId,
   });
 
   final String name;
@@ -28,6 +31,7 @@ class CircleFormData {
   final Color fillColor;
   final CircleSizeDisplay sizeDisplay;
   final bool showNameLabel;
+  final UuidValue? layerId;
 }
 
 Future<CircleFormData?> showCircleFormDialog({
@@ -44,6 +48,7 @@ Future<CircleFormData?> showCircleFormDialog({
   Color? initialBorderColor,
   Color? initialFillColor,
   bool initialShowNameLabel = false,
+  UuidValue? initialLayerId,
 }) {
   return showDialog<CircleFormData>(
     context: context,
@@ -63,6 +68,7 @@ Future<CircleFormData?> showCircleFormDialog({
         initialFillColor:
             initialFillColor ?? parseMarkerColor('#1B496540'),
         initialShowNameLabel: initialShowNameLabel,
+        initialLayerId: initialLayerId,
       );
     },
   );
@@ -83,6 +89,7 @@ class CircleFormDialog extends StatefulWidget {
     required this.initialBorderColor,
     required this.initialFillColor,
     required this.initialShowNameLabel,
+    this.initialLayerId,
   });
 
   final String title;
@@ -97,6 +104,7 @@ class CircleFormDialog extends StatefulWidget {
   final Color initialBorderColor;
   final Color initialFillColor;
   final bool initialShowNameLabel;
+  final UuidValue? initialLayerId;
 
   @override
   State<CircleFormDialog> createState() => _CircleFormDialogState();
@@ -110,6 +118,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   late Color _fillColor;
   late CircleSizeDisplay _sizeDisplay;
   late bool _showNameLabel;
+  UuidValue? _selectedLayerId;
 
   @override
   void initState() {
@@ -123,6 +132,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
     _fillColor = widget.initialFillColor;
     _sizeDisplay = widget.initialSizeDisplay;
     _showNameLabel = widget.initialShowNameLabel;
+    _selectedLayerId = widget.initialLayerId;
   }
 
   @override
@@ -148,6 +158,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
         fillColor: _fillColor,
         sizeDisplay: _sizeDisplay,
         showNameLabel: _showNameLabel,
+        layerId: _selectedLayerId,
       ),
     );
   }
@@ -181,6 +192,12 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+              LayerPickerField(
+                selectedLayerId: _selectedLayerId,
+                onChanged: (layerId) =>
+                    setState(() => _selectedLayerId = layerId),
               ),
               const SizedBox(height: 16),
               ListTile(

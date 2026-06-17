@@ -5,10 +5,25 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 const lineZoneType = 'line';
 
+enum LinePathMode {
+  straight,
+  smooth,
+}
+
+LinePathMode linePathModeFromJson(String? value) {
+  return value == 'straight' ? LinePathMode.straight : LinePathMode.smooth;
+}
+
+String linePathModeToJson(LinePathMode mode) => switch (mode) {
+      LinePathMode.straight => 'straight',
+      LinePathMode.smooth => 'smooth',
+    };
+
 class LineGeometry {
   const LineGeometry({
     required this.points,
     required this.showArrows,
+    this.pathMode = LinePathMode.straight,
     this.notes,
     this.showDistanceLabel = true,
     this.showNameLabel = false,
@@ -16,11 +31,14 @@ class LineGeometry {
 
   final List<LatLng> points;
   final bool showArrows;
+  final LinePathMode pathMode;
   final String? notes;
   final bool showDistanceLabel;
   final bool showNameLabel;
 
   bool get isValid => points.length >= 2;
+
+  bool get hasInteriorControlPoints => points.length > 2;
 
   LatLng? get start => points.isEmpty ? null : points.first;
 
@@ -29,6 +47,7 @@ class LineGeometry {
   LineGeometry copyWith({
     List<LatLng>? points,
     bool? showArrows,
+    LinePathMode? pathMode,
     String? notes,
     bool? showDistanceLabel,
     bool? showNameLabel,
@@ -37,6 +56,7 @@ class LineGeometry {
     return LineGeometry(
       points: points ?? this.points,
       showArrows: showArrows ?? this.showArrows,
+      pathMode: pathMode ?? this.pathMode,
       notes: clearNotes ? null : notes ?? this.notes,
       showDistanceLabel: showDistanceLabel ?? this.showDistanceLabel,
       showNameLabel: showNameLabel ?? this.showNameLabel,
@@ -56,6 +76,8 @@ class LineGeometry {
       'showArrows': showArrows,
       'showDistanceLabel': showDistanceLabel,
       'showNameLabel': showNameLabel,
+      if (pathMode != LinePathMode.straight)
+        'pathMode': linePathModeToJson(pathMode),
       if (notes != null && notes!.trim().isNotEmpty) 'notes': notes,
     };
   }
@@ -103,24 +125,12 @@ class LineGeometry {
     return LineGeometry(
       points: points,
       showArrows: json['showArrows'] == true,
+      pathMode: linePathModeFromJson(json['pathMode'] as String?),
       notes: json['notes'] as String?,
       showDistanceLabel: json['showDistanceLabel'] != false,
       showNameLabel: json['showNameLabel'] == true,
     );
   }
-}
-
-LatLng? lineZoneCenter(MapZone zone) {
-  final geometry = LineGeometry.fromZone(zone);
-  if (geometry == null || !geometry.isValid) {
-    return null;
-  }
-  final start = geometry.start!;
-  final end = geometry.end!;
-  return LatLng(
-    (start.latitude + end.latitude) / 2,
-    (start.longitude + end.longitude) / 2,
-  );
 }
 
 MapZone updateZoneLineGeometry(MapZone zone, LineGeometry geometry) {

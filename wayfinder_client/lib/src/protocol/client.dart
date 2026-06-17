@@ -18,10 +18,14 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
 import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i5;
 import 'package:wayfinder_client/src/protocol/greetings/greeting.dart' as _i6;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i7;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart' as _i8;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i9;
-import 'protocol.dart' as _i10;
+import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i7;
+import 'package:wayfinder_client/src/protocol/map/map_data_restore_summary.dart'
+    as _i8;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i9;
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
+    as _i10;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i11;
+import 'protocol.dart' as _i12;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -306,35 +310,106 @@ class EndpointGreeting extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointMapLayer extends _i2.EndpointRef {
+  EndpointMapLayer(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'mapLayer';
+
+  _i3.Future<List<_i7.MapLayer>> listLayers() =>
+      caller.callServerEndpoint<List<_i7.MapLayer>>(
+        'mapLayer',
+        'listLayers',
+        {},
+      );
+
+  _i3.Future<_i7.MapLayer?> getLayer(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i7.MapLayer?>(
+        'mapLayer',
+        'getLayer',
+        {'id': id},
+      );
+
+  _i3.Future<_i7.MapLayer> createLayer(_i7.MapLayer layer) =>
+      caller.callServerEndpoint<_i7.MapLayer>(
+        'mapLayer',
+        'createLayer',
+        {'layer': layer},
+      );
+
+  _i3.Future<_i7.MapLayer> updateLayer(_i7.MapLayer layer) =>
+      caller.callServerEndpoint<_i7.MapLayer>(
+        'mapLayer',
+        'updateLayer',
+        {'layer': layer},
+      );
+
+  _i3.Future<bool> deleteLayer(_i2.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'mapLayer',
+        'deleteLayer',
+        {'id': id},
+      );
+
+  _i3.Future<List<_i7.MapLayer>> reorderLayers(List<_i7.MapLayer> layers) =>
+      caller.callServerEndpoint<List<_i7.MapLayer>>(
+        'mapLayer',
+        'reorderLayers',
+        {'layers': layers},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointMapData extends _i2.EndpointRef {
+  EndpointMapData(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'mapData';
+
+  _i3.Future<String> exportMapData() => caller.callServerEndpoint<String>(
+    'mapData',
+    'exportMapData',
+    {},
+  );
+
+  _i3.Future<_i8.MapDataRestoreSummary> restoreMapData(String backupJson) =>
+      caller.callServerEndpoint<_i8.MapDataRestoreSummary>(
+        'mapData',
+        'restoreMapData',
+        {'backupJson': backupJson},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointMapMarker extends _i2.EndpointRef {
   EndpointMapMarker(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapMarker';
 
-  _i3.Future<List<_i7.MapMarker>> listMarkers() =>
-      caller.callServerEndpoint<List<_i7.MapMarker>>(
+  _i3.Future<List<_i9.MapMarker>> listMarkers() =>
+      caller.callServerEndpoint<List<_i9.MapMarker>>(
         'mapMarker',
         'listMarkers',
         {},
       );
 
-  _i3.Future<_i7.MapMarker?> getMarker(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i7.MapMarker?>(
+  _i3.Future<_i9.MapMarker?> getMarker(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i9.MapMarker?>(
         'mapMarker',
         'getMarker',
         {'id': id},
       );
 
-  _i3.Future<_i7.MapMarker> createMarker(_i7.MapMarker marker) =>
-      caller.callServerEndpoint<_i7.MapMarker>(
+  _i3.Future<_i9.MapMarker> createMarker(_i9.MapMarker marker) =>
+      caller.callServerEndpoint<_i9.MapMarker>(
         'mapMarker',
         'createMarker',
         {'marker': marker},
       );
 
-  _i3.Future<_i7.MapMarker> updateMarker(_i7.MapMarker marker) =>
-      caller.callServerEndpoint<_i7.MapMarker>(
+  _i3.Future<_i9.MapMarker> updateMarker(_i9.MapMarker marker) =>
+      caller.callServerEndpoint<_i9.MapMarker>(
         'mapMarker',
         'updateMarker',
         {'marker': marker},
@@ -355,8 +430,8 @@ class EndpointPmtiles extends _i2.EndpointRef {
   @override
   String get name => 'pmtiles';
 
-  _i3.Future<List<_i8.PmtilesFile>> listFiles() =>
-      caller.callServerEndpoint<List<_i8.PmtilesFile>>(
+  _i3.Future<List<_i10.PmtilesFile>> listFiles() =>
+      caller.callServerEndpoint<List<_i10.PmtilesFile>>(
         'pmtiles',
         'listFiles',
         {},
@@ -397,29 +472,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i9.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i9.MapZone>>(
+  _i3.Future<List<_i11.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i11.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i9.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i9.MapZone?>(
+  _i3.Future<_i11.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i11.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i9.MapZone> createZone(_i9.MapZone zone) =>
-      caller.callServerEndpoint<_i9.MapZone>(
+  _i3.Future<_i11.MapZone> createZone(_i11.MapZone zone) =>
+      caller.callServerEndpoint<_i11.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i9.MapZone> updateZone(_i9.MapZone zone) =>
-      caller.callServerEndpoint<_i9.MapZone>(
+  _i3.Future<_i11.MapZone> updateZone(_i11.MapZone zone) =>
+      caller.callServerEndpoint<_i11.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -464,7 +539,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i10.Protocol(),
+         _i12.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -477,6 +552,8 @@ class Client extends _i2.ServerpodClientShared {
     jwtRefresh = EndpointJwtRefresh(this);
     category = EndpointCategory(this);
     greeting = EndpointGreeting(this);
+    mapLayer = EndpointMapLayer(this);
+    mapData = EndpointMapData(this);
     mapMarker = EndpointMapMarker(this);
     pmtiles = EndpointPmtiles(this);
     mapZone = EndpointMapZone(this);
@@ -490,6 +567,10 @@ class Client extends _i2.ServerpodClientShared {
   late final EndpointCategory category;
 
   late final EndpointGreeting greeting;
+
+  late final EndpointMapLayer mapLayer;
+
+  late final EndpointMapData mapData;
 
   late final EndpointMapMarker mapMarker;
 
@@ -505,6 +586,8 @@ class Client extends _i2.ServerpodClientShared {
     'jwtRefresh': jwtRefresh,
     'category': category,
     'greeting': greeting,
+    'mapLayer': mapLayer,
+    'mapData': mapData,
     'mapMarker': mapMarker,
     'pmtiles': pmtiles,
     'mapZone': mapZone,

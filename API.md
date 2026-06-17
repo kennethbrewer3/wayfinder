@@ -43,11 +43,55 @@ Errors return JSON with an `error` message:
 | 204 | Success, no body (typical for deletes) |
 | 400 | Invalid request (bad JSON, missing field, invalid UUID) |
 | 404 | Resource not found |
+| 503 | Service unavailable (health check failed) |
 | 500 | Server error |
 
 ### Authentication
 
 The REST API does not currently require authentication. The Flutter app uses separate Serverpod RPC endpoints on port **18080** with JWT auth.
+
+---
+
+## Health check
+
+Use this endpoint for load balancers, uptime monitors, and cron scripts.
+
+### Check server health
+
+```bash
+curl http://localhost:18082/api/health
+```
+
+When the server and its dependencies are healthy, the response is HTTP **200** with the JSON boolean:
+
+```json
+true
+```
+
+When a dependency check fails, the response is HTTP **503** with diagnostic details:
+
+```json
+{
+  "healthy": false,
+  "checks": {
+    "database": {
+      "ok": false,
+      "error": "connection refused"
+    },
+    "pmtilesStorage": {
+      "ok": true,
+      "path": "storage/pmtiles"
+    }
+  }
+}
+```
+
+Checks performed:
+
+| Check | Description |
+|-------|-------------|
+| `database` | PostgreSQL reachable; runs a lightweight query |
+| `pmtilesStorage` | PMTiles upload directory exists or can be created |
 
 ---
 
@@ -69,7 +113,7 @@ curl http://localhost:18082/api/markers/69d0219b-ab94-4f42-94dd-3d102c35ee91
 
 Required fields: `name`, `latitude`, `longitude`, `color`, `icon`.
 
-Optional: `notes`, `visible` (defaults to `true`).
+Optional: `notes`, `visible` (defaults to `true`), `elevation` in meters (defaults to `0`), `layerId` (UUID of a map layer).
 
 ```bash
 curl -X POST http://localhost:18082/api/markers \
@@ -78,6 +122,7 @@ curl -X POST http://localhost:18082/api/markers \
     "name": "Trailhead",
     "latitude": 38.910381,
     "longitude": -77.263527,
+    "elevation": 125.5,
     "color": "#009688",
     "icon": "place",
     "visible": true,
@@ -94,6 +139,7 @@ Example response:
   "notes": "Parking lot entrance",
   "latitude": 38.910381,
   "longitude": -77.263527,
+  "elevation": 125.5,
   "color": "#009688",
   "icon": "place",
   "visible": true,
@@ -107,7 +153,7 @@ Example response:
 ```bash
 curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d82da6 \
   -H "Content-Type: application/json" \
-  -d '{"notes":"Updated via curl","visible":false}'
+  -d '{"notes":"Updated via curl","elevation":130,"visible":false}'
 ```
 
 `PUT` works the same way.
@@ -119,6 +165,65 @@ curl -X DELETE http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65
 ```
 
 Returns HTTP 204 on success.
+
+---
+
+## Map layers
+
+Map layers group markers and zones. Layer order controls draw order (higher `sortOrder` draws on top). Toggling a layer's `visible` flag hides all of its contents on the map.
+
+### List layers
+
+```bash
+curl http://localhost:18082/api/layers
+```
+
+### Get one layer
+
+```bash
+curl http://localhost:18082/api/layers/00000000-0000-4000-8000-000000000001
+```
+
+### Create a layer
+
+Required: `name`. Optional: `sortOrder` (auto-assigned if omitted), `visible` (defaults to `true`).
+
+```bash
+curl -X POST http://localhost:18082/api/layers \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Trails","visible":true}'
+```
+
+### Update a layer
+
+```bash
+curl -X PATCH http://localhost:18082/api/layers/00000000-0000-4000-8000-000000000001 \
+  -H "Content-Type: application/json" \
+  -d '{"visible":false}'
+```
+
+### Reorder layers
+
+Send the full desired order. Each entry needs `id` and `sortOrder` (`0` = bottom, higher values draw above).
+
+```bash
+curl -X POST http://localhost:18082/api/layers/reorder \
+  -H "Content-Type: application/json" \
+  -d '{
+    "layers": [
+      {"id":"00000000-0000-4000-8000-000000000001","sortOrder":0},
+      {"id":"9e2ee7b0-9ba4-4e17-8948-54ae65d82da6","sortOrder":1}
+    ]
+  }'
+```
+
+### Delete a layer
+
+Cannot delete the last remaining layer. Markers and zones on the deleted layer are moved to another layer.
+
+```bash
+curl -X DELETE http://localhost:18082/api/layers/9e2ee7b0-9ba4-4e17-8948-54ae65d82da6
+```
 
 ---
 
@@ -138,6 +243,7 @@ Zones represent map overlays: lines, circles, and rectangles.
 | `borderPattern` | string | `solid` or `dashed` |
 | `fillColor` | string | Hex fill color (often with alpha) |
 | `visible` | boolean | Whether the zone is shown on the map |
+| `layerId` | UUID | Map layer this zone belongs to |
 | `geometryJson` | string | JSON string with type-specific geometry |
 | `createdAt` | datetime | UTC timestamp |
 | `updatedAt` | datetime | UTC timestamp |
@@ -354,11 +460,75 @@ curl -X DELETE http://localhost:18082/api/pmtiles/17feeaff-1532-4709-8786-022597
 
 ---
 
+## Map data backup
+
+Export or restore the full map structure (layers, markers, and zones) in one JSON document. IDs and relationships are preserved on restore.
+
+### Export all map data
+
+```bash
+curl http://localhost:18082/api/map-data
+```
+
+Save to a dated backup file:
+
+```bash
+curl -s http://localhost:18082/api/map-data \
+  -o "wayfinder-backup-$(date -u +%Y-%m-%d).json"
+```
+
+Example response shape:
+
+```json
+{
+  "version": 1,
+  "exportedAt": "2026-06-15T12:34:56.789Z",
+  "layers": [ { "id": "…", "name": "Default", "sortOrder": 0, "visible": true, "createdAt": "…", "updatedAt": "…" } ],
+  "markers": [ { "id": "…", "name": "Trailhead", "latitude": 38.9, "longitude": -77.2, "elevation": 0, "color": "#1B4965", "icon": "place", "visible": true, "layerId": "…", "createdAt": "…", "updatedAt": "…" } ],
+  "zones": [ { "id": "…", "name": "Route", "type": "line", "color": "#1B4965", "borderColor": "#1B4965", "borderPattern": "solid", "fillColor": "#1B4965", "visible": true, "geometryJson": "{…}", "layerId": "…", "createdAt": "…", "updatedAt": "…" } ]
+}
+```
+
+### Restore map data
+
+**Warning:** This replaces all existing layers, markers, and zones on the server.
+
+Required top-level fields: `version` (must be `1`), `layers`, `markers`, and `zones` (arrays). Use the same object shapes returned by export.
+
+```bash
+curl -X POST http://localhost:18082/api/map-data/restore \
+  -H "Content-Type: application/json" \
+  --data-binary @wayfinder-backup.json
+```
+
+Example response:
+
+```json
+{
+  "restored": {
+    "layers": 2,
+    "markers": 15,
+    "zones": 8
+  }
+}
+```
+
+If the backup has no layers, a default layer is created. Markers or zones referencing unknown `layerId` values are assigned to the first layer in the backup.
+
+### Cron backup example
+
+```bash
+0 2 * * * curl -sf http://localhost:18082/api/map-data -o "/backups/wayfinder-$(date +\%Y\%m\%d).json"
+```
+
+---
+
 ## Endpoint summary
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/` | API index |
+| GET | `/api/health` | Server health check |
 | GET | `/api/markers` | List markers |
 | GET | `/api/markers/:id` | Get marker |
 | POST | `/api/markers` | Create marker |
@@ -374,6 +544,14 @@ curl -X DELETE http://localhost:18082/api/pmtiles/17feeaff-1532-4709-8786-022597
 | POST | `/api/categories` | Create category |
 | PUT/PATCH | `/api/categories/:id` | Update category |
 | DELETE | `/api/categories/:id` | Delete category |
+| GET | `/api/layers` | List map layers |
+| GET | `/api/layers/:id` | Get map layer |
+| POST | `/api/layers` | Create map layer |
+| PUT/PATCH | `/api/layers/:id` | Update map layer |
+| POST | `/api/layers/reorder` | Reorder map layers |
+| DELETE | `/api/layers/:id` | Delete map layer |
+| GET | `/api/map-data` | Export all layers, markers, and zones |
+| POST | `/api/map-data/restore` | Restore map data from backup JSON |
 | GET | `/api/pmtiles` | List PMTiles catalog |
 | POST | `/api/pmtiles/upload?name=…` | Upload PMTiles bytes |
 | GET | `/api/pmtiles/active` | Get active file id |

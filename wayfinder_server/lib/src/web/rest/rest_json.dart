@@ -31,6 +31,13 @@ abstract final class RestJson {
 
   static Response noContent() => Response.noContent();
 
+  static Response serviceUnavailable(Object? body) {
+    return Response(
+      503,
+      body: Body.fromString(jsonEncode(body), mimeType: MimeType.json),
+    );
+  }
+
   static Response error(int statusCode, String message) {
     final body = Body.fromString(
       jsonEncode({'error': message}),

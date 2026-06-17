@@ -5,10 +5,12 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../layers/providers/layers_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../providers/zones_provider.dart';
 import '../models/line_geometry.dart';
 import '../providers/measurement_units_provider.dart';
+import '../utils/line_path.dart';
 import 'line_form_dialog.dart';
 
 Future<bool> createLineBetweenPoints({
@@ -23,6 +25,7 @@ Future<bool> createLineBetweenPoints({
     start: start,
     end: end,
     measurementUnits: measurementUnits,
+    initialLayerId: selectedLayerIdForCreate(ref),
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -53,6 +56,7 @@ Future<bool> createLineBetweenPoints({
       fillColor: colorHex,
       visible: true,
       geometryJson: geometry.encode(),
+      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
       createdAt: now,
       updatedAt: now,
     ),
@@ -80,11 +84,13 @@ Future<bool> updateLineFromForm({
     defaultName: zone.name,
     start: geometry.start!,
     end: geometry.end!,
+    pathLengthMeters: geometry.pathLengthMeters,
     measurementUnits: measurementUnits,
     initialNotes: geometry.notes,
     initialColor: parseMarkerColor(zone.color),
     initialBorderPattern: lineBorderPatternFromStorage(zone.borderPattern),
     initialShowArrows: geometry.showArrows,
+    initialLayerId: zone.layerId,
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -107,6 +113,7 @@ Future<bool> updateLineFromForm({
       borderPattern: formData.borderPattern.storageValue,
       fillColor: colorHex,
       geometryJson: updatedGeometry.encode(),
+      layerId: formData.layerId,
       updatedAt: DateTime.now().toUtc(),
     ),
   );

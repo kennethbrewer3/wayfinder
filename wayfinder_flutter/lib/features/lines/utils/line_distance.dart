@@ -30,7 +30,11 @@ double lineLengthMetersForPoints(List<LatLng> points) {
   if (points.length < 2) {
     return 0;
   }
-  return lineLengthMeters(points.first, points.last);
+  var total = 0.0;
+  for (var index = 0; index < points.length - 1; index++) {
+    total += lineLengthMeters(points[index], points[index + 1]);
+  }
+  return total;
 }
 
 LatLng lineSegmentMidpoint(LatLng start, LatLng end) {

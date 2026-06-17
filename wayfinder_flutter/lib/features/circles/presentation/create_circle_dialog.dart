@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/models/marker_color.dart';
@@ -29,6 +30,7 @@ Future<bool> createCircleAtCenter({
     initialSizeDisplay: defaultSizeDisplay == CircleSizeDisplay.none
         ? CircleSizeDisplay.radius
         : defaultSizeDisplay,
+    initialLayerId: selectedLayerIdForCreate(ref),
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -60,6 +62,7 @@ Future<bool> createCircleAtCenter({
       fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
       visible: true,
       geometryJson: geometry.encode(),
+      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
       createdAt: now,
       updatedAt: now,
     ),
@@ -94,6 +97,7 @@ Future<bool> updateCircleFromForm({
     initialBorderColor: parseMarkerColor(zone.borderColor),
     initialFillColor: parseMarkerColor(zone.fillColor),
     initialShowNameLabel: geometry.showNameLabel,
+    initialLayerId: zone.layerId,
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -113,6 +117,7 @@ Future<bool> updateCircleFromForm({
       borderColor: formatMarkerColorHex(formData.borderColor),
       fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
       geometryJson: updatedGeometry.encode(),
+      layerId: formData.layerId,
       updatedAt: DateTime.now().toUtc(),
     ),
   );

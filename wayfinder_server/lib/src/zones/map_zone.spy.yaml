@@ -10,6 +10,7 @@ fields:
   fillColor: String
   visible: bool
   geometryJson: String
+  layerId: UuidValue?
   createdAt: DateTime
   updatedAt: DateTime
 
@@ -18,3 +19,5 @@ indexes:
     fields: name
   map_zone_type_idx:
     fields: type
+  map_zone_layer_id_idx:
+    fields: layerId

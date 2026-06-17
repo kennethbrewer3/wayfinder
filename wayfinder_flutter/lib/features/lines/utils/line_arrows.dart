@@ -12,26 +12,41 @@ List<Marker> buildDirectionArrowMarkers({
   required Color color,
   int count = 3,
 }) {
-  final totalMeters = lineLengthMeters(start, end);
+  return buildDirectionArrowMarkersForPath(
+    renderPoints: [start, end],
+    color: color,
+    count: count,
+  );
+}
+
+List<Marker> buildDirectionArrowMarkersForPath({
+  required List<LatLng> renderPoints,
+  required Color color,
+  int count = 3,
+}) {
+  if (renderPoints.length < 2) {
+    return const [];
+  }
+
+  final totalMeters = lineLengthMetersForPoints(renderPoints);
   if (totalMeters < 1) {
     return const [];
   }
 
-  final bearing = lineGeodesicCalculator.bearing(start, end);
-  final rotation = (bearing - 90) * math.pi / 180;
   final arrowCount = totalMeters < 50 ? 1 : count;
   final markers = <Marker>[];
 
   for (var index = 1; index <= arrowCount; index++) {
-    final fraction = index / (arrowCount + 1);
-    final point = lineGeodesicCalculator.offset(
-      start,
-      totalMeters * fraction,
-      bearing,
-    );
+    final target = totalMeters * index / (arrowCount + 1);
+    final placement = _pointAndBearingAtDistance(renderPoints, target);
+    if (placement == null) {
+      continue;
+    }
+
+    final rotation = (placement.bearing - 90) * math.pi / 180;
     markers.add(
       Marker(
-        point: point,
+        point: placement.point,
         width: 24,
         height: 24,
         alignment: Alignment.center,
@@ -48,4 +63,41 @@ List<Marker> buildDirectionArrowMarkers({
   }
 
   return markers;
+}
+
+class _PathPlacement {
+  const _PathPlacement({required this.point, required this.bearing});
+
+  final LatLng point;
+  final double bearing;
+}
+
+_PathPlacement? _pointAndBearingAtDistance(
+  List<LatLng> renderPoints,
+  double targetMeters,
+) {
+  var accumulated = 0.0;
+
+  for (var index = 0; index < renderPoints.length - 1; index++) {
+    final start = renderPoints[index];
+    final end = renderPoints[index + 1];
+    final segmentLength = lineLengthMeters(start, end);
+    if (accumulated + segmentLength >= targetMeters) {
+      final remaining = targetMeters - accumulated;
+      if (segmentLength < 0.5) {
+        return _PathPlacement(
+          point: start,
+          bearing: lineGeodesicCalculator.bearing(start, end),
+        );
+      }
+      final bearing = lineGeodesicCalculator.bearing(start, end);
+      return _PathPlacement(
+        point: lineGeodesicCalculator.offset(start, remaining, bearing),
+        bearing: bearing,
+      );
+    }
+    accumulated += segmentLength;
+  }
+
+  return null;
 }

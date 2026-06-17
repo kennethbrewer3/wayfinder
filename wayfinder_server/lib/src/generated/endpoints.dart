@@ -15,16 +15,20 @@ import '../auth/email_idp_endpoint.dart' as _i2;
 import '../auth/jwt_refresh_endpoint.dart' as _i3;
 import '../categories/category_endpoint.dart' as _i4;
 import '../greetings/greeting_endpoint.dart' as _i5;
-import '../map/map_marker_endpoint.dart' as _i6;
-import '../pmtiles/pmtiles_endpoint.dart' as _i7;
-import '../zones/map_zone_endpoint.dart' as _i8;
-import 'package:wayfinder_server/src/generated/categories/category.dart' as _i9;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i10;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i11;
+import '../layers/map_layer_endpoint.dart' as _i6;
+import '../map/map_data_endpoint.dart' as _i7;
+import '../map/map_marker_endpoint.dart' as _i8;
+import '../pmtiles/pmtiles_endpoint.dart' as _i9;
+import '../zones/map_zone_endpoint.dart' as _i10;
+import 'package:wayfinder_server/src/generated/categories/category.dart'
+    as _i11;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i12;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i13;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i14;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i12;
+    as _i15;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i13;
+    as _i16;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -54,19 +58,31 @@ class Endpoints extends _i1.EndpointDispatch {
           'greeting',
           null,
         ),
-      'mapMarker': _i6.MapMarkerEndpoint()
+      'mapLayer': _i6.MapLayerEndpoint()
+        ..initialize(
+          server,
+          'mapLayer',
+          null,
+        ),
+      'mapData': _i7.MapDataEndpoint()
+        ..initialize(
+          server,
+          'mapData',
+          null,
+        ),
+      'mapMarker': _i8.MapMarkerEndpoint()
         ..initialize(
           server,
           'mapMarker',
           null,
         ),
-      'pmtiles': _i7.PmtilesEndpoint()
+      'pmtiles': _i9.PmtilesEndpoint()
         ..initialize(
           server,
           'pmtiles',
           null,
         ),
-      'mapZone': _i8.MapZoneEndpoint()
+      'mapZone': _i10.MapZoneEndpoint()
         ..initialize(
           server,
           'mapZone',
@@ -315,7 +331,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i9.Category>(),
+              type: _i1.getType<_i11.Category>(),
               nullable: false,
             ),
           },
@@ -334,7 +350,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i9.Category>(),
+              type: _i1.getType<_i11.Category>(),
               nullable: false,
             ),
           },
@@ -393,6 +409,152 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['mapLayer'] = _i1.EndpointConnector(
+      name: 'mapLayer',
+      endpoint: endpoints['mapLayer']!,
+      methodConnectors: {
+        'listLayers': _i1.MethodConnector(
+          name: 'listLayers',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapLayer'] as _i6.MapLayerEndpoint)
+                  .listLayers(session),
+        ),
+        'getLayer': _i1.MethodConnector(
+          name: 'getLayer',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapLayer'] as _i6.MapLayerEndpoint).getLayer(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'createLayer': _i1.MethodConnector(
+          name: 'createLayer',
+          params: {
+            'layer': _i1.ParameterDescription(
+              name: 'layer',
+              type: _i1.getType<_i12.MapLayer>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapLayer'] as _i6.MapLayerEndpoint).createLayer(
+                    session,
+                    params['layer'],
+                  ),
+        ),
+        'updateLayer': _i1.MethodConnector(
+          name: 'updateLayer',
+          params: {
+            'layer': _i1.ParameterDescription(
+              name: 'layer',
+              type: _i1.getType<_i12.MapLayer>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapLayer'] as _i6.MapLayerEndpoint).updateLayer(
+                    session,
+                    params['layer'],
+                  ),
+        ),
+        'deleteLayer': _i1.MethodConnector(
+          name: 'deleteLayer',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapLayer'] as _i6.MapLayerEndpoint).deleteLayer(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'reorderLayers': _i1.MethodConnector(
+          name: 'reorderLayers',
+          params: {
+            'layers': _i1.ParameterDescription(
+              name: 'layers',
+              type: _i1.getType<List<_i12.MapLayer>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapLayer'] as _i6.MapLayerEndpoint).reorderLayers(
+                    session,
+                    params['layers'],
+                  ),
+        ),
+      },
+    );
+    connectors['mapData'] = _i1.EndpointConnector(
+      name: 'mapData',
+      endpoint: endpoints['mapData']!,
+      methodConnectors: {
+        'exportMapData': _i1.MethodConnector(
+          name: 'exportMapData',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapData'] as _i7.MapDataEndpoint)
+                  .exportMapData(session),
+        ),
+        'restoreMapData': _i1.MethodConnector(
+          name: 'restoreMapData',
+          params: {
+            'backupJson': _i1.ParameterDescription(
+              name: 'backupJson',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapData'] as _i7.MapDataEndpoint).restoreMapData(
+                    session,
+                    params['backupJson'],
+                  ),
+        ),
+      },
+    );
     connectors['mapMarker'] = _i1.EndpointConnector(
       name: 'mapMarker',
       endpoint: endpoints['mapMarker']!,
@@ -404,7 +566,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapMarker'] as _i6.MapMarkerEndpoint)
+              ) async => (endpoints['mapMarker'] as _i8.MapMarkerEndpoint)
                   .listMarkers(session),
         ),
         'getMarker': _i1.MethodConnector(
@@ -421,7 +583,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapMarker'] as _i6.MapMarkerEndpoint).getMarker(
+                  (endpoints['mapMarker'] as _i8.MapMarkerEndpoint).getMarker(
                     session,
                     params['id'],
                   ),
@@ -431,7 +593,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i10.MapMarker>(),
+              type: _i1.getType<_i13.MapMarker>(),
               nullable: false,
             ),
           },
@@ -439,7 +601,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapMarker'] as _i6.MapMarkerEndpoint)
+              ) async => (endpoints['mapMarker'] as _i8.MapMarkerEndpoint)
                   .createMarker(
                     session,
                     params['marker'],
@@ -450,7 +612,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i10.MapMarker>(),
+              type: _i1.getType<_i13.MapMarker>(),
               nullable: false,
             ),
           },
@@ -458,7 +620,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapMarker'] as _i6.MapMarkerEndpoint)
+              ) async => (endpoints['mapMarker'] as _i8.MapMarkerEndpoint)
                   .updateMarker(
                     session,
                     params['marker'],
@@ -477,7 +639,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapMarker'] as _i6.MapMarkerEndpoint)
+              ) async => (endpoints['mapMarker'] as _i8.MapMarkerEndpoint)
                   .deleteMarker(
                     session,
                     params['id'],
@@ -496,7 +658,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['pmtiles'] as _i7.PmtilesEndpoint)
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
                   .listFiles(session),
         ),
         'activeFileId': _i1.MethodConnector(
@@ -506,7 +668,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['pmtiles'] as _i7.PmtilesEndpoint)
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
                   .activeFileId(session),
         ),
         'setActiveFile': _i1.MethodConnector(
@@ -523,7 +685,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['pmtiles'] as _i7.PmtilesEndpoint).setActiveFile(
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).setActiveFile(
                     session,
                     params['id'],
                   ),
@@ -535,7 +697,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['pmtiles'] as _i7.PmtilesEndpoint)
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
                   .clearActiveFile(session),
         ),
         'deleteFile': _i1.MethodConnector(
@@ -552,7 +714,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['pmtiles'] as _i7.PmtilesEndpoint).deleteFile(
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).deleteFile(
                     session,
                     params['id'],
                   ),
@@ -570,7 +732,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapZone'] as _i8.MapZoneEndpoint)
+              ) async => (endpoints['mapZone'] as _i10.MapZoneEndpoint)
                   .listZones(session),
         ),
         'getZone': _i1.MethodConnector(
@@ -586,7 +748,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapZone'] as _i8.MapZoneEndpoint).getZone(
+              ) async => (endpoints['mapZone'] as _i10.MapZoneEndpoint).getZone(
                 session,
                 params['id'],
               ),
@@ -596,7 +758,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i11.MapZone>(),
+              type: _i1.getType<_i14.MapZone>(),
               nullable: false,
             ),
           },
@@ -605,7 +767,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i8.MapZoneEndpoint).createZone(
+                  (endpoints['mapZone'] as _i10.MapZoneEndpoint).createZone(
                     session,
                     params['zone'],
                   ),
@@ -615,7 +777,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i11.MapZone>(),
+              type: _i1.getType<_i14.MapZone>(),
               nullable: false,
             ),
           },
@@ -624,7 +786,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i8.MapZoneEndpoint).updateZone(
+                  (endpoints['mapZone'] as _i10.MapZoneEndpoint).updateZone(
                     session,
                     params['zone'],
                   ),
@@ -643,16 +805,16 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i8.MapZoneEndpoint).deleteZone(
+                  (endpoints['mapZone'] as _i10.MapZoneEndpoint).deleteZone(
                     session,
                     params['id'],
                   ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i12.Endpoints()
+    modules['serverpod_auth_idp'] = _i15.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i13.Endpoints()
+    modules['serverpod_auth_core'] = _i16.Endpoints()
       ..initializeEndpoints(server);
   }
 }

@@ -1,11 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../models/line_geometry.dart';
 import 'line_distance.dart';
+import 'line_path.dart';
 
 const lineSnapRadiusPx = 18.0;
 const lineHitRadiusPx = 14.0;
@@ -22,6 +21,21 @@ List<LatLng> collectLineEndpointSnapCandidates(List<MapZone> zones) {
     }
     points.add(geometry.start!);
     points.add(geometry.end!);
+  }
+  return points;
+}
+
+List<LatLng> collectLineControlPointSnapCandidates(List<MapZone> zones) {
+  final points = <LatLng>[];
+  for (final zone in zones) {
+    if (!zone.visible || zone.type != lineZoneType) {
+      continue;
+    }
+    final geometry = LineGeometry.fromZone(zone);
+    if (geometry == null || !geometry.isValid) {
+      continue;
+    }
+    points.addAll(geometry.points);
   }
   return points;
 }
@@ -56,23 +70,6 @@ bool areLinePointsTooClose(LatLng start, LatLng end, {double minMeters = 1}) {
   return lineLengthMeters(start, end) < minMeters;
 }
 
-double distanceToSegmentPx(Offset point, Offset start, Offset end) {
-  final segment = end - start;
-  final toPoint = point - start;
-  final lengthSquared = segment.distanceSquared;
-  if (lengthSquared == 0) {
-    return toPoint.distance;
-  }
-
-  final t = ((toPoint.dx * segment.dx + toPoint.dy * segment.dy) / lengthSquared)
-      .clamp(0.0, 1.0);
-  final projection = Offset(
-    start.dx + segment.dx * t,
-    start.dy + segment.dy * t,
-  );
-  return (point - projection).distance;
-}
-
 UuidValue? hitTestLineAtPoint({
   required LatLng point,
   required List<MapZone> zones,
@@ -92,14 +89,16 @@ UuidValue? hitTestLineAtPoint({
       continue;
     }
 
-    final distance = distanceToSegmentPx(
-      tapScreen,
-      camera.latLngToScreenOffset(geometry.start!),
-      camera.latLngToScreenOffset(geometry.end!),
-    );
-    if (distance <= closestDistance) {
-      closestDistance = distance;
-      closestId = zone.id;
+    for (final segment in lineRenderSegments(geometry)) {
+      final distance = distanceToSegmentPx(
+        tapScreen,
+        camera.latLngToScreenOffset(segment.start),
+        camera.latLngToScreenOffset(segment.end),
+      );
+      if (distance <= closestDistance) {
+        closestDistance = distance;
+        closestId = zone.id;
+      }
     }
   }
 

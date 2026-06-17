@@ -1,7 +1,9 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../layers/presentation/layer_picker_field.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
@@ -20,6 +22,7 @@ class RectangleFormData {
     required this.fillColor,
     required this.sizeDisplay,
     required this.showNameLabel,
+    required this.layerId,
   });
 
   final String name;
@@ -29,6 +32,7 @@ class RectangleFormData {
   final Color fillColor;
   final RectangleSizeDisplay sizeDisplay;
   final bool showNameLabel;
+  final UuidValue? layerId;
 }
 
 Future<RectangleFormData?> showRectangleFormDialog({
@@ -45,6 +49,7 @@ Future<RectangleFormData?> showRectangleFormDialog({
   Color? initialBorderColor,
   Color? initialFillColor,
   bool initialShowNameLabel = false,
+  UuidValue? initialLayerId,
 }) {
   return showDialog<RectangleFormData>(
     context: context,
@@ -64,6 +69,7 @@ Future<RectangleFormData?> showRectangleFormDialog({
         initialFillColor:
             initialFillColor ?? parseMarkerColor('#1B496540'),
         initialShowNameLabel: initialShowNameLabel,
+        initialLayerId: initialLayerId,
       );
     },
   );
@@ -84,6 +90,7 @@ class RectangleFormDialog extends StatefulWidget {
     required this.initialBorderColor,
     required this.initialFillColor,
     required this.initialShowNameLabel,
+    this.initialLayerId,
   });
 
   final String title;
@@ -98,6 +105,7 @@ class RectangleFormDialog extends StatefulWidget {
   final Color initialBorderColor;
   final Color initialFillColor;
   final bool initialShowNameLabel;
+  final UuidValue? initialLayerId;
 
   @override
   State<RectangleFormDialog> createState() => _RectangleFormDialogState();
@@ -111,6 +119,7 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
   late Color _fillColor;
   late RectangleSizeDisplay _sizeDisplay;
   late bool _showNameLabel;
+  UuidValue? _selectedLayerId;
 
   @override
   void initState() {
@@ -124,6 +133,7 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
     _fillColor = widget.initialFillColor;
     _sizeDisplay = widget.initialSizeDisplay;
     _showNameLabel = widget.initialShowNameLabel;
+    _selectedLayerId = widget.initialLayerId;
   }
 
   @override
@@ -149,6 +159,7 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
         fillColor: _fillColor,
         sizeDisplay: _sizeDisplay,
         showNameLabel: _showNameLabel,
+        layerId: _selectedLayerId,
       ),
     );
   }
@@ -181,6 +192,12 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+              LayerPickerField(
+                selectedLayerId: _selectedLayerId,
+                onChanged: (layerId) =>
+                    setState(() => _selectedLayerId = layerId),
               ),
               const SizedBox(height: 16),
               ListTile(

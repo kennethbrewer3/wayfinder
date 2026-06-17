@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/constants.dart';
 import 'selected_map_object_provider.dart';
@@ -81,38 +82,68 @@ extension ZoneSortFieldLabel on ZoneSortField {
       };
 }
 
-class SidebarState {
-  const SidebarState({
-    this.viewMode = SidebarViewMode.list,
+class LayerSidebarSettings {
+  const LayerSidebarSettings({
     this.activeTab = SidebarPanelTab.markers,
+    this.viewMode = SidebarViewMode.list,
     this.markerSort = MarkerSortField.name,
     this.zoneSort = ZoneSortField.name,
-    this.searchQuery = '',
-    this.expanded = true,
   });
 
-  final SidebarViewMode viewMode;
   final SidebarPanelTab activeTab;
+  final SidebarViewMode viewMode;
   final MarkerSortField markerSort;
   final ZoneSortField zoneSort;
-  final String searchQuery;
-  final bool expanded;
 
-  SidebarState copyWith({
-    SidebarViewMode? viewMode,
+  LayerSidebarSettings copyWith({
     SidebarPanelTab? activeTab,
+    SidebarViewMode? viewMode,
     MarkerSortField? markerSort,
     ZoneSortField? zoneSort,
-    String? searchQuery,
-    bool? expanded,
   }) {
-    return SidebarState(
-      viewMode: viewMode ?? this.viewMode,
+    return LayerSidebarSettings(
       activeTab: activeTab ?? this.activeTab,
+      viewMode: viewMode ?? this.viewMode,
       markerSort: markerSort ?? this.markerSort,
       zoneSort: zoneSort ?? this.zoneSort,
+    );
+  }
+}
+
+class SidebarState {
+  const SidebarState({
+    this.searchQuery = '',
+    this.expanded = true,
+    this.selectedLayerId,
+    this.expandedLayerIds,
+    this.layerSettings = const {},
+  });
+
+  final String searchQuery;
+  final bool expanded;
+  final UuidValue? selectedLayerId;
+  /// `null` = all layers expanded (initial default).
+  /// Non-null set tracks explicit expand/collapse; empty set = all collapsed.
+  final Set<UuidValue>? expandedLayerIds;
+  final Map<UuidValue, LayerSidebarSettings> layerSettings;
+
+  LayerSidebarSettings settingsForLayer(UuidValue layerId) {
+    return layerSettings[layerId] ?? const LayerSidebarSettings();
+  }
+
+  SidebarState copyWith({
+    String? searchQuery,
+    bool? expanded,
+    UuidValue? selectedLayerId,
+    Set<UuidValue>? expandedLayerIds,
+    Map<UuidValue, LayerSidebarSettings>? layerSettings,
+  }) {
+    return SidebarState(
       searchQuery: searchQuery ?? this.searchQuery,
       expanded: expanded ?? this.expanded,
+      selectedLayerId: selectedLayerId ?? this.selectedLayerId,
+      expandedLayerIds: expandedLayerIds ?? this.expandedLayerIds,
+      layerSettings: layerSettings ?? this.layerSettings,
     );
   }
 }
@@ -120,20 +151,36 @@ class SidebarState {
 class SidebarNotifier extends StateNotifier<SidebarState> {
   SidebarNotifier() : super(const SidebarState());
 
-  void setViewMode(SidebarViewMode mode) {
-    state = state.copyWith(viewMode: mode);
+  void _updateLayerSettings(
+    UuidValue layerId,
+    LayerSidebarSettings Function(LayerSidebarSettings current) update,
+  ) {
+    final current = state.settingsForLayer(layerId);
+    state = state.copyWith(
+      layerSettings: {
+        ...state.layerSettings,
+        layerId: update(current),
+      },
+    );
   }
 
-  void setActiveTab(SidebarPanelTab tab) {
-    state = state.copyWith(activeTab: tab);
+  void setLayerActiveTab(UuidValue layerId, SidebarPanelTab tab) {
+    _updateLayerSettings(layerId, (current) => current.copyWith(activeTab: tab));
   }
 
-  void setMarkerSort(MarkerSortField sort) {
-    state = state.copyWith(markerSort: sort);
+  void setLayerViewMode(UuidValue layerId, SidebarViewMode mode) {
+    _updateLayerSettings(layerId, (current) => current.copyWith(viewMode: mode));
   }
 
-  void setZoneSort(ZoneSortField sort) {
-    state = state.copyWith(zoneSort: sort);
+  void setLayerMarkerSort(UuidValue layerId, MarkerSortField sort) {
+    _updateLayerSettings(
+      layerId,
+      (current) => current.copyWith(markerSort: sort),
+    );
+  }
+
+  void setLayerZoneSort(UuidValue layerId, ZoneSortField sort) {
+    _updateLayerSettings(layerId, (current) => current.copyWith(zoneSort: sort));
   }
 
   void setSearchQuery(String query) {
@@ -144,18 +191,52 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
     state = state.copyWith(expanded: expanded);
   }
 
+  void setSelectedLayerId(UuidValue? layerId) {
+    state = state.copyWith(selectedLayerId: layerId);
+  }
+
+  void toggleLayerExpanded(
+    UuidValue layerId, {
+    required bool expanded,
+    required Iterable<UuidValue> allLayerIds,
+  }) {
+    final next = state.expandedLayerIds == null
+        ? Set<UuidValue>.from(allLayerIds)
+        : Set<UuidValue>.from(state.expandedLayerIds!);
+    if (expanded) {
+      next.add(layerId);
+    } else {
+      next.remove(layerId);
+    }
+    state = state.copyWith(expandedLayerIds: next);
+  }
+
   void revealMapObject({
     required SelectedMapObjectKind kind,
+    UuidValue? layerId,
   }) {
-    final tab = kind == SelectedMapObjectKind.marker
-        ? SidebarPanelTab.markers
-        : SidebarPanelTab.zones;
-    if (state.expanded && state.activeTab == tab) {
-      return;
+    Set<UuidValue>? expandedLayerIds;
+    Map<UuidValue, LayerSidebarSettings>? layerSettings;
+
+    if (layerId != null) {
+      if (state.expandedLayerIds != null) {
+        expandedLayerIds = {...state.expandedLayerIds!, layerId};
+      }
+      layerSettings = {
+        ...state.layerSettings,
+        layerId: state.settingsForLayer(layerId).copyWith(
+          activeTab: kind == SelectedMapObjectKind.marker
+              ? SidebarPanelTab.markers
+              : SidebarPanelTab.zones,
+        ),
+      };
     }
+
     state = state.copyWith(
       expanded: true,
-      activeTab: tab,
+      selectedLayerId: layerId ?? state.selectedLayerId,
+      expandedLayerIds: expandedLayerIds ?? state.expandedLayerIds,
+      layerSettings: layerSettings ?? state.layerSettings,
     );
   }
 

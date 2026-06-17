@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/models/marker_color.dart';
@@ -58,6 +59,7 @@ Future<bool> _createRectangle({
     creationMode: geometry.creationMode,
     bounds: geometry.bounds,
     measurementUnits: measurementUnits,
+    initialLayerId: selectedLayerIdForCreate(ref),
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -86,6 +88,7 @@ Future<bool> _createRectangle({
       fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
       visible: true,
       geometryJson: savedGeometry.encode(),
+      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
       createdAt: now,
       updatedAt: now,
     ),
@@ -120,6 +123,7 @@ Future<bool> updateRectangleFromForm({
     initialBorderColor: parseMarkerColor(zone.borderColor),
     initialFillColor: parseMarkerColor(zone.fillColor),
     initialShowNameLabel: geometry.showNameLabel,
+    initialLayerId: zone.layerId,
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -139,6 +143,7 @@ Future<bool> updateRectangleFromForm({
       borderColor: formatMarkerColorHex(formData.borderColor),
       fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
       geometryJson: updatedGeometry.encode(),
+      layerId: formData.layerId,
       updatedAt: DateTime.now().toUtc(),
     ),
   );

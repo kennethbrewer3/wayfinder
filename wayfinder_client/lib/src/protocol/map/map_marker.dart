@@ -19,12 +19,15 @@ abstract class MapMarker implements _i1.SerializableModel {
     this.notes,
     required this.latitude,
     required this.longitude,
+    double? elevation,
     required this.color,
     required this.icon,
     required this.visible,
+    this.layerId,
     required this.createdAt,
     required this.updatedAt,
-  }) : id = id ?? const _i1.Uuid().v4obj();
+  }) : id = id ?? const _i1.Uuid().v4obj(),
+       elevation = elevation ?? 0.0;
 
   factory MapMarker({
     _i1.UuidValue? id,
@@ -32,9 +35,11 @@ abstract class MapMarker implements _i1.SerializableModel {
     String? notes,
     required double latitude,
     required double longitude,
+    double? elevation,
     required String color,
     required String icon,
     required bool visible,
+    _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MapMarkerImpl;
@@ -48,9 +53,13 @@ abstract class MapMarker implements _i1.SerializableModel {
       notes: jsonSerialization['notes'] as String?,
       latitude: (jsonSerialization['latitude'] as num).toDouble(),
       longitude: (jsonSerialization['longitude'] as num).toDouble(),
+      elevation: (jsonSerialization['elevation'] as num?)?.toDouble(),
       color: jsonSerialization['color'] as String,
       icon: jsonSerialization['icon'] as String,
       visible: _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+      layerId: jsonSerialization['layerId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -71,11 +80,15 @@ abstract class MapMarker implements _i1.SerializableModel {
 
   double longitude;
 
+  double elevation;
+
   String color;
 
   String icon;
 
   bool visible;
+
+  _i1.UuidValue? layerId;
 
   DateTime createdAt;
 
@@ -90,9 +103,11 @@ abstract class MapMarker implements _i1.SerializableModel {
     String? notes,
     double? latitude,
     double? longitude,
+    double? elevation,
     String? color,
     String? icon,
     bool? visible,
+    _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -105,9 +120,11 @@ abstract class MapMarker implements _i1.SerializableModel {
       if (notes != null) 'notes': notes,
       'latitude': latitude,
       'longitude': longitude,
+      'elevation': elevation,
       'color': color,
       'icon': icon,
       'visible': visible,
+      if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -128,9 +145,11 @@ class _MapMarkerImpl extends MapMarker {
     String? notes,
     required double latitude,
     required double longitude,
+    double? elevation,
     required String color,
     required String icon,
     required bool visible,
+    _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -139,9 +158,11 @@ class _MapMarkerImpl extends MapMarker {
          notes: notes,
          latitude: latitude,
          longitude: longitude,
+         elevation: elevation,
          color: color,
          icon: icon,
          visible: visible,
+         layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -156,9 +177,11 @@ class _MapMarkerImpl extends MapMarker {
     Object? notes = _Undefined,
     double? latitude,
     double? longitude,
+    double? elevation,
     String? color,
     String? icon,
     bool? visible,
+    Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -168,9 +191,11 @@ class _MapMarkerImpl extends MapMarker {
       notes: notes is String? ? notes : this.notes,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      elevation: elevation ?? this.elevation,
       color: color ?? this.color,
       icon: icon ?? this.icon,
       visible: visible ?? this.visible,
+      layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

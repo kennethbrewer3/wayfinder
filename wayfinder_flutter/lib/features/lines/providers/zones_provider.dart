@@ -69,6 +69,42 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
     );
   }
 
+  Future<void> updateLineGeometry({
+    required UuidValue zoneId,
+    required LineGeometry geometry,
+  }) async {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+
+    final index = current.indexWhere((zone) => zone.id == zoneId);
+    if (index < 0) {
+      return;
+    }
+
+    final zone = current[index];
+    final updatedZone = updateZoneLineGeometry(zone, geometry);
+    final previousState = state;
+
+    state = AsyncData([
+      for (var i = 0; i < current.length; i++)
+        if (i == index) updatedZone else current[i],
+    ]);
+
+    try {
+      final client = ref.read(serverClientProvider);
+      await client.mapZone.updateZone(updatedZone);
+    } catch (error, stackTrace) {
+      AppLogger.logZones.error(
+        '📡 Failed to update line geometry',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      state = previousState;
+    }
+  }
+
   Future<void> toggleCircleNameLabel(UuidValue zoneId) {
     return _toggleCircleLabel(
       zoneId: zoneId,

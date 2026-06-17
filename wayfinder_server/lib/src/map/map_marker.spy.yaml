@@ -6,12 +6,16 @@ fields:
   notes: String?
   latitude: double
   longitude: double
+  elevation: double, defaultModel=0, defaultPersist=0
   color: String
   icon: String
   visible: bool
+  layerId: UuidValue?
   createdAt: DateTime
   updatedAt: DateTime
 
 indexes:
   map_marker_name_idx:
     fields: name
+  map_marker_layer_id_idx:
+    fields: layerId

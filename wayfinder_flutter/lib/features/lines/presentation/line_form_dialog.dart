@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../layers/presentation/layer_picker_field.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/marker_notes_editor.dart';
@@ -38,6 +40,7 @@ class LineFormData {
     required this.color,
     required this.borderPattern,
     required this.showArrows,
+    required this.layerId,
   });
 
   final String name;
@@ -45,6 +48,7 @@ class LineFormData {
   final Color color;
   final LineBorderPattern borderPattern;
   final bool showArrows;
+  final UuidValue? layerId;
 }
 
 Future<LineFormData?> showLineFormDialog({
@@ -52,6 +56,7 @@ Future<LineFormData?> showLineFormDialog({
   required LatLng start,
   required LatLng end,
   required MeasurementUnits measurementUnits,
+  double? pathLengthMeters,
   String title = 'Create line',
   String confirmLabel = 'Create',
   String defaultName = 'New line',
@@ -59,6 +64,7 @@ Future<LineFormData?> showLineFormDialog({
   Color? initialColor,
   LineBorderPattern initialBorderPattern = LineBorderPattern.solid,
   bool initialShowArrows = true,
+  UuidValue? initialLayerId,
 }) {
   return showDialog<LineFormData>(
     context: context,
@@ -69,11 +75,13 @@ Future<LineFormData?> showLineFormDialog({
         defaultName: defaultName,
         start: start,
         end: end,
+        pathLengthMeters: pathLengthMeters,
         measurementUnits: measurementUnits,
         initialNotes: initialNotes,
         initialColor: initialColor ?? parseMarkerColor('#1B4965'),
         initialBorderPattern: initialBorderPattern,
         initialShowArrows: initialShowArrows,
+        initialLayerId: initialLayerId,
       );
     },
   );
@@ -87,11 +95,13 @@ class LineFormDialog extends StatefulWidget {
     required this.defaultName,
     required this.start,
     required this.end,
+    this.pathLengthMeters,
     required this.measurementUnits,
     required this.initialNotes,
     required this.initialColor,
     required this.initialBorderPattern,
     required this.initialShowArrows,
+    this.initialLayerId,
   });
 
   final String title;
@@ -99,11 +109,13 @@ class LineFormDialog extends StatefulWidget {
   final String defaultName;
   final LatLng start;
   final LatLng end;
+  final double? pathLengthMeters;
   final MeasurementUnits measurementUnits;
   final String? initialNotes;
   final Color initialColor;
   final LineBorderPattern initialBorderPattern;
   final bool initialShowArrows;
+  final UuidValue? initialLayerId;
 
   @override
   State<LineFormDialog> createState() => _LineFormDialogState();
@@ -115,6 +127,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
   late Color _selectedColor;
   late LineBorderPattern _borderPattern;
   late bool _showArrows;
+  UuidValue? _selectedLayerId;
 
   @override
   void initState() {
@@ -126,6 +139,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
     _selectedColor = widget.initialColor;
     _borderPattern = widget.initialBorderPattern;
     _showArrows = widget.initialShowArrows;
+    _selectedLayerId = widget.initialLayerId;
   }
 
   @override
@@ -149,13 +163,15 @@ class _LineFormDialogState extends State<LineFormDialog> {
         color: _selectedColor,
         borderPattern: _borderPattern,
         showArrows: _showArrows,
+        layerId: _selectedLayerId,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final distanceMeters = lineLengthMeters(widget.start, widget.end);
+    final distanceMeters =
+        widget.pathLengthMeters ?? lineLengthMeters(widget.start, widget.end);
     final distanceLabel = formatLineDistance(
       distanceMeters,
       widget.measurementUnits,
@@ -177,6 +193,12 @@ class _LineFormDialogState extends State<LineFormDialog> {
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+              LayerPickerField(
+                selectedLayerId: _selectedLayerId,
+                onChanged: (layerId) =>
+                    setState(() => _selectedLayerId = layerId),
               ),
               const SizedBox(height: 16),
               ListTile(

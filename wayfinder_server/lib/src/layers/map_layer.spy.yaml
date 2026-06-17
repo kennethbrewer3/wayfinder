@@ -1,0 +1,13 @@
+class: MapLayer
+table: map_layer
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  sortOrder: int
+  visible: bool, defaultModel=true
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  map_layer_sort_order_idx:
+    fields: sortOrder

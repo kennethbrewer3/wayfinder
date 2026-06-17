@@ -12,12 +12,15 @@ import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
 import '../../rectangles/utils/rectangle_dimensions.dart';
+import '../../layers/data/layers_repository.dart';
+import '../../layers/providers/layers_provider.dart';
+import '../../layers/utils/map_layer_utils.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/providers/selected_map_object_provider.dart';
-import '../../lines/utils/line_distance.dart';
+import '../../lines/utils/line_path.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
@@ -56,64 +59,14 @@ class SidebarPanel extends ConsumerWidget {
             },
           ),
           if (sidebar.expanded) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SegmentedButton<SidebarPanelTab>(
-                segments: const [
-                  ButtonSegment(
-                    value: SidebarPanelTab.markers,
-                    label: Text('Markers'),
-                    icon: Icon(Icons.place_outlined),
-                  ),
-                  ButtonSegment(
-                    value: SidebarPanelTab.zones,
-                    label: Text('Zones'),
-                    icon: Icon(Icons.layers_outlined),
-                  ),
-                ],
-                selected: {sidebar.activeTab},
-                onSelectionChanged: (selection) {
-                  ref
-                      .read(sidebarProvider.notifier)
-                      .setActiveTab(selection.first);
-                },
-              ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SegmentedButton<SidebarViewMode>(
-                segments: const [
-                  ButtonSegment(
-                    value: SidebarViewMode.list,
-                    label: Text('List'),
-                  ),
-                  ButtonSegment(
-                    value: SidebarViewMode.tree,
-                    label: Text('Tree'),
-                  ),
-                ],
-                selected: {sidebar.viewMode},
-                onSelectionChanged: (selection) {
-                  ref
-                      .read(sidebarProvider.notifier)
-                      .setViewMode(selection.first);
-                },
-              ),
-            ),
             const SizedBox(height: 8),
             Expanded(
-              child: sidebar.activeTab == SidebarPanelTab.markers
-                  ? _MarkersPanel(
-                      markersAsync: markersAsync,
-                      sidebar: sidebar,
-                      onZoomTo: onZoomTo,
-                    )
-                  : _ZonesPanel(
-                      zonesAsync: zonesAsync,
-                      sidebar: sidebar,
-                      onZoomTo: onZoomTo,
-                    ),
+              child: _LayerOrganizedPanel(
+                markersAsync: markersAsync,
+                zonesAsync: zonesAsync,
+                sidebar: sidebar,
+                onZoomTo: onZoomTo,
+              ),
             ),
           ],
         ],
@@ -164,144 +117,689 @@ class _SidebarHeader extends StatelessWidget {
   }
 }
 
-class _MarkersPanel extends ConsumerWidget {
-  const _MarkersPanel({
+class _LayerOrganizedPanel extends ConsumerWidget {
+  const _LayerOrganizedPanel({
     required this.markersAsync,
-    required this.sidebar,
-    required this.onZoomTo,
-  });
-
-  final AsyncValue<List<MapMarker>> markersAsync;
-  final SidebarState sidebar;
-  final ValueChanged<LatLng> onZoomTo;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return markersAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => MapObjectsErrorState(
-        title: 'Markers unavailable',
-        message: mapObjectsLoadErrorMessage(error),
-        onRetry: () => ref.invalidate(markersProvider),
-      ),
-      data: (markers) {
-        final filteredMarkers = markers.where((marker) {
-          if (sidebar.searchQuery.isEmpty) return true;
-          return marker.name
-              .toLowerCase()
-              .contains(sidebar.searchQuery.toLowerCase());
-        }).toList();
-
-        if (filteredMarkers.isEmpty) {
-          if (sidebar.searchQuery.isNotEmpty) {
-            return const MapObjectsEmptyState(
-              icon: Icons.search_off,
-              title: 'No matching markers',
-              message: 'Try a different search term.',
-            );
-          }
-
-          return const MapObjectsEmptyState(
-            icon: Icons.place_outlined,
-            title: 'No markers yet',
-            message: 'Long-press the map to add your first marker.',
-          );
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _MarkerSortSelector(
-              value: sidebar.markerSort,
-              onChanged: (sort) {
-                ref.read(sidebarProvider.notifier).setMarkerSort(sort);
-              },
-            ),
-            Expanded(
-              child: sidebar.viewMode == SidebarViewMode.tree
-                  ? _MarkerTreeView(
-                      groups: groupMarkers(filteredMarkers, sidebar.markerSort),
-                      onZoomTo: onZoomTo,
-                    )
-                  : _MarkerListView(
-                      markers: sortMarkers(filteredMarkers, sidebar.markerSort),
-                      onZoomTo: onZoomTo,
-                    ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _ZonesPanel extends ConsumerWidget {
-  const _ZonesPanel({
     required this.zonesAsync,
     required this.sidebar,
     required this.onZoomTo,
   });
 
+  final AsyncValue<List<MapMarker>> markersAsync;
   final AsyncValue<List<MapZone>> zonesAsync;
   final SidebarState sidebar;
   final ValueChanged<LatLng> onZoomTo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return zonesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => MapObjectsErrorState(
+    final layersResultAsync = ref.watch(layersProvider);
+
+    if (layersResultAsync.isLoading ||
+        markersAsync.isLoading ||
+        zonesAsync.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (markersAsync.hasError) {
+      return MapObjectsErrorState(
+        title: 'Markers unavailable',
+        message: mapObjectsLoadErrorMessage(markersAsync.error!),
+        onRetry: () => ref.invalidate(markersProvider),
+      );
+    }
+
+    if (zonesAsync.hasError) {
+      return MapObjectsErrorState(
         title: 'Zones unavailable',
-        message: mapObjectsLoadErrorMessage(error),
+        message: mapObjectsLoadErrorMessage(zonesAsync.error!),
         onRetry: () => ref.read(zonesProvider.notifier).reload(),
+      );
+    }
+
+    final layersResult = layersResultAsync.value ??
+        LayersLoadResult(
+          layers: [syntheticDefaultLayer()],
+          syncedWithServer: false,
+        );
+    final layers = layersResult.layers;
+    final syncedWithServer = layersResult.syncedWithServer;
+    final markers = markersAsync.value ?? const <MapMarker>[];
+    final zones = zonesAsync.value ?? const <MapZone>[];
+    final query = sidebar.searchQuery.trim().toLowerCase();
+
+    bool matchesSearch(String name) =>
+        query.isEmpty || name.toLowerCase().contains(query);
+
+    final orderedLayers = mapLayersForSidebar(layers);
+    final selectedLayerId = resolveSelectedLayerId(
+      selectedLayerId: sidebar.selectedLayerId,
+      layers: layers,
+    );
+
+    if (sidebar.selectedLayerId == null && selectedLayerId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(sidebarProvider.notifier).setSelectedLayerId(selectedLayerId);
+      });
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (!syncedWithServer)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Material(
+              color: Theme.of(context).colorScheme.errorContainer,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  'Layers are running in offline mode because the server has not '
+                  'been updated yet. Restart the Wayfinder server with migrations '
+                  'to enable saving layers.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                ),
+              ),
+            ),
+          ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(
+            'Top layers draw above lower ones. Use ▼ to expand or collapse layer contents.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            itemCount: orderedLayers.length,
+            itemBuilder: (context, index) {
+              final layer = orderedLayers[index];
+              final layerSettings = sidebar.settingsForLayer(layer.id);
+              final filteredLayerMarkers = markersForLayer(markers, layer.id)
+                  .where((marker) => matchesSearch(marker.name))
+                  .toList();
+              final filteredLayerZones = zonesForLayer(zones, layer.id)
+                  .where((zone) => matchesSearch(zone.name))
+                  .toList();
+              final layerMarkers = sortMarkers(
+                filteredLayerMarkers,
+                layerSettings.markerSort,
+              );
+              final layerZones = sortZones(
+                filteredLayerZones,
+                layerSettings.zoneSort,
+              );
+              final isSelected = layer.id == selectedLayerId;
+              final isExpanded = isLayerExpandedInSidebar(
+                layerId: layer.id,
+                expandedLayerIds: sidebar.expandedLayerIds,
+              );
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Material(
+                  color: isSelected
+                      ? Theme.of(context)
+                          .colorScheme
+                          .primaryContainer
+                          .withValues(alpha: 0.35)
+                      : Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest
+                          .withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _LayerHeader(
+                        layer: layer,
+                        isSelected: isSelected,
+                        isExpanded: isExpanded,
+                        isTop: index == 0,
+                        isBottom: index == orderedLayers.length - 1,
+                        objectCount: layerMarkers.length + layerZones.length,
+                        onSelect: () {
+                          ref
+                              .read(sidebarProvider.notifier)
+                              .setSelectedLayerId(layer.id);
+                        },
+                        onToggleExpanded: () {
+                          ref.read(sidebarProvider.notifier).toggleLayerExpanded(
+                                layer.id,
+                                expanded: !isExpanded,
+                                allLayerIds: orderedLayers.map((l) => l.id),
+                              );
+                        },
+                        onToggleVisible: () {
+                          updateMapLayer(
+                            ref,
+                            layer.copyWith(visible: !layer.visible),
+                          );
+                        },
+                        onMoveUp: () {
+                          reorderMapLayers(
+                            ref,
+                            applyLayerOrder(layers, index, index - 1),
+                          );
+                        },
+                        onMoveDown: () {
+                          reorderMapLayers(
+                            ref,
+                            applyLayerOrder(layers, index, index + 1),
+                          );
+                        },
+                        onRename: () => _renameLayer(context, ref, layer),
+                        onDelete: () => _deleteLayer(context, ref, layer, layers),
+                      ),
+                      if (isExpanded)
+                        _LayerObjectPanel(
+                          layerId: layer.id,
+                          settings: layerSettings,
+                          layerMarkers: layerMarkers,
+                          layerZones: layerZones,
+                          hasSearchQuery: query.isNotEmpty,
+                          onZoomTo: onZoomTo,
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: FilledButton.icon(
+            onPressed: () => _createLayer(context, ref),
+            icon: const Icon(Icons.add),
+            label: const Text('Add layer'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _createLayer(BuildContext context, WidgetRef ref) async {
+    final synced =
+        ref.read(layersProvider).valueOrNull?.syncedWithServer ?? false;
+    if (!synced) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Update and restart the Wayfinder server before adding layers.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final name = await _promptForLayerName(
+      context: context,
+      title: 'New layer',
+      confirmLabel: 'Create',
+    );
+    if (name == null || name.isEmpty || !context.mounted) {
+      return;
+    }
+
+    await createMapLayer(ref, name);
+    final createdLayers =
+        (await ref.read(layersProvider.future)).layers;
+    final created = createdLayers.lastWhere(
+      (layer) => layer.name == name,
+      orElse: () => createdLayers.last,
+    );
+    ref.read(sidebarProvider.notifier).setSelectedLayerId(created.id);
+  }
+
+  Future<void> _renameLayer(
+    BuildContext context,
+    WidgetRef ref,
+    MapLayer layer,
+  ) async {
+    final name = await _promptForLayerName(
+      context: context,
+      title: 'Rename layer',
+      confirmLabel: 'Save',
+      initialName: layer.name,
+    );
+    if (name == null || name.isEmpty || name == layer.name || !context.mounted) {
+      return;
+    }
+
+    await updateMapLayer(ref, layer.copyWith(name: name));
+  }
+
+  Future<void> _deleteLayer(
+    BuildContext context,
+    WidgetRef ref,
+    MapLayer layer,
+    List<MapLayer> layers,
+  ) async {
+    if (layers.length <= 1) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must keep at least one layer.')),
+      );
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete layer?'),
+        content: Text(
+          'Delete "${layer.name}"? Its markers and zones will move to another layer.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
-      data: (zones) {
-        final filteredZones = zones.where((zone) {
-          if (sidebar.searchQuery.isEmpty) return true;
-          return zone.name
-              .toLowerCase()
-              .contains(sidebar.searchQuery.toLowerCase());
-        }).toList();
+    );
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
 
-        if (filteredZones.isEmpty) {
-          if (sidebar.searchQuery.isNotEmpty) {
-            return const MapObjectsEmptyState(
-              icon: Icons.search_off,
-              title: 'No matching zones',
-              message: 'Try a different search term.',
-            );
-          }
+    await deleteMapLayer(ref, layer);
+    final remaining =
+        ref.read(layersProvider).valueOrNull?.layers ?? const <MapLayer>[];
+    ref.read(sidebarProvider.notifier).setSelectedLayerId(
+          resolveSelectedLayerId(
+            selectedLayerId: null,
+            layers: remaining,
+          ),
+        );
+  }
 
-          return const MapObjectsEmptyState(
-            icon: Icons.layers_outlined,
-            title: 'No zones yet',
-            message: 'Long-press the map and choose Line to draw one.',
-          );
-        }
+  Future<String?> _promptForLayerName({
+    required BuildContext context,
+    required String title,
+    required String confirmLabel,
+    String initialName = '',
+  }) {
+    final controller = TextEditingController(text: initialName);
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Layer name',
+          ),
+          onSubmitted: (value) {
+            final trimmed = value.trim();
+            if (trimmed.isNotEmpty) {
+              Navigator.of(context).pop(trimmed);
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final trimmed = controller.text.trim();
+              if (trimmed.isEmpty) {
+                return;
+              }
+              Navigator.of(context).pop(trimmed);
+            },
+            child: Text(confirmLabel),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+class _LayerHeader extends StatelessWidget {
+  const _LayerHeader({
+    required this.layer,
+    required this.isSelected,
+    required this.isExpanded,
+    required this.isTop,
+    required this.isBottom,
+    required this.objectCount,
+    required this.onSelect,
+    required this.onToggleExpanded,
+    required this.onToggleVisible,
+    required this.onMoveUp,
+    required this.onMoveDown,
+    required this.onRename,
+    required this.onDelete,
+  });
+
+  final MapLayer layer;
+  final bool isSelected;
+  final bool isExpanded;
+  final bool isTop;
+  final bool isBottom;
+  final int objectCount;
+  final VoidCallback onSelect;
+  final VoidCallback onToggleExpanded;
+  final VoidCallback onToggleVisible;
+  final VoidCallback onMoveUp;
+  final VoidCallback onMoveDown;
+  final VoidCallback onRename;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+      onTap: onSelect,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+        child: Row(
           children: [
-            _ZoneSortSelector(
-              value: sidebar.zoneSort,
-              onChanged: (sort) {
-                ref.read(sidebarProvider.notifier).setZoneSort(sort);
-              },
+            IconButton(
+              tooltip: isExpanded ? 'Collapse layer' : 'Expand layer',
+              onPressed: onToggleExpanded,
+              icon: Icon(
+                isExpanded ? Icons.expand_less : Icons.expand_more,
+              ),
+            ),
+            IconButton(
+              tooltip: layer.visible ? 'Hide layer' : 'Show layer',
+              onPressed: onToggleVisible,
+              icon: Icon(
+                layer.visible ? Icons.visibility : Icons.visibility_off,
+              ),
             ),
             Expanded(
-              child: sidebar.viewMode == SidebarViewMode.tree
-                  ? _ZoneTreeView(
-                      groups: groupZones(filteredZones, sidebar.zoneSort),
-                      onZoomTo: onZoomTo,
-                    )
-                  : _ZoneListView(
-                      zones: sortZones(filteredZones, sidebar.zoneSort),
-                      onZoomTo: onZoomTo,
-                    ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    layer.name,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Text(
+                    '$objectCount object${objectCount == 1 ? '' : 's'}'
+                    '${isSelected ? ' · selected for new objects' : ''}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: isSelected
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              tooltip: 'Move up',
+              onPressed: isTop ? null : onMoveUp,
+              icon: const Icon(Icons.arrow_upward),
+            ),
+            IconButton(
+              tooltip: 'Move down',
+              onPressed: isBottom ? null : onMoveDown,
+              icon: const Icon(Icons.arrow_downward),
+            ),
+            PopupMenuButton<_LayerMenuAction>(
+              onSelected: (action) {
+                switch (action) {
+                  case _LayerMenuAction.rename:
+                    onRename();
+                  case _LayerMenuAction.delete:
+                    onDelete();
+                }
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: _LayerMenuAction.rename,
+                  child: Text('Rename'),
+                ),
+                PopupMenuItem(
+                  value: _LayerMenuAction.delete,
+                  child: Text('Delete'),
+                ),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+enum _LayerMenuAction { rename, delete }
+
+class _LayerObjectPanel extends ConsumerWidget {
+  const _LayerObjectPanel({
+    required this.layerId,
+    required this.settings,
+    required this.layerMarkers,
+    required this.layerZones,
+    required this.hasSearchQuery,
+    required this.onZoomTo,
+  });
+
+  final UuidValue layerId;
+  final LayerSidebarSettings settings;
+  final List<MapMarker> layerMarkers;
+  final List<MapZone> layerZones;
+  final bool hasSearchQuery;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(sidebarProvider.notifier);
+    final showingMarkers = settings.activeTab == SidebarPanelTab.markers;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: SegmentedButton<SidebarPanelTab>(
+            segments: const [
+              ButtonSegment(
+                value: SidebarPanelTab.markers,
+                label: Text('Markers'),
+                icon: Icon(Icons.place_outlined),
+              ),
+              ButtonSegment(
+                value: SidebarPanelTab.zones,
+                label: Text('Zones'),
+                icon: Icon(Icons.layers_outlined),
+              ),
+            ],
+            selected: {settings.activeTab},
+            onSelectionChanged: (selection) {
+              notifier.setLayerActiveTab(layerId, selection.first);
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: SegmentedButton<SidebarViewMode>(
+            segments: const [
+              ButtonSegment(
+                value: SidebarViewMode.list,
+                label: Text('List'),
+              ),
+              ButtonSegment(
+                value: SidebarViewMode.tree,
+                label: Text('Tree'),
+              ),
+            ],
+            selected: {settings.viewMode},
+            onSelectionChanged: (selection) {
+              notifier.setLayerViewMode(layerId, selection.first);
+            },
+          ),
+        ),
+        if (showingMarkers)
+          _MarkerSortSelector(
+            value: settings.markerSort,
+            onChanged: (sort) {
+              notifier.setLayerMarkerSort(layerId, sort);
+            },
+          )
+        else
+          _ZoneSortSelector(
+            value: settings.zoneSort,
+            onChanged: (sort) {
+              notifier.setLayerZoneSort(layerId, sort);
+            },
+          ),
+        if (showingMarkers)
+          _LayerMarkersContent(
+            markers: layerMarkers,
+            settings: settings,
+            hasSearchQuery: hasSearchQuery,
+            onZoomTo: onZoomTo,
+          )
+        else
+          _LayerZonesContent(
+            zones: layerZones,
+            settings: settings,
+            hasSearchQuery: hasSearchQuery,
+            onZoomTo: onZoomTo,
+          ),
+      ],
+    );
+  }
+}
+
+class _LayerMarkersContent extends StatelessWidget {
+  const _LayerMarkersContent({
+    required this.markers,
+    required this.settings,
+    required this.hasSearchQuery,
+    required this.onZoomTo,
+  });
+
+  final List<MapMarker> markers;
+  final LayerSidebarSettings settings;
+  final bool hasSearchQuery;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context) {
+    if (markers.isEmpty) {
+      if (hasSearchQuery) {
+        return const Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: MapObjectsEmptyState(
+            icon: Icons.search_off,
+            title: 'No matching markers',
+            message: 'Try a different search term.',
+          ),
         );
-      },
+      }
+
+      return const Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+        child: MapObjectsEmptyState(
+          icon: Icons.place_outlined,
+          title: 'No markers on this layer',
+          message: 'Long-press the map to add a marker.',
+        ),
+      );
+    }
+
+    if (settings.viewMode == SidebarViewMode.tree) {
+      return _MarkerTreeView(
+        groups: groupMarkers(markers, settings.markerSort),
+        onZoomTo: onZoomTo,
+        nested: true,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (index, marker) in markers.indexed) ...[
+          if (index > 0) const Divider(height: 1),
+          _MarkerListTile(
+            key: ValueKey(marker.id),
+            marker: marker,
+            onZoomTo: onZoomTo,
+          ),
+        ],
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _LayerZonesContent extends StatelessWidget {
+  const _LayerZonesContent({
+    required this.zones,
+    required this.settings,
+    required this.hasSearchQuery,
+    required this.onZoomTo,
+  });
+
+  final List<MapZone> zones;
+  final LayerSidebarSettings settings;
+  final bool hasSearchQuery;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context) {
+    if (zones.isEmpty) {
+      if (hasSearchQuery) {
+        return const Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: MapObjectsEmptyState(
+            icon: Icons.search_off,
+            title: 'No matching zones',
+            message: 'Try a different search term.',
+          ),
+        );
+      }
+
+      return const Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+        child: MapObjectsEmptyState(
+          icon: Icons.layers_outlined,
+          title: 'No zones on this layer',
+          message: 'Long-press the map and choose Line to draw one.',
+        ),
+      );
+    }
+
+    if (settings.viewMode == SidebarViewMode.tree) {
+      return _ZoneTreeView(
+        groups: groupZones(zones, settings.zoneSort),
+        onZoomTo: onZoomTo,
+        nested: true,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (index, zone) in zones.indexed) ...[
+          if (index > 0) const Divider(height: 1),
+          _ZoneListTile(
+            key: ValueKey(zone.id),
+            zone: zone,
+            onZoomTo: onZoomTo,
+          ),
+        ],
+        const SizedBox(height: 8),
+      ],
     );
   }
 }
@@ -402,71 +900,22 @@ class _SortFieldSelector<T> extends StatelessWidget {
   }
 }
 
-class _MarkerListView extends StatelessWidget {
-  const _MarkerListView({
-    required this.markers,
-    required this.onZoomTo,
-  });
-
-  final List<MapMarker> markers;
-  final ValueChanged<LatLng> onZoomTo;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: markers.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        final marker = markers[index];
-        return _MarkerListTile(
-          key: ValueKey(marker.id),
-          marker: marker,
-          onZoomTo: onZoomTo,
-        );
-      },
-    );
-  }
-}
-
-class _ZoneListView extends StatelessWidget {
-  const _ZoneListView({
-    required this.zones,
-    required this.onZoomTo,
-  });
-
-  final List<MapZone> zones;
-  final ValueChanged<LatLng> onZoomTo;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: zones.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        final zone = zones[index];
-        return _ZoneListTile(
-          key: ValueKey(zone.id),
-          zone: zone,
-          onZoomTo: onZoomTo,
-        );
-      },
-    );
-  }
-}
-
 class _MarkerTreeView extends StatelessWidget {
   const _MarkerTreeView({
     required this.groups,
     required this.onZoomTo,
+    this.nested = false,
   });
 
   final List<MapObjectTreeGroup<MapMarker>> groups;
   final ValueChanged<LatLng> onZoomTo;
+  final bool nested;
 
   @override
   Widget build(BuildContext context) {
     return _MapObjectTreeScaffold(
       groups: groups,
+      nested: nested,
       itemBuilder: (marker) => _MarkerListTile(
         key: ValueKey(marker.id),
         marker: marker,
@@ -480,15 +929,18 @@ class _ZoneTreeView extends StatelessWidget {
   const _ZoneTreeView({
     required this.groups,
     required this.onZoomTo,
+    this.nested = false,
   });
 
   final List<MapObjectTreeGroup<MapZone>> groups;
   final ValueChanged<LatLng> onZoomTo;
+  final bool nested;
 
   @override
   Widget build(BuildContext context) {
     return _MapObjectTreeScaffold(
       groups: groups,
+      nested: nested,
       itemBuilder: (zone) => _ZoneListTile(
         key: ValueKey(zone.id),
         zone: zone,
@@ -502,16 +954,20 @@ class _MapObjectTreeScaffold<T> extends StatelessWidget {
   const _MapObjectTreeScaffold({
     required this.groups,
     required this.itemBuilder,
+    this.nested = false,
   });
 
   final List<MapObjectTreeGroup<T>> groups;
   final Widget Function(T item) itemBuilder;
+  final bool nested;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return ListView.separated(
+      shrinkWrap: nested,
+      physics: nested ? const NeverScrollableScrollPhysics() : null,
       itemCount: groups.length,
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
@@ -738,7 +1194,7 @@ class _LineZoneListTile extends ConsumerWidget {
     }
 
     final distance = formatLineDistance(
-      lineLengthMeters(geometry.start!, geometry.end!),
+      geometry.pathLengthMeters,
       measurementUnits,
     );
 

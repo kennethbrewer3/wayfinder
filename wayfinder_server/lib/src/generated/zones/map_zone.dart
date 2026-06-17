@@ -24,6 +24,7 @@ abstract class MapZone
     required this.fillColor,
     required this.visible,
     required this.geometryJson,
+    this.layerId,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj();
@@ -38,6 +39,7 @@ abstract class MapZone
     required String fillColor,
     required bool visible,
     required String geometryJson,
+    _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MapZoneImpl;
@@ -55,6 +57,9 @@ abstract class MapZone
       fillColor: jsonSerialization['fillColor'] as String,
       visible: _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
       geometryJson: jsonSerialization['geometryJson'] as String,
+      layerId: jsonSerialization['layerId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -87,6 +92,8 @@ abstract class MapZone
 
   String geometryJson;
 
+  _i1.UuidValue? layerId;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -107,6 +114,7 @@ abstract class MapZone
     String? fillColor,
     bool? visible,
     String? geometryJson,
+    _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -123,6 +131,7 @@ abstract class MapZone
       'fillColor': fillColor,
       'visible': visible,
       'geometryJson': geometryJson,
+      if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -141,6 +150,7 @@ abstract class MapZone
       'fillColor': fillColor,
       'visible': visible,
       'geometryJson': geometryJson,
+      if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -176,6 +186,8 @@ abstract class MapZone
   }
 }
 
+class _Undefined {}
+
 class _MapZoneImpl extends MapZone {
   _MapZoneImpl({
     _i1.UuidValue? id,
@@ -187,6 +199,7 @@ class _MapZoneImpl extends MapZone {
     required String fillColor,
     required bool visible,
     required String geometryJson,
+    _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -199,6 +212,7 @@ class _MapZoneImpl extends MapZone {
          fillColor: fillColor,
          visible: visible,
          geometryJson: geometryJson,
+         layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -217,6 +231,7 @@ class _MapZoneImpl extends MapZone {
     String? fillColor,
     bool? visible,
     String? geometryJson,
+    Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -230,6 +245,7 @@ class _MapZoneImpl extends MapZone {
       fillColor: fillColor ?? this.fillColor,
       visible: visible ?? this.visible,
       geometryJson: geometryJson ?? this.geometryJson,
+      layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -280,6 +296,12 @@ class MapZoneUpdateTable extends _i1.UpdateTable<MapZoneTable> {
     value,
   );
 
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> layerId(_i1.UuidValue? value) =>
+      _i1.ColumnValue(
+        table.layerId,
+        value,
+      );
+
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _i1.ColumnValue(
         table.createdAt,
@@ -328,6 +350,10 @@ class MapZoneTable extends _i1.Table<_i1.UuidValue> {
       'geometryJson',
       this,
     );
+    layerId = _i1.ColumnUuid(
+      'layerId',
+      this,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -356,6 +382,8 @@ class MapZoneTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnString geometryJson;
 
+  late final _i1.ColumnUuid layerId;
+
   late final _i1.ColumnDateTime createdAt;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -371,6 +399,7 @@ class MapZoneTable extends _i1.Table<_i1.UuidValue> {
     fillColor,
     visible,
     geometryJson,
+    layerId,
     createdAt,
     updatedAt,
   ];

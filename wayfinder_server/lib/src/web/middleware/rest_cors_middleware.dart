@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:serverpod/serverpod.dart';
 
 /// CORS for the public REST API under `/api`.
@@ -11,14 +13,24 @@ class RestCorsMiddleware extends MiddlewareObject {
         return Response.ok(headers: Headers.build(_applyCors));
       }
 
-      final result = await next(req);
-      if (result is Response) {
-        return result.copyWith(
-          headers: result.headers.transform(_applyCors),
+      try {
+        final result = await next(req);
+        if (result is Response) {
+          return result.copyWith(
+            headers: result.headers.transform(_applyCors),
+          );
+        }
+
+        return result;
+      } catch (error, _) {
+        return Response.internalServerError(
+          body: Body.fromString(
+            jsonEncode({'error': error.toString()}),
+            mimeType: MimeType.json,
+          ),
+          headers: Headers.build(_applyCors),
         );
       }
-
-      return result;
     };
   }
 

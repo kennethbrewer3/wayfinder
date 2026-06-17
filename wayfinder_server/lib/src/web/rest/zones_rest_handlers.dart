@@ -122,6 +122,7 @@ abstract final class ZonesRestHandlers {
       fillColor: fillColor,
       visible: body['visible'] is bool ? body['visible'] as bool : true,
       geometryJson: geometryJson,
+      layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdAt: now,
       updatedAt: now,
     );
@@ -146,6 +147,9 @@ abstract final class ZonesRestHandlers {
       geometryJson: body['geometryJson'] is String
           ? body['geometryJson'] as String
           : existing.geometryJson,
+      layerId: body.containsKey('layerId')
+          ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
+          : existing.layerId,
       createdAt: existing.createdAt,
       updatedAt: DateTime.now().toUtc(),
     );

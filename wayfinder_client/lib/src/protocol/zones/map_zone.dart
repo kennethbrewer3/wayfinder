@@ -23,6 +23,7 @@ abstract class MapZone implements _i1.SerializableModel {
     required this.fillColor,
     required this.visible,
     required this.geometryJson,
+    this.layerId,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj();
@@ -37,6 +38,7 @@ abstract class MapZone implements _i1.SerializableModel {
     required String fillColor,
     required bool visible,
     required String geometryJson,
+    _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MapZoneImpl;
@@ -54,6 +56,9 @@ abstract class MapZone implements _i1.SerializableModel {
       fillColor: jsonSerialization['fillColor'] as String,
       visible: _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
       geometryJson: jsonSerialization['geometryJson'] as String,
+      layerId: jsonSerialization['layerId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -82,6 +87,8 @@ abstract class MapZone implements _i1.SerializableModel {
 
   String geometryJson;
 
+  _i1.UuidValue? layerId;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -99,6 +106,7 @@ abstract class MapZone implements _i1.SerializableModel {
     String? fillColor,
     bool? visible,
     String? geometryJson,
+    _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -115,6 +123,7 @@ abstract class MapZone implements _i1.SerializableModel {
       'fillColor': fillColor,
       'visible': visible,
       'geometryJson': geometryJson,
+      if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -125,6 +134,8 @@ abstract class MapZone implements _i1.SerializableModel {
     return _i1.SerializationManager.encode(this);
   }
 }
+
+class _Undefined {}
 
 class _MapZoneImpl extends MapZone {
   _MapZoneImpl({
@@ -137,6 +148,7 @@ class _MapZoneImpl extends MapZone {
     required String fillColor,
     required bool visible,
     required String geometryJson,
+    _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -149,6 +161,7 @@ class _MapZoneImpl extends MapZone {
          fillColor: fillColor,
          visible: visible,
          geometryJson: geometryJson,
+         layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -167,6 +180,7 @@ class _MapZoneImpl extends MapZone {
     String? fillColor,
     bool? visible,
     String? geometryJson,
+    Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -180,6 +194,7 @@ class _MapZoneImpl extends MapZone {
       fillColor: fillColor ?? this.fillColor,
       visible: visible ?? this.visible,
       geometryJson: geometryJson ?? this.geometryJson,
+      layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

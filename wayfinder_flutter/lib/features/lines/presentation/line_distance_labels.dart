@@ -16,6 +16,7 @@ import '../../rectangles/utils/rectangle_dimensions.dart';
 import '../models/line_geometry.dart';
 import '../models/measurement_units.dart';
 import '../utils/line_distance.dart';
+import '../utils/line_path.dart';
 
 const _labelMaxWidth = 168.0;
 const _singleRowHeight = 22.0;
@@ -206,10 +207,7 @@ LineMapLabelContent? lineMapLabelContentForZone(
 
   final name = geometry.showNameLabel ? zone.name : null;
   final distance = geometry.showDistanceLabel
-      ? formatLineDistance(
-          lineLengthMeters(geometry.start!, geometry.end!),
-          units,
-        )
+      ? formatLineDistance(geometry.pathLengthMeters, units)
       : null;
   if (name == null && distance == null) {
     return null;
@@ -217,7 +215,7 @@ LineMapLabelContent? lineMapLabelContentForZone(
 
   return LineMapLabelContent(
     id: zone.id.uuid,
-    point: lineSegmentMidpoint(geometry.start!, geometry.end!),
+    point: linePathMidpoint(geometry),
     color: parseMarkerColor(zone.color),
     name: name,
     distance: distance,

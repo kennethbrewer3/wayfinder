@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../layers/presentation/layer_picker_field.dart';
 import '../models/marker_color.dart';
 import '../models/marker_icon_registry.dart';
 import 'marker_form_fields.dart';
@@ -13,12 +14,16 @@ class MarkerFormData {
     required this.notes,
     required this.color,
     required this.icon,
+    required this.elevation,
+    required this.layerId,
   });
 
   final String name;
   final String? notes;
   final Color color;
   final String icon;
+  final double elevation;
+  final UuidValue? layerId;
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -29,6 +34,8 @@ Future<MarkerFormData?> showMarkerFormDialog({
   String? initialNotes,
   Color? initialColor,
   String? initialIcon,
+  double initialElevation = 0,
+  UuidValue? initialLayerId,
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -40,6 +47,8 @@ Future<MarkerFormData?> showMarkerFormDialog({
         initialNotes: initialNotes,
         initialColor: initialColor ?? parseMarkerColor('#1B4965'),
         initialIcon: normalizeMarkerIcon(initialIcon ?? 'place'),
+        initialElevation: initialElevation,
+        initialLayerId: initialLayerId,
       );
     },
   );
@@ -57,6 +66,8 @@ Future<MarkerFormData?> showEditMarkerDialog({
     initialNotes: marker.notes,
     initialColor: parseMarkerColor(marker.color),
     initialIcon: marker.icon,
+    initialElevation: marker.elevation,
+    initialLayerId: marker.layerId,
   );
 }
 
@@ -69,6 +80,8 @@ class MarkerFormDialog extends StatefulWidget {
     required this.initialNotes,
     required this.initialColor,
     required this.initialIcon,
+    required this.initialElevation,
+    this.initialLayerId,
   });
 
   final String title;
@@ -77,6 +90,8 @@ class MarkerFormDialog extends StatefulWidget {
   final String? initialNotes;
   final Color initialColor;
   final String initialIcon;
+  final double initialElevation;
+  final UuidValue? initialLayerId;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -84,20 +99,26 @@ class MarkerFormDialog extends StatefulWidget {
 
 class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late final TextEditingController _nameController;
+  late final TextEditingController _elevationController;
   late final QuillController _notesController;
   late Color _selectedColor;
   late String _selectedIcon;
+  UuidValue? _selectedLayerId;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.defaultName);
     _nameController.addListener(_maybeSuggestIconFromName);
+    _elevationController = TextEditingController(
+      text: _formatElevationInput(widget.initialElevation),
+    );
     _notesController = createMarkerNotesController(
       markdown: widget.initialNotes,
     );
     _selectedColor = widget.initialColor;
     _selectedIcon = widget.initialIcon;
+    _selectedLayerId = widget.initialLayerId;
   }
 
   void _maybeSuggestIconFromName() {
@@ -114,13 +135,34 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _elevationController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  String _formatElevationInput(double elevation) {
+    if (elevation == elevation.roundToDouble()) {
+      return elevation.toInt().toString();
+    }
+    return elevation.toString();
+  }
+
+  double? _parseElevation() {
+    final raw = _elevationController.text.trim();
+    if (raw.isEmpty) {
+      return 0;
+    }
+    return double.tryParse(raw);
   }
 
   void _submit() {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
+      return;
+    }
+
+    final elevation = _parseElevation();
+    if (elevation == null) {
       return;
     }
 
@@ -131,6 +173,8 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         notes: notes.isEmpty ? null : notes,
         color: _selectedColor,
         icon: _selectedIcon,
+        elevation: elevation,
+        layerId: _selectedLayerId,
       ),
     );
   }
@@ -153,6 +197,23 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _elevationController,
+                decoration: const InputDecoration(
+                  labelText: 'Elevation (m)',
+                  hintText: '0',
+                ),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true, signed: true),
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+              LayerPickerField(
+                selectedLayerId: _selectedLayerId,
+                onChanged: (layerId) =>
+                    setState(() => _selectedLayerId = layerId),
               ),
               const SizedBox(height: 16),
               MarkerIconPicker(

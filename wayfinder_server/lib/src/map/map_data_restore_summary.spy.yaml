@@ -1,0 +1,5 @@
+class: MapDataRestoreSummary
+fields:
+  layers: int
+  markers: int
+  zones: int

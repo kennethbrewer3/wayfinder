@@ -32,7 +32,7 @@ class LayerPickerField extends ConsumerWidget {
         ),
       ),
       data: (result) {
-        final layers = result.layers;
+        final layers = result;
         final selectedId = resolveSelectedLayerId(
           selectedLayerId: selectedLayerId,
           layers: layers,
@@ -59,9 +59,7 @@ class LayerPickerField extends ConsumerWidget {
                     child: Text(layer.name),
                   ),
               ],
-              onChanged: result.syncedWithServer
-                  ? (value) => onChanged(value)
-                  : null,
+              onChanged: (value) => onChanged(value),
             ),
           ),
         );

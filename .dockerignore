@@ -1,0 +1,7 @@
+.git
+**/.dart_tool
+**/.idea
+**/build
+wayfinder_flutter
+wayfinder_server/storage
+!wayfinder_server/storage/pmtiles/.gitkeep

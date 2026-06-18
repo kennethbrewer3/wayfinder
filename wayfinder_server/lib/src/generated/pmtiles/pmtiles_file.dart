@@ -20,6 +20,13 @@ abstract class PmtilesFile
     required this.sizeBytes,
     required this.isActive,
     required this.addedAt,
+    this.minZoom,
+    this.maxZoom,
+    this.minLatitude,
+    this.minLongitude,
+    this.maxLatitude,
+    this.maxLongitude,
+    this.groupId,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
   factory PmtilesFile({
@@ -28,6 +35,13 @@ abstract class PmtilesFile
     required int sizeBytes,
     required bool isActive,
     required DateTime addedAt,
+    int? minZoom,
+    int? maxZoom,
+    double? minLatitude,
+    double? minLongitude,
+    double? maxLatitude,
+    double? maxLongitude,
+    _i1.UuidValue? groupId,
   }) = _PmtilesFileImpl;
 
   factory PmtilesFile.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +53,15 @@ abstract class PmtilesFile
       sizeBytes: jsonSerialization['sizeBytes'] as int,
       isActive: _i1.BoolJsonExtension.fromJson(jsonSerialization['isActive']),
       addedAt: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['addedAt']),
+      minZoom: jsonSerialization['minZoom'] as int?,
+      maxZoom: jsonSerialization['maxZoom'] as int?,
+      minLatitude: (jsonSerialization['minLatitude'] as num?)?.toDouble(),
+      minLongitude: (jsonSerialization['minLongitude'] as num?)?.toDouble(),
+      maxLatitude: (jsonSerialization['maxLatitude'] as num?)?.toDouble(),
+      maxLongitude: (jsonSerialization['maxLongitude'] as num?)?.toDouble(),
+      groupId: jsonSerialization['groupId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['groupId']),
     );
   }
 
@@ -57,6 +80,20 @@ abstract class PmtilesFile
 
   DateTime addedAt;
 
+  int? minZoom;
+
+  int? maxZoom;
+
+  double? minLatitude;
+
+  double? minLongitude;
+
+  double? maxLatitude;
+
+  double? maxLongitude;
+
+  _i1.UuidValue? groupId;
+
   @override
   _i1.Table<_i1.UuidValue> get table => t;
 
@@ -69,6 +106,13 @@ abstract class PmtilesFile
     int? sizeBytes,
     bool? isActive,
     DateTime? addedAt,
+    int? minZoom,
+    int? maxZoom,
+    double? minLatitude,
+    double? minLongitude,
+    double? maxLatitude,
+    double? maxLongitude,
+    _i1.UuidValue? groupId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -79,6 +123,13 @@ abstract class PmtilesFile
       'sizeBytes': sizeBytes,
       'isActive': isActive,
       'addedAt': addedAt.toJson(),
+      if (minZoom != null) 'minZoom': minZoom,
+      if (maxZoom != null) 'maxZoom': maxZoom,
+      if (minLatitude != null) 'minLatitude': minLatitude,
+      if (minLongitude != null) 'minLongitude': minLongitude,
+      if (maxLatitude != null) 'maxLatitude': maxLatitude,
+      if (maxLongitude != null) 'maxLongitude': maxLongitude,
+      if (groupId != null) 'groupId': groupId?.toJson(),
     };
   }
 
@@ -91,6 +142,13 @@ abstract class PmtilesFile
       'sizeBytes': sizeBytes,
       'isActive': isActive,
       'addedAt': addedAt.toJson(),
+      if (minZoom != null) 'minZoom': minZoom,
+      if (maxZoom != null) 'maxZoom': maxZoom,
+      if (minLatitude != null) 'minLatitude': minLatitude,
+      if (minLongitude != null) 'minLongitude': minLongitude,
+      if (maxLatitude != null) 'maxLatitude': maxLatitude,
+      if (maxLongitude != null) 'maxLongitude': maxLongitude,
+      if (groupId != null) 'groupId': groupId?.toJson(),
     };
   }
 
@@ -124,6 +182,8 @@ abstract class PmtilesFile
   }
 }
 
+class _Undefined {}
+
 class _PmtilesFileImpl extends PmtilesFile {
   _PmtilesFileImpl({
     _i1.UuidValue? id,
@@ -131,12 +191,26 @@ class _PmtilesFileImpl extends PmtilesFile {
     required int sizeBytes,
     required bool isActive,
     required DateTime addedAt,
+    int? minZoom,
+    int? maxZoom,
+    double? minLatitude,
+    double? minLongitude,
+    double? maxLatitude,
+    double? maxLongitude,
+    _i1.UuidValue? groupId,
   }) : super._(
          id: id,
          name: name,
          sizeBytes: sizeBytes,
          isActive: isActive,
          addedAt: addedAt,
+         minZoom: minZoom,
+         maxZoom: maxZoom,
+         minLatitude: minLatitude,
+         minLongitude: minLongitude,
+         maxLatitude: maxLatitude,
+         maxLongitude: maxLongitude,
+         groupId: groupId,
        );
 
   /// Returns a shallow copy of this [PmtilesFile]
@@ -149,6 +223,13 @@ class _PmtilesFileImpl extends PmtilesFile {
     int? sizeBytes,
     bool? isActive,
     DateTime? addedAt,
+    Object? minZoom = _Undefined,
+    Object? maxZoom = _Undefined,
+    Object? minLatitude = _Undefined,
+    Object? minLongitude = _Undefined,
+    Object? maxLatitude = _Undefined,
+    Object? maxLongitude = _Undefined,
+    Object? groupId = _Undefined,
   }) {
     return PmtilesFile(
       id: id ?? this.id,
@@ -156,6 +237,13 @@ class _PmtilesFileImpl extends PmtilesFile {
       sizeBytes: sizeBytes ?? this.sizeBytes,
       isActive: isActive ?? this.isActive,
       addedAt: addedAt ?? this.addedAt,
+      minZoom: minZoom is int? ? minZoom : this.minZoom,
+      maxZoom: maxZoom is int? ? maxZoom : this.maxZoom,
+      minLatitude: minLatitude is double? ? minLatitude : this.minLatitude,
+      minLongitude: minLongitude is double? ? minLongitude : this.minLongitude,
+      maxLatitude: maxLatitude is double? ? maxLatitude : this.maxLatitude,
+      maxLongitude: maxLongitude is double? ? maxLongitude : this.maxLongitude,
+      groupId: groupId is _i1.UuidValue? ? groupId : this.groupId,
     );
   }
 }
@@ -183,6 +271,44 @@ class PmtilesFileUpdateTable extends _i1.UpdateTable<PmtilesFileTable> {
         table.addedAt,
         value,
       );
+
+  _i1.ColumnValue<int, int> minZoom(int? value) => _i1.ColumnValue(
+    table.minZoom,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> maxZoom(int? value) => _i1.ColumnValue(
+    table.maxZoom,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> minLatitude(double? value) => _i1.ColumnValue(
+    table.minLatitude,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> minLongitude(double? value) =>
+      _i1.ColumnValue(
+        table.minLongitude,
+        value,
+      );
+
+  _i1.ColumnValue<double, double> maxLatitude(double? value) => _i1.ColumnValue(
+    table.maxLatitude,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> maxLongitude(double? value) =>
+      _i1.ColumnValue(
+        table.maxLongitude,
+        value,
+      );
+
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> groupId(_i1.UuidValue? value) =>
+      _i1.ColumnValue(
+        table.groupId,
+        value,
+      );
 }
 
 class PmtilesFileTable extends _i1.Table<_i1.UuidValue> {
@@ -204,6 +330,34 @@ class PmtilesFileTable extends _i1.Table<_i1.UuidValue> {
       'addedAt',
       this,
     );
+    minZoom = _i1.ColumnInt(
+      'minZoom',
+      this,
+    );
+    maxZoom = _i1.ColumnInt(
+      'maxZoom',
+      this,
+    );
+    minLatitude = _i1.ColumnDouble(
+      'minLatitude',
+      this,
+    );
+    minLongitude = _i1.ColumnDouble(
+      'minLongitude',
+      this,
+    );
+    maxLatitude = _i1.ColumnDouble(
+      'maxLatitude',
+      this,
+    );
+    maxLongitude = _i1.ColumnDouble(
+      'maxLongitude',
+      this,
+    );
+    groupId = _i1.ColumnUuid(
+      'groupId',
+      this,
+    );
   }
 
   late final PmtilesFileUpdateTable updateTable;
@@ -216,6 +370,20 @@ class PmtilesFileTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnDateTime addedAt;
 
+  late final _i1.ColumnInt minZoom;
+
+  late final _i1.ColumnInt maxZoom;
+
+  late final _i1.ColumnDouble minLatitude;
+
+  late final _i1.ColumnDouble minLongitude;
+
+  late final _i1.ColumnDouble maxLatitude;
+
+  late final _i1.ColumnDouble maxLongitude;
+
+  late final _i1.ColumnUuid groupId;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -223,6 +391,13 @@ class PmtilesFileTable extends _i1.Table<_i1.UuidValue> {
     sizeBytes,
     isActive,
     addedAt,
+    minZoom,
+    maxZoom,
+    minLatitude,
+    minLongitude,
+    maxLatitude,
+    maxLongitude,
+    groupId,
   ];
 }
 

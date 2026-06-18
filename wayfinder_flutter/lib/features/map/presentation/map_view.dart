@@ -49,9 +49,12 @@ import '../../markers/presentation/map_marker_icon.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
+import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
 import '../../settings/providers/pmtiles_providers.dart';
+import '../../settings/data/pmtiles_loader.dart';
 import '../models/map_viewport.dart';
+import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
 import 'map_radial_menu.dart';
 
@@ -69,49 +72,47 @@ class MapView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final markersAsync = ref.watch(markersProvider);
     final zonesAsync = ref.watch(zonesProvider);
-    final layersResultAsync = ref.watch(layersProvider);
-    final layersAsync = layersResultAsync.whenData((result) => result.layers);
+    final layersAsync = ref.watch(layersProvider);
     final searchCoordinateMarker = ref.watch(searchCoordinateMarkerProvider);
-    final mapLayerAsync = ref.watch(activePmtilesMapLayerProvider);
+    final metadataAsync = ref.watch(pmtilesEnabledMetadataProvider);
 
-    return mapLayerAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) {
-        AppLogger.logMap.error(
-          '🗺️ Map layer failed to load',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        return _PlaceholderLayer(
-          errorMessage: error.toString(),
-          onOpenSettings: () {
-            AppLogger.logNav.info(
-              '🧭 Navigating to settings from map error placeholder',
-            );
-            context.push('/settings');
-          },
-        );
-      },
-      data: (mapLayer) {
-        if (mapLayer == null) {
-          AppLogger.logMap.warn('🗺️ No PMTiles map layer — showing placeholder');
-        }
-        return _MapCanvas(
-          viewport: viewport,
-          onViewportChanged: onViewportChanged,
-          mapLayer: mapLayer,
-          markersAsync: markersAsync,
-          zonesAsync: zonesAsync,
-          layersAsync: layersAsync,
-          searchCoordinateMarker: searchCoordinateMarker,
-          onCreateMarker: (point) => _createMarker(context, ref, point),
-          onSaveSearchCoordinateMarker: (marker) =>
-              _saveSearchCoordinateMarker(context, ref, marker),
-          onOpenSettings: () {
-            AppLogger.logNav.info('🧭 Navigating to settings from map placeholder');
-            context.push('/settings');
-          },
-        );
+    if (metadataAsync.hasError) {
+      AppLogger.logMap.error(
+        '🗺️ PMTiles metadata failed to load',
+        error: metadataAsync.error,
+        stackTrace: metadataAsync.stackTrace,
+      );
+      return _PlaceholderLayer(
+        errorMessage: metadataAsync.error.toString(),
+        onOpenSettings: () {
+          AppLogger.logNav.info(
+            '🧭 Navigating to settings from map error placeholder',
+          );
+          context.push('/settings');
+        },
+      );
+    }
+
+    final enabledEntries = metadataAsync.valueOrNull ?? const [];
+    if (enabledEntries.isEmpty && !metadataAsync.isLoading) {
+      AppLogger.logMap.warn('🗺️ No PMTiles map layers — showing placeholder');
+    }
+
+    return _MapCanvas(
+      viewport: viewport,
+      onViewportChanged: onViewportChanged,
+      enabledEntries: enabledEntries,
+      metadataLoading: metadataAsync.isLoading,
+      markersAsync: markersAsync,
+      zonesAsync: zonesAsync,
+      layersAsync: layersAsync,
+      searchCoordinateMarker: searchCoordinateMarker,
+      onCreateMarker: (point) => _createMarker(context, ref, point),
+      onSaveSearchCoordinateMarker: (marker) =>
+          _saveSearchCoordinateMarker(context, ref, marker),
+      onOpenSettings: () {
+        AppLogger.logNav.info('🧭 Navigating to settings from map placeholder');
+        context.push('/settings');
       },
     );
   }
@@ -151,7 +152,8 @@ class _MapCanvas extends ConsumerStatefulWidget {
   const _MapCanvas({
     required this.viewport,
     required this.onViewportChanged,
-    required this.mapLayer,
+    required this.enabledEntries,
+    required this.metadataLoading,
     required this.markersAsync,
     required this.zonesAsync,
     required this.layersAsync,
@@ -163,7 +165,8 @@ class _MapCanvas extends ConsumerStatefulWidget {
 
   final MapViewport viewport;
   final ValueChanged<MapViewport> onViewportChanged;
-  final PmtilesMapLayerConfig? mapLayer;
+  final List<PmtilesArchiveEntry> enabledEntries;
+  final bool metadataLoading;
   final AsyncValue<List<MapMarker>> markersAsync;
   final AsyncValue<List<MapZone>> zonesAsync;
   final AsyncValue<List<MapLayer>> layersAsync;
@@ -185,6 +188,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   late final MapController _mapController;
   final GlobalKey _mapHostKey = GlobalKey();
+  final Map<String, PmtilesMapLayerConfig> _layerCache = {};
+  List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
+  String? _activeLayerCatalogId;
+  Timer? _viewportLayerUpdateTimer;
+  int _layerLoadGeneration = 0;
 
   LatLng? _cursorLocation;
   Offset? _cursorScreenPosition;
@@ -212,10 +220,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     super.initState();
     _mapController = MapController();
     setBrowserContextMenuEnabled(false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scheduleVisibleLayerUpdate(preload: true, immediate: true);
+    });
   }
 
   @override
   void dispose() {
+    _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
     setBrowserContextMenuEnabled(true);
     super.dispose();
@@ -227,6 +239,174 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (oldWidget.viewport.center != widget.viewport.center ||
         oldWidget.viewport.zoom != widget.viewport.zoom) {
       _mapController.move(widget.viewport.center, widget.viewport.zoom);
+    }
+
+    final oldIds = oldWidget.enabledEntries.map((entry) => entry.id).toSet();
+    final newIds = widget.enabledEntries.map((entry) => entry.id).toSet();
+    if (oldIds != newIds) {
+      _layerCache.removeWhere((id, _) => !newIds.contains(id));
+      _scheduleVisibleLayerUpdate(preload: true, immediate: true);
+    } else if (oldWidget.enabledEntries != widget.enabledEntries ||
+        (oldWidget.metadataLoading && !widget.metadataLoading)) {
+      if (widget.enabledEntries.isEmpty) {
+        setState(() {
+          _layerCache.clear();
+          _activeLayerCatalogId = null;
+          _visibleMapLayers = const [];
+        });
+      } else {
+        _scheduleVisibleLayerUpdate(preload: true, immediate: true);
+      }
+    }
+  }
+
+  double _currentViewportZoom() {
+    try {
+      return _mapController.camera.zoom;
+    } catch (_) {
+      return widget.viewport.zoom;
+    }
+  }
+
+  void _scheduleVisibleLayerUpdate({
+    bool preload = false,
+    bool immediate = false,
+  }) {
+    _viewportLayerUpdateTimer?.cancel();
+    void run() => unawaited(_syncMapLayers(preload: preload));
+    if (immediate) {
+      run();
+      return;
+    }
+    _viewportLayerUpdateTimer = Timer(
+      const Duration(milliseconds: 250),
+      run,
+    );
+  }
+
+  LatLngBounds _currentViewportBounds() {
+    try {
+      return _mapController.camera.visibleBounds;
+    } catch (_) {
+      return approximateVisibleBounds(widget.viewport);
+    }
+  }
+
+  LatLng _currentViewportCenter() {
+    try {
+      return _mapController.camera.center;
+    } catch (_) {
+      return widget.viewport.center;
+    }
+  }
+
+  Future<void> _syncMapLayers({required bool preload}) async {
+    if (!mounted) {
+      return;
+    }
+
+    if (widget.enabledEntries.isEmpty) {
+      if (_visibleMapLayers.isNotEmpty || _activeLayerCatalogId != null) {
+        setState(() {
+          _visibleMapLayers = const [];
+          _activeLayerCatalogId = null;
+        });
+      }
+      return;
+    }
+
+    try {
+      final selectedEntries = selectArchivesForViewport(
+        entries: widget.enabledEntries,
+        viewportBounds: _currentViewportBounds(),
+        viewportCenter: _currentViewportCenter(),
+        viewportZoom: _currentViewportZoom(),
+      );
+      if (!preload &&
+          selectedEntries.isNotEmpty &&
+          !_layerCache.containsKey(selectedEntries.first.id)) {
+        await _syncMapLayers(preload: true);
+        return;
+      }
+
+      if (preload) {
+        final generation = ++_layerLoadGeneration;
+        final missingEntries = widget.enabledEntries
+            .where((entry) => !_layerCache.containsKey(entry.id))
+            .toList();
+        if (missingEntries.isNotEmpty) {
+          await Future.wait(
+            missingEntries.map((entry) async {
+              try {
+                final layer = await buildPmtilesMapLayer(
+                  entry.source,
+                  catalogId: entry.id,
+                );
+                if (mounted && generation == _layerLoadGeneration) {
+                  _layerCache[entry.id] = layer;
+                }
+              } catch (error, stackTrace) {
+                AppLogger.logPmtiles.error(
+                  '🗺️ Failed to load PMTiles layer',
+                  error: error,
+                  stackTrace: stackTrace,
+                  data: 'id=${entry.id} name="${entry.name}"',
+                );
+              }
+            }),
+          );
+        }
+        if (!mounted || generation != _layerLoadGeneration) {
+          return;
+        }
+      }
+
+      _applyVisibleLayerSelection();
+    } catch (error, stackTrace) {
+      AppLogger.logPmtiles.error(
+        '🗺️ Failed to sync visible PMTiles layers',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  void _applyVisibleLayerSelection() {
+    if (!mounted) {
+      return;
+    }
+
+    final selectedEntries = selectArchivesForViewport(
+      entries: widget.enabledEntries,
+      viewportBounds: _currentViewportBounds(),
+      viewportCenter: _currentViewportCenter(),
+      viewportZoom: _currentViewportZoom(),
+    );
+    final activeEntry = selectedEntries.isEmpty ? null : selectedEntries.first;
+    final activeLayer =
+        activeEntry == null ? null : _layerCache[activeEntry.id];
+    final nextCatalogId = activeLayer?.catalogId;
+
+    if (nextCatalogId == _activeLayerCatalogId &&
+        (activeLayer == null
+            ? _visibleMapLayers.isEmpty
+            : _visibleMapLayers.length == 1 &&
+                _visibleMapLayers.first.catalogId == nextCatalogId)) {
+      return;
+    }
+
+    setState(() {
+      _activeLayerCatalogId = nextCatalogId;
+      _visibleMapLayers =
+          activeLayer == null ? const [] : [activeLayer];
+    });
+
+    if (activeLayer != null) {
+      AppLogger.logPmtiles.debug(
+        '🗺️ Active PMTiles layer',
+        data:
+            'id=${activeEntry!.id} name="${activeEntry.name}" enabled=${widget.enabledEntries.length}',
+      );
     }
   }
 
@@ -1556,9 +1736,25 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   @override
   Widget build(BuildContext context) {
-    final mapLayer = widget.mapLayer;
-    final minZoom = mapLayer?.minZoom.toDouble() ?? 2;
-    final maxZoom = _maxInteractionZoom(mapLayer?.maxZoom);
+    final mapLayers = _visibleMapLayers;
+    final enabledEntries = widget.enabledEntries;
+    final activeLayer = mapLayers.isEmpty ? null : mapLayers.first;
+    final minZoom = activeLayer?.minZoom.toDouble() ??
+        (enabledEntries.isEmpty
+            ? 2.0
+            : enabledEntries
+                .map((entry) => entry.minZoom)
+                .reduce((a, b) => a < b ? a : b)
+                .toDouble());
+    final maxZoom = activeLayer != null
+        ? _maxInteractionZoom(activeLayer.maxZoom)
+        : enabledEntries.isEmpty
+            ? _maxInteractionZoom(null)
+            : _maxInteractionZoom(
+                enabledEntries
+                    .map((entry) => entry.maxZoom)
+                    .reduce((a, b) => a > b ? a : b),
+              );
     final lineDrawing = ref.watch(lineDrawingProvider);
     final circleDrawing = ref.watch(circleDrawingProvider);
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
@@ -1656,6 +1852,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         : InteractiveFlag.all,
                   ),
                   onPositionChanged: (position, hasGesture) {
+                    _scheduleVisibleLayerUpdate();
                     if (!hasGesture) return;
                     widget.onViewportChanged(
                       MapViewport(
@@ -1672,32 +1869,42 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   onPointerCancel: (_, __) => _handlePointerCancel(),
                 ),
                 children: [
-                  ...switch (mapLayer) {
-                    PmtilesVectorMapLayerConfig(
-                      :final tileProvider,
-                      :final theme,
-                      :final sprites,
-                    ) =>
-                      [
-                        VectorTileLayer(
-                          theme: theme,
-                          sprites: sprites,
-                          tileProviders: TileProviders({
-                            'protomaps': tileProvider,
-                          }),
-                        ),
-                      ],
-                    PmtilesRasterMapLayerConfig(:final tileProvider) => [
-                        TileLayer(
-                          tileProvider: tileProvider,
-                        ),
-                      ],
-                    null => [
-                        _PlaceholderLayer(
-                          onOpenSettings: widget.onOpenSettings,
-                        ),
-                      ],
-                  },
+                  if (enabledEntries.isEmpty && !widget.metadataLoading)
+                    _PlaceholderLayer(
+                      onOpenSettings: widget.onOpenSettings,
+                    )
+                  else
+                    ...mapLayers.expand((mapLayer) => switch (mapLayer) {
+                          PmtilesVectorMapLayerConfig(
+                            :final catalogId,
+                            :final tileProvider,
+                            :final theme,
+                            :final sprites,
+                          ) =>
+                            [
+                              VectorTileLayer(
+                                key: ValueKey('pmtiles-$catalogId'),
+                                layerMode: VectorTileLayerMode.vector,
+                                theme: theme,
+                                sprites: sprites,
+                                tileProviders: TileProviders({
+                                  'protomaps': tileProvider,
+                                }),
+                              ),
+                            ],
+                          PmtilesRasterMapLayerConfig(
+                            :final catalogId,
+                            :final tileProvider,
+                            :final maxZoom,
+                          ) => [
+                              TileLayer(
+                                key: ValueKey('pmtiles-$catalogId'),
+                                maxNativeZoom: maxZoom,
+                                maxZoom: AppConstants.maxMapZoom,
+                                tileProvider: tileProvider,
+                              ),
+                            ],
+                        }),
                   ...mapObjectLayerChildren,
                   if (widget.searchCoordinateMarker case final marker?)
                     MarkerLayer(

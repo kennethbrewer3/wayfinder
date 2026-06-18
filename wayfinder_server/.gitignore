@@ -11,6 +11,9 @@ web/app
 # Directory created by dartdoc
 doc/api/
 
+# Local Docker Compose overrides (paths, ports)
+.env
+
 # Passwords file
 config/passwords.yaml
 

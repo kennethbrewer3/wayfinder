@@ -1,0 +1,11 @@
+class: PmtilesGroup
+table: pmtiles_group
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  sortOrder: int, defaultModel=0
+  createdAt: DateTime
+
+indexes:
+  pmtiles_group_name_idx:
+    fields: name

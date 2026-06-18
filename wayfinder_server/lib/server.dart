@@ -7,10 +7,13 @@ import 'package:serverpod_auth_idp_server/providers/email.dart';
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
+import 'src/core/wayfinder_env.dart';
+import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
 import 'src/web/middleware/rest_cors_middleware.dart';
 import 'src/web/routes/app_config_route.dart';
+import 'src/web/routes/pmtiles_file_route.dart';
 import 'src/web/routes/pmtiles_upload_route.dart';
 import 'src/web/routes/root.dart';
 import 'src/web/rest/rest_api_route.dart';
@@ -26,7 +29,8 @@ void run(List<String> args) async {
     'server',
     '⚙️ Serverpod initialized | apiPort=${pod.config.apiServer.port} '
     'webPort=${pod.config.webServer?.port} '
-    'db=${pod.config.database?.name}@${pod.config.database?.host}:${pod.config.database?.port}',
+    'db=${pod.config.database?.name}@${pod.config.database?.host}:${pod.config.database?.port} '
+    'pmtiles=${WayfinderEnv.pmtilesStoragePath}',
   );
 
   // Initialize authentication services for the server.
@@ -74,10 +78,7 @@ void run(List<String> args) async {
       '/pmtiles/upload',
     );
     pod.webServer.addRoute(
-      StaticRoute.directory(
-        pmtilesStorage.root,
-        cacheControlFactory: StaticRoute.publicImmutable(),
-      ),
+      PmtilesFileRoute(),
       '/pmtiles/files',
     );
 
@@ -115,6 +116,14 @@ void run(List<String> args) async {
   // Start the server.
   WfLog.info(null, 'server', '🎬 Calling pod.start()');
   await pod.start();
+
+  final syncSession = await pod.createSession();
+  try {
+    await PmtilesCatalogSync.sync(syncSession);
+  } finally {
+    await syncSession.close();
+  }
+
   WfLog.success(null, 'server', '🏁 Server started');
 }
 

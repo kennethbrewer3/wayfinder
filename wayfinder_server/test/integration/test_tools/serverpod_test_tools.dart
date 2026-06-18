@@ -24,7 +24,9 @@ import 'package:wayfinder_server/src/generated/map/map_data_restore_summary.dart
 import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i9;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i10;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i11;
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
+    as _i11;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i12;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -1202,6 +1204,234 @@ class _PmtilesEndpoint {
     });
   }
 
+  _i3.Future<List<_i11.PmtilesGroup>> listGroups(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'listGroups',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'listGroups',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i11.PmtilesGroup>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i11.PmtilesGroup> createGroup(
+    _i1.TestSessionBuilder sessionBuilder,
+    String name,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'createGroup',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'createGroup',
+          parameters: _i1.testObjectToJson({'name': name}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i11.PmtilesGroup>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i11.PmtilesGroup> renameGroup(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+    String name,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'renameGroup',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'renameGroup',
+          parameters: _i1.testObjectToJson({
+            'id': id,
+            'name': name,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i11.PmtilesGroup>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteGroup(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'deleteGroup',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'deleteGroup',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> setFileGroup(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue fileId,
+    _i2.UuidValue? groupId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'setFileGroup',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'setFileGroup',
+          parameters: _i1.testObjectToJson({
+            'fileId': fileId,
+            'groupId': groupId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> setGroupEnabled(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue groupId, {
+    required bool enabled,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'setGroupEnabled',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'setGroupEnabled',
+          parameters: _i1.testObjectToJson({
+            'groupId': groupId,
+            'enabled': enabled,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> setUngroupedEnabled(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required bool enabled,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'setUngroupedEnabled',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'setUngroupedEnabled',
+          parameters: _i1.testObjectToJson({'enabled': enabled}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i2.UuidValue?> activeFileId(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
@@ -1263,6 +1493,69 @@ class _PmtilesEndpoint {
     });
   }
 
+  _i3.Future<void> setFileEnabled(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id, {
+    required bool enabled,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'setFileEnabled',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'setFileEnabled',
+          parameters: _i1.testObjectToJson({
+            'id': id,
+            'enabled': enabled,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> enableAllFiles(_i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'enableAllFiles',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'enableAllFiles',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<void> clearActiveFile(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
@@ -1277,6 +1570,36 @@ class _PmtilesEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'pmtiles',
           methodName: 'clearActiveFile',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> disableAllFiles(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'pmtiles',
+            method: 'disableAllFiles',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'pmtiles',
+          methodName: 'disableAllFiles',
           parameters: _i1.testObjectToJson({}),
           serializationManager: _serializationManager,
         );
@@ -1335,7 +1658,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i11.MapZone>> listZones(
+  _i3.Future<List<_i12.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1357,7 +1680,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i11.MapZone>>);
+                as _i3.Future<List<_i12.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1365,7 +1688,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i11.MapZone?> getZone(
+  _i3.Future<_i12.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -1388,7 +1711,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i11.MapZone?>);
+                as _i3.Future<_i12.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1396,9 +1719,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i11.MapZone> createZone(
+  _i3.Future<_i12.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i11.MapZone zone,
+    _i12.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1419,7 +1742,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i11.MapZone>);
+                as _i3.Future<_i12.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1427,9 +1750,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i11.MapZone> updateZone(
+  _i3.Future<_i12.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i11.MapZone zone,
+    _i12.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1450,7 +1773,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i11.MapZone>);
+                as _i3.Future<_i12.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

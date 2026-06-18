@@ -17,23 +17,27 @@ import 'layers/map_layer.dart' as _i4;
 import 'map/map_data_restore_summary.dart' as _i5;
 import 'map/map_marker.dart' as _i6;
 import 'pmtiles/pmtiles_file.dart' as _i7;
-import 'zones/map_zone.dart' as _i8;
-import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i9;
-import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i10;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i11;
+import 'pmtiles/pmtiles_group.dart' as _i8;
+import 'zones/map_zone.dart' as _i9;
+import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i10;
+import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i11;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i12;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
-    as _i12;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i13;
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _i13;
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i14;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i15;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _i16;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i15;
+    as _i17;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
 export 'map/map_data_restore_summary.dart';
 export 'map/map_marker.dart';
 export 'pmtiles/pmtiles_file.dart';
+export 'pmtiles/pmtiles_group.dart';
 export 'zones/map_zone.dart';
 export 'client.dart';
 
@@ -89,8 +93,11 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i7.PmtilesFile) {
       return _i7.PmtilesFile.fromJson(data) as T;
     }
-    if (t == _i8.MapZone) {
-      return _i8.MapZone.fromJson(data) as T;
+    if (t == _i8.PmtilesGroup) {
+      return _i8.PmtilesGroup.fromJson(data) as T;
+    }
+    if (t == _i9.MapZone) {
+      return _i9.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Category?>()) {
       return (data != null ? _i2.Category.fromJson(data) : null) as T;
@@ -111,36 +118,45 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i7.PmtilesFile?>()) {
       return (data != null ? _i7.PmtilesFile.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.MapZone?>()) {
-      return (data != null ? _i8.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.PmtilesGroup?>()) {
+      return (data != null ? _i8.PmtilesGroup.fromJson(data) : null) as T;
     }
-    if (t == List<_i9.Category>) {
-      return (data as List).map((e) => deserialize<_i9.Category>(e)).toList()
+    if (t == _i1.getType<_i9.MapZone?>()) {
+      return (data != null ? _i9.MapZone.fromJson(data) : null) as T;
+    }
+    if (t == List<_i10.Category>) {
+      return (data as List).map((e) => deserialize<_i10.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i10.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i10.MapLayer>(e)).toList()
+    if (t == List<_i11.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i11.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i11.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i11.MapMarker>(e)).toList()
+    if (t == List<_i12.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i12.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i12.PmtilesFile>) {
+    if (t == List<_i13.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i12.PmtilesFile>(e))
+              .map((e) => deserialize<_i13.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i13.MapZone>) {
-      return (data as List).map((e) => deserialize<_i13.MapZone>(e)).toList()
+    if (t == List<_i14.PmtilesGroup>) {
+      return (data as List)
+              .map((e) => deserialize<_i14.PmtilesGroup>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i15.MapZone>) {
+      return (data as List).map((e) => deserialize<_i15.MapZone>(e)).toList()
           as T;
     }
     try {
-      return _i14.Protocol().deserialize<T>(data, t);
+      return _i16.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i15.Protocol().deserialize<T>(data, t);
+      return _i17.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -153,7 +169,8 @@ class Protocol extends _i1.SerializationManager {
       _i5.MapDataRestoreSummary => 'MapDataRestoreSummary',
       _i6.MapMarker => 'MapMarker',
       _i7.PmtilesFile => 'PmtilesFile',
-      _i8.MapZone => 'MapZone',
+      _i8.PmtilesGroup => 'PmtilesGroup',
+      _i9.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -180,14 +197,16 @@ class Protocol extends _i1.SerializationManager {
         return 'MapMarker';
       case _i7.PmtilesFile():
         return 'PmtilesFile';
-      case _i8.MapZone():
+      case _i8.PmtilesGroup():
+        return 'PmtilesGroup';
+      case _i9.MapZone():
         return 'MapZone';
     }
-    className = _i14.Protocol().getClassNameForObject(data);
+    className = _i16.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i15.Protocol().getClassNameForObject(data);
+    className = _i17.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -218,16 +237,19 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'PmtilesFile') {
       return deserialize<_i7.PmtilesFile>(data['data']);
     }
+    if (dataClassName == 'PmtilesGroup') {
+      return deserialize<_i8.PmtilesGroup>(data['data']);
+    }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i8.MapZone>(data['data']);
+      return deserialize<_i9.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i14.Protocol().deserializeByClassName(data);
+      return _i16.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i15.Protocol().deserializeByClassName(data);
+      return _i17.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -242,10 +264,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i14.Protocol().mapRecordToJson(record);
+      return _i16.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i15.Protocol().mapRecordToJson(record);
+      return _i17.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

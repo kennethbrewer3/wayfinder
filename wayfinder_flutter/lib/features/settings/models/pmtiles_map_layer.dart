@@ -7,11 +7,13 @@ import 'package:vector_tile_renderer/vector_tile_renderer.dart';
 /// Resolved map layer configuration for an active PMTiles archive.
 sealed class PmtilesMapLayerConfig {
   const PmtilesMapLayerConfig({
+    required this.catalogId,
     required this.minZoom,
     required this.maxZoom,
     required this.tileType,
   });
 
+  final String catalogId;
   final int minZoom;
   final int maxZoom;
   final TileType tileType;
@@ -19,6 +21,7 @@ sealed class PmtilesMapLayerConfig {
 
 class PmtilesRasterMapLayerConfig extends PmtilesMapLayerConfig {
   const PmtilesRasterMapLayerConfig({
+    required super.catalogId,
     required super.minZoom,
     required super.maxZoom,
     required super.tileType,
@@ -30,6 +33,7 @@ class PmtilesRasterMapLayerConfig extends PmtilesMapLayerConfig {
 
 class PmtilesVectorMapLayerConfig extends PmtilesMapLayerConfig {
   const PmtilesVectorMapLayerConfig({
+    required super.catalogId,
     required super.minZoom,
     required super.maxZoom,
     required super.tileType,

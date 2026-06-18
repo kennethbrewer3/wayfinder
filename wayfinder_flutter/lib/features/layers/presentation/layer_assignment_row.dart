@@ -35,8 +35,7 @@ class LayerAssignmentRow extends ConsumerWidget {
           layerNameForObject(layerId: layerId, layersById: const {}),
         ),
       ),
-      data: (result) {
-        final layers = result.layers;
+      data: (layers) {
         final selectedId = resolveSelectedLayerId(
           selectedLayerId: layerId,
           layers: layers,
@@ -56,7 +55,7 @@ class LayerAssignmentRow extends ConsumerWidget {
                   child: Text(layer.name),
                 ),
             ],
-            onChanged: result.syncedWithServer ? (value) => onChanged(value) : null,
+            onChanged: (value) => onChanged(value),
           ),
         );
       },

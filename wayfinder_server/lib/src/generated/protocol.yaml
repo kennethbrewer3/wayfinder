@@ -35,9 +35,19 @@ mapMarker:
   - deleteMarker:
 pmtiles:
   - listFiles:
+  - listGroups:
+  - createGroup:
+  - renameGroup:
+  - deleteGroup:
+  - setFileGroup:
+  - setGroupEnabled:
+  - setUngroupedEnabled:
   - activeFileId:
   - setActiveFile:
+  - setFileEnabled:
+  - enableAllFiles:
   - clearActiveFile:
+  - disableAllFiles:
   - deleteFile:
 mapZone:
   - listZones:

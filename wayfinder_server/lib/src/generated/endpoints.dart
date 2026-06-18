@@ -661,6 +661,148 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
                   .listFiles(session),
         ),
+        'listGroups': _i1.MethodConnector(
+          name: 'listGroups',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
+                  .listGroups(session),
+        ),
+        'createGroup': _i1.MethodConnector(
+          name: 'createGroup',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).createGroup(
+                    session,
+                    params['name'],
+                  ),
+        ),
+        'renameGroup': _i1.MethodConnector(
+          name: 'renameGroup',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).renameGroup(
+                    session,
+                    params['id'],
+                    params['name'],
+                  ),
+        ),
+        'deleteGroup': _i1.MethodConnector(
+          name: 'deleteGroup',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).deleteGroup(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'setFileGroup': _i1.MethodConnector(
+          name: 'setFileGroup',
+          params: {
+            'fileId': _i1.ParameterDescription(
+              name: 'fileId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+            'groupId': _i1.ParameterDescription(
+              name: 'groupId',
+              type: _i1.getType<_i1.UuidValue?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).setFileGroup(
+                    session,
+                    params['fileId'],
+                    params['groupId'],
+                  ),
+        ),
+        'setGroupEnabled': _i1.MethodConnector(
+          name: 'setGroupEnabled',
+          params: {
+            'groupId': _i1.ParameterDescription(
+              name: 'groupId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+            'enabled': _i1.ParameterDescription(
+              name: 'enabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).setGroupEnabled(
+                    session,
+                    params['groupId'],
+                    enabled: params['enabled'],
+                  ),
+        ),
+        'setUngroupedEnabled': _i1.MethodConnector(
+          name: 'setUngroupedEnabled',
+          params: {
+            'enabled': _i1.ParameterDescription(
+              name: 'enabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
+                  .setUngroupedEnabled(
+                    session,
+                    enabled: params['enabled'],
+                  ),
+        ),
         'activeFileId': _i1.MethodConnector(
           name: 'activeFileId',
           params: {},
@@ -690,6 +832,41 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['id'],
                   ),
         ),
+        'setFileEnabled': _i1.MethodConnector(
+          name: 'setFileEnabled',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+            'enabled': _i1.ParameterDescription(
+              name: 'enabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pmtiles'] as _i9.PmtilesEndpoint).setFileEnabled(
+                    session,
+                    params['id'],
+                    enabled: params['enabled'],
+                  ),
+        ),
+        'enableAllFiles': _i1.MethodConnector(
+          name: 'enableAllFiles',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
+                  .enableAllFiles(session),
+        ),
         'clearActiveFile': _i1.MethodConnector(
           name: 'clearActiveFile',
           params: {},
@@ -699,6 +876,16 @@ class Endpoints extends _i1.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
                   .clearActiveFile(session),
+        ),
+        'disableAllFiles': _i1.MethodConnector(
+          name: 'disableAllFiles',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i9.PmtilesEndpoint)
+                  .disableAllFiles(session),
         ),
         'deleteFile': _i1.MethodConnector(
           name: 'deleteFile',

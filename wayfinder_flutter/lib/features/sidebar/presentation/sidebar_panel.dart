@@ -132,12 +132,20 @@ class _LayerOrganizedPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final layersResultAsync = ref.watch(layersProvider);
+    final layersAsync = ref.watch(layersProvider);
 
-    if (layersResultAsync.isLoading ||
+    if (layersAsync.isLoading ||
         markersAsync.isLoading ||
         zonesAsync.isLoading) {
       return const Center(child: CircularProgressIndicator());
+    }
+
+    if (layersAsync.hasError) {
+      return MapObjectsErrorState(
+        title: 'Layers unavailable',
+        message: layersLoadErrorMessage(layersAsync.error!),
+        onRetry: () => ref.invalidate(layersProvider),
+      );
     }
 
     if (markersAsync.hasError) {
@@ -156,13 +164,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
       );
     }
 
-    final layersResult = layersResultAsync.value ??
-        LayersLoadResult(
-          layers: [syntheticDefaultLayer()],
-          syncedWithServer: false,
-        );
-    final layers = layersResult.layers;
-    final syncedWithServer = layersResult.syncedWithServer;
+    final layers = layersAsync.value ?? const <MapLayer>[];
     final markers = markersAsync.value ?? const <MapMarker>[];
     final zones = zonesAsync.value ?? const <MapZone>[];
     final query = sidebar.searchQuery.trim().toLowerCase();
@@ -185,25 +187,6 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (!syncedWithServer)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Material(
-              color: Theme.of(context).colorScheme.errorContainer,
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  'Layers are running in offline mode because the server has not '
-                  'been updated yet. Restart the Wayfinder server with migrations '
-                  'to enable saving layers.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onErrorContainer,
-                      ),
-                ),
-              ),
-            ),
-          ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Text(
@@ -323,20 +306,6 @@ class _LayerOrganizedPanel extends ConsumerWidget {
   }
 
   Future<void> _createLayer(BuildContext context, WidgetRef ref) async {
-    final synced =
-        ref.read(layersProvider).valueOrNull?.syncedWithServer ?? false;
-    if (!synced) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Update and restart the Wayfinder server before adding layers.',
-          ),
-        ),
-      );
-      return;
-    }
-
     final name = await _promptForLayerName(
       context: context,
       title: 'New layer',
@@ -347,8 +316,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     }
 
     await createMapLayer(ref, name);
-    final createdLayers =
-        (await ref.read(layersProvider.future)).layers;
+    final createdLayers = await ref.read(layersProvider.future);
     final created = createdLayers.lastWhere(
       (layer) => layer.name == name,
       orElse: () => createdLayers.last,
@@ -413,7 +381,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
 
     await deleteMapLayer(ref, layer);
     final remaining =
-        ref.read(layersProvider).valueOrNull?.layers ?? const <MapLayer>[];
+        ref.read(layersProvider).valueOrNull ?? const <MapLayer>[];
     ref.read(sidebarProvider.notifier).setSelectedLayerId(
           resolveSelectedLayerId(
             selectedLayerId: null,

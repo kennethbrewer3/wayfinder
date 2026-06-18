@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
+import '../../pmtiles/pmtiles_catalog_sync.dart';
 import '../../pmtiles/pmtiles_storage.dart';
 import '../../pmtiles/pmtiles_upload_handler.dart';
 import 'rest_json.dart';
@@ -13,6 +14,7 @@ abstract final class PmtilesRestHandlers {
   static Future<Result> list(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
+      await PmtilesCatalogSync.sync(session);
       final files = await PmtilesFile.db.find(
         session,
         orderBy: (t) => t.addedAt,
@@ -46,15 +48,10 @@ abstract final class PmtilesRestHandlers {
       if (file == null) {
         return RestJson.error(404, 'PMTiles file not found');
       }
-      if (!_storage.exists(id.uuid)) {
+      if (!_storage.existsForEntry(id: id.uuid, name: file.name)) {
         return RestJson.error(400, 'PMTiles file bytes missing on disk');
       }
 
-      await PmtilesFile.db.updateWhere(
-        session,
-        where: (t) => t.isActive.equals(true),
-        columnValues: (t) => [t.isActive(false)],
-      );
       await PmtilesFile.db.updateRow(
         session,
         file.copyWith(isActive: true),
@@ -89,23 +86,8 @@ abstract final class PmtilesRestHandlers {
         return RestJson.error(404, 'PMTiles file not found');
       }
 
-      await _storage.delete(id.uuid);
+      await _storage.deleteForEntry(id: id.uuid, name: file.name);
       await PmtilesFile.db.deleteRow(session, file);
-
-      if (file.isActive) {
-        final remaining = await PmtilesFile.db.find(
-          session,
-          orderBy: (t) => t.addedAt,
-          orderDescending: true,
-          limit: 1,
-        );
-        if (remaining.isNotEmpty) {
-          await PmtilesFile.db.updateRow(
-            session,
-            remaining.first.copyWith(isActive: true),
-          );
-        }
-      }
 
       return RestJson.noContent();
     });

@@ -4,18 +4,24 @@ class PmtilesFile {
     required this.name,
     required this.sizeBytes,
     required this.addedAt,
+    required this.enabledOnMap,
+    this.groupId,
   });
 
   final String id;
   final String name;
   final int sizeBytes;
   final DateTime addedAt;
+  final bool enabledOnMap;
+  final String? groupId;
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
         'sizeBytes': sizeBytes,
         'addedAt': addedAt.toIso8601String(),
+        'enabledOnMap': enabledOnMap,
+        'groupId': groupId,
       };
 
   factory PmtilesFile.fromJson(Map<String, dynamic> json) {
@@ -24,6 +30,8 @@ class PmtilesFile {
       name: json['name'] as String,
       sizeBytes: json['sizeBytes'] as int,
       addedAt: DateTime.parse(json['addedAt'] as String),
+      enabledOnMap: json['enabledOnMap'] as bool? ?? false,
+      groupId: json['groupId'] as String?,
     );
   }
 

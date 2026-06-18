@@ -1,25 +1,67 @@
 services:
-  # Development services
-  # NOTE: Local dev ports use 18090+ to avoid conflicts with other Docker stacks
-  # (e.g. forge_rack on 8080/8090). API server uses 18080-18082 in development.yaml.
+  # Start everything: docker compose up -d --build
+  #
+  # Copy `.env.example` to `.env` and adjust paths/ports.
+  #
+  # Map tiles: set WAYFINDER_PMTILES_HOST_PATH to a host folder containing
+  # `.pmtiles` files (pre-downloaded archives). They are mounted into the
+  # server container and registered automatically at startup.
+  # Example: WAYFINDER_PMTILES_HOST_PATH=/Volumes/maptiles
   postgres:
     image: pgvector/pgvector:pg16
     ports:
-      - "18090:5432"
+      - "${WAYFINDER_DB_PORT:-18090}:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: wayfinder
       POSTGRES_PASSWORD: "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"
     volumes:
       - wayfinder_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d wayfinder"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:6.2.6
     ports:
-      - "18091:6379"
+      - "${WAYFINDER_REDIS_PORT:-18091}:6379"
     command: redis-server --requirepass "jZSPtad_20Z4JmPOazsDurPauqOk9FlM"
     environment:
       - REDIS_REPLICATION_MODE=master
+
+  server:
+    build:
+      context: ..
+      dockerfile: wayfinder_server/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${SERVERPOD_API_SERVER_PORT:-18080}:18080"
+      - "${SERVERPOD_INSIGHTS_SERVER_PORT:-18081}:18081"
+      - "${SERVERPOD_WEB_SERVER_PORT:-18082}:18082"
+    environment:
+      runmode: development
+      SERVERPOD_RUN_MODE: development
+      SERVERPOD_APPLY_MIGRATIONS: "true"
+      SERVERPOD_DATABASE_HOST: postgres
+      SERVERPOD_DATABASE_PORT: "5432"
+      SERVERPOD_DATABASE_PASSWORD: "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"
+      SERVERPOD_API_SERVER_PORT: "18080"
+      SERVERPOD_INSIGHTS_SERVER_PORT: "18081"
+      SERVERPOD_WEB_SERVER_PORT: "18082"
+      SERVERPOD_API_SERVER_PUBLIC_HOST: localhost
+      SERVERPOD_API_SERVER_PUBLIC_PORT: "${SERVERPOD_API_SERVER_PORT:-18080}"
+      SERVERPOD_API_SERVER_PUBLIC_SCHEME: http
+      SERVERPOD_WEB_SERVER_PUBLIC_HOST: localhost
+      SERVERPOD_WEB_SERVER_PUBLIC_PORT: "${SERVERPOD_WEB_SERVER_PORT:-18082}"
+      SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: http
+      WAYFINDER_PMTILES_STORAGE: /data/pmtiles
+    volumes:
+      - ${WAYFINDER_PMTILES_HOST_PATH:-./storage/pmtiles}:/data/pmtiles
+    restart: unless-stopped
 
   # Test services (not started during normal dev — use: docker compose --profile test up -d)
   postgres_test:
@@ -27,7 +69,7 @@ services:
       - test
     image: pgvector/pgvector:pg16
     ports:
-      - "19090:5432"
+      - "${WAYFINDER_DB_TEST_PORT:-19090}:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: wayfinder_test
@@ -40,7 +82,7 @@ services:
       - test
     image: redis:6.2.6
     ports:
-      - "19091:6379"
+      - "${WAYFINDER_REDIS_TEST_PORT:-19091}:6379"
     command: redis-server --requirepass "68i8nW9rJ80VZ_UEGd9xKshW1FvTdP0a"
     environment:
       - REDIS_REPLICATION_MODE=master

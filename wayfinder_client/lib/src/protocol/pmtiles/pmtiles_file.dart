@@ -19,6 +19,13 @@ abstract class PmtilesFile implements _i1.SerializableModel {
     required this.sizeBytes,
     required this.isActive,
     required this.addedAt,
+    this.minZoom,
+    this.maxZoom,
+    this.minLatitude,
+    this.minLongitude,
+    this.maxLatitude,
+    this.maxLongitude,
+    this.groupId,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
   factory PmtilesFile({
@@ -27,6 +34,13 @@ abstract class PmtilesFile implements _i1.SerializableModel {
     required int sizeBytes,
     required bool isActive,
     required DateTime addedAt,
+    int? minZoom,
+    int? maxZoom,
+    double? minLatitude,
+    double? minLongitude,
+    double? maxLatitude,
+    double? maxLongitude,
+    _i1.UuidValue? groupId,
   }) = _PmtilesFileImpl;
 
   factory PmtilesFile.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +52,15 @@ abstract class PmtilesFile implements _i1.SerializableModel {
       sizeBytes: jsonSerialization['sizeBytes'] as int,
       isActive: _i1.BoolJsonExtension.fromJson(jsonSerialization['isActive']),
       addedAt: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['addedAt']),
+      minZoom: jsonSerialization['minZoom'] as int?,
+      maxZoom: jsonSerialization['maxZoom'] as int?,
+      minLatitude: (jsonSerialization['minLatitude'] as num?)?.toDouble(),
+      minLongitude: (jsonSerialization['minLongitude'] as num?)?.toDouble(),
+      maxLatitude: (jsonSerialization['maxLatitude'] as num?)?.toDouble(),
+      maxLongitude: (jsonSerialization['maxLongitude'] as num?)?.toDouble(),
+      groupId: jsonSerialization['groupId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['groupId']),
     );
   }
 
@@ -52,6 +75,20 @@ abstract class PmtilesFile implements _i1.SerializableModel {
 
   DateTime addedAt;
 
+  int? minZoom;
+
+  int? maxZoom;
+
+  double? minLatitude;
+
+  double? minLongitude;
+
+  double? maxLatitude;
+
+  double? maxLongitude;
+
+  _i1.UuidValue? groupId;
+
   /// Returns a shallow copy of this [PmtilesFile]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -61,6 +98,13 @@ abstract class PmtilesFile implements _i1.SerializableModel {
     int? sizeBytes,
     bool? isActive,
     DateTime? addedAt,
+    int? minZoom,
+    int? maxZoom,
+    double? minLatitude,
+    double? minLongitude,
+    double? maxLatitude,
+    double? maxLongitude,
+    _i1.UuidValue? groupId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -71,6 +115,13 @@ abstract class PmtilesFile implements _i1.SerializableModel {
       'sizeBytes': sizeBytes,
       'isActive': isActive,
       'addedAt': addedAt.toJson(),
+      if (minZoom != null) 'minZoom': minZoom,
+      if (maxZoom != null) 'maxZoom': maxZoom,
+      if (minLatitude != null) 'minLatitude': minLatitude,
+      if (minLongitude != null) 'minLongitude': minLongitude,
+      if (maxLatitude != null) 'maxLatitude': maxLatitude,
+      if (maxLongitude != null) 'maxLongitude': maxLongitude,
+      if (groupId != null) 'groupId': groupId?.toJson(),
     };
   }
 
@@ -80,6 +131,8 @@ abstract class PmtilesFile implements _i1.SerializableModel {
   }
 }
 
+class _Undefined {}
+
 class _PmtilesFileImpl extends PmtilesFile {
   _PmtilesFileImpl({
     _i1.UuidValue? id,
@@ -87,12 +140,26 @@ class _PmtilesFileImpl extends PmtilesFile {
     required int sizeBytes,
     required bool isActive,
     required DateTime addedAt,
+    int? minZoom,
+    int? maxZoom,
+    double? minLatitude,
+    double? minLongitude,
+    double? maxLatitude,
+    double? maxLongitude,
+    _i1.UuidValue? groupId,
   }) : super._(
          id: id,
          name: name,
          sizeBytes: sizeBytes,
          isActive: isActive,
          addedAt: addedAt,
+         minZoom: minZoom,
+         maxZoom: maxZoom,
+         minLatitude: minLatitude,
+         minLongitude: minLongitude,
+         maxLatitude: maxLatitude,
+         maxLongitude: maxLongitude,
+         groupId: groupId,
        );
 
   /// Returns a shallow copy of this [PmtilesFile]
@@ -105,6 +172,13 @@ class _PmtilesFileImpl extends PmtilesFile {
     int? sizeBytes,
     bool? isActive,
     DateTime? addedAt,
+    Object? minZoom = _Undefined,
+    Object? maxZoom = _Undefined,
+    Object? minLatitude = _Undefined,
+    Object? minLongitude = _Undefined,
+    Object? maxLatitude = _Undefined,
+    Object? maxLongitude = _Undefined,
+    Object? groupId = _Undefined,
   }) {
     return PmtilesFile(
       id: id ?? this.id,
@@ -112,6 +186,13 @@ class _PmtilesFileImpl extends PmtilesFile {
       sizeBytes: sizeBytes ?? this.sizeBytes,
       isActive: isActive ?? this.isActive,
       addedAt: addedAt ?? this.addedAt,
+      minZoom: minZoom is int? ? minZoom : this.minZoom,
+      maxZoom: maxZoom is int? ? maxZoom : this.maxZoom,
+      minLatitude: minLatitude is double? ? minLatitude : this.minLatitude,
+      minLongitude: minLongitude is double? ? minLongitude : this.minLongitude,
+      maxLatitude: maxLatitude is double? ? maxLatitude : this.maxLatitude,
+      maxLongitude: maxLongitude is double? ? maxLongitude : this.maxLongitude,
+      groupId: groupId is _i1.UuidValue? ? groupId : this.groupId,
     );
   }
 }

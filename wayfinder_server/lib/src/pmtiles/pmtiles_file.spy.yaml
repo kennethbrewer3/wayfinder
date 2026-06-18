@@ -6,7 +6,16 @@ fields:
   sizeBytes: int
   isActive: bool
   addedAt: DateTime
+  minZoom: int?
+  maxZoom: int?
+  minLatitude: double?
+  minLongitude: double?
+  maxLatitude: double?
+  maxLongitude: double?
+  groupId: UuidValue?
 
 indexes:
   pmtiles_file_name_idx:
     fields: name
+  pmtiles_file_group_id_idx:
+    fields: groupId

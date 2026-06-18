@@ -24,8 +24,10 @@ import 'package:wayfinder_client/src/protocol/map/map_data_restore_summary.dart'
 import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i9;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i10;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i11;
-import 'protocol.dart' as _i12;
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
+    as _i11;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i12;
+import 'protocol.dart' as _i13;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -437,6 +439,70 @@ class EndpointPmtiles extends _i2.EndpointRef {
         {},
       );
 
+  _i3.Future<List<_i11.PmtilesGroup>> listGroups() =>
+      caller.callServerEndpoint<List<_i11.PmtilesGroup>>(
+        'pmtiles',
+        'listGroups',
+        {},
+      );
+
+  _i3.Future<_i11.PmtilesGroup> createGroup(String name) =>
+      caller.callServerEndpoint<_i11.PmtilesGroup>(
+        'pmtiles',
+        'createGroup',
+        {'name': name},
+      );
+
+  _i3.Future<_i11.PmtilesGroup> renameGroup(
+    _i2.UuidValue id,
+    String name,
+  ) => caller.callServerEndpoint<_i11.PmtilesGroup>(
+    'pmtiles',
+    'renameGroup',
+    {
+      'id': id,
+      'name': name,
+    },
+  );
+
+  _i3.Future<bool> deleteGroup(_i2.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'pmtiles',
+        'deleteGroup',
+        {'id': id},
+      );
+
+  _i3.Future<void> setFileGroup(
+    _i2.UuidValue fileId,
+    _i2.UuidValue? groupId,
+  ) => caller.callServerEndpoint<void>(
+    'pmtiles',
+    'setFileGroup',
+    {
+      'fileId': fileId,
+      'groupId': groupId,
+    },
+  );
+
+  _i3.Future<void> setGroupEnabled(
+    _i2.UuidValue groupId, {
+    required bool enabled,
+  }) => caller.callServerEndpoint<void>(
+    'pmtiles',
+    'setGroupEnabled',
+    {
+      'groupId': groupId,
+      'enabled': enabled,
+    },
+  );
+
+  _i3.Future<void> setUngroupedEnabled({required bool enabled}) =>
+      caller.callServerEndpoint<void>(
+        'pmtiles',
+        'setUngroupedEnabled',
+        {'enabled': enabled},
+      );
+
   _i3.Future<_i2.UuidValue?> activeFileId() =>
       caller.callServerEndpoint<_i2.UuidValue?>(
         'pmtiles',
@@ -444,6 +510,7 @@ class EndpointPmtiles extends _i2.EndpointRef {
         {},
       );
 
+  /// Enables a file on the map without disabling others.
   _i3.Future<void> setActiveFile(_i2.UuidValue id) =>
       caller.callServerEndpoint<void>(
         'pmtiles',
@@ -451,9 +518,33 @@ class EndpointPmtiles extends _i2.EndpointRef {
         {'id': id},
       );
 
+  _i3.Future<void> setFileEnabled(
+    _i2.UuidValue id, {
+    required bool enabled,
+  }) => caller.callServerEndpoint<void>(
+    'pmtiles',
+    'setFileEnabled',
+    {
+      'id': id,
+      'enabled': enabled,
+    },
+  );
+
+  _i3.Future<void> enableAllFiles() => caller.callServerEndpoint<void>(
+    'pmtiles',
+    'enableAllFiles',
+    {},
+  );
+
   _i3.Future<void> clearActiveFile() => caller.callServerEndpoint<void>(
     'pmtiles',
     'clearActiveFile',
+    {},
+  );
+
+  _i3.Future<void> disableAllFiles() => caller.callServerEndpoint<void>(
+    'pmtiles',
+    'disableAllFiles',
     {},
   );
 
@@ -472,29 +563,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i11.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i11.MapZone>>(
+  _i3.Future<List<_i12.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i12.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i11.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i11.MapZone?>(
+  _i3.Future<_i12.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i12.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i11.MapZone> createZone(_i11.MapZone zone) =>
-      caller.callServerEndpoint<_i11.MapZone>(
+  _i3.Future<_i12.MapZone> createZone(_i12.MapZone zone) =>
+      caller.callServerEndpoint<_i12.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i11.MapZone> updateZone(_i11.MapZone zone) =>
-      caller.callServerEndpoint<_i11.MapZone>(
+  _i3.Future<_i12.MapZone> updateZone(_i12.MapZone zone) =>
+      caller.callServerEndpoint<_i12.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -539,7 +630,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i12.Protocol(),
+         _i13.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

@@ -9,47 +9,30 @@ import '../../markers/providers/markers_provider.dart';
 import '../data/layers_repository.dart';
 import '../utils/map_layer_utils.dart';
 
-class LayersLoadResult {
-  const LayersLoadResult({
-    required this.layers,
-    required this.syncedWithServer,
-  });
-
-  final List<MapLayer> layers;
-  final bool syncedWithServer;
-}
-
-final layersProvider = FutureProvider<LayersLoadResult>((ref) async {
+final layersProvider = FutureProvider<List<MapLayer>>((ref) async {
   AppLogger.logMap.debug('📡 Fetching map layers from server');
   try {
     final client = ref.read(serverClientProvider);
     final layers = await fetchMapLayers(client);
     AppLogger.logMap.success(
       '📡 Map layers loaded',
-      data: 'count=${layers.length} synced=$layersLoadedFromServer',
+      data: 'count=${layers.length}',
     );
-    return LayersLoadResult(
-      layers: layers,
-      syncedWithServer: layersLoadedFromServer,
-    );
+    return layers;
   } catch (error, stackTrace) {
     AppLogger.logMap.error(
-      '📡 Failed to load map layers, using local default',
+      '📡 Failed to load map layers',
       error: error,
       stackTrace: stackTrace,
     );
-    return LayersLoadResult(
-      layers: [syntheticDefaultLayer()],
-      syncedWithServer: false,
-    );
+    rethrow;
   }
 });
 
 Future<void> createMapLayer(WidgetRef ref, String name) async {
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
-  final existing =
-      ref.read(layersProvider).valueOrNull?.layers ?? const <MapLayer>[];
+  final existing = ref.read(layersProvider).valueOrNull ?? const <MapLayer>[];
   final nextSortOrder = existing.isEmpty
       ? 0
       : existing
@@ -70,11 +53,6 @@ Future<void> createMapLayer(WidgetRef ref, String name) async {
 }
 
 Future<void> updateMapLayer(WidgetRef ref, MapLayer layer) async {
-  final synced = ref.read(layersProvider).valueOrNull?.syncedWithServer ?? false;
-  if (!synced) {
-    return;
-  }
-
   final client = ref.read(serverClientProvider);
   await client.mapLayer.updateLayer(
     layer.copyWith(updatedAt: DateTime.now().toUtc()),
@@ -83,11 +61,6 @@ Future<void> updateMapLayer(WidgetRef ref, MapLayer layer) async {
 }
 
 Future<void> deleteMapLayer(WidgetRef ref, MapLayer layer) async {
-  final synced = ref.read(layersProvider).valueOrNull?.syncedWithServer ?? false;
-  if (!synced) {
-    return;
-  }
-
   final client = ref.read(serverClientProvider);
   await client.mapLayer.deleteLayer(layer.id);
   ref.invalidate(layersProvider);
@@ -99,19 +72,13 @@ Future<void> reorderMapLayers(
   WidgetRef ref,
   List<MapLayer> layers,
 ) async {
-  final synced = ref.read(layersProvider).valueOrNull?.syncedWithServer ?? false;
-  if (!synced) {
-    return;
-  }
-
   final client = ref.read(serverClientProvider);
   await client.mapLayer.reorderLayers(layers);
   ref.invalidate(layersProvider);
 }
 
 UuidValue? selectedLayerIdForCreate(WidgetRef ref) {
-  final layers =
-      ref.read(layersProvider).valueOrNull?.layers ?? const <MapLayer>[];
+  final layers = ref.read(layersProvider).valueOrNull ?? const <MapLayer>[];
   final sidebar = ref.read(sidebarProvider);
   return resolveSelectedLayerId(
     selectedLayerId: sidebar.selectedLayerId,

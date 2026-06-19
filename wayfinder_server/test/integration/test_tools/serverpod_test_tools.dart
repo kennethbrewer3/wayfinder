@@ -17,16 +17,20 @@ import 'dart:async' as _i3;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
 import 'package:wayfinder_server/src/generated/categories/category.dart' as _i5;
-import 'package:wayfinder_server/src/generated/greetings/greeting.dart' as _i6;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i7;
+import 'package:wayfinder_server/src/generated/geocoding/geocoding_settings.dart'
+    as _i6;
+import 'package:wayfinder_server/src/generated/geocoding/geocode_search_result.dart'
+    as _i7;
+import 'package:wayfinder_server/src/generated/greetings/greeting.dart' as _i8;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i9;
 import 'package:wayfinder_server/src/generated/map/map_data_restore_summary.dart'
-    as _i8;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i9;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i10;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i11;
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
+    as _i12;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
-    as _i11;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i12;
+    as _i13;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i14;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -147,6 +151,8 @@ class TestEndpoints {
 
   late final _CategoryEndpoint category;
 
+  late final _GeocodingEndpoint geocoding;
+
   late final _GreetingEndpoint greeting;
 
   late final _MapLayerEndpoint mapLayer;
@@ -176,6 +182,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     category = _CategoryEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    geocoding = _GeocodingEndpoint(
       endpoints,
       serializationManager,
     );
@@ -689,6 +699,387 @@ class _CategoryEndpoint {
   }
 }
 
+class _GeocodingEndpoint {
+  _GeocodingEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i6.GeocodingSettings> getSettings(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'getSettings',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'getSettings',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i6.GeocodingSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i6.GeocodingSettings> updateSourceUrl(
+    _i1.TestSessionBuilder sessionBuilder,
+    String sourceUrl, {
+    List<String>? countryCodes,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'updateSourceUrl',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'updateSourceUrl',
+          parameters: _i1.testObjectToJson({
+            'sourceUrl': sourceUrl,
+            'countryCodes': countryCodes,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i6.GeocodingSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i6.GeocodingSettings> startImport(
+    _i1.TestSessionBuilder sessionBuilder, {
+    String? sourceUrl,
+    List<String>? countryCodes,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'startImport',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'startImport',
+          parameters: _i1.testObjectToJson({
+            'sourceUrl': sourceUrl,
+            'countryCodes': countryCodes,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i6.GeocodingSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i6.GeocodingSettings> startHousenumbersImport(
+    _i1.TestSessionBuilder sessionBuilder, {
+    String? sourceUrl,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'startHousenumbersImport',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'startHousenumbersImport',
+          parameters: _i1.testObjectToJson({'sourceUrl': sourceUrl}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i6.GeocodingSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i7.GeocodeSearchResult>> searchPlaces(
+    _i1.TestSessionBuilder sessionBuilder,
+    String query,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'searchPlaces',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'searchPlaces',
+          parameters: _i1.testObjectToJson({'query': query}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i7.GeocodeSearchResult>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> isSearchReady(_i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'isSearchReady',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'isSearchReady',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<String> exportPlacesArchive(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'exportPlacesArchive',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'exportPlacesArchive',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<String>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<String> exportHousenumbersArchive(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'exportHousenumbersArchive',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'exportHousenumbersArchive',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<String>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<int> importPlacesArchive(
+    _i1.TestSessionBuilder sessionBuilder,
+    String archiveJson,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'importPlacesArchive',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'importPlacesArchive',
+          parameters: _i1.testObjectToJson({'archiveJson': archiveJson}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<int> importHousenumbersArchive(
+    _i1.TestSessionBuilder sessionBuilder,
+    String archiveJson,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'importHousenumbersArchive',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'importHousenumbersArchive',
+          parameters: _i1.testObjectToJson({'archiveJson': archiveJson}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<int> clearPlaces(_i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'clearPlaces',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'clearPlaces',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<int> clearHousenumbers(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'geocoding',
+            method: 'clearHousenumbers',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'geocoding',
+          methodName: 'clearHousenumbers',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _GreetingEndpoint {
   _GreetingEndpoint(
     this._endpointDispatch,
@@ -699,7 +1090,7 @@ class _GreetingEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i6.Greeting> hello(
+  _i3.Future<_i8.Greeting> hello(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -722,7 +1113,7 @@ class _GreetingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i6.Greeting>);
+                as _i3.Future<_i8.Greeting>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -741,7 +1132,7 @@ class _MapLayerEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i7.MapLayer>> listLayers(
+  _i3.Future<List<_i9.MapLayer>> listLayers(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -763,7 +1154,7 @@ class _MapLayerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i7.MapLayer>>);
+                as _i3.Future<List<_i9.MapLayer>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -771,7 +1162,7 @@ class _MapLayerEndpoint {
     });
   }
 
-  _i3.Future<_i7.MapLayer?> getLayer(
+  _i3.Future<_i9.MapLayer?> getLayer(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -794,7 +1185,7 @@ class _MapLayerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i7.MapLayer?>);
+                as _i3.Future<_i9.MapLayer?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -802,9 +1193,9 @@ class _MapLayerEndpoint {
     });
   }
 
-  _i3.Future<_i7.MapLayer> createLayer(
+  _i3.Future<_i9.MapLayer> createLayer(
     _i1.TestSessionBuilder sessionBuilder,
-    _i7.MapLayer layer,
+    _i9.MapLayer layer,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -825,7 +1216,7 @@ class _MapLayerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i7.MapLayer>);
+                as _i3.Future<_i9.MapLayer>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -833,9 +1224,9 @@ class _MapLayerEndpoint {
     });
   }
 
-  _i3.Future<_i7.MapLayer> updateLayer(
+  _i3.Future<_i9.MapLayer> updateLayer(
     _i1.TestSessionBuilder sessionBuilder,
-    _i7.MapLayer layer,
+    _i9.MapLayer layer,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -856,7 +1247,7 @@ class _MapLayerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i7.MapLayer>);
+                as _i3.Future<_i9.MapLayer>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -895,9 +1286,9 @@ class _MapLayerEndpoint {
     });
   }
 
-  _i3.Future<List<_i7.MapLayer>> reorderLayers(
+  _i3.Future<List<_i9.MapLayer>> reorderLayers(
     _i1.TestSessionBuilder sessionBuilder,
-    List<_i7.MapLayer> layers,
+    List<_i9.MapLayer> layers,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -918,7 +1309,7 @@ class _MapLayerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i7.MapLayer>>);
+                as _i3.Future<List<_i9.MapLayer>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -967,7 +1358,7 @@ class _MapDataEndpoint {
     });
   }
 
-  _i3.Future<_i8.MapDataRestoreSummary> restoreMapData(
+  _i3.Future<_i10.MapDataRestoreSummary> restoreMapData(
     _i1.TestSessionBuilder sessionBuilder,
     String backupJson,
   ) async {
@@ -990,7 +1381,7 @@ class _MapDataEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i8.MapDataRestoreSummary>);
+                as _i3.Future<_i10.MapDataRestoreSummary>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1009,7 +1400,7 @@ class _MapMarkerEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i9.MapMarker>> listMarkers(
+  _i3.Future<List<_i11.MapMarker>> listMarkers(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1031,7 +1422,7 @@ class _MapMarkerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i9.MapMarker>>);
+                as _i3.Future<List<_i11.MapMarker>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1039,7 +1430,7 @@ class _MapMarkerEndpoint {
     });
   }
 
-  _i3.Future<_i9.MapMarker?> getMarker(
+  _i3.Future<_i11.MapMarker?> getMarker(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -1062,7 +1453,7 @@ class _MapMarkerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i9.MapMarker?>);
+                as _i3.Future<_i11.MapMarker?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1070,9 +1461,9 @@ class _MapMarkerEndpoint {
     });
   }
 
-  _i3.Future<_i9.MapMarker> createMarker(
+  _i3.Future<_i11.MapMarker> createMarker(
     _i1.TestSessionBuilder sessionBuilder,
-    _i9.MapMarker marker,
+    _i11.MapMarker marker,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1093,7 +1484,7 @@ class _MapMarkerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i9.MapMarker>);
+                as _i3.Future<_i11.MapMarker>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1101,9 +1492,9 @@ class _MapMarkerEndpoint {
     });
   }
 
-  _i3.Future<_i9.MapMarker> updateMarker(
+  _i3.Future<_i11.MapMarker> updateMarker(
     _i1.TestSessionBuilder sessionBuilder,
-    _i9.MapMarker marker,
+    _i11.MapMarker marker,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1124,7 +1515,7 @@ class _MapMarkerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i9.MapMarker>);
+                as _i3.Future<_i11.MapMarker>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1174,7 +1565,7 @@ class _PmtilesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i10.PmtilesFile>> listFiles(
+  _i3.Future<List<_i12.PmtilesFile>> listFiles(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1196,7 +1587,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i10.PmtilesFile>>);
+                as _i3.Future<List<_i12.PmtilesFile>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1204,7 +1595,7 @@ class _PmtilesEndpoint {
     });
   }
 
-  _i3.Future<List<_i11.PmtilesGroup>> listGroups(
+  _i3.Future<List<_i13.PmtilesGroup>> listGroups(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1226,7 +1617,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i11.PmtilesGroup>>);
+                as _i3.Future<List<_i13.PmtilesGroup>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1234,7 +1625,7 @@ class _PmtilesEndpoint {
     });
   }
 
-  _i3.Future<_i11.PmtilesGroup> createGroup(
+  _i3.Future<_i13.PmtilesGroup> createGroup(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -1257,7 +1648,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i11.PmtilesGroup>);
+                as _i3.Future<_i13.PmtilesGroup>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1265,7 +1656,7 @@ class _PmtilesEndpoint {
     });
   }
 
-  _i3.Future<_i11.PmtilesGroup> renameGroup(
+  _i3.Future<_i13.PmtilesGroup> renameGroup(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
     String name,
@@ -1292,7 +1683,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i11.PmtilesGroup>);
+                as _i3.Future<_i13.PmtilesGroup>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1658,7 +2049,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i12.MapZone>> listZones(
+  _i3.Future<List<_i14.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1680,7 +2071,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i12.MapZone>>);
+                as _i3.Future<List<_i14.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1688,7 +2079,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i12.MapZone?> getZone(
+  _i3.Future<_i14.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -1711,7 +2102,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i12.MapZone?>);
+                as _i3.Future<_i14.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1719,9 +2110,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i12.MapZone> createZone(
+  _i3.Future<_i14.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i12.MapZone zone,
+    _i14.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1742,7 +2133,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i12.MapZone>);
+                as _i3.Future<_i14.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1750,9 +2141,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i12.MapZone> updateZone(
+  _i3.Future<_i14.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i12.MapZone zone,
+    _i14.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1773,7 +2164,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i12.MapZone>);
+                as _i3.Future<_i14.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

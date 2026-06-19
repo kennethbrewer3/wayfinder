@@ -128,4 +128,5 @@ GET /pmtiles/files/{id}
 - [API.md](API.md) — REST API manual
 - [technical-architecture-specification.md](technical-architecture-specification.md) — architecture spec
 - [wayfinder_server/README.md](wayfinder_server/README.md) — server-specific notes
+- [wayfinder_server/DATA_MIGRATION.md](wayfinder_server/DATA_MIGRATION.md) — moving Postgres and PMTiles to another volume
 - [wayfinder_flutter/README.md](wayfinder_flutter/README.md) — Flutter client notes

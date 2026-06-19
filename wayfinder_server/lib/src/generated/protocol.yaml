@@ -15,6 +15,19 @@ category:
   - createCategory:
   - updateCategory:
   - deleteCategory:
+geocoding:
+  - getSettings:
+  - updateSourceUrl:
+  - startImport:
+  - startHousenumbersImport:
+  - searchPlaces:
+  - isSearchReady:
+  - exportPlacesArchive:
+  - exportHousenumbersArchive:
+  - importPlacesArchive:
+  - importHousenumbersArchive:
+  - clearPlaces:
+  - clearHousenumbers:
 greeting:
   - hello:
 mapLayer:

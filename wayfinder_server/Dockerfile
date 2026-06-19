@@ -21,6 +21,8 @@ RUN dart compile exe bin/main.dart -o bin/server
 # Final stage
 FROM alpine:latest
 
+RUN apk add --no-cache ca-certificates
+
 ENV runmode=development
 ENV serverid=default
 ENV logging=normal

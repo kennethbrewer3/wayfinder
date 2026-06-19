@@ -1,0 +1,19 @@
+class: GeocodePlace
+table: geocode_place
+fields:
+  id: int?
+  name: String
+  displayName: String?
+  latitude: double
+  longitude: double
+  placeRank: int
+  importance: double
+  countryCode: String?
+  featureClass: String?
+  featureType: String?
+
+indexes:
+  geocode_place_name_idx:
+    fields: name
+  geocode_place_importance_idx:
+    fields: importance

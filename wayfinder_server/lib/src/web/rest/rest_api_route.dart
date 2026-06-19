@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import 'categories_rest_handlers.dart';
+import 'geocoding_rest_handlers.dart';
 import 'health_rest_handlers.dart';
 import 'layers_rest_handlers.dart';
 import 'map_data_rest_handlers.dart';
@@ -50,7 +51,27 @@ class RestApiRoute extends Route {
       ..get('/pmtiles/active', PmtilesRestHandlers.getActive)
       ..put('/pmtiles/active', PmtilesRestHandlers.setActive)
       ..delete('/pmtiles/active', PmtilesRestHandlers.clearActive)
-      ..delete('/pmtiles/:id', PmtilesRestHandlers.delete);
+      ..delete('/pmtiles/:id', PmtilesRestHandlers.delete)
+      ..get('/geocoding/settings', GeocodingRestHandlers.getSettings)
+      ..put('/geocoding/settings', GeocodingRestHandlers.updateSettings)
+      ..post('/geocoding/import', GeocodingRestHandlers.startImport)
+      ..post(
+        '/geocoding/import/housenumbers',
+        GeocodingRestHandlers.startHousenumbersImport,
+      )
+      ..get('/geocoding/search', GeocodingRestHandlers.search)
+      ..get('/geocoding/export/places', GeocodingRestHandlers.exportPlaces)
+      ..get(
+        '/geocoding/export/housenumbers',
+        GeocodingRestHandlers.exportHousenumbers,
+      )
+      ..post('/geocoding/archive/places', GeocodingRestHandlers.importPlaces)
+      ..post(
+        '/geocoding/archive/housenumbers',
+        GeocodingRestHandlers.importHousenumbers,
+      )
+      ..delete('/geocoding/places', GeocodingRestHandlers.clearPlaces)
+      ..delete('/geocoding/housenumbers', GeocodingRestHandlers.clearHousenumbers);
   }
 
   static Future<Result> _index(Request request) async {
@@ -67,6 +88,9 @@ class RestApiRoute extends Route {
         'pmtiles': '/api/pmtiles',
         'pmtilesUpload': '/api/pmtiles/upload?name=<file.pmtiles>',
         'pmtilesDownload': '/pmtiles/files/<id>',
+        'geocodingSettings': '/api/geocoding/settings',
+        'geocodingImport': '/api/geocoding/import',
+        'geocodingSearch': '/api/geocoding/search?q=<query>',
       },
     });
   }

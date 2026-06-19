@@ -1,0 +1,15 @@
+class: GeocodeHousenumber
+table: geocode_housenumber
+fields:
+  id: int?
+  streetId: String
+  street: String
+  housenumber: String
+  latitude: double
+  longitude: double
+
+indexes:
+  geocode_housenumber_street_idx:
+    fields: street
+  geocode_housenumber_housenumber_idx:
+    fields: housenumber

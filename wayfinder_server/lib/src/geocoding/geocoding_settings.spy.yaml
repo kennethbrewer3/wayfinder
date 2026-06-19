@@ -1,0 +1,18 @@
+class: GeocodingSettings
+table: geocoding_settings
+fields:
+  id: int?
+  sourceUrl: String
+  countryCodes: String?
+  importStatus: String, default="idle"
+  importedRowCount: int, default=0
+  importProgress: double, default=0
+  importError: String?
+  importedAt: DateTime?
+  housenumbersSourceUrl: String, default="https://github.com/OSMNames/OSMNames/releases/download/v2.0.4/planet-latest_housenumbers.tsv.gz"
+  housenumbersImportStatus: String, default="idle"
+  housenumbersImportedRowCount: int, default=0
+  housenumbersImportProgress: double, default=0
+  housenumbersImportError: String?
+  housenumbersImportedAt: DateTime?
+  updatedAt: DateTime

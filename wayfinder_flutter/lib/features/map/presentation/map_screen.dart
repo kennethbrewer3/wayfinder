@@ -5,6 +5,8 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../geocoding/providers/geocoding_providers.dart';
+import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../search/presentation/map_search_bar.dart';
@@ -65,15 +67,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _handleSearchResult(SearchResult result) async {
-    final currentZoom = ref.read(mapViewportProvider).valueOrNull?.zoom ??
+    final defaultZoom = ref.read(mapViewportProvider).valueOrNull?.zoom ??
         AppConstants.defaultZoom;
+    final zoom = switch (result.type) {
+      SearchResultType.coordinate ||
+      SearchResultType.place ||
+      SearchResultType.address =>
+        result.zoom,
+      _ => defaultZoom,
+    };
     await ref.read(mapViewportProvider.notifier).moveTo(
           center: result.location,
-          zoom: currentZoom,
+          zoom: zoom,
         );
     final searchCoordinateMarker =
         ref.read(searchCoordinateMarkerProvider.notifier);
-    if (result.type == SearchResultType.coordinate) {
+    if (result.type == SearchResultType.coordinate ||
+        result.type == SearchResultType.place ||
+        result.type == SearchResultType.address) {
       searchCoordinateMarker.set(result.location, result.label);
     } else {
       searchCoordinateMarker.clear();
@@ -96,13 +107,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final viewportAsync = ref.watch(mapViewportProvider);
-    final searchResults = watchMapSearchResults(ref);
+    final searchResults = watchCombinedSearchResults(ref);
+    final debouncedQuery = ref.watch(debouncedMapSearchQueryProvider).trim();
+    final geocodingLoading = debouncedQuery.length >= mapSearchMinGeocodingLength &&
+        ref.watch(geocodingSearchProvider(debouncedQuery)).isLoading;
+    final showSearchResults = searchResults.isNotEmpty || geocodingLoading;
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         title: MapSearchField(onResultSelected: _handleSearchResult),
-        bottom: searchResults.isNotEmpty
+        bottom: showSearchResults
             ? PreferredSize(
                 preferredSize: const Size.fromHeight(240),
                 child: MapSearchResults(onResultSelected: _handleSearchResult),

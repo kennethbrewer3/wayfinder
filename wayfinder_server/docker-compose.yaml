@@ -63,6 +63,21 @@ services:
       - ${WAYFINDER_PMTILES_HOST_PATH:-./storage/pmtiles}:/data/pmtiles
     restart: unless-stopped
 
+  # Flutter web client (nginx). Start with: docker compose --profile client up -d --build
+  # Set WAYFINDER_API_URL / WAYFINDER_WEB_URL to the server host reachable from the browser.
+  client:
+    profiles:
+      - client
+    build:
+      context: ..
+      dockerfile: wayfinder_flutter/Dockerfile
+    ports:
+      - "${WAYFINDER_CLIENT_PORT:-8080}:8080"
+    environment:
+      WAYFINDER_API_URL: ${WAYFINDER_API_URL:-http://localhost:18080}
+      WAYFINDER_WEB_URL: ${WAYFINDER_WEB_URL:-http://localhost:18082}
+    restart: unless-stopped
+
   # Test services (not started during normal dev — use: docker compose --profile test up -d)
   postgres_test:
     profiles:

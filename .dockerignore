@@ -2,6 +2,12 @@
 **/.dart_tool
 **/.idea
 **/build
-wayfinder_flutter
+wayfinder_flutter/ios
+wayfinder_flutter/android
+wayfinder_flutter/macos
+wayfinder_flutter/linux
+wayfinder_flutter/windows
+wayfinder_flutter/.dart_tool
 wayfinder_server/storage
 !wayfinder_server/storage/pmtiles/.gitkeep
+wayfinder_server/test

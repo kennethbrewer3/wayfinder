@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 import 'server_config_storage.dart';
 
@@ -39,23 +41,50 @@ Future<AppServerConfig> loadAppServerConfig() async {
     );
   }
 
+  final deployedConfig = await _loadDeployedWebConfig();
+  if (deployedConfig != null) {
+    return deployedConfig;
+  }
+
   try {
     final data = await rootBundle.loadString('assets/config.json');
-    final config = jsonDecode(data) as Map<String, dynamic>;
-    final apiUrl = normalizeApiUrl(
-      config['apiUrl'] as String? ?? defaultApiUrl,
-    );
-    final webUrl = normalizeWebUrl(
-      config['webUrl'] as String? ??
-          defaultWebUrlForApi(apiUrl) ??
-          defaultWebUrl,
-    );
-    return AppServerConfig(apiUrl: apiUrl, webUrl: webUrl);
+    return _configFromJsonMap(jsonDecode(data) as Map<String, dynamic>);
   } catch (_) {
     return const AppServerConfig(
       apiUrl: defaultApiUrl,
       webUrl: defaultWebUrl,
     );
+  }
+}
+
+AppServerConfig _configFromJsonMap(Map<String, dynamic> config) {
+  final apiUrl = normalizeApiUrl(
+    config['apiUrl'] as String? ?? defaultApiUrl,
+  );
+  final webUrl = normalizeWebUrl(
+    config['webUrl'] as String? ??
+        defaultWebUrlForApi(apiUrl) ??
+        defaultWebUrl,
+  );
+  return AppServerConfig(apiUrl: apiUrl, webUrl: webUrl);
+}
+
+Future<AppServerConfig?> _loadDeployedWebConfig() async {
+  if (!kIsWeb) {
+    return null;
+  }
+
+  try {
+    final response = await http
+        .get(Uri.base.resolve('config.json'))
+        .timeout(const Duration(seconds: 5));
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    return _configFromJsonMap(jsonDecode(response.body) as Map<String, dynamic>);
+  } catch (_) {
+    return null;
   }
 }
 

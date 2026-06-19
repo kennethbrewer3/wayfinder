@@ -71,6 +71,29 @@ flutter run -d chrome
 
 The app reads server URLs from `wayfinder_flutter/assets/config.json` (API on port 18080, web on port 18082).
 
+### Docker (server + optional web client)
+
+From `wayfinder_server/`:
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
+
+Start the Flutter web client in a separate container (nginx on port 8080 by default):
+
+```bash
+docker compose --profile client up -d --build client
+```
+
+Or run server and client together:
+
+```bash
+docker compose --profile client up -d --build postgres redis server client
+```
+
+Open the client at `http://localhost:8080`. Configure server URLs with `WAYFINDER_API_URL` and `WAYFINDER_WEB_URL` in `.env` — these must be reachable from the **browser**, not from inside Docker. When the client runs on a different machine than the server, set them to the server's hostname or IP (for example `http://192.168.1.10:18080`).
+
 ## REST API
 
 A curl-friendly REST API is available on the web server:

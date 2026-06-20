@@ -1,0 +1,46 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "app_settings",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "__className__": "serverpod.ColumnMigration",
+            "columnName": "homeLatitude",
+            "addNullable": false,
+            "removeNullable": false,
+            "changeDefault": true
+          },
+          {
+            "__className__": "serverpod.ColumnMigration",
+            "columnName": "homeLongitude",
+            "addNullable": false,
+            "removeNullable": false,
+            "changeDefault": true
+          },
+          {
+            "__className__": "serverpod.ColumnMigration",
+            "columnName": "homeZoom",
+            "addNullable": false,
+            "removeNullable": false,
+            "changeDefault": true
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

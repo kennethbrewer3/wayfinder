@@ -22,21 +22,22 @@ import 'map/map_data_restore_summary.dart' as _i9;
 import 'map/map_marker.dart' as _i10;
 import 'pmtiles/pmtiles_file.dart' as _i11;
 import 'pmtiles/pmtiles_group.dart' as _i12;
-import 'zones/map_zone.dart' as _i13;
-import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i14;
+import 'settings/app_settings.dart' as _i13;
+import 'zones/map_zone.dart' as _i14;
+import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i15;
 import 'package:wayfinder_client/src/protocol/geocoding/geocode_search_result.dart'
-    as _i15;
-import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i16;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i17;
+    as _i16;
+import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i17;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i18;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
-    as _i18;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i19;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i20;
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
+    as _i20;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i21;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i21;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i22;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i23;
 export 'categories/category.dart';
 export 'geocoding/geocode_housenumber.dart';
 export 'geocoding/geocode_place.dart';
@@ -48,6 +49,7 @@ export 'map/map_data_restore_summary.dart';
 export 'map/map_marker.dart';
 export 'pmtiles/pmtiles_file.dart';
 export 'pmtiles/pmtiles_group.dart';
+export 'settings/app_settings.dart';
 export 'zones/map_zone.dart';
 export 'client.dart';
 
@@ -118,8 +120,11 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i12.PmtilesGroup) {
       return _i12.PmtilesGroup.fromJson(data) as T;
     }
-    if (t == _i13.MapZone) {
-      return _i13.MapZone.fromJson(data) as T;
+    if (t == _i13.AppSettings) {
+      return _i13.AppSettings.fromJson(data) as T;
+    }
+    if (t == _i14.MapZone) {
+      return _i14.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Category?>()) {
       return (data != null ? _i2.Category.fromJson(data) : null) as T;
@@ -156,11 +161,14 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i12.PmtilesGroup?>()) {
       return (data != null ? _i12.PmtilesGroup.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i13.MapZone?>()) {
-      return (data != null ? _i13.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i13.AppSettings?>()) {
+      return (data != null ? _i13.AppSettings.fromJson(data) : null) as T;
     }
-    if (t == List<_i14.Category>) {
-      return (data as List).map((e) => deserialize<_i14.Category>(e)).toList()
+    if (t == _i1.getType<_i14.MapZone?>()) {
+      return (data != null ? _i14.MapZone.fromJson(data) : null) as T;
+    }
+    if (t == List<_i15.Category>) {
+      return (data as List).map((e) => deserialize<_i15.Category>(e)).toList()
           as T;
     }
     if (t == List<String>) {
@@ -172,41 +180,41 @@ class Protocol extends _i1.SerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i15.GeocodeSearchResult>) {
+    if (t == List<_i16.GeocodeSearchResult>) {
       return (data as List)
-              .map((e) => deserialize<_i15.GeocodeSearchResult>(e))
+              .map((e) => deserialize<_i16.GeocodeSearchResult>(e))
               .toList()
           as T;
     }
-    if (t == List<_i16.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i16.MapLayer>(e)).toList()
+    if (t == List<_i17.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i17.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i17.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i17.MapMarker>(e)).toList()
+    if (t == List<_i18.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i18.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i18.PmtilesFile>) {
+    if (t == List<_i19.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i18.PmtilesFile>(e))
+              .map((e) => deserialize<_i19.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i19.PmtilesGroup>) {
+    if (t == List<_i20.PmtilesGroup>) {
       return (data as List)
-              .map((e) => deserialize<_i19.PmtilesGroup>(e))
+              .map((e) => deserialize<_i20.PmtilesGroup>(e))
               .toList()
           as T;
     }
-    if (t == List<_i20.MapZone>) {
-      return (data as List).map((e) => deserialize<_i20.MapZone>(e)).toList()
+    if (t == List<_i21.MapZone>) {
+      return (data as List).map((e) => deserialize<_i21.MapZone>(e)).toList()
           as T;
     }
-    try {
-      return _i21.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _i22.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+    try {
+      return _i23.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -224,7 +232,8 @@ class Protocol extends _i1.SerializationManager {
       _i10.MapMarker => 'MapMarker',
       _i11.PmtilesFile => 'PmtilesFile',
       _i12.PmtilesGroup => 'PmtilesGroup',
-      _i13.MapZone => 'MapZone',
+      _i13.AppSettings => 'AppSettings',
+      _i14.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -261,14 +270,16 @@ class Protocol extends _i1.SerializationManager {
         return 'PmtilesFile';
       case _i12.PmtilesGroup():
         return 'PmtilesGroup';
-      case _i13.MapZone():
+      case _i13.AppSettings():
+        return 'AppSettings';
+      case _i14.MapZone():
         return 'MapZone';
     }
-    className = _i21.Protocol().getClassNameForObject(data);
+    className = _i22.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i22.Protocol().getClassNameForObject(data);
+    className = _i23.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -314,16 +325,19 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'PmtilesGroup') {
       return deserialize<_i12.PmtilesGroup>(data['data']);
     }
+    if (dataClassName == 'AppSettings') {
+      return deserialize<_i13.AppSettings>(data['data']);
+    }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i13.MapZone>(data['data']);
+      return deserialize<_i14.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i21.Protocol().deserializeByClassName(data);
+      return _i22.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i22.Protocol().deserializeByClassName(data);
+      return _i23.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -338,10 +352,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i21.Protocol().mapRecordToJson(record);
+      return _i22.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i22.Protocol().mapRecordToJson(record);
+      return _i23.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

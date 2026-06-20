@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import 'app_settings_rest_handlers.dart';
 import 'categories_rest_handlers.dart';
 import 'geocoding_rest_handlers.dart';
 import 'health_rest_handlers.dart';
@@ -71,7 +72,12 @@ class RestApiRoute extends Route {
         GeocodingRestHandlers.importHousenumbers,
       )
       ..delete('/geocoding/places', GeocodingRestHandlers.clearPlaces)
-      ..delete('/geocoding/housenumbers', GeocodingRestHandlers.clearHousenumbers);
+      ..delete('/geocoding/housenumbers', GeocodingRestHandlers.clearHousenumbers)
+      ..get('/settings/home', AppSettingsRestHandlers.getHomeLocation)
+      ..put('/settings/home', AppSettingsRestHandlers.updateHomeLocation)
+      ..delete('/settings/home', AppSettingsRestHandlers.resetHomeLocation)
+      ..get('/settings/pmtiles-storage', AppSettingsRestHandlers.getPmtilesStoragePath)
+      ..put('/settings/pmtiles-storage', AppSettingsRestHandlers.updatePmtilesStoragePath);
   }
 
   static Future<Result> _index(Request request) async {

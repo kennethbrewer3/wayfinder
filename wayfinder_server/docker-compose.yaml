@@ -3,10 +3,10 @@ services:
   #
   # Copy `.env.example` to `.env` and adjust paths/ports.
   #
-  # Map tiles: set WAYFINDER_PMTILES_HOST_PATH to a host folder containing
-  # `.pmtiles` files (pre-downloaded archives). They are mounted into the
-  # server container and registered automatically at startup.
-  # Example: WAYFINDER_PMTILES_HOST_PATH=/Volumes/maptiles
+  # All persistent data lives under WAYFINDER_DATA_PATH on the host (default:
+  # ./storage/data). Point it at an external drive to keep Postgres, PMTiles,
+  # and Redis data outside Docker-managed volumes.
+  # Example: WAYFINDER_DATA_PATH=/mnt/external/wayfinder
   postgres:
     image: pgvector/pgvector:pg16
     ports:
@@ -16,7 +16,7 @@ services:
       POSTGRES_DB: wayfinder
       POSTGRES_PASSWORD: "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"
     volumes:
-      - wayfinder_data:/var/lib/postgresql/data
+      - ${WAYFINDER_DATA_PATH:-./storage/data}/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d wayfinder"]
       interval: 5s
@@ -30,6 +30,8 @@ services:
     command: redis-server --requirepass "jZSPtad_20Z4JmPOazsDurPauqOk9FlM"
     environment:
       - REDIS_REPLICATION_MODE=master
+    volumes:
+      - ${WAYFINDER_DATA_PATH:-./storage/data}/redis:/data
 
   server:
     build:
@@ -60,7 +62,7 @@ services:
       SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: http
       WAYFINDER_PMTILES_STORAGE: /data/pmtiles
     volumes:
-      - ${WAYFINDER_PMTILES_HOST_PATH:-./storage/pmtiles}:/data/pmtiles
+      - ${WAYFINDER_PMTILES_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/pmtiles}:/data/pmtiles
     restart: unless-stopped
 
   # Flutter web client (nginx). Start with: docker compose --profile client up -d --build
@@ -90,7 +92,7 @@ services:
       POSTGRES_DB: wayfinder_test
       POSTGRES_PASSWORD: "mA8uwnnQaPPF-RJuCw0xBQ8qV5ol7EH-"
     volumes:
-      - wayfinder_test_data:/var/lib/postgresql/data
+      - ${WAYFINDER_DATA_PATH:-./storage/data}/postgres_test:/var/lib/postgresql/data
 
   redis_test:
     profiles:
@@ -101,7 +103,5 @@ services:
     command: redis-server --requirepass "68i8nW9rJ80VZ_UEGd9xKshW1FvTdP0a"
     environment:
       - REDIS_REPLICATION_MODE=master
-
-volumes:
-  wayfinder_data:
-  wayfinder_test_data:
+    volumes:
+      - ${WAYFINDER_DATA_PATH:-./storage/data}/redis_test:/data

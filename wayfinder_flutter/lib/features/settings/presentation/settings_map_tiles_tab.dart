@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../data/app_settings_repository.dart';
 import '../models/pmtiles_file.dart';
 import '../models/pmtiles_group.dart';
 import '../providers/pmtiles_providers.dart';
@@ -19,6 +20,88 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
   static final _log = AppLogger.logSettings;
 
   bool _isUploading = false;
+  bool _isSavingStoragePath = false;
+  final _storagePathController = TextEditingController();
+
+  @override
+  void dispose() {
+    _storagePathController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadStoragePath();
+    });
+  }
+
+  Future<void> _loadStoragePath() async {
+    try {
+      final settings =
+          await ref.read(appSettingsRepositoryProvider).getPmtilesStoragePath();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _storagePathController.text = settings.storagePath;
+      });
+    } catch (error, stackTrace) {
+      _log.error(
+        '🗺️ PMTiles storage path load failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _saveStoragePath() async {
+    final storagePath = _storagePathController.text.trim();
+    if (storagePath.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PMTiles storage path is required.')),
+      );
+      return;
+    }
+
+    setState(() => _isSavingStoragePath = true);
+    try {
+      final settings = await ref
+          .read(appSettingsRepositoryProvider)
+          .updatePmtilesStoragePath(storagePath);
+      refreshPmtiles(ref);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _storagePathController.text = settings.storagePath;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'PMTiles folder saved. Resynced from ${settings.effectiveStoragePath}.',
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🗺️ PMTiles storage path save failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save PMTiles folder: $error')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSavingStoragePath = false);
+      }
+    }
+  }
   Future<void> _uploadPmtiles() async {
     _log.info('📤 Upload button pressed — opening file picker');
 
@@ -239,8 +322,34 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-        'PMTiles Maps',
-        style: Theme.of(context).textTheme.titleLarge,
+          'PMTiles folder',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Folder on the server containing .pmtiles archives. Stored in the '
+          'database so every client uses the same map tile library after restart.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _storagePathController,
+          decoration: const InputDecoration(
+            labelText: 'PMTiles storage path',
+            hintText: '/Volumes/maptiles',
+            border: OutlineInputBorder(),
+          ),
+          autocorrect: false,
+        ),
+        const SizedBox(height: 12),
+        FilledButton(
+          onPressed: _isSavingStoragePath ? null : _saveStoragePath,
+          child: Text(_isSavingStoragePath ? 'Saving…' : 'Save and rescan folder'),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          'PMTiles Maps',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(

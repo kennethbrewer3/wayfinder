@@ -12,7 +12,8 @@
       ],
       "preLaunchTask": "docker_compose_up",
       "env": {
-        "SERVERPOD_PASSWORD_database": "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"
+        "SERVERPOD_PASSWORD_database": "hoMP8M6XziidHgRLWdYWIChJN64gcPhV",
+        "WAYFINDER_PMTILES_STORAGE": "/Volumes/maptiles"
       },
       "presentation": {
         "group": "wayfinder",

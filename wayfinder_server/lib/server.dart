@@ -8,6 +8,7 @@ import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/core/wayfinder_env.dart';
+import 'src/settings/app_settings_store.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
@@ -70,8 +71,6 @@ void run(List<String> args) async {
     );
 
     // Serve uploaded PMTiles archives with HTTP range support for all clients.
-    final pmtilesStorage = PmtilesStorage();
-    await pmtilesStorage.ensureReady();
     pod.webServer.addMiddleware(const CorsMiddleware(), '/pmtiles');
     pod.webServer.addRoute(
       PmtilesUploadRoute(),
@@ -119,6 +118,15 @@ void run(List<String> args) async {
 
   final syncSession = await pod.createSession();
   try {
+    final settings = await AppSettingsStore.getOrCreate(syncSession);
+    final pmtilesPath = AppSettingsStore.effectivePmtilesStoragePath(settings);
+    PmtilesStorage.configure(pmtilesPath);
+    await PmtilesStorage().ensureReady();
+    WfLog.info(
+      syncSession,
+      'server',
+      '🗺️ PMTiles storage configured | path=$pmtilesPath',
+    );
     await PmtilesCatalogSync.sync(syncSession);
   } finally {
     await syncSession.close();

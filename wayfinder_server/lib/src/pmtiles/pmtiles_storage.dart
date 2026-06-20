@@ -10,8 +10,18 @@ import '../core/wayfinder_env.dart';
 class PmtilesStorage {
   PmtilesStorage._(this._root);
 
-  static final PmtilesStorage instance =
-      PmtilesStorage._(Directory(WayfinderEnv.pmtilesStoragePath));
+  static PmtilesStorage? _instance;
+
+  static PmtilesStorage get instance {
+    _instance ??= PmtilesStorage._(
+      Directory(WayfinderEnv.pmtilesStoragePath),
+    );
+    return _instance!;
+  }
+
+  static void configure(String path) {
+    _instance = PmtilesStorage._(Directory(path));
+  }
 
   factory PmtilesStorage() => instance;
 

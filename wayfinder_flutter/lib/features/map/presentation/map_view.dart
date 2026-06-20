@@ -2231,13 +2231,13 @@ class _PlaceholderLayer extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'No offline map installed',
+                'No offline map installed or visible',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
               Text(
                 errorMessage ??
-                    'Upload a .pmtiles file in Settings. Tiles are stored on the server so every browser can use them.',
+                    'Upload a .pmtiles file in Settings, or turn on visibility for tiles already on the server.',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),

@@ -30,7 +30,9 @@ import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i12;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
     as _i13;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i14;
+import 'package:wayfinder_server/src/generated/settings/app_settings.dart'
+    as _i14;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i15;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -163,6 +165,8 @@ class TestEndpoints {
 
   late final _PmtilesEndpoint pmtiles;
 
+  late final _AppSettingsEndpoint appSettings;
+
   late final _MapZoneEndpoint mapZone;
 }
 
@@ -206,6 +210,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     pmtiles = _PmtilesEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    appSettings = _AppSettingsEndpoint(
       endpoints,
       serializationManager,
     );
@@ -2039,6 +2047,145 @@ class _PmtilesEndpoint {
   }
 }
 
+class _AppSettingsEndpoint {
+  _AppSettingsEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i14.AppSettings> getSettings(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'getSettings',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'getSettings',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i14.AppSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i14.AppSettings> updateHomeLocation(
+    _i1.TestSessionBuilder sessionBuilder,
+    double latitude,
+    double longitude,
+    double zoom,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'updateHomeLocation',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'updateHomeLocation',
+          parameters: _i1.testObjectToJson({
+            'latitude': latitude,
+            'longitude': longitude,
+            'zoom': zoom,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i14.AppSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i14.AppSettings> resetHomeLocation(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'resetHomeLocation',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'resetHomeLocation',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i14.AppSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i14.AppSettings> updatePmtilesStoragePath(
+    _i1.TestSessionBuilder sessionBuilder,
+    String storagePath,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'updatePmtilesStoragePath',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'updatePmtilesStoragePath',
+          parameters: _i1.testObjectToJson({'storagePath': storagePath}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i14.AppSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _MapZoneEndpoint {
   _MapZoneEndpoint(
     this._endpointDispatch,
@@ -2049,7 +2196,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i14.MapZone>> listZones(
+  _i3.Future<List<_i15.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2071,7 +2218,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i14.MapZone>>);
+                as _i3.Future<List<_i15.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2079,7 +2226,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i14.MapZone?> getZone(
+  _i3.Future<_i15.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -2102,7 +2249,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.MapZone?>);
+                as _i3.Future<_i15.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2110,9 +2257,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i14.MapZone> createZone(
+  _i3.Future<_i15.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i14.MapZone zone,
+    _i15.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2133,7 +2280,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.MapZone>);
+                as _i3.Future<_i15.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2141,9 +2288,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i14.MapZone> updateZone(
+  _i3.Future<_i15.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i14.MapZone zone,
+    _i15.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2164,7 +2311,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.MapZone>);
+                as _i3.Future<_i15.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -12,7 +12,8 @@ import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../search/presentation/map_search_bar.dart';
 import '../../sidebar/presentation/sidebar_panel.dart';
 import '../models/map_viewport.dart';
-import '../providers/map_providers.dart';
+import '../../map/providers/home_location_provider.dart';
+import '../../map/providers/map_providers.dart';
 import 'map_object_selection_listener.dart';
 import 'map_view.dart';
 
@@ -100,8 +101,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _goHome() {
-    AppLogger.logNav.info('🏠 Debug home — moving to default viewport');
-    return ref.read(mapViewportProvider.notifier).applyDefaults();
+    final home = ref.read(homeLocationProvider);
+    AppLogger.logNav.info(
+      '🏠 Home — moving to ${home.latitude}, ${home.longitude} @ ${home.zoom}',
+    );
+    return ref.read(mapViewportProvider.notifier).goHome(home);
   }
 
   @override
@@ -125,7 +129,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             : null,
         actions: [
           IconButton(
-            tooltip: 'Home (debug)',
+            tooltip: 'Home',
             icon: const Icon(Icons.home),
             onPressed: _goHome,
           ),

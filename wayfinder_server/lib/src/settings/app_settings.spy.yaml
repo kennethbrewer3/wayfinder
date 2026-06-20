@@ -1,0 +1,9 @@
+class: AppSettings
+table: app_settings
+fields:
+  id: int?
+  homeLatitude: double
+  homeLongitude: double
+  homeZoom: double
+  pmtilesStoragePath: String
+  updatedAt: DateTime

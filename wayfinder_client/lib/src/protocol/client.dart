@@ -30,8 +30,10 @@ import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i12;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i13;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i14;
-import 'protocol.dart' as _i15;
+import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+    as _i14;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i15;
+import 'protocol.dart' as _i16;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -660,35 +662,78 @@ class EndpointPmtiles extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointAppSettings extends _i2.EndpointRef {
+  EndpointAppSettings(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'appSettings';
+
+  _i3.Future<_i14.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i14.AppSettings>(
+        'appSettings',
+        'getSettings',
+        {},
+      );
+
+  _i3.Future<_i14.AppSettings> updateHomeLocation(
+    double latitude,
+    double longitude,
+    double zoom,
+  ) => caller.callServerEndpoint<_i14.AppSettings>(
+    'appSettings',
+    'updateHomeLocation',
+    {
+      'latitude': latitude,
+      'longitude': longitude,
+      'zoom': zoom,
+    },
+  );
+
+  _i3.Future<_i14.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i14.AppSettings>(
+        'appSettings',
+        'resetHomeLocation',
+        {},
+      );
+
+  _i3.Future<_i14.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i14.AppSettings>(
+        'appSettings',
+        'updatePmtilesStoragePath',
+        {'storagePath': storagePath},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointMapZone extends _i2.EndpointRef {
   EndpointMapZone(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i14.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i14.MapZone>>(
+  _i3.Future<List<_i15.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i15.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i14.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i14.MapZone?>(
+  _i3.Future<_i15.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i15.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i14.MapZone> createZone(_i14.MapZone zone) =>
-      caller.callServerEndpoint<_i14.MapZone>(
+  _i3.Future<_i15.MapZone> createZone(_i15.MapZone zone) =>
+      caller.callServerEndpoint<_i15.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i14.MapZone> updateZone(_i14.MapZone zone) =>
-      caller.callServerEndpoint<_i14.MapZone>(
+  _i3.Future<_i15.MapZone> updateZone(_i15.MapZone zone) =>
+      caller.callServerEndpoint<_i15.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -733,7 +778,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i15.Protocol(),
+         _i16.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -751,6 +796,7 @@ class Client extends _i2.ServerpodClientShared {
     mapData = EndpointMapData(this);
     mapMarker = EndpointMapMarker(this);
     pmtiles = EndpointPmtiles(this);
+    appSettings = EndpointAppSettings(this);
     mapZone = EndpointMapZone(this);
     modules = Modules(this);
   }
@@ -773,6 +819,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointPmtiles pmtiles;
 
+  late final EndpointAppSettings appSettings;
+
   late final EndpointMapZone mapZone;
 
   late final Modules modules;
@@ -788,6 +836,7 @@ class Client extends _i2.ServerpodClientShared {
     'mapData': mapData,
     'mapMarker': mapMarker,
     'pmtiles': pmtiles,
+    'appSettings': appSettings,
     'mapZone': mapZone,
   };
 

@@ -120,7 +120,7 @@ GET /pmtiles/files/{id}
 ## Development notes
 
 - Run `serverpod generate` in `wayfinder_server/` after changing `.spy.yaml` model files.
-- PMTiles files are stored on disk under `wayfinder_server/storage/pmtiles/`.
+- PMTiles files are stored on disk under `wayfinder_server/storage/data/pmtiles/` by default (configure via `WAYFINDER_DATA_PATH` in `.env`).
 - The Flutter web build can be served by the server at `/app` when `wayfinder_server/web/app/` exists.
 
 ## Further reading

@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
 import 'geocoding_constants.dart';
+import 'geocoding_import_status.dart';
 
 abstract final class GeocodingSearch {
   static Future<List<GeocodeSearchResult>> search(
@@ -19,12 +20,14 @@ abstract final class GeocodingSearch {
       return const [];
     }
 
-    final placesReady = settings.importStatus ==
-            GeocodingConstants.statusCompleted &&
-        settings.importedRowCount > 0;
-    final addressesReady = settings.housenumbersImportStatus ==
-            GeocodingConstants.statusCompleted &&
-        settings.housenumbersImportedRowCount > 0;
+    final placesReady = GeocodingImportStatus.isSearchable(
+      settings.importStatus,
+      settings.importedRowCount,
+    );
+    final addressesReady = GeocodingImportStatus.isSearchable(
+      settings.housenumbersImportStatus,
+      settings.housenumbersImportedRowCount,
+    );
     if (!placesReady && !addressesReady) {
       return const [];
     }
@@ -33,9 +36,7 @@ abstract final class GeocodingSearch {
     final results = <GeocodeSearchResult>[];
     final addressLimit = addressesReady && _looksLikeAddress(trimmed)
         ? (limit / 2).ceil()
-        : addressesReady
-            ? (limit / 3).ceil()
-            : 0;
+        : 0;
 
     if (addressesReady && addressLimit > 0) {
       final addressRows = await session.db.unsafeQuery(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
@@ -9,6 +10,7 @@ import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/core/wayfinder_env.dart';
 import 'src/settings/app_settings_store.dart';
+import 'src/geocoding/geocoding_search_indexes.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
@@ -128,11 +130,29 @@ void run(List<String> args) async {
       '🗺️ PMTiles storage configured | path=$pmtilesPath',
     );
     await PmtilesCatalogSync.sync(syncSession);
+    unawaited(_ensureGeocodingSearchIndexes(pod));
   } finally {
     await syncSession.close();
   }
 
   WfLog.success(null, 'server', '🏁 Server started');
+}
+
+Future<void> _ensureGeocodingSearchIndexes(Serverpod pod) async {
+  final session = await pod.createSession();
+  try {
+    await GeocodingSearchIndexes.ensureReady(session);
+  } catch (error, stackTrace) {
+    WfLog.error(
+      null,
+      'geocoding',
+      '🔎 Failed to build geocoding search indexes',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  } finally {
+    await session.close();
+  }
 }
 
 void _sendRegistrationCode(

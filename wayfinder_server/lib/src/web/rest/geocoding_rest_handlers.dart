@@ -5,7 +5,9 @@ import '../../geocoding/geocoding_archive_service.dart';
 import '../../geocoding/geocoding_constants.dart';
 import '../../geocoding/geocoding_housenumbers_importer.dart';
 import '../../geocoding/geocoding_importer.dart';
+import '../../geocoding/geocoding_import_status.dart';
 import '../../geocoding/geocoding_search.dart';
+import '../../geocoding/geocoding_search_index_status.dart';
 import '../../geocoding/geocoding_settings_store.dart';
 import 'rest_json.dart';
 
@@ -14,7 +16,16 @@ abstract final class GeocodingRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final settings = await GeocodingSettingsStore.getOrCreate(session);
-      return RestJson.ok(_encodeSettings(settings));
+      return RestJson.ok(await _encodeSettings(session, settings));
+    });
+  }
+
+  static Future<Result> getSearchReadiness(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final settings = await GeocodingSettingsStore.getOrCreate(session);
+      final status = await GeocodingSearchIndexStatus.get(session, settings);
+      return RestJson.ok(status.toJson());
     });
   }
 
@@ -37,7 +48,7 @@ abstract final class GeocodingRestHandlers {
           countryCodes: _joinCountryCodes(countryCodes),
         ),
       );
-      return RestJson.ok(_encodeSettings(updated));
+      return RestJson.ok(await _encodeSettings(session, updated));
     });
   }
 
@@ -52,7 +63,7 @@ abstract final class GeocodingRestHandlers {
         sourceUrl: sourceUrl,
         countryCodes: countryCodes,
       );
-      return RestJson.ok(_encodeSettings(settings));
+      return RestJson.ok(await _encodeSettings(session, settings));
     });
   }
 
@@ -65,7 +76,23 @@ abstract final class GeocodingRestHandlers {
         session,
         sourceUrl: sourceUrl,
       );
-      return RestJson.ok(_encodeSettings(settings));
+      return RestJson.ok(await _encodeSettings(session, settings));
+    });
+  }
+
+  static Future<Result> cancelImport(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final settings = await GeocodingImporter.cancelImport(session);
+      return RestJson.ok(await _encodeSettings(session, settings));
+    });
+  }
+
+  static Future<Result> cancelHousenumbersImport(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final settings = await GeocodingHousenumbersImporter.cancelImport(session);
+      return RestJson.ok(await _encodeSettings(session, settings));
     });
   }
 
@@ -109,7 +136,7 @@ abstract final class GeocodingRestHandlers {
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       return RestJson.ok({
         'rowCount': rowCount,
-        ..._encodeSettings(settings),
+        ...(await _encodeSettings(session, settings)),
       });
     });
   }
@@ -125,7 +152,7 @@ abstract final class GeocodingRestHandlers {
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       return RestJson.ok({
         'rowCount': rowCount,
-        ..._encodeSettings(settings),
+        ...(await _encodeSettings(session, settings)),
       });
     });
   }
@@ -137,7 +164,7 @@ abstract final class GeocodingRestHandlers {
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       return RestJson.ok({
         'removed': removed,
-        ..._encodeSettings(settings),
+        ...(await _encodeSettings(session, settings)),
       });
     });
   }
@@ -149,12 +176,16 @@ abstract final class GeocodingRestHandlers {
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       return RestJson.ok({
         'removed': removed,
-        ..._encodeSettings(settings),
+        ...(await _encodeSettings(session, settings)),
       });
     });
   }
 
-  static Map<String, Object?> _encodeSettings(GeocodingSettings settings) {
+  static Future<Map<String, Object?>> _encodeSettings(
+    Session session,
+    GeocodingSettings settings,
+  ) async {
+    final indexStatus = await GeocodingSearchIndexStatus.get(session, settings);
     return {
       'sourceUrl': settings.sourceUrl,
       'countryCodes': settings.countryCodes,
@@ -170,17 +201,22 @@ abstract final class GeocodingRestHandlers {
       'housenumbersImportError': settings.housenumbersImportError,
       'housenumbersImportedAt': settings.housenumbersImportedAt?.toIso8601String(),
       'isReady':
-          (settings.importStatus == GeocodingConstants.statusCompleted &&
-                  settings.importedRowCount > 0) ||
-              (settings.housenumbersImportStatus ==
-                      GeocodingConstants.statusCompleted &&
-                  settings.housenumbersImportedRowCount > 0),
-      'isPlacesReady': settings.importStatus ==
-              GeocodingConstants.statusCompleted &&
-          settings.importedRowCount > 0,
-      'isHousenumbersReady': settings.housenumbersImportStatus ==
-              GeocodingConstants.statusCompleted &&
-          settings.housenumbersImportedRowCount > 0,
+          GeocodingImportStatus.isSearchable(
+            settings.importStatus,
+            settings.importedRowCount,
+          ) ||
+          GeocodingImportStatus.isSearchable(
+            settings.housenumbersImportStatus,
+            settings.housenumbersImportedRowCount,
+          ),
+      'isPlacesReady': GeocodingImportStatus.isSearchable(
+        settings.importStatus,
+        settings.importedRowCount,
+      ),
+      'isHousenumbersReady': GeocodingImportStatus.isSearchable(
+        settings.housenumbersImportStatus,
+        settings.housenumbersImportedRowCount,
+      ),
       'isRunning': GeocodingImporter.isRunning ||
           GeocodingHousenumbersImporter.isRunning ||
           settings.importStatus == GeocodingConstants.statusDownloading ||
@@ -197,6 +233,7 @@ abstract final class GeocodingRestHandlers {
               GeocodingConstants.statusDownloading ||
           settings.housenumbersImportStatus ==
               GeocodingConstants.statusImporting,
+      ...indexStatus.toJson(),
     };
   }
 

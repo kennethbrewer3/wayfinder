@@ -14,6 +14,7 @@ abstract final class GeocodingConstants {
   static const statusImporting = 'importing';
   static const statusCompleted = 'completed';
   static const statusFailed = 'failed';
+  static const statusCancelled = 'cancelled';
 
   static const minSearchLength = 2;
   static const maxSearchResults = 20;

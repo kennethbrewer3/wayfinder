@@ -29,6 +29,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   bool _initializedFromServer = false;
   bool _isStartingPlacesImport = false;
   bool _isStartingHousenumbersImport = false;
+  bool _isCancellingPlacesImport = false;
+  bool _isCancellingHousenumbersImport = false;
   bool _isPlacesArchiveBusy = false;
   bool _isHousenumbersArchiveBusy = false;
   Timer? _pollTimer;
@@ -139,6 +141,37 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     }
   }
 
+  Future<void> _cancelPlacesImport() async {
+    setState(() => _isCancellingPlacesImport = true);
+    try {
+      final repository = ref.read(geocodingRepositoryProvider);
+      await repository.cancelImport();
+      refreshGeocoding(ref);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Place import abort requested. Existing data will be kept.',
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🌍 Geocoding import cancel failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Abort failed: $error')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isCancellingPlacesImport = false);
+      }
+    }
+  }
+
   Future<void> _downloadAndImportHousenumbers() async {
     final sourceUrl = _housenumbersUrlController.text.trim();
     if (sourceUrl.isEmpty) {
@@ -175,6 +208,37 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     } finally {
       if (mounted) {
         setState(() => _isStartingHousenumbersImport = false);
+      }
+    }
+  }
+
+  Future<void> _cancelHousenumbersImport() async {
+    setState(() => _isCancellingHousenumbersImport = true);
+    try {
+      final repository = ref.read(geocodingRepositoryProvider);
+      await repository.cancelHousenumbersImport();
+      refreshGeocoding(ref);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Address import abort requested. Existing data will be kept.',
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🏠 Housenumbers import cancel failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Abort failed: $error')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isCancellingHousenumbersImport = false);
       }
     }
   }
@@ -483,6 +547,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       geocodingStatusImporting => 'Importing…',
       geocodingStatusCompleted => 'Ready ($rowCount $readyLabel)',
       geocodingStatusFailed => 'Failed',
+      geocodingStatusCancelled => 'Cancelled',
       _ => status,
     };
   }
@@ -503,6 +568,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     required double progress,
     required int importedRowCount,
     required String rowLabel,
+    required bool isCancelling,
+    required VoidCallback? onAbort,
   }) {
     if (!isRunning) {
       return const SizedBox.shrink();
@@ -520,6 +587,23 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
           '$progressPercent% · $importedRowCount $rowLabel imported',
           style: Theme.of(context).textTheme.bodySmall,
         ),
+        if (onAbort != null) ...[
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: isCancelling ? null : onAbort,
+              icon: isCancelling
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.stop_circle_outlined),
+              label: Text(isCancelling ? 'Aborting…' : 'Abort import'),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -652,6 +736,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   progress: settings.importProgress,
                   importedRowCount: settings.importedRowCount,
                   rowLabel: 'rows',
+                  isCancelling: _isCancellingPlacesImport,
+                  onAbort: settings.isPlacesRunning ? _cancelPlacesImport : null,
                 ),
                 if (!settings.isPlacesRunning && settings.importedAt != null) ...[
                   const SizedBox(height: 4),
@@ -741,6 +827,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   progress: settings.housenumbersImportProgress,
                   importedRowCount: settings.housenumbersImportedRowCount,
                   rowLabel: 'addresses',
+                  isCancelling: _isCancellingHousenumbersImport,
+                  onAbort: settings.isHousenumbersRunning
+                      ? _cancelHousenumbersImport
+                      : null,
                 ),
                 if (!settings.isHousenumbersRunning &&
                     settings.housenumbersImportedAt != null) ...[

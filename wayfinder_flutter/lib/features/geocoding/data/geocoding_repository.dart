@@ -32,6 +32,22 @@ class GeocodingRepository {
     }
   }
 
+  Future<GeocodingSearchReadiness> getSearchReadiness() async {
+    final uri = Uri.parse('$_webServerUrl/api/geocoding/search-readiness');
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception(
+        'GET /api/geocoding/search-readiness returned ${response.statusCode}',
+      );
+    }
+
+    final decoded = jsonDecode(response.body);
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException('Invalid search readiness response');
+    }
+    return GeocodingSearchReadiness.fromJson(decoded);
+  }
+
   Future<GeocodingImportState> updateImportConfig({
     required String sourceUrl,
     List<String>? countryCodes,
@@ -88,6 +104,32 @@ class GeocodingRepository {
         error: error,
       );
       return _startHousenumbersImportRest(sourceUrl?.trim());
+    }
+  }
+
+  Future<GeocodingImportState> cancelImport() async {
+    try {
+      final settings = await _client.geocoding.cancelImport();
+      return _mapSettings(settings);
+    } catch (error, _) {
+      _log.warn(
+        '🌍 Geocoding cancelImport RPC failed, trying REST',
+        error: error,
+      );
+      return _cancelImportRest();
+    }
+  }
+
+  Future<GeocodingImportState> cancelHousenumbersImport() async {
+    try {
+      final settings = await _client.geocoding.cancelHousenumbersImport();
+      return _mapSettings(settings);
+    } catch (error, _) {
+      _log.warn(
+        '🏠 Housenumbers cancelImport RPC failed, trying REST',
+        error: error,
+      );
+      return _cancelHousenumbersImportRest();
     }
   }
 
@@ -252,6 +294,29 @@ class GeocodingRepository {
     return _mapSettingsJson(jsonDecode(response.body) as Map<String, dynamic>);
   }
 
+  Future<GeocodingImportState> _cancelImportRest() async {
+    final response =
+        await http.post(Uri.parse('$_webServerUrl/api/geocoding/import/cancel'));
+    if (response.statusCode != 200) {
+      throw Exception(
+        'POST /api/geocoding/import/cancel returned ${response.statusCode}',
+      );
+    }
+    return _mapSettingsJson(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+
+  Future<GeocodingImportState> _cancelHousenumbersImportRest() async {
+    final response = await http.post(
+      Uri.parse('$_webServerUrl/api/geocoding/import/housenumbers/cancel'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'POST /api/geocoding/import/housenumbers/cancel returned ${response.statusCode}',
+      );
+    }
+    return _mapSettingsJson(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+
   Future<String> _exportPlacesArchiveRest() async {
     final response =
         await http.get(Uri.parse('$_webServerUrl/api/geocoding/export/places'));
@@ -351,11 +416,14 @@ class GeocodingRepository {
   }
 
   GeocodingImportState _mapSettings(wf.GeocodingSettings settings) {
-    final placesReady = settings.importStatus == geocodingStatusCompleted &&
-        settings.importedRowCount > 0;
-    final housenumbersReady =
-        settings.housenumbersImportStatus == geocodingStatusCompleted &&
-            settings.housenumbersImportedRowCount > 0;
+    final placesReady = isSearchableGeocodingImport(
+      settings.importStatus,
+      settings.importedRowCount,
+    );
+    final housenumbersReady = isSearchableGeocodingImport(
+      settings.housenumbersImportStatus,
+      settings.housenumbersImportedRowCount,
+    );
     final placesRunning =
         settings.importStatus == geocodingStatusDownloading ||
             settings.importStatus == geocodingStatusImporting;

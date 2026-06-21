@@ -5,7 +5,9 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../geocoding/presentation/address_search_readiness_indicator.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
+import 'map_tiles_load_indicator.dart';
 import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
@@ -128,6 +130,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               )
             : null,
         actions: [
+          const AddressSearchReadinessIndicator(),
+          const MapTilesLoadIndicator(),
           IconButton(
             tooltip: 'Home',
             icon: const Icon(Icons.home),

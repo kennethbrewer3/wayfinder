@@ -8,11 +8,17 @@ import '../core/wayfinder_log.dart';
 import '../generated/protocol.dart';
 import 'geocoding_constants.dart';
 import 'geocoding_importer.dart';
+import 'geocoding_import_control.dart';
+import 'geocoding_import_exceptions.dart';
+import 'geocoding_import_status.dart';
 import 'geocoding_remote_fetch.dart';
 import 'geocoding_settings_store.dart';
+import 'geocoding_staging_store.dart';
 
 abstract final class GeocodingHousenumbersImporter {
   static bool _running = false;
+  static int _previousImportedRowCount = 0;
+  static DateTime? _previousImportedAt;
 
   static bool get isRunning => _running;
 
@@ -34,6 +40,9 @@ abstract final class GeocodingHousenumbersImporter {
     }
     _validateUrl(url);
 
+    _previousImportedRowCount = settings.housenumbersImportedRowCount;
+    _previousImportedAt = settings.housenumbersImportedAt;
+
     final updated = await GeocodingSettingsStore.update(
       session,
       settings.copyWith(
@@ -51,16 +60,64 @@ abstract final class GeocodingHousenumbersImporter {
     return updated;
   }
 
+  static Future<GeocodingSettings> cancelImport(Session session) async {
+    final settings = await GeocodingSettingsStore.getOrCreate(session);
+
+    if (_running) {
+      GeocodingImportControl.requestCancel();
+      return settings;
+    }
+
+    if (!GeocodingImportStatus.isActive(settings.housenumbersImportStatus)) {
+      throw StateError('No housenumbers import is running.');
+    }
+
+    return _abortStaleImport(session, settings);
+  }
+
+  static Future<GeocodingSettings> _abortStaleImport(
+    Session session,
+    GeocodingSettings settings,
+  ) async {
+    await GeocodingStagingStore.discardHousenumbersStaging(session);
+    final liveCount = await GeocodeHousenumber.db.count(session);
+
+    if (liveCount > 0) {
+      return GeocodingSettingsStore.update(
+        session,
+        settings.copyWith(
+          housenumbersImportStatus: GeocodingConstants.statusCompleted,
+          housenumbersImportedRowCount: liveCount,
+          housenumbersImportProgress: 1,
+          housenumbersImportError: null,
+          housenumbersImportedAt:
+              settings.housenumbersImportedAt ?? DateTime.now().toUtc(),
+        ),
+      );
+    }
+
+    return GeocodingSettingsStore.update(
+      session,
+      settings.copyWith(
+        housenumbersImportStatus: GeocodingConstants.statusCancelled,
+        housenumbersImportedRowCount: 0,
+        housenumbersImportProgress: 0,
+        housenumbersImportError: 'Import cancelled.',
+        housenumbersImportedAt: null,
+      ),
+    );
+  }
+
   static Future<void> _runImport(
     Serverpod serverpod,
     String url,
   ) async {
     _running = true;
+    GeocodingImportControl.begin();
     try {
       final session = await serverpod.createSession();
       try {
-        await session.db
-            .unsafeExecute('TRUNCATE "geocode_housenumber" RESTART IDENTITY');
+        await GeocodingStagingStore.prepareHousenumbersStaging(session);
         await _setStatus(
           session,
           importStatus: GeocodingConstants.statusDownloading,
@@ -73,66 +130,75 @@ abstract final class GeocodingHousenumbersImporter {
       }
 
       var importedRows = 0;
-      await GeocodingRemoteFetch.withDownload(url, (response) async {
-        final totalBytes = response.contentLength;
-        var processedBytes = 0;
-        final lineStream = response
-            .transform(gzip.decoder)
-            .transform(utf8.decoder)
-            .transform(const LineSplitter());
+      await GeocodingRemoteFetch.withDownload(
+        url,
+        (response) async {
+          final totalBytes = response.contentLength;
+          var processedBytes = 0;
+          final lineStream = response
+              .transform(gzip.decoder)
+              .transform(utf8.decoder)
+              .transform(const LineSplitter());
 
-        final batch = <GeocodeHousenumber>[];
-        var isHeader = true;
+          final batch = <GeocodeHousenumber>[];
+          var isHeader = true;
 
-        await for (final line in lineStream) {
-          processedBytes += line.length + 1;
-          if (isHeader) {
-            isHeader = false;
-            await _updateProgress(
-              serverpod,
-              importStatus: GeocodingConstants.statusImporting,
-              importedRowCount: 0,
-              importProgress: totalBytes > 0 ? 0.01 : 0,
-            );
-            continue;
-          }
-
-          final address = _parseLine(line);
-          if (address == null) {
-            continue;
-          }
-
-          batch.add(address);
-          if (batch.length >= GeocodingConstants.importBatchSize) {
-            importedRows += await _insertBatch(serverpod, batch);
-            batch.clear();
-
-            if (importedRows % GeocodingConstants.progressUpdateInterval == 0) {
-              final progress = _downloadProgress(
-                processedBytes: processedBytes,
-                totalBytes: totalBytes,
-                importedRows: importedRows,
-              );
+          await for (final line in lineStream) {
+            GeocodingImportControl.checkCancelled();
+            processedBytes += line.length + 1;
+            if (isHeader) {
+              isHeader = false;
               await _updateProgress(
                 serverpod,
                 importStatus: GeocodingConstants.statusImporting,
-                importedRowCount: importedRows,
-                importProgress: progress,
+                importedRowCount: 0,
+                importProgress: totalBytes > 0 ? 0.01 : 0,
               );
+              continue;
+            }
+
+            final address = _parseLine(line);
+            if (address == null) {
+              continue;
+            }
+
+            batch.add(address);
+            if (batch.length >= GeocodingConstants.importBatchSize) {
+              importedRows += await _insertBatch(serverpod, batch);
+              batch.clear();
+
+              if (importedRows % GeocodingConstants.progressUpdateInterval ==
+                  0) {
+                final progress = _downloadProgress(
+                  processedBytes: processedBytes,
+                  totalBytes: totalBytes,
+                  importedRows: importedRows,
+                );
+                await _updateProgress(
+                  serverpod,
+                  importStatus: GeocodingConstants.statusImporting,
+                  importedRowCount: importedRows,
+                  importProgress: progress,
+                );
+              }
             }
           }
-        }
 
-        if (batch.isNotEmpty) {
-          importedRows += await _insertBatch(serverpod, batch);
-        }
-      });
+          if (batch.isNotEmpty) {
+            importedRows += await _insertBatch(serverpod, batch);
+          }
+        },
+        onClientCreated: GeocodingImportControl.attachClient,
+      );
 
-      final finishSession = await serverpod.createSession();
+      GeocodingImportControl.checkCancelled();
+
+      final commitSession = await serverpod.createSession();
       try {
+        await GeocodingStagingStore.commitHousenumbersImport(commitSession);
         await GeocodingSettingsStore.update(
-          finishSession,
-          (await GeocodingSettingsStore.getOrCreate(finishSession)).copyWith(
+          commitSession,
+          (await GeocodingSettingsStore.getOrCreate(commitSession)).copyWith(
             housenumbersImportStatus: GeocodingConstants.statusCompleted,
             housenumbersImportedRowCount: importedRows,
             housenumbersImportProgress: 1,
@@ -141,7 +207,7 @@ abstract final class GeocodingHousenumbersImporter {
           ),
         );
       } finally {
-        await finishSession.close();
+        await commitSession.close();
       }
 
       WfLog.success(
@@ -149,7 +215,13 @@ abstract final class GeocodingHousenumbersImporter {
         'geocoding',
         '🏠 Housenumbers import completed rows=$importedRows url=$url',
       );
+    } on ImportCancelledException {
+      await _handleCancelled(serverpod);
     } catch (error, stackTrace) {
+      if (GeocodingImportControl.cancelRequested) {
+        await _handleCancelled(serverpod);
+        return;
+      }
       WfLog.error(
         null,
         'geocoding',
@@ -157,18 +229,49 @@ abstract final class GeocodingHousenumbersImporter {
         error: error,
         stackTrace: stackTrace,
       );
-      final errorSession = await serverpod.createSession();
-      try {
-        await _setStatus(
-          errorSession,
-          importStatus: GeocodingConstants.statusFailed,
-          importError: error.toString(),
-        );
-      } finally {
-        await errorSession.close();
-      }
+      await _handleFailure(serverpod, error);
     } finally {
       _running = false;
+      GeocodingImportControl.end();
+    }
+  }
+
+  static Future<void> _handleCancelled(Serverpod serverpod) async {
+    final session = await serverpod.createSession();
+    try {
+      await GeocodingStagingStore.discardHousenumbersStaging(session);
+      await _setStatus(
+        session,
+        importStatus: GeocodingConstants.statusCancelled,
+        importedRowCount: _previousImportedRowCount,
+        importProgress: 0,
+        importError: 'Import cancelled.',
+        importedAt: _previousImportedAt,
+      );
+    } finally {
+      await session.close();
+    }
+
+    WfLog.info(null, 'geocoding', '🏠 Housenumbers import cancelled');
+  }
+
+  static Future<void> _handleFailure(
+    Serverpod serverpod,
+    Object error,
+  ) async {
+    final session = await serverpod.createSession();
+    try {
+      await GeocodingStagingStore.discardHousenumbersStaging(session);
+      await _setStatus(
+        session,
+        importStatus: GeocodingConstants.statusFailed,
+        importedRowCount: _previousImportedRowCount,
+        importProgress: 0,
+        importError: error.toString(),
+        importedAt: _previousImportedAt,
+      );
+    } finally {
+      await session.close();
     }
   }
 
@@ -176,9 +279,10 @@ abstract final class GeocodingHousenumbersImporter {
     Serverpod serverpod,
     List<GeocodeHousenumber> batch,
   ) async {
+    GeocodingImportControl.checkCancelled();
     final session = await serverpod.createSession();
     try {
-      await GeocodeHousenumber.db.insert(session, batch);
+      await GeocodingStagingStore.insertHousenumbersBatch(session, batch);
       return batch.length;
     } finally {
       await session.close();
@@ -191,6 +295,7 @@ abstract final class GeocodingHousenumbersImporter {
     required int importedRowCount,
     required double importProgress,
   }) async {
+    GeocodingImportControl.checkCancelled();
     final session = await serverpod.createSession();
     try {
       await _setStatus(
@@ -210,6 +315,7 @@ abstract final class GeocodingHousenumbersImporter {
     int? importedRowCount,
     double? importProgress,
     String? importError,
+    DateTime? importedAt,
   }) async {
     final settings = await GeocodingSettingsStore.getOrCreate(session);
     await GeocodingSettingsStore.update(
@@ -221,6 +327,7 @@ abstract final class GeocodingHousenumbersImporter {
         housenumbersImportProgress:
             importProgress ?? settings.housenumbersImportProgress,
         housenumbersImportError: importError,
+        housenumbersImportedAt: importedAt ?? settings.housenumbersImportedAt,
       ),
     );
   }

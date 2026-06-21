@@ -345,6 +345,20 @@ class EndpointGeocoding extends _i2.EndpointRef {
     {'sourceUrl': sourceUrl},
   );
 
+  _i3.Future<_i6.GeocodingSettings> cancelImport() =>
+      caller.callServerEndpoint<_i6.GeocodingSettings>(
+        'geocoding',
+        'cancelImport',
+        {},
+      );
+
+  _i3.Future<_i6.GeocodingSettings> cancelHousenumbersImport() =>
+      caller.callServerEndpoint<_i6.GeocodingSettings>(
+        'geocoding',
+        'cancelHousenumbersImport',
+        {},
+      );
+
   _i3.Future<List<_i7.GeocodeSearchResult>> searchPlaces(String query) =>
       caller.callServerEndpoint<List<_i7.GeocodeSearchResult>>(
         'geocoding',

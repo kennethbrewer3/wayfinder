@@ -482,6 +482,26 @@ class Endpoints extends _i1.EndpointDispatch {
                     sourceUrl: params['sourceUrl'],
                   ),
         ),
+        'cancelImport': _i1.MethodConnector(
+          name: 'cancelImport',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['geocoding'] as _i5.GeocodingEndpoint)
+                  .cancelImport(session),
+        ),
+        'cancelHousenumbersImport': _i1.MethodConnector(
+          name: 'cancelHousenumbersImport',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['geocoding'] as _i5.GeocodingEndpoint)
+                  .cancelHousenumbersImport(session),
+        ),
         'searchPlaces': _i1.MethodConnector(
           name: 'searchPlaces',
           params: {

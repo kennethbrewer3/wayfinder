@@ -3,9 +3,9 @@ import 'package:serverpod/serverpod.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'geocoding_archive_service.dart';
-import 'geocoding_constants.dart';
 import 'geocoding_housenumbers_importer.dart';
 import 'geocoding_importer.dart';
+import 'geocoding_import_status.dart';
 import 'geocoding_search.dart';
 import 'geocoding_settings_store.dart';
 
@@ -84,6 +84,27 @@ class GeocodingEndpoint extends Endpoint with EndpointLogging {
     );
   }
 
+  Future<GeocodingSettings> cancelImport(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'cancelImport',
+      () => GeocodingImporter.cancelImport(session),
+      onSuccess: (settings) => 'status=${settings.importStatus}',
+    );
+  }
+
+  Future<GeocodingSettings> cancelHousenumbersImport(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'cancelHousenumbersImport',
+      () => GeocodingHousenumbersImporter.cancelImport(session),
+      onSuccess: (settings) =>
+          'status=${settings.housenumbersImportStatus}',
+    );
+  }
+
   Future<List<GeocodeSearchResult>> searchPlaces(
     Session session,
     String query,
@@ -104,11 +125,14 @@ class GeocodingEndpoint extends Endpoint with EndpointLogging {
       'isSearchReady',
       () async {
         final settings = await GeocodingSettingsStore.getOrCreate(session);
-        return (settings.importStatus == GeocodingConstants.statusCompleted &&
-                settings.importedRowCount > 0) ||
-            (settings.housenumbersImportStatus ==
-                    GeocodingConstants.statusCompleted &&
-                settings.housenumbersImportedRowCount > 0);
+        return GeocodingImportStatus.isSearchable(
+              settings.importStatus,
+              settings.importedRowCount,
+            ) ||
+            GeocodingImportStatus.isSearchable(
+              settings.housenumbersImportStatus,
+              settings.housenumbersImportedRowCount,
+            );
       },
     );
   }

@@ -20,6 +20,8 @@ geocoding:
   - updateSourceUrl:
   - startImport:
   - startHousenumbersImport:
+  - cancelImport:
+  - cancelHousenumbersImport:
   - searchPlaces:
   - isSearchReady:
   - exportPlacesArchive:

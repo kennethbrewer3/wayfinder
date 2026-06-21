@@ -8,6 +8,7 @@ const geocodingStatusDownloading = 'downloading';
 const geocodingStatusImporting = 'importing';
 const geocodingStatusCompleted = 'completed';
 const geocodingStatusFailed = 'failed';
+const geocodingStatusCancelled = 'cancelled';
 
 const geocodingResultTypePlace = 'place';
 const geocodingResultTypeAddress = 'address';
@@ -52,11 +53,74 @@ class GeocodingImportState {
   final bool isHousenumbersRunning;
 
   bool get isPlacesReady =>
-      importStatus == geocodingStatusCompleted && importedRowCount > 0;
+      isSearchableGeocodingImport(importStatus, importedRowCount);
 
-  bool get isHousenumbersReady =>
-      housenumbersImportStatus == geocodingStatusCompleted &&
-      housenumbersImportedRowCount > 0;
+  bool get isHousenumbersReady => isSearchableGeocodingImport(
+        housenumbersImportStatus,
+        housenumbersImportedRowCount,
+      );
+}
+
+bool isSearchableGeocodingImport(String status, int rowCount) {
+  if (rowCount <= 0) {
+    return false;
+  }
+  return status != geocodingStatusDownloading &&
+      status != geocodingStatusImporting;
+}
+
+class GeocodingSearchReadiness {
+  const GeocodingSearchReadiness({
+    required this.isAddressSearchReady,
+    required this.isFullSearchReady,
+    required this.indexesBuilding,
+    required this.readyIndexCount,
+    required this.totalIndexCount,
+    this.buildProgress,
+    this.etaSeconds,
+    this.currentIndexName,
+    this.statusMessage,
+  });
+
+  final bool isAddressSearchReady;
+  final bool isFullSearchReady;
+  final bool indexesBuilding;
+  final int readyIndexCount;
+  final int totalIndexCount;
+  final double? buildProgress;
+  final int? etaSeconds;
+  final String? currentIndexName;
+  final String? statusMessage;
+
+  factory GeocodingSearchReadiness.fromJson(Map<String, dynamic> json) {
+    return GeocodingSearchReadiness(
+      isAddressSearchReady: json['isAddressSearchReady'] as bool? ?? false,
+      isFullSearchReady: json['isFullSearchReady'] as bool? ?? false,
+      indexesBuilding: json['indexesBuilding'] as bool? ?? false,
+      readyIndexCount: (json['readyIndexCount'] as num?)?.toInt() ?? 0,
+      totalIndexCount: (json['totalIndexCount'] as num?)?.toInt() ?? 0,
+      buildProgress: (json['buildProgress'] as num?)?.toDouble(),
+      etaSeconds: (json['etaSeconds'] as num?)?.toInt(),
+      currentIndexName: json['currentIndexName'] as String?,
+      statusMessage: json['statusMessage'] as String?,
+    );
+  }
+
+  String? get etaLabel {
+    final seconds = etaSeconds;
+    if (seconds == null || seconds <= 0) {
+      return null;
+    }
+    if (seconds < 60) {
+      return 'about $seconds seconds';
+    }
+    final minutes = (seconds / 60).ceil();
+    if (minutes < 60) {
+      return minutes == 1 ? 'about 1 minute' : 'about $minutes minutes';
+    }
+    final hours = (minutes / 60).ceil();
+    return hours == 1 ? 'about 1 hour' : 'about $hours hours';
+  }
 }
 
 class GeocodingPlaceResult {

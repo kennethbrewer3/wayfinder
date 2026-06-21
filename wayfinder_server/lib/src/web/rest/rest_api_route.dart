@@ -18,6 +18,10 @@ class RestApiRoute extends Route {
   @override
   void injectIn(RelicRouter router) {
     router
+      ..options('/geocoding/import', _preflight)
+      ..options('/geocoding/import/cancel', _preflight)
+      ..options('/geocoding/import/housenumbers', _preflight)
+      ..options('/geocoding/import/housenumbers/cancel', _preflight)
       ..get('/', _index)
       ..get('/health', HealthRestHandlers.check)
       ..get('/markers', MarkersRestHandlers.list)
@@ -54,11 +58,25 @@ class RestApiRoute extends Route {
       ..delete('/pmtiles/active', PmtilesRestHandlers.clearActive)
       ..delete('/pmtiles/:id', PmtilesRestHandlers.delete)
       ..get('/geocoding/settings', GeocodingRestHandlers.getSettings)
+      ..get(
+        '/geocoding/search-readiness',
+        GeocodingRestHandlers.getSearchReadiness,
+      )
       ..put('/geocoding/settings', GeocodingRestHandlers.updateSettings)
       ..post('/geocoding/import', GeocodingRestHandlers.startImport)
+      ..delete('/geocoding/import', GeocodingRestHandlers.cancelImport)
+      ..post('/geocoding/import/cancel', GeocodingRestHandlers.cancelImport)
       ..post(
         '/geocoding/import/housenumbers',
         GeocodingRestHandlers.startHousenumbersImport,
+      )
+      ..delete(
+        '/geocoding/import/housenumbers',
+        GeocodingRestHandlers.cancelHousenumbersImport,
+      )
+      ..post(
+        '/geocoding/import/housenumbers/cancel',
+        GeocodingRestHandlers.cancelHousenumbersImport,
       )
       ..get('/geocoding/search', GeocodingRestHandlers.search)
       ..get('/geocoding/export/places', GeocodingRestHandlers.exportPlaces)
@@ -78,6 +96,30 @@ class RestApiRoute extends Route {
       ..delete('/settings/home', AppSettingsRestHandlers.resetHomeLocation)
       ..get('/settings/pmtiles-storage', AppSettingsRestHandlers.getPmtilesStoragePath)
       ..put('/settings/pmtiles-storage', AppSettingsRestHandlers.updatePmtilesStoragePath);
+  }
+
+  static Future<Result> _preflight(Request request) async {
+    return Response.ok(
+      headers: Headers.build((mh) {
+        mh.accessControlAllowOrigin =
+            const AccessControlAllowOriginHeader.wildcard();
+        mh.accessControlAllowMethods = AccessControlAllowMethodsHeader.methods([
+          Method.get,
+          Method.head,
+          Method.post,
+          Method.put,
+          Method.patch,
+          Method.delete,
+          Method.options,
+        ]);
+        mh.accessControlAllowHeaders =
+            AccessControlAllowHeadersHeader.headers([
+          'Content-Type',
+          'Authorization',
+          'X-API-Key',
+        ]);
+      }),
+    );
   }
 
   static Future<Result> _index(Request request) async {

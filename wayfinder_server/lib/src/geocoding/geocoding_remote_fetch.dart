@@ -6,12 +6,15 @@ abstract final class GeocodingRemoteFetch {
 
   static Future<T> withDownload<T>(
     String url,
-    Future<T> Function(HttpClientResponse response) process,
-  ) async {
+    Future<T> Function(HttpClientResponse response) process, {
+    void Function(HttpClient client)? onClientCreated,
+  }) async {
     final uri = Uri.parse(url);
     final client = HttpClient()
       ..connectionTimeout = const Duration(minutes: 5)
       ..idleTimeout = const Duration(minutes: 10);
+
+    onClientCreated?.call(client);
 
     try {
       final request = await client.getUrl(uri);

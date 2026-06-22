@@ -17,7 +17,12 @@ doc/api/
 # Passwords file
 config/passwords.yaml
 
-# Uploaded PMTiles archives (served over HTTP)
+# Local runtime data (Postgres, PMTiles, Redis) — see WAYFINDER_DATA_PATH in .env
+storage/data/*
+!storage/data/.gitkeep
+!storage/data/pmtiles/.gitkeep
+
+# Legacy PMTiles path (pre-storage/data layout)
 storage/pmtiles/*
 !storage/pmtiles/.gitkeep
 

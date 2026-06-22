@@ -2,9 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-import '../../../core/constants.dart';
 import 'selected_map_object_provider.dart';
+import '../../settings/data/app_settings_repository.dart';
 import '../data/map_viewport_storage.dart';
+import '../models/home_location.dart';
 import '../models/map_viewport.dart';
 
 final mapViewportStorageProvider = Provider<MapViewportStorage>(
@@ -12,7 +13,7 @@ final mapViewportStorageProvider = Provider<MapViewportStorage>(
 );
 
 class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
-  MapViewportNotifier(this._storage)
+  MapViewportNotifier(this._storage, this._appSettingsRepository)
       : super(
           const AsyncValue.loading(),
         ) {
@@ -20,10 +21,17 @@ class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
   }
 
   final MapViewportStorage _storage;
+  final AppSettingsRepository _appSettingsRepository;
 
   Future<void> _load() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(_storage.loadViewport);
+    state = await AsyncValue.guard(() async {
+      final saved = await _storage.loadSavedViewport();
+      if (saved != null) {
+        return saved;
+      }
+      return (await _appSettingsRepository.getHomeLocation()).toViewport();
+    });
   }
 
   Future<void> setViewport(MapViewport viewport) async {
@@ -38,22 +46,17 @@ class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
     return setViewport(MapViewport(center: center, zoom: zoom));
   }
 
-  Future<void> applyDefaults() {
-    return setViewport(
-      const MapViewport(
-        center: LatLng(
-          AppConstants.defaultLatitude,
-          AppConstants.defaultLongitude,
-        ),
-        zoom: AppConstants.defaultZoom,
-      ),
-    );
+  Future<void> goHome(HomeLocation home) {
+    return setViewport(home.toViewport());
   }
 }
 
 final mapViewportProvider =
     StateNotifierProvider<MapViewportNotifier, AsyncValue<MapViewport>>(
-  (ref) => MapViewportNotifier(ref.watch(mapViewportStorageProvider)),
+  (ref) => MapViewportNotifier(
+    ref.watch(mapViewportStorageProvider),
+    ref.watch(appSettingsRepositoryProvider),
+  ),
 );
 
 enum SidebarViewMode { list, tree }

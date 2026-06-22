@@ -38,7 +38,18 @@ class PmtilesRepository {
 
   Future<List<local.PmtilesFile>> listEnabledFiles() async {
     final files = await listFiles();
-    return files.where((file) => file.enabledOnMap).toList();
+    final groups = await listGroups();
+    final groupsOnMap = {
+      for (final group in groups)
+        if (group.showOnMap) group.id: true,
+    };
+    return files
+        .where(
+          (file) =>
+              file.enabledOnMap ||
+              file.groupIds.any((groupId) => groupsOnMap[groupId] == true),
+        )
+        .toList();
   }
 
   Future<List<PmtilesSource>> resolveEnabledSources() async {
@@ -49,7 +60,19 @@ class PmtilesRepository {
   Future<List<PmtilesArchiveEntry>> resolveEnabledEntries() async {
     _log.debug('🧭 Resolving enabled PMTiles entries');
     final files = await _client.pmtiles.listFiles();
-    final enabled = files.where((file) => file.isActive).toList()
+    final groups = await _client.pmtiles.listGroups();
+    final groupsOnMap = {
+      for (final group in groups)
+        if (group.showOnMap) group.id.uuid: true,
+    };
+
+    final enabled = files.where((file) {
+      if (file.isActive) {
+        return true;
+      }
+      final groupIds = file.groupIds ?? const [];
+      return groupIds.any((groupId) => groupsOnMap[groupId.uuid] == true);
+    }).toList()
       ..sort((a, b) => _compareNames(a.name, b.name));
     if (enabled.isEmpty) {
       _log.warn('🧭 No enabled PMTiles files on server');
@@ -262,14 +285,25 @@ class PmtilesRepository {
     }
   }
 
-  Future<void> setFileGroup(String fileId, {String? groupId}) async {
+  Future<void> addFileToGroup(String fileId, String groupId) async {
     _log.info(
-      '📁 Assigning PMTiles file to group',
-      data: 'fileId=$fileId groupId=${groupId ?? '(none)'}',
+      '📁 Adding PMTiles file to group',
+      data: 'fileId=$fileId groupId=$groupId',
     );
-    await _client.pmtiles.setFileGroup(
+    await _client.pmtiles.addFileToGroup(
       UuidValue.fromString(fileId),
-      groupId == null ? null : UuidValue.fromString(groupId),
+      UuidValue.fromString(groupId),
+    );
+  }
+
+  Future<void> removeFileFromGroup(String fileId, String groupId) async {
+    _log.info(
+      '📁 Removing PMTiles file from group',
+      data: 'fileId=$fileId groupId=$groupId',
+    );
+    await _client.pmtiles.removeFileFromGroup(
+      UuidValue.fromString(fileId),
+      UuidValue.fromString(groupId),
     );
   }
 
@@ -308,7 +342,10 @@ class PmtilesRepository {
       sizeBytes: file.sizeBytes,
       addedAt: file.addedAt.toUtc(),
       enabledOnMap: file.isActive,
-      groupId: file.groupId?.uuid,
+      groupIds: [
+        for (final groupId in file.groupIds ?? const <UuidValue>[])
+          groupId.uuid,
+      ],
     );
   }
 
@@ -318,6 +355,7 @@ class PmtilesRepository {
       name: group.name,
       sortOrder: group.sortOrder,
       createdAt: group.createdAt.toUtc(),
+      showOnMap: group.showOnMap,
     );
   }
 

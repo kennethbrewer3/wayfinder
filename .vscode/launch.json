@@ -7,9 +7,6 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/wayfinder_server",
       "program": "bin/main.dart",
-      "args": [
-        "--apply-migrations"
-      ],
       "preLaunchTask": "docker_compose_up",
       "env": {
         "SERVERPOD_PASSWORD_database": "hoMP8M6XziidHgRLWdYWIChJN64gcPhV"

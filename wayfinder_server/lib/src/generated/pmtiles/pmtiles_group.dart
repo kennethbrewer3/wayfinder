@@ -19,14 +19,17 @@ abstract class PmtilesGroup
     required this.name,
     int? sortOrder,
     required this.createdAt,
+    bool? showOnMap,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       sortOrder = sortOrder ?? 0;
+       sortOrder = sortOrder ?? 0,
+       showOnMap = showOnMap ?? false;
 
   factory PmtilesGroup({
     _i1.UuidValue? id,
     required String name,
     int? sortOrder,
     required DateTime createdAt,
+    bool? showOnMap,
   }) = _PmtilesGroupImpl;
 
   factory PmtilesGroup.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +42,9 @@ abstract class PmtilesGroup
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
+      showOnMap: jsonSerialization['showOnMap'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['showOnMap']),
     );
   }
 
@@ -55,6 +61,8 @@ abstract class PmtilesGroup
 
   DateTime createdAt;
 
+  bool showOnMap;
+
   @override
   _i1.Table<_i1.UuidValue> get table => t;
 
@@ -66,6 +74,7 @@ abstract class PmtilesGroup
     String? name,
     int? sortOrder,
     DateTime? createdAt,
+    bool? showOnMap,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -75,6 +84,7 @@ abstract class PmtilesGroup
       'name': name,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
+      'showOnMap': showOnMap,
     };
   }
 
@@ -86,6 +96,7 @@ abstract class PmtilesGroup
       'name': name,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
+      'showOnMap': showOnMap,
     };
   }
 
@@ -125,11 +136,13 @@ class _PmtilesGroupImpl extends PmtilesGroup {
     required String name,
     int? sortOrder,
     required DateTime createdAt,
+    bool? showOnMap,
   }) : super._(
          id: id,
          name: name,
          sortOrder: sortOrder,
          createdAt: createdAt,
+         showOnMap: showOnMap,
        );
 
   /// Returns a shallow copy of this [PmtilesGroup]
@@ -141,12 +154,14 @@ class _PmtilesGroupImpl extends PmtilesGroup {
     String? name,
     int? sortOrder,
     DateTime? createdAt,
+    bool? showOnMap,
   }) {
     return PmtilesGroup(
       id: id ?? this.id,
       name: name ?? this.name,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
+      showOnMap: showOnMap ?? this.showOnMap,
     );
   }
 }
@@ -169,6 +184,11 @@ class PmtilesGroupUpdateTable extends _i1.UpdateTable<PmtilesGroupTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<bool, bool> showOnMap(bool value) => _i1.ColumnValue(
+    table.showOnMap,
+    value,
+  );
 }
 
 class PmtilesGroupTable extends _i1.Table<_i1.UuidValue> {
@@ -186,6 +206,11 @@ class PmtilesGroupTable extends _i1.Table<_i1.UuidValue> {
       'createdAt',
       this,
     );
+    showOnMap = _i1.ColumnBool(
+      'showOnMap',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final PmtilesGroupUpdateTable updateTable;
@@ -196,12 +221,15 @@ class PmtilesGroupTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  late final _i1.ColumnBool showOnMap;
+
   @override
   List<_i1.Column> get columns => [
     id,
     name,
     sortOrder,
     createdAt,
+    showOnMap,
   ];
 }
 

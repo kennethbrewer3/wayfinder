@@ -1,0 +1,15 @@
+class: PmtilesFileGroupLink
+table: pmtiles_file_group
+fields:
+  id: UuidValue, defaultModel=random
+  fileId: UuidValue
+  groupId: UuidValue
+
+indexes:
+  pmtiles_file_group_file_idx:
+    fields: fileId
+  pmtiles_file_group_group_idx:
+    fields: groupId
+  pmtiles_file_group_unique_idx:
+    fields: fileId, groupId
+    unique: true

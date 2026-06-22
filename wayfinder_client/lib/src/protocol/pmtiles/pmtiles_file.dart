@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:wayfinder_client/src/protocol/protocol.dart' as _i2;
 
 abstract class PmtilesFile implements _i1.SerializableModel {
   PmtilesFile._({
@@ -25,7 +26,7 @@ abstract class PmtilesFile implements _i1.SerializableModel {
     this.minLongitude,
     this.maxLatitude,
     this.maxLongitude,
-    this.groupId,
+    this.groupIds,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
   factory PmtilesFile({
@@ -40,7 +41,7 @@ abstract class PmtilesFile implements _i1.SerializableModel {
     double? minLongitude,
     double? maxLatitude,
     double? maxLongitude,
-    _i1.UuidValue? groupId,
+    List<_i1.UuidValue>? groupIds,
   }) = _PmtilesFileImpl;
 
   factory PmtilesFile.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -58,9 +59,11 @@ abstract class PmtilesFile implements _i1.SerializableModel {
       minLongitude: (jsonSerialization['minLongitude'] as num?)?.toDouble(),
       maxLatitude: (jsonSerialization['maxLatitude'] as num?)?.toDouble(),
       maxLongitude: (jsonSerialization['maxLongitude'] as num?)?.toDouble(),
-      groupId: jsonSerialization['groupId'] == null
+      groupIds: jsonSerialization['groupIds'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['groupId']),
+          : _i2.Protocol().deserialize<List<_i1.UuidValue>>(
+              jsonSerialization['groupIds'],
+            ),
     );
   }
 
@@ -87,7 +90,7 @@ abstract class PmtilesFile implements _i1.SerializableModel {
 
   double? maxLongitude;
 
-  _i1.UuidValue? groupId;
+  List<_i1.UuidValue>? groupIds;
 
   /// Returns a shallow copy of this [PmtilesFile]
   /// with some or all fields replaced by the given arguments.
@@ -104,7 +107,7 @@ abstract class PmtilesFile implements _i1.SerializableModel {
     double? minLongitude,
     double? maxLatitude,
     double? maxLongitude,
-    _i1.UuidValue? groupId,
+    List<_i1.UuidValue>? groupIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -121,7 +124,8 @@ abstract class PmtilesFile implements _i1.SerializableModel {
       if (minLongitude != null) 'minLongitude': minLongitude,
       if (maxLatitude != null) 'maxLatitude': maxLatitude,
       if (maxLongitude != null) 'maxLongitude': maxLongitude,
-      if (groupId != null) 'groupId': groupId?.toJson(),
+      if (groupIds != null)
+        'groupIds': groupIds?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -146,7 +150,7 @@ class _PmtilesFileImpl extends PmtilesFile {
     double? minLongitude,
     double? maxLatitude,
     double? maxLongitude,
-    _i1.UuidValue? groupId,
+    List<_i1.UuidValue>? groupIds,
   }) : super._(
          id: id,
          name: name,
@@ -159,7 +163,7 @@ class _PmtilesFileImpl extends PmtilesFile {
          minLongitude: minLongitude,
          maxLatitude: maxLatitude,
          maxLongitude: maxLongitude,
-         groupId: groupId,
+         groupIds: groupIds,
        );
 
   /// Returns a shallow copy of this [PmtilesFile]
@@ -178,7 +182,7 @@ class _PmtilesFileImpl extends PmtilesFile {
     Object? minLongitude = _Undefined,
     Object? maxLatitude = _Undefined,
     Object? maxLongitude = _Undefined,
-    Object? groupId = _Undefined,
+    Object? groupIds = _Undefined,
   }) {
     return PmtilesFile(
       id: id ?? this.id,
@@ -192,7 +196,9 @@ class _PmtilesFileImpl extends PmtilesFile {
       minLongitude: minLongitude is double? ? minLongitude : this.minLongitude,
       maxLatitude: maxLatitude is double? ? maxLatitude : this.maxLatitude,
       maxLongitude: maxLongitude is double? ? maxLongitude : this.maxLongitude,
-      groupId: groupId is _i1.UuidValue? ? groupId : this.groupId,
+      groupIds: groupIds is List<_i1.UuidValue>?
+          ? groupIds
+          : this.groupIds?.map((e0) => e0).toList(),
     );
   }
 }

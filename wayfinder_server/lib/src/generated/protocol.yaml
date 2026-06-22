@@ -15,6 +15,21 @@ category:
   - createCategory:
   - updateCategory:
   - deleteCategory:
+geocoding:
+  - getSettings:
+  - updateSourceUrl:
+  - startImport:
+  - startHousenumbersImport:
+  - cancelImport:
+  - cancelHousenumbersImport:
+  - searchPlaces:
+  - isSearchReady:
+  - exportPlacesArchive:
+  - exportHousenumbersArchive:
+  - importPlacesArchive:
+  - importHousenumbersArchive:
+  - clearPlaces:
+  - clearHousenumbers:
 greeting:
   - hello:
 mapLayer:
@@ -39,7 +54,8 @@ pmtiles:
   - createGroup:
   - renameGroup:
   - deleteGroup:
-  - setFileGroup:
+  - addFileToGroup:
+  - removeFileFromGroup:
   - setGroupEnabled:
   - setUngroupedEnabled:
   - activeFileId:
@@ -49,6 +65,11 @@ pmtiles:
   - clearActiveFile:
   - disableAllFiles:
   - deleteFile:
+appSettings:
+  - getSettings:
+  - updateHomeLocation:
+  - resetHomeLocation:
+  - updatePmtilesStoragePath:
 mapZone:
   - listZones:
   - getZone:

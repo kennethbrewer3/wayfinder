@@ -9,7 +9,7 @@ class RestCorsMiddleware extends MiddlewareObject {
   @override
   Handler call(Handler next) {
     return (Request req) async {
-      if (req.method == Method.options) {
+      if (_isPreflight(req)) {
         return Response.ok(headers: Headers.build(_applyCors));
       }
 
@@ -32,6 +32,10 @@ class RestCorsMiddleware extends MiddlewareObject {
         );
       }
     };
+  }
+
+  static bool _isPreflight(Request req) {
+    return req.method == Method.options;
   }
 
   void _applyCors(MutableHeaders mh) {

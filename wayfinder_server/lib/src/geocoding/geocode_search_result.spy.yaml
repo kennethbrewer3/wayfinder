@@ -1,0 +1,10 @@
+class: GeocodeSearchResult
+fields:
+  id: int
+  name: String
+  displayName: String?
+  latitude: double
+  longitude: double
+  countryCode: String?
+  importance: double
+  resultType: String, default="place"

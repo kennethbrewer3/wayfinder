@@ -17,29 +17,43 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
 import 'categories/category.dart' as _i5;
-import 'greetings/greeting.dart' as _i6;
-import 'layers/map_layer.dart' as _i7;
-import 'map/map_data_restore_summary.dart' as _i8;
-import 'map/map_marker.dart' as _i9;
-import 'pmtiles/pmtiles_file.dart' as _i10;
-import 'pmtiles/pmtiles_group.dart' as _i11;
-import 'zones/map_zone.dart' as _i12;
+import 'geocoding/geocode_housenumber.dart' as _i6;
+import 'geocoding/geocode_place.dart' as _i7;
+import 'geocoding/geocode_search_result.dart' as _i8;
+import 'geocoding/geocoding_settings.dart' as _i9;
+import 'greetings/greeting.dart' as _i10;
+import 'layers/map_layer.dart' as _i11;
+import 'map/map_data_restore_summary.dart' as _i12;
+import 'map/map_marker.dart' as _i13;
+import 'pmtiles/pmtiles_file.dart' as _i14;
+import 'pmtiles/pmtiles_file_group_link.dart' as _i15;
+import 'pmtiles/pmtiles_group.dart' as _i16;
+import 'settings/app_settings.dart' as _i17;
+import 'zones/map_zone.dart' as _i18;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
-    as _i13;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i14;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i15;
+    as _i19;
+import 'package:wayfinder_server/src/generated/geocoding/geocode_search_result.dart'
+    as _i20;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i21;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i22;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
-    as _i16;
+    as _i23;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
-    as _i17;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i18;
+    as _i24;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i25;
 export 'categories/category.dart';
+export 'geocoding/geocode_housenumber.dart';
+export 'geocoding/geocode_place.dart';
+export 'geocoding/geocode_search_result.dart';
+export 'geocoding/geocoding_settings.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
 export 'map/map_data_restore_summary.dart';
 export 'map/map_marker.dart';
 export 'pmtiles/pmtiles_file.dart';
+export 'pmtiles/pmtiles_file_group_link.dart';
 export 'pmtiles/pmtiles_group.dart';
+export 'settings/app_settings.dart';
 export 'zones/map_zone.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
@@ -50,6 +64,68 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'app_settings',
+      dartName: 'AppSettings',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'app_settings_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'homeLatitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'homeLongitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'homeZoom',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'pmtilesStoragePath',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'app_settings_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'category',
       dartName: 'Category',
@@ -109,6 +185,395 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: false,
           isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'geocode_housenumber',
+      dartName: 'GeocodeHousenumber',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'geocode_housenumber_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'streetId',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'street',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumber',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'latitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'longitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'geocode_housenumber_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_housenumber_street_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'street',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_housenumber_housenumber_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'housenumber',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_housenumber_street_trgm_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'street',
+            ),
+          ],
+          type: 'gin',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_housenumber_housenumber_trgm_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'housenumber',
+            ),
+          ],
+          type: 'gin',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_housenumber_label_trgm_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: '("housenumber" || \' \' || "street")',
+            ),
+          ],
+          type: 'gin',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'geocode_place',
+      dartName: 'GeocodePlace',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'geocode_place_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'displayName',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'latitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'longitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'placeRank',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importance',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'countryCode',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'featureClass',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'featureType',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'geocode_place_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_place_name_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_place_importance_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'importance',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_place_name_trgm_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'gin',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_place_display_name_trgm_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'displayName',
+            ),
+          ],
+          type: 'gin',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'geocoding_settings',
+      dartName: 'GeocodingSettings',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'geocoding_settings_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sourceUrl',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'countryCodes',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importStatus',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'idle\'::text',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importedRowCount',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importProgress',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importError',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumbersSourceUrl',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault:
+              '\'https://github.com/OSMNames/OSMNames/releases/download/v2.0.4/planet-latest_housenumbers.tsv.gz\'::text',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumbersImportStatus',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'idle\'::text',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumbersImportedRowCount',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumbersImportProgress',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumbersImportError',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'housenumbersImportedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'geocoding_settings_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
         ),
       ],
       managed: true,
@@ -523,12 +988,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
-          name: 'groupId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: true,
-          dartType: 'UuidValue?',
-        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -558,8 +1017,65 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'pmtiles_file_group',
+      dartName: 'PmtilesFileGroupLink',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'gen_random_uuid()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'fileId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
+          name: 'groupId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
         _i2.IndexDefinition(
-          indexName: 'pmtiles_file_group_id_idx',
+          indexName: 'pmtiles_file_group_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'pmtiles_file_group_file_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'fileId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'pmtiles_file_group_group_idx',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
@@ -569,6 +1085,23 @@ class Protocol extends _i1.SerializationManagerServer {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'pmtiles_file_group_unique_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'fileId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'groupId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -604,6 +1137,13 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'showOnMap',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
       ],
       foreignKeys: [],
@@ -672,78 +1212,143 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i5.Category) {
       return _i5.Category.fromJson(data) as T;
     }
-    if (t == _i6.Greeting) {
-      return _i6.Greeting.fromJson(data) as T;
+    if (t == _i6.GeocodeHousenumber) {
+      return _i6.GeocodeHousenumber.fromJson(data) as T;
     }
-    if (t == _i7.MapLayer) {
-      return _i7.MapLayer.fromJson(data) as T;
+    if (t == _i7.GeocodePlace) {
+      return _i7.GeocodePlace.fromJson(data) as T;
     }
-    if (t == _i8.MapDataRestoreSummary) {
-      return _i8.MapDataRestoreSummary.fromJson(data) as T;
+    if (t == _i8.GeocodeSearchResult) {
+      return _i8.GeocodeSearchResult.fromJson(data) as T;
     }
-    if (t == _i9.MapMarker) {
-      return _i9.MapMarker.fromJson(data) as T;
+    if (t == _i9.GeocodingSettings) {
+      return _i9.GeocodingSettings.fromJson(data) as T;
     }
-    if (t == _i10.PmtilesFile) {
-      return _i10.PmtilesFile.fromJson(data) as T;
+    if (t == _i10.Greeting) {
+      return _i10.Greeting.fromJson(data) as T;
     }
-    if (t == _i11.PmtilesGroup) {
-      return _i11.PmtilesGroup.fromJson(data) as T;
+    if (t == _i11.MapLayer) {
+      return _i11.MapLayer.fromJson(data) as T;
     }
-    if (t == _i12.MapZone) {
-      return _i12.MapZone.fromJson(data) as T;
+    if (t == _i12.MapDataRestoreSummary) {
+      return _i12.MapDataRestoreSummary.fromJson(data) as T;
+    }
+    if (t == _i13.MapMarker) {
+      return _i13.MapMarker.fromJson(data) as T;
+    }
+    if (t == _i14.PmtilesFile) {
+      return _i14.PmtilesFile.fromJson(data) as T;
+    }
+    if (t == _i15.PmtilesFileGroupLink) {
+      return _i15.PmtilesFileGroupLink.fromJson(data) as T;
+    }
+    if (t == _i16.PmtilesGroup) {
+      return _i16.PmtilesGroup.fromJson(data) as T;
+    }
+    if (t == _i17.AppSettings) {
+      return _i17.AppSettings.fromJson(data) as T;
+    }
+    if (t == _i18.MapZone) {
+      return _i18.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Category?>()) {
       return (data != null ? _i5.Category.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Greeting?>()) {
-      return (data != null ? _i6.Greeting.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.GeocodeHousenumber?>()) {
+      return (data != null ? _i6.GeocodeHousenumber.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.MapLayer?>()) {
-      return (data != null ? _i7.MapLayer.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.GeocodePlace?>()) {
+      return (data != null ? _i7.GeocodePlace.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.MapDataRestoreSummary?>()) {
-      return (data != null ? _i8.MapDataRestoreSummary.fromJson(data) : null)
+    if (t == _i1.getType<_i8.GeocodeSearchResult?>()) {
+      return (data != null ? _i8.GeocodeSearchResult.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i9.MapMarker?>()) {
-      return (data != null ? _i9.MapMarker.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.GeocodingSettings?>()) {
+      return (data != null ? _i9.GeocodingSettings.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.PmtilesFile?>()) {
-      return (data != null ? _i10.PmtilesFile.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.Greeting?>()) {
+      return (data != null ? _i10.Greeting.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.PmtilesGroup?>()) {
-      return (data != null ? _i11.PmtilesGroup.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i11.MapLayer?>()) {
+      return (data != null ? _i11.MapLayer.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.MapZone?>()) {
-      return (data != null ? _i12.MapZone.fromJson(data) : null) as T;
-    }
-    if (t == List<_i13.Category>) {
-      return (data as List).map((e) => deserialize<_i13.Category>(e)).toList()
+    if (t == _i1.getType<_i12.MapDataRestoreSummary?>()) {
+      return (data != null ? _i12.MapDataRestoreSummary.fromJson(data) : null)
           as T;
     }
-    if (t == List<_i14.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i14.MapLayer>(e)).toList()
+    if (t == _i1.getType<_i13.MapMarker?>()) {
+      return (data != null ? _i13.MapMarker.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i14.PmtilesFile?>()) {
+      return (data != null ? _i14.PmtilesFile.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i15.PmtilesFileGroupLink?>()) {
+      return (data != null ? _i15.PmtilesFileGroupLink.fromJson(data) : null)
           as T;
     }
-    if (t == List<_i15.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i15.MapMarker>(e)).toList()
+    if (t == _i1.getType<_i16.PmtilesGroup?>()) {
+      return (data != null ? _i16.PmtilesGroup.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i17.AppSettings?>()) {
+      return (data != null ? _i17.AppSettings.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i18.MapZone?>()) {
+      return (data != null ? _i18.MapZone.fromJson(data) : null) as T;
+    }
+    if (t == List<_i1.UuidValue>) {
+      return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
           as T;
     }
-    if (t == List<_i16.PmtilesFile>) {
+    if (t == _i1.getType<List<_i1.UuidValue>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i1.UuidValue>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i19.Category>) {
+      return (data as List).map((e) => deserialize<_i19.Category>(e)).toList()
+          as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i20.GeocodeSearchResult>) {
       return (data as List)
-              .map((e) => deserialize<_i16.PmtilesFile>(e))
+              .map((e) => deserialize<_i20.GeocodeSearchResult>(e))
               .toList()
           as T;
     }
-    if (t == List<_i17.PmtilesGroup>) {
+    if (t == List<_i21.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i21.MapLayer>(e)).toList()
+          as T;
+    }
+    if (t == List<_i22.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i22.MapMarker>(e)).toList()
+          as T;
+    }
+    if (t == List<_i23.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i17.PmtilesGroup>(e))
+              .map((e) => deserialize<_i23.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i18.MapZone>) {
-      return (data as List).map((e) => deserialize<_i18.MapZone>(e)).toList()
+    if (t == List<_i24.PmtilesGroup>) {
+      return (data as List)
+              .map((e) => deserialize<_i24.PmtilesGroup>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i25.MapZone>) {
+      return (data as List).map((e) => deserialize<_i25.MapZone>(e)).toList()
           as T;
     }
     try {
@@ -761,13 +1366,19 @@ class Protocol extends _i1.SerializationManagerServer {
   static String? getClassNameForType(Type type) {
     return switch (type) {
       _i5.Category => 'Category',
-      _i6.Greeting => 'Greeting',
-      _i7.MapLayer => 'MapLayer',
-      _i8.MapDataRestoreSummary => 'MapDataRestoreSummary',
-      _i9.MapMarker => 'MapMarker',
-      _i10.PmtilesFile => 'PmtilesFile',
-      _i11.PmtilesGroup => 'PmtilesGroup',
-      _i12.MapZone => 'MapZone',
+      _i6.GeocodeHousenumber => 'GeocodeHousenumber',
+      _i7.GeocodePlace => 'GeocodePlace',
+      _i8.GeocodeSearchResult => 'GeocodeSearchResult',
+      _i9.GeocodingSettings => 'GeocodingSettings',
+      _i10.Greeting => 'Greeting',
+      _i11.MapLayer => 'MapLayer',
+      _i12.MapDataRestoreSummary => 'MapDataRestoreSummary',
+      _i13.MapMarker => 'MapMarker',
+      _i14.PmtilesFile => 'PmtilesFile',
+      _i15.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
+      _i16.PmtilesGroup => 'PmtilesGroup',
+      _i17.AppSettings => 'AppSettings',
+      _i18.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -784,19 +1395,31 @@ class Protocol extends _i1.SerializationManagerServer {
     switch (data) {
       case _i5.Category():
         return 'Category';
-      case _i6.Greeting():
+      case _i6.GeocodeHousenumber():
+        return 'GeocodeHousenumber';
+      case _i7.GeocodePlace():
+        return 'GeocodePlace';
+      case _i8.GeocodeSearchResult():
+        return 'GeocodeSearchResult';
+      case _i9.GeocodingSettings():
+        return 'GeocodingSettings';
+      case _i10.Greeting():
         return 'Greeting';
-      case _i7.MapLayer():
+      case _i11.MapLayer():
         return 'MapLayer';
-      case _i8.MapDataRestoreSummary():
+      case _i12.MapDataRestoreSummary():
         return 'MapDataRestoreSummary';
-      case _i9.MapMarker():
+      case _i13.MapMarker():
         return 'MapMarker';
-      case _i10.PmtilesFile():
+      case _i14.PmtilesFile():
         return 'PmtilesFile';
-      case _i11.PmtilesGroup():
+      case _i15.PmtilesFileGroupLink():
+        return 'PmtilesFileGroupLink';
+      case _i16.PmtilesGroup():
         return 'PmtilesGroup';
-      case _i12.MapZone():
+      case _i17.AppSettings():
+        return 'AppSettings';
+      case _i18.MapZone():
         return 'MapZone';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -823,26 +1446,44 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Category') {
       return deserialize<_i5.Category>(data['data']);
     }
+    if (dataClassName == 'GeocodeHousenumber') {
+      return deserialize<_i6.GeocodeHousenumber>(data['data']);
+    }
+    if (dataClassName == 'GeocodePlace') {
+      return deserialize<_i7.GeocodePlace>(data['data']);
+    }
+    if (dataClassName == 'GeocodeSearchResult') {
+      return deserialize<_i8.GeocodeSearchResult>(data['data']);
+    }
+    if (dataClassName == 'GeocodingSettings') {
+      return deserialize<_i9.GeocodingSettings>(data['data']);
+    }
     if (dataClassName == 'Greeting') {
-      return deserialize<_i6.Greeting>(data['data']);
+      return deserialize<_i10.Greeting>(data['data']);
     }
     if (dataClassName == 'MapLayer') {
-      return deserialize<_i7.MapLayer>(data['data']);
+      return deserialize<_i11.MapLayer>(data['data']);
     }
     if (dataClassName == 'MapDataRestoreSummary') {
-      return deserialize<_i8.MapDataRestoreSummary>(data['data']);
+      return deserialize<_i12.MapDataRestoreSummary>(data['data']);
     }
     if (dataClassName == 'MapMarker') {
-      return deserialize<_i9.MapMarker>(data['data']);
+      return deserialize<_i13.MapMarker>(data['data']);
     }
     if (dataClassName == 'PmtilesFile') {
-      return deserialize<_i10.PmtilesFile>(data['data']);
+      return deserialize<_i14.PmtilesFile>(data['data']);
+    }
+    if (dataClassName == 'PmtilesFileGroupLink') {
+      return deserialize<_i15.PmtilesFileGroupLink>(data['data']);
     }
     if (dataClassName == 'PmtilesGroup') {
-      return deserialize<_i11.PmtilesGroup>(data['data']);
+      return deserialize<_i16.PmtilesGroup>(data['data']);
+    }
+    if (dataClassName == 'AppSettings') {
+      return deserialize<_i17.AppSettings>(data['data']);
     }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i12.MapZone>(data['data']);
+      return deserialize<_i18.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -882,16 +1523,26 @@ class Protocol extends _i1.SerializationManagerServer {
     switch (t) {
       case _i5.Category:
         return _i5.Category.t;
-      case _i7.MapLayer:
-        return _i7.MapLayer.t;
-      case _i9.MapMarker:
-        return _i9.MapMarker.t;
-      case _i10.PmtilesFile:
-        return _i10.PmtilesFile.t;
-      case _i11.PmtilesGroup:
-        return _i11.PmtilesGroup.t;
-      case _i12.MapZone:
-        return _i12.MapZone.t;
+      case _i6.GeocodeHousenumber:
+        return _i6.GeocodeHousenumber.t;
+      case _i7.GeocodePlace:
+        return _i7.GeocodePlace.t;
+      case _i9.GeocodingSettings:
+        return _i9.GeocodingSettings.t;
+      case _i11.MapLayer:
+        return _i11.MapLayer.t;
+      case _i13.MapMarker:
+        return _i13.MapMarker.t;
+      case _i14.PmtilesFile:
+        return _i14.PmtilesFile.t;
+      case _i15.PmtilesFileGroupLink:
+        return _i15.PmtilesFileGroupLink.t;
+      case _i16.PmtilesGroup:
+        return _i16.PmtilesGroup.t;
+      case _i17.AppSettings:
+        return _i17.AppSettings.t;
+      case _i18.MapZone:
+        return _i18.MapZone.t;
     }
     return null;
   }

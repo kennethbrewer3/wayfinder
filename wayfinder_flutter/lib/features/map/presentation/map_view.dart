@@ -54,6 +54,8 @@ import '../../settings/models/pmtiles_map_layer.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../settings/data/pmtiles_loader.dart';
 import '../models/map_viewport.dart';
+import '../models/pmtiles_load_status.dart';
+import '../providers/pmtiles_load_status_provider.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
 import 'map_radial_menu.dart';
@@ -189,6 +191,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   late final MapController _mapController;
   final GlobalKey _mapHostKey = GlobalKey();
   final Map<String, PmtilesMapLayerConfig> _layerCache = {};
+  final Map<String, String> _layerLoadErrors = {};
   List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
   String? _activeLayerCatalogId;
   Timer? _viewportLayerUpdateTimer;
@@ -245,12 +248,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final newIds = widget.enabledEntries.map((entry) => entry.id).toSet();
     if (oldIds != newIds) {
       _layerCache.removeWhere((id, _) => !newIds.contains(id));
+      _layerLoadErrors.removeWhere((id, _) => !newIds.contains(id));
       _scheduleVisibleLayerUpdate(preload: true, immediate: true);
     } else if (oldWidget.enabledEntries != widget.enabledEntries ||
         (oldWidget.metadataLoading && !widget.metadataLoading)) {
       if (widget.enabledEntries.isEmpty) {
         setState(() {
           _layerCache.clear();
+          _layerLoadErrors.clear();
           _activeLayerCatalogId = null;
           _visibleMapLayers = const [];
         });
@@ -300,6 +305,120 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
   }
 
+  void _publishPmtilesLoadStatus() {
+    if (!mounted) {
+      return;
+    }
+
+    final entries = widget.enabledEntries;
+    if (widget.metadataLoading) {
+      ref.read(pmtilesLoadStatusProvider.notifier).update(
+            const PmtilesLoadStatus(
+              isReady: false,
+              isLoading: true,
+              statusMessage: 'Loading map tile catalog…',
+            ),
+          );
+      return;
+    }
+
+    if (entries.isEmpty) {
+      ref.read(pmtilesLoadStatusProvider.notifier).update(
+            PmtilesLoadStatus.noLayers,
+          );
+      return;
+    }
+
+    final loadedCount =
+        entries.where((entry) => _layerCache.containsKey(entry.id)).length;
+    final selectedEntries = selectArchivesForViewport(
+      entries: entries,
+      viewportBounds: _currentViewportBounds(),
+      viewportCenter: _currentViewportCenter(),
+      viewportZoom: _currentViewportZoom(),
+    );
+    final activeEntry =
+        selectedEntries.isEmpty ? null : selectedEntries.first;
+    final activeLayer =
+        activeEntry == null ? null : _layerCache[activeEntry.id];
+    final activeReady = activeLayer != null && _visibleMapLayers.isNotEmpty;
+
+    if (activeReady && activeEntry != null) {
+      ref.read(pmtilesLoadStatusProvider.notifier).update(
+            PmtilesLoadStatus(
+              isReady: true,
+              isLoading: false,
+              enabledCount: entries.length,
+              loadedCount: loadedCount,
+              activeLayerName: activeEntry.name,
+              statusMessage: 'Map tiles are active for the current view.',
+            ),
+          );
+      return;
+    }
+
+    if (activeEntry != null) {
+      final loadError = _layerLoadErrors[activeEntry.id];
+      if (loadError != null) {
+        ref.read(pmtilesLoadStatusProvider.notifier).update(
+              PmtilesLoadStatus(
+                isReady: false,
+                isLoading: false,
+                enabledCount: entries.length,
+                loadedCount: loadedCount,
+                loadingLayerName: activeEntry.name,
+                statusMessage: 'Failed to open ${activeEntry.name}.',
+                failureMessage: loadError,
+              ),
+            );
+        return;
+      }
+
+      ref.read(pmtilesLoadStatusProvider.notifier).update(
+            PmtilesLoadStatus(
+              isReady: false,
+              isLoading: true,
+              enabledCount: entries.length,
+              loadedCount: loadedCount,
+              loadingLayerName: activeEntry.name,
+              statusMessage:
+                  'Opening ${activeEntry.name} for the current map view…',
+            ),
+          );
+      return;
+    }
+
+    if (loadedCount < entries.length) {
+      final pending = entries.firstWhere(
+        (entry) => !_layerCache.containsKey(entry.id),
+        orElse: () => entries.first,
+      );
+      ref.read(pmtilesLoadStatusProvider.notifier).update(
+            PmtilesLoadStatus(
+              isReady: false,
+              isLoading: true,
+              enabledCount: entries.length,
+              loadedCount: loadedCount,
+              loadingLayerName: pending.name,
+              statusMessage: 'Preparing visible map tile layers…',
+            ),
+          );
+      return;
+    }
+
+    ref.read(pmtilesLoadStatusProvider.notifier).update(
+          PmtilesLoadStatus(
+            isReady: false,
+            isLoading: false,
+            enabledCount: entries.length,
+            loadedCount: loadedCount,
+            statusMessage:
+                'Visible map layers do not cover the current map view. '
+                'Pan or zoom to an area covered by an enabled layer.',
+          ),
+        );
+  }
+
   Future<void> _syncMapLayers({required bool preload}) async {
     if (!mounted) {
       return;
@@ -312,8 +431,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           _activeLayerCatalogId = null;
         });
       }
+      _publishPmtilesLoadStatus();
       return;
     }
+
+    _publishPmtilesLoadStatus();
 
     try {
       final selectedEntries = selectArchivesForViewport(
@@ -344,14 +466,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 );
                 if (mounted && generation == _layerLoadGeneration) {
                   _layerCache[entry.id] = layer;
+                  _layerLoadErrors.remove(entry.id);
                 }
               } catch (error, stackTrace) {
+                if (mounted && generation == _layerLoadGeneration) {
+                  _layerLoadErrors[entry.id] = error.toString();
+                }
                 AppLogger.logPmtiles.error(
                   '🗺️ Failed to load PMTiles layer',
                   error: error,
                   stackTrace: stackTrace,
                   data: 'id=${entry.id} name="${entry.name}"',
                 );
+              } finally {
+                if (mounted && generation == _layerLoadGeneration) {
+                  _publishPmtilesLoadStatus();
+                }
               }
             }),
           );
@@ -362,12 +492,23 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       }
 
       _applyVisibleLayerSelection();
+      _publishPmtilesLoadStatus();
     } catch (error, stackTrace) {
       AppLogger.logPmtiles.error(
         '🗺️ Failed to sync visible PMTiles layers',
         error: error,
         stackTrace: stackTrace,
       );
+      ref.read(pmtilesLoadStatusProvider.notifier).update(
+            PmtilesLoadStatus(
+              isReady: false,
+              isLoading: false,
+              enabledCount: widget.enabledEntries.length,
+              loadedCount: _layerCache.length,
+              statusMessage: 'Failed to prepare map tiles.',
+              failureMessage: error.toString(),
+            ),
+          );
     }
   }
 
@@ -408,6 +549,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             'id=${activeEntry!.id} name="${activeEntry.name}" enabled=${widget.enabledEntries.length}',
       );
     }
+
+    _publishPmtilesLoadStatus();
   }
 
   RenderBox? get _mapRenderBox =>
@@ -2231,13 +2374,13 @@ class _PlaceholderLayer extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'No offline map installed',
+                'No offline map installed or visible',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
               Text(
                 errorMessage ??
-                    'Upload a .pmtiles file in Settings. Tiles are stored on the server so every browser can use them.',
+                    'Upload a .pmtiles file in Settings, or turn on visibility for tiles already on the server.',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),

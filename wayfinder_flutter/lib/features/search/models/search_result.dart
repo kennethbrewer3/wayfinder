@@ -1,7 +1,9 @@
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-enum SearchResultType { marker, zone, coordinate }
+import '../../geocoding/models/geocoding_models.dart';
+
+enum SearchResultType { marker, zone, coordinate, place, address }
 
 class SearchResult {
   const SearchResult({
@@ -81,6 +83,33 @@ List<SearchResult> buildSearchResults({
   }
 
   return results;
+}
+
+SearchResult geocodingPlaceToSearchResult(GeocodingPlaceResult place) {
+  final type = place.isAddress
+      ? SearchResultType.address
+      : SearchResultType.place;
+  return SearchResult(
+    id: '${type.name}-${place.id}',
+    label: place.label,
+    subtitle: place.subtitle,
+    type: type,
+    location: LatLng(place.latitude, place.longitude),
+    zoom: _zoomForImportance(place.importance, isAddress: place.isAddress),
+  );
+}
+
+double _zoomForImportance(double importance, {required bool isAddress}) {
+  if (isAddress) {
+    return 18;
+  }
+  if (importance >= 0.7) {
+    return 12;
+  }
+  if (importance >= 0.4) {
+    return 10;
+  }
+  return 8;
 }
 
 LatLng? _parseCoordinate(String input) {

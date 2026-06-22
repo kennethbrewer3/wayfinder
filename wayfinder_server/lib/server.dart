@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
@@ -8,6 +9,8 @@ import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/core/wayfinder_env.dart';
+import 'src/settings/app_settings_store.dart';
+import 'src/geocoding/geocoding_search_indexes.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
@@ -70,8 +73,6 @@ void run(List<String> args) async {
     );
 
     // Serve uploaded PMTiles archives with HTTP range support for all clients.
-    final pmtilesStorage = PmtilesStorage();
-    await pmtilesStorage.ensureReady();
     pod.webServer.addMiddleware(const CorsMiddleware(), '/pmtiles');
     pod.webServer.addRoute(
       PmtilesUploadRoute(),
@@ -119,12 +120,48 @@ void run(List<String> args) async {
 
   final syncSession = await pod.createSession();
   try {
-    await PmtilesCatalogSync.sync(syncSession);
+    final settings = await AppSettingsStore.getOrCreate(syncSession);
+    final pmtilesPath = AppSettingsStore.effectivePmtilesStoragePath(settings);
+    PmtilesStorage.configure(pmtilesPath);
+    final pmtilesReady = await PmtilesStorage().ensureReady();
+    if (pmtilesReady) {
+      WfLog.info(
+        syncSession,
+        'server',
+        '🗺️ PMTiles storage configured | path=$pmtilesPath',
+      );
+      await PmtilesCatalogSync.sync(syncSession);
+    } else {
+      WfLog.warn(
+        syncSession,
+        'server',
+        '🗺️ PMTiles storage unavailable | path=$pmtilesPath '
+        '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
+      );
+    }
+    unawaited(_ensureGeocodingSearchIndexes(pod));
   } finally {
     await syncSession.close();
   }
 
   WfLog.success(null, 'server', '🏁 Server started');
+}
+
+Future<void> _ensureGeocodingSearchIndexes(Serverpod pod) async {
+  final session = await pod.createSession();
+  try {
+    await GeocodingSearchIndexes.ensureReady(session);
+  } catch (error, stackTrace) {
+    WfLog.error(
+      null,
+      'geocoding',
+      '🔎 Failed to build geocoding search indexes',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  } finally {
+    await session.close();
+  }
 }
 
 void _sendRegistrationCode(

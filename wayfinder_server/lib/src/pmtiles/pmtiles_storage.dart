@@ -10,8 +10,18 @@ import '../core/wayfinder_env.dart';
 class PmtilesStorage {
   PmtilesStorage._(this._root);
 
-  static final PmtilesStorage instance =
-      PmtilesStorage._(Directory(WayfinderEnv.pmtilesStoragePath));
+  static PmtilesStorage? _instance;
+
+  static PmtilesStorage get instance {
+    _instance ??= PmtilesStorage._(
+      Directory(WayfinderEnv.pmtilesStoragePath),
+    );
+    return _instance!;
+  }
+
+  static void configure(String path) {
+    _instance = PmtilesStorage._(Directory(path));
+  }
 
   factory PmtilesStorage() => instance;
 
@@ -19,9 +29,20 @@ class PmtilesStorage {
 
   Directory get root => _root;
 
-  Future<void> ensureReady() async {
-    if (!_root.existsSync()) {
+  /// Ensures the storage directory exists when it can be created locally.
+  ///
+  /// Returns `false` when the path is missing (for example an unmounted
+  /// external drive at `/Volumes/...`) so the server can still start.
+  Future<bool> ensureReady() async {
+    if (_root.existsSync()) {
+      return true;
+    }
+
+    try {
       await _root.create(recursive: true);
+      return true;
+    } on FileSystemException {
+      return false;
     }
   }
 

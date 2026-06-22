@@ -5,7 +5,7 @@ class PmtilesFile {
     required this.sizeBytes,
     required this.addedAt,
     required this.enabledOnMap,
-    this.groupId,
+    this.groupIds = const [],
   });
 
   final String id;
@@ -13,7 +13,9 @@ class PmtilesFile {
   final int sizeBytes;
   final DateTime addedAt;
   final bool enabledOnMap;
-  final String? groupId;
+  final List<String> groupIds;
+
+  bool isInGroup(String groupId) => groupIds.contains(groupId);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -21,17 +23,20 @@ class PmtilesFile {
         'sizeBytes': sizeBytes,
         'addedAt': addedAt.toIso8601String(),
         'enabledOnMap': enabledOnMap,
-        'groupId': groupId,
+        'groupIds': groupIds,
       };
 
   factory PmtilesFile.fromJson(Map<String, dynamic> json) {
+    final rawGroupIds = json['groupIds'];
     return PmtilesFile(
       id: json['id'] as String,
       name: json['name'] as String,
       sizeBytes: json['sizeBytes'] as int,
       addedAt: DateTime.parse(json['addedAt'] as String),
       enabledOnMap: json['enabledOnMap'] as bool? ?? false,
-      groupId: json['groupId'] as String?,
+      groupIds: rawGroupIds is List
+          ? rawGroupIds.map((value) => value.toString()).toList()
+          : const [],
     );
   }
 

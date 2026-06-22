@@ -115,6 +115,24 @@ void run(List<String> args) async {
     );
   }
 
+  // Geocoding search indexes are declared in [Protocol.targetTableDefinitions]
+  // but built outside Serverpod migrations. Create them before pod.start() so
+  // development-mode schema verification does not exit the process first.
+  final indexSession = await pod.createSession();
+  try {
+    await GeocodingSearchIndexes.ensureReady(indexSession);
+  } catch (error, stackTrace) {
+    WfLog.error(
+      indexSession,
+      'geocoding',
+      '🔎 Failed to build geocoding search indexes before startup',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  } finally {
+    await indexSession.close();
+  }
+
   // Start the server.
   WfLog.info(null, 'server', '🎬 Calling pod.start()');
   await pod.start();

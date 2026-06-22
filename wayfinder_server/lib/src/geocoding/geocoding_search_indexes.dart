@@ -9,7 +9,9 @@ import 'geocoding_search_index_status.dart';
 /// Serverpod's schema check accepts them across restarts. Expression indexes
 /// must use type `expression` and match Postgres's normalized definition (see
 /// `pg_get_indexdef`). Re-apply that patch in `lib/src/generated/protocol.dart`
-/// after `serverpod generate` if geocoding models change.
+/// after `serverpod generate` if geocoding models change, and keep
+/// [GeocodingSearchIndexes.ensureReady] running before `pod.start()` in
+/// `server.dart` so development-mode verification does not exit first.
 abstract final class GeocodingSearchIndexes {
   static const indexNames = [
     'geocode_place_name_trgm_idx',

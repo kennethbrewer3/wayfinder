@@ -26,6 +26,10 @@ jobs:
         env:
           POSTGRES_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
           REDIS_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
+          SERVERPOD_PASSWORD_serviceSecret: 'ci-test-service-secret'
+          SERVERPOD_PASSWORD_emailSecretHashPepper: 'ci-test-email-pepper'
+          SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: 'ci-test-jwt-signing-key'
+          SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'ci-test-jwt-refresh-pepper'
         run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml up --quiet-pull --quiet-build --build -d
 
       - name: Install dependencies

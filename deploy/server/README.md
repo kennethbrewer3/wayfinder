@@ -10,7 +10,13 @@ curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/depl
 cp .env.example .env
 ```
 
-Edit `.env` — at minimum set `POSTGRES_PASSWORD`, `REDIS_PASSWORD`, and `WAYFINDER_DATA_PATH`.
+Edit `.env` — set database passwords, auth secrets, and `WAYFINDER_DATA_PATH`. Generate secrets with `openssl rand -base64 32`:
+
+- `POSTGRES_PASSWORD`, `REDIS_PASSWORD`
+- `SERVERPOD_PASSWORD_serviceSecret`
+- `SERVERPOD_PASSWORD_emailSecretHashPepper`
+- `SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey`
+- `SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper`
 
 ```bash
 docker compose pull
@@ -36,3 +42,7 @@ The GHCR package may still be private. On GitHub, open **Packages → wayfinder-
 **`Set POSTGRES_PASSWORD in .env`**
 
 Copy `.env.example` to `.env` and set `POSTGRES_PASSWORD` and `REDIS_PASSWORD`.
+
+**`PasswordNotFoundException: jwtRefreshTokenHashPepper was not found`**
+
+Add the four `SERVERPOD_PASSWORD_*` variables from `.env.example` to your `.env` file and restart the stack.

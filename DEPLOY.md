@@ -31,6 +31,7 @@ cp .env.example .env
 Edit `.env`:
 
 - **`POSTGRES_PASSWORD`** and **`REDIS_PASSWORD`** — required; choose strong values and keep `.env` private
+- **`SERVERPOD_PASSWORD_*`** — required auth secrets (the Docker image has no `passwords.yaml`); generate with `openssl rand -base64 32`
 - **`WAYFINDER_DATA_PATH`** — host folder for Postgres, Redis, and (by default) PMTiles
 - **`WAYFINDER_PMTILES_HOST_PATH`** — optional; mount PMTiles from a different folder
 - **`SERVERPOD_*_PUBLIC_HOST`** — this machine's LAN IP or DNS (not `localhost`) if browsers on other machines will connect
@@ -40,6 +41,10 @@ Example:
 ```env
 POSTGRES_PASSWORD=your-strong-postgres-password
 REDIS_PASSWORD=your-strong-redis-password
+SERVERPOD_PASSWORD_serviceSecret=your-service-secret
+SERVERPOD_PASSWORD_emailSecretHashPepper=your-email-pepper
+SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey=your-jwt-signing-key
+SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper=your-jwt-refresh-pepper
 WAYFINDER_DATA_PATH=/mnt/storage/wayfinder
 SERVERPOD_API_SERVER_PUBLIC_HOST=192.168.1.10
 SERVERPOD_WEB_SERVER_PUBLIC_HOST=192.168.1.10
@@ -170,6 +175,16 @@ See [deploy/server/README.md](deploy/server/README.md).
 
 **`pull access denied` or image not found**  
 Ensure the GitHub packages are public: repo **Settings → Actions → General → Workflow permissions**, and on each package page **Package settings → Change visibility → Public**. Images are published after the first successful run of the Docker workflow on `main`.
+
+**`PasswordNotFoundException: jwtRefreshTokenHashPepper was not found`**
+
+The pre-built Docker image does not include `config/passwords.yaml`. Add the four `SERVERPOD_PASSWORD_*` auth variables to `.env` (see `.env.example`), then restart:
+
+```bash
+docker compose up -d
+```
+
+Generate values with `openssl rand -base64 32`.
 
 **Map loads but API calls fail**  
 Check that client `WAYFINDER_*_URL` values match addresses the browser can reach, and server `SERVERPOD_*_PUBLIC_HOST` is not `localhost` when remote browsers connect.

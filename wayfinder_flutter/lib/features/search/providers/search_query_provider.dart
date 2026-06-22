@@ -1,53 +1,29 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../map/providers/map_providers.dart';
-
-/// Delay before search results and geocoding requests update while typing.
-const mapSearchDebounceDuration = Duration(milliseconds: 450);
 
 /// Minimum characters before querying geocoded place names.
 const mapSearchMinGeocodingLength = 3;
 
-final debouncedMapSearchQueryProvider =
-    StateNotifierProvider<DebouncedMapSearchQueryNotifier, String>((ref) {
-  return DebouncedMapSearchQueryNotifier(ref);
+/// Query used for map search results, geocoding, and sidebar filtering.
+/// Updated only when the user submits search (search button or Enter).
+final submittedMapSearchQueryProvider =
+    StateNotifierProvider<SubmittedMapSearchQueryNotifier, String>((ref) {
+  return SubmittedMapSearchQueryNotifier();
 });
 
-class DebouncedMapSearchQueryNotifier extends StateNotifier<String> {
-  DebouncedMapSearchQueryNotifier(this._ref) : super('') {
-    _subscription = _ref.listen<String>(
-      sidebarProvider.select((sidebar) => sidebar.searchQuery),
-      (previous, next) {
-        _timer?.cancel();
-        final trimmed = next.trim();
-        if (trimmed.isEmpty) {
-          state = '';
-          return;
-        }
+/// Backwards-compatible alias for older call sites.
+final debouncedMapSearchQueryProvider = submittedMapSearchQueryProvider;
 
-        _timer = Timer(mapSearchDebounceDuration, () {
-          state = next;
-        });
-      },
-      fireImmediately: true,
-    );
+class SubmittedMapSearchQueryNotifier extends StateNotifier<String> {
+  SubmittedMapSearchQueryNotifier() : super('');
+
+  void submit(String query) {
+    state = query.trim();
   }
 
-  final Ref _ref;
-  Timer? _timer;
-  ProviderSubscription<String>? _subscription;
-
-  void flush(String query) {
-    _timer?.cancel();
-    state = query;
+  void clear() {
+    state = '';
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _subscription?.close();
-    super.dispose();
-  }
+  /// Alias kept for existing call sites.
+  void flush(String query) => submit(query);
 }

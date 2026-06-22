@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/presentation/coordinate_form_fields.dart';
 import '../../layers/presentation/layer_picker_field.dart';
 import '../models/marker_color.dart';
 import '../models/marker_icon_registry.dart';
@@ -16,6 +18,8 @@ class MarkerFormData {
     required this.icon,
     required this.elevation,
     required this.layerId,
+    this.latitude,
+    this.longitude,
   });
 
   final String name;
@@ -24,31 +28,40 @@ class MarkerFormData {
   final String icon;
   final double elevation;
   final UuidValue? layerId;
+  final double? latitude;
+  final double? longitude;
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
   required BuildContext context,
-  String title = 'Create marker',
-  String confirmLabel = 'Create',
-  String defaultName = 'New marker',
+  String? title,
+  String? confirmLabel,
+  String? defaultName,
   String? initialNotes,
   Color? initialColor,
   String? initialIcon,
   double initialElevation = 0,
   UuidValue? initialLayerId,
+  double? initialLatitude,
+  double? initialLongitude,
+  bool allowCoordinateEdit = false,
 }) {
   return showDialog<MarkerFormData>(
     context: context,
     builder: (context) {
+      final l10n = AppLocalizations.of(context)!;
       return MarkerFormDialog(
-        title: title,
-        confirmLabel: confirmLabel,
-        defaultName: defaultName,
+        title: title ?? l10n.markerCreateTitle,
+        confirmLabel: confirmLabel ?? l10n.actionCreate,
+        defaultName: defaultName ?? l10n.markerDefaultName,
         initialNotes: initialNotes,
         initialColor: initialColor ?? parseMarkerColor('#1B4965'),
         initialIcon: normalizeMarkerIcon(initialIcon ?? 'place'),
         initialElevation: initialElevation,
         initialLayerId: initialLayerId,
+        initialLatitude: initialLatitude,
+        initialLongitude: initialLongitude,
+        allowCoordinateEdit: allowCoordinateEdit,
       );
     },
   );
@@ -58,16 +71,20 @@ Future<MarkerFormData?> showEditMarkerDialog({
   required BuildContext context,
   required MapMarker marker,
 }) {
+  final l10n = AppLocalizations.of(context)!;
   return showMarkerFormDialog(
     context: context,
-    title: 'Edit marker',
-    confirmLabel: 'Save',
+    title: l10n.markerEditTitle,
+    confirmLabel: l10n.actionSave,
     defaultName: marker.name,
     initialNotes: marker.notes,
     initialColor: parseMarkerColor(marker.color),
     initialIcon: marker.icon,
     initialElevation: marker.elevation,
     initialLayerId: marker.layerId,
+    initialLatitude: marker.latitude,
+    initialLongitude: marker.longitude,
+    allowCoordinateEdit: true,
   );
 }
 
@@ -82,6 +99,9 @@ class MarkerFormDialog extends StatefulWidget {
     required this.initialIcon,
     required this.initialElevation,
     this.initialLayerId,
+    this.initialLatitude,
+    this.initialLongitude,
+    this.allowCoordinateEdit = false,
   });
 
   final String title;
@@ -92,6 +112,9 @@ class MarkerFormDialog extends StatefulWidget {
   final String initialIcon;
   final double initialElevation;
   final UuidValue? initialLayerId;
+  final double? initialLatitude;
+  final double? initialLongitude;
+  final bool allowCoordinateEdit;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -100,6 +123,8 @@ class MarkerFormDialog extends StatefulWidget {
 class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _elevationController;
+  late final TextEditingController? _latitudeController;
+  late final TextEditingController? _longitudeController;
   late final QuillController _notesController;
   late Color _selectedColor;
   late String _selectedIcon;
@@ -113,6 +138,19 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     _elevationController = TextEditingController(
       text: _formatElevationInput(widget.initialElevation),
     );
+    if (widget.allowCoordinateEdit &&
+        widget.initialLatitude != null &&
+        widget.initialLongitude != null) {
+      _latitudeController = TextEditingController(
+        text: formatCoordinateField(widget.initialLatitude!),
+      );
+      _longitudeController = TextEditingController(
+        text: formatCoordinateField(widget.initialLongitude!),
+      );
+    } else {
+      _latitudeController = null;
+      _longitudeController = null;
+    }
     _notesController = createMarkerNotesController(
       markdown: widget.initialNotes,
     );
@@ -136,6 +174,8 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   void dispose() {
     _nameController.dispose();
     _elevationController.dispose();
+    _latitudeController?.dispose();
+    _longitudeController?.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -166,6 +206,17 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
       return;
     }
 
+    final coordinates = _latitudeController != null && _longitudeController != null
+        ? parseLatLngFields(
+            _latitudeController.text,
+            _longitudeController.text,
+          )
+        : null;
+    if (_latitudeController != null && _longitudeController != null &&
+        coordinates == null) {
+      return;
+    }
+
     final notes = markerNotesToMarkdown(_notesController);
     Navigator.of(context).pop(
       MarkerFormData(
@@ -175,12 +226,16 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         icon: _selectedIcon,
         elevation: elevation,
         layerId: _selectedLayerId,
+        latitude: coordinates?.latitude,
+        longitude: coordinates?.longitude,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
       title: Text(widget.title),
       content: SizedBox(
@@ -191,9 +246,9 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'e.g. Home, Work, Trailhead',
+                decoration: InputDecoration(
+                  labelText: l10n.formNameLabel,
+                  hintText: l10n.markerNameHint,
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
@@ -201,14 +256,21 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
               const SizedBox(height: 16),
               TextField(
                 controller: _elevationController,
-                decoration: const InputDecoration(
-                  labelText: 'Elevation (m)',
+                decoration: InputDecoration(
+                  labelText: l10n.markerElevationLabel,
                   hintText: '0',
                 ),
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true, signed: true),
                 textInputAction: TextInputAction.next,
               ),
+              if (_latitudeController != null && _longitudeController != null) ...[
+                const SizedBox(height: 16),
+                CoordinateFormFields(
+                  latitudeController: _latitudeController!,
+                  longitudeController: _longitudeController!,
+                ),
+              ],
               const SizedBox(height: 16),
               LayerPickerField(
                 selectedLayerId: _selectedLayerId,
@@ -240,7 +302,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.actionCancel),
         ),
         FilledButton(
           onPressed: _submit,

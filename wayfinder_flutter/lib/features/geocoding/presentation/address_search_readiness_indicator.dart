@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/animated_status_dot_icon_button.dart';
 import '../data/geocoding_repository.dart';
@@ -54,6 +55,7 @@ class _AddressSearchReadinessIndicatorState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final readinessAsync = ref.watch(geocodingSearchReadinessProvider);
 
     readinessAsync.whenData((readiness) {
@@ -62,8 +64,8 @@ class _AddressSearchReadinessIndicatorState
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Full search is ready — places and addresses.'),
+            SnackBar(
+              content: Text(l10n.searchReadinessReadySnackBar),
             ),
           );
         });
@@ -71,26 +73,26 @@ class _AddressSearchReadinessIndicatorState
     });
 
     return readinessAsync.when(
-      loading: () => const AnimatedStatusDotIconButton(
+      loading: () => AnimatedStatusDotIconButton(
         isReady: false,
         isLoading: true,
-        tooltip: 'Checking search readiness…',
+        tooltip: l10n.searchReadinessCheckingTooltip,
         icon: Icons.travel_explore,
       ),
       error: (error, stackTrace) => AnimatedStatusDotIconButton(
         isReady: false,
         isLoading: false,
-        tooltip: 'Search readiness unavailable',
+        tooltip: l10n.searchReadinessUnavailableTooltip,
         icon: Icons.travel_explore,
         onPressed: () => _showReadinessDialog(
           context,
-          const GeocodingSearchReadiness(
+          GeocodingSearchReadiness(
             isAddressSearchReady: false,
             isFullSearchReady: false,
             indexesBuilding: false,
             readyIndexCount: 0,
             totalIndexCount: 0,
-            statusMessage: 'Could not reach the server to check search status.',
+            statusMessage: l10n.searchReadinessServerUnreachable,
           ),
         ),
       ),
@@ -98,10 +100,10 @@ class _AddressSearchReadinessIndicatorState
         isReady: readiness.isFullSearchReady,
         isLoading: readiness.indexesBuilding,
         tooltip: readiness.isFullSearchReady
-            ? 'Full search ready'
+            ? l10n.searchReadinessFullReadyTooltip
             : readiness.indexesBuilding
-                ? 'Building search indexes…'
-                : 'Full search not ready',
+                ? l10n.searchReadinessBuildingTooltip
+                : l10n.searchReadinessNotReadyTooltip,
         icon: Icons.travel_explore,
         onPressed: () => _showReadinessDialog(context, readiness),
       ),
@@ -117,6 +119,7 @@ class _AddressSearchReadinessIndicatorState
       builder: (dialogContext) {
         return Consumer(
           builder: (context, ref, _) {
+            final l10n = AppLocalizations.of(context)!;
             final readinessAsync = ref.watch(geocodingSearchReadinessProvider);
             final readiness = readinessAsync.maybeWhen(
               data: (value) => value,
@@ -131,10 +134,10 @@ class _AddressSearchReadinessIndicatorState
             return AlertDialog(
               title: Text(
                 readiness.isFullSearchReady
-                    ? 'Full search ready'
+                    ? l10n.searchReadinessFullReadyTitle
                     : readiness.isAddressSearchReady
-                        ? 'Address search ready'
-                        : 'Search not ready yet',
+                        ? l10n.searchReadinessAddressReadyTitle
+                        : l10n.searchReadinessNotReadyTitle,
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -144,10 +147,13 @@ class _AddressSearchReadinessIndicatorState
                     ActivityProgressBar(
                       progress: readiness.buildProgress,
                       label: readiness.totalIndexCount > 0
-                          ? 'Indexes built: ${readiness.readyIndexCount} of ${readiness.totalIndexCount}'
+                          ? l10n.searchReadinessIndexesBuilt(
+                              readiness.readyIndexCount,
+                              readiness.totalIndexCount,
+                            )
                           : readinessAsync.isLoading
-                              ? 'Checking search status…'
-                              : 'Building search indexes…',
+                              ? l10n.searchReadinessCheckingStatus
+                              : l10n.searchReadinessBuildingTooltip,
                     ),
                     const SizedBox(height: 12),
                   ],
@@ -155,33 +161,34 @@ class _AddressSearchReadinessIndicatorState
                     Text(readiness.statusMessage!),
                   if (readiness.isFullSearchReady) ...[
                     const SizedBox(height: 12),
-                    const Text(
-                      'You can search for places and street addresses from the map search bar.',
-                    ),
+                    Text(l10n.searchReadinessFullReadyMessage),
                   ] else if (readiness.isAddressSearchReady) ...[
                     const SizedBox(height: 12),
-                    const Text(
-                      'Street address search is ready. Place-name search is still being prepared.',
-                    ),
+                    Text(l10n.searchReadinessAddressOnlyMessage),
                   ] else ...[
                     if (!isLoading && readiness.totalIndexCount > 0) ...[
                       const SizedBox(height: 12),
                       Text(
-                        'Indexes built: ${readiness.readyIndexCount} of ${readiness.totalIndexCount}',
+                        l10n.searchReadinessIndexesBuilt(
+                          readiness.readyIndexCount,
+                          readiness.totalIndexCount,
+                        ),
                       ),
                     ],
                     if (!isLoading && progressPercent != null) ...[
                       const SizedBox(height: 8),
-                      Text('$progressPercent% complete'),
+                      Text(l10n.searchReadinessPercentComplete(progressPercent)),
                     ],
                     if (etaLabel != null) ...[
                       const SizedBox(height: 12),
-                      Text('Estimated time remaining: $etaLabel'),
+                      Text(l10n.searchReadinessEta(etaLabel)),
                     ],
                     if (readiness.currentIndexName != null) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'Current index: ${readiness.currentIndexName}',
+                        l10n.searchReadinessCurrentIndex(
+                          readiness.currentIndexName!,
+                        ),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -191,7 +198,7 @@ class _AddressSearchReadinessIndicatorState
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('OK'),
+                  child: Text(l10n.actionOk),
                 ),
               ],
             );

@@ -1,4 +1,5 @@
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 /// Default layer seeded by the layers migration.
 final defaultMapLayerId =
@@ -82,11 +83,12 @@ UuidValue? resolveSelectedLayerId({
 String layerNameForObject({
   required UuidValue? layerId,
   required Map<UuidValue, MapLayer> layersById,
+  required AppLocalizations l10n,
 }) {
   if (layerId == null) {
-    return 'Unassigned';
+    return l10n.layerUnassigned;
   }
-  return layersById[layerId]?.name ?? 'Unknown layer';
+  return layersById[layerId]?.name ?? l10n.layerUnknown;
 }
 
 List<MapMarker> markersForLayer(

@@ -65,13 +65,16 @@ class _AnimatedStatusDotIconButtonState extends State<AnimatedStatusDotIconButto
   }
 
   Color _dotColor(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     if (widget.isReady) {
-      return Colors.green;
+      return colorScheme.brightness == Brightness.dark
+          ? const Color(0xFF81C784)
+          : const Color(0xFF2E7D32);
     }
     if (widget.isLoading) {
-      return Theme.of(context).colorScheme.primary;
+      return colorScheme.primary;
     }
-    return Colors.red;
+    return colorScheme.error;
   }
 
   @override

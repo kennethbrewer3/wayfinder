@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
@@ -30,9 +31,10 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         contents: jsonText,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       if (saved) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Map data backup saved.')),
+          SnackBar(content: Text(l10n.backupExportSuccess)),
         );
       }
     } catch (error, stackTrace) {
@@ -42,8 +44,9 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $error')),
+        SnackBar(content: Text(l10n.backupExportFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -61,20 +64,18 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
-          title: const Text('Restore map data?'),
-          content: const Text(
-            'This replaces all layers, markers, and zones on the server '
-            'with the selected backup file. This cannot be undone.',
-          ),
+          title: Text(l10n.backupRestoreConfirmTitle),
+          content: Text(l10n.backupRestoreConfirmMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Restore'),
+              child: Text(l10n.actionRestore),
             ),
           ],
         );
@@ -91,11 +92,15 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
       final result = await repository.restoreFromJson(jsonText);
       refreshMapData(ref);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Restored ${result.layers} layer(s), ${result.markers} marker(s), '
-            'and ${result.zones} zone(s).',
+            l10n.backupRestoreSuccess(
+              result.layers,
+              result.markers,
+              result.zones,
+            ),
           ),
         ),
       );
@@ -106,8 +111,9 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Restore failed: $error')),
+        SnackBar(content: Text(l10n.backupRestoreFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -118,17 +124,18 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Map data backup',
+          l10n.backupTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Export or restore all layers, markers, and zones. You can also '
-          'back up with curl: GET /api/map-data',
+          l10n.backupDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
@@ -142,7 +149,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                 )
               : const Icon(Icons.download),
           label: Text(
-            _isExportingMapData ? 'Exporting…' : 'Export map data (.json)',
+            _isExportingMapData ? l10n.actionExporting : l10n.backupExportButton,
           ),
         ),
         const SizedBox(height: 12),
@@ -156,7 +163,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                 )
               : const Icon(Icons.upload_file),
           label: Text(
-            _isRestoringMapData ? 'Restoring…' : 'Restore from backup',
+            _isRestoringMapData ? l10n.actionRestoring : l10n.backupRestoreButton,
           ),
         ),
       ],

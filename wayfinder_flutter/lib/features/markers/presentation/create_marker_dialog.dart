@@ -14,9 +14,9 @@ Future<bool> createMarkerAtPoint({
   required BuildContext context,
   required WidgetRef ref,
   required LatLng point,
-  String defaultName = 'New marker',
-  String dialogTitle = 'Create marker',
-  String confirmLabel = 'Create',
+  String? defaultName,
+  String? dialogTitle,
+  String? confirmLabel,
 }) async {
   final formData = await showMarkerFormDialog(
     context: context,
@@ -73,6 +73,8 @@ Future<bool> updateMarkerFromForm({
     marker.copyWith(
       name: formData.name,
       notes: formData.notes,
+      latitude: formData.latitude ?? marker.latitude,
+      longitude: formData.longitude ?? marker.longitude,
       color: formatMarkerColorHex(formData.color),
       icon: formData.icon,
       elevation: formData.elevation,

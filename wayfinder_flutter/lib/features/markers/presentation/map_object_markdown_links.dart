@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 Uri? normalizeMarkdownLinkUri(String href) {
   final trimmed = href.trim();
@@ -41,8 +42,9 @@ Future<void> handleMapObjectMarkdownLink(
   );
 
   if (!launched && context.mounted) {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Could not open link: $trimmed')),
+      SnackBar(content: Text(l10n.couldNotOpenLink(trimmed))),
     );
   }
 }

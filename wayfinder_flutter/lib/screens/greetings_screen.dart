@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../core/app_globals.dart';
 
@@ -39,26 +40,28 @@ class _GreetingsScreenState extends State<GreetingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           if (widget.onSignOut != null) ...[
-            const Text('You are connected'),
+            Text(l10n.greetingsConnected),
             ElevatedButton(
               onPressed: widget.onSignOut,
-              child: const Text('Sign out'),
+              child: Text(l10n.actionSignOut),
             ),
           ],
           const SizedBox(height: 32),
           TextField(
             controller: _textEditingController,
-            decoration: const InputDecoration(hintText: 'Enter your name'),
+            decoration: InputDecoration(hintText: l10n.greetingsNameHint),
           ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _callHello,
-            child: const Text('Send to Server'),
+            child: Text(l10n.greetingsSendToServer),
           ),
           const SizedBox(height: 16),
           ResultDisplay(
@@ -81,6 +84,7 @@ class ResultDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     String text;
     Color backgroundColor;
     if (errorMessage != null) {
@@ -91,7 +95,7 @@ class ResultDisplay extends StatelessWidget {
       text = resultMessage!;
     } else {
       backgroundColor = Colors.grey[300]!;
-      text = 'No server response yet.';
+      text = l10n.greetingsNoResponse;
     }
 
     return ConstrainedBox(

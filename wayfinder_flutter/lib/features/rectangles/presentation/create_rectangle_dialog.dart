@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
@@ -60,6 +61,9 @@ Future<bool> _createRectangle({
     bounds: geometry.bounds,
     measurementUnits: measurementUnits,
     initialLayerId: selectedLayerIdForCreate(ref),
+    initialCenter: geometry.center ?? geometry.bounds.center,
+    initialCornerA: geometry.cornerA,
+    initialCornerB: geometry.cornerB,
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -72,10 +76,15 @@ Future<bool> _createRectangle({
 
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
-  final savedGeometry = geometry.copyWith(
-    notes: formData.notes,
-    sizeDisplay: formData.sizeDisplay,
-    showNameLabel: formData.showNameLabel,
+  final savedGeometry = applyRectangleCoordinateEdits(
+    geometry.copyWith(
+      notes: formData.notes,
+      sizeDisplay: formData.sizeDisplay,
+      showNameLabel: formData.showNameLabel,
+    ),
+    center: formData.center,
+    cornerA: formData.cornerA,
+    cornerB: formData.cornerB,
   );
 
   await client.mapZone.createZone(
@@ -109,10 +118,11 @@ Future<bool> updateRectangleFromForm({
   }
 
   final measurementUnits = ref.read(measurementUnitsProvider);
+  final l10n = AppLocalizations.of(context)!;
   final formData = await showRectangleFormDialog(
     context: context,
-    title: 'Edit rectangle',
-    confirmLabel: 'Save',
+    title: l10n.rectangleEditTitle,
+    confirmLabel: l10n.actionSave,
     defaultName: zone.name,
     creationMode: geometry.creationMode,
     bounds: geometry.bounds,
@@ -124,16 +134,24 @@ Future<bool> updateRectangleFromForm({
     initialFillColor: parseMarkerColor(zone.fillColor),
     initialShowNameLabel: geometry.showNameLabel,
     initialLayerId: zone.layerId,
+    initialCenter: geometry.center ?? geometry.bounds.center,
+    initialCornerA: geometry.cornerA,
+    initialCornerB: geometry.cornerB,
   );
   if (formData == null || !context.mounted) {
     return false;
   }
 
   final client = ref.read(serverClientProvider);
-  final updatedGeometry = geometry.copyWith(
-    notes: formData.notes,
-    sizeDisplay: formData.sizeDisplay,
-    showNameLabel: formData.showNameLabel,
+  final updatedGeometry = applyRectangleCoordinateEdits(
+    geometry.copyWith(
+      notes: formData.notes,
+      sizeDisplay: formData.sizeDisplay,
+      showNameLabel: formData.showNameLabel,
+    ),
+    center: formData.center,
+    cornerA: formData.cornerA,
+    cornerB: formData.cornerB,
   );
 
   await client.mapZone.updateZone(

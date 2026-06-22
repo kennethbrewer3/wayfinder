@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
@@ -93,6 +94,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       searchCoordinateMarker.clear();
     }
     ref.read(sidebarProvider.notifier).setSearchQuery('');
+    ref.read(debouncedMapSearchQueryProvider.notifier).clear();
   }
 
   Future<void> _zoomTo(LatLng location) {
@@ -112,8 +114,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final viewportAsync = ref.watch(mapViewportProvider);
-    final searchResults = watchCombinedSearchResults(ref);
+    final searchResults = watchCombinedSearchResults(ref, l10n);
     final debouncedQuery = ref.watch(debouncedMapSearchQueryProvider).trim();
     final geocodingLoading = debouncedQuery.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(debouncedQuery)).isLoading;
@@ -133,12 +136,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           const AddressSearchReadinessIndicator(),
           const MapTilesLoadIndicator(),
           IconButton(
-            tooltip: 'Home',
+            tooltip: l10n.mapHomeTooltip,
             icon: const Icon(Icons.home),
             onPressed: _goHome,
           ),
           IconButton(
-            tooltip: 'Settings',
+            tooltip: l10n.mapSettingsTooltip,
             icon: const Icon(Icons.settings),
             onPressed: () {
               AppLogger.logNav.info('🧭 Navigating to settings from app bar');
@@ -150,7 +153,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       body: MapObjectSelectionListener(
         child: viewportAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('Failed to load map: $error')),
+        error: (error, _) =>
+            Center(child: Text(l10n.mapLoadFailed(error.toString()))),
         data: (viewport) {
           final isWide = MediaQuery.sizeOf(context).width >= 960;
           final sidebarExpanded = ref.watch(
@@ -177,7 +181,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     borderRadius: BorderRadius.circular(8),
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: IconButton(
-                      tooltip: 'Show map objects',
+                      tooltip: l10n.mapShowObjectsTooltip,
                       icon: const Icon(Icons.chevron_left),
                       onPressed: () {
                         ref.read(sidebarProvider.notifier).setExpanded(true);

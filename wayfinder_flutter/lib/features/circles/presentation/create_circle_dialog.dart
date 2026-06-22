@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
@@ -45,7 +46,7 @@ Future<bool> createCircleAtCenter({
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
   final geometry = CircleGeometry(
-    center: center,
+    center: formData.center,
     radiusMeters: radiusMeters,
     notes: formData.notes,
     sizeDisplay: formData.sizeDisplay,
@@ -83,10 +84,11 @@ Future<bool> updateCircleFromForm({
   }
 
   final measurementUnits = ref.read(measurementUnitsProvider);
+  final l10n = AppLocalizations.of(context)!;
   final formData = await showCircleFormDialog(
     context: context,
-    title: 'Edit circle',
-    confirmLabel: 'Save',
+    title: l10n.circleEditTitle,
+    confirmLabel: l10n.actionSave,
     defaultName: zone.name,
     center: geometry.center,
     radiusMeters: geometry.radiusMeters,
@@ -105,6 +107,7 @@ Future<bool> updateCircleFromForm({
 
   final client = ref.read(serverClientProvider);
   final updatedGeometry = geometry.copyWith(
+    center: formData.center,
     notes: formData.notes,
     sizeDisplay: formData.sizeDisplay,
     showNameLabel: formData.showNameLabel,

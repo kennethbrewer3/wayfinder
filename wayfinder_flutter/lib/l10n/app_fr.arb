@@ -1,0 +1,836 @@
+{
+  "@@locale": "fr",
+  "@appTitle": {
+    "description": "Application name shown in the window title."
+  },
+  "appTitle": "Wayfinder",
+  "settingsTitle": "Paramètres",
+  "settingsTabGeneral": "Général",
+  "settingsTabMapTiles": "Tuiles cartographiques",
+  "settingsTabGeocoding": "Géocodage",
+  "settingsTabBackup": "Sauvegarde",
+  "actionSave": "Enregistrer",
+  "actionSearch": "Rechercher",
+  "actionCancel": "Annuler",
+  "actionReset": "Réinitialiser",
+  "actionLater": "Plus tard",
+  "actionOk": "OK",
+  "actionReloadNow": "Recharger maintenant",
+  "actionSaving": "Enregistrement…",
+  "actionCreate": "Créer",
+  "actionDelete": "Supprimer",
+  "actionImport": "Importer",
+  "actionExport": "Exporter",
+  "actionRemoveAll": "Tout supprimer",
+  "actionClose": "Fermer",
+  "actionEdit": "Modifier",
+  "actionTryAgain": "Réessayer",
+  "actionOpenSettings": "Ouvrir les paramètres",
+  "actionRename": "Renommer",
+  "actionRestore": "Restaurer",
+  "actionSignOut": "Se déconnecter",
+  "actionUploading": "Téléversement…",
+  "actionExporting": "Exportation…",
+  "actionRestoring": "Restauration…",
+  "actionAborting": "Annulation…",
+  "statusLoading": "Chargement…",
+  "statusWorking": "Traitement…",
+  "errorWithMessage": "Erreur : {error}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAppearanceTitle": "Apparence",
+  "settingsAppearanceDescription": "Choisissez un thème de couleur pour l'application. Les thèmes militaires utilisent des tons olive, sable et vert forêt. Enregistré sur le serveur pour que chaque navigateur utilise le même thème.",
+  "settingsLanguageTitle": "Langue",
+  "settingsLanguageDescription": "Choisissez la langue utilisée dans l'application. Enregistrée sur le serveur pour que chaque navigateur utilise la même langue.",
+  "languageSystem": "Langue du système",
+  "languageEnglish": "Anglais",
+  "languageSpanish": "Espagnol",
+  "languageFrench": "Français",
+  "settingsThemeStyle": "Style de thème",
+  "settingsBrightness": "Luminosité",
+  "settingsMapHomeTitle": "Accueil carte",
+  "settingsMapHomeDescription": "Coordonnées et zoom du bouton d'accueil sur la carte. Enregistré sur le serveur pour que tous les clients partagent le même point d'accueil. Utilisé aussi comme vue initiale lorsqu'aucune position précédente n'est enregistrée.",
+  "settingsLatitude": "Latitude",
+  "settingsLongitude": "Longitude",
+  "settingsZoom": "Zoom",
+  "settingsZoomHelper": "0–{maxZoom}",
+  "@settingsZoomHelper": {
+    "placeholders": {
+      "maxZoom": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSaveHome": "Enregistrer l'accueil",
+  "settingsUseCurrentMapView": "Utiliser la vue actuelle",
+  "settingsResetToDefault": "Réinitialiser par défaut",
+  "settingsServerConnectionTitle": "Connexion au serveur",
+  "settingsServerConnectionDescription": "URL du serveur API Wayfinder, y compris l'hôte et le port. L'URL du serveur web (API REST et PMTiles) est dérivée automatiquement (port API + 2). Redémarrez l'application après modification.",
+  "settingsServerUrl": "URL du serveur",
+  "settingsCurrentWebServer": "Serveur web actuel : {webUrl}",
+  "@settingsCurrentWebServer": {
+    "placeholders": {
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSaveServerUrl": "Enregistrer l'URL du serveur",
+  "settingsMeasurementsTitle": "Mesures",
+  "settingsMeasurementsDescription": "Choisissez comment les distances des lignes sont affichées sur la carte. Enregistré sur le serveur pour que chaque navigateur utilise les mêmes unités.",
+  "settingsAnglesTitle": "Angles",
+  "settingsAnglesDescription": "Choisissez comment les angles relatifs sont affichés sur la carte et dans les graphiques de relèvement. Enregistré sur le serveur pour que chaque navigateur utilise le même format.",
+  "settingsCirclesTitle": "Cercles",
+  "settingsCirclesDescription": "Choisissez l'étiquette de taille par défaut affichée sur les nouvelles zones circulaires. Enregistré sur le serveur pour que chaque navigateur utilise la même valeur par défaut.",
+  "settingsHomeLocationSaved": "Point d'accueil enregistré.",
+  "settingsHomeLocationReset": "Point d'accueil réinitialisé par défaut.",
+  "settingsOpenMapFirst": "Ouvrez d'abord la carte pour capturer sa vue.",
+  "settingsHomeLocationInvalid": "Saisissez des nombres valides pour la latitude, la longitude et le zoom.",
+  "settingsHomeLocationSaveFailed": "Échec de l'enregistrement du point d'accueil : {error}",
+  "@settingsHomeLocationSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRestartRequiredTitle": "Redémarrage requis",
+  "settingsRestartRequiredMessage": "URL du serveur enregistrée.\n\nAPI : {apiUrl}\nWeb : {webUrl}\n\nRedémarrez l'application pour vous connecter au nouveau serveur.",
+  "@settingsRestartRequiredMessage": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      },
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerUrlReset": "URL du serveur réinitialisée par défaut. Redémarrez l'application pour appliquer.",
+  "settingsServerUrlSaveFailed": "Échec de l'enregistrement de l'URL du serveur : {error}",
+  "@settingsServerUrlSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "themePreviewPrimary": "Primaire",
+  "themePreviewSecondary": "Secondaire",
+  "themePreviewSurface": "Surface",
+  "themePreviewAccent": "Accent",
+  "themePreviewButton": "Bouton",
+  "themePreviewOutline": "Contour",
+  "themeFamilyStandard": "Standard",
+  "themeFamilyMilitary": "Militaire",
+  "themeBrightnessLight": "Clair",
+  "themeBrightnessDark": "Sombre",
+  "themeChoiceMilitaryLight": "Militaire clair",
+  "themeChoiceMilitaryDark": "Militaire sombre",
+  "measurementMetric": "Métrique",
+  "measurementImperial": "Impérial",
+  "measurementNautical": "Nautique",
+  "measurementMetricShort": "m/km",
+  "measurementImperialShort": "pi/pi",
+  "measurementNauticalShort": "mn",
+  "angleFormatDecimal": "Degrés décimaux",
+  "angleFormatDms": "Degrés, minutes, secondes",
+  "angleFormatDecimalShort": "DD",
+  "angleFormatDmsShort": "DMS",
+  "circleSizeRadius": "Rayon",
+  "circleSizeDiameter": "Diamètre",
+  "circleSizeNone": "Aucun",
+  "circleSizeToggleRadius": "Rayon affiché sur la carte · appuyez pour le diamètre",
+  "circleSizeToggleDiameter": "Diamètre affiché sur la carte · appuyez pour masquer",
+  "circleSizeToggleNone": "Taille masquée sur la carte · appuyez pour le rayon",
+  "backupTitle": "Sauvegarde des données cartographiques",
+  "backupDescription": "Exporter ou restaurer toutes les couches, marqueurs et zones. Vous pouvez aussi sauvegarder avec curl : GET /api/map-data",
+  "backupExportButton": "Exporter les données (.json)",
+  "backupRestoreButton": "Restaurer depuis une sauvegarde",
+  "backupExportSuccess": "Sauvegarde des données cartographiques enregistrée.",
+  "backupExportFailed": "Échec de l'exportation : {error}",
+  "@backupExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Restaurer les données cartographiques ?",
+  "backupRestoreConfirmMessage": "Cela remplace toutes les couches, marqueurs et zones sur le serveur par le fichier de sauvegarde sélectionné. Cette action est irréversible.",
+  "backupRestoreSuccess": "{layers} couche(s), {markers} marqueur(s) et {zones} zone(s) restauré(s).",
+  "@backupRestoreSuccess": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreFailed": "Échec de la restauration : {error}",
+  "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesFolderTitle": "Dossier PMTiles",
+  "mapTilesFolderDescription": "Dossier sur le serveur contenant les archives .pmtiles. Enregistré dans la base de données pour que chaque client utilise la même bibliothèque de tuiles après redémarrage.",
+  "mapTilesStoragePathLabel": "Chemin de stockage PMTiles",
+  "mapTilesStoragePathRequired": "Le chemin de stockage PMTiles est requis.",
+  "mapTilesSaveAndRescan": "Enregistrer et rescanner le dossier",
+  "mapTilesFolderSaved": "Dossier PMTiles enregistré. Resynchronisé depuis {path}.",
+  "@mapTilesFolderSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesFolderSaveFailed": "Échec de l'enregistrement du dossier PMTiles : {error}",
+  "@mapTilesFolderSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesMapsTitle": "Cartes PMTiles",
+  "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Une seule archive activée correspondante est affichée à la fois pour garder la carte réactive.",
+  "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
+  "mapTilesUploadSuccess": "Fichier PMTiles téléversé : {name}",
+  "@mapTilesUploadSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesUploadFailed": "Échec du téléversement : {error}",
+  "@mapTilesUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesAllHidden": "Toutes les tuiles cartographiques sont masquées sur la carte.",
+  "mapTilesNewGroupTitle": "Nouveau groupe de tuiles",
+  "mapTilesGroupNameLabel": "Nom du groupe",
+  "mapTilesGroupNameHint": "p. ex. États du Mid-Atlantic",
+  "mapTilesGroupCreated": "Groupe « {name} » créé.",
+  "@mapTilesGroupCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGroupCreateFailed": "Impossible de créer le groupe : {error}",
+  "@mapTilesGroupCreateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesDeleteGroupTitle": "Supprimer le groupe de tuiles ?",
+  "mapTilesDeleteGroupMessage": "Supprimer « {name} » ? Les fichiers de ce groupe deviendront non groupés.",
+  "@mapTilesDeleteGroupMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesDeleteFileTitle": "Supprimer le fichier PMTiles ?",
+  "mapTilesDeleteFileMessage": "Retirer « {name} » du serveur ?",
+  "@mapTilesDeleteFileMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesFileDeleted": "Fichier PMTiles supprimé.",
+  "mapTilesFilesLoadFailed": "Échec du chargement des fichiers : {error}",
+  "@mapTilesFilesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGroupsLoadFailed": "Échec du chargement des groupes : {error}",
+  "@mapTilesGroupsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesNoFiles": "Aucun fichier PMTiles téléversé pour l'instant.",
+  "mapTilesShownOnMapCount": "{shown} sur {total} affiché(s) sur la carte",
+  "@mapTilesShownOnMapCount": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mapTilesUngrouped": "Non groupé",
+  "mapTilesNoFilesAssigned": "Aucun fichier assigné",
+  "mapTilesShowUngroupedOnMap": "Afficher les non groupés sur la carte",
+  "mapTilesShowGroupOnMap": "Afficher le groupe sur la carte",
+  "mapTilesDeleteGroupTooltip": "Supprimer le groupe",
+  "mapTilesUngroupedEmptyMessage": "Les fichiers non assignés à un groupe apparaissent ici.",
+  "mapTilesGroupEmptyMessage": "Assignez des fichiers à ce groupe depuis le menu de chaque tuile.",
+  "mapTilesNoGroups": "Aucun groupe",
+  "mapTilesGroupCount": "{count, plural, =1{1 groupe} other{{count} groupes}}",
+  "mapTilesManageGroupsTooltip": "Gérer les groupes",
+  "mapTilesNewGroup": "Nouveau groupe",
+  "mapTilesShowAllOnMap": "Tout afficher sur la carte",
+  "mapTilesHideAllFromMap": "Tout masquer sur la carte",
+  "layerLabel": "Couche",
+  "layerUnassigned": "Non assigné",
+  "layerUnknown": "Couche inconnue",
+  "formNameLabel": "Nom",
+  "formColorLabel": "Couleur",
+  "formNotesLabel": "Notes",
+  "formNotesPlaceholder": "Ajouter des notes (enregistrées en Markdown)...",
+  "formPreviewLabel": "Aperçu",
+  "formShowNameOnMap": "Afficher le nom sur la carte",
+  "formBorderColorLabel": "Couleur de bordure",
+  "formFillColorLabel": "Couleur de remplissage",
+  "formFillOpacityHelp": "Ajustez l'opacité pour contrôler la transparence du remplissage.",
+  "coordinatesTitle": "Coordonnées",
+  "markerCreateTitle": "Créer un marqueur",
+  "markerEditTitle": "Modifier le marqueur",
+  "markerDefaultName": "Nouveau marqueur",
+  "markerNameHint": "p. ex. Maison, Travail, Départ de sentier",
+  "markerElevationLabel": "Altitude (m)",
+  "markerIconLabel": "Icône",
+  "markerIconHelp": "Choisissez une icône pour l'épingle sur la carte, par exemple Maison pour votre domicile.",
+  "markerSaveSearchedCoordinatesTitle": "Enregistrer les coordonnées recherchées",
+  "markerSaveSearchedCoordinatesConfirm": "Enregistrer le marqueur",
+  "lineCreateTitle": "Créer une ligne",
+  "lineEditTitle": "Modifier la ligne",
+  "lineDefaultName": "Nouvelle ligne",
+  "lineNameHint": "p. ex. Route vers le camp, Limite de propriété",
+  "lineDistanceLabel": "Distance",
+  "lineStartPointLabel": "Point de départ",
+  "lineEndPointLabel": "Point d'arrivée",
+  "lineStyleLabel": "Style de ligne",
+  "lineBorderSolid": "Plein",
+  "lineBorderDashed": "Tirets",
+  "lineDirectionArrowsTitle": "Flèches de direction",
+  "lineDirectionArrowsSubtitle": "Les flèches pointent du premier point vers le second.",
+  "circleCreateTitle": "Créer un cercle",
+  "circleEditTitle": "Modifier le cercle",
+  "circleDefaultName": "Nouveau cercle",
+  "circleNameHint": "p. ex. Zone de recherche, Limite de propriété",
+  "circleMeasurementsLabel": "Mesures",
+  "circleCenterLabel": "Centre",
+  "circleSizeLabelOnMap": "Étiquette de taille sur la carte",
+  "circleCenterMarkerLabel": "Marqueur central",
+  "rectangleCreateTitle": "Créer un rectangle",
+  "rectangleEditTitle": "Modifier le rectangle",
+  "rectangleDefaultName": "Nouveau rectangle",
+  "rectangleCornerALabel": "Coin A",
+  "rectangleCornerBLabel": "Coin B",
+  "rectangleCenterMoveHelp": "Déplacer le centre déplace tout le rectangle sur la carte.",
+  "mapHomeTooltip": "Accueil",
+  "mapSettingsTooltip": "Paramètres",
+  "mapShowObjectsTooltip": "Afficher les objets cartographiques",
+  "mapLoadFailed": "Échec du chargement de la carte : {error}",
+  "@mapLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapNoOfflineMapTitle": "Aucune carte hors ligne installée ou visible",
+  "mapNoOfflineMapMessage": "Téléversez un fichier .pmtiles dans les Paramètres, ou activez la visibilité des tuiles déjà sur le serveur.",
+  "mapObjectDetailsTitle": "Objet cartographique",
+  "mapObjectDetailsLoading": "Chargement des détails…",
+  "mapObjectDetailsNotFound": "Cet objet est introuvable.",
+  "mapObjectDetailType": "Type",
+  "mapObjectTypeMarker": "Marqueur",
+  "mapObjectTypeLine": "Ligne",
+  "mapObjectTypeCircle": "Cercle",
+  "mapObjectDetailCoordinates": "Coordonnées",
+  "mapObjectDetailElevation": "Altitude",
+  "mapObjectDetailVisibility": "Visibilité",
+  "mapObjectVisibilityVisible": "Visible",
+  "mapObjectVisibilityHidden": "Masqué",
+  "mapObjectDetailLength": "Longueur",
+  "mapObjectDetailStart": "Début",
+  "mapObjectDetailEnd": "Fin",
+  "mapObjectDetailRadius": "Rayon",
+  "mapObjectDetailDiameter": "Diamètre",
+  "mapObjectDetailCenter": "Centre",
+  "mapObjectDetailMapLabel": "Étiquette sur la carte",
+  "mapObjectMapLabelNone": "Aucune",
+  "mapObjectDetailDimensions": "Dimensions",
+  "mapObjectDetailArea": "Surface",
+  "mapObjectsErrorServerUnreachable": "Le serveur Wayfinder est inaccessible. Démarrez le serveur pour synchroniser les marqueurs et les zones.",
+  "mapObjectsErrorSignInRequired": "Connectez-vous pour charger vos objets cartographiques.",
+  "mapObjectsErrorGeneric": "Une erreur s'est produite lors du chargement des objets cartographiques. Vérifiez votre connexion et réessayez.",
+  "mapObjectsErrorRetry": "Une erreur s'est produite lors du chargement des objets cartographiques. Veuillez réessayer.",
+  "layersErrorTableMissing": "La table des couches cartographiques est absente. Redémarrez le serveur Wayfinder avec les migrations appliquées.",
+  "layersErrorEndpointUnavailable": "Redémarrez le serveur Wayfinder avec la dernière version du code.",
+  "layersErrorGeneric": "Une erreur s'est produite lors du chargement des couches. Veuillez réessayer.",
+  "sidebarTitle": "Objets cartographiques",
+  "sidebarCollapsePanel": "Réduire le panneau",
+  "sidebarExpandPanel": "Développer le panneau",
+  "sidebarLayerOrderHint": "Les couches supérieures s'affichent au-dessus des inférieures. Utilisez ▼ pour développer ou réduire le contenu d'une couche.",
+  "sidebarLayersUnavailable": "Couches indisponibles",
+  "sidebarMarkersUnavailable": "Marqueurs indisponibles",
+  "sidebarZonesUnavailable": "Zones indisponibles",
+  "sidebarAddLayer": "Ajouter une couche",
+  "sidebarKeepOneLayer": "Vous devez conserver au moins une couche.",
+  "sidebarNewLayerTitle": "Nouvelle couche",
+  "sidebarRenameLayerTitle": "Renommer la couche",
+  "sidebarLayerNameLabel": "Nom de la couche",
+  "sidebarDeleteLayerTitle": "Supprimer la couche ?",
+  "sidebarDeleteLayerMessage": "Supprimer « {name} » ? Ses marqueurs et zones seront déplacés vers une autre couche.",
+  "@sidebarDeleteLayerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sidebarCollapseLayer": "Réduire la couche",
+  "sidebarExpandLayer": "Développer la couche",
+  "sidebarHideLayer": "Masquer la couche",
+  "sidebarShowLayer": "Afficher la couche",
+  "sidebarObjectCount": "{count, plural, =1{1 objet} other{{count} objets}}",
+  "sidebarSelectedForNewObjects": "· sélectionné pour les nouveaux objets",
+  "sidebarMoveUp": "Monter",
+  "sidebarMoveDown": "Descendre",
+  "sidebarTabMarkers": "Marqueurs",
+  "sidebarTabZones": "Zones",
+  "sidebarViewList": "Liste",
+  "sidebarViewTree": "Arbre",
+  "sidebarNoMatchingMarkers": "Aucun marqueur correspondant",
+  "sidebarNoMatchingZones": "Aucune zone correspondante",
+  "sidebarTryDifferentSearch": "Essayez un autre terme de recherche.",
+  "sidebarNoMarkersOnLayer": "Aucun marqueur sur cette couche",
+  "sidebarAddMarkerHint": "Appuyez longuement sur la carte pour ajouter un marqueur.",
+  "sidebarNoZonesOnLayer": "Aucune zone sur cette couche",
+  "sidebarAddZoneHint": "Appuyez longuement sur la carte et choisissez Ligne pour en dessiner une.",
+  "sidebarHideMarker": "Masquer le marqueur",
+  "sidebarShowMarker": "Afficher le marqueur",
+  "sidebarEditMarker": "Modifier le marqueur",
+  "sidebarDeleteMarker": "Supprimer le marqueur",
+  "sidebarHideNameOnMap": "Masquer le nom sur la carte",
+  "sidebarShowNameOnMap": "Afficher le nom sur la carte",
+  "sidebarHideDistanceOnMap": "Masquer la distance sur la carte",
+  "sidebarShowDistanceOnMap": "Afficher la distance sur la carte",
+  "sidebarHideLine": "Masquer la ligne",
+  "sidebarShowLine": "Afficher la ligne",
+  "sidebarEditLine": "Modifier la ligne",
+  "sidebarDeleteLine": "Supprimer la ligne",
+  "sidebarHideCircle": "Masquer le cercle",
+  "sidebarShowCircle": "Afficher le cercle",
+  "sidebarEditCircle": "Modifier le cercle",
+  "sidebarDeleteCircle": "Supprimer le cercle",
+  "sidebarHideRectangle": "Masquer le rectangle",
+  "sidebarShowRectangle": "Afficher le rectangle",
+  "sidebarEditRectangle": "Modifier le rectangle",
+  "sidebarDeleteRectangle": "Supprimer le rectangle",
+  "sidebarHideZone": "Masquer la zone",
+  "sidebarShowZone": "Afficher la zone",
+  "sidebarDeleteZone": "Supprimer la zone",
+  "searchReadinessReadySnackBar": "Recherche complète prête — lieux et adresses.",
+  "searchReadinessCheckingTooltip": "Vérification de la disponibilité de la recherche…",
+  "searchReadinessUnavailableTooltip": "Disponibilité de la recherche indisponible",
+  "searchReadinessFullReadyTooltip": "Recherche complète prête",
+  "searchReadinessBuildingTooltip": "Construction des index de recherche…",
+  "searchReadinessNotReadyTooltip": "Recherche complète non prête",
+  "searchReadinessFullReadyTitle": "Recherche complète prête",
+  "searchReadinessAddressReadyTitle": "Recherche d'adresses prête",
+  "searchReadinessNotReadyTitle": "Recherche pas encore prête",
+  "searchReadinessIndexesBuilt": "Index construits : {ready} sur {total}",
+  "@searchReadinessIndexesBuilt": {
+    "placeholders": {
+      "ready": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchReadinessCheckingStatus": "Vérification de l'état de la recherche…",
+  "searchReadinessFullReadyMessage": "Vous pouvez rechercher des lieux et des adresses postales depuis la barre de recherche de la carte.",
+  "searchReadinessAddressOnlyMessage": "La recherche d'adresses est prête. La recherche de noms de lieux est encore en préparation.",
+  "searchReadinessPercentComplete": "{percent} % terminé",
+  "@searchReadinessPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "searchReadinessEta": "Temps restant estimé : {eta}",
+  "@searchReadinessEta": {
+    "placeholders": {
+      "eta": {
+        "type": "String"
+      }
+    }
+  },
+  "searchReadinessCurrentIndex": "Index en cours : {name}",
+  "@searchReadinessCurrentIndex": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "searchReadinessServerUnreachable": "Impossible de joindre le serveur pour vérifier l'état de la recherche.",
+  "mapTilesReadyTooltip": "Tuiles cartographiques prêtes",
+  "mapTilesLoadingTooltip": "Chargement des tuiles cartographiques",
+  "mapTilesNotReadyTooltip": "Tuiles cartographiques non prêtes",
+  "mapTilesLoadingTitle": "Chargement des tuiles cartographiques",
+  "mapTilesCatalogLoadFailed": "Échec du chargement du catalogue de tuiles.",
+  "mapTilesOpeningLayer": "Ouverture : {name}",
+  "@mapTilesOpeningLayer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesLargeArchiveHelp": "Les grandes archives .pmtiles peuvent prendre plusieurs minutes à s'ouvrir avant que les tuiles apparaissent. Le panoramique et le zoom chargeront les tuiles au fur et à mesure.",
+  "mapTilesLayersPrepared": "Couches préparées : {loaded} sur {enabled}",
+  "@mapTilesLayersPrepared": {
+    "placeholders": {
+      "loaded": {
+        "type": "int"
+      },
+      "enabled": {
+        "type": "int"
+      }
+    }
+  },
+  "mapTilesActiveLayer": "Couche active : {name}",
+  "@mapTilesActiveLayer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesReadyHelp": "Les tuiles pour la vue actuelle devraient être visibles. Si la carte est encore vide, essayez de zoomer sur la zone couverte par la couche.",
+  "mapTilesOpeningProgress": "Ouverture de {name}…",
+  "@mapTilesOpeningProgress": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "greetingsConnected": "Vous êtes connecté",
+  "greetingsNameHint": "Entrez votre nom",
+  "greetingsSendToServer": "Envoyer au serveur",
+  "greetingsNoResponse": "Pas encore de réponse du serveur.",
+  "authSuccess": "Utilisateur authentifié.",
+  "authFailed": "Échec de l'authentification : {error}",
+  "@authFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotOpenLink": "Impossible d'ouvrir le lien : {url}",
+  "@couldNotOpenLink": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingAbortImport": "Annuler l'importation",
+  "geocodingTitle": "Géocodage",
+  "geocodingDescription": "Téléchargez les données OSMNames sur le serveur pour la recherche hors ligne. Les noms de lieux et les adresses postales sont importés séparément.",
+  "geocodingPlacesSectionTitle": "Noms de lieux (geonames.tsv)",
+  "geocodingPlaceDatasetLabel": "Jeu de données de lieux",
+  "geocodingCustomPlaceUrlLabel": "URL de données de lieux personnalisée",
+  "geocodingStatusLabel": "État : {status}",
+  "@geocodingStatusLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingLastSelection": "Dernière sélection : {dataset}",
+  "@geocodingLastSelection": {
+    "placeholders": {
+      "dataset": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingLastImport": "Dernière importation : {dateTime}",
+  "@geocodingLastImport": {
+    "placeholders": {
+      "dateTime": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingPlacesArchiveDescription": "Archivez les données de lieux en JSON, restaurez depuis une exportation précédente ou supprimez tous les enregistrements du serveur.",
+  "geocodingPlaceImportInProgress": "Importation de lieux en cours…",
+  "geocodingDownloadImportPlaces": "Télécharger et importer les lieux",
+  "geocodingAddressesSectionTitle": "Adresses postales (housenumbers.tsv)",
+  "geocodingHousenumbersUrlLabel": "URL des données housenumbers",
+  "geocodingAddressesArchiveDescription": "Archivez les données d'adresses dans un fichier JSON séparé, restaurez depuis une exportation précédente ou supprimez tous les enregistrements du serveur.",
+  "geocodingAddressImportInProgress": "Importation d'adresses en cours…",
+  "geocodingDownloadImportHousenumbers": "Télécharger et importer les housenumbers",
+  "geocodingSettingsLoadFailed": "Échec du chargement des paramètres de géocodage : {error}",
+  "@geocodingSettingsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingStatusNotImported": "Non importé",
+  "geocodingStatusDownloading": "Téléchargement…",
+  "geocodingStatusImporting": "Importation…",
+  "geocodingStatusReady": "Prêt ({count} {label})",
+  "@geocodingStatusReady": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingStatusFailed": "Échec",
+  "geocodingStatusCancelled": "Annulé",
+  "geocodingCustomUrlLabel": "URL personnalisée",
+  "geocodingRowLabelPlaces": "lieux",
+  "geocodingRowLabelAddresses": "adresses",
+  "geocodingRowLabelRows": "lignes",
+  "geocodingImportProgress": "{percent} % · {count} {rowLabel} importé(s)",
+  "@geocodingImportProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      },
+      "rowLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingSourceUrlRequired": "L'URL source de géocodage est requise.",
+  "geocodingPlanetImportStarted": "Importation planétaire des lieux démarrée. Cela peut prendre de nombreuses heures.",
+  "geocodingPlaceImportStarted": "Importation des noms de lieux démarrée.",
+  "geocodingPlaceImportFailed": "Échec de l'importation des lieux : {error}",
+  "@geocodingPlaceImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingPlaceImportAbortRequested": "Annulation de l'importation des lieux demandée. Les données existantes seront conservées.",
+  "geocodingAbortFailed": "Échec de l'annulation : {error}",
+  "@geocodingAbortFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingHousenumbersUrlRequired": "L'URL source des housenumbers est requise.",
+  "geocodingHousenumbersImportStarted": "Importation des housenumbers démarrée. Cela peut prendre de nombreuses heures.",
+  "geocodingHousenumbersImportFailed": "Échec de l'importation des housenumbers : {error}",
+  "@geocodingHousenumbersImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingAddressImportAbortRequested": "Annulation de l'importation d'adresses demandée. Les données existantes seront conservées.",
+  "geocodingPlaceDataExported": "Données de lieux exportées.",
+  "geocodingImportPlaceArchiveTitle": "Importer l'archive de lieux ?",
+  "geocodingImportPlaceArchiveMessage": "Cela remplace tous les enregistrements de noms de lieux sur le serveur par le fichier d'archive sélectionné.",
+  "geocodingPlaceArchiveImported": "{count} enregistrement(s) de lieu importé(s).",
+  "@geocodingPlaceArchiveImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingImportFailed": "Échec de l'importation : {error}",
+  "@geocodingImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingRemoveAllPlacesTitle": "Supprimer tous les enregistrements de lieux ?",
+  "geocodingRemoveAllPlacesMessage": "Cela supprime définitivement tous les enregistrements de noms de lieux du serveur. Cette action est irréversible.",
+  "geocodingPlacesRemoved": "{count} enregistrement(s) de lieu supprimé(s).",
+  "@geocodingPlacesRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingRemoveFailed": "Échec de la suppression : {error}",
+  "@geocodingRemoveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingHousenumberDataExported": "Données housenumbers exportées.",
+  "geocodingImportHousenumberArchiveTitle": "Importer l'archive housenumbers ?",
+  "geocodingImportHousenumberArchiveMessage": "Cela remplace tous les enregistrements d'adresses sur le serveur par le fichier d'archive sélectionné.",
+  "geocodingHousenumberArchiveImported": "{count} enregistrement(s) d'adresse importé(s).",
+  "@geocodingHousenumberArchiveImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingRemoveAllAddressesTitle": "Supprimer tous les enregistrements d'adresses ?",
+  "geocodingRemoveAllAddressesMessage": "Cela supprime définitivement tous les enregistrements housenumbers du serveur. Cette action est irréversible.",
+  "geocodingAddressesRemoved": "{count} enregistrement(s) d'adresse supprimé(s).",
+  "@geocodingAddressesRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingPlanetImportWarning": "L'importation planétaire complète télécharge environ 1,4 Go et peut prendre de nombreuses heures. Pour la plupart des utilisateurs, commencez par l'échantillon ou un seul pays.",
+  "geocodingCountryImportDownloadNote": "Les importations par pays téléchargent toujours le fichier OSMNames global (~1,4 Go), mais seul le pays sélectionné est chargé dans la base de données.",
+  "geocodingHousenumbersImportWarning": "Le fichier housenumbers est distinct des noms de lieux et fait aussi environ 1,4 Go compressé. L'importation peut prendre de nombreuses heures.",
+  "geocodingDatasetSample": "Échantillon (100 k lieux)",
+  "geocodingDatasetSampleDescription": "Un petit jeu de données d'aperçu. Idéal pour tester la recherche en quelques minutes.",
+  "geocodingDatasetPlanet": "Planète complète (~23 M lieux)",
+  "geocodingDatasetPlanetDescription": "Importe chaque lieu du fichier planétaire OSMNames. Le téléchargement fait environ 1,4 Go compressé et l'importation peut prendre de nombreuses heures.",
+  "geocodingDatasetUs": "États-Unis",
+  "geocodingDatasetUsDescription": "Télécharge le fichier OSMNames global mais n'importe que les lieux des États-Unis.",
+  "geocodingDatasetCa": "Canada",
+  "geocodingDatasetCaDescription": "Télécharge le fichier OSMNames global mais n'importe que les lieux canadiens.",
+  "geocodingDatasetMx": "Mexique",
+  "geocodingDatasetGb": "Royaume-Uni",
+  "geocodingDatasetDe": "Allemagne",
+  "geocodingDatasetFr": "France",
+  "geocodingDatasetEs": "Espagne",
+  "geocodingDatasetIt": "Italie",
+  "geocodingDatasetNl": "Pays-Bas",
+  "geocodingDatasetAu": "Australie",
+  "geocodingDatasetNz": "Nouvelle-Zélande",
+  "geocodingDatasetJp": "Japon",
+  "geocodingDatasetBr": "Brésil",
+  "geocodingDatasetIn": "Inde",
+  "geocodingDatasetCustom": "URL personnalisée…",
+  "geocodingDatasetCustomDescription": "Fournissez votre propre URL OSMNames .tsv.gz.",
+  "mapRadialMarker": "Marqueur",
+  "mapRadialLine": "Ligne",
+  "mapRadialCircle": "Cercle",
+  "mapRadialRectCenter": "Rect. centre",
+  "mapRadialRectCorners": "Rect. coins",
+  "mapRelativeAngleLabel": "Rel°",
+  "sortName": "Nom",
+  "sortHue": "Teinte",
+  "sortIcon": "Icône",
+  "sortVisibility": "Visibilité",
+  "sortType": "Type",
+  "sortGroupVisible": "Visible",
+  "sortGroupHidden": "Masqué",
+  "sortGroupOther": "Autre",
+  "sidebarSortMarkers": "Trier les marqueurs",
+  "sidebarSortZones": "Trier les zones",
+  "rectangleSizeDimensions": "Dimensions",
+  "rectangleSizeArea": "Surface",
+  "rectangleSizeNone": "Aucune",
+  "rectangleSizeDimensionsShort": "L×H",
+  "rectangleModeCenter": "Rectangle centré",
+  "rectangleModeCorners": "Rectangle par coins",
+  "mapObjectTypeRectangle": "Rectangle",
+  "searchSubtitleCoordinates": "Coordonnées",
+  "searchSubtitleMarker": "Marqueur",
+  "searchSubtitleZone": "Zone ({type})",
+  "@searchSubtitleZone": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "searchHint": "Rechercher des lieux, marqueurs, zones ou lat, lng (p. ex. {example})",
+  "@searchHint": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "sortGroupDigits": "0-9",
+  "markerIconPlace": "Lieu",
+  "markerIconHome": "Maison",
+  "markerIconHouse": "Habitation",
+  "markerIconApartment": "Appartement",
+  "markerIconWork": "Travail",
+  "markerIconSchool": "École",
+  "markerIconStore": "Magasin",
+  "markerIconFood": "Restaurant",
+  "markerIconCafe": "Café",
+  "markerIconHotel": "Hôtel",
+  "markerIconChurch": "Église",
+  "markerIconMosque": "Mosquée",
+  "markerIconCommunity": "Communauté",
+  "markerIconMedical": "Médical",
+  "markerIconVehicle": "Véhicule",
+  "markerIconBike": "Vélo",
+  "markerIconTrail": "Sentier",
+  "markerIconPark": "Parc",
+  "markerIconFlag": "Drapeau",
+  "markerIconStar": "Étoile",
+  "markerIconFavorite": "Favori",
+  "markerIconWarning": "Avertissement",
+  "markerIconInfo": "Info",
+  "markerIconLocation": "Position",
+  "markerIconPhoto": "Photo",
+  "markerIconPets": "Animaux",
+  "markerIconRadioTower": "Tour radio",
+  "markerIconRadioRepeater": "Répéteur radio"
+}

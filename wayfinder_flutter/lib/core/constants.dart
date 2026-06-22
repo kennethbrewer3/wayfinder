@@ -19,4 +19,5 @@ class AppConstants {
   static const circleSizeDisplayStorageKey = 'wayfinder.settings.circleSizeDisplay';
   static const serverApiUrlStorageKey = 'wayfinder.settings.serverApiUrl';
   static const appThemeStorageKey = 'wayfinder.settings.appTheme';
+  static const appLocaleStorageKey = 'wayfinder.settings.appLocale';
 }

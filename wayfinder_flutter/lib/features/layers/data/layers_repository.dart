@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/app_globals.dart';
 
@@ -53,20 +54,17 @@ Future<List<MapLayer>> _fetchLayersViaRest() async {
   ];
 }
 
-String layersLoadErrorMessage(Object error) {
+String layersLoadErrorMessage(Object error, AppLocalizations l10n) {
   final text = error.toString();
 
   if (text.contains('relation "map_layer" does not exist') ||
       text.contains('no such table: map_layer')) {
-    return 'The map layers database table is missing. '
-        'Restart the Wayfinder server with migrations applied:\n'
-        'cd wayfinder_server && dart run bin/main.dart --apply-migrations';
+    return l10n.layersErrorTableMissing;
   }
 
   if (isLayersEndpointUnavailable(error)) {
-    return 'Restart the Wayfinder server from the latest code, then run:\n'
-        'cd wayfinder_server && dart run bin/main.dart --apply-migrations';
+    return l10n.layersErrorEndpointUnavailable;
   }
 
-  return 'Something went wrong while loading layers. Please try again.';
+  return l10n.layersErrorGeneric;
 }

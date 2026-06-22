@@ -1,0 +1,836 @@
+{
+  "@@locale": "en",
+  "@appTitle": {
+    "description": "Application name shown in the window title."
+  },
+  "appTitle": "Wayfinder",
+  "settingsTitle": "Settings",
+  "settingsTabGeneral": "General",
+  "settingsTabMapTiles": "Map tiles",
+  "settingsTabGeocoding": "Geocoding",
+  "settingsTabBackup": "Backup",
+  "actionSave": "Save",
+  "actionSearch": "Search",
+  "actionCancel": "Cancel",
+  "actionReset": "Reset",
+  "actionLater": "Later",
+  "actionOk": "OK",
+  "actionReloadNow": "Reload now",
+  "actionSaving": "Saving…",
+  "actionCreate": "Create",
+  "actionDelete": "Delete",
+  "actionImport": "Import",
+  "actionExport": "Export",
+  "actionRemoveAll": "Remove all",
+  "actionClose": "Close",
+  "actionEdit": "Edit",
+  "actionTryAgain": "Try again",
+  "actionOpenSettings": "Open Settings",
+  "actionRename": "Rename",
+  "actionRestore": "Restore",
+  "actionSignOut": "Sign out",
+  "actionUploading": "Uploading…",
+  "actionExporting": "Exporting…",
+  "actionRestoring": "Restoring…",
+  "actionAborting": "Aborting…",
+  "statusLoading": "Loading…",
+  "statusWorking": "Working…",
+  "errorWithMessage": "Error: {error}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAppearanceTitle": "Appearance",
+  "settingsAppearanceDescription": "Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Stored on the server so every browser uses the same theme.",
+  "settingsLanguageTitle": "Language",
+  "settingsLanguageDescription": "Choose the language used throughout the app. Stored on the server so every browser uses the same language.",
+  "languageSystem": "System default",
+  "languageEnglish": "English",
+  "languageSpanish": "Spanish",
+  "languageFrench": "French",
+  "settingsThemeStyle": "Theme style",
+  "settingsBrightness": "Brightness",
+  "settingsMapHomeTitle": "Map home",
+  "settingsMapHomeDescription": "Coordinates and zoom for the home button on the map. Stored on the server so all clients share the same home location. Also used as the starting view when no previous map position is saved.",
+  "settingsLatitude": "Latitude",
+  "settingsLongitude": "Longitude",
+  "settingsZoom": "Zoom",
+  "settingsZoomHelper": "0–{maxZoom}",
+  "@settingsZoomHelper": {
+    "placeholders": {
+      "maxZoom": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSaveHome": "Save home",
+  "settingsUseCurrentMapView": "Use current map view",
+  "settingsResetToDefault": "Reset to default",
+  "settingsServerConnectionTitle": "Server connection",
+  "settingsServerConnectionDescription": "Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2). Restart the app after changing this.",
+  "settingsServerUrl": "Server URL",
+  "settingsCurrentWebServer": "Current web server: {webUrl}",
+  "@settingsCurrentWebServer": {
+    "placeholders": {
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSaveServerUrl": "Save server URL",
+  "settingsMeasurementsTitle": "Measurements",
+  "settingsMeasurementsDescription": "Choose how line distances are displayed on the map. Stored on the server so every browser uses the same units.",
+  "settingsAnglesTitle": "Angles",
+  "settingsAnglesDescription": "Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.",
+  "settingsCirclesTitle": "Circles",
+  "settingsCirclesDescription": "Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.",
+  "settingsHomeLocationSaved": "Home location saved.",
+  "settingsHomeLocationReset": "Home location reset to default.",
+  "settingsOpenMapFirst": "Open the map first to capture its view.",
+  "settingsHomeLocationInvalid": "Enter valid numbers for latitude, longitude, and zoom.",
+  "settingsHomeLocationSaveFailed": "Failed to save home location: {error}",
+  "@settingsHomeLocationSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRestartRequiredTitle": "Restart required",
+  "settingsRestartRequiredMessage": "Server URL saved.\n\nAPI: {apiUrl}\nWeb: {webUrl}\n\nRestart the app to connect to the new server.",
+  "@settingsRestartRequiredMessage": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      },
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerUrlReset": "Server URL reset to default. Restart the app to apply.",
+  "settingsServerUrlSaveFailed": "Failed to save server URL: {error}",
+  "@settingsServerUrlSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "themePreviewPrimary": "Primary",
+  "themePreviewSecondary": "Secondary",
+  "themePreviewSurface": "Surface",
+  "themePreviewAccent": "Accent",
+  "themePreviewButton": "Button",
+  "themePreviewOutline": "Outline",
+  "themeFamilyStandard": "Standard",
+  "themeFamilyMilitary": "Military",
+  "themeBrightnessLight": "Light",
+  "themeBrightnessDark": "Dark",
+  "themeChoiceMilitaryLight": "Military light",
+  "themeChoiceMilitaryDark": "Military dark",
+  "measurementMetric": "Metric",
+  "measurementImperial": "Imperial",
+  "measurementNautical": "Nautical",
+  "measurementMetricShort": "m/km",
+  "measurementImperialShort": "ft/mi",
+  "measurementNauticalShort": "nm",
+  "angleFormatDecimal": "Decimal degrees",
+  "angleFormatDms": "Degrees, minutes, seconds",
+  "angleFormatDecimalShort": "DD",
+  "angleFormatDmsShort": "DMS",
+  "circleSizeRadius": "Radius",
+  "circleSizeDiameter": "Diameter",
+  "circleSizeNone": "None",
+  "circleSizeToggleRadius": "Showing radius on map · tap for diameter",
+  "circleSizeToggleDiameter": "Showing diameter on map · tap for none",
+  "circleSizeToggleNone": "Size hidden on map · tap for radius",
+  "backupTitle": "Map data backup",
+  "backupDescription": "Export or restore all layers, markers, and zones. You can also back up with curl: GET /api/map-data",
+  "backupExportButton": "Export map data (.json)",
+  "backupRestoreButton": "Restore from backup",
+  "backupExportSuccess": "Map data backup saved.",
+  "backupExportFailed": "Export failed: {error}",
+  "@backupExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Restore map data?",
+  "backupRestoreConfirmMessage": "This replaces all layers, markers, and zones on the server with the selected backup file. This cannot be undone.",
+  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), and {zones} zone(s).",
+  "@backupRestoreSuccess": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreFailed": "Restore failed: {error}",
+  "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesFolderTitle": "PMTiles folder",
+  "mapTilesFolderDescription": "Folder on the server containing .pmtiles archives. Stored in the database so every client uses the same map tile library after restart.",
+  "mapTilesStoragePathLabel": "PMTiles storage path",
+  "mapTilesStoragePathRequired": "PMTiles storage path is required.",
+  "mapTilesSaveAndRescan": "Save and rescan folder",
+  "mapTilesFolderSaved": "PMTiles folder saved. Resynced from {path}.",
+  "@mapTilesFolderSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesFolderSaveFailed": "Failed to save PMTiles folder: {error}",
+  "@mapTilesFolderSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesMapsTitle": "PMTiles Maps",
+  "mapTilesMapsDescription": "Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive.",
+  "mapTilesUploadButton": "Upload .pmtiles file",
+  "mapTilesUploadSuccess": "PMTiles file uploaded: {name}",
+  "@mapTilesUploadSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesUploadFailed": "Upload failed: {error}",
+  "@mapTilesUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesAllHidden": "All map tiles hidden from the map.",
+  "mapTilesNewGroupTitle": "New tile group",
+  "mapTilesGroupNameLabel": "Group name",
+  "mapTilesGroupNameHint": "e.g. Mid-Atlantic states",
+  "mapTilesGroupCreated": "Created group \"{name}\".",
+  "@mapTilesGroupCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGroupCreateFailed": "Could not create group: {error}",
+  "@mapTilesGroupCreateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesDeleteGroupTitle": "Delete tile group?",
+  "mapTilesDeleteGroupMessage": "Delete \"{name}\"? Files in this group will become ungrouped.",
+  "@mapTilesDeleteGroupMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesDeleteFileTitle": "Delete PMTiles file?",
+  "mapTilesDeleteFileMessage": "Remove \"{name}\" from the server?",
+  "@mapTilesDeleteFileMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesFileDeleted": "PMTiles file deleted.",
+  "mapTilesFilesLoadFailed": "Failed to load files: {error}",
+  "@mapTilesFilesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGroupsLoadFailed": "Failed to load groups: {error}",
+  "@mapTilesGroupsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesNoFiles": "No PMTiles files uploaded yet.",
+  "mapTilesShownOnMapCount": "{shown} of {total} shown on map",
+  "@mapTilesShownOnMapCount": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mapTilesUngrouped": "Ungrouped",
+  "mapTilesNoFilesAssigned": "No files assigned",
+  "mapTilesShowUngroupedOnMap": "Show ungrouped on map",
+  "mapTilesShowGroupOnMap": "Show group on map",
+  "mapTilesDeleteGroupTooltip": "Delete group",
+  "mapTilesUngroupedEmptyMessage": "Files not assigned to a group appear here.",
+  "mapTilesGroupEmptyMessage": "Assign files to this group from the menu on each tile.",
+  "mapTilesNoGroups": "No groups",
+  "mapTilesGroupCount": "{count, plural, =1{1 group} other{{count} groups}}",
+  "mapTilesManageGroupsTooltip": "Manage groups",
+  "mapTilesNewGroup": "New group",
+  "mapTilesShowAllOnMap": "Show all on map",
+  "mapTilesHideAllFromMap": "Hide all from map",
+  "layerLabel": "Layer",
+  "layerUnassigned": "Unassigned",
+  "layerUnknown": "Unknown layer",
+  "formNameLabel": "Name",
+  "formColorLabel": "Color",
+  "formNotesLabel": "Notes",
+  "formNotesPlaceholder": "Add notes (saved as Markdown)...",
+  "formPreviewLabel": "Preview",
+  "formShowNameOnMap": "Show name on map",
+  "formBorderColorLabel": "Border color",
+  "formFillColorLabel": "Fill color",
+  "formFillOpacityHelp": "Adjust opacity to control fill transparency.",
+  "coordinatesTitle": "Coordinates",
+  "markerCreateTitle": "Create marker",
+  "markerEditTitle": "Edit marker",
+  "markerDefaultName": "New marker",
+  "markerNameHint": "e.g. Home, Work, Trailhead",
+  "markerElevationLabel": "Elevation (m)",
+  "markerIconLabel": "Icon",
+  "markerIconHelp": "Choose an icon for the map pin, such as Home for your house.",
+  "markerSaveSearchedCoordinatesTitle": "Save searched coordinates",
+  "markerSaveSearchedCoordinatesConfirm": "Save marker",
+  "lineCreateTitle": "Create line",
+  "lineEditTitle": "Edit line",
+  "lineDefaultName": "New line",
+  "lineNameHint": "e.g. Route to camp, Property boundary",
+  "lineDistanceLabel": "Distance",
+  "lineStartPointLabel": "Start point",
+  "lineEndPointLabel": "End point",
+  "lineStyleLabel": "Line style",
+  "lineBorderSolid": "Solid",
+  "lineBorderDashed": "Dashed",
+  "lineDirectionArrowsTitle": "Direction arrows",
+  "lineDirectionArrowsSubtitle": "Arrows point from the first point toward the second.",
+  "circleCreateTitle": "Create circle",
+  "circleEditTitle": "Edit circle",
+  "circleDefaultName": "New circle",
+  "circleNameHint": "e.g. Search area, Property boundary",
+  "circleMeasurementsLabel": "Measurements",
+  "circleCenterLabel": "Center",
+  "circleSizeLabelOnMap": "Size label on map",
+  "circleCenterMarkerLabel": "Center marker",
+  "rectangleCreateTitle": "Create rectangle",
+  "rectangleEditTitle": "Edit rectangle",
+  "rectangleDefaultName": "New rectangle",
+  "rectangleCornerALabel": "Corner A",
+  "rectangleCornerBLabel": "Corner B",
+  "rectangleCenterMoveHelp": "Moving the center shifts the whole rectangle on the map.",
+  "mapHomeTooltip": "Home",
+  "mapSettingsTooltip": "Settings",
+  "mapShowObjectsTooltip": "Show map objects",
+  "mapLoadFailed": "Failed to load map: {error}",
+  "@mapLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapNoOfflineMapTitle": "No offline map installed or visible",
+  "mapNoOfflineMapMessage": "Upload a .pmtiles file in Settings, or turn on visibility for tiles already on the server.",
+  "mapObjectDetailsTitle": "Map object",
+  "mapObjectDetailsLoading": "Loading details…",
+  "mapObjectDetailsNotFound": "This object could not be found.",
+  "mapObjectDetailType": "Type",
+  "mapObjectTypeMarker": "Marker",
+  "mapObjectTypeLine": "Line",
+  "mapObjectTypeCircle": "Circle",
+  "mapObjectDetailCoordinates": "Coordinates",
+  "mapObjectDetailElevation": "Elevation",
+  "mapObjectDetailVisibility": "Visibility",
+  "mapObjectVisibilityVisible": "Visible",
+  "mapObjectVisibilityHidden": "Hidden",
+  "mapObjectDetailLength": "Length",
+  "mapObjectDetailStart": "Start",
+  "mapObjectDetailEnd": "End",
+  "mapObjectDetailRadius": "Radius",
+  "mapObjectDetailDiameter": "Diameter",
+  "mapObjectDetailCenter": "Center",
+  "mapObjectDetailMapLabel": "Map label",
+  "mapObjectMapLabelNone": "None",
+  "mapObjectDetailDimensions": "Dimensions",
+  "mapObjectDetailArea": "Area",
+  "mapObjectsErrorServerUnreachable": "The Wayfinder server could not be reached. Start the server to sync markers and zones.",
+  "mapObjectsErrorSignInRequired": "Sign in to load your map objects.",
+  "mapObjectsErrorGeneric": "Something went wrong while loading map objects. Check your connection and try again.",
+  "mapObjectsErrorRetry": "Something went wrong while loading map objects. Please try again.",
+  "layersErrorTableMissing": "The map layers database table is missing. Restart the Wayfinder server with migrations applied.",
+  "layersErrorEndpointUnavailable": "Restart the Wayfinder server from the latest code.",
+  "layersErrorGeneric": "Something went wrong while loading layers. Please try again.",
+  "sidebarTitle": "Map Objects",
+  "sidebarCollapsePanel": "Collapse panel",
+  "sidebarExpandPanel": "Expand panel",
+  "sidebarLayerOrderHint": "Top layers draw above lower ones. Use ▼ to expand or collapse layer contents.",
+  "sidebarLayersUnavailable": "Layers unavailable",
+  "sidebarMarkersUnavailable": "Markers unavailable",
+  "sidebarZonesUnavailable": "Zones unavailable",
+  "sidebarAddLayer": "Add layer",
+  "sidebarKeepOneLayer": "You must keep at least one layer.",
+  "sidebarNewLayerTitle": "New layer",
+  "sidebarRenameLayerTitle": "Rename layer",
+  "sidebarLayerNameLabel": "Layer name",
+  "sidebarDeleteLayerTitle": "Delete layer?",
+  "sidebarDeleteLayerMessage": "Delete \"{name}\"? Its markers and zones will move to another layer.",
+  "@sidebarDeleteLayerMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sidebarCollapseLayer": "Collapse layer",
+  "sidebarExpandLayer": "Expand layer",
+  "sidebarHideLayer": "Hide layer",
+  "sidebarShowLayer": "Show layer",
+  "sidebarObjectCount": "{count, plural, =1{1 object} other{{count} objects}}",
+  "sidebarSelectedForNewObjects": "· selected for new objects",
+  "sidebarMoveUp": "Move up",
+  "sidebarMoveDown": "Move down",
+  "sidebarTabMarkers": "Markers",
+  "sidebarTabZones": "Zones",
+  "sidebarViewList": "List",
+  "sidebarViewTree": "Tree",
+  "sidebarNoMatchingMarkers": "No matching markers",
+  "sidebarNoMatchingZones": "No matching zones",
+  "sidebarTryDifferentSearch": "Try a different search term.",
+  "sidebarNoMarkersOnLayer": "No markers on this layer",
+  "sidebarAddMarkerHint": "Long-press the map to add a marker.",
+  "sidebarNoZonesOnLayer": "No zones on this layer",
+  "sidebarAddZoneHint": "Long-press the map and choose Line to draw one.",
+  "sidebarHideMarker": "Hide marker",
+  "sidebarShowMarker": "Show marker",
+  "sidebarEditMarker": "Edit marker",
+  "sidebarDeleteMarker": "Delete marker",
+  "sidebarHideNameOnMap": "Hide name on map",
+  "sidebarShowNameOnMap": "Show name on map",
+  "sidebarHideDistanceOnMap": "Hide distance on map",
+  "sidebarShowDistanceOnMap": "Show distance on map",
+  "sidebarHideLine": "Hide line",
+  "sidebarShowLine": "Show line",
+  "sidebarEditLine": "Edit line",
+  "sidebarDeleteLine": "Delete line",
+  "sidebarHideCircle": "Hide circle",
+  "sidebarShowCircle": "Show circle",
+  "sidebarEditCircle": "Edit circle",
+  "sidebarDeleteCircle": "Delete circle",
+  "sidebarHideRectangle": "Hide rectangle",
+  "sidebarShowRectangle": "Show rectangle",
+  "sidebarEditRectangle": "Edit rectangle",
+  "sidebarDeleteRectangle": "Delete rectangle",
+  "sidebarHideZone": "Hide zone",
+  "sidebarShowZone": "Show zone",
+  "sidebarDeleteZone": "Delete zone",
+  "searchReadinessReadySnackBar": "Full search is ready — places and addresses.",
+  "searchReadinessCheckingTooltip": "Checking search readiness…",
+  "searchReadinessUnavailableTooltip": "Search readiness unavailable",
+  "searchReadinessFullReadyTooltip": "Full search ready",
+  "searchReadinessBuildingTooltip": "Building search indexes…",
+  "searchReadinessNotReadyTooltip": "Full search not ready",
+  "searchReadinessFullReadyTitle": "Full search ready",
+  "searchReadinessAddressReadyTitle": "Address search ready",
+  "searchReadinessNotReadyTitle": "Search not ready yet",
+  "searchReadinessIndexesBuilt": "Indexes built: {ready} of {total}",
+  "@searchReadinessIndexesBuilt": {
+    "placeholders": {
+      "ready": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchReadinessCheckingStatus": "Checking search status…",
+  "searchReadinessFullReadyMessage": "You can search for places and street addresses from the map search bar.",
+  "searchReadinessAddressOnlyMessage": "Street address search is ready. Place-name search is still being prepared.",
+  "searchReadinessPercentComplete": "{percent}% complete",
+  "@searchReadinessPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "searchReadinessEta": "Estimated time remaining: {eta}",
+  "@searchReadinessEta": {
+    "placeholders": {
+      "eta": {
+        "type": "String"
+      }
+    }
+  },
+  "searchReadinessCurrentIndex": "Current index: {name}",
+  "@searchReadinessCurrentIndex": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "searchReadinessServerUnreachable": "Could not reach the server to check search status.",
+  "mapTilesReadyTooltip": "Map tiles ready",
+  "mapTilesLoadingTooltip": "Map tiles loading",
+  "mapTilesNotReadyTooltip": "Map tiles not ready",
+  "mapTilesLoadingTitle": "Loading map tiles",
+  "mapTilesCatalogLoadFailed": "Failed to load map tile catalog.",
+  "mapTilesOpeningLayer": "Opening: {name}",
+  "@mapTilesOpeningLayer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesLargeArchiveHelp": "Large .pmtiles archives can take several minutes to open before tiles appear. Panning and zooming will fetch tiles as the map becomes ready.",
+  "mapTilesLayersPrepared": "Layers prepared: {loaded} of {enabled}",
+  "@mapTilesLayersPrepared": {
+    "placeholders": {
+      "loaded": {
+        "type": "int"
+      },
+      "enabled": {
+        "type": "int"
+      }
+    }
+  },
+  "mapTilesActiveLayer": "Active layer: {name}",
+  "@mapTilesActiveLayer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesReadyHelp": "Tiles for the current map view should be visible. If the map is still blank, try zooming to the layer coverage area.",
+  "mapTilesOpeningProgress": "Opening {name}…",
+  "@mapTilesOpeningProgress": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "greetingsConnected": "You are connected",
+  "greetingsNameHint": "Enter your name",
+  "greetingsSendToServer": "Send to Server",
+  "greetingsNoResponse": "No server response yet.",
+  "authSuccess": "User authenticated.",
+  "authFailed": "Authentication failed: {error}",
+  "@authFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotOpenLink": "Could not open link: {url}",
+  "@couldNotOpenLink": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingAbortImport": "Abort import",
+  "geocodingTitle": "Geocoding",
+  "geocodingDescription": "Download OSMNames data to the server for offline search. Place names and street addresses are imported separately.",
+  "geocodingPlacesSectionTitle": "Place names (geonames.tsv)",
+  "geocodingPlaceDatasetLabel": "Place dataset",
+  "geocodingCustomPlaceUrlLabel": "Custom place data URL",
+  "geocodingStatusLabel": "Status: {status}",
+  "@geocodingStatusLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingLastSelection": "Last selection: {dataset}",
+  "@geocodingLastSelection": {
+    "placeholders": {
+      "dataset": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingLastImport": "Last import: {dateTime}",
+  "@geocodingLastImport": {
+    "placeholders": {
+      "dateTime": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingPlacesArchiveDescription": "Archive place data as a JSON file, restore from a previous export, or remove all records from the server.",
+  "geocodingPlaceImportInProgress": "Place import in progress…",
+  "geocodingDownloadImportPlaces": "Download and import places",
+  "geocodingAddressesSectionTitle": "Street addresses (housenumbers.tsv)",
+  "geocodingHousenumbersUrlLabel": "Housenumbers data URL",
+  "geocodingAddressesArchiveDescription": "Archive address data as a separate JSON file, restore from a previous export, or remove all records from the server.",
+  "geocodingAddressImportInProgress": "Address import in progress…",
+  "geocodingDownloadImportHousenumbers": "Download and import housenumbers",
+  "geocodingSettingsLoadFailed": "Failed to load geocoding settings: {error}",
+  "@geocodingSettingsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingStatusNotImported": "Not imported",
+  "geocodingStatusDownloading": "Downloading…",
+  "geocodingStatusImporting": "Importing…",
+  "geocodingStatusReady": "Ready ({count} {label})",
+  "@geocodingStatusReady": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingStatusFailed": "Failed",
+  "geocodingStatusCancelled": "Cancelled",
+  "geocodingCustomUrlLabel": "Custom URL",
+  "geocodingRowLabelPlaces": "places",
+  "geocodingRowLabelAddresses": "addresses",
+  "geocodingRowLabelRows": "rows",
+  "geocodingImportProgress": "{percent}% · {count} {rowLabel} imported",
+  "@geocodingImportProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      },
+      "rowLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingSourceUrlRequired": "Geocoding source URL is required.",
+  "geocodingPlanetImportStarted": "Full planet place import started. This can take many hours.",
+  "geocodingPlaceImportStarted": "Place-name import started.",
+  "geocodingPlaceImportFailed": "Place import failed: {error}",
+  "@geocodingPlaceImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingPlaceImportAbortRequested": "Place import abort requested. Existing data will be kept.",
+  "geocodingAbortFailed": "Abort failed: {error}",
+  "@geocodingAbortFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingHousenumbersUrlRequired": "Housenumbers source URL is required.",
+  "geocodingHousenumbersImportStarted": "Housenumbers import started. This can take many hours.",
+  "geocodingHousenumbersImportFailed": "Housenumbers import failed: {error}",
+  "@geocodingHousenumbersImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingAddressImportAbortRequested": "Address import abort requested. Existing data will be kept.",
+  "geocodingPlaceDataExported": "Place data exported.",
+  "geocodingImportPlaceArchiveTitle": "Import place archive?",
+  "geocodingImportPlaceArchiveMessage": "This replaces all place-name records on the server with the selected archive file.",
+  "geocodingPlaceArchiveImported": "Imported {count} place record(s).",
+  "@geocodingPlaceArchiveImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingImportFailed": "Import failed: {error}",
+  "@geocodingImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingRemoveAllPlacesTitle": "Remove all place records?",
+  "geocodingRemoveAllPlacesMessage": "This permanently deletes every place-name record from the server. This cannot be undone.",
+  "geocodingPlacesRemoved": "Removed {count} place record(s).",
+  "@geocodingPlacesRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingRemoveFailed": "Remove failed: {error}",
+  "@geocodingRemoveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingHousenumberDataExported": "Housenumber data exported.",
+  "geocodingImportHousenumberArchiveTitle": "Import housenumber archive?",
+  "geocodingImportHousenumberArchiveMessage": "This replaces all street-address records on the server with the selected archive file.",
+  "geocodingHousenumberArchiveImported": "Imported {count} address record(s).",
+  "@geocodingHousenumberArchiveImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingRemoveAllAddressesTitle": "Remove all address records?",
+  "geocodingRemoveAllAddressesMessage": "This permanently deletes every housenumber record from the server. This cannot be undone.",
+  "geocodingAddressesRemoved": "Removed {count} address record(s).",
+  "@geocodingAddressesRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geocodingPlanetImportWarning": "The full planet import downloads about 1.4 GB and can take many hours to finish. For most users, start with the sample dataset or import a single country instead.",
+  "geocodingCountryImportDownloadNote": "Country imports still download the global OSMNames file (~1.4 GB), but only the selected country is loaded into the database, so import finishes much sooner than the full planet.",
+  "geocodingHousenumbersImportWarning": "The housenumbers file is separate from place names and is also about 1.4 GB compressed. Import can take many hours and loads street addresses (house number + street) worldwide. Place-name search and address search work independently.",
+  "geocodingDatasetSample": "Sample (100k places)",
+  "geocodingDatasetSampleDescription": "A small preview dataset. Best for testing search in a few minutes.",
+  "geocodingDatasetPlanet": "Full planet (~23M places)",
+  "geocodingDatasetPlanetDescription": "Imports every place in the OSMNames planet file. The download is about 1.4 GB compressed and the import can take many hours depending on your server hardware and network speed.",
+  "geocodingDatasetUs": "United States",
+  "geocodingDatasetUsDescription": "Downloads the global OSMNames file but only imports United States places. The download is still large, but the database import is much faster than the full planet.",
+  "geocodingDatasetCa": "Canada",
+  "geocodingDatasetCaDescription": "Downloads the global OSMNames file but only imports Canadian places.",
+  "geocodingDatasetMx": "Mexico",
+  "geocodingDatasetGb": "United Kingdom",
+  "geocodingDatasetDe": "Germany",
+  "geocodingDatasetFr": "France",
+  "geocodingDatasetEs": "Spain",
+  "geocodingDatasetIt": "Italy",
+  "geocodingDatasetNl": "Netherlands",
+  "geocodingDatasetAu": "Australia",
+  "geocodingDatasetNz": "New Zealand",
+  "geocodingDatasetJp": "Japan",
+  "geocodingDatasetBr": "Brazil",
+  "geocodingDatasetIn": "India",
+  "geocodingDatasetCustom": "Custom URL…",
+  "geocodingDatasetCustomDescription": "Provide your own OSMNames .tsv.gz URL.",
+  "mapRadialMarker": "Marker",
+  "mapRadialLine": "Line",
+  "mapRadialCircle": "Circle",
+  "mapRadialRectCenter": "Rect center",
+  "mapRadialRectCorners": "Rect corners",
+  "mapRelativeAngleLabel": "Rel°",
+  "sortName": "Name",
+  "sortHue": "Hue",
+  "sortIcon": "Icon",
+  "sortVisibility": "Visibility",
+  "sortType": "Type",
+  "sortGroupVisible": "Visible",
+  "sortGroupHidden": "Hidden",
+  "sortGroupOther": "Other",
+  "sidebarSortMarkers": "Sort markers",
+  "sidebarSortZones": "Sort zones",
+  "rectangleSizeDimensions": "Dimensions",
+  "rectangleSizeArea": "Area",
+  "rectangleSizeNone": "None",
+  "rectangleSizeDimensionsShort": "W×H",
+  "rectangleModeCenter": "Center rectangle",
+  "rectangleModeCorners": "Corner rectangle",
+  "mapObjectTypeRectangle": "Rectangle",
+  "searchSubtitleCoordinates": "Coordinates",
+  "searchSubtitleMarker": "Marker",
+  "searchSubtitleZone": "Zone ({type})",
+  "@searchSubtitleZone": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "searchHint": "Search places, markers, zones, or lat, lng (e.g. {example})",
+  "@searchHint": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "sortGroupDigits": "0-9",
+  "markerIconPlace": "Place",
+  "markerIconHome": "Home",
+  "markerIconHouse": "House",
+  "markerIconApartment": "Apartment",
+  "markerIconWork": "Work",
+  "markerIconSchool": "School",
+  "markerIconStore": "Store",
+  "markerIconFood": "Food",
+  "markerIconCafe": "Cafe",
+  "markerIconHotel": "Hotel",
+  "markerIconChurch": "Church",
+  "markerIconMosque": "Mosque",
+  "markerIconCommunity": "Community",
+  "markerIconMedical": "Medical",
+  "markerIconVehicle": "Vehicle",
+  "markerIconBike": "Bike",
+  "markerIconTrail": "Trail",
+  "markerIconPark": "Park",
+  "markerIconFlag": "Flag",
+  "markerIconStar": "Star",
+  "markerIconFavorite": "Favorite",
+  "markerIconWarning": "Warning",
+  "markerIconInfo": "Info",
+  "markerIconLocation": "Location",
+  "markerIconPhoto": "Photo",
+  "markerIconPets": "Pets",
+  "markerIconRadioTower": "Radio tower",
+  "markerIconRadioRepeater": "Radio repeater"
+}

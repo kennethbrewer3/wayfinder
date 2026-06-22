@@ -7,6 +7,7 @@ import 'package:wayfinder_client/wayfinder_client.dart' as wf;
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../map/models/home_location.dart';
+import '../models/client_preferences.dart';
 
 class AppSettingsRepository {
   AppSettingsRepository({
@@ -90,6 +91,80 @@ class AppSettingsRepository {
       );
       return _updatePmtilesStoragePathRest(storagePath.trim());
     }
+  }
+
+  Future<ClientPreferences> getClientPreferences() async {
+    try {
+      final settings = await _client.appSettings.getSettings();
+      return ClientPreferences.fromAppSettings(settings);
+    } catch (error, _) {
+      _log.warn(
+        '⚙️ Client preferences RPC failed, trying REST',
+        error: error,
+      );
+      return _getClientPreferencesRest();
+    }
+  }
+
+  Future<ClientPreferences> updateClientPreferences(
+    ClientPreferences preferences,
+  ) async {
+    final payload = preferences.toJson();
+    try {
+      final settings = await _client.appSettings.updateClientPreferences(
+        payload['measurementUnits']!,
+        payload['angleDisplayFormat']!,
+        payload['circleSizeDisplay']!,
+        payload['appTheme']!,
+        payload['appLocale']!,
+      );
+      return ClientPreferences.fromAppSettings(settings);
+    } catch (error, _) {
+      _log.warn(
+        '⚙️ Client preferences update RPC failed, trying REST',
+        error: error,
+      );
+      return _updateClientPreferencesRest(preferences);
+    }
+  }
+
+  Future<ClientPreferences> patchClientPreferences(
+    ClientPreferences Function(ClientPreferences current) update,
+  ) async {
+    final current = await getClientPreferences();
+    return updateClientPreferences(update(current));
+  }
+
+  Future<ClientPreferences> _getClientPreferencesRest() async {
+    final response = await http.get(
+      Uri.parse('$_webServerUrl/api/settings/client-preferences'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'GET /api/settings/client-preferences returned ${response.statusCode}',
+      );
+    }
+    return ClientPreferences.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+  }
+
+  Future<ClientPreferences> _updateClientPreferencesRest(
+    ClientPreferences preferences,
+  ) async {
+    final response = await http.put(
+      Uri.parse('$_webServerUrl/api/settings/client-preferences'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode(preferences.toJson()),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'PUT /api/settings/client-preferences returned ${response.statusCode}',
+      );
+    }
+    return ClientPreferences.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<HomeLocation> _getHomeLocationRest() async {

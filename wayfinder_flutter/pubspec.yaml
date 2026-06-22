@@ -61,15 +61,31 @@ dependencies:
   markdown: ^7.3.1
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: '>=3.0.0 <7.0.0'
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  macos:
+    generate: true
+  image_path: assets/wayfinder-favicon.png
+  adaptive_icon_background: '#FFFFFF'
+  adaptive_icon_foreground: assets/wayfinder-favicon.png
+  web:
+    generate: true
+    image_path: assets/wayfinder-favicon.png
+    background_color: '#FFFFFF'
+    theme_color: '#1B4965'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

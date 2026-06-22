@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/file_save.dart';
 import '../../../core/format/locale_count_format.dart';
@@ -70,28 +71,66 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     });
   }
 
-  String? _selectedDescription() {
+  String _datasetLabel(AppLocalizations l10n, GeocodingDatasetOption option) {
+    return switch (option.id) {
+      'sample' => l10n.geocodingDatasetSample,
+      'planet' => l10n.geocodingDatasetPlanet,
+      'us' => l10n.geocodingDatasetUs,
+      'ca' => l10n.geocodingDatasetCa,
+      'mx' => l10n.geocodingDatasetMx,
+      'gb' => l10n.geocodingDatasetGb,
+      'de' => l10n.geocodingDatasetDe,
+      'fr' => l10n.geocodingDatasetFr,
+      'es' => l10n.geocodingDatasetEs,
+      'it' => l10n.geocodingDatasetIt,
+      'nl' => l10n.geocodingDatasetNl,
+      'au' => l10n.geocodingDatasetAu,
+      'nz' => l10n.geocodingDatasetNz,
+      'jp' => l10n.geocodingDatasetJp,
+      'br' => l10n.geocodingDatasetBr,
+      'in' => l10n.geocodingDatasetIn,
+      'custom' => l10n.geocodingDatasetCustom,
+      _ => option.label,
+    };
+  }
+
+  String? _datasetDescription(
+    AppLocalizations l10n,
+    GeocodingDatasetOption option,
+  ) {
+    return switch (option.id) {
+      'sample' => l10n.geocodingDatasetSampleDescription,
+      'planet' => l10n.geocodingDatasetPlanetDescription,
+      'us' => l10n.geocodingDatasetUsDescription,
+      'ca' => l10n.geocodingDatasetCaDescription,
+      'custom' => l10n.geocodingDatasetCustomDescription,
+      _ => null,
+    };
+  }
+
+  String? _selectedDescription(AppLocalizations l10n) {
     if (_selectedDataset.isCustom) {
-      return _selectedDataset.description;
+      return _datasetDescription(l10n, _selectedDataset);
     }
     if (_selectedDataset.isFullPlanet) {
-      return geocodingPlanetImportWarning;
+      return l10n.geocodingPlanetImportWarning;
     }
     if (_selectedDataset.usesPlanetDownload &&
         _selectedDataset.countryCodes.isNotEmpty) {
-      return '${_selectedDataset.description ?? ''}\n\n$geocodingCountryImportDownloadNote'
+      return '${_datasetDescription(l10n, _selectedDataset) ?? ''}\n\n${l10n.geocodingCountryImportDownloadNote}'
           .trim();
     }
-    return _selectedDataset.description;
+    return _datasetDescription(l10n, _selectedDataset);
   }
 
   Future<void> _downloadAndImportPlaces() async {
+    final l10n = AppLocalizations.of(context)!;
     final sourceUrl = _selectedDataset.isCustom
         ? _customUrlController.text.trim()
         : _selectedDataset.sourceUrl;
     if (sourceUrl.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Geocoding source URL is required.')),
+        SnackBar(content: Text(l10n.geocodingSourceUrlRequired)),
       );
       return;
     }
@@ -116,12 +155,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       refreshGeocoding(ref);
       _schedulePolling(isRunning: true);
       if (!mounted) return;
+      final startedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             _selectedDataset.isFullPlanet
-                ? 'Full planet place import started. This can take many hours.'
-                : 'Place-name import started.',
+                ? startedL10n.geocodingPlanetImportStarted
+                : startedL10n.geocodingPlaceImportStarted,
           ),
         ),
       );
@@ -132,8 +172,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Place import failed: $error')),
+        SnackBar(
+          content: Text(errorL10n.geocodingPlaceImportFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -149,12 +192,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       await repository.cancelImport();
       refreshGeocoding(ref);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Place import abort requested. Existing data will be kept.',
-          ),
-        ),
+        SnackBar(content: Text(l10n.geocodingPlaceImportAbortRequested)),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -163,8 +203,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Abort failed: $error')),
+        SnackBar(content: Text(l10n.geocodingAbortFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -174,10 +215,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   }
 
   Future<void> _downloadAndImportHousenumbers() async {
+    final l10n = AppLocalizations.of(context)!;
     final sourceUrl = _housenumbersUrlController.text.trim();
     if (sourceUrl.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Housenumbers source URL is required.')),
+        SnackBar(content: Text(l10n.geocodingHousenumbersUrlRequired)),
       );
       return;
     }
@@ -189,12 +231,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       refreshGeocoding(ref);
       _schedulePolling(isRunning: true);
       if (!mounted) return;
+      final startedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Housenumbers import started. This can take many hours.',
-          ),
-        ),
+        SnackBar(content: Text(startedL10n.geocodingHousenumbersImportStarted)),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -203,8 +242,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Housenumbers import failed: $error')),
+        SnackBar(
+          content: Text(
+            errorL10n.geocodingHousenumbersImportFailed(error.toString()),
+          ),
+        ),
       );
     } finally {
       if (mounted) {
@@ -220,12 +264,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       await repository.cancelHousenumbersImport();
       refreshGeocoding(ref);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Address import abort requested. Existing data will be kept.',
-          ),
-        ),
+        SnackBar(content: Text(l10n.geocodingAddressImportAbortRequested)),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -234,8 +275,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Abort failed: $error')),
+        SnackBar(content: Text(l10n.geocodingAbortFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -252,13 +294,14 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
           title: Text(title),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
@@ -283,9 +326,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         contents: jsonText,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       if (saved) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Place data exported.')),
+          SnackBar(content: Text(l10n.geocodingPlaceDataExported)),
         );
       }
     } catch (error, stackTrace) {
@@ -295,8 +339,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $error')),
+        SnackBar(content: Text(l10n.backupExportFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -311,12 +356,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await _confirmAction(
-      title: 'Import place archive?',
-      message:
-          'This replaces all place-name records on the server with the selected '
-          'archive file.',
-      confirmLabel: 'Import',
+      title: l10n.geocodingImportPlaceArchiveTitle,
+      message: l10n.geocodingImportPlaceArchiveMessage,
+      confirmLabel: l10n.actionImport,
     );
     if (!confirmed || !mounted) {
       return;
@@ -328,8 +372,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       final rowCount = await repository.importPlacesArchive(jsonText);
       refreshGeocoding(ref);
       if (!mounted) return;
+      final importedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Imported $rowCount place record(s).')),
+        SnackBar(
+          content: Text(importedL10n.geocodingPlaceArchiveImported(rowCount)),
+        ),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -338,8 +385,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Import failed: $error')),
+        SnackBar(
+          content: Text(errorL10n.geocodingImportFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -349,12 +399,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   }
 
   Future<void> _clearPlaces() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await _confirmAction(
-      title: 'Remove all place records?',
-      message:
-          'This permanently deletes every place-name record from the server. '
-          'This cannot be undone.',
-      confirmLabel: 'Remove all',
+      title: l10n.geocodingRemoveAllPlacesTitle,
+      message: l10n.geocodingRemoveAllPlacesMessage,
+      confirmLabel: l10n.actionRemoveAll,
     );
     if (!confirmed || !mounted) {
       return;
@@ -366,8 +415,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       final removed = await repository.clearPlaces();
       refreshGeocoding(ref);
       if (!mounted) return;
+      final clearedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Removed $removed place record(s).')),
+        SnackBar(
+          content: Text(clearedL10n.geocodingPlacesRemoved(removed)),
+        ),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -376,8 +428,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Remove failed: $error')),
+        SnackBar(
+          content: Text(errorL10n.geocodingRemoveFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -398,9 +453,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         contents: jsonText,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       if (saved) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Housenumber data exported.')),
+          SnackBar(content: Text(l10n.geocodingHousenumberDataExported)),
         );
       }
     } catch (error, stackTrace) {
@@ -410,8 +466,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $error')),
+        SnackBar(content: Text(l10n.backupExportFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -426,12 +483,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await _confirmAction(
-      title: 'Import housenumber archive?',
-      message:
-          'This replaces all street-address records on the server with the '
-          'selected archive file.',
-      confirmLabel: 'Import',
+      title: l10n.geocodingImportHousenumberArchiveTitle,
+      message: l10n.geocodingImportHousenumberArchiveMessage,
+      confirmLabel: l10n.actionImport,
     );
     if (!confirmed || !mounted) {
       return;
@@ -443,8 +499,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       final rowCount = await repository.importHousenumbersArchive(jsonText);
       refreshGeocoding(ref);
       if (!mounted) return;
+      final importedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Imported $rowCount address record(s).')),
+        SnackBar(
+          content: Text(
+            importedL10n.geocodingHousenumberArchiveImported(rowCount),
+          ),
+        ),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -453,8 +514,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Import failed: $error')),
+        SnackBar(
+          content: Text(errorL10n.geocodingImportFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -464,12 +528,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   }
 
   Future<void> _clearHousenumbers() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await _confirmAction(
-      title: 'Remove all address records?',
-      message:
-          'This permanently deletes every housenumber record from the server. '
-          'This cannot be undone.',
-      confirmLabel: 'Remove all',
+      title: l10n.geocodingRemoveAllAddressesTitle,
+      message: l10n.geocodingRemoveAllAddressesMessage,
+      confirmLabel: l10n.actionRemoveAll,
     );
     if (!confirmed || !mounted) {
       return;
@@ -481,8 +544,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       final removed = await repository.clearHousenumbers();
       refreshGeocoding(ref);
       if (!mounted) return;
+      final clearedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Removed $removed address record(s).')),
+        SnackBar(
+          content: Text(clearedL10n.geocodingAddressesRemoved(removed)),
+        ),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -491,8 +557,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Remove failed: $error')),
+        SnackBar(
+          content: Text(errorL10n.geocodingRemoveFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -502,6 +571,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   }
 
   Widget _buildArchiveActions({
+    required AppLocalizations l10n,
     required bool enabled,
     required bool busy,
     required VoidCallback onExport,
@@ -521,17 +591,17 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.upload_outlined),
-          label: const Text('Export'),
+          label: Text(l10n.actionExport),
         ),
         OutlinedButton.icon(
           onPressed: enabled && !busy ? onImport : null,
           icon: const Icon(Icons.download_outlined),
-          label: const Text('Import'),
+          label: Text(l10n.actionImport),
         ),
         OutlinedButton.icon(
           onPressed: enabled && !busy ? onRemoveAll : null,
           icon: const Icon(Icons.delete_outline),
-          label: const Text('Remove all'),
+          label: Text(l10n.actionRemoveAll),
         ),
       ],
     );
@@ -542,34 +612,40 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   }
 
   String _importStatusLabel({
+    required AppLocalizations l10n,
     required String status,
     required int rowCount,
     required String readyLabel,
   }) {
     final formattedCount = _formatCount(rowCount);
     return switch (status) {
-      geocodingStatusIdle => 'Not imported',
-      geocodingStatusDownloading => 'Downloading…',
-      geocodingStatusImporting => 'Importing…',
-      geocodingStatusCompleted => 'Ready ($formattedCount $readyLabel)',
-      geocodingStatusFailed => 'Failed',
-      geocodingStatusCancelled => 'Cancelled',
+      geocodingStatusIdle => l10n.geocodingStatusNotImported,
+      geocodingStatusDownloading => l10n.geocodingStatusDownloading,
+      geocodingStatusImporting => l10n.geocodingStatusImporting,
+      geocodingStatusCompleted =>
+        l10n.geocodingStatusReady(formattedCount, readyLabel),
+      geocodingStatusFailed => l10n.geocodingStatusFailed,
+      geocodingStatusCancelled => l10n.geocodingStatusCancelled,
       _ => status,
     };
   }
 
-  String _activeDatasetLabel(GeocodingImportState settings) {
+  String _activeDatasetLabel(
+    AppLocalizations l10n,
+    GeocodingImportState settings,
+  ) {
     final option = GeocodingDatasetOption.match(
       sourceUrl: settings.sourceUrl,
       countryCodes: settings.countryCodes,
     );
     if (option.isCustom) {
-      return 'Custom URL';
+      return l10n.geocodingCustomUrlLabel;
     }
-    return option.label;
+    return _datasetLabel(l10n, option);
   }
 
   Widget _buildImportProgress({
+    required AppLocalizations l10n,
     required bool isRunning,
     required double progress,
     required int importedRowCount,
@@ -591,7 +667,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         LinearProgressIndicator(value: progress),
         const SizedBox(height: 4),
         Text(
-          '$progressPercent% · $formattedCount $rowLabel imported',
+          l10n.geocodingImportProgress(progressPercent, formattedCount, rowLabel),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         if (onAbort != null) ...[
@@ -607,7 +683,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.stop_circle_outlined),
-              label: Text(isCancelling ? 'Aborting…' : 'Abort import'),
+              label: Text(
+                isCancelling ? l10n.actionAborting : l10n.geocodingAbortImport,
+              ),
             ),
           ),
         ],
@@ -617,8 +695,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final settingsAsync = ref.watch(geocodingSettingsProvider);
-    final description = _selectedDescription();
+    final description = _selectedDescription(l10n);
 
     ref.listen(geocodingSettingsProvider, (previous, next) {
       next.whenData((settings) {
@@ -630,19 +709,20 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Geocoding',
+          l10n.geocodingTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Download OSMNames data to the server for offline search. Place names '
-          'and street addresses are imported separately.',
+          l10n.geocodingDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
         settingsAsync.when(
           loading: () => const LinearProgressIndicator(),
-          error: (error, _) => Text('Failed to load geocoding settings: $error'),
+          error: (error, _) => Text(
+            l10n.geocodingSettingsLoadFailed(error.toString()),
+          ),
           data: (settings) {
             _syncFromServer(settings);
             final placesControlsEnabled = !settings.isPlacesRunning &&
@@ -663,12 +743,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Place names (geonames.tsv)',
+                  l10n.geocodingPlacesSectionTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  geocodingPlanetImportWarning,
+                  l10n.geocodingPlanetImportWarning,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -677,15 +757,15 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 DropdownButtonFormField<GeocodingDatasetOption>(
                   key: ValueKey(_selectedDataset.id),
                   initialValue: _selectedDataset,
-                  decoration: const InputDecoration(
-                    labelText: 'Place dataset',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.geocodingPlaceDatasetLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   items: [
                     for (final option in geocodingDatasetOptions)
                       DropdownMenuItem(
                         value: option,
-                        child: Text(option.label),
+                        child: Text(_datasetLabel(l10n, option)),
                       ),
                   ],
                   onChanged: placesControlsEnabled
@@ -711,10 +791,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   const SizedBox(height: 12),
                   TextField(
                     controller: _customUrlController,
-                    decoration: const InputDecoration(
-                      labelText: 'Custom place data URL',
+                    decoration: InputDecoration(
+                      labelText: l10n.geocodingCustomPlaceUrlLabel,
                       hintText: geocodingPlanetSourceUrl,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.url,
                     autocorrect: false,
@@ -724,32 +804,40 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 ],
                 const SizedBox(height: 12),
                 Text(
-                  'Status: ${_importStatusLabel(
-                    status: settings.importStatus,
-                    rowCount: settings.importedRowCount,
-                    readyLabel: 'places',
-                  )}',
+                  l10n.geocodingStatusLabel(
+                    _importStatusLabel(
+                      l10n: l10n,
+                      status: settings.importStatus,
+                      rowCount: settings.importedRowCount,
+                      readyLabel: l10n.geocodingRowLabelPlaces,
+                    ),
+                  ),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 if (settings.importStatus != geocodingStatusIdle) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Last selection: ${_activeDatasetLabel(settings)}',
+                    l10n.geocodingLastSelection(
+                      _activeDatasetLabel(l10n, settings),
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
                 _buildImportProgress(
+                  l10n: l10n,
                   isRunning: settings.isPlacesRunning,
                   progress: settings.importProgress,
                   importedRowCount: settings.importedRowCount,
-                  rowLabel: 'rows',
+                  rowLabel: l10n.geocodingRowLabelRows,
                   isCancelling: _isCancellingPlacesImport,
                   onAbort: settings.isPlacesRunning ? _cancelPlacesImport : null,
                 ),
                 if (!settings.isPlacesRunning && settings.importedAt != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Last import: ${settings.importedAt!.toLocal()}',
+                    l10n.geocodingLastImport(
+                      settings.importedAt!.toLocal().toString(),
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -764,12 +852,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 ],
                 const SizedBox(height: 12),
                 Text(
-                  'Archive place data as a JSON file, restore from a previous '
-                  'export, or remove all records from the server.',
+                  l10n.geocodingPlacesArchiveDescription,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 12),
                 _buildArchiveActions(
+                  l10n: l10n,
                   enabled: placesArchiveEnabled,
                   busy: _isPlacesArchiveBusy,
                   onExport: _exportPlacesArchive,
@@ -789,20 +877,20 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                       : const Icon(Icons.cloud_download_outlined),
                   label: Text(
                     settings.isPlacesRunning
-                        ? 'Place import in progress…'
-                        : 'Download and import places',
+                        ? l10n.geocodingPlaceImportInProgress
+                        : l10n.geocodingDownloadImportPlaces,
                   ),
                 ),
                 const SizedBox(height: 32),
                 const Divider(),
                 const SizedBox(height: 16),
                 Text(
-                  'Street addresses (housenumbers.tsv)',
+                  l10n.geocodingAddressesSectionTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  geocodingHousenumbersImportWarning,
+                  l10n.geocodingHousenumbersImportWarning,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -810,10 +898,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 const SizedBox(height: 12),
                 TextField(
                   controller: _housenumbersUrlController,
-                  decoration: const InputDecoration(
-                    labelText: 'Housenumbers data URL',
+                  decoration: InputDecoration(
+                    labelText: l10n.geocodingHousenumbersUrlLabel,
                     hintText: geocodingHousenumbersSourceUrl,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.url,
                   autocorrect: false,
@@ -822,18 +910,22 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Status: ${_importStatusLabel(
-                    status: settings.housenumbersImportStatus,
-                    rowCount: settings.housenumbersImportedRowCount,
-                    readyLabel: 'addresses',
-                  )}',
+                  l10n.geocodingStatusLabel(
+                    _importStatusLabel(
+                      l10n: l10n,
+                      status: settings.housenumbersImportStatus,
+                      rowCount: settings.housenumbersImportedRowCount,
+                      readyLabel: l10n.geocodingRowLabelAddresses,
+                    ),
+                  ),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 _buildImportProgress(
+                  l10n: l10n,
                   isRunning: settings.isHousenumbersRunning,
                   progress: settings.housenumbersImportProgress,
                   importedRowCount: settings.housenumbersImportedRowCount,
-                  rowLabel: 'addresses',
+                  rowLabel: l10n.geocodingRowLabelAddresses,
                   isCancelling: _isCancellingHousenumbersImport,
                   onAbort: settings.isHousenumbersRunning
                       ? _cancelHousenumbersImport
@@ -843,7 +935,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                     settings.housenumbersImportedAt != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Last import: ${settings.housenumbersImportedAt!.toLocal()}',
+                    l10n.geocodingLastImport(
+                      settings.housenumbersImportedAt!.toLocal().toString(),
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -858,12 +952,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 ],
                 const SizedBox(height: 12),
                 Text(
-                  'Archive address data as a separate JSON file, restore from a '
-                  'previous export, or remove all records from the server.',
+                  l10n.geocodingAddressesArchiveDescription,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 12),
                 _buildArchiveActions(
+                  l10n: l10n,
                   enabled: housenumbersArchiveEnabled,
                   busy: _isHousenumbersArchiveBusy,
                   onExport: _exportHousenumbersArchive,
@@ -885,8 +979,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                       : const Icon(Icons.home_work_outlined),
                   label: Text(
                     settings.isHousenumbersRunning
-                        ? 'Address import in progress…'
-                        : 'Download and import housenumbers',
+                        ? l10n.geocodingAddressImportInProgress
+                        : l10n.geocodingDownloadImportHousenumbers,
                   ),
                 ),
               ],

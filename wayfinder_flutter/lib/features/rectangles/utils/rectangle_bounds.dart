@@ -111,3 +111,12 @@ Map<String, dynamic> latLngToJson(LatLng point) {
     'lng': point.longitude,
   };
 }
+
+RectangleBounds translateBounds(RectangleBounds bounds, LatLng delta) {
+  return RectangleBounds(
+    north: bounds.north + delta.latitude,
+    south: bounds.south + delta.latitude,
+    east: bounds.east + delta.longitude,
+    west: bounds.west + delta.longitude,
+  );
+}

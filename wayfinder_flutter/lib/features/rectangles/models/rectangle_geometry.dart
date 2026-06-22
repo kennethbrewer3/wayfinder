@@ -178,6 +178,50 @@ class RectangleGeometry {
   }
 }
 
+RectangleBounds translateBounds(RectangleBounds bounds, LatLng delta) {
+  return RectangleBounds(
+    north: bounds.north + delta.latitude,
+    south: bounds.south + delta.latitude,
+    east: bounds.east + delta.longitude,
+    west: bounds.west + delta.longitude,
+  );
+}
+
+RectangleGeometry applyRectangleCoordinateEdits(
+  RectangleGeometry geometry, {
+  required LatLng? center,
+  required LatLng? cornerA,
+  required LatLng? cornerB,
+}) {
+  switch (geometry.creationMode) {
+    case RectangleCreationMode.centerExtent:
+      final oldCenter = geometry.center ?? geometry.bounds.center;
+      final newCenter = center ?? oldCenter;
+      final delta = LatLng(
+        newCenter.latitude - oldCenter.latitude,
+        newCenter.longitude - oldCenter.longitude,
+      );
+      return geometry.copyWith(
+        center: newCenter,
+        extentPoint: geometry.extentPoint == null
+            ? null
+            : LatLng(
+                geometry.extentPoint!.latitude + delta.latitude,
+                geometry.extentPoint!.longitude + delta.longitude,
+              ),
+        bounds: translateBounds(geometry.bounds, delta),
+      );
+    case RectangleCreationMode.corners:
+      final a = cornerA ?? geometry.cornerA ?? geometry.bounds.center;
+      final b = cornerB ?? geometry.cornerB ?? geometry.bounds.center;
+      return geometry.copyWith(
+        cornerA: a,
+        cornerB: b,
+        bounds: boundsFromCorners(a, b),
+      );
+  }
+}
+
 LatLng? rectangleZoneCenter(MapZone zone) {
   return RectangleGeometry.fromZone(zone)?.bounds.center;
 }

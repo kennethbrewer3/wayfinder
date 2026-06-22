@@ -1,5 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../geocoding/models/geocoding_models.dart';
 
@@ -24,6 +26,7 @@ class SearchResult {
 }
 
 List<SearchResult> buildSearchResults({
+  required AppLocalizations l10n,
   required String query,
   required List<MapMarker> markers,
   required List<MapZone> zones,
@@ -42,7 +45,7 @@ List<SearchResult> buildSearchResults({
       SearchResult(
         id: 'coordinate',
         label: trimmed,
-        subtitle: 'Coordinates',
+        subtitle: l10n.searchSubtitleCoordinates,
         type: SearchResultType.coordinate,
         location: coordinate,
         zoom: 14,
@@ -57,7 +60,7 @@ List<SearchResult> buildSearchResults({
         SearchResult(
           id: marker.id.toString(),
           label: marker.name,
-          subtitle: 'Marker',
+          subtitle: l10n.searchSubtitleMarker,
           type: SearchResultType.marker,
           location: LatLng(marker.latitude, marker.longitude),
         ),
@@ -74,7 +77,9 @@ List<SearchResult> buildSearchResults({
         SearchResult(
           id: zone.id.toString(),
           label: zone.name,
-          subtitle: 'Zone (${zone.type})',
+          subtitle: l10n.searchSubtitleZone(
+            localizedZoneTypeLabel(l10n, zone.type),
+          ),
           type: SearchResultType.zone,
           location: location,
         ),

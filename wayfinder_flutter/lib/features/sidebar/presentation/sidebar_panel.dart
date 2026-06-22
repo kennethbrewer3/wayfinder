@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/serverpod_client.dart';
 import '../../circles/models/circle_geometry.dart';
@@ -88,6 +90,7 @@ class _SidebarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.sizeOf(context).width >= 960;
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
@@ -97,13 +100,13 @@ class _SidebarHeader extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                'Map Objects',
+                l10n.sidebarTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
           ),
           IconButton(
-            tooltip: expanded ? 'Collapse panel' : 'Expand panel',
+            tooltip: expanded ? l10n.sidebarCollapsePanel : l10n.sidebarExpandPanel,
             icon: Icon(
               expanded
                   ? (isWide ? Icons.chevron_right : Icons.expand_more)
@@ -133,6 +136,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layersAsync = ref.watch(layersProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     if (layersAsync.isLoading ||
         markersAsync.isLoading ||
@@ -142,24 +146,24 @@ class _LayerOrganizedPanel extends ConsumerWidget {
 
     if (layersAsync.hasError) {
       return MapObjectsErrorState(
-        title: 'Layers unavailable',
-        message: layersLoadErrorMessage(layersAsync.error!),
+        title: l10n.sidebarLayersUnavailable,
+        message: layersLoadErrorMessage(layersAsync.error!, l10n),
         onRetry: () => ref.invalidate(layersProvider),
       );
     }
 
     if (markersAsync.hasError) {
       return MapObjectsErrorState(
-        title: 'Markers unavailable',
-        message: mapObjectsLoadErrorMessage(markersAsync.error!),
+        title: l10n.sidebarMarkersUnavailable,
+        message: mapObjectsLoadErrorMessage(markersAsync.error!, l10n),
         onRetry: () => ref.invalidate(markersProvider),
       );
     }
 
     if (zonesAsync.hasError) {
       return MapObjectsErrorState(
-        title: 'Zones unavailable',
-        message: mapObjectsLoadErrorMessage(zonesAsync.error!),
+        title: l10n.sidebarZonesUnavailable,
+        message: mapObjectsLoadErrorMessage(zonesAsync.error!, l10n),
         onRetry: () => ref.read(zonesProvider.notifier).reload(),
       );
     }
@@ -190,7 +194,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Text(
-            'Top layers draw above lower ones. Use ▼ to expand or collapse layer contents.',
+            l10n.sidebarLayerOrderHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
@@ -298,7 +302,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
           child: FilledButton.icon(
             onPressed: () => _createLayer(context, ref),
             icon: const Icon(Icons.add),
-            label: const Text('Add layer'),
+            label: Text(l10n.sidebarAddLayer),
           ),
         ),
       ],
@@ -306,10 +310,11 @@ class _LayerOrganizedPanel extends ConsumerWidget {
   }
 
   Future<void> _createLayer(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
     final name = await _promptForLayerName(
       context: context,
-      title: 'New layer',
-      confirmLabel: 'Create',
+      title: l10n.sidebarNewLayerTitle,
+      confirmLabel: l10n.actionCreate,
     );
     if (name == null || name.isEmpty || !context.mounted) {
       return;
@@ -329,10 +334,11 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     WidgetRef ref,
     MapLayer layer,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     final name = await _promptForLayerName(
       context: context,
-      title: 'Rename layer',
-      confirmLabel: 'Save',
+      title: l10n.sidebarRenameLayerTitle,
+      confirmLabel: l10n.actionSave,
       initialName: layer.name,
     );
     if (name == null || name.isEmpty || name == layer.name || !context.mounted) {
@@ -350,30 +356,32 @@ class _LayerOrganizedPanel extends ConsumerWidget {
   ) async {
     if (layers.length <= 1) {
       if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must keep at least one layer.')),
+        SnackBar(content: Text(l10n.sidebarKeepOneLayer)),
       );
       return;
     }
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete layer?'),
-        content: Text(
-          'Delete "${layer.name}"? Its markers and zones will move to another layer.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final dialogL10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(dialogL10n.sidebarDeleteLayerTitle),
+          content: Text(dialogL10n.sidebarDeleteLayerMessage(layer.name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(dialogL10n.actionCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(dialogL10n.actionDelete),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true || !context.mounted) {
       return;
@@ -399,38 +407,41 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     final controller = TextEditingController(text: initialName);
     return showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(
-            labelText: 'Layer name',
-          ),
-          onSubmitted: (value) {
-            final trimmed = value.trim();
-            if (trimmed.isNotEmpty) {
-              Navigator.of(context).pop(trimmed);
-            }
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              final trimmed = controller.text.trim();
-              if (trimmed.isEmpty) {
-                return;
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: l10n.sidebarLayerNameLabel,
+            ),
+            onSubmitted: (value) {
+              final trimmed = value.trim();
+              if (trimmed.isNotEmpty) {
+                Navigator.of(context).pop(trimmed);
               }
-              Navigator.of(context).pop(trimmed);
             },
-            child: Text(confirmLabel),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.actionCancel),
+            ),
+            FilledButton(
+              onPressed: () {
+                final trimmed = controller.text.trim();
+                if (trimmed.isEmpty) {
+                  return;
+                }
+                Navigator.of(context).pop(trimmed);
+              },
+              child: Text(confirmLabel),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -469,6 +480,7 @@ class _LayerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
@@ -478,14 +490,14 @@ class _LayerHeader extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              tooltip: isExpanded ? 'Collapse layer' : 'Expand layer',
+              tooltip: isExpanded ? l10n.sidebarCollapseLayer : l10n.sidebarExpandLayer,
               onPressed: onToggleExpanded,
               icon: Icon(
                 isExpanded ? Icons.expand_less : Icons.expand_more,
               ),
             ),
             IconButton(
-              tooltip: layer.visible ? 'Hide layer' : 'Show layer',
+              tooltip: layer.visible ? l10n.sidebarHideLayer : l10n.sidebarShowLayer,
               onPressed: onToggleVisible,
               icon: Icon(
                 layer.visible ? Icons.visibility : Icons.visibility_off,
@@ -500,8 +512,8 @@ class _LayerHeader extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   Text(
-                    '$objectCount object${objectCount == 1 ? '' : 's'}'
-                    '${isSelected ? ' · selected for new objects' : ''}',
+                    l10n.sidebarObjectCount(objectCount) +
+                        (isSelected ? l10n.sidebarSelectedForNewObjects : ''),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: isSelected
                               ? colorScheme.primary
@@ -512,12 +524,12 @@ class _LayerHeader extends StatelessWidget {
               ),
             ),
             IconButton(
-              tooltip: 'Move up',
+              tooltip: l10n.sidebarMoveUp,
               onPressed: isTop ? null : onMoveUp,
               icon: const Icon(Icons.arrow_upward),
             ),
             IconButton(
-              tooltip: 'Move down',
+              tooltip: l10n.sidebarMoveDown,
               onPressed: isBottom ? null : onMoveDown,
               icon: const Icon(Icons.arrow_downward),
             ),
@@ -530,14 +542,14 @@ class _LayerHeader extends StatelessWidget {
                     onDelete();
                 }
               },
-              itemBuilder: (context) => const [
+              itemBuilder: (context) => [
                 PopupMenuItem(
                   value: _LayerMenuAction.rename,
-                  child: Text('Rename'),
+                  child: Text(l10n.actionRename),
                 ),
                 PopupMenuItem(
                   value: _LayerMenuAction.delete,
-                  child: Text('Delete'),
+                  child: Text(l10n.actionDelete),
                 ),
               ],
             ),
@@ -571,6 +583,7 @@ class _LayerObjectPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(sidebarProvider.notifier);
     final showingMarkers = settings.activeTab == SidebarPanelTab.markers;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -578,16 +591,16 @@ class _LayerObjectPanel extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: SegmentedButton<SidebarPanelTab>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: SidebarPanelTab.markers,
-                label: Text('Markers'),
-                icon: Icon(Icons.place_outlined),
+                label: Text(l10n.sidebarTabMarkers),
+                icon: const Icon(Icons.place_outlined),
               ),
               ButtonSegment(
                 value: SidebarPanelTab.zones,
-                label: Text('Zones'),
-                icon: Icon(Icons.layers_outlined),
+                label: Text(l10n.sidebarTabZones),
+                icon: const Icon(Icons.layers_outlined),
               ),
             ],
             selected: {settings.activeTab},
@@ -599,14 +612,14 @@ class _LayerObjectPanel extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: SegmentedButton<SidebarViewMode>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: SidebarViewMode.list,
-                label: Text('List'),
+                label: Text(l10n.sidebarViewList),
               ),
               ButtonSegment(
                 value: SidebarViewMode.tree,
-                label: Text('Tree'),
+                label: Text(l10n.sidebarViewTree),
               ),
             ],
             selected: {settings.viewMode},
@@ -663,31 +676,33 @@ class _LayerMarkersContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (markers.isEmpty) {
       if (hasSearchQuery) {
-        return const Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: MapObjectsEmptyState(
             icon: Icons.search_off,
-            title: 'No matching markers',
-            message: 'Try a different search term.',
+            title: l10n.sidebarNoMatchingMarkers,
+            message: l10n.sidebarTryDifferentSearch,
           ),
         );
       }
 
-      return const Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         child: MapObjectsEmptyState(
           icon: Icons.place_outlined,
-          title: 'No markers on this layer',
-          message: 'Long-press the map to add a marker.',
+          title: l10n.sidebarNoMarkersOnLayer,
+          message: l10n.sidebarAddMarkerHint,
         ),
       );
     }
 
     if (settings.viewMode == SidebarViewMode.tree) {
       return _MarkerTreeView(
-        groups: groupMarkers(markers, settings.markerSort),
+        groups: groupMarkers(markers, settings.markerSort, l10n),
         onZoomTo: onZoomTo,
         nested: true,
       );
@@ -725,31 +740,33 @@ class _LayerZonesContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (zones.isEmpty) {
       if (hasSearchQuery) {
-        return const Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: MapObjectsEmptyState(
             icon: Icons.search_off,
-            title: 'No matching zones',
-            message: 'Try a different search term.',
+            title: l10n.sidebarNoMatchingZones,
+            message: l10n.sidebarTryDifferentSearch,
           ),
         );
       }
 
-      return const Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         child: MapObjectsEmptyState(
           icon: Icons.layers_outlined,
-          title: 'No zones on this layer',
-          message: 'Long-press the map and choose Line to draw one.',
+          title: l10n.sidebarNoZonesOnLayer,
+          message: l10n.sidebarAddZoneHint,
         ),
       );
     }
 
     if (settings.viewMode == SidebarViewMode.tree) {
       return _ZoneTreeView(
-        groups: groupZones(zones, settings.zoneSort),
+        groups: groupZones(zones, settings.zoneSort, l10n),
         onZoomTo: onZoomTo,
         nested: true,
       );
@@ -783,11 +800,12 @@ class _MarkerSortSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _SortFieldSelector<MarkerSortField>(
-      label: 'Sort markers',
+      label: l10n.sidebarSortMarkers,
       value: value,
       items: MarkerSortField.values,
-      itemLabel: (field) => field.label,
+      itemLabel: (field) => field.localizedLabel(l10n),
       onChanged: onChanged,
     );
   }
@@ -804,11 +822,12 @@ class _ZoneSortSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _SortFieldSelector<ZoneSortField>(
-      label: 'Sort zones',
+      label: l10n.sidebarSortZones,
       value: value,
       items: ZoneSortField.values,
-      itemLabel: (field) => field.label,
+      itemLabel: (field) => field.localizedLabel(l10n),
       onChanged: onChanged,
     );
   }
@@ -932,6 +951,7 @@ class _MapObjectTreeScaffold<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return ListView.separated(
       shrinkWrap: nested,
@@ -955,7 +975,7 @@ class _MapObjectTreeScaffold<T> extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              '${group.items.length} item${group.items.length == 1 ? '' : 's'}',
+              l10n.sidebarObjectCount(group.items.length),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -990,6 +1010,7 @@ class _MarkerListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final notesPreview = marker.notes?.trim();
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected = selected?.kind == SelectedMapObjectKind.marker &&
@@ -1054,7 +1075,7 @@ class _MarkerListTile extends ConsumerWidget {
         _MapObjectActionBar(
           actions: [
             _MapObjectIconAction(
-              tooltip: marker.visible ? 'Hide marker' : 'Show marker',
+              tooltip: marker.visible ? l10n.sidebarHideMarker : l10n.sidebarShowMarker,
               icon: marker.visible ? Icons.visibility : Icons.visibility_off,
               toggled: marker.visible,
               isToggle: true,
@@ -1067,7 +1088,7 @@ class _MarkerListTile extends ConsumerWidget {
               },
             ),
             _MapObjectIconAction(
-              tooltip: 'Edit marker',
+              tooltip: l10n.sidebarEditMarker,
               icon: Icons.edit_outlined,
               onPressed: () => updateMarkerFromForm(
                 context: context,
@@ -1076,7 +1097,7 @@ class _MarkerListTile extends ConsumerWidget {
               ),
             ),
             _MapObjectIconAction(
-              tooltip: 'Delete marker',
+              tooltip: l10n.sidebarDeleteMarker,
               icon: Icons.delete_outline,
               onPressed: () async {
                 final client = ref.read(serverClientProvider);
@@ -1149,6 +1170,7 @@ class _LineZoneListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final zoneId = zone.id;
     final geometry = LineGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1236,8 +1258,8 @@ class _LineZoneListTile extends ConsumerWidget {
             actions: [
               _MapObjectIconAction(
                 tooltip: geometry.showNameLabel
-                    ? 'Hide name on map'
-                    : 'Show name on map',
+                    ? l10n.sidebarHideNameOnMap
+                    : l10n.sidebarShowNameOnMap,
                 icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
                 toggled: geometry.showNameLabel,
                 isToggle: true,
@@ -1245,8 +1267,8 @@ class _LineZoneListTile extends ConsumerWidget {
               ),
               _MapObjectIconAction(
                 tooltip: geometry.showDistanceLabel
-                    ? 'Hide distance on map'
-                    : 'Show distance on map',
+                    ? l10n.sidebarHideDistanceOnMap
+                    : l10n.sidebarShowDistanceOnMap,
                 icon: geometry.showDistanceLabel
                     ? Icons.straighten
                     : Icons.straighten_outlined,
@@ -1256,7 +1278,7 @@ class _LineZoneListTile extends ConsumerWidget {
                     toggleLineDistanceLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
-                tooltip: zone.visible ? 'Hide line' : 'Show line',
+                tooltip: zone.visible ? l10n.sidebarHideLine : l10n.sidebarShowLine,
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
@@ -1269,7 +1291,7 @@ class _LineZoneListTile extends ConsumerWidget {
                 },
               ),
               _MapObjectIconAction(
-                tooltip: 'Edit line',
+                tooltip: l10n.sidebarEditLine,
                 icon: Icons.edit_outlined,
                 onPressed: () => updateLineFromForm(
                   context: context,
@@ -1278,7 +1300,7 @@ class _LineZoneListTile extends ConsumerWidget {
                 ),
               ),
               _MapObjectIconAction(
-                tooltip: 'Delete line',
+                tooltip: l10n.sidebarDeleteLine,
                 icon: Icons.delete_outline,
                 onPressed: () async {
                   final client = ref.read(serverClientProvider);
@@ -1307,6 +1329,7 @@ class _CircleZoneListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final zoneId = zone.id;
     final geometry = CircleGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1374,7 +1397,7 @@ class _CircleZoneListTile extends ConsumerWidget {
                       Text(
                         mapSizeLabel == null
                             ? 'R $radiusLabel · no map label'
-                            : '${geometry.sizeDisplay.shortLabel} $mapSizeLabel',
+                            : '${geometry.sizeDisplay.localizedShortLabel(l10n)} $mapSizeLabel',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
@@ -1397,15 +1420,15 @@ class _CircleZoneListTile extends ConsumerWidget {
           actions: [
             _MapObjectIconAction(
               tooltip: geometry.showNameLabel
-                  ? 'Hide name on map'
-                  : 'Show name on map',
+                  ? l10n.sidebarHideNameOnMap
+                  : l10n.sidebarShowNameOnMap,
               icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
               toggled: geometry.showNameLabel,
               isToggle: true,
               onPressed: () => toggleCircleNameLabel(ref: ref, zoneId: zoneId),
             ),
             _MapObjectIconAction(
-              tooltip: circleSizeDisplayToggleTooltip(geometry.sizeDisplay),
+              tooltip: geometry.sizeDisplay.localizedToggleTooltip(l10n),
               icon: geometry.sizeDisplay == CircleSizeDisplay.none
                   ? Icons.straighten_outlined
                   : Icons.straighten,
@@ -1414,7 +1437,7 @@ class _CircleZoneListTile extends ConsumerWidget {
               onPressed: () => toggleCircleSizeLabel(ref: ref, zoneId: zoneId),
             ),
             _MapObjectIconAction(
-              tooltip: zone.visible ? 'Hide circle' : 'Show circle',
+              tooltip: zone.visible ? l10n.sidebarHideCircle : l10n.sidebarShowCircle,
               icon: zone.visible ? Icons.visibility : Icons.visibility_off,
               toggled: zone.visible,
               isToggle: true,
@@ -1427,7 +1450,7 @@ class _CircleZoneListTile extends ConsumerWidget {
               },
             ),
             _MapObjectIconAction(
-              tooltip: 'Edit circle',
+              tooltip: l10n.sidebarEditCircle,
               icon: Icons.edit_outlined,
               onPressed: () => updateCircleFromForm(
                 context: context,
@@ -1436,7 +1459,7 @@ class _CircleZoneListTile extends ConsumerWidget {
               ),
             ),
             _MapObjectIconAction(
-              tooltip: 'Delete circle',
+              tooltip: l10n.sidebarDeleteCircle,
               icon: Icons.delete_outline,
               onPressed: () async {
                 final client = ref.read(serverClientProvider);
@@ -1465,6 +1488,7 @@ class _RectangleZoneListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final zoneId = zone.id;
     final geometry = RectangleGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1554,8 +1578,8 @@ class _RectangleZoneListTile extends ConsumerWidget {
             actions: [
               _MapObjectIconAction(
                 tooltip: geometry.showNameLabel
-                    ? 'Hide name on map'
-                    : 'Show name on map',
+                    ? l10n.sidebarHideNameOnMap
+                    : l10n.sidebarShowNameOnMap,
                 icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
                 toggled: geometry.showNameLabel,
                 isToggle: true,
@@ -1574,7 +1598,9 @@ class _RectangleZoneListTile extends ConsumerWidget {
                     toggleRectangleSizeLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
-                tooltip: zone.visible ? 'Hide rectangle' : 'Show rectangle',
+                tooltip: zone.visible
+                    ? l10n.sidebarHideRectangle
+                    : l10n.sidebarShowRectangle,
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
@@ -1587,7 +1613,7 @@ class _RectangleZoneListTile extends ConsumerWidget {
                 },
               ),
               _MapObjectIconAction(
-                tooltip: 'Edit rectangle',
+                tooltip: l10n.sidebarEditRectangle,
                 icon: Icons.edit_outlined,
                 onPressed: () => updateRectangleFromForm(
                   context: context,
@@ -1596,7 +1622,7 @@ class _RectangleZoneListTile extends ConsumerWidget {
                 ),
               ),
               _MapObjectIconAction(
-                tooltip: 'Delete rectangle',
+                tooltip: l10n.sidebarDeleteRectangle,
                 icon: Icons.delete_outline,
                 onPressed: () async {
                   final client = ref.read(serverClientProvider);
@@ -1625,6 +1651,7 @@ class _GenericZoneListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
         selected?.id == zone.id;
@@ -1691,7 +1718,7 @@ class _GenericZoneListTile extends ConsumerWidget {
         _MapObjectActionBar(
           actions: [
             _MapObjectIconAction(
-              tooltip: zone.visible ? 'Hide zone' : 'Show zone',
+              tooltip: zone.visible ? l10n.sidebarHideZone : l10n.sidebarShowZone,
               icon: zone.visible ? Icons.visibility : Icons.visibility_off,
               toggled: zone.visible,
               isToggle: true,
@@ -1704,7 +1731,7 @@ class _GenericZoneListTile extends ConsumerWidget {
               },
             ),
             _MapObjectIconAction(
-              tooltip: 'Delete zone',
+              tooltip: l10n.sidebarDeleteZone,
               icon: Icons.delete_outline,
               onPressed: () async {
                 final client = ref.read(serverClientProvider);

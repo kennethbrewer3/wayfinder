@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/animated_status_dot_icon_button.dart';
 import '../../settings/providers/pmtiles_providers.dart';
@@ -11,22 +12,23 @@ class MapTilesLoadIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final effectiveStatus = _effectiveStatus(ref);
+    final l10n = AppLocalizations.of(context)!;
+    final effectiveStatus = _effectiveStatus(ref, l10n);
 
     return AnimatedStatusDotIconButton(
       isReady: effectiveStatus.isReady,
       isLoading: effectiveStatus.isLoading,
       tooltip: effectiveStatus.isReady
-          ? 'Map tiles ready'
+          ? l10n.mapTilesReadyTooltip
           : effectiveStatus.isLoading
-              ? 'Map tiles loading'
-              : 'Map tiles not ready',
+              ? l10n.mapTilesLoadingTooltip
+              : l10n.mapTilesNotReadyTooltip,
       icon: Icons.layers_outlined,
       onPressed: () => _showStatusDialog(context, ref),
     );
   }
 
-  PmtilesLoadStatus _effectiveStatus(WidgetRef ref) {
+  PmtilesLoadStatus _effectiveStatus(WidgetRef ref, AppLocalizations l10n) {
     final metadataAsync = ref.watch(pmtilesEnabledMetadataProvider);
     final status = ref.watch(pmtilesLoadStatusProvider);
 
@@ -34,7 +36,7 @@ class MapTilesLoadIndicator extends ConsumerWidget {
       return status.copyWith(
         isReady: false,
         isLoading: true,
-        statusMessage: 'Loading map tile catalog…',
+        statusMessage: l10n.statusLoading,
       );
     }
 
@@ -43,7 +45,7 @@ class MapTilesLoadIndicator extends ConsumerWidget {
         isReady: false,
         isLoading: false,
         failureMessage: metadataAsync.error.toString(),
-        statusMessage: 'Failed to load map tile catalog.',
+        statusMessage: l10n.mapTilesCatalogLoadFailed,
       );
     }
 
@@ -56,14 +58,15 @@ class MapTilesLoadIndicator extends ConsumerWidget {
       builder: (dialogContext) {
         return Consumer(
           builder: (context, ref, _) {
-            final status = _effectiveStatus(ref);
+            final l10n = AppLocalizations.of(context)!;
+            final status = _effectiveStatus(ref, l10n);
             return AlertDialog(
               title: Text(
                 status.isReady
-                    ? 'Map tiles ready'
+                    ? l10n.mapTilesReadyTooltip
                     : status.isLoading
-                        ? 'Loading map tiles'
-                        : 'Map tiles not ready',
+                        ? l10n.mapTilesLoadingTitle
+                        : l10n.mapTilesNotReadyTooltip,
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -72,7 +75,7 @@ class MapTilesLoadIndicator extends ConsumerWidget {
                   if (status.isLoading) ...[
                     ActivityProgressBar(
                       progress: _loadProgress(status),
-                      label: _loadProgressLabel(status),
+                      label: _loadProgressLabel(status, l10n),
                     ),
                     const SizedBox(height: 12),
                   ],
@@ -88,37 +91,33 @@ class MapTilesLoadIndicator extends ConsumerWidget {
                   ],
                   if (status.isLoading && status.loadingLayerName != null) ...[
                     const SizedBox(height: 12),
-                    Text('Opening: ${status.loadingLayerName}'),
+                    Text(l10n.mapTilesOpeningLayer(status.loadingLayerName!)),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Large .pmtiles archives can take several minutes to open '
-                      'before tiles appear. Panning and zooming will fetch tiles '
-                      'as the map becomes ready.',
-                    ),
+                    Text(l10n.mapTilesLargeArchiveHelp),
                   ],
                   if (!status.isLoading && status.enabledCount > 0) ...[
                     const SizedBox(height: 12),
                     Text(
-                      'Layers prepared: ${status.loadedCount} of ${status.enabledCount}',
+                      l10n.mapTilesLayersPrepared(
+                        status.loadedCount,
+                        status.enabledCount,
+                      ),
                     ),
                   ],
                   if (status.activeLayerName != null) ...[
                     const SizedBox(height: 8),
-                    Text('Active layer: ${status.activeLayerName}'),
+                    Text(l10n.mapTilesActiveLayer(status.activeLayerName!)),
                   ],
                   if (status.isReady) ...[
                     const SizedBox(height: 12),
-                    const Text(
-                      'Tiles for the current map view should be visible. If the '
-                      'map is still blank, try zooming to the layer coverage area.',
-                    ),
+                    Text(l10n.mapTilesReadyHelp),
                   ],
                 ],
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('OK'),
+                  child: Text(l10n.actionOk),
                 ),
               ],
             );
@@ -139,14 +138,17 @@ class MapTilesLoadIndicator extends ConsumerWidget {
     return status.loadedCount / status.enabledCount;
   }
 
-  String _loadProgressLabel(PmtilesLoadStatus status) {
+  String _loadProgressLabel(PmtilesLoadStatus status, AppLocalizations l10n) {
     if (status.loadingLayerName != null &&
         status.loadedCount >= status.enabledCount) {
-      return 'Opening ${status.loadingLayerName}…';
+      return l10n.mapTilesOpeningProgress(status.loadingLayerName!);
     }
     if (status.enabledCount > 0) {
-      return 'Layers prepared: ${status.loadedCount} of ${status.enabledCount}';
+      return l10n.mapTilesLayersPrepared(
+        status.loadedCount,
+        status.enabledCount,
+      );
     }
-    return 'Working…';
+    return l10n.statusWorking;
   }
 }

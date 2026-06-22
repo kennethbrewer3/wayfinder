@@ -111,14 +111,37 @@ class AppTheme {
   }
 
   static ThemeData _buildTheme(ColorScheme colorScheme) {
+    final textTheme = ThemeData(
+      colorScheme: colorScheme,
+      useMaterial3: true,
+    ).textTheme.apply(
+      bodyColor: colorScheme.onSurface,
+      displayColor: colorScheme.onSurface,
+    );
+
     return ThemeData(
       colorScheme: colorScheme,
       useMaterial3: true,
       scaffoldBackgroundColor: colorScheme.surface,
+      textTheme: textTheme,
+      primaryTextTheme: textTheme,
+      iconTheme: IconThemeData(color: colorScheme.onSurface),
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
+        iconTheme: IconThemeData(color: colorScheme.onSurface),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
         elevation: 0,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+        labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+        helperStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+        prefixIconColor: colorScheme.onSurfaceVariant,
+        suffixIconColor: colorScheme.onSurfaceVariant,
       ),
       dividerTheme: DividerThemeData(
         color: colorScheme.outlineVariant,

@@ -1,8 +1,12 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/presentation/coordinate_form_fields.dart';
 import '../../layers/presentation/layer_picker_field.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/marker_color.dart';
@@ -23,6 +27,9 @@ class RectangleFormData {
     required this.sizeDisplay,
     required this.showNameLabel,
     required this.layerId,
+    this.center,
+    this.cornerA,
+    this.cornerB,
   });
 
   final String name;
@@ -33,6 +40,9 @@ class RectangleFormData {
   final RectangleSizeDisplay sizeDisplay;
   final bool showNameLabel;
   final UuidValue? layerId;
+  final LatLng? center;
+  final LatLng? cornerA;
+  final LatLng? cornerB;
 }
 
 Future<RectangleFormData?> showRectangleFormDialog({
@@ -41,23 +51,27 @@ Future<RectangleFormData?> showRectangleFormDialog({
   required RectangleBounds bounds,
   required MeasurementUnits measurementUnits,
   RectangleSizeDisplay initialSizeDisplay = RectangleSizeDisplay.dimensions,
-  String title = 'Create rectangle',
-  String confirmLabel = 'Create',
-  String defaultName = 'New rectangle',
+  String? title,
+  String? confirmLabel,
+  String? defaultName,
   String? initialNotes,
   Color? initialCenterMarkerColor,
   Color? initialBorderColor,
   Color? initialFillColor,
   bool initialShowNameLabel = false,
   UuidValue? initialLayerId,
+  LatLng? initialCenter,
+  LatLng? initialCornerA,
+  LatLng? initialCornerB,
 }) {
   return showDialog<RectangleFormData>(
     context: context,
     builder: (context) {
+      final l10n = AppLocalizations.of(context)!;
       return RectangleFormDialog(
-        title: title,
-        confirmLabel: confirmLabel,
-        defaultName: defaultName,
+        title: title ?? l10n.rectangleCreateTitle,
+        confirmLabel: confirmLabel ?? l10n.actionCreate,
+        defaultName: defaultName ?? l10n.rectangleDefaultName,
         creationMode: creationMode,
         bounds: bounds,
         measurementUnits: measurementUnits,
@@ -70,6 +84,9 @@ Future<RectangleFormData?> showRectangleFormDialog({
             initialFillColor ?? parseMarkerColor('#1B496540'),
         initialShowNameLabel: initialShowNameLabel,
         initialLayerId: initialLayerId,
+        initialCenter: initialCenter,
+        initialCornerA: initialCornerA,
+        initialCornerB: initialCornerB,
       );
     },
   );
@@ -91,6 +108,9 @@ class RectangleFormDialog extends StatefulWidget {
     required this.initialFillColor,
     required this.initialShowNameLabel,
     this.initialLayerId,
+    this.initialCenter,
+    this.initialCornerA,
+    this.initialCornerB,
   });
 
   final String title;
@@ -106,6 +126,9 @@ class RectangleFormDialog extends StatefulWidget {
   final Color initialFillColor;
   final bool initialShowNameLabel;
   final UuidValue? initialLayerId;
+  final LatLng? initialCenter;
+  final LatLng? initialCornerA;
+  final LatLng? initialCornerB;
 
   @override
   State<RectangleFormDialog> createState() => _RectangleFormDialogState();
@@ -113,6 +136,12 @@ class RectangleFormDialog extends StatefulWidget {
 
 class _RectangleFormDialogState extends State<RectangleFormDialog> {
   late final TextEditingController _nameController;
+  late final TextEditingController? _centerLatitudeController;
+  late final TextEditingController? _centerLongitudeController;
+  late final TextEditingController? _cornerALatitudeController;
+  late final TextEditingController? _cornerALongitudeController;
+  late final TextEditingController? _cornerBLatitudeController;
+  late final TextEditingController? _cornerBLongitudeController;
   late final QuillController _notesController;
   late Color _centerMarkerColor;
   late Color _borderColor;
@@ -125,6 +154,38 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.defaultName);
+    if (widget.creationMode == RectangleCreationMode.centerExtent) {
+      final center = widget.initialCenter ?? widget.bounds.center;
+      _centerLatitudeController = TextEditingController(
+        text: formatCoordinateField(center.latitude),
+      );
+      _centerLongitudeController = TextEditingController(
+        text: formatCoordinateField(center.longitude),
+      );
+      _cornerALatitudeController = null;
+      _cornerALongitudeController = null;
+      _cornerBLatitudeController = null;
+      _cornerBLongitudeController = null;
+    } else {
+      final cornerA = widget.initialCornerA ??
+          LatLng(widget.bounds.north, widget.bounds.west);
+      final cornerB = widget.initialCornerB ??
+          LatLng(widget.bounds.south, widget.bounds.east);
+      _centerLatitudeController = null;
+      _centerLongitudeController = null;
+      _cornerALatitudeController = TextEditingController(
+        text: formatCoordinateField(cornerA.latitude),
+      );
+      _cornerALongitudeController = TextEditingController(
+        text: formatCoordinateField(cornerA.longitude),
+      );
+      _cornerBLatitudeController = TextEditingController(
+        text: formatCoordinateField(cornerB.latitude),
+      );
+      _cornerBLongitudeController = TextEditingController(
+        text: formatCoordinateField(cornerB.longitude),
+      );
+    }
     _notesController = createMarkerNotesController(
       markdown: widget.initialNotes,
     );
@@ -139,6 +200,12 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _centerLatitudeController?.dispose();
+    _centerLongitudeController?.dispose();
+    _cornerALatitudeController?.dispose();
+    _cornerALongitudeController?.dispose();
+    _cornerBLatitudeController?.dispose();
+    _cornerBLongitudeController?.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -147,6 +214,34 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       return;
+    }
+
+    LatLng? center;
+    LatLng? cornerA;
+    LatLng? cornerB;
+    if (_centerLatitudeController != null && _centerLongitudeController != null) {
+      center = parseLatLngFields(
+        _centerLatitudeController!.text,
+        _centerLongitudeController!.text,
+      );
+      if (center == null) {
+        return;
+      }
+    } else if (_cornerALatitudeController != null &&
+        _cornerALongitudeController != null &&
+        _cornerBLatitudeController != null &&
+        _cornerBLongitudeController != null) {
+      cornerA = parseLatLngFields(
+        _cornerALatitudeController!.text,
+        _cornerALongitudeController!.text,
+      );
+      cornerB = parseLatLngFields(
+        _cornerBLatitudeController!.text,
+        _cornerBLongitudeController!.text,
+      );
+      if (cornerA == null || cornerB == null) {
+        return;
+      }
     }
 
     final notes = markerNotesToMarkdown(_notesController);
@@ -160,12 +255,16 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
         sizeDisplay: _sizeDisplay,
         showNameLabel: _showNameLabel,
         layerId: _selectedLayerId,
+        center: center,
+        cornerA: cornerA,
+        cornerB: cornerB,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final dimensionsLabel = formatRectangleDimensions(
       widget.bounds,
       widget.measurementUnits,
@@ -174,7 +273,6 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
       widget.bounds,
       widget.measurementUnits,
     );
-    final center = widget.bounds.center;
 
     return AlertDialog(
       title: Text(widget.title),
@@ -186,9 +284,9 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'e.g. Search area, Property boundary',
+                decoration: InputDecoration(
+                  labelText: l10n.formNameLabel,
+                  hintText: l10n.circleNameHint,
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
@@ -202,11 +300,7 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
               const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(widget.creationMode.label),
-                subtitle: Text(
-                  '${center.latitude.toStringAsFixed(5)}, '
-                  '${center.longitude.toStringAsFixed(5)}',
-                ),
+                title: Text(widget.creationMode.localizedLabel(l10n)),
                 trailing: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
@@ -227,8 +321,33 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                 ),
               ),
               const SizedBox(height: 8),
+              if (_centerLatitudeController != null &&
+                  _centerLongitudeController != null)
+                CoordinateFormFields(
+                  title: l10n.circleCenterLabel,
+                  latitudeController: _centerLatitudeController!,
+                  longitudeController: _centerLongitudeController!,
+                  helperText: l10n.rectangleCenterMoveHelp,
+                )
+              else if (_cornerALatitudeController != null &&
+                  _cornerALongitudeController != null &&
+                  _cornerBLatitudeController != null &&
+                  _cornerBLongitudeController != null) ...[
+                CoordinateFormFields(
+                  title: l10n.rectangleCornerALabel,
+                  latitudeController: _cornerALatitudeController!,
+                  longitudeController: _cornerALongitudeController!,
+                ),
+                const SizedBox(height: 16),
+                CoordinateFormFields(
+                  title: l10n.rectangleCornerBLabel,
+                  latitudeController: _cornerBLatitudeController!,
+                  longitudeController: _cornerBLongitudeController!,
+                ),
+              ],
+              const SizedBox(height: 8),
               Text(
-                'Size label on map',
+                l10n.circleSizeLabelOnMap,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
@@ -237,8 +356,8 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                     .map(
                       (display) => ButtonSegment(
                         value: display,
-                        label: Text(display.shortLabel),
-                        tooltip: display.label,
+                        label: Text(display.localizedShortLabel(l10n)),
+                        tooltip: display.localizedLabel(l10n),
                       ),
                     )
                     .toList(),
@@ -250,14 +369,14 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
               const SizedBox(height: 12),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Show name on map'),
+                title: Text(l10n.formShowNameOnMap),
                 value: _showNameLabel,
                 onChanged: (value) => setState(() => _showNameLabel = value),
               ),
               if (widget.creationMode == RectangleCreationMode.centerExtent) ...[
                 const SizedBox(height: 16),
                 Text(
-                  'Center marker',
+                  l10n.circleCenterMarkerLabel,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(height: 8),
@@ -269,7 +388,7 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
               ],
               const SizedBox(height: 16),
               Text(
-                'Border color',
+                l10n.formBorderColorLabel,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
@@ -291,7 +410,7 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.actionCancel),
         ),
         FilledButton(
           onPressed: _submit,
@@ -313,16 +432,18 @@ class _FillColorPickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Fill color',
+          l10n.formFillColorLabel,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 4),
         Text(
-          'Adjust opacity to control fill transparency.',
+          l10n.formFillOpacityHelp,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -342,10 +463,10 @@ class _FillColorPickerField extends StatelessWidget {
             ColorPickerType.primary: true,
             ColorPickerType.accent: true,
           },
-          pickerTypeLabels: const {
-            ColorPickerType.wheel: 'Wheel',
-            ColorPickerType.primary: 'Primary',
-            ColorPickerType.accent: 'Accent',
+          pickerTypeLabels: {
+            ColorPickerType.wheel: l10n.themePreviewOutline,
+            ColorPickerType.primary: l10n.themePreviewPrimary,
+            ColorPickerType.accent: l10n.themePreviewAccent,
           },
         ),
       ],

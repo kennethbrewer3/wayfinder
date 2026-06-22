@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../providers/layers_provider.dart';
 import '../utils/map_layer_utils.dart';
@@ -19,16 +20,21 @@ class LayerPickerField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final layersAsync = ref.watch(layersProvider);
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return layersAsync.when(
-      loading: () => const InputDecorator(
-        decoration: InputDecoration(labelText: 'Layer'),
-        child: Text('Loading…'),
+      loading: () => InputDecorator(
+        decoration: InputDecoration(labelText: l10n.layerLabel),
+        child: Text(l10n.statusLoading),
       ),
       error: (_, __) => InputDecorator(
-        decoration: const InputDecoration(labelText: 'Layer'),
+        decoration: InputDecoration(labelText: l10n.layerLabel),
         child: Text(
-          layerNameForObject(layerId: selectedLayerId, layersById: const {}),
+          layerNameForObject(
+            layerId: selectedLayerId,
+            layersById: const {},
+            l10n: l10n,
+          ),
         ),
       ),
       data: (result) {
@@ -39,8 +45,8 @@ class LayerPickerField extends ConsumerWidget {
         );
 
         return InputDecorator(
-          decoration: const InputDecoration(
-            labelText: 'Layer',
+          decoration: InputDecoration(
+            labelText: l10n.layerLabel,
             isDense: true,
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             border: OutlineInputBorder(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../core/app_globals.dart';
 
@@ -35,6 +36,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return _isSignedIn
         ? widget.child
         : Center(
@@ -42,13 +45,13 @@ class _SignInScreenState extends State<SignInScreen> {
               client: client,
               onAuthenticated: () {
                 context.showSnackBar(
-                  message: 'User authenticated.',
+                  message: l10n.authSuccess,
                   backgroundColor: Colors.green,
                 );
               },
               onError: (error) {
                 context.showSnackBar(
-                  message: 'Authentication failed: $error',
+                  message: l10n.authFailed(error.toString()),
                   backgroundColor: Colors.red,
                 );
               },

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/presentation/coordinate_form_fields.dart';
 import '../../layers/presentation/layer_picker_field.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/marker_color.dart';
@@ -16,6 +19,7 @@ class CircleFormData {
   const CircleFormData({
     required this.name,
     required this.notes,
+    required this.center,
     required this.centerMarkerColor,
     required this.borderColor,
     required this.fillColor,
@@ -26,6 +30,7 @@ class CircleFormData {
 
   final String name;
   final String? notes;
+  final LatLng center;
   final Color centerMarkerColor;
   final Color borderColor;
   final Color fillColor;
@@ -40,9 +45,9 @@ Future<CircleFormData?> showCircleFormDialog({
   required double radiusMeters,
   required MeasurementUnits measurementUnits,
   CircleSizeDisplay initialSizeDisplay = CircleSizeDisplay.radius,
-  String title = 'Create circle',
-  String confirmLabel = 'Create',
-  String defaultName = 'New circle',
+  String? title,
+  String? confirmLabel,
+  String? defaultName,
   String? initialNotes,
   Color? initialCenterMarkerColor,
   Color? initialBorderColor,
@@ -53,10 +58,11 @@ Future<CircleFormData?> showCircleFormDialog({
   return showDialog<CircleFormData>(
     context: context,
     builder: (context) {
+      final l10n = AppLocalizations.of(context)!;
       return CircleFormDialog(
-        title: title,
-        confirmLabel: confirmLabel,
-        defaultName: defaultName,
+        title: title ?? l10n.circleCreateTitle,
+        confirmLabel: confirmLabel ?? l10n.actionCreate,
+        defaultName: defaultName ?? l10n.circleDefaultName,
         center: center,
         radiusMeters: radiusMeters,
         measurementUnits: measurementUnits,
@@ -112,6 +118,8 @@ class CircleFormDialog extends StatefulWidget {
 
 class _CircleFormDialogState extends State<CircleFormDialog> {
   late final TextEditingController _nameController;
+  late final TextEditingController _latitudeController;
+  late final TextEditingController _longitudeController;
   late final QuillController _notesController;
   late Color _centerMarkerColor;
   late Color _borderColor;
@@ -124,6 +132,12 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.defaultName);
+    _latitudeController = TextEditingController(
+      text: formatCoordinateField(widget.center.latitude),
+    );
+    _longitudeController = TextEditingController(
+      text: formatCoordinateField(widget.center.longitude),
+    );
     _notesController = createMarkerNotesController(
       markdown: widget.initialNotes,
     );
@@ -138,6 +152,8 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -148,11 +164,20 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
       return;
     }
 
+    final center = parseLatLngFields(
+      _latitudeController.text,
+      _longitudeController.text,
+    );
+    if (center == null) {
+      return;
+    }
+
     final notes = markerNotesToMarkdown(_notesController);
     Navigator.of(context).pop(
       CircleFormData(
         name: name,
         notes: notes.isEmpty ? null : notes,
+        center: center,
         centerMarkerColor: _centerMarkerColor,
         borderColor: _borderColor,
         fillColor: _fillColor,
@@ -165,6 +190,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final radiusLabel = formatCircleSize(
       widget.radiusMeters,
       widget.measurementUnits,
@@ -186,9 +212,9 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'e.g. Search area, Property boundary',
+                decoration: InputDecoration(
+                  labelText: l10n.formNameLabel,
+                  hintText: l10n.circleNameHint,
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
@@ -202,11 +228,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
               const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Measurements'),
-                subtitle: Text(
-                  '${widget.center.latitude.toStringAsFixed(5)}, '
-                  '${widget.center.longitude.toStringAsFixed(5)}',
-                ),
+                title: Text(l10n.circleMeasurementsLabel),
                 trailing: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
@@ -227,8 +249,14 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
                 ),
               ),
               const SizedBox(height: 8),
+              CoordinateFormFields(
+                title: l10n.circleCenterLabel,
+                latitudeController: _latitudeController,
+                longitudeController: _longitudeController,
+              ),
+              const SizedBox(height: 8),
               Text(
-                'Size label on map',
+                l10n.circleSizeLabelOnMap,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
@@ -237,8 +265,8 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
                     .map(
                       (display) => ButtonSegment(
                         value: display,
-                        label: Text(display.shortLabel),
-                        tooltip: display.label,
+                        label: Text(display.localizedShortLabel(l10n)),
+                        tooltip: display.localizedLabel(l10n),
                       ),
                     )
                     .toList(),
@@ -250,13 +278,13 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
               const SizedBox(height: 12),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Show name on map'),
+                title: Text(l10n.formShowNameOnMap),
                 value: _showNameLabel,
                 onChanged: (value) => setState(() => _showNameLabel = value),
               ),
               const SizedBox(height: 16),
               Text(
-                'Center marker',
+                l10n.circleCenterMarkerLabel,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
@@ -267,7 +295,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Border color',
+                l10n.formBorderColorLabel,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
@@ -289,7 +317,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.actionCancel),
         ),
         FilledButton(
           onPressed: _submit,
@@ -311,16 +339,18 @@ class _FillColorPickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Fill color',
+          l10n.formFillColorLabel,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 4),
         Text(
-          'Adjust opacity to control fill transparency.',
+          l10n.formFillOpacityHelp,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -340,10 +370,10 @@ class _FillColorPickerField extends StatelessWidget {
             ColorPickerType.primary: true,
             ColorPickerType.accent: true,
           },
-          pickerTypeLabels: const {
-            ColorPickerType.wheel: 'Wheel',
-            ColorPickerType.primary: 'Primary',
-            ColorPickerType.accent: 'Accent',
+          pickerTypeLabels: {
+            ColorPickerType.wheel: l10n.themePreviewOutline,
+            ColorPickerType.primary: l10n.themePreviewPrimary,
+            ColorPickerType.accent: l10n.themePreviewAccent,
           },
         ),
       ],

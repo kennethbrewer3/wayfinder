@@ -1,5 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/marker_icon_registry.dart';
 import 'map_marker_icon.dart';
@@ -42,6 +44,7 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final selectedOption =
         markerIconOption(widget.selectedIcon) ?? markerIconOptions.first;
@@ -80,7 +83,7 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Icon',
+                          l10n.markerIconLabel,
                           style: theme.textTheme.labelLarge,
                         ),
                         Text(
@@ -115,7 +118,7 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Choose an icon for the map pin, such as Home for your house.',
+                  l10n.markerIconHelp,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -171,7 +174,7 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  option.label,
+                                  localizedMarkerIconLabel(l10n, option.key),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: theme.textTheme.labelSmall?.copyWith(
@@ -209,11 +212,13 @@ class MarkerColorPickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Color',
+          l10n.formColorLabel,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
@@ -231,10 +236,10 @@ class MarkerColorPickerField extends StatelessWidget {
             ColorPickerType.primary: true,
             ColorPickerType.accent: true,
           },
-          pickerTypeLabels: const {
-            ColorPickerType.wheel: 'Custom',
-            ColorPickerType.primary: 'Primary',
-            ColorPickerType.accent: 'Accent',
+          pickerTypeLabels: {
+            ColorPickerType.wheel: l10n.themePreviewOutline,
+            ColorPickerType.primary: l10n.themePreviewPrimary,
+            ColorPickerType.accent: l10n.themePreviewAccent,
           },
         ),
       ],
@@ -254,11 +259,13 @@ class MarkerPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Preview',
+          l10n.formPreviewLabel,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 8),

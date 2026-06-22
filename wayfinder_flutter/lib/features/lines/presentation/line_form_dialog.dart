@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/presentation/coordinate_form_fields.dart';
 import '../../layers/presentation/layer_picker_field.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
@@ -41,6 +44,8 @@ class LineFormData {
     required this.borderPattern,
     required this.showArrows,
     required this.layerId,
+    required this.start,
+    required this.end,
   });
 
   final String name;
@@ -49,6 +54,8 @@ class LineFormData {
   final LineBorderPattern borderPattern;
   final bool showArrows;
   final UuidValue? layerId;
+  final LatLng start;
+  final LatLng end;
 }
 
 Future<LineFormData?> showLineFormDialog({
@@ -57,9 +64,9 @@ Future<LineFormData?> showLineFormDialog({
   required LatLng end,
   required MeasurementUnits measurementUnits,
   double? pathLengthMeters,
-  String title = 'Create line',
-  String confirmLabel = 'Create',
-  String defaultName = 'New line',
+  String? title,
+  String? confirmLabel,
+  String? defaultName,
   String? initialNotes,
   Color? initialColor,
   LineBorderPattern initialBorderPattern = LineBorderPattern.solid,
@@ -69,10 +76,11 @@ Future<LineFormData?> showLineFormDialog({
   return showDialog<LineFormData>(
     context: context,
     builder: (context) {
+      final l10n = AppLocalizations.of(context)!;
       return LineFormDialog(
-        title: title,
-        confirmLabel: confirmLabel,
-        defaultName: defaultName,
+        title: title ?? l10n.lineCreateTitle,
+        confirmLabel: confirmLabel ?? l10n.actionCreate,
+        defaultName: defaultName ?? l10n.lineDefaultName,
         start: start,
         end: end,
         pathLengthMeters: pathLengthMeters,
@@ -123,6 +131,10 @@ class LineFormDialog extends StatefulWidget {
 
 class _LineFormDialogState extends State<LineFormDialog> {
   late final TextEditingController _nameController;
+  late final TextEditingController _startLatitudeController;
+  late final TextEditingController _startLongitudeController;
+  late final TextEditingController _endLatitudeController;
+  late final TextEditingController _endLongitudeController;
   late final QuillController _notesController;
   late Color _selectedColor;
   late LineBorderPattern _borderPattern;
@@ -133,6 +145,18 @@ class _LineFormDialogState extends State<LineFormDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.defaultName);
+    _startLatitudeController = TextEditingController(
+      text: formatCoordinateField(widget.start.latitude),
+    );
+    _startLongitudeController = TextEditingController(
+      text: formatCoordinateField(widget.start.longitude),
+    );
+    _endLatitudeController = TextEditingController(
+      text: formatCoordinateField(widget.end.latitude),
+    );
+    _endLongitudeController = TextEditingController(
+      text: formatCoordinateField(widget.end.longitude),
+    );
     _notesController = createMarkerNotesController(
       markdown: widget.initialNotes,
     );
@@ -140,11 +164,29 @@ class _LineFormDialogState extends State<LineFormDialog> {
     _borderPattern = widget.initialBorderPattern;
     _showArrows = widget.initialShowArrows;
     _selectedLayerId = widget.initialLayerId;
+    for (final controller in [
+      _startLatitudeController,
+      _startLongitudeController,
+      _endLatitudeController,
+      _endLongitudeController,
+    ]) {
+      controller.addListener(_onCoordinatesChanged);
+    }
+  }
+
+  void _onCoordinatesChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _startLatitudeController.dispose();
+    _startLongitudeController.dispose();
+    _endLatitudeController.dispose();
+    _endLongitudeController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -152,6 +194,18 @@ class _LineFormDialogState extends State<LineFormDialog> {
   void _submit() {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
+      return;
+    }
+
+    final start = parseLatLngFields(
+      _startLatitudeController.text,
+      _startLongitudeController.text,
+    );
+    final end = parseLatLngFields(
+      _endLatitudeController.text,
+      _endLongitudeController.text,
+    );
+    if (start == null || end == null) {
       return;
     }
 
@@ -164,18 +218,29 @@ class _LineFormDialogState extends State<LineFormDialog> {
         borderPattern: _borderPattern,
         showArrows: _showArrows,
         layerId: _selectedLayerId,
+        start: start,
+        end: end,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final distanceMeters =
-        widget.pathLengthMeters ?? lineLengthMeters(widget.start, widget.end);
-    final distanceLabel = formatLineDistance(
-      distanceMeters,
-      widget.measurementUnits,
+    final l10n = AppLocalizations.of(context)!;
+    final start = parseLatLngFields(
+      _startLatitudeController.text,
+      _startLongitudeController.text,
     );
+    final end = parseLatLngFields(
+      _endLatitudeController.text,
+      _endLongitudeController.text,
+    );
+    final distanceMeters = start != null && end != null
+        ? lineLengthMeters(start, end)
+        : null;
+    final distanceLabel = distanceMeters == null
+        ? '—'
+        : formatLineDistance(distanceMeters, widget.measurementUnits);
 
     return AlertDialog(
       title: Text(widget.title),
@@ -187,9 +252,9 @@ class _LineFormDialogState extends State<LineFormDialog> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'e.g. Route to camp, Property boundary',
+                decoration: InputDecoration(
+                  labelText: l10n.formNameLabel,
+                  hintText: l10n.lineNameHint,
                 ),
                 autofocus: true,
                 textInputAction: TextInputAction.next,
@@ -203,13 +268,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
               const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Distance'),
-                subtitle: Text(
-                  '${widget.start.latitude.toStringAsFixed(5)}, '
-                  '${widget.start.longitude.toStringAsFixed(5)} → '
-                  '${widget.end.latitude.toStringAsFixed(5)}, '
-                  '${widget.end.longitude.toStringAsFixed(5)}',
-                ),
+                title: Text(l10n.lineDistanceLabel),
                 trailing: Text(
                   distanceLabel,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -217,23 +276,34 @@ class _LineFormDialogState extends State<LineFormDialog> {
                       ),
                 ),
               ),
+              CoordinateFormFields(
+                title: l10n.lineStartPointLabel,
+                latitudeController: _startLatitudeController,
+                longitudeController: _startLongitudeController,
+              ),
+              const SizedBox(height: 16),
+              CoordinateFormFields(
+                title: l10n.lineEndPointLabel,
+                latitudeController: _endLatitudeController,
+                longitudeController: _endLongitudeController,
+              ),
               const SizedBox(height: 8),
               Text(
-                'Line style',
+                l10n.lineStyleLabel,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
               SegmentedButton<LineBorderPattern>(
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: LineBorderPattern.solid,
-                    label: Text('Solid'),
-                    icon: Icon(Icons.remove),
+                    label: Text(l10n.lineBorderSolid),
+                    icon: const Icon(Icons.remove),
                   ),
                   ButtonSegment(
                     value: LineBorderPattern.dashed,
-                    label: Text('Dashed'),
-                    icon: Icon(Icons.more_horiz),
+                    label: Text(l10n.lineBorderDashed),
+                    icon: const Icon(Icons.more_horiz),
                   ),
                 ],
                 selected: {_borderPattern},
@@ -244,10 +314,8 @@ class _LineFormDialogState extends State<LineFormDialog> {
               const SizedBox(height: 12),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Direction arrows'),
-                subtitle: const Text(
-                  'Arrows point from the first point toward the second.',
-                ),
+                title: Text(l10n.lineDirectionArrowsTitle),
+                subtitle: Text(l10n.lineDirectionArrowsSubtitle),
                 value: _showArrows,
                 onChanged: (value) => setState(() => _showArrows = value),
               ),
@@ -265,7 +333,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.actionCancel),
         ),
         FilledButton(
           onPressed: _submit,

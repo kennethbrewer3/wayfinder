@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import 'settings_backup_tab.dart';
@@ -23,18 +24,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
-          bottom: const TabBar(
+          title: Text(l10n.settingsTitle),
+          bottom: TabBar(
             isScrollable: true,
             tabs: [
-              Tab(text: 'General'),
-              Tab(text: 'Map tiles'),
-              Tab(text: 'Geocoding'),
-              Tab(text: 'Backup'),
+              Tab(text: l10n.settingsTabGeneral),
+              Tab(text: l10n.settingsTabMapTiles),
+              Tab(text: l10n.settingsTabGeocoding),
+              Tab(text: l10n.settingsTabBackup),
             ],
           ),
         ),

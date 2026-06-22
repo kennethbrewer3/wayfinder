@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
@@ -106,6 +107,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final measurementUnits = ref.watch(measurementUnitsProvider);
 
     return switch (selection.kind) {
@@ -113,11 +115,13 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           context,
           ref,
           theme,
+          l10n,
         ),
       SelectedMapObjectKind.zone => _buildZoneDialog(
           context,
           ref,
           theme,
+          l10n,
           measurementUnits,
         ),
     };
@@ -127,6 +131,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ThemeData theme,
+    AppLocalizations l10n,
   ) {
     final markersAsync = ref.watch(markersProvider);
     final marker = markersAsync.valueOrNull == null
@@ -137,6 +142,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       return _loadingOrMissingDialog(
         context: context,
         theme: theme,
+        l10n: l10n,
         loading: markersAsync.isLoading,
         onEdit: onEdit,
       );
@@ -153,22 +159,25 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         height: 34,
       ),
       onEdit: onEdit,
+      l10n: l10n,
       children: [
         _DetailRow(
-          label: 'Type',
-          value: 'Marker',
+          label: l10n.mapObjectDetailType,
+          value: l10n.mapObjectTypeMarker,
         ),
         _DetailRow(
-          label: 'Coordinates',
+          label: l10n.mapObjectDetailCoordinates,
           value: _formatCoordinates(marker.latitude, marker.longitude),
         ),
         _DetailRow(
-          label: 'Elevation',
+          label: l10n.mapObjectDetailElevation,
           value: _formatElevation(marker.elevation),
         ),
         _DetailRow(
-          label: 'Visibility',
-          value: marker.visible ? 'Visible' : 'Hidden',
+          label: l10n.mapObjectDetailVisibility,
+          value: marker.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
         ),
         LayerAssignmentRow(
           layerId: marker.layerId,
@@ -179,7 +188,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           ),
         ),
         if (notes != null && notes.isNotEmpty)
-          _NotesSection(markdown: notes),
+          _NotesSection(l10n: l10n, markdown: notes),
       ],
     );
   }
@@ -188,6 +197,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ThemeData theme,
+    AppLocalizations l10n,
     MeasurementUnits measurementUnits,
   ) {
     final zonesAsync = ref.watch(zonesProvider);
@@ -199,6 +209,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       return _loadingOrMissingDialog(
         context: context,
         theme: theme,
+        l10n: l10n,
         loading: zonesAsync.isLoading,
         onEdit: onEdit,
       );
@@ -208,19 +219,22 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       lineZoneType => _lineDetails(
           ref: ref,
           zone: zone,
+          l10n: l10n,
           measurementUnits: measurementUnits,
         ),
       circleZoneType => _circleDetails(
           ref: ref,
           zone: zone,
+          l10n: l10n,
           measurementUnits: measurementUnits,
         ),
       rectangleZoneType => _rectangleDetails(
           ref: ref,
           zone: zone,
+          l10n: l10n,
           measurementUnits: measurementUnits,
         ),
-      _ => _genericZoneDetails(ref: ref, zone: zone),
+      _ => _genericZoneDetails(ref: ref, zone: zone, l10n: l10n),
     };
   }
 
@@ -238,11 +252,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   Widget _lineDetails({
     required WidgetRef ref,
     required MapZone zone,
+    required AppLocalizations l10n,
     required MeasurementUnits measurementUnits,
   }) {
     final geometry = LineGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
-      return _genericZoneDetails(ref: ref, zone: zone);
+      return _genericZoneDetails(ref: ref, zone: zone, l10n: l10n);
     }
 
     final notes = geometry.notes?.trim();
@@ -258,24 +273,27 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         icon: Icons.timeline,
       ),
       onEdit: onEdit,
+      l10n: l10n,
       children: [
-        const _DetailRow(label: 'Type', value: 'Line'),
-        _DetailRow(label: 'Length', value: distance),
+        _DetailRow(label: l10n.mapObjectDetailType, value: l10n.mapObjectTypeLine),
+        _DetailRow(label: l10n.mapObjectDetailLength, value: distance),
         _DetailRow(
-          label: 'Start',
+          label: l10n.mapObjectDetailStart,
           value: _formatLatLng(geometry.start!),
         ),
         _DetailRow(
-          label: 'End',
+          label: l10n.mapObjectDetailEnd,
           value: _formatLatLng(geometry.end!),
         ),
         _DetailRow(
-          label: 'Visibility',
-          value: zone.visible ? 'Visible' : 'Hidden',
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
         ),
         _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
-          _NotesSection(markdown: notes),
+          _NotesSection(l10n: l10n, markdown: notes),
       ],
     );
   }
@@ -283,11 +301,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   Widget _circleDetails({
     required WidgetRef ref,
     required MapZone zone,
+    required AppLocalizations l10n,
     required MeasurementUnits measurementUnits,
   }) {
     final geometry = CircleGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
-      return _genericZoneDetails(ref: ref, zone: zone);
+      return _genericZoneDetails(ref: ref, zone: zone, l10n: l10n);
     }
 
     final notes = geometry.notes?.trim();
@@ -314,25 +333,28 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         icon: Icons.radio_button_unchecked,
       ),
       onEdit: onEdit,
+      l10n: l10n,
       children: [
-        const _DetailRow(label: 'Type', value: 'Circle'),
-        _DetailRow(label: 'Radius', value: radius),
-        _DetailRow(label: 'Diameter', value: diameter),
+        _DetailRow(label: l10n.mapObjectDetailType, value: l10n.mapObjectTypeCircle),
+        _DetailRow(label: l10n.mapObjectDetailRadius, value: radius),
+        _DetailRow(label: l10n.mapObjectDetailDiameter, value: diameter),
         _DetailRow(
-          label: 'Center',
+          label: l10n.mapObjectDetailCenter,
           value: _formatLatLng(geometry.center),
         ),
         _DetailRow(
-          label: 'Map label',
-          value: mapLabel ?? 'None',
+          label: l10n.mapObjectDetailMapLabel,
+          value: mapLabel ?? l10n.mapObjectMapLabelNone,
         ),
         _DetailRow(
-          label: 'Visibility',
-          value: zone.visible ? 'Visible' : 'Hidden',
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
         ),
         _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
-          _NotesSection(markdown: notes),
+          _NotesSection(l10n: l10n, markdown: notes),
       ],
     );
   }
@@ -340,11 +362,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   Widget _rectangleDetails({
     required WidgetRef ref,
     required MapZone zone,
+    required AppLocalizations l10n,
     required MeasurementUnits measurementUnits,
   }) {
     final geometry = RectangleGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
-      return _genericZoneDetails(ref: ref, zone: zone);
+      return _genericZoneDetails(ref: ref, zone: zone, l10n: l10n);
     }
 
     final notes = geometry.notes?.trim();
@@ -366,25 +389,34 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         icon: Icons.crop_square,
       ),
       onEdit: onEdit,
+      l10n: l10n,
       children: [
-        _DetailRow(label: 'Type', value: geometry.creationMode.label),
-        _DetailRow(label: 'Dimensions', value: dimensions),
-        _DetailRow(label: 'Area', value: area),
         _DetailRow(
-          label: 'Center',
+          label: l10n.mapObjectDetailType,
+          value: switch (geometry.creationMode) {
+            RectangleCreationMode.centerExtent => l10n.rectangleModeCenter,
+            RectangleCreationMode.corners => l10n.rectangleModeCorners,
+          },
+        ),
+        _DetailRow(label: l10n.mapObjectDetailDimensions, value: dimensions),
+        _DetailRow(label: l10n.mapObjectDetailArea, value: area),
+        _DetailRow(
+          label: l10n.mapObjectDetailCenter,
           value: _formatLatLng(geometry.bounds.center),
         ),
         _DetailRow(
-          label: 'Map label',
-          value: mapLabel ?? 'None',
+          label: l10n.mapObjectDetailMapLabel,
+          value: mapLabel ?? l10n.mapObjectMapLabelNone,
         ),
         _DetailRow(
-          label: 'Visibility',
-          value: zone.visible ? 'Visible' : 'Hidden',
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
         ),
         _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
-          _NotesSection(markdown: notes),
+          _NotesSection(l10n: l10n, markdown: notes),
       ],
     );
   }
@@ -392,6 +424,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   Widget _genericZoneDetails({
     required WidgetRef ref,
     required MapZone zone,
+    required AppLocalizations l10n,
   }) {
     return _DetailsDialogShell(
       title: zone.name,
@@ -400,11 +433,14 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         icon: Icons.layers,
       ),
       onEdit: onEdit,
+      l10n: l10n,
       children: [
-        _DetailRow(label: 'Type', value: zone.type),
+        _DetailRow(label: l10n.mapObjectDetailType, value: zone.type),
         _DetailRow(
-          label: 'Visibility',
-          value: zone.visible ? 'Visible' : 'Hidden',
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
         ),
         _zoneLayerAssignment(ref, zone),
       ],
@@ -414,23 +450,26 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   Widget _loadingOrMissingDialog({
     required BuildContext context,
     required ThemeData theme,
+    required AppLocalizations l10n,
     required bool loading,
     required VoidCallback onEdit,
   }) {
     return AlertDialog(
-      title: const Text('Map object'),
+      title: Text(l10n.mapObjectDetailsTitle),
       content: Text(
-        loading ? 'Loading details…' : 'This object could not be found.',
+        loading
+            ? l10n.mapObjectDetailsLoading
+            : l10n.mapObjectDetailsNotFound,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(l10n.actionClose),
         ),
         if (!loading)
           TextButton(
             onPressed: onEdit,
-            child: const Text('Edit'),
+            child: Text(l10n.actionEdit),
           ),
       ],
     );
@@ -442,12 +481,14 @@ class _DetailsDialogShell extends StatelessWidget {
     required this.title,
     required this.leading,
     required this.onEdit,
+    required this.l10n,
     required this.children,
   });
 
   final String title;
   final Widget leading;
   final VoidCallback onEdit;
+  final AppLocalizations l10n;
   final List<Widget> children;
 
   @override
@@ -474,11 +515,11 @@ class _DetailsDialogShell extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(l10n.actionClose),
         ),
         FilledButton(
           onPressed: onEdit,
-          child: const Text('Edit'),
+          child: Text(l10n.actionEdit),
         ),
       ],
     );
@@ -527,8 +568,9 @@ class _DetailRow extends StatelessWidget {
 }
 
 class _NotesSection extends StatelessWidget {
-  const _NotesSection({required this.markdown});
+  const _NotesSection({required this.l10n, required this.markdown});
 
+  final AppLocalizations l10n;
   final String markdown;
 
   @override
@@ -541,7 +583,7 @@ class _NotesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Notes',
+            l10n.formNotesLabel,
             style: theme.textTheme.labelLarge,
           ),
           const SizedBox(height: 8),

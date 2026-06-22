@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/constants.dart';
-import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
 import '../../map/providers/map_providers.dart';
 import '../../lines/providers/zones_provider.dart';
@@ -12,18 +12,23 @@ import '../providers/search_query_provider.dart';
 
 List<SearchResult> combinedSearchResults(
   WidgetRef ref, {
+  required AppLocalizations l10n,
   required String query,
 }) {
   final markers = ref.read(markersProvider).valueOrNull ?? const [];
   final zones = ref.read(zonesProvider).valueOrNull ?? const [];
   return buildSearchResults(
+    l10n: l10n,
     query: query,
     markers: markers,
     zones: zones,
   );
 }
 
-List<SearchResult> watchLocalSearchResults(WidgetRef ref) {
+List<SearchResult> watchLocalSearchResults(
+  WidgetRef ref,
+  AppLocalizations l10n,
+) {
   final query = ref.watch(
     debouncedMapSearchQueryProvider,
   );
@@ -31,15 +36,19 @@ List<SearchResult> watchLocalSearchResults(WidgetRef ref) {
   final zones = ref.watch(zonesProvider).valueOrNull ?? const [];
 
   return buildSearchResults(
+    l10n: l10n,
     query: query,
     markers: markers,
     zones: zones,
   );
 }
 
-List<SearchResult> watchCombinedSearchResults(WidgetRef ref) {
+List<SearchResult> watchCombinedSearchResults(
+  WidgetRef ref,
+  AppLocalizations l10n,
+) {
   final query = ref.watch(debouncedMapSearchQueryProvider);
-  final local = watchLocalSearchResults(ref);
+  final local = watchLocalSearchResults(ref, l10n);
   final trimmed = query.trim();
   if (trimmed.length < mapSearchMinGeocodingLength) {
     return local;
@@ -89,9 +98,7 @@ class _MapSearchFieldState extends ConsumerState<MapSearchField> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: ref.read(sidebarProvider).searchQuery,
-    );
+    _controller = TextEditingController();
     _focusNode = FocusNode();
   }
 
@@ -103,27 +110,18 @@ class _MapSearchFieldState extends ConsumerState<MapSearchField> {
   }
 
   Future<void> _submitSearch(String query) async {
-    final callback = widget.onResultSelected;
-    if (callback == null) return;
-
-    ref.read(sidebarProvider.notifier).setSearchQuery(query);
-    ref.read(debouncedMapSearchQueryProvider.notifier).flush(query);
-
     final trimmed = query.trim();
-    var results = combinedSearchResults(ref, query: trimmed);
-    if (trimmed.length >= mapSearchMinGeocodingLength) {
-      final places =
-          await ref.read(geocodingRepositoryProvider).searchPlaces(trimmed);
-      results = [
-        ...results.where((result) => result.type != SearchResultType.place),
-        ...places.map(geocodingPlaceToSearchResult),
-      ];
-    }
+    ref.read(sidebarProvider.notifier).setSearchQuery(trimmed);
+    ref.read(debouncedMapSearchQueryProvider.notifier).submit(trimmed);
+    setState(() {});
+  }
 
-    final result = pickPrimarySearchResult(results);
-    if (result != null) {
-      callback(result);
-    }
+  void _clearSearch() {
+    _controller.clear();
+    ref.read(sidebarProvider.notifier).setSearchQuery('');
+    ref.read(debouncedMapSearchQueryProvider.notifier).clear();
+    _focusNode.requestFocus();
+    setState(() {});
   }
 
   @override
@@ -131,17 +129,14 @@ class _MapSearchFieldState extends ConsumerState<MapSearchField> {
     ref.listen<String>(
       sidebarProvider.select((sidebar) => sidebar.searchQuery),
       (previous, next) {
-        if (_controller.text == next) {
-          return;
+        if (next.isEmpty && _controller.text.isNotEmpty) {
+          _controller.clear();
         }
-        _controller.value = TextEditingValue(
-          text: next,
-          selection: TextSelection.collapsed(offset: next.length),
-        );
       },
     );
 
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return MouseRegion(
       cursor: SystemMouseCursors.basic,
@@ -152,35 +147,43 @@ class _MapSearchFieldState extends ConsumerState<MapSearchField> {
           color: theme.colorScheme.onSurface,
         ),
         decoration: InputDecoration(
-          hintText:
-              'Search places, markers, zones, or lat, lng (e.g. ${_coordinateExample()})',
+          hintText: l10n.searchHint(_coordinateExample()),
           hintStyle: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            color: theme.colorScheme.onSurfaceVariant,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-          suffixIcon: _controller.text.isEmpty
-              ? null
-              : IconButton(
+          suffixIcon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_controller.text.isNotEmpty)
+                IconButton(
                   icon: Icon(
                     Icons.clear,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
-                  onPressed: () {
-                    _controller.clear();
-                    ref.read(sidebarProvider.notifier).setSearchQuery('');
-                    ref.read(debouncedMapSearchQueryProvider.notifier).flush('');
-                    _focusNode.requestFocus();
-                  },
+                  tooltip: l10n.actionCancel,
+                  onPressed: _clearSearch,
                 ),
+              IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: theme.colorScheme.primary,
+                ),
+                tooltip: l10n.actionSearch,
+                onPressed: () => _submitSearch(_controller.text),
+              ),
+            ],
+          ),
           isDense: true,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),
-        onChanged: (value) {
-          ref.read(sidebarProvider.notifier).setSearchQuery(value);
+        onChanged: (_) {
+          // Hide stale results while editing; do not sync sidebar or reset text.
+          ref.read(debouncedMapSearchQueryProvider.notifier).clear();
           setState(() {});
         },
         textInputAction: TextInputAction.search,
@@ -200,7 +203,8 @@ class MapSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final results = watchCombinedSearchResults(ref);
+    final l10n = AppLocalizations.of(context)!;
+    final results = watchCombinedSearchResults(ref, l10n);
     final query = ref.watch(debouncedMapSearchQueryProvider).trim();
     final geocodingLoading = query.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(query)).isLoading;
@@ -256,7 +260,8 @@ class MapSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final results = watchCombinedSearchResults(ref);
+    final l10n = AppLocalizations.of(context)!;
+    final results = watchCombinedSearchResults(ref, l10n);
     final query = ref.watch(debouncedMapSearchQueryProvider).trim();
     final geocodingLoading = query.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(query)).isLoading;
@@ -294,5 +299,8 @@ String _coordinateExample() {
 }
 
 /// Backwards-compatible alias used by older call sites.
-List<SearchResult> watchMapSearchResults(WidgetRef ref) =>
-    watchCombinedSearchResults(ref);
+List<SearchResult> watchMapSearchResults(
+  WidgetRef ref,
+  AppLocalizations l10n,
+) =>
+    watchCombinedSearchResults(ref, l10n);

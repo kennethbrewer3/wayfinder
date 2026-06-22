@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
@@ -41,7 +42,7 @@ Future<bool> createLineBetweenPoints({
   final now = DateTime.now().toUtc();
   final colorHex = formatMarkerColorHex(formData.color);
   final geometry = LineGeometry(
-    points: [start, end],
+    points: [formData.start, formData.end],
     showArrows: formData.showArrows,
     notes: formData.notes,
   );
@@ -77,10 +78,11 @@ Future<bool> updateLineFromForm({
   }
 
   final measurementUnits = ref.read(measurementUnitsProvider);
+  final l10n = AppLocalizations.of(context)!;
   final formData = await showLineFormDialog(
     context: context,
-    title: 'Edit line',
-    confirmLabel: 'Save',
+    title: l10n.lineEditTitle,
+    confirmLabel: l10n.actionSave,
     defaultName: zone.name,
     start: geometry.start!,
     end: geometry.end!,
@@ -98,7 +100,11 @@ Future<bool> updateLineFromForm({
 
   final client = ref.read(serverClientProvider);
   final colorHex = formatMarkerColorHex(formData.color);
+  final points = List<LatLng>.from(geometry.points);
+  points[0] = formData.start;
+  points[points.length - 1] = formData.end;
   final updatedGeometry = geometry.copyWith(
+    points: points,
     showArrows: formData.showArrows,
     notes: formData.notes,
     showDistanceLabel: geometry.showDistanceLabel,

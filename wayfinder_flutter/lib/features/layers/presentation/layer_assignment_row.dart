@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
@@ -21,18 +22,23 @@ class LayerAssignmentRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layersAsync = ref.watch(layersProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return layersAsync.when(
-      loading: () => const ListTile(
+      loading: () => ListTile(
         dense: true,
-        title: Text('Layer'),
-        subtitle: Text('Loading…'),
+        title: Text(l10n.layerLabel),
+        subtitle: Text(l10n.statusLoading),
       ),
       error: (_, __) => ListTile(
         dense: true,
-        title: const Text('Layer'),
+        title: Text(l10n.layerLabel),
         subtitle: Text(
-          layerNameForObject(layerId: layerId, layersById: const {}),
+          layerNameForObject(
+            layerId: layerId,
+            layersById: const {},
+            l10n: l10n,
+          ),
         ),
       ),
       data: (layers) {
@@ -44,7 +50,7 @@ class LayerAssignmentRow extends ConsumerWidget {
         return ListTile(
           dense: true,
           contentPadding: EdgeInsets.zero,
-          title: const Text('Layer'),
+          title: Text(l10n.layerLabel),
           trailing: DropdownButton<UuidValue>(
             value: selectedId,
             underline: const SizedBox.shrink(),

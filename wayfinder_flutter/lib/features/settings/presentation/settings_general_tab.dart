@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../app/app_locale_choice.dart';
 import '../../../app/app_theme_choice.dart';
 import '../../../app/theme.dart';
 import '../../../core/app_globals.dart';
 import '../../../core/app_restart.dart';
 import '../../../core/constants.dart';
+import '../../../core/l10n/localized_labels.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/server_config.dart';
 import '../../circles/models/circle_size_display.dart';
@@ -18,6 +21,7 @@ import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
+import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
 
@@ -67,6 +71,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
   }
 
   Future<void> _saveHomeLocation() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isSavingHomeLocation = true);
     try {
       final home = HomeLocation.tryParse(
@@ -75,16 +80,15 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         zoomText: _homeZoomController.text,
       );
       if (home == null) {
-        throw const FormatException(
-          'Enter valid numbers for latitude, longitude, and zoom.',
-        );
+        throw FormatException(l10n.settingsHomeLocationInvalid);
       }
       await ref.read(homeLocationProvider.notifier).setLocation(home);
       if (!mounted) {
         return;
       }
+      final savedL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Home location saved.')),
+        SnackBar(content: Text(savedL10n.settingsHomeLocationSaved)),
       );
     } on FormatException catch (error) {
       if (!mounted) {
@@ -102,8 +106,13 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       if (!mounted) {
         return;
       }
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save home location: $error')),
+        SnackBar(
+          content: Text(
+            errorL10n.settingsHomeLocationSaveFailed(error.toString()),
+          ),
+        ),
       );
     } finally {
       if (mounted) {
@@ -120,16 +129,18 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     if (!mounted) {
       return;
     }
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Home location reset to default.')),
+      SnackBar(content: Text(l10n.settingsHomeLocationReset)),
     );
   }
 
   void _useCurrentMapView() {
     final viewport = ref.read(mapViewportProvider).valueOrNull;
     if (viewport == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Open the map first to capture its view.')),
+        SnackBar(content: Text(l10n.settingsOpenMapFirst)),
       );
       return;
     }
@@ -154,22 +165,20 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       final restartNow = await showDialog<bool>(
         context: context,
         builder: (context) {
+          final l10n = AppLocalizations.of(context)!;
           return AlertDialog(
-            title: const Text('Restart required'),
+            title: Text(l10n.settingsRestartRequiredTitle),
             content: Text(
-              'Server URL saved.\n\n'
-              'API: ${config.apiUrl}\n'
-              'Web: ${config.webUrl}\n\n'
-              'Restart the app to connect to the new server.',
+              l10n.settingsRestartRequiredMessage(config.apiUrl, config.webUrl),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Later'),
+                child: Text(l10n.actionLater),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text(kIsWeb ? 'Reload now' : 'OK'),
+                child: Text(kIsWeb ? l10n.actionReloadNow : l10n.actionOk),
               ),
             ],
           );
@@ -195,8 +204,11 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       if (!mounted) {
         return;
       }
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save server URL: $error')),
+        SnackBar(
+          content: Text(l10n.settingsServerUrlSaveFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -214,21 +226,20 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     if (!mounted) {
       return;
     }
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Server URL reset to default. Restart the app to apply.',
-        ),
-      ),
+      SnackBar(content: Text(l10n.settingsServerUrlReset)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
     final themeChoice = ref.watch(appThemeProvider);
+    final localeChoice = ref.watch(appLocaleProvider);
     ref.listen<HomeLocation>(homeLocationProvider, (previous, next) {
       if (previous != next) {
         _syncHomeFields(next);
@@ -239,18 +250,42 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Appearance',
+          l10n.settingsLanguageTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Choose a color theme for the app. Military themes use olive, tan, '
-          'and forest green tones.',
+          l10n.settingsLanguageDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        SegmentedButton<AppLocaleChoice>(
+          segments: appLocaleChoices
+              .map(
+                (choice) => ButtonSegment(
+                  value: choice,
+                  label: Text(choice.localizedLabel(l10n)),
+                ),
+              )
+              .toList(),
+          selected: {localeChoice},
+          onSelectionChanged: (selection) {
+            ref.read(appLocaleProvider.notifier).setLocale(selection.first);
+          },
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsAppearanceTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsAppearanceDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
         Text(
-          'Theme style',
+          l10n.settingsThemeStyle,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
@@ -259,7 +294,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .map(
                 (family) => ButtonSegment(
                   value: family,
-                  label: Text(family.label),
+                  label: Text(family.localizedLabel(l10n)),
                 ),
               )
               .toList(),
@@ -270,7 +305,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Brightness',
+          l10n.settingsBrightness,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
@@ -279,7 +314,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .map(
                 (brightness) => ButtonSegment(
                   value: brightness,
-                  label: Text(brightness.label),
+                  label: Text(brightness.localizedLabel(l10n)),
                 ),
               )
               .toList(),
@@ -294,14 +329,12 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         _ThemePreview(choice: themeChoice),
         const SizedBox(height: 32),
         Text(
-          'Map home',
+          l10n.settingsMapHomeTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Coordinates and zoom for the home button on the map. Stored on the '
-          'server so all clients share the same home location. Also used as '
-          'the starting view when no previous map position is saved.',
+          l10n.settingsMapHomeDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
@@ -310,10 +343,10 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             Expanded(
               child: TextField(
                 controller: _homeLatController,
-                decoration: const InputDecoration(
-                  labelText: 'Latitude',
+                decoration: InputDecoration(
+                  labelText: l10n.settingsLatitude,
                   hintText: '38.903481',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -325,10 +358,10 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             Expanded(
               child: TextField(
                 controller: _homeLngController,
-                decoration: const InputDecoration(
-                  labelText: 'Longitude',
+                decoration: InputDecoration(
+                  labelText: l10n.settingsLongitude,
                   hintText: '-77.262817',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -342,9 +375,11 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         TextField(
           controller: _homeZoomController,
           decoration: InputDecoration(
-            labelText: 'Zoom',
+            labelText: l10n.settingsZoom,
             hintText: '12',
-            helperText: '0–${AppConstants.maxMapZoom.toStringAsFixed(0)}',
+            helperText: l10n.settingsZoomHelper(
+              AppConstants.maxMapZoom.toStringAsFixed(0),
+            ),
             border: const OutlineInputBorder(),
           ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -356,37 +391,37 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           children: [
             FilledButton(
               onPressed: _isSavingHomeLocation ? null : _saveHomeLocation,
-              child: Text(_isSavingHomeLocation ? 'Saving…' : 'Save home'),
+              child: Text(
+                _isSavingHomeLocation ? l10n.actionSaving : l10n.settingsSaveHome,
+              ),
             ),
             OutlinedButton(
               onPressed: _isSavingHomeLocation ? null : _useCurrentMapView,
-              child: const Text('Use current map view'),
+              child: Text(l10n.settingsUseCurrentMapView),
             ),
             OutlinedButton(
               onPressed: _isSavingHomeLocation ? null : _resetHomeLocation,
-              child: const Text('Reset to default'),
+              child: Text(l10n.settingsResetToDefault),
             ),
           ],
         ),
         const SizedBox(height: 32),
         Text(
-          'Server connection',
+          l10n.settingsServerConnectionTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Wayfinder API server URL, including host and port. The web '
-          'server URL (REST API and PMTiles) is derived automatically '
-          '(API port + 2). Restart the app after changing this.',
+          l10n.settingsServerConnectionDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _serverUrlController,
-          decoration: const InputDecoration(
-            labelText: 'Server URL',
+          decoration: InputDecoration(
+            labelText: l10n.settingsServerUrl,
             hintText: 'http://localhost:18080',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           keyboardType: TextInputType.url,
           autocorrect: false,
@@ -394,7 +429,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Current web server: ${appServerConfig.webUrl}',
+          l10n.settingsCurrentWebServer(appServerConfig.webUrl),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
@@ -402,23 +437,25 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           children: [
             FilledButton(
               onPressed: _isSavingServerUrl ? null : _saveServerUrl,
-              child: Text(_isSavingServerUrl ? 'Saving…' : 'Save server URL'),
+              child: Text(
+                _isSavingServerUrl ? l10n.actionSaving : l10n.settingsSaveServerUrl,
+              ),
             ),
             const SizedBox(width: 12),
             OutlinedButton(
               onPressed: _isSavingServerUrl ? null : _resetServerUrl,
-              child: const Text('Reset to default'),
+              child: Text(l10n.settingsResetToDefault),
             ),
           ],
         ),
         const SizedBox(height: 32),
         Text(
-          'Measurements',
+          l10n.settingsMeasurementsTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Choose how line distances are displayed on the map.',
+          l10n.settingsMeasurementsDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
@@ -427,8 +464,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .map(
                 (units) => ButtonSegment(
                   value: units,
-                  label: Text(units.label),
-                  tooltip: units.shortLabel,
+                  label: Text(units.localizedLabel(l10n)),
+                  tooltip: units.localizedShortLabel(l10n),
                 ),
               )
               .toList(),
@@ -439,13 +476,12 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         const SizedBox(height: 32),
         Text(
-          'Angles',
+          l10n.settingsAnglesTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Choose how relative angles are displayed on the map and in '
-          'bearing plots.',
+          l10n.settingsAnglesDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
@@ -454,8 +490,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .map(
                 (format) => ButtonSegment(
                   value: format,
-                  label: Text(format.shortLabel),
-                  tooltip: format.label,
+                  label: Text(format.localizedShortLabel(l10n)),
+                  tooltip: format.localizedLabel(l10n),
                 ),
               )
               .toList(),
@@ -468,12 +504,12 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         const SizedBox(height: 32),
         Text(
-          'Circles',
+          l10n.settingsCirclesTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Choose the default size label shown on new circular zones.',
+          l10n.settingsCirclesDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
@@ -482,8 +518,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .map(
                 (display) => ButtonSegment(
                   value: display,
-                  label: Text(display.shortLabel),
-                  tooltip: display.label,
+                  label: Text(display.localizedShortLabel(l10n)),
+                  tooltip: display.localizedLabel(l10n),
                 ),
               )
               .toList(),
@@ -506,6 +542,7 @@ class _ThemePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final previewTheme = AppTheme.forChoice(choice);
     final colors = previewTheme.colorScheme;
 
@@ -518,7 +555,7 @@ class _ThemePreview extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                choice.label,
+                choice.localizedLabel(l10n),
                 style: previewTheme.textTheme.titleSmall,
               ),
               const SizedBox(height: 12),
@@ -526,20 +563,23 @@ class _ThemePreview extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _Swatch(label: 'Primary', color: colors.primary),
-                  _Swatch(label: 'Secondary', color: colors.secondary),
-                  _Swatch(label: 'Surface', color: colors.surface),
-                  _Swatch(label: 'Accent', color: colors.tertiary),
+                  _Swatch(label: l10n.themePreviewPrimary, color: colors.primary),
+                  _Swatch(label: l10n.themePreviewSecondary, color: colors.secondary),
+                  _Swatch(label: l10n.themePreviewSurface, color: colors.surface),
+                  _Swatch(label: l10n.themePreviewAccent, color: colors.tertiary),
                 ],
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  FilledButton(onPressed: () {}, child: const Text('Button')),
+                  FilledButton(
+                    onPressed: () {},
+                    child: Text(l10n.themePreviewButton),
+                  ),
                   const SizedBox(width: 8),
                   OutlinedButton(
                     onPressed: () {},
-                    child: const Text('Outline'),
+                    child: Text(l10n.themePreviewOutline),
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
@@ -57,10 +58,11 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
   }
 
   Future<void> _saveStoragePath() async {
+    final l10n = AppLocalizations.of(context)!;
     final storagePath = _storagePathController.text.trim();
     if (storagePath.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PMTiles storage path is required.')),
+        SnackBar(content: Text(l10n.mapTilesStoragePathRequired)),
       );
       return;
     }
@@ -74,13 +76,14 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       if (!mounted) {
         return;
       }
+      final savedL10n = AppLocalizations.of(context)!;
       setState(() {
         _storagePathController.text = settings.storagePath;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'PMTiles folder saved. Resynced from ${settings.effectiveStoragePath}.',
+            savedL10n.mapTilesFolderSaved(settings.effectiveStoragePath),
           ),
         ),
       );
@@ -93,8 +96,11 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       if (!mounted) {
         return;
       }
+      final errorL10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save PMTiles folder: $error')),
+        SnackBar(
+          content: Text(errorL10n.mapTilesFolderSaveFailed(error.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -102,6 +108,7 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       }
     }
   }
+
   Future<void> _uploadPmtiles() async {
     _log.info('📤 Upload button pressed — opening file picker');
 
@@ -130,9 +137,10 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       final entry = await repository.uploadFile(picked);
       refreshPmtiles(ref);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       _log.success('📤 Upload UI flow complete', data: '"${entry.name}"');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('PMTiles file uploaded: ${entry.name}')),
+        SnackBar(content: Text(l10n.mapTilesUploadSuccess(entry.name))),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -141,8 +149,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
         stackTrace: stackTrace,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Upload failed: $error')),
+        SnackBar(content: Text(l10n.mapTilesUploadFailed(error.toString()))),
       );
     } finally {
       if (mounted) {
@@ -169,8 +178,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     await ref.read(pmtilesRepositoryProvider).disableAllFiles();
     refreshPmtiles(ref);
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('All map tiles hidden from the map.')),
+      SnackBar(content: Text(l10n.mapTilesAllHidden)),
     );
   }
 
@@ -179,26 +189,27 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     final name = await showDialog<String>(
       context: context,
       builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
-          title: const Text('New tile group'),
+          title: Text(l10n.mapTilesNewGroupTitle),
           content: TextField(
             controller: nameController,
             autofocus: true,
-            decoration: const InputDecoration(
-              labelText: 'Group name',
-              hintText: 'e.g. Mid-Atlantic states',
+            decoration: InputDecoration(
+              labelText: l10n.mapTilesGroupNameLabel,
+              hintText: l10n.mapTilesGroupNameHint,
             ),
             onSubmitted: (value) => Navigator.of(context).pop(value.trim()),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () =>
                   Navigator.of(context).pop(nameController.text.trim()),
-              child: const Text('Create'),
+              child: Text(l10n.actionCreate),
             ),
           ],
         );
@@ -213,13 +224,15 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       await ref.read(pmtilesRepositoryProvider).createGroup(name);
       refreshPmtiles(ref);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Created group "$name".')),
+        SnackBar(content: Text(l10n.mapTilesGroupCreated(name))),
       );
     } catch (error) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not create group: $error')),
+        SnackBar(content: Text(l10n.mapTilesGroupCreateFailed(error.toString()))),
       );
     }
   }
@@ -269,19 +282,18 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
-          title: const Text('Delete tile group?'),
-          content: Text(
-            'Delete "${group.name}"? Files in this group will become ungrouped.',
-          ),
+          title: Text(l10n.mapTilesDeleteGroupTitle),
+          content: Text(l10n.mapTilesDeleteGroupMessage(group.name)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Delete'),
+              child: Text(l10n.actionDelete),
             ),
           ],
         );
@@ -301,17 +313,18 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
-          title: const Text('Delete PMTiles file?'),
-          content: Text('Remove "$name" from the server?'),
+          title: Text(l10n.mapTilesDeleteFileTitle),
+          content: Text(l10n.mapTilesDeleteFileMessage(name)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Delete'),
+              child: Text(l10n.actionDelete),
             ),
           ],
         );
@@ -326,13 +339,15 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     await ref.read(pmtilesRepositoryProvider).deleteFile(id);
     refreshPmtiles(ref);
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('PMTiles file deleted.')),
+      SnackBar(content: Text(l10n.mapTilesFileDeleted)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final filesAsync = ref.watch(pmtilesCatalogProvider);
     final groupsAsync = ref.watch(pmtilesGroupsProvider);
 
@@ -340,177 +355,178 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'PMTiles folder',
+          l10n.mapTilesFolderTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-          'Folder on the server containing .pmtiles archives. Stored in the '
-          'database so every client uses the same map tile library after restart.',
+          l10n.mapTilesFolderDescription,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _storagePathController,
-          decoration: const InputDecoration(
-            labelText: 'PMTiles storage path',
+          decoration: InputDecoration(
+            labelText: l10n.mapTilesStoragePathLabel,
             hintText: '/Volumes/maptiles',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           autocorrect: false,
         ),
         const SizedBox(height: 12),
         FilledButton(
           onPressed: _isSavingStoragePath ? null : _saveStoragePath,
-          child: Text(_isSavingStoragePath ? 'Saving…' : 'Save and rescan folder'),
+          child: Text(
+            _isSavingStoragePath ? l10n.actionSaving : l10n.mapTilesSaveAndRescan,
+          ),
         ),
         const SizedBox(height: 32),
         Text(
-          'PMTiles Maps',
+          l10n.mapTilesMapsTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
-        'Organize offline map archives into groups and choose which ones '
-        'are drawn on the map. Only the best-matching enabled archive is '
-        'shown at once to keep the map responsive.',
-        style: Theme.of(context).textTheme.bodyMedium,
+          l10n.mapTilesMapsDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
         Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        children: [
-        OutlinedButton(
-        onPressed: _createPmtilesGroup,
-        child: const Text('New group'),
-        ),
-        OutlinedButton(
-        onPressed: _enableAllPmtiles,
-        child: const Text('Show all on map'),
-        ),
-        OutlinedButton(
-        onPressed: _disableAllPmtiles,
-        child: const Text('Hide all from map'),
-        ),
-        ],
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            OutlinedButton(
+              onPressed: _createPmtilesGroup,
+              child: Text(l10n.mapTilesNewGroup),
+            ),
+            OutlinedButton(
+              onPressed: _enableAllPmtiles,
+              child: Text(l10n.mapTilesShowAllOnMap),
+            ),
+            OutlinedButton(
+              onPressed: _disableAllPmtiles,
+              child: Text(l10n.mapTilesHideAllFromMap),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         FilledButton.icon(
-        onPressed: _isUploading ? null : _uploadPmtiles,
-        icon: _isUploading
-        ? const SizedBox(
-        width: 18,
-        height: 18,
-        child: CircularProgressIndicator(strokeWidth: 2),
-        )
-        : const Icon(Icons.upload_file),
-        label: Text(_isUploading ? 'Uploading…' : 'Upload .pmtiles file'),
+          onPressed: _isUploading ? null : _uploadPmtiles,
+          icon: _isUploading
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.upload_file),
+          label: Text(
+            _isUploading ? l10n.actionUploading : l10n.mapTilesUploadButton,
+          ),
         ),
         const SizedBox(height: 24),
         filesAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) {
-        _log.error(
-        '📋 Settings catalog load failed',
-        error: error,
-        stackTrace: stackTrace,
-        );
-        return Text('Failed to load files: $error');
-        },
-        data: (files) {
-        return groupsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) {
-        _log.error(
-        '📋 Settings groups load failed',
-        error: error,
-        stackTrace: stackTrace,
-        );
-        return Text('Failed to load groups: $error');
-        },
-        data: (groups) {
-        if (files.isEmpty) {
-        return Card(
-        child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(
-        'No PMTiles files uploaded yet.',
-        style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        ),
-        );
-        }
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) {
+            _log.error(
+              '📋 Settings catalog load failed',
+              error: error,
+              stackTrace: stackTrace,
+            );
+            return Text(l10n.mapTilesFilesLoadFailed(error.toString()));
+          },
+          data: (files) {
+            return groupsAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stackTrace) {
+                _log.error(
+                  '📋 Settings groups load failed',
+                  error: error,
+                  stackTrace: stackTrace,
+                );
+                return Text(l10n.mapTilesGroupsLoadFailed(error.toString()));
+              },
+              data: (groups) {
+                if (files.isEmpty) {
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        l10n.mapTilesNoFiles,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  );
+                }
 
-        final groupsById = {for (final group in groups) group.id: group};
-        final enabledCount = files
-            .where((file) => _fileVisibleOnMap(file, groupsById))
-            .length;
-        final filesByGroupId = <String, List<PmtilesFile>>{};
-        final ungroupedFiles = <PmtilesFile>[];
+                final groupsById = {for (final group in groups) group.id: group};
+                final enabledCount = files
+                    .where((file) => _fileVisibleOnMap(file, groupsById))
+                    .length;
+                final filesByGroupId = <String, List<PmtilesFile>>{};
+                final ungroupedFiles = <PmtilesFile>[];
 
-        for (final file in files) {
-          if (file.groupIds.isEmpty) {
-            ungroupedFiles.add(file);
-          } else {
-            for (final groupId in file.groupIds) {
-              filesByGroupId.putIfAbsent(groupId, () => []).add(file);
-            }
-          }
-        }
-        ungroupedFiles.sort(
-        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
-        for (final groupFiles in filesByGroupId.values) {
-        groupFiles.sort(
-        (a, b) =>
-        a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
-        }
-        final sortedGroups = [...groups]
-        ..sort(
-        (a, b) =>
-        a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
+                for (final file in files) {
+                  if (file.groupIds.isEmpty) {
+                    ungroupedFiles.add(file);
+                  } else {
+                    for (final groupId in file.groupIds) {
+                      filesByGroupId.putIfAbsent(groupId, () => []).add(file);
+                    }
+                  }
+                }
+                ungroupedFiles.sort(
+                  (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+                );
+                for (final groupFiles in filesByGroupId.values) {
+                  groupFiles.sort(
+                    (a, b) =>
+                        a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+                  );
+                }
+                final sortedGroups = [...groups]
+                  ..sort(
+                    (a, b) =>
+                        a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+                  );
 
-        return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-        Text(
-        '$enabledCount of ${files.length} shown on map',
-        style: Theme.of(context).textTheme.bodySmall,
-        ),
-        const SizedBox(height: 12),
-        for (final group in sortedGroups) ...[
-        _PmtilesGroupSection(
-        group: group,
-        files: filesByGroupId[group.id] ?? const [],
-        groups: groups,
-        onToggleGroup: (enabled) =>
-        _setGroupEnabled(group.id, enabled),
-        onDeleteGroup: () => _deleteGroup(group),
-        onToggleFile: (file, enabled) =>
-        _setFileEnabled(file.id, enabled),
-        onToggleGroupMembership: _toggleFileGroupMembership,
-        onDeleteFile: _deleteFile,
-        ),
-        const SizedBox(height: 12),
-        ],
-        _PmtilesGroupSection(
-        isUngrouped: true,
-        files: ungroupedFiles,
-        groups: groups,
-        onToggleGroup: _setUngroupedEnabled,
-        onToggleFile: (file, enabled) =>
-        _setFileEnabled(file.id, enabled),
-        onToggleGroupMembership: _toggleFileGroupMembership,
-        onDeleteFile: _deleteFile,
-        ),
-        ],
-        );
-        },
-        );
-        },
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      l10n.mapTilesShownOnMapCount(enabledCount, files.length),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 12),
+                    for (final group in sortedGroups) ...[
+                      _PmtilesGroupSection(
+                        group: group,
+                        files: filesByGroupId[group.id] ?? const [],
+                        groups: groups,
+                        onToggleGroup: (enabled) =>
+                            _setGroupEnabled(group.id, enabled),
+                        onDeleteGroup: () => _deleteGroup(group),
+                        onToggleFile: (file, enabled) =>
+                            _setFileEnabled(file.id, enabled),
+                        onToggleGroupMembership: _toggleFileGroupMembership,
+                        onDeleteFile: _deleteFile,
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    _PmtilesGroupSection(
+                      isUngrouped: true,
+                      files: ungroupedFiles,
+                      groups: groups,
+                      onToggleGroup: _setUngroupedEnabled,
+                      onToggleFile: (file, enabled) =>
+                          _setFileEnabled(file.id, enabled),
+                      onToggleGroupMembership: _toggleFileGroupMembership,
+                      onDeleteFile: _deleteFile,
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         ),
       ],
     );
@@ -560,8 +576,9 @@ class _PmtilesGroupSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final enabledCount = _visibleCount();
-    final title = isUngrouped ? 'Ungrouped' : group!.name;
+    final title = isUngrouped ? l10n.mapTilesUngrouped : group!.name;
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -570,8 +587,8 @@ class _PmtilesGroupSection extends StatelessWidget {
         title: Text(title),
         subtitle: Text(
           files.isEmpty
-              ? 'No files assigned'
-              : '$enabledCount of ${files.length} shown on map',
+              ? l10n.mapTilesNoFilesAssigned
+              : l10n.mapTilesShownOnMapCount(enabledCount, files.length),
         ),
         controlAffinity: ListTileControlAffinity.leading,
         children: [
@@ -581,7 +598,9 @@ class _PmtilesGroupSection extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    isUngrouped ? 'Show ungrouped on map' : 'Show group on map',
+                    isUngrouped
+                        ? l10n.mapTilesShowUngroupedOnMap
+                        : l10n.mapTilesShowGroupOnMap,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const Spacer(),
@@ -591,7 +610,7 @@ class _PmtilesGroupSection extends StatelessWidget {
                   ),
                   if (!isUngrouped && onDeleteGroup != null)
                     IconButton(
-                      tooltip: 'Delete group',
+                      tooltip: l10n.mapTilesDeleteGroupTooltip,
                       icon: const Icon(Icons.delete_outline),
                       onPressed: onDeleteGroup,
                     ),
@@ -603,8 +622,8 @@ class _PmtilesGroupSection extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Text(
                 isUngrouped
-                    ? 'Files not assigned to a group appear here.'
-                    : 'Assign files to this group from the menu on each tile.',
+                    ? l10n.mapTilesUngroupedEmptyMessage
+                    : l10n.mapTilesGroupEmptyMessage,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             )
@@ -614,6 +633,9 @@ class _PmtilesGroupSection extends StatelessWidget {
               _PmtilesFileTile(
                 file: files[i],
                 groups: groups,
+                visibleOnMap: isUngrouped
+                    ? files[i].enabledOnMap
+                    : files[i].enabledOnMap || (group?.showOnMap ?? false),
                 onToggleEnabled: (enabled) => onToggleFile(files[i], enabled),
                 onToggleGroupMembership: (groupId, include) =>
                     onToggleGroupMembership(
@@ -634,6 +656,7 @@ class _PmtilesFileTile extends StatelessWidget {
   const _PmtilesFileTile({
     required this.file,
     required this.groups,
+    required this.visibleOnMap,
     required this.onToggleEnabled,
     required this.onToggleGroupMembership,
     required this.onDelete,
@@ -641,6 +664,7 @@ class _PmtilesFileTile extends StatelessWidget {
 
   final PmtilesFile file;
   final List<PmtilesGroup> groups;
+  final bool visibleOnMap;
   final ValueChanged<bool> onToggleEnabled;
   final Future<void> Function(String groupId, bool include)
       onToggleGroupMembership;
@@ -654,14 +678,15 @@ class _PmtilesFileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final groupLabel = file.groupIds.isEmpty
-        ? 'No groups'
-        : '${file.groupIds.length} group${file.groupIds.length == 1 ? '' : 's'}';
+        ? l10n.mapTilesNoGroups
+        : l10n.mapTilesGroupCount(file.groupIds.length);
 
     return ListTile(
       leading: Icon(
-        file.enabledOnMap ? Icons.layers : Icons.layers_outlined,
-        color: file.enabledOnMap ? Theme.of(context).colorScheme.primary : null,
+        visibleOnMap ? Icons.layers : Icons.layers_outlined,
+        color: visibleOnMap ? Theme.of(context).colorScheme.primary : null,
       ),
       title: Text(file.name),
       subtitle: Text(
@@ -671,7 +696,7 @@ class _PmtilesFileTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           PopupMenuButton<String>(
-            tooltip: 'Manage groups',
+            tooltip: l10n.mapTilesManageGroupsTooltip,
             icon: Icon(
               file.groupIds.isEmpty
                   ? Icons.folder_outlined
@@ -703,11 +728,11 @@ class _PmtilesFileTile extends StatelessWidget {
             },
           ),
           Switch(
-            value: file.enabledOnMap,
+            value: visibleOnMap,
             onChanged: onToggleEnabled,
           ),
           IconButton(
-            tooltip: 'Delete',
+            tooltip: l10n.actionDelete,
             icon: const Icon(Icons.delete_outline),
             onPressed: onDelete,
           ),

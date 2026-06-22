@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:markdown_quill/markdown_quill.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 final _markdownDocument = md.Document(encodeHtml: false);
 final _markdownToDelta = MarkdownToDelta(markdownDocument: _markdownDocument);
@@ -40,13 +41,14 @@ class MarkerNotesEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Notes',
+          l10n.formNotesLabel,
           style: theme.textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
@@ -80,7 +82,7 @@ class MarkerNotesEditor extends StatelessWidget {
                 child: QuillEditor.basic(
                   controller: controller,
                   config: QuillEditorConfig(
-                    placeholder: 'Add notes (saved as Markdown)...',
+                    placeholder: l10n.formNotesPlaceholder,
                     padding: const EdgeInsets.all(12),
                     scrollable: true,
                     autoFocus: false,

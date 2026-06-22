@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
-String mapObjectsLoadErrorMessage(Object error) {
+String mapObjectsLoadErrorMessage(Object error, AppLocalizations l10n) {
   final text = error.toString();
 
   if (_isNotFoundError(text)) {
-    return 'The Wayfinder server could not be reached. '
-        'Start the server to sync markers and zones.';
+    return l10n.mapObjectsErrorServerUnreachable;
   }
 
   if (text.contains('Unauthorized') && text.contains('ServerpodClient')) {
-    return 'Sign in to load your map objects.';
+    return l10n.mapObjectsErrorSignInRequired;
   }
 
   if (text.contains('ServerpodClient')) {
-    return 'Something went wrong while loading map objects. '
-        'Check your connection and try again.';
+    return l10n.mapObjectsErrorGeneric;
   }
 
-  return 'Something went wrong while loading map objects. '
-      'Please try again.';
+  return l10n.mapObjectsErrorRetry;
 }
 
 bool _isNotFoundError(String text) {
@@ -51,7 +49,7 @@ class MapObjectsEmptyState extends StatelessWidget {
             Icon(
               icon,
               size: 40,
-              color: theme.colorScheme.primary.withValues(alpha: 0.8),
+              color: theme.colorScheme.primary,
             ),
             const SizedBox(height: 12),
             Text(
@@ -89,6 +87,7 @@ class MapObjectsErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -99,7 +98,7 @@ class MapObjectsErrorState extends StatelessWidget {
             Icon(
               Icons.cloud_off_outlined,
               size: 40,
-              color: theme.colorScheme.error.withValues(alpha: 0.85),
+              color: theme.colorScheme.error,
             ),
             const SizedBox(height: 12),
             Text(
@@ -120,7 +119,7 @@ class MapObjectsErrorState extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Try again'),
+                label: Text(l10n.actionTryAgain),
               ),
             ],
           ],

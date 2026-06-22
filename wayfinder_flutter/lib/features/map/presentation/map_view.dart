@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/browser_context_menu.dart';
 import '../../../core/constants.dart';
@@ -136,13 +137,14 @@ class MapView extends ConsumerWidget {
     WidgetRef ref,
     SearchCoordinateMarker marker,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     final saved = await createMarkerAtPoint(
       context: context,
       ref: ref,
       point: marker.location,
       defaultName: marker.label,
-      dialogTitle: 'Save searched coordinates',
-      confirmLabel: 'Save marker',
+      dialogTitle: l10n.markerSaveSearchedCoordinatesTitle,
+      confirmLabel: l10n.markerSaveSearchedCoordinatesConfirm,
     );
     if (saved) {
       ref.read(searchCoordinateMarkerProvider.notifier).clear();
@@ -310,13 +312,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     final entries = widget.enabledEntries;
     if (widget.metadataLoading) {
       ref.read(pmtilesLoadStatusProvider.notifier).update(
-            const PmtilesLoadStatus(
+            PmtilesLoadStatus(
               isReady: false,
               isLoading: true,
-              statusMessage: 'Loading map tile catalog…',
+              statusMessage: l10n.statusLoading,
             ),
           );
       return;
@@ -382,7 +385,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               loadedCount: loadedCount,
               loadingLayerName: activeEntry.name,
               statusMessage:
-                  'Opening ${activeEntry.name} for the current map view…',
+                  l10n.mapTilesOpeningProgress(activeEntry.name),
             ),
           );
       return;
@@ -1654,6 +1657,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     AngleDisplayFormat angleFormat,
   ) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final reference = bearingPlot.referenceBearing;
     final plot = bearingPlot.plotBearing;
     final relative = bearingPlot.relativeBearing;
@@ -1698,7 +1702,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 child: TextField(
                   decoration: InputDecoration(
                     isDense: true,
-                    labelText: 'Rel°',
+                    labelText: l10n.mapRelativeAngleLabel,
                     labelStyle: TextStyle(
                       color: theme.colorScheme.onInverseSurface
                           .withValues(alpha: 0.8),
@@ -1734,7 +1738,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               TextButton(
                 onPressed: _cancelBearingPlot,
                 child: Text(
-                  'Cancel',
+                  l10n.actionCancel,
                   style: TextStyle(color: theme.colorScheme.inversePrimary),
                 ),
               ),
@@ -1747,6 +1751,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   Widget _lineDrawingBanner(LineDrawingState lineDrawing) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final message = lineDrawing.awaitingStart
         ? 'Drag a snap point to draw freely, or click one to plot a bearing'
         : 'Click or drag to the end point, or use Cancel to exit';
@@ -1777,7 +1782,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               TextButton(
                 onPressed: _cancelLineDrawing,
                 child: Text(
-                  'Cancel',
+                  l10n.actionCancel,
                   style: TextStyle(color: theme.colorScheme.inversePrimary),
                 ),
               ),
@@ -1790,6 +1795,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   Widget _circleDrawingBanner(CircleDrawingState circleDrawing) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     const message =
         'Click or drag to set the circle radius, or use Cancel to exit';
 
@@ -1819,7 +1825,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               TextButton(
                 onPressed: _cancelCircleDrawing,
                 child: Text(
-                  'Cancel',
+                  l10n.actionCancel,
                   style: TextStyle(color: theme.colorScheme.inversePrimary),
                 ),
               ),
@@ -1832,6 +1838,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   Widget _rectangleDrawingBanner(RectangleDrawingState rectangleDrawing) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final message = switch (rectangleDrawing.mode) {
       RectangleCreationMode.centerExtent =>
         'Click or drag to set the rectangle size from center, or use Cancel to exit',
@@ -1866,7 +1873,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               TextButton(
                 onPressed: _cancelRectangleDrawing,
                 child: Text(
-                  'Cancel',
+                  l10n.actionCancel,
                   style: TextStyle(color: theme.colorScheme.inversePrimary),
                 ),
               ),
@@ -1879,6 +1886,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mapLayers = _visibleMapLayers;
     final enabledEntries = widget.enabledEntries;
     final activeLayer = mapLayers.isEmpty ? null : mapLayers.first;
@@ -1908,7 +1916,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final selectedLine =
         selectedLineId == null ? null : findZoneById(zones, selectedLineId);
     final lineGeometryOverrides = _lineGeometryOverrides();
-    final mapObjectLayerChildren = allMarkers == null
+    final mapTilesDisplayed = !widget.metadataLoading &&
+        widget.enabledEntries.isNotEmpty &&
+        mapLayers.isNotEmpty;
+    final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
             layers: layers,
@@ -2045,8 +2056,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             ],
                         }),
                   ...mapObjectLayerChildren,
-                  if (widget.searchCoordinateMarker case final marker?)
-                    MarkerLayer(
+                  if (mapTilesDisplayed)
+                    if (widget.searchCoordinateMarker case final marker?)
+                      MarkerLayer(
                       markers: [
                         Marker(
                           point: marker.location,
@@ -2060,7 +2072,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             child: MouseRegion(
                               cursor: SystemMouseCursors.click,
                               child: Tooltip(
-                                message: 'Save as marker',
+                                message: l10n.markerSaveSearchedCoordinatesConfirm,
                                 child: const MapMarkerIcon(
                                   color: Color(0xFFE07A24),
                                   iconName: 'my_location',
@@ -2071,9 +2083,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         ),
                       ],
                     ),
-                  if (selectedLine case final line?
-                      when !lineDrawing.active && !bearingPlot.active)
-                    MarkerLayer(
+                  if (mapTilesDisplayed)
+                    if (selectedLine case final line?
+                        when !lineDrawing.active && !bearingPlot.active)
+                      MarkerLayer(
                       markers: buildLineSnapPointMarkers(
                         zone: line,
                         geometryOverride: selectedLinePreviewGeometry,
@@ -2218,8 +2231,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
             ),
             ),
-            if (widget.zonesAsync.valueOrNull case final value?)
-              Positioned.fill(
+            if (mapTilesDisplayed)
+              if (widget.zonesAsync.valueOrNull case final value?)
+                Positioned.fill(
                 child: IgnorePointer(
                   child: LineMapLabelsOverlay(
                     zones: filterZonesForMap(value, layersById),
@@ -2273,27 +2287,27 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 actions: [
                   MapRadialMenuAction(
                     icon: Icons.add_location_alt,
-                    label: 'Marker',
+                    label: l10n.mapRadialMarker,
                     onSelected: _createMarkerFromRadialMenu,
                   ),
                   MapRadialMenuAction(
                     icon: Icons.timeline,
-                    label: 'Line',
+                    label: l10n.mapRadialLine,
                     onSelected: _beginLineDrawing,
                   ),
                   MapRadialMenuAction(
                     icon: Icons.radio_button_unchecked,
-                    label: 'Circle',
+                    label: l10n.mapRadialCircle,
                     onSelected: _beginCircleDrawing,
                   ),
                   MapRadialMenuAction(
                     icon: Icons.crop_square,
-                    label: 'Rect center',
+                    label: l10n.mapRadialRectCenter,
                     onSelected: _beginCenterRectDrawing,
                   ),
                   MapRadialMenuAction(
                     icon: Icons.select_all,
-                    label: 'Rect corners',
+                    label: l10n.mapRadialRectCorners,
                     onSelected: _beginCornersRectDrawing,
                   ),
                 ],
@@ -2355,37 +2369,50 @@ class _PlaceholderLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: const Color(0xFFE8EEF2),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Material(
+      color: colorScheme.surface,
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.map_outlined,
-                size: 48,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'No offline map installed or visible',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                errorMessage ??
-                    'Upload a .pmtiles file in Settings, or turn on visibility for tiles already on the server.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: onOpenSettings,
-                icon: const Icon(Icons.settings),
-                label: const Text('Open Settings'),
-              ),
-            ],
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.map_outlined,
+                  size: 48,
+                  color: colorScheme.primary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.mapNoOfflineMapTitle,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  errorMessage ?? l10n.mapNoOfflineMapMessage,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: onOpenSettings,
+                  icon: const Icon(Icons.settings),
+                  label: Text(l10n.actionOpenSettings),
+                ),
+              ],
+            ),
           ),
         ),
       ),

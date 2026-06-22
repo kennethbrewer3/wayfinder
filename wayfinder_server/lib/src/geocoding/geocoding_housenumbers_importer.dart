@@ -7,6 +7,7 @@ import 'package:serverpod/serverpod.dart';
 import '../core/wayfinder_log.dart';
 import '../generated/protocol.dart';
 import 'geocoding_constants.dart';
+import 'geocoding_download_progress.dart';
 import 'geocoding_importer.dart';
 import 'geocoding_import_control.dart';
 import 'geocoding_import_exceptions.dart';
@@ -56,6 +57,11 @@ abstract final class GeocodingHousenumbersImporter {
     );
 
     final serverpod = session.serverpod;
+    WfLog.info(
+      session,
+      'geocoding',
+      '🏠 Starting housenumbers import url=$url',
+    );
     unawaited(_runImport(serverpod, url));
     return updated;
   }
@@ -134,7 +140,22 @@ abstract final class GeocodingHousenumbersImporter {
         url,
         (response) async {
           final totalBytes = response.contentLength;
-          var processedBytes = 0;
+          final progress = GeocodingDownloadProgress(
+            serverpod: serverpod,
+            logLabel: 'housenumbers',
+            totalBytes: totalBytes,
+            updateStatus: ({
+              required String importStatus,
+              required int importedRowCount,
+              required double importProgress,
+            }) =>
+                _updateProgress(
+              serverpod,
+              importStatus: importStatus,
+              importedRowCount: importedRowCount,
+              importProgress: importProgress,
+            ),
+          );
           final lineStream = response
               .transform(gzip.decoder)
               .transform(utf8.decoder)
@@ -145,14 +166,26 @@ abstract final class GeocodingHousenumbersImporter {
 
           await for (final line in lineStream) {
             GeocodingImportControl.checkCancelled();
-            processedBytes += line.length + 1;
+            progress.addLineBytes(line.length);
+            await progress.maybeReport(
+              importStatus: isHeader
+                  ? GeocodingConstants.statusDownloading
+                  : GeocodingConstants.statusImporting,
+              phase: isHeader ? 'download' : 'import',
+            );
             if (isHeader) {
               isHeader = false;
               await _updateProgress(
                 serverpod,
                 importStatus: GeocodingConstants.statusImporting,
                 importedRowCount: 0,
-                importProgress: totalBytes > 0 ? 0.01 : 0,
+                importProgress: progress.computeProgress().clamp(0.01, 0.99),
+              );
+              WfLog.info(
+                null,
+                'geocoding',
+                '🏠 Housenumbers import started parsing rows '
+                'totalBytes=${totalBytes >= 0 ? GeocodingDownloadProgress.formatBytes(totalBytes) : 'unknown'}',
               );
               continue;
             }
@@ -165,20 +198,16 @@ abstract final class GeocodingHousenumbersImporter {
             batch.add(address);
             if (batch.length >= GeocodingConstants.importBatchSize) {
               importedRows += await _insertBatch(serverpod, batch);
+              progress.importedRows = importedRows;
               batch.clear();
 
               if (importedRows % GeocodingConstants.progressUpdateInterval ==
                   0) {
-                final progress = _downloadProgress(
-                  processedBytes: processedBytes,
-                  totalBytes: totalBytes,
-                  importedRows: importedRows,
-                );
                 await _updateProgress(
                   serverpod,
                   importStatus: GeocodingConstants.statusImporting,
                   importedRowCount: importedRows,
-                  importProgress: progress,
+                  importProgress: progress.computeProgress(),
                 );
               }
             }
@@ -186,9 +215,11 @@ abstract final class GeocodingHousenumbersImporter {
 
           if (batch.isNotEmpty) {
             importedRows += await _insertBatch(serverpod, batch);
+            progress.importedRows = importedRows;
           }
         },
         onClientCreated: GeocodingImportControl.attachClient,
+        logLabel: 'housenumbers',
       );
 
       GeocodingImportControl.checkCancelled();
@@ -330,20 +361,6 @@ abstract final class GeocodingHousenumbersImporter {
         housenumbersImportedAt: importedAt ?? settings.housenumbersImportedAt,
       ),
     );
-  }
-
-  static double _downloadProgress({
-    required int processedBytes,
-    required int totalBytes,
-    required int importedRows,
-  }) {
-    if (totalBytes > 0) {
-      return (processedBytes / totalBytes).clamp(0, 0.99);
-    }
-    if (importedRows <= 0) {
-      return 0;
-    }
-    return 0.5;
   }
 
   static GeocodeHousenumber? _parseLine(String line) {

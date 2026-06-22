@@ -30,6 +30,7 @@ cp .env.example .env
 
 Edit `.env`:
 
+- **`POSTGRES_PASSWORD`** and **`REDIS_PASSWORD`** — required; choose strong values and keep `.env` private
 - **`WAYFINDER_DATA_PATH`** — host folder for Postgres, Redis, and (by default) PMTiles
 - **`WAYFINDER_PMTILES_HOST_PATH`** — optional; mount PMTiles from a different folder
 - **`SERVERPOD_*_PUBLIC_HOST`** — this machine's LAN IP or DNS (not `localhost`) if browsers on other machines will connect
@@ -37,6 +38,8 @@ Edit `.env`:
 Example:
 
 ```env
+POSTGRES_PASSWORD=your-strong-postgres-password
+REDIS_PASSWORD=your-strong-redis-password
 WAYFINDER_DATA_PATH=/mnt/storage/wayfinder
 SERVERPOD_API_SERVER_PUBLIC_HOST=192.168.1.10
 SERVERPOD_WEB_SERVER_PUBLIC_HOST=192.168.1.10

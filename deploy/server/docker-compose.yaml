@@ -17,7 +17,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: wayfinder
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-hoMP8M6XziidHgRLWdYWIChJN64gcPhV}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
     volumes:
       - ${WAYFINDER_DATA_PATH:-./storage/data}/postgres:/var/lib/postgresql/data
     healthcheck:
@@ -31,7 +31,7 @@ services:
     image: redis:6.2.6
     ports:
       - "${WAYFINDER_REDIS_PORT:-18091}:6379"
-    command: redis-server --requirepass "${REDIS_PASSWORD:-jZSPtad_20Z4JmPOazsDurPauqOk9FlM}"
+    command: redis-server --requirepass "${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}"
     environment:
       - REDIS_REPLICATION_MODE=master
     volumes:
@@ -54,7 +54,8 @@ services:
       SERVERPOD_APPLY_MIGRATIONS: "true"
       SERVERPOD_DATABASE_HOST: postgres
       SERVERPOD_DATABASE_PORT: "5432"
-      SERVERPOD_DATABASE_PASSWORD: "${POSTGRES_PASSWORD:-hoMP8M6XziidHgRLWdYWIChJN64gcPhV}"
+      SERVERPOD_DATABASE_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      SERVERPOD_PASSWORD_redis: "${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}"
       SERVERPOD_API_SERVER_PORT: "18080"
       SERVERPOD_INSIGHTS_SERVER_PORT: "18081"
       SERVERPOD_WEB_SERVER_PORT: "18082"

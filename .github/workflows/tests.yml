@@ -23,6 +23,9 @@ jobs:
 
       - name: Start containers
         working-directory: wayfinder_server
+        env:
+          POSTGRES_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
+          REDIS_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
         run: docker compose up --quiet-pull --quiet-build --build -d
 
       - name: Install dependencies

@@ -113,4 +113,48 @@ abstract final class PmtilesFileGroups {
       where: (t) => t.groupId.equals(groupId),
     );
   }
+
+  /// Keeps grouped files' [PmtilesFile.isActive] aligned with whether any
+  /// linked group has [PmtilesGroup.showOnMap]. Ungrouped files are unchanged.
+  static Future<void> syncFileActiveFromGroups(
+    Session session,
+    UuidValue fileId,
+  ) async {
+    final links = await PmtilesFileGroupLink.db.find(
+      session,
+      where: (t) => t.fileId.equals(fileId),
+    );
+    if (links.isEmpty) {
+      return;
+    }
+
+    var shouldBeActive = false;
+    for (final link in links) {
+      final group = await PmtilesGroup.db.findById(session, link.groupId);
+      if (group?.showOnMap ?? false) {
+        shouldBeActive = true;
+        break;
+      }
+    }
+
+    final file = await PmtilesFile.db.findById(session, fileId);
+    if (file == null || file.isActive == shouldBeActive) {
+      return;
+    }
+
+    await PmtilesFile.db.updateRow(
+      session,
+      file.copyWith(isActive: shouldBeActive),
+    );
+  }
+
+  static Future<void> syncGroupFilesActiveFromGroups(
+    Session session,
+    UuidValue groupId,
+  ) async {
+    final files = await filesInGroup(session, groupId);
+    for (final file in files) {
+      await syncFileActiveFromGroups(session, file.id);
+    }
+  }
 }

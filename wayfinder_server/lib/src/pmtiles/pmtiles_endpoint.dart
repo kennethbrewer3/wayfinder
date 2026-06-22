@@ -149,6 +149,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         }
 
         await PmtilesFileGroups.addFileToGroup(session, fileId, groupId);
+        await PmtilesFileGroups.syncFileActiveFromGroups(session, fileId);
       },
       onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId.uuid}',
     );
@@ -175,6 +176,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         }
 
         await PmtilesFileGroups.removeFileFromGroup(session, fileId, groupId);
+        await PmtilesFileGroups.syncFileActiveFromGroups(session, fileId);
       },
       onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId.uuid}',
     );
@@ -209,6 +211,10 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         await PmtilesGroup.db.updateRow(
           session,
           group.copyWith(showOnMap: enabled),
+        );
+        await PmtilesFileGroups.syncGroupFilesActiveFromGroups(
+          session,
+          groupId,
         );
       },
       onSuccess: (_) => 'groupId=${groupId.uuid} enabled=$enabled',

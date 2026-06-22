@@ -89,4 +89,40 @@ abstract final class AppSettingsStore {
       throw const FormatException('PMTiles storage path must be a local folder.');
     }
   }
+
+  static void validateMeasurementUnits(String value) {
+    if (!AppSettingsConstants.allowedMeasurementUnits.contains(value)) {
+      throw FormatException('Unsupported measurement units: $value');
+    }
+  }
+
+  static void validateAngleDisplayFormat(String value) {
+    if (!AppSettingsConstants.allowedAngleDisplayFormats.contains(value)) {
+      throw FormatException('Unsupported angle display format: $value');
+    }
+  }
+
+  static void validateCircleSizeDisplay(String value) {
+    if (!AppSettingsConstants.allowedCircleSizeDisplays.contains(value)) {
+      throw FormatException('Unsupported circle size display: $value');
+    }
+  }
+
+  static void validateAppTheme(String value) {
+    if (!AppSettingsConstants.allowedAppThemes.contains(value)) {
+      throw FormatException('Unsupported app theme: $value');
+    }
+  }
+
+  static void validateClientPreferences({
+    required String measurementUnits,
+    required String angleDisplayFormat,
+    required String circleSizeDisplay,
+    required String appTheme,
+  }) {
+    validateMeasurementUnits(measurementUnits);
+    validateAngleDisplayFormat(angleDisplayFormat);
+    validateCircleSizeDisplay(circleSizeDisplay);
+    validateAppTheme(appTheme);
+  }
 }

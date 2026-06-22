@@ -96,6 +96,63 @@ abstract final class AppSettingsRestHandlers {
     });
   }
 
+  static Future<Result> getClientPreferences(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final settings = await AppSettingsStore.getOrCreate(session);
+      return RestJson.ok(_encodeClientPreferences(settings));
+    });
+  }
+
+  static Future<Result> updateClientPreferences(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final body = await RestJson.readObject(request);
+      final measurementUnits = _readString(body['measurementUnits']);
+      final angleDisplayFormat = _readString(body['angleDisplayFormat']);
+      final circleSizeDisplay = _readString(body['circleSizeDisplay']);
+      final appTheme = _readString(body['appTheme']);
+      if (measurementUnits == null ||
+          angleDisplayFormat == null ||
+          circleSizeDisplay == null ||
+          appTheme == null) {
+        throw const FormatException(
+          'Fields "measurementUnits", "angleDisplayFormat", '
+          '"circleSizeDisplay", and "appTheme" are required.',
+        );
+      }
+
+      AppSettingsStore.validateClientPreferences(
+        measurementUnits: measurementUnits,
+        angleDisplayFormat: angleDisplayFormat,
+        circleSizeDisplay: circleSizeDisplay,
+        appTheme: appTheme,
+      );
+
+      final settings = await AppSettingsStore.getOrCreate(session);
+      final updated = await AppSettingsStore.update(
+        session,
+        settings.copyWith(
+          measurementUnits: measurementUnits,
+          angleDisplayFormat: angleDisplayFormat,
+          circleSizeDisplay: circleSizeDisplay,
+          appTheme: appTheme,
+        ),
+      );
+      return RestJson.ok(_encodeClientPreferences(updated));
+    });
+  }
+
+  static Map<String, Object?> _encodeClientPreferences(AppSettings settings) {
+    return {
+      'measurementUnits': settings.measurementUnits,
+      'angleDisplayFormat': settings.angleDisplayFormat,
+      'circleSizeDisplay': settings.circleSizeDisplay,
+      'appTheme': settings.appTheme,
+      'updatedAt': settings.updatedAt.toIso8601String(),
+    };
+  }
+
   static Map<String, Object?> _encodePmtilesStorage(AppSettings settings) {
     return {
       'storagePath': settings.pmtilesStoragePath,
@@ -122,5 +179,13 @@ abstract final class AppSettingsRestHandlers {
       return double.tryParse(value.trim());
     }
     return null;
+  }
+
+  static String? _readString(Object? value) {
+    if (value is! String) {
+      return null;
+    }
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 }

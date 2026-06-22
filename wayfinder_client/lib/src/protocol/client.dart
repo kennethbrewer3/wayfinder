@@ -728,6 +728,22 @@ class EndpointAppSettings extends _i2.EndpointRef {
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
+
+  _i3.Future<_i14.AppSettings> updateClientPreferences(
+    String measurementUnits,
+    String angleDisplayFormat,
+    String circleSizeDisplay,
+    String appTheme,
+  ) => caller.callServerEndpoint<_i14.AppSettings>(
+    'appSettings',
+    'updateClientPreferences',
+    {
+      'measurementUnits': measurementUnits,
+      'angleDisplayFormat': angleDisplayFormat,
+      'circleSizeDisplay': circleSizeDisplay,
+      'appTheme': appTheme,
+    },
+  );
 }
 
 /// {@category Endpoint}

@@ -6,4 +6,8 @@ fields:
   homeLongitude: double
   homeZoom: double
   pmtilesStoragePath: String
+  measurementUnits: String, default="metric"
+  angleDisplayFormat: String, default="decimal"
+  circleSizeDisplay: String, default="radius"
+  appTheme: String, default="light"
   updatedAt: DateTime

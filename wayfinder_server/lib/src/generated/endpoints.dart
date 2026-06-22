@@ -1233,6 +1233,43 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['storagePath'],
                   ),
         ),
+        'updateClientPreferences': _i1.MethodConnector(
+          name: 'updateClientPreferences',
+          params: {
+            'measurementUnits': _i1.ParameterDescription(
+              name: 'measurementUnits',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'angleDisplayFormat': _i1.ParameterDescription(
+              name: 'angleDisplayFormat',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'circleSizeDisplay': _i1.ParameterDescription(
+              name: 'circleSizeDisplay',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'appTheme': _i1.ParameterDescription(
+              name: 'appTheme',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+                  .updateClientPreferences(
+                    session,
+                    params['measurementUnits'],
+                    params['angleDisplayFormat'],
+                    params['circleSizeDisplay'],
+                    params['appTheme'],
+                  ),
+        ),
       },
     );
     connectors['mapZone'] = _i1.EndpointConnector(

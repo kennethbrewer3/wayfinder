@@ -20,8 +20,15 @@ abstract class AppSettings
     required this.homeLongitude,
     required this.homeZoom,
     required this.pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     required this.updatedAt,
-  });
+  }) : measurementUnits = measurementUnits ?? 'metric',
+       angleDisplayFormat = angleDisplayFormat ?? 'decimal',
+       circleSizeDisplay = circleSizeDisplay ?? 'radius',
+       appTheme = appTheme ?? 'light';
 
   factory AppSettings({
     int? id,
@@ -29,6 +36,10 @@ abstract class AppSettings
     required double homeLongitude,
     required double homeZoom,
     required String pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -39,6 +50,10 @@ abstract class AppSettings
       homeLongitude: (jsonSerialization['homeLongitude'] as num).toDouble(),
       homeZoom: (jsonSerialization['homeZoom'] as num).toDouble(),
       pmtilesStoragePath: jsonSerialization['pmtilesStoragePath'] as String,
+      measurementUnits: jsonSerialization['measurementUnits'] as String?,
+      angleDisplayFormat: jsonSerialization['angleDisplayFormat'] as String?,
+      circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
+      appTheme: jsonSerialization['appTheme'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -60,6 +75,14 @@ abstract class AppSettings
 
   String pmtilesStoragePath;
 
+  String measurementUnits;
+
+  String angleDisplayFormat;
+
+  String circleSizeDisplay;
+
+  String appTheme;
+
   DateTime updatedAt;
 
   @override
@@ -74,6 +97,10 @@ abstract class AppSettings
     double? homeLongitude,
     double? homeZoom,
     String? pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     DateTime? updatedAt,
   });
   @override
@@ -85,6 +112,10 @@ abstract class AppSettings
       'homeLongitude': homeLongitude,
       'homeZoom': homeZoom,
       'pmtilesStoragePath': pmtilesStoragePath,
+      'measurementUnits': measurementUnits,
+      'angleDisplayFormat': angleDisplayFormat,
+      'circleSizeDisplay': circleSizeDisplay,
+      'appTheme': appTheme,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -98,6 +129,10 @@ abstract class AppSettings
       'homeLongitude': homeLongitude,
       'homeZoom': homeZoom,
       'pmtilesStoragePath': pmtilesStoragePath,
+      'measurementUnits': measurementUnits,
+      'angleDisplayFormat': angleDisplayFormat,
+      'circleSizeDisplay': circleSizeDisplay,
+      'appTheme': appTheme,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -141,6 +176,10 @@ class _AppSettingsImpl extends AppSettings {
     required double homeLongitude,
     required double homeZoom,
     required String pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -148,6 +187,10 @@ class _AppSettingsImpl extends AppSettings {
          homeLongitude: homeLongitude,
          homeZoom: homeZoom,
          pmtilesStoragePath: pmtilesStoragePath,
+         measurementUnits: measurementUnits,
+         angleDisplayFormat: angleDisplayFormat,
+         circleSizeDisplay: circleSizeDisplay,
+         appTheme: appTheme,
          updatedAt: updatedAt,
        );
 
@@ -161,6 +204,10 @@ class _AppSettingsImpl extends AppSettings {
     double? homeLongitude,
     double? homeZoom,
     String? pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -169,6 +216,10 @@ class _AppSettingsImpl extends AppSettings {
       homeLongitude: homeLongitude ?? this.homeLongitude,
       homeZoom: homeZoom ?? this.homeZoom,
       pmtilesStoragePath: pmtilesStoragePath ?? this.pmtilesStoragePath,
+      measurementUnits: measurementUnits ?? this.measurementUnits,
+      angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
+      circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
+      appTheme: appTheme ?? this.appTheme,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -199,6 +250,29 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
         value,
       );
 
+  _i1.ColumnValue<String, String> measurementUnits(String value) =>
+      _i1.ColumnValue(
+        table.measurementUnits,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> angleDisplayFormat(String value) =>
+      _i1.ColumnValue(
+        table.angleDisplayFormat,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> circleSizeDisplay(String value) =>
+      _i1.ColumnValue(
+        table.circleSizeDisplay,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> appTheme(String value) => _i1.ColumnValue(
+    table.appTheme,
+    value,
+  );
+
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
       _i1.ColumnValue(
         table.updatedAt,
@@ -225,6 +299,26 @@ class AppSettingsTable extends _i1.Table<int?> {
       'pmtilesStoragePath',
       this,
     );
+    measurementUnits = _i1.ColumnString(
+      'measurementUnits',
+      this,
+      hasDefault: true,
+    );
+    angleDisplayFormat = _i1.ColumnString(
+      'angleDisplayFormat',
+      this,
+      hasDefault: true,
+    );
+    circleSizeDisplay = _i1.ColumnString(
+      'circleSizeDisplay',
+      this,
+      hasDefault: true,
+    );
+    appTheme = _i1.ColumnString(
+      'appTheme',
+      this,
+      hasDefault: true,
+    );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
@@ -241,6 +335,14 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString pmtilesStoragePath;
 
+  late final _i1.ColumnString measurementUnits;
+
+  late final _i1.ColumnString angleDisplayFormat;
+
+  late final _i1.ColumnString circleSizeDisplay;
+
+  late final _i1.ColumnString appTheme;
+
   late final _i1.ColumnDateTime updatedAt;
 
   @override
@@ -250,6 +352,10 @@ class AppSettingsTable extends _i1.Table<int?> {
     homeLongitude,
     homeZoom,
     pmtilesStoragePath,
+    measurementUnits,
+    angleDisplayFormat,
+    circleSizeDisplay,
+    appTheme,
     updatedAt,
   ];
 }

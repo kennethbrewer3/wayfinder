@@ -2279,6 +2279,45 @@ class _AppSettingsEndpoint {
       }
     });
   }
+
+  _i3.Future<_i14.AppSettings> updateClientPreferences(
+    _i1.TestSessionBuilder sessionBuilder,
+    String measurementUnits,
+    String angleDisplayFormat,
+    String circleSizeDisplay,
+    String appTheme,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'updateClientPreferences',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'updateClientPreferences',
+          parameters: _i1.testObjectToJson({
+            'measurementUnits': measurementUnits,
+            'angleDisplayFormat': angleDisplayFormat,
+            'circleSizeDisplay': circleSizeDisplay,
+            'appTheme': appTheme,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i14.AppSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _MapZoneEndpoint {

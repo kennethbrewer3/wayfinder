@@ -4,4 +4,19 @@ abstract final class AppSettingsConstants {
   static const defaultHomeZoom = 12.0;
   static const maxHomeZoom = 18.0;
   static const defaultPmtilesStoragePath = 'storage/pmtiles';
+
+  static const defaultMeasurementUnits = 'metric';
+  static const defaultAngleDisplayFormat = 'decimal';
+  static const defaultCircleSizeDisplay = 'radius';
+  static const defaultAppTheme = 'light';
+
+  static const allowedMeasurementUnits = {'metric', 'imperial', 'nautical'};
+  static const allowedAngleDisplayFormats = {'decimal', 'dms'};
+  static const allowedCircleSizeDisplays = {'radius', 'diameter', 'none'};
+  static const allowedAppThemes = {
+    'light',
+    'dark',
+    'militaryLight',
+    'militaryDark',
+  };
 }

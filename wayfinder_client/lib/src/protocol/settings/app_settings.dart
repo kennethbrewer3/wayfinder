@@ -19,8 +19,15 @@ abstract class AppSettings implements _i1.SerializableModel {
     required this.homeLongitude,
     required this.homeZoom,
     required this.pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     required this.updatedAt,
-  });
+  }) : measurementUnits = measurementUnits ?? 'metric',
+       angleDisplayFormat = angleDisplayFormat ?? 'decimal',
+       circleSizeDisplay = circleSizeDisplay ?? 'radius',
+       appTheme = appTheme ?? 'light';
 
   factory AppSettings({
     int? id,
@@ -28,6 +35,10 @@ abstract class AppSettings implements _i1.SerializableModel {
     required double homeLongitude,
     required double homeZoom,
     required String pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -38,6 +49,10 @@ abstract class AppSettings implements _i1.SerializableModel {
       homeLongitude: (jsonSerialization['homeLongitude'] as num).toDouble(),
       homeZoom: (jsonSerialization['homeZoom'] as num).toDouble(),
       pmtilesStoragePath: jsonSerialization['pmtilesStoragePath'] as String,
+      measurementUnits: jsonSerialization['measurementUnits'] as String?,
+      angleDisplayFormat: jsonSerialization['angleDisplayFormat'] as String?,
+      circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
+      appTheme: jsonSerialization['appTheme'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -57,6 +72,14 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   String pmtilesStoragePath;
 
+  String measurementUnits;
+
+  String angleDisplayFormat;
+
+  String circleSizeDisplay;
+
+  String appTheme;
+
   DateTime updatedAt;
 
   /// Returns a shallow copy of this [AppSettings]
@@ -68,6 +91,10 @@ abstract class AppSettings implements _i1.SerializableModel {
     double? homeLongitude,
     double? homeZoom,
     String? pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     DateTime? updatedAt,
   });
   @override
@@ -79,6 +106,10 @@ abstract class AppSettings implements _i1.SerializableModel {
       'homeLongitude': homeLongitude,
       'homeZoom': homeZoom,
       'pmtilesStoragePath': pmtilesStoragePath,
+      'measurementUnits': measurementUnits,
+      'angleDisplayFormat': angleDisplayFormat,
+      'circleSizeDisplay': circleSizeDisplay,
+      'appTheme': appTheme,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -98,6 +129,10 @@ class _AppSettingsImpl extends AppSettings {
     required double homeLongitude,
     required double homeZoom,
     required String pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -105,6 +140,10 @@ class _AppSettingsImpl extends AppSettings {
          homeLongitude: homeLongitude,
          homeZoom: homeZoom,
          pmtilesStoragePath: pmtilesStoragePath,
+         measurementUnits: measurementUnits,
+         angleDisplayFormat: angleDisplayFormat,
+         circleSizeDisplay: circleSizeDisplay,
+         appTheme: appTheme,
          updatedAt: updatedAt,
        );
 
@@ -118,6 +157,10 @@ class _AppSettingsImpl extends AppSettings {
     double? homeLongitude,
     double? homeZoom,
     String? pmtilesStoragePath,
+    String? measurementUnits,
+    String? angleDisplayFormat,
+    String? circleSizeDisplay,
+    String? appTheme,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -126,6 +169,10 @@ class _AppSettingsImpl extends AppSettings {
       homeLongitude: homeLongitude ?? this.homeLongitude,
       homeZoom: homeZoom ?? this.homeZoom,
       pmtilesStoragePath: pmtilesStoragePath ?? this.pmtilesStoragePath,
+      measurementUnits: measurementUnits ?? this.measurementUnits,
+      angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
+      circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
+      appTheme: appTheme ?? this.appTheme,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

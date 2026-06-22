@@ -98,4 +98,42 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       onSuccess: (settings) => 'path="${settings.pmtilesStoragePath}"',
     );
   }
+
+  Future<AppSettings> updateClientPreferences(
+    Session session,
+    String measurementUnits,
+    String angleDisplayFormat,
+    String circleSizeDisplay,
+    String appTheme,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'updateClientPreferences',
+      () async {
+        AppSettingsStore.validateClientPreferences(
+          measurementUnits: measurementUnits,
+          angleDisplayFormat: angleDisplayFormat,
+          circleSizeDisplay: circleSizeDisplay,
+          appTheme: appTheme,
+        );
+
+        final settings = await AppSettingsStore.getOrCreate(session);
+        return AppSettingsStore.update(
+          session,
+          settings.copyWith(
+            measurementUnits: measurementUnits,
+            angleDisplayFormat: angleDisplayFormat,
+            circleSizeDisplay: circleSizeDisplay,
+            appTheme: appTheme,
+          ),
+        );
+      },
+      onSuccess: (settings) =>
+          'units=${settings.measurementUnits} '
+          'angles=${settings.angleDisplayFormat} '
+          'circles=${settings.circleSizeDisplay} '
+          'theme=${settings.appTheme}',
+    );
+  }
 }

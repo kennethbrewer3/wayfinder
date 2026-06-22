@@ -70,6 +70,7 @@ appSettings:
   - updateHomeLocation:
   - resetHomeLocation:
   - updatePmtilesStoragePath:
+  - updateClientPreferences:
 mapZone:
   - listZones:
   - getZone:

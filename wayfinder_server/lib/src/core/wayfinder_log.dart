@@ -70,7 +70,7 @@ class WfLog {
     String tag,
     String message,
   ) {
-    final line = '$emoji [$level] [$_timestamp()] [$tag] $message';
+    final line = '$emoji [$level] [${_timestamp()}] [$tag] $message';
     // ignore: avoid_print
     print(line);
     session?.log(line);

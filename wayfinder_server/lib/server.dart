@@ -10,6 +10,7 @@ import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/core/wayfinder_env.dart';
 import 'src/settings/app_settings_store.dart';
+import 'src/geocoding/geocoding_import_recovery.dart';
 import 'src/geocoding/geocoding_search_indexes.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
@@ -139,6 +140,7 @@ void run(List<String> args) async {
         '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
       );
     }
+    await GeocodingImportRecovery.recoverStaleImportsOnStartup(syncSession);
     unawaited(_ensureGeocodingSearchIndexes(pod));
   } finally {
     await syncSession.close();

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import '../core/wayfinder_log.dart';
@@ -26,7 +27,19 @@ abstract final class GeocodingRemoteFetch {
 
     onClientCreated?.call(client);
 
+    Timer? heartbeat;
+    final waitStarted = DateTime.now();
+
     try {
+      heartbeat = Timer.periodic(const Duration(seconds: 30), (_) {
+        final elapsed = DateTime.now().difference(waitStarted).inSeconds;
+        WfLog.info(
+          null,
+          'geocoding',
+          '⬇️ $logLabel still waiting for HTTP response (${elapsed}s elapsed)…',
+        );
+      });
+
       final request = await client.getUrl(uri);
       request.followRedirects = true;
       request.headers.set(HttpHeaders.userAgentHeader, _userAgent);
@@ -39,6 +52,8 @@ abstract final class GeocodingRemoteFetch {
       );
 
       final response = await request.close();
+      heartbeat.cancel();
+      heartbeat = null;
       final contentLength = response.contentLength;
       final contentEncoding = response.headers.value(HttpHeaders.contentEncodingHeader);
       WfLog.info(
@@ -77,6 +92,7 @@ abstract final class GeocodingRemoteFetch {
         uri: uri,
       );
     } finally {
+      heartbeat?.cancel();
       client.close(force: true);
       WfLog.debug(null, 'geocoding', '⬇️ $logLabel HTTP client closed');
     }

@@ -36,7 +36,17 @@ abstract final class GeocodingImporter {
     }
 
     final settings = await GeocodingSettingsStore.getOrCreate(session);
-    final url = (sourceUrl ?? settings.sourceUrl).trim();
+    if (GeocodingImportStatus.isActive(settings.importStatus) && !_running) {
+      WfLog.warn(
+        session,
+        'geocoding',
+        '🌍 Replacing stale place-name import before starting a new one',
+      );
+      await _abortStaleImport(session, settings);
+    }
+
+    final currentSettings = await GeocodingSettingsStore.getOrCreate(session);
+    final url = (sourceUrl ?? currentSettings.sourceUrl).trim();
     if (url.isEmpty) {
       throw FormatException('Geocoding source URL is required.');
     }
@@ -47,12 +57,12 @@ abstract final class GeocodingImporter {
         ? null
         : normalizedCodes.join(',');
 
-    _previousImportedRowCount = settings.importedRowCount;
-    _previousImportedAt = settings.importedAt;
+    _previousImportedRowCount = currentSettings.importedRowCount;
+    _previousImportedAt = currentSettings.importedAt;
 
     final updated = await GeocodingSettingsStore.update(
       session,
-      settings.copyWith(
+      currentSettings.copyWith(
         sourceUrl: url,
         countryCodes: codesValue,
         importStatus: GeocodingConstants.statusDownloading,
@@ -128,6 +138,12 @@ abstract final class GeocodingImporter {
   }) async {
     _running = true;
     GeocodingImportControl.begin();
+    WfLog.info(
+      null,
+      'geocoding',
+      '🌍 Place-name import worker started '
+      'url=$url countries=${countryFilter?.join(',') ?? 'all'}',
+    );
     try {
       final session = await serverpod.createSession();
       try {

@@ -71,28 +71,27 @@ flutter run -d chrome
 
 The app reads server URLs from `wayfinder_flutter/assets/config.json` (API on port 18080, web on port 18082).
 
-### Docker (server + optional web client)
+### Docker
 
-From `wayfinder_server/`:
+Pre-built images are published to GitHub Container Registry on every push to `main`. **No git clone required** — download compose files and pull images:
+
+| Stack | Install |
+|-------|---------|
+| Server | [deploy/server/](deploy/server/) — `docker-compose.yaml` + `.env` |
+| Client | [deploy/client/](deploy/client/) — `docker-compose.yaml` + `.env` |
 
 ```bash
+# Example: server machine
+mkdir wayfinder-server && cd wayfinder-server
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/server/docker-compose.yaml
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/server/.env.example
 cp .env.example .env
-docker compose up -d --build
+docker compose pull && docker compose up -d
 ```
 
-Start the Flutter web client in a separate container (nginx on port 8080 by default):
+See **[DEPLOY.md](DEPLOY.md)** for the full guide (separate machines, firewall, pinning releases).
 
-```bash
-docker compose --profile client up -d --build client
-```
-
-Or run server and client together:
-
-```bash
-docker compose --profile client up -d --build postgres redis server client
-```
-
-Open the client at `http://localhost:8080`. Configure server URLs with `WAYFINDER_API_URL` and `WAYFINDER_WEB_URL` in `.env` — these must be reachable from the **browser**, not from inside Docker. When the client runs on a different machine than the server, set them to the server's hostname or IP (for example `http://192.168.1.10:18080`).
+Developers with a repo clone can still build locally from `wayfinder_server/` and `wayfinder_flutter/` compose files.
 
 ## REST API
 
@@ -130,3 +129,4 @@ GET /pmtiles/files/{id}
 - [wayfinder_server/README.md](wayfinder_server/README.md) — server-specific notes
 - [wayfinder_server/DATA_MIGRATION.md](wayfinder_server/DATA_MIGRATION.md) — moving Postgres and PMTiles to another volume
 - [wayfinder_flutter/README.md](wayfinder_flutter/README.md) — Flutter client notes
+- [DEPLOY.md](DEPLOY.md) — Docker install on separate server and client machines

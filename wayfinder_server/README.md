@@ -1,15 +1,36 @@
 # wayfinder_server
 
-This is the starting point for your Serverpod server.
+Serverpod backend for Wayfinder (PostgreSQL, Redis, API, PMTiles).
 
-To run your server, you first need to start Postgres and Redis. It's easiest to do with Docker.
+## Docker (recommended for deployment)
 
-    docker compose up --build --detach
+End users can install **without cloning the repo** — see [deploy/server/](../deploy/server/) and [DEPLOY.md](../DEPLOY.md).
 
-Then you can start the Serverpod server.
+Developers with a repo clone can build locally:
 
-    dart bin/main.dart
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
 
-When you are finished, you can shut down Serverpod with `Ctrl-C`, then stop Postgres and Redis.
+This starts Postgres, Redis, and the Serverpod server. The Flutter web client has its own Compose file in `wayfinder_flutter/` — see [DEPLOY.md](../DEPLOY.md) to run server and client on separate machines.
 
-    docker compose stop
+## Local development (Dart on host)
+
+Start only the database services:
+
+```bash
+docker compose up -d postgres redis
+```
+
+Then run the server:
+
+```bash
+dart bin/main.dart
+```
+
+Stop services when finished:
+
+```bash
+docker compose stop
+```

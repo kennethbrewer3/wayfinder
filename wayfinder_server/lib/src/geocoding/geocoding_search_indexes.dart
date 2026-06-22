@@ -7,7 +7,8 @@ import 'geocoding_search_index_status.dart';
 ///
 /// Index metadata is also declared in [Protocol.targetTableDefinitions] so
 /// Serverpod's schema check accepts them across restarts. Re-apply that patch
-/// after `serverpod generate` if geocoding models change.
+/// in `lib/src/generated/protocol.dart` after `serverpod generate` if geocoding
+/// models change.
 abstract final class GeocodingSearchIndexes {
   static const indexNames = [
     'geocode_place_name_trgm_idx',

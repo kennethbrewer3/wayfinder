@@ -591,12 +591,24 @@ class EndpointPmtiles extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<void> setFileGroup(
+  _i3.Future<void> addFileToGroup(
     _i2.UuidValue fileId,
-    _i2.UuidValue? groupId,
+    _i2.UuidValue groupId,
   ) => caller.callServerEndpoint<void>(
     'pmtiles',
-    'setFileGroup',
+    'addFileToGroup',
+    {
+      'fileId': fileId,
+      'groupId': groupId,
+    },
+  );
+
+  _i3.Future<void> removeFileFromGroup(
+    _i2.UuidValue fileId,
+    _i2.UuidValue groupId,
+  ) => caller.callServerEndpoint<void>(
+    'pmtiles',
+    'removeFileFromGroup',
     {
       'fileId': fileId,
       'groupId': groupId,

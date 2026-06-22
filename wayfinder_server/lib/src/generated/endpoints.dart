@@ -960,8 +960,8 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['id'],
                   ),
         ),
-        'setFileGroup': _i1.MethodConnector(
-          name: 'setFileGroup',
+        'addFileToGroup': _i1.MethodConnector(
+          name: 'addFileToGroup',
           params: {
             'fileId': _i1.ParameterDescription(
               name: 'fileId',
@@ -970,8 +970,8 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'groupId': _i1.ParameterDescription(
               name: 'groupId',
-              type: _i1.getType<_i1.UuidValue?>(),
-              nullable: true,
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
             ),
           },
           call:
@@ -979,7 +979,32 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['pmtiles'] as _i10.PmtilesEndpoint).setFileGroup(
+                  (endpoints['pmtiles'] as _i10.PmtilesEndpoint).addFileToGroup(
+                    session,
+                    params['fileId'],
+                    params['groupId'],
+                  ),
+        ),
+        'removeFileFromGroup': _i1.MethodConnector(
+          name: 'removeFileFromGroup',
+          params: {
+            'fileId': _i1.ParameterDescription(
+              name: 'fileId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+            'groupId': _i1.ParameterDescription(
+              name: 'groupId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pmtiles'] as _i10.PmtilesEndpoint)
+                  .removeFileFromGroup(
                     session,
                     params['fileId'],
                     params['groupId'],

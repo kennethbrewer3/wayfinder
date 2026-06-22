@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'pmtiles_catalog_sync.dart';
+import 'pmtiles_file_groups.dart';
 import 'pmtiles_storage.dart';
 
 class PmtilesEndpoint extends Endpoint with EndpointLogging {
@@ -17,11 +18,12 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
       'listFiles',
       () async {
         await PmtilesCatalogSync.sync(session);
-        return PmtilesFile.db.find(
+        final files = await PmtilesFile.db.find(
           session,
           orderBy: (t) => t.addedAt,
           orderDescending: true,
         );
+        return PmtilesFileGroups.withGroupIds(session, files);
       },
       onSuccess: (files) => 'count=${files.length}',
     );
@@ -117,11 +119,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
           return false;
         }
 
-        await PmtilesFile.db.updateWhere(
-          session,
-          where: (t) => t.groupId.equals(id),
-          columnValues: (t) => [t.groupId(null)],
-        );
+        await PmtilesFileGroups.removeAllForGroup(session, id);
         await PmtilesGroup.db.deleteRow(session, group);
         return true;
       },
@@ -130,34 +128,55 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
     );
   }
 
-  Future<void> setFileGroup(
+  Future<void> addFileToGroup(
     Session session,
     UuidValue fileId,
-    UuidValue? groupId,
+    UuidValue groupId,
   ) {
     return loggedCall(
       session,
       _tag,
-      'setFileGroup',
+      'addFileToGroup',
       () async {
         final file = await PmtilesFile.db.findById(session, fileId);
         if (file == null) {
           throw FormatException('PMTiles file not found: ${fileId.uuid}');
         }
 
-        if (groupId != null) {
-          final group = await PmtilesGroup.db.findById(session, groupId);
-          if (group == null) {
-            throw FormatException('PMTiles group not found: ${groupId.uuid}');
-          }
+        final group = await PmtilesGroup.db.findById(session, groupId);
+        if (group == null) {
+          throw FormatException('PMTiles group not found: ${groupId.uuid}');
         }
 
-        await PmtilesFile.db.updateRow(
-          session,
-          file.copyWith(groupId: groupId),
-        );
+        await PmtilesFileGroups.addFileToGroup(session, fileId, groupId);
       },
-      onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId?.uuid ?? '(none)'}',
+      onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId.uuid}',
+    );
+  }
+
+  Future<void> removeFileFromGroup(
+    Session session,
+    UuidValue fileId,
+    UuidValue groupId,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'removeFileFromGroup',
+      () async {
+        final file = await PmtilesFile.db.findById(session, fileId);
+        if (file == null) {
+          throw FormatException('PMTiles file not found: ${fileId.uuid}');
+        }
+
+        final group = await PmtilesGroup.db.findById(session, groupId);
+        if (group == null) {
+          throw FormatException('PMTiles group not found: ${groupId.uuid}');
+        }
+
+        await PmtilesFileGroups.removeFileFromGroup(session, fileId, groupId);
+      },
+      onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId.uuid}',
     );
   }
 
@@ -177,10 +196,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         }
 
         if (enabled) {
-          final files = await PmtilesFile.db.find(
-            session,
-            where: (t) => t.groupId.equals(groupId),
-          );
+          final files = await PmtilesFileGroups.filesInGroup(session, groupId);
           for (final file in files) {
             if (!_storage.existsForEntry(id: file.id.uuid, name: file.name)) {
               throw StateError(
@@ -190,10 +206,9 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
           }
         }
 
-        await PmtilesFile.db.updateWhere(
+        await PmtilesGroup.db.updateRow(
           session,
-          where: (t) => t.groupId.equals(groupId),
-          columnValues: (t) => [t.isActive(enabled)],
+          group.copyWith(showOnMap: enabled),
         );
       },
       onSuccess: (_) => 'groupId=${groupId.uuid} enabled=$enabled',
@@ -209,12 +224,13 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'setUngroupedEnabled',
       () async {
+        final ungroupedIds = await PmtilesFileGroups.ungroupedFileIds(session);
         if (enabled) {
-          final files = await PmtilesFile.db.find(
-            session,
-            where: (t) => t.groupId.equals(null),
-          );
-          for (final file in files) {
+          for (final fileId in ungroupedIds) {
+            final file = await PmtilesFile.db.findById(session, fileId);
+            if (file == null) {
+              continue;
+            }
             if (!_storage.existsForEntry(id: file.id.uuid, name: file.name)) {
               throw StateError(
                 'PMTiles file bytes missing on disk: ${file.id.uuid}',
@@ -223,11 +239,16 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
           }
         }
 
-        await PmtilesFile.db.updateWhere(
-          session,
-          where: (t) => t.groupId.equals(null),
-          columnValues: (t) => [t.isActive(enabled)],
-        );
+        for (final fileId in ungroupedIds) {
+          final file = await PmtilesFile.db.findById(session, fileId);
+          if (file == null) {
+            continue;
+          }
+          await PmtilesFile.db.updateRow(
+            session,
+            file.copyWith(isActive: enabled),
+          );
+        }
       },
       onSuccess: (_) => 'enabled=$enabled',
     );
@@ -301,6 +322,15 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
             );
           }
         }
+        final groups = await PmtilesGroup.db.find(session);
+        for (final group in groups) {
+          if (!group.showOnMap) {
+            await PmtilesGroup.db.updateRow(
+              session,
+              group.copyWith(showOnMap: true),
+            );
+          }
+        }
       },
       onSuccess: (_) => 'enabled all',
     );
@@ -315,11 +345,18 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'disableAllFiles',
-      () => PmtilesFile.db.updateWhere(
-        session,
-        where: (t) => t.isActive.equals(true),
-        columnValues: (t) => [t.isActive(false)],
-      ),
+      () async {
+        await PmtilesFile.db.updateWhere(
+          session,
+          where: (t) => t.isActive.equals(true),
+          columnValues: (t) => [t.isActive(false)],
+        );
+        await PmtilesGroup.db.updateWhere(
+          session,
+          where: (t) => t.showOnMap.equals(true),
+          columnValues: (t) => [t.showOnMap(false)],
+        );
+      },
       onSuccess: (_) => 'disabled all',
     );
   }
@@ -335,6 +372,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
           return false;
         }
 
+        await PmtilesFileGroups.removeAllForFile(session, id);
         await _storage.deleteForEntry(id: id.uuid, name: file.name);
         await PmtilesFile.db.deleteRow(session, file);
         return true;

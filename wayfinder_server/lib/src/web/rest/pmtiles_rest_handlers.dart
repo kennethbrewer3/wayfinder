@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
 import '../../pmtiles/pmtiles_catalog_sync.dart';
+import '../../pmtiles/pmtiles_file_groups.dart';
 import '../../pmtiles/pmtiles_storage.dart';
 import '../../pmtiles/pmtiles_upload_handler.dart';
 import 'rest_json.dart';
@@ -15,10 +16,13 @@ abstract final class PmtilesRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       await PmtilesCatalogSync.sync(session);
-      final files = await PmtilesFile.db.find(
+      final files = await PmtilesFileGroups.withGroupIds(
         session,
-        orderBy: (t) => t.addedAt,
-        orderDescending: true,
+        await PmtilesFile.db.find(
+          session,
+          orderBy: (t) => t.addedAt,
+          orderDescending: true,
+        ),
       );
       return RestJson.ok(RestJson.encodeModels(files));
     });
@@ -86,6 +90,7 @@ abstract final class PmtilesRestHandlers {
         return RestJson.error(404, 'PMTiles file not found');
       }
 
+      await PmtilesFileGroups.removeAllForFile(session, id);
       await _storage.deleteForEntry(id: id.uuid, name: file.name);
       await PmtilesFile.db.deleteRow(session, file);
 

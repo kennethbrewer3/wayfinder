@@ -123,13 +123,22 @@ void run(List<String> args) async {
     final settings = await AppSettingsStore.getOrCreate(syncSession);
     final pmtilesPath = AppSettingsStore.effectivePmtilesStoragePath(settings);
     PmtilesStorage.configure(pmtilesPath);
-    await PmtilesStorage().ensureReady();
-    WfLog.info(
-      syncSession,
-      'server',
-      '🗺️ PMTiles storage configured | path=$pmtilesPath',
-    );
-    await PmtilesCatalogSync.sync(syncSession);
+    final pmtilesReady = await PmtilesStorage().ensureReady();
+    if (pmtilesReady) {
+      WfLog.info(
+        syncSession,
+        'server',
+        '🗺️ PMTiles storage configured | path=$pmtilesPath',
+      );
+      await PmtilesCatalogSync.sync(syncSession);
+    } else {
+      WfLog.warn(
+        syncSession,
+        'server',
+        '🗺️ PMTiles storage unavailable | path=$pmtilesPath '
+        '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
+      );
+    }
     unawaited(_ensureGeocodingSearchIndexes(pod));
   } finally {
     await syncSession.close();

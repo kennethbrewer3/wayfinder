@@ -239,12 +239,30 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     refreshPmtiles(ref);
   }
 
-  Future<void> _assignFileGroup(String fileId, String? groupId) async {
-    await ref.read(pmtilesRepositoryProvider).setFileGroup(
-          fileId,
-          groupId: groupId,
-        );
+  Future<void> _toggleFileGroupMembership(
+    String fileId,
+    String groupId, {
+    required bool include,
+  }) async {
+    final repository = ref.read(pmtilesRepositoryProvider);
+    if (include) {
+      await repository.addFileToGroup(fileId, groupId);
+    } else {
+      await repository.removeFileFromGroup(fileId, groupId);
+    }
     refreshPmtiles(ref);
+  }
+
+  bool _fileVisibleOnMap(
+    PmtilesFile file,
+    Map<String, PmtilesGroup> groupsById,
+  ) {
+    if (file.enabledOnMap) {
+      return true;
+    }
+    return file.groupIds.any(
+      (groupId) => groupsById[groupId]?.showOnMap ?? false,
+    );
   }
 
   Future<void> _deleteGroup(PmtilesGroup group) async {
@@ -424,18 +442,21 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
         );
         }
 
-        final enabledCount =
-        files.where((file) => file.enabledOnMap).length;
+        final groupsById = {for (final group in groups) group.id: group};
+        final enabledCount = files
+            .where((file) => _fileVisibleOnMap(file, groupsById))
+            .length;
         final filesByGroupId = <String, List<PmtilesFile>>{};
         final ungroupedFiles = <PmtilesFile>[];
 
         for (final file in files) {
-        final groupId = file.groupId;
-        if (groupId == null) {
-        ungroupedFiles.add(file);
-        } else {
-        filesByGroupId.putIfAbsent(groupId, () => []).add(file);
-        }
+          if (file.groupIds.isEmpty) {
+            ungroupedFiles.add(file);
+          } else {
+            for (final groupId in file.groupIds) {
+              filesByGroupId.putIfAbsent(groupId, () => []).add(file);
+            }
+          }
         }
         ungroupedFiles.sort(
         (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
@@ -470,7 +491,7 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
         onDeleteGroup: () => _deleteGroup(group),
         onToggleFile: (file, enabled) =>
         _setFileEnabled(file.id, enabled),
-        onAssignGroup: _assignFileGroup,
+        onToggleGroupMembership: _toggleFileGroupMembership,
         onDeleteFile: _deleteFile,
         ),
         const SizedBox(height: 12),
@@ -482,7 +503,7 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
         onToggleGroup: _setUngroupedEnabled,
         onToggleFile: (file, enabled) =>
         _setFileEnabled(file.id, enabled),
-        onAssignGroup: _assignFileGroup,
+        onToggleGroupMembership: _toggleFileGroupMembership,
         onDeleteFile: _deleteFile,
         ),
         ],
@@ -505,7 +526,7 @@ class _PmtilesGroupSection extends StatelessWidget {
     this.onToggleGroup,
     this.onDeleteGroup,
     required this.onToggleFile,
-    required this.onAssignGroup,
+    required this.onToggleGroupMembership,
     required this.onDeleteFile,
   });
 
@@ -516,15 +537,30 @@ class _PmtilesGroupSection extends StatelessWidget {
   final ValueChanged<bool>? onToggleGroup;
   final VoidCallback? onDeleteGroup;
   final void Function(PmtilesFile file, bool enabled) onToggleFile;
-  final Future<void> Function(String fileId, String? groupId) onAssignGroup;
+  final Future<void> Function(
+    String fileId,
+    String groupId, {
+    required bool include,
+  }) onToggleGroupMembership;
   final Future<void> Function(String id, String name) onDeleteFile;
 
-  bool get _groupEnabled =>
-      files.isNotEmpty && files.every((file) => file.enabledOnMap);
+  bool get _groupEnabled => isUngrouped
+      ? files.isNotEmpty && files.every((file) => file.enabledOnMap)
+      : group?.showOnMap ?? false;
+
+  int _visibleCount() {
+    if (isUngrouped) {
+      return files.where((file) => file.enabledOnMap).length;
+    }
+    final showOnMap = group?.showOnMap ?? false;
+    return files
+        .where((file) => file.enabledOnMap || showOnMap)
+        .length;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final enabledCount = files.where((file) => file.enabledOnMap).length;
+    final enabledCount = _visibleCount();
     final title = isUngrouped ? 'Ungrouped' : group!.name;
 
     return Card(
@@ -579,7 +615,12 @@ class _PmtilesGroupSection extends StatelessWidget {
                 file: files[i],
                 groups: groups,
                 onToggleEnabled: (enabled) => onToggleFile(files[i], enabled),
-                onAssignGroup: (groupId) => onAssignGroup(files[i].id, groupId),
+                onToggleGroupMembership: (groupId, include) =>
+                    onToggleGroupMembership(
+                  files[i].id,
+                  groupId,
+                  include: include,
+                ),
                 onDelete: () => onDeleteFile(files[i].id, files[i].name),
               ),
             ],
@@ -594,14 +635,15 @@ class _PmtilesFileTile extends StatelessWidget {
     required this.file,
     required this.groups,
     required this.onToggleEnabled,
-    required this.onAssignGroup,
+    required this.onToggleGroupMembership,
     required this.onDelete,
   });
 
   final PmtilesFile file;
   final List<PmtilesGroup> groups;
   final ValueChanged<bool> onToggleEnabled;
-  final ValueChanged<String?> onAssignGroup;
+  final Future<void> Function(String groupId, bool include)
+      onToggleGroupMembership;
   final VoidCallback onDelete;
 
   List<PmtilesGroup> get _sortedGroups => [
@@ -612,30 +654,50 @@ class _PmtilesFileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final groupLabel = file.groupIds.isEmpty
+        ? 'No groups'
+        : '${file.groupIds.length} group${file.groupIds.length == 1 ? '' : 's'}';
+
     return ListTile(
       leading: Icon(
         file.enabledOnMap ? Icons.layers : Icons.layers_outlined,
         color: file.enabledOnMap ? Theme.of(context).colorScheme.primary : null,
       ),
       title: Text(file.name),
-      subtitle: Text('${file.formattedSize} • ${file.addedAt.toLocal()}'),
+      subtitle: Text(
+        '${file.formattedSize} • ${file.addedAt.toLocal()} • $groupLabel',
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          PopupMenuButton<String?>(
-            tooltip: 'Assign group',
-            icon: const Icon(Icons.folder_outlined),
-            onSelected: onAssignGroup,
+          PopupMenuButton<String>(
+            tooltip: 'Manage groups',
+            icon: Icon(
+              file.groupIds.isEmpty
+                  ? Icons.folder_outlined
+                  : Icons.folder_copy_outlined,
+            ),
+            onSelected: (groupId) async {
+              final include = !file.isInGroup(groupId);
+              await onToggleGroupMembership(groupId, include);
+            },
             itemBuilder: (context) {
               return [
-                const PopupMenuItem(
-                  value: null,
-                  child: Text('Ungrouped'),
-                ),
                 for (final group in _sortedGroups)
                   PopupMenuItem(
                     value: group.id,
-                    child: Text(group.name),
+                    child: Row(
+                      children: [
+                        Icon(
+                          file.isInGroup(group.id)
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(group.name)),
+                      ],
+                    ),
                   ),
               ];
             },

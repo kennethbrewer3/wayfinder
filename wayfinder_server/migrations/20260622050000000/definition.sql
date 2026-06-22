@@ -185,13 +185,25 @@ CREATE TABLE "pmtiles_file" (
     "minLatitude" double precision,
     "minLongitude" double precision,
     "maxLatitude" double precision,
-    "maxLongitude" double precision,
-    "groupId" uuid
+    "maxLongitude" double precision
 );
 
 -- Indexes
 CREATE INDEX "pmtiles_file_name_idx" ON "pmtiles_file" USING btree ("name");
-CREATE INDEX "pmtiles_file_group_id_idx" ON "pmtiles_file" USING btree ("groupId");
+
+--
+-- Class PmtilesFileGroupLink as table pmtiles_file_group
+--
+CREATE TABLE "pmtiles_file_group" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "fileId" uuid NOT NULL,
+    "groupId" uuid NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "pmtiles_file_group_file_idx" ON "pmtiles_file_group" USING btree ("fileId");
+CREATE INDEX "pmtiles_file_group_group_idx" ON "pmtiles_file_group" USING btree ("groupId");
+CREATE UNIQUE INDEX "pmtiles_file_group_unique_idx" ON "pmtiles_file_group" USING btree ("fileId", "groupId");
 
 --
 -- Class PmtilesGroup as table pmtiles_group
@@ -200,7 +212,8 @@ CREATE TABLE "pmtiles_group" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "name" text NOT NULL,
     "sortOrder" bigint NOT NULL,
-    "createdAt" timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "showOnMap" boolean NOT NULL DEFAULT false
 );
 
 -- Indexes
@@ -888,9 +901,9 @@ ALTER TABLE ONLY "serverpod_auth_core_session"
 -- MIGRATION VERSION FOR wayfinder
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260620211732894', now())
+    VALUES ('wayfinder', '20260622040226213', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20260620211732894', "timestamp" = now();
+    DO UPDATE SET "version" = '20260622040226213', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

@@ -5,6 +5,7 @@ fields:
   name: String
   sortOrder: int, defaultModel=0
   createdAt: DateTime
+  showOnMap: bool, defaultModel=false, defaultPersist=false
 
 indexes:
   pmtiles_group_name_idx:

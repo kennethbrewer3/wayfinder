@@ -54,7 +54,8 @@ pmtiles:
   - createGroup:
   - renameGroup:
   - deleteGroup:
-  - setFileGroup:
+  - addFileToGroup:
+  - removeFileFromGroup:
   - setGroupEnabled:
   - setUngroupedEnabled:
   - activeFileId:

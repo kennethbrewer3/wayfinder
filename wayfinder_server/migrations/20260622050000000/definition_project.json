@@ -969,13 +969,6 @@
           "columnType": 3,
           "isNullable": true,
           "dartType": "double?"
-        },
-        {
-          "__className__": "serverpod.ColumnDefinition",
-          "name": "groupId",
-          "columnType": 7,
-          "isNullable": true,
-          "dartType": "UuidValue?"
         }
       ],
       "foreignKeys": [],
@@ -1007,10 +1000,73 @@
           "type": "btree",
           "isUnique": false,
           "isPrimary": false
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "pmtiles_file_group",
+      "dartName": "PmtilesFileGroupLink",
+      "module": "wayfinder",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "fileId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "groupId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        }
+      ],
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "pmtiles_file_group_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
         },
         {
           "__className__": "serverpod.IndexDefinition",
-          "indexName": "pmtiles_file_group_id_idx",
+          "indexName": "pmtiles_file_group_file_idx",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "fileId"
+            }
+          ],
+          "type": "btree",
+          "isUnique": false,
+          "isPrimary": false
+        },
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "pmtiles_file_group_group_idx",
           "elements": [
             {
               "__className__": "serverpod.IndexElementDefinition",
@@ -1020,6 +1076,25 @@
           ],
           "type": "btree",
           "isUnique": false,
+          "isPrimary": false
+        },
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "pmtiles_file_group_unique_idx",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "fileId"
+            },
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "groupId"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
           "isPrimary": false
         }
       ],
@@ -1060,6 +1135,13 @@
           "columnType": 4,
           "isNullable": false,
           "dartType": "DateTime"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "showOnMap",
+          "columnType": 1,
+          "isNullable": false,
+          "dartType": "bool"
         }
       ],
       "foreignKeys": [],

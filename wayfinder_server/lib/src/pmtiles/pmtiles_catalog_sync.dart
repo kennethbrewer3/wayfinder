@@ -39,6 +39,14 @@ abstract final class PmtilesCatalogSync {
     var relocated = 0;
     final skipRemovals = discovered.isEmpty && existing.isNotEmpty;
 
+    if (discovered.isEmpty && existing.isEmpty) {
+      WfLog.info(
+        session,
+        'pmtiles',
+        '📂 PMTiles catalog sync found 0 .pmtiles files under ${root.path}',
+      );
+    }
+
     if (skipRemovals) {
       WfLog.warn(
         session,
@@ -117,7 +125,7 @@ abstract final class PmtilesCatalogSync {
         PmtilesFile(
           name: name,
           sizeBytes: stat.size,
-          isActive: false,
+          isActive: true,
           addedAt: stat.modified.toUtc(),
           minZoom: bounds?.minZoom,
           maxZoom: bounds?.maxZoom,

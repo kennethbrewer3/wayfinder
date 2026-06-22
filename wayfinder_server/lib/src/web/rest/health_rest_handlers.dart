@@ -23,11 +23,18 @@ abstract final class HealthRestHandlers {
 
     try {
       final storage = PmtilesStorage();
-      await storage.ensureReady();
+      final ready = await storage.ensureReady();
+      final discovered = storage.discoverNamedArchives().length;
+      final catalog = await PmtilesFile.db.count(session);
       checks['pmtilesStorage'] = {
-        'ok': true,
+        'ok': ready,
         'path': storage.root.path,
+        'discoveredFiles': discovered,
+        'catalogEntries': catalog,
       };
+      if (!ready) {
+        healthy = false;
+      }
     } catch (error) {
       healthy = false;
       checks['pmtilesStorage'] = {
@@ -36,8 +43,19 @@ abstract final class HealthRestHandlers {
       };
     }
 
-    if (healthy) {
+    final includeDetails =
+        request.url.queryParameters['details'] == '1' ||
+        request.url.queryParameters['verbose'] == '1';
+
+    if (healthy && !includeDetails) {
       return RestJson.ok(true);
+    }
+
+    if (healthy) {
+      return RestJson.ok({
+        'healthy': true,
+        'checks': checks,
+      });
     }
 
     return RestJson.serviceUnavailable({

@@ -71,5 +71,5 @@ services:
       SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: "${SERVERPOD_WEB_SERVER_PUBLIC_SCHEME:-http}"
       WAYFINDER_PMTILES_STORAGE: /data/pmtiles
     volumes:
-      - ${WAYFINDER_PMTILES_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/pmtiles}:/data/pmtiles
+      - ${WAYFINDER_PMTILES_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/pmtiles}:/data/pmtiles${WAYFINDER_PMTILES_MOUNT_OPTIONS:-}
     restart: unless-stopped

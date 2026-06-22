@@ -305,8 +305,8 @@ class Protocol extends _i1.SerializationManagerServer {
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: '("housenumber" || \' \' || "street")',
+              type: _i2.IndexElementDefinitionType.expression,
+              definition: '((housenumber || \' \'::text) || street)',
             ),
           ],
           type: 'gin',

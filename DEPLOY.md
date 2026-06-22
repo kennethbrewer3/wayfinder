@@ -186,8 +186,32 @@ docker compose up -d
 
 Generate values with `openssl rand -base64 32`.
 
+**Server container restart loop (`geocode_housenumber_label_trgm_idx` mismatch)**
+
+The geocoding search index on `(housenumber || street)` must match Postgres's expression-index metadata. Pull the latest server image (`docker compose pull && docker compose up -d`). If the loop persists after updating, recreate the index:
+
+```bash
+docker compose exec postgres psql -U postgres -d wayfinder \
+  -c 'DROP INDEX IF EXISTS geocode_housenumber_label_trgm_idx;'
+docker compose restart server
+```
+
 **Map loads but API calls fail**  
 Check that client `WAYFINDER_*_URL` values match addresses the browser can reach, and server `SERVERPOD_*_PUBLIC_HOST` is not `localhost` when remote browsers connect.
 
 **PMTiles missing after restart**  
 Ensure the PMTiles bind mount path exists and external drives are mounted before starting the server.
+
+**Shared PMTiles folder (`WAYFINDER_PMTILES_HOST_PATH`) shows 0 files**
+
+1. Confirm the path exists on the **host** before starting Docker (Docker creates an empty folder if the path is missing).
+2. Add `WAYFINDER_PMTILES_MOUNT_OPTIONS=:ro` when sharing tiles with another app.
+3. Check discovery from the host:
+
+```bash
+curl -s 'http://localhost:18082/api/health?details=1'
+```
+
+Look for `pmtilesStorage.discoveredFiles` — it should match the number of `.pmtiles` files under your mount. If `discoveredFiles` is 0 but files exist on the host, check permissions (`chmod -R a+rX` on the folder) and whether files are symlinks (supported as of recent versions).
+4. Restart after fixing the mount: `docker compose up -d`
+5. In the app, open **Settings → Map tiles** — imported files must be enabled on the map (use **Enable all** if needed).

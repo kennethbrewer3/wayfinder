@@ -46,3 +46,20 @@ Copy `.env.example` to `.env` and set `POSTGRES_PASSWORD` and `REDIS_PASSWORD`.
 **`PasswordNotFoundException: jwtRefreshTokenHashPepper was not found`**
 
 Add the four `SERVERPOD_PASSWORD_*` variables from `.env.example` to your `.env` file and restart the stack.
+
+**PMTiles not loading from a shared folder**
+
+Set in `.env`:
+
+```env
+WAYFINDER_PMTILES_HOST_PATH=/path/to/your/pmtiles
+WAYFINDER_PMTILES_MOUNT_OPTIONS=:ro
+```
+
+Restart, then verify:
+
+```bash
+curl -s 'http://localhost:18082/api/health?details=1'
+```
+
+`discoveredFiles` should be greater than 0. In the app, enable tiles under **Settings → Map tiles**.

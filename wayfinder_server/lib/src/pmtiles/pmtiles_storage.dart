@@ -58,23 +58,60 @@ class PmtilesStorage {
   }
 
   void _scanDirectory(Directory directory, List<File> results) {
-    for (final entity in directory.listSync(followLinks: false)) {
+    Iterable<FileSystemEntity> entries;
+    try {
+      entries = directory.listSync(followLinks: false);
+    } on FileSystemException {
+      return;
+    }
+
+    for (final entity in entries) {
+      if (entity is Link) {
+        _scanLinkedEntity(entity, results);
+        continue;
+      }
       if (entity is File) {
-        final name = _basename(entity.path);
-        if (name.startsWith('.')) {
-          continue;
-        }
-        if (name.toLowerCase().endsWith('.pmtiles')) {
+        if (_isPmtilesArchive(entity.path)) {
           results.add(entity);
         }
-      } else if (entity is Directory) {
-        final name = _basename(entity.path);
-        if (name.startsWith('.')) {
+        continue;
+      }
+      if (entity is Directory) {
+        if (_basename(entity.path).startsWith('.')) {
           continue;
         }
         _scanDirectory(entity, results);
       }
     }
+  }
+
+  void _scanLinkedEntity(Link link, List<File> results) {
+    if (_basename(link.path).startsWith('.')) {
+      return;
+    }
+
+    FileSystemEntityType type;
+    try {
+      type = FileSystemEntity.typeSync(link.path, followLinks: true);
+    } on FileSystemException {
+      return;
+    }
+
+    switch (type) {
+      case FileSystemEntityType.file:
+        if (_isPmtilesArchive(link.path)) {
+          results.add(File(link.path));
+        }
+      case FileSystemEntityType.directory:
+        _scanDirectory(Directory(link.path), results);
+      case FileSystemEntityType.link:
+      case FileSystemEntityType.notFound:
+        return;
+    }
+  }
+
+  bool _isPmtilesArchive(String path) {
+    return _basename(path).toLowerCase().endsWith('.pmtiles');
   }
 
   /// Catalog name for a discovered archive (path relative to [root]).

@@ -51,20 +51,14 @@ abstract final class AppSettingsStore {
     Session session,
     AppSettings settings,
   ) async {
-    final configured = settings.pmtilesStoragePath.trim();
-    if (configured.isNotEmpty &&
-        configured != AppSettingsConstants.defaultPmtilesStoragePath) {
-      return settings;
-    }
-
-    final resolved = WayfinderEnv.resolveInitialPmtilesStoragePath();
-    if (resolved == configured) {
+    final effective = effectivePmtilesStoragePath(settings);
+    if (settings.pmtilesStoragePath.trim() == effective) {
       return settings;
     }
 
     return update(
       session,
-      settings.copyWith(pmtilesStoragePath: resolved),
+      settings.copyWith(pmtilesStoragePath: effective),
     );
   }
 

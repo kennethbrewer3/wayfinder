@@ -6,9 +6,10 @@ import 'geocoding_search_index_status.dart';
 /// Ensures pg_trgm indexes exist for geocoding ILIKE search.
 ///
 /// Index metadata is also declared in [Protocol.targetTableDefinitions] so
-/// Serverpod's schema check accepts them across restarts. Re-apply that patch
-/// in `lib/src/generated/protocol.dart` after `serverpod generate` if geocoding
-/// models change.
+/// Serverpod's schema check accepts them across restarts. Expression indexes
+/// must use type `expression` and match Postgres's normalized definition (see
+/// `pg_get_indexdef`). Re-apply that patch in `lib/src/generated/protocol.dart`
+/// after `serverpod generate` if geocoding models change.
 abstract final class GeocodingSearchIndexes {
   static const indexNames = [
     'geocode_place_name_trgm_idx',
@@ -38,7 +39,7 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_housenumber_trgm_idx"
     '''
 CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
   ON "geocode_housenumber"
-  USING gin (("housenumber" || ' ' || "street") gin_trgm_ops)
+  USING gin (((housenumber || ' '::text) || street) gin_trgm_ops)
 ''',
   ];
 

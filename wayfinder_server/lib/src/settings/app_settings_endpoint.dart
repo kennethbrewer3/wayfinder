@@ -105,6 +105,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     String angleDisplayFormat,
     String circleSizeDisplay,
     String appTheme,
+    String appLocale,
   ) {
     return loggedCall(
       session,
@@ -116,6 +117,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           angleDisplayFormat: angleDisplayFormat,
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
+          appLocale: appLocale,
         );
 
         final settings = await AppSettingsStore.getOrCreate(session);
@@ -126,6 +128,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
             angleDisplayFormat: angleDisplayFormat,
             circleSizeDisplay: circleSizeDisplay,
             appTheme: appTheme,
+            appLocale: appLocale,
           ),
         );
       },
@@ -133,7 +136,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           'units=${settings.measurementUnits} '
           'angles=${settings.angleDisplayFormat} '
           'circles=${settings.circleSizeDisplay} '
-          'theme=${settings.appTheme}',
+          'theme=${settings.appTheme} '
+          'locale=${settings.appLocale}',
     );
   }
 }

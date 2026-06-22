@@ -9,6 +9,7 @@ abstract final class AppSettingsConstants {
   static const defaultAngleDisplayFormat = 'decimal';
   static const defaultCircleSizeDisplay = 'radius';
   static const defaultAppTheme = 'light';
+  static const defaultAppLocale = 'system';
 
   static const allowedMeasurementUnits = {'metric', 'imperial', 'nautical'};
   static const allowedAngleDisplayFormats = {'decimal', 'dms'};
@@ -19,4 +20,5 @@ abstract final class AppSettingsConstants {
     'militaryLight',
     'militaryDark',
   };
+  static const allowedAppLocales = {'system', 'en', 'es', 'fr'};
 }

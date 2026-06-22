@@ -114,15 +114,23 @@ abstract final class AppSettingsStore {
     }
   }
 
+  static void validateAppLocale(String value) {
+    if (!AppSettingsConstants.allowedAppLocales.contains(value)) {
+      throw FormatException('Unsupported app locale: $value');
+    }
+  }
+
   static void validateClientPreferences({
     required String measurementUnits,
     required String angleDisplayFormat,
     required String circleSizeDisplay,
     required String appTheme,
+    required String appLocale,
   }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);
     validateCircleSizeDisplay(circleSizeDisplay);
     validateAppTheme(appTheme);
+    validateAppLocale(appLocale);
   }
 }

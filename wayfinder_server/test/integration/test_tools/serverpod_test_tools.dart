@@ -2286,6 +2286,7 @@ class _AppSettingsEndpoint {
     String angleDisplayFormat,
     String circleSizeDisplay,
     String appTheme,
+    String appLocale,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2303,6 +2304,7 @@ class _AppSettingsEndpoint {
             'angleDisplayFormat': angleDisplayFormat,
             'circleSizeDisplay': circleSizeDisplay,
             'appTheme': appTheme,
+            'appLocale': appLocale,
           }),
           serializationManager: _serializationManager,
         );

@@ -112,13 +112,15 @@ abstract final class AppSettingsRestHandlers {
       final angleDisplayFormat = _readString(body['angleDisplayFormat']);
       final circleSizeDisplay = _readString(body['circleSizeDisplay']);
       final appTheme = _readString(body['appTheme']);
+      final appLocale = _readString(body['appLocale']);
       if (measurementUnits == null ||
           angleDisplayFormat == null ||
           circleSizeDisplay == null ||
-          appTheme == null) {
+          appTheme == null ||
+          appLocale == null) {
         throw const FormatException(
           'Fields "measurementUnits", "angleDisplayFormat", '
-          '"circleSizeDisplay", and "appTheme" are required.',
+          '"circleSizeDisplay", "appTheme", and "appLocale" are required.',
         );
       }
 
@@ -127,6 +129,7 @@ abstract final class AppSettingsRestHandlers {
         angleDisplayFormat: angleDisplayFormat,
         circleSizeDisplay: circleSizeDisplay,
         appTheme: appTheme,
+        appLocale: appLocale,
       );
 
       final settings = await AppSettingsStore.getOrCreate(session);
@@ -137,6 +140,7 @@ abstract final class AppSettingsRestHandlers {
           angleDisplayFormat: angleDisplayFormat,
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
+          appLocale: appLocale,
         ),
       );
       return RestJson.ok(_encodeClientPreferences(updated));
@@ -149,6 +153,7 @@ abstract final class AppSettingsRestHandlers {
       'angleDisplayFormat': settings.angleDisplayFormat,
       'circleSizeDisplay': settings.circleSizeDisplay,
       'appTheme': settings.appTheme,
+      'appLocale': settings.appLocale,
       'updatedAt': settings.updatedAt.toIso8601String(),
     };
   }

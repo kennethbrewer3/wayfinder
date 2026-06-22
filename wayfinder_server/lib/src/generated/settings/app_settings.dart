@@ -24,11 +24,13 @@ abstract class AppSettings
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
-       appTheme = appTheme ?? 'light';
+       appTheme = appTheme ?? 'light',
+       appLocale = appLocale ?? 'system';
 
   factory AppSettings({
     int? id,
@@ -40,6 +42,7 @@ abstract class AppSettings
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -54,6 +57,7 @@ abstract class AppSettings
       angleDisplayFormat: jsonSerialization['angleDisplayFormat'] as String?,
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
+      appLocale: jsonSerialization['appLocale'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -83,6 +87,8 @@ abstract class AppSettings
 
   String appTheme;
 
+  String appLocale;
+
   DateTime updatedAt;
 
   @override
@@ -101,6 +107,7 @@ abstract class AppSettings
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     DateTime? updatedAt,
   });
   @override
@@ -116,6 +123,7 @@ abstract class AppSettings
       'angleDisplayFormat': angleDisplayFormat,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
+      'appLocale': appLocale,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -133,6 +141,7 @@ abstract class AppSettings
       'angleDisplayFormat': angleDisplayFormat,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
+      'appLocale': appLocale,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -180,6 +189,7 @@ class _AppSettingsImpl extends AppSettings {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -191,6 +201,7 @@ class _AppSettingsImpl extends AppSettings {
          angleDisplayFormat: angleDisplayFormat,
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
+         appLocale: appLocale,
          updatedAt: updatedAt,
        );
 
@@ -208,6 +219,7 @@ class _AppSettingsImpl extends AppSettings {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -220,6 +232,7 @@ class _AppSettingsImpl extends AppSettings {
       angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
+      appLocale: appLocale ?? this.appLocale,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -273,6 +286,11 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
     value,
   );
 
+  _i1.ColumnValue<String, String> appLocale(String value) => _i1.ColumnValue(
+    table.appLocale,
+    value,
+  );
+
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
       _i1.ColumnValue(
         table.updatedAt,
@@ -319,6 +337,11 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    appLocale = _i1.ColumnString(
+      'appLocale',
+      this,
+      hasDefault: true,
+    );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
@@ -343,6 +366,8 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString appTheme;
 
+  late final _i1.ColumnString appLocale;
+
   late final _i1.ColumnDateTime updatedAt;
 
   @override
@@ -356,6 +381,7 @@ class AppSettingsTable extends _i1.Table<int?> {
     angleDisplayFormat,
     circleSizeDisplay,
     appTheme,
+    appLocale,
     updatedAt,
   ];
 }

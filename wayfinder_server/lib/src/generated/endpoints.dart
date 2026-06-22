@@ -1256,6 +1256,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'appLocale': _i1.ParameterDescription(
+              name: 'appLocale',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -1268,6 +1273,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['angleDisplayFormat'],
                     params['circleSizeDisplay'],
                     params['appTheme'],
+                    params['appLocale'],
                   ),
         ),
       },

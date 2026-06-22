@@ -10,4 +10,5 @@ fields:
   angleDisplayFormat: String, default="decimal"
   circleSizeDisplay: String, default="radius"
   appTheme: String, default="light"
+  appLocale: String, default="system"
   updatedAt: DateTime

@@ -130,6 +130,13 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'light\'::text',
         ),
         _i2.ColumnDefinition(
+          name: 'appLocale',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'system\'::text',
+        ),
+        _i2.ColumnDefinition(
           name: 'updatedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -302,45 +309,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_housenumber_street_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'street',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_housenumber_housenumber_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'housenumber',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_housenumber_label_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.expression,
-              definition: '((housenumber || \' \'::text) || street)',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
       ],
       managed: true,
     ),
@@ -450,32 +418,6 @@ class Protocol extends _i1.SerializationManagerServer {
             ),
           ],
           type: 'btree',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_place_name_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_place_display_name_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'displayName',
-            ),
-          ],
-          type: 'gin',
           isUnique: false,
           isPrimary: false,
         ),

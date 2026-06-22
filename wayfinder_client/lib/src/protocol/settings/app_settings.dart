@@ -23,11 +23,13 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
-       appTheme = appTheme ?? 'light';
+       appTheme = appTheme ?? 'light',
+       appLocale = appLocale ?? 'system';
 
   factory AppSettings({
     int? id,
@@ -39,6 +41,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -53,6 +56,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       angleDisplayFormat: jsonSerialization['angleDisplayFormat'] as String?,
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
+      appLocale: jsonSerialization['appLocale'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -80,6 +84,8 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   String appTheme;
 
+  String appLocale;
+
   DateTime updatedAt;
 
   /// Returns a shallow copy of this [AppSettings]
@@ -95,6 +101,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     DateTime? updatedAt,
   });
   @override
@@ -110,6 +117,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       'angleDisplayFormat': angleDisplayFormat,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
+      'appLocale': appLocale,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -133,6 +141,7 @@ class _AppSettingsImpl extends AppSettings {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -144,6 +153,7 @@ class _AppSettingsImpl extends AppSettings {
          angleDisplayFormat: angleDisplayFormat,
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
+         appLocale: appLocale,
          updatedAt: updatedAt,
        );
 
@@ -161,6 +171,7 @@ class _AppSettingsImpl extends AppSettings {
     String? angleDisplayFormat,
     String? circleSizeDisplay,
     String? appTheme,
+    String? appLocale,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -173,6 +184,7 @@ class _AppSettingsImpl extends AppSettings {
       angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
+      appLocale: appLocale ?? this.appLocale,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

@@ -154,6 +154,20 @@ cd wayfinder_flutter && docker compose up -d --build
 
 ## Troubleshooting
 
+**`could not find .../wayfinder_server` or `[+] Building` when you did not expect a build**
+
+You are using the **developer** compose file (`wayfinder_server/docker-compose.yaml` from a git clone) which used to build from source. End users should use **`deploy/server/docker-compose.yaml`** instead — it only pulls a pre-built image:
+
+```bash
+mkdir wayfinder-server && cd wayfinder-server
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/server/docker-compose.yaml
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/server/.env.example
+cp .env.example .env
+docker compose pull && docker compose up -d
+```
+
+See [deploy/server/README.md](deploy/server/README.md).
+
 **`pull access denied` or image not found**  
 Ensure the GitHub packages are public: repo **Settings → Actions → General → Workflow permissions**, and on each package page **Package settings → Change visibility → Public**. Images are published after the first successful run of the Docker workflow on `main`.
 

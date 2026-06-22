@@ -6,14 +6,18 @@ Serverpod backend for Wayfinder (PostgreSQL, Redis, API, PMTiles).
 
 End users can install **without cloning the repo** — see [deploy/server/](../deploy/server/) and [DEPLOY.md](../DEPLOY.md).
 
-Developers with a repo clone can build locally:
+Pull the pre-built image (default):
 
 ```bash
 cp .env.example .env
-docker compose up -d --build
+docker compose pull && docker compose up -d
 ```
 
-This starts Postgres, Redis, and the Serverpod server. The Flutter web client has its own Compose file in `wayfinder_flutter/` — see [DEPLOY.md](../DEPLOY.md) to run server and client on separate machines.
+Build from source when developing server changes:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.build.yaml up -d --build
+```
 
 ## Local development (Dart on host)
 

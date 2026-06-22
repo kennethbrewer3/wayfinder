@@ -91,7 +91,19 @@ docker compose pull && docker compose up -d
 
 See **[DEPLOY.md](DEPLOY.md)** for the full guide (separate machines, firewall, pinning releases).
 
-Developers with a repo clone can still build locally from `wayfinder_server/` and `wayfinder_flutter/` compose files.
+Developers with a repo clone can build locally when changing server code:
+
+```bash
+cd wayfinder_server
+docker compose -f docker-compose.yaml -f docker-compose.build.yaml up -d --build
+```
+
+To run without building (pull pre-built image like end users):
+
+```bash
+cd wayfinder_server
+docker compose up -d
+```
 
 ## REST API
 

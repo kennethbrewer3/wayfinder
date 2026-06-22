@@ -1,11 +1,13 @@
 # Wayfinder server stack (Postgres, Redis, Serverpod).
 #
-# Developers: build from source in this repo:
+# Pull pre-built image (default):
 #   cp .env.example .env
-#   docker compose up -d --build
+#   docker compose pull && docker compose up -d
 #
-# End users (no clone): use deploy/server/ and pull ghcr.io/kennethbrewer3/wayfinder-server
-# See ../DEPLOY.md
+# Build from source (developers changing server code):
+#   docker compose -f docker-compose.yaml -f docker-compose.build.yaml up -d --build
+#
+# End users without a git clone: use deploy/server/ — see ../DEPLOY.md
 
 services:
   postgres:
@@ -37,9 +39,8 @@ services:
     restart: unless-stopped
 
   server:
-    build:
-      context: ..
-      dockerfile: wayfinder_server/Dockerfile
+    image: ${WAYFINDER_SERVER_IMAGE:-ghcr.io/kennethbrewer3/wayfinder-server:latest}
+    pull_policy: always
     depends_on:
       postgres:
         condition: service_healthy

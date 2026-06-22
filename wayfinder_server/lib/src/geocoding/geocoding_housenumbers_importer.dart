@@ -157,6 +157,10 @@ abstract final class GeocodingHousenumbersImporter {
             ),
           );
           final lineStream = response
+              .map((chunk) {
+                progress.addStreamBytes(chunk.length);
+                return chunk;
+              })
               .transform(gzip.decoder)
               .transform(utf8.decoder)
               .transform(const LineSplitter());
@@ -166,7 +170,7 @@ abstract final class GeocodingHousenumbersImporter {
 
           await for (final line in lineStream) {
             GeocodingImportControl.checkCancelled();
-            progress.addLineBytes(line.length);
+            progress.addProcessedLine();
             await progress.maybeReport(
               importStatus: isHeader
                   ? GeocodingConstants.statusDownloading
@@ -179,7 +183,7 @@ abstract final class GeocodingHousenumbersImporter {
                 serverpod,
                 importStatus: GeocodingConstants.statusImporting,
                 importedRowCount: 0,
-                importProgress: progress.computeProgress().clamp(0.01, 0.99),
+                importProgress: progress.computeProgress(),
               );
               WfLog.info(
                 null,
@@ -217,6 +221,23 @@ abstract final class GeocodingHousenumbersImporter {
             importedRows += await _insertBatch(serverpod, batch);
             progress.importedRows = importedRows;
           }
+
+          await _updateProgress(
+            serverpod,
+            importStatus: GeocodingConstants.statusImporting,
+            importedRowCount: importedRows,
+            importProgress: progress.computeProgress(
+              phase: GeocodingImportProgressPhase.finalizing,
+            ),
+          );
+          await _updateProgress(
+            serverpod,
+            importStatus: GeocodingConstants.statusImporting,
+            importedRowCount: importedRows,
+            importProgress: progress.computeProgress(
+              phase: GeocodingImportProgressPhase.committing,
+            ),
+          );
         },
         onClientCreated: GeocodingImportControl.attachClient,
         logLabel: 'housenumbers',

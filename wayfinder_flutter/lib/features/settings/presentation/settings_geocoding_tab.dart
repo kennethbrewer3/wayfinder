@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/file_save.dart';
+import '../../../core/format/locale_count_format.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/models/geocoding_datasets.dart';
@@ -536,16 +537,21 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     );
   }
 
+  String _formatCount(int value) {
+    return formatLocaleCount(value, Localizations.localeOf(context).toString());
+  }
+
   String _importStatusLabel({
     required String status,
     required int rowCount,
     required String readyLabel,
   }) {
+    final formattedCount = _formatCount(rowCount);
     return switch (status) {
       geocodingStatusIdle => 'Not imported',
       geocodingStatusDownloading => 'Downloading…',
       geocodingStatusImporting => 'Importing…',
-      geocodingStatusCompleted => 'Ready ($rowCount $readyLabel)',
+      geocodingStatusCompleted => 'Ready ($formattedCount $readyLabel)',
       geocodingStatusFailed => 'Failed',
       geocodingStatusCancelled => 'Cancelled',
       _ => status,
@@ -576,7 +582,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     }
 
     final progressPercent =
-        (progress * 100).clamp(0, 100).toStringAsFixed(0);
+        (progress * 100).clamp(0, 100).toStringAsFixed(1);
+    final formattedCount = _formatCount(importedRowCount);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -584,7 +591,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         LinearProgressIndicator(value: progress),
         const SizedBox(height: 4),
         Text(
-          '$progressPercent% · $importedRowCount $rowLabel imported',
+          '$progressPercent% · $formattedCount $rowLabel imported',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         if (onAbort != null) ...[

@@ -2,6 +2,13 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/wayfinder_log.dart';
 
+/// Where an import is in its lifecycle for progress weighting.
+enum GeocodingImportProgressPhase {
+  streaming,
+  finalizing,
+  committing,
+}
+
 /// Tracks byte progress while streaming a remote geocoding dataset and emits
 /// periodic logs plus status updates so long downloads do not appear stuck.
 class GeocodingDownloadProgress {
@@ -21,7 +28,9 @@ class GeocodingDownloadProgress {
     required double importProgress,
   }) updateStatus;
 
+  /// Compressed bytes read from the HTTP response (matches [totalBytes]).
   int processedBytes = 0;
+  int processedLines = 0;
   int importedRows = 0;
   int _lastLoggedBytes = 0;
   DateTime _lastLoggedAt = DateTime.now();
@@ -30,13 +39,19 @@ class GeocodingDownloadProgress {
   static const _logByteInterval = 50 * 1024 * 1024;
   static const _logTimeInterval = Duration(seconds: 30);
 
-  void addLineBytes(int lineLength) {
-    processedBytes += lineLength + 1;
+  void addStreamBytes(int byteCount) {
+    processedBytes += byteCount;
+  }
+
+  void addProcessedLine() {
+    processedLines++;
   }
 
   Future<void> maybeReport({
     required String importStatus,
     required String phase,
+    GeocodingImportProgressPhase progressPhase =
+        GeocodingImportProgressPhase.streaming,
   }) async {
     final now = DateTime.now();
     final bytesSinceLog = processedBytes - _lastLoggedBytes;
@@ -49,7 +64,7 @@ class GeocodingDownloadProgress {
       return;
     }
 
-    final progress = computeProgress();
+    final progress = computeProgress(phase: progressPhase);
     if (shouldLog) {
       WfLog.info(
         null,
@@ -57,6 +72,7 @@ class GeocodingDownloadProgress {
         '⬇️ $logLabel $phase '
         'processed=${formatBytes(processedBytes)}/'
         '${totalBytes > 0 ? formatBytes(totalBytes) : 'unknown size'} '
+        'lines=$processedLines '
         'progress=${(progress * 100).toStringAsFixed(1)}% '
         'importedRows=$importedRows',
       );
@@ -74,14 +90,34 @@ class GeocodingDownloadProgress {
     }
   }
 
-  double computeProgress() {
+  double computeProgress({
+    GeocodingImportProgressPhase phase = GeocodingImportProgressPhase.streaming,
+  }) {
+    return switch (phase) {
+      GeocodingImportProgressPhase.streaming => _streamingProgress(),
+      GeocodingImportProgressPhase.finalizing => 0.92,
+      GeocodingImportProgressPhase.committing => 0.97,
+    };
+  }
+
+  double _streamingProgress() {
     if (totalBytes > 0) {
-      return (processedBytes / totalBytes).clamp(0, 0.99);
+      final streamRatio = (processedBytes / totalBytes).clamp(0.0, 1.0);
+      // Reserve headroom for final batch flush and DB commit.
+      return (streamRatio * 0.88).clamp(0.0, 0.88);
     }
-    if (importedRows <= 0) {
-      return 0;
+
+    if (importedRows > 0) {
+      // Unknown Content-Length — grow slowly from row volume so the bar still moves.
+      final rowProgress = 1 - (1 / (1 + importedRows / 250000));
+      return (rowProgress * 0.85).clamp(0.0, 0.85);
     }
-    return 0.5;
+
+    if (processedBytes > 0) {
+      return 0.02;
+    }
+
+    return 0;
   }
 
   static String formatBytes(int bytes) {

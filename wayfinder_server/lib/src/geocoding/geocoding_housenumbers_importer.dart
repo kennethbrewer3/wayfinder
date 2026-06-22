@@ -382,7 +382,9 @@ abstract final class GeocodingHousenumbersImporter {
         street.isEmpty ||
         housenumber.isEmpty ||
         longitude == null ||
-        latitude == null) {
+        latitude == null ||
+        !longitude.isFinite ||
+        !latitude.isFinite) {
       return null;
     }
 

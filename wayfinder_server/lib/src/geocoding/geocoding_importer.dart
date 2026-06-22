@@ -410,7 +410,10 @@ abstract final class GeocodingImporter {
     if (longitude == null ||
         latitude == null ||
         placeRank == null ||
-        importance == null) {
+        importance == null ||
+        !longitude.isFinite ||
+        !latitude.isFinite ||
+        !importance.isFinite) {
       return null;
     }
 

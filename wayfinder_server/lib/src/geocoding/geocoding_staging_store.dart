@@ -189,10 +189,10 @@ FROM "geocode_housenumber_staging"
 (
   ${_sqlString(place.name)},
   ${_sqlNullable(place.displayName)},
-  ${place.latitude},
-  ${place.longitude},
+  ${_sqlDouble(place.latitude)},
+  ${_sqlDouble(place.longitude)},
   ${place.placeRank},
-  ${place.importance},
+  ${_sqlDouble(place.importance)},
   ${_sqlNullable(place.countryCode)},
   ${_sqlNullable(place.featureClass)},
   ${_sqlNullable(place.featureType)}
@@ -205,8 +205,8 @@ FROM "geocode_housenumber_staging"
   ${_sqlString(address.streetId)},
   ${_sqlString(address.street)},
   ${_sqlString(address.housenumber)},
-  ${address.latitude},
-  ${address.longitude}
+  ${_sqlDouble(address.latitude)},
+  ${_sqlDouble(address.longitude)}
 )''';
   }
 
@@ -219,5 +219,15 @@ FROM "geocode_housenumber_staging"
       return 'NULL';
     }
     return _sqlString(value);
+  }
+
+  static String _sqlDouble(double value) {
+    if (value.isNaN) {
+      return "'NaN'";
+    }
+    if (value.isInfinite) {
+      return value.isNegative ? "'-Infinity'" : "'Infinity'";
+    }
+    return value.toString();
   }
 }

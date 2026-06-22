@@ -1889,15 +1889,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 .map((entry) => entry.minZoom)
                 .reduce((a, b) => a < b ? a : b)
                 .toDouble());
-    final maxZoom = activeLayer != null
-        ? _maxInteractionZoom(activeLayer.maxZoom)
-        : enabledEntries.isEmpty
-            ? _maxInteractionZoom(null)
-            : _maxInteractionZoom(
-                enabledEntries
-                    .map((entry) => entry.maxZoom)
-                    .reduce((a, b) => a > b ? a : b),
-              );
+    final maxZoom = AppConstants.maxMapZoom;
     final lineDrawing = ref.watch(lineDrawingProvider);
     final circleDrawing = ref.watch(circleDrawingProvider);
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
@@ -1985,6 +1977,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   initialZoom: widget.viewport.zoom,
                   minZoom: minZoom,
                   maxZoom: maxZoom,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   interactionOptions: InteractionOptions(
                     flags: lineDrawing.active ||
                             bearingPlot.active ||
@@ -2022,6 +2015,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             :final catalogId,
                             :final tileProvider,
                             :final theme,
+                            :final backgroundTheme,
                             :final sprites,
                           ) =>
                             [
@@ -2029,7 +2023,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 key: ValueKey('pmtiles-$catalogId'),
                                 layerMode: VectorTileLayerMode.vector,
                                 theme: theme,
+                                backgroundTheme: backgroundTheme,
                                 sprites: sprites,
+                                maximumTileSubstitutionDifference: 4,
                                 tileProviders: TileProviders({
                                   'protomaps': tileProvider,
                                 }),
@@ -2397,9 +2393,3 @@ class _PlaceholderLayer extends StatelessWidget {
   }
 }
 
-double _maxInteractionZoom(int? archiveMaxZoom) {
-  final archiveMax = archiveMaxZoom?.toDouble() ?? AppConstants.maxMapZoom;
-  return archiveMax > AppConstants.maxMapZoom
-      ? archiveMax
-      : AppConstants.maxMapZoom;
-}

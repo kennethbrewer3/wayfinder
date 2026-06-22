@@ -22,6 +22,13 @@ Theme buildOfflineProtomapsLightV4Theme() {
       .toList();
 
   for (final layer in layers) {
+    if (layer['id'] == 'background') {
+      final paint = layer['paint'];
+      if (paint is Map) {
+        paint['background-color'] = '#e0e0e0';
+      }
+    }
+
     if (layer['type'] != 'symbol') {
       continue;
     }
@@ -46,4 +53,13 @@ Theme buildOfflineProtomapsLightV4Theme() {
   return ProtomapsThemes(
     glyphs: 'asset://protomaps/glyphs/{fontstack}/{range}.pbf',
   ).build(layers);
+}
+
+/// Coarse fill layers rendered beneath the main theme while tiles load or
+/// overzoom. Matches [vector_map_tiles] `backgroundTheme` usage.
+Theme buildOfflineProtomapsBackgroundTheme() {
+  return buildOfflineProtomapsLightV4Theme().copyWith(
+    id: 'protomaps-light-v4-background',
+    types: {ThemeLayerType.background, ThemeLayerType.fill},
+  );
 }

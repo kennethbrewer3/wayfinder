@@ -39,10 +39,12 @@ class PmtilesVectorMapLayerConfig extends PmtilesMapLayerConfig {
     required super.tileType,
     required this.tileProvider,
     required this.theme,
+    required this.backgroundTheme,
     required this.sprites,
   });
 
   final PmTilesVectorTileProvider tileProvider;
   final Theme theme;
+  final Theme backgroundTheme;
   final SpriteStyle sprites;
 }

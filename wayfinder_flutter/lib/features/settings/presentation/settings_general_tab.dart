@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/app_theme_choice.dart';
+import '../../../app/theme.dart';
 import '../../../core/app_globals.dart';
 import '../../../core/app_restart.dart';
 import '../../../core/constants.dart';
@@ -16,6 +18,7 @@ import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
+import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
 
 class SettingsGeneralTab extends ConsumerStatefulWidget {
@@ -225,6 +228,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
+    final themeChoice = ref.watch(appThemeProvider);
     ref.listen<HomeLocation>(homeLocationProvider, (previous, next) {
       if (previous != next) {
         _syncHomeFields(next);
@@ -234,6 +238,61 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        Text(
+          'Appearance',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Choose a color theme for the app. Military themes use olive, tan, '
+          'and forest green tones.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Theme style',
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 8),
+        SegmentedButton<AppThemeFamily>(
+          segments: AppThemeFamily.values
+              .map(
+                (family) => ButtonSegment(
+                  value: family,
+                  label: Text(family.label),
+                ),
+              )
+              .toList(),
+          selected: {themeChoice.family},
+          onSelectionChanged: (selection) {
+            ref.read(appThemeProvider.notifier).setFamily(selection.first);
+          },
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Brightness',
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 8),
+        SegmentedButton<AppThemeBrightness>(
+          segments: AppThemeBrightness.values
+              .map(
+                (brightness) => ButtonSegment(
+                  value: brightness,
+                  label: Text(brightness.label),
+                ),
+              )
+              .toList(),
+          selected: {themeChoice.brightness},
+          onSelectionChanged: (selection) {
+            ref
+                .read(appThemeProvider.notifier)
+                .setBrightness(selection.first);
+          },
+        ),
+        const SizedBox(height: 12),
+        _ThemePreview(choice: themeChoice),
+        const SizedBox(height: 32),
         Text(
           'Map home',
           style: Theme.of(context).textTheme.titleLarge,
@@ -435,6 +494,86 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 .setDisplay(selection.first);
           },
         ),
+      ],
+    );
+  }
+}
+
+class _ThemePreview extends StatelessWidget {
+  const _ThemePreview({required this.choice});
+
+  final AppThemeChoice choice;
+
+  @override
+  Widget build(BuildContext context) {
+    final previewTheme = AppTheme.forChoice(choice);
+    final colors = previewTheme.colorScheme;
+
+    return Theme(
+      data: previewTheme,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                choice.label,
+                style: previewTheme.textTheme.titleSmall,
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _Swatch(label: 'Primary', color: colors.primary),
+                  _Swatch(label: 'Secondary', color: colors.secondary),
+                  _Swatch(label: 'Surface', color: colors.surface),
+                  _Swatch(label: 'Accent', color: colors.tertiary),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  FilledButton(onPressed: () {}, child: const Text('Button')),
+                  const SizedBox(width: 8),
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: const Text('Outline'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Swatch extends StatelessWidget {
+  const _Swatch({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 48,
+          height: 32,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: Theme.of(context).textTheme.labelSmall),
       ],
     );
   }

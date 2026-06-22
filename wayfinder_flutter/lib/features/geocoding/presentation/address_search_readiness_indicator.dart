@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/presentation/animated_status_dot_icon_button.dart';
 import '../data/geocoding_repository.dart';
 import '../models/geocoding_models.dart';
 
@@ -70,14 +71,17 @@ class _AddressSearchReadinessIndicatorState
     });
 
     return readinessAsync.when(
-      loading: () => const _ReadinessIconButton(
+      loading: () => const AnimatedStatusDotIconButton(
         isReady: false,
+        isLoading: true,
         tooltip: 'Checking search readiness…',
-        onPressed: null,
+        icon: Icons.travel_explore,
       ),
-      error: (error, stackTrace) => _ReadinessIconButton(
+      error: (error, stackTrace) => AnimatedStatusDotIconButton(
         isReady: false,
+        isLoading: false,
         tooltip: 'Search readiness unavailable',
+        icon: Icons.travel_explore,
         onPressed: () => _showReadinessDialog(
           context,
           const GeocodingSearchReadiness(
@@ -90,11 +94,15 @@ class _AddressSearchReadinessIndicatorState
           ),
         ),
       ),
-      data: (readiness) => _ReadinessIconButton(
+      data: (readiness) => AnimatedStatusDotIconButton(
         isReady: readiness.isFullSearchReady,
+        isLoading: readiness.indexesBuilding,
         tooltip: readiness.isFullSearchReady
             ? 'Full search ready'
-            : 'Full search not ready',
+            : readiness.indexesBuilding
+                ? 'Building search indexes…'
+                : 'Full search not ready',
+        icon: Icons.travel_explore,
         onPressed: () => _showReadinessDialog(context, readiness),
       ),
     );
@@ -102,119 +110,94 @@ class _AddressSearchReadinessIndicatorState
 
   void _showReadinessDialog(
     BuildContext context,
-    GeocodingSearchReadiness readiness,
+    GeocodingSearchReadiness initialReadiness,
   ) {
     showDialog<void>(
       context: context,
-      builder: (context) {
-        final etaLabel = readiness.etaLabel;
-        final progressPercent = readiness.buildProgress == null
-            ? null
-            : (readiness.buildProgress! * 100).round();
+      builder: (dialogContext) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final readinessAsync = ref.watch(geocodingSearchReadinessProvider);
+            final readiness = readinessAsync.maybeWhen(
+              data: (value) => value,
+              orElse: () => initialReadiness,
+            );
+            final isLoading = readinessAsync.isLoading || readiness.indexesBuilding;
+            final progressPercent = readiness.buildProgress == null
+                ? null
+                : (readiness.buildProgress! * 100).round();
+            final etaLabel = readiness.etaLabel;
 
-        return AlertDialog(
-          title: Text(
-            readiness.isFullSearchReady
-                ? 'Full search ready'
-                : readiness.isAddressSearchReady
-                    ? 'Address search ready'
-                    : 'Search not ready yet',
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (readiness.statusMessage != null)
-                Text(readiness.statusMessage!),
-              if (readiness.isFullSearchReady) ...[
-                const SizedBox(height: 12),
-                const Text(
-                  'You can search for places and street addresses from the map search bar.',
+            return AlertDialog(
+              title: Text(
+                readiness.isFullSearchReady
+                    ? 'Full search ready'
+                    : readiness.isAddressSearchReady
+                        ? 'Address search ready'
+                        : 'Search not ready yet',
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isLoading && !readiness.isFullSearchReady) ...[
+                    ActivityProgressBar(
+                      progress: readiness.buildProgress,
+                      label: readiness.totalIndexCount > 0
+                          ? 'Indexes built: ${readiness.readyIndexCount} of ${readiness.totalIndexCount}'
+                          : readinessAsync.isLoading
+                              ? 'Checking search status…'
+                              : 'Building search indexes…',
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (readiness.statusMessage != null)
+                    Text(readiness.statusMessage!),
+                  if (readiness.isFullSearchReady) ...[
+                    const SizedBox(height: 12),
+                    const Text(
+                      'You can search for places and street addresses from the map search bar.',
+                    ),
+                  ] else if (readiness.isAddressSearchReady) ...[
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Street address search is ready. Place-name search is still being prepared.',
+                    ),
+                  ] else ...[
+                    if (!isLoading && readiness.totalIndexCount > 0) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        'Indexes built: ${readiness.readyIndexCount} of ${readiness.totalIndexCount}',
+                      ),
+                    ],
+                    if (!isLoading && progressPercent != null) ...[
+                      const SizedBox(height: 8),
+                      Text('$progressPercent% complete'),
+                    ],
+                    if (etaLabel != null) ...[
+                      const SizedBox(height: 12),
+                      Text('Estimated time remaining: $etaLabel'),
+                    ],
+                    if (readiness.currentIndexName != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        'Current index: ${readiness.currentIndexName}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ],
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('OK'),
                 ),
-              ] else if (readiness.isAddressSearchReady) ...[
-                const SizedBox(height: 12),
-                const Text(
-                  'Street address search is ready. Place-name search is still being prepared.',
-                ),
-              ] else ...[
-                if (readiness.totalIndexCount > 0) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    'Indexes built: ${readiness.readyIndexCount} of ${readiness.totalIndexCount}',
-                  ),
-                ],
-                if (progressPercent != null) ...[
-                  const SizedBox(height: 8),
-                  LinearProgressIndicator(value: readiness.buildProgress),
-                  const SizedBox(height: 4),
-                  Text('$progressPercent% complete'),
-                ],
-                if (etaLabel != null) ...[
-                  const SizedBox(height: 12),
-                  Text('Estimated time remaining: $etaLabel'),
-                ],
-                if (readiness.currentIndexName != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'Current index: ${readiness.currentIndexName}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
               ],
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
+            );
+          },
         );
       },
-    );
-  }
-}
-
-class _ReadinessIconButton extends StatelessWidget {
-  const _ReadinessIconButton({
-    required this.isReady,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  final bool isReady;
-  final String tooltip;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final indicatorColor = isReady ? Colors.green : Colors.red;
-
-    return IconButton(
-      tooltip: tooltip,
-      onPressed: onPressed,
-      icon: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          const Icon(Icons.travel_explore),
-          Positioned(
-            right: -1,
-            bottom: -1,
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: indicatorColor,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.surface,
-                  width: 1.5,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

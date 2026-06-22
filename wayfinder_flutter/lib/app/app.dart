@@ -4,18 +4,21 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/constants.dart';
+import '../features/settings/providers/app_theme_provider.dart';
 import 'router.dart';
 import 'theme.dart';
 
-class WayfinderApp extends StatelessWidget {
+class WayfinderApp extends ConsumerWidget {
   const WayfinderApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeChoice = ref.watch(appThemeProvider);
+
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
+      theme: AppTheme.forChoice(themeChoice),
       routerConfig: appRouter,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

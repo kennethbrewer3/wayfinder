@@ -11,10 +11,12 @@ import 'protomaps_offline_theme.dart';
 class ProtomapsOfflineMapStyle {
   const ProtomapsOfflineMapStyle({
     required this.theme,
+    required this.backgroundTheme,
     required this.sprites,
   });
 
   final Theme theme;
+  final Theme backgroundTheme;
   final SpriteStyle sprites;
 }
 
@@ -52,9 +54,14 @@ class ProtomapsOfflineAssets {
     );
 
     final theme = buildOfflineProtomapsLightV4Theme();
+    final backgroundTheme = buildOfflineProtomapsBackgroundTheme();
     _log.info('📦 Using simplified offline label expressions for street names');
 
     _log.success('📦 Protomaps offline assets ready');
-    return ProtomapsOfflineMapStyle(theme: theme, sprites: sprites);
+    return ProtomapsOfflineMapStyle(
+      theme: theme,
+      backgroundTheme: backgroundTheme,
+      sprites: sprites,
+    );
   }
 }

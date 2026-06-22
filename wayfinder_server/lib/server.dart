@@ -140,7 +140,17 @@ void run(List<String> args) async {
         '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
       );
     }
-    await GeocodingImportRecovery.recoverStaleImportsOnStartup(syncSession);
+    try {
+      await GeocodingImportRecovery.recoverStaleImportsOnStartup(syncSession);
+    } catch (error, stackTrace) {
+      WfLog.error(
+        syncSession,
+        'geocoding',
+        '⚠️ Stale import recovery failed on startup (server will continue)',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
     unawaited(_ensureGeocodingSearchIndexes(pod));
   } finally {
     await syncSession.close();

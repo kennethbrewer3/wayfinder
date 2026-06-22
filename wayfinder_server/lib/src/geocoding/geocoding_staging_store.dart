@@ -4,13 +4,43 @@ import '../generated/protocol.dart';
 
 /// Staging tables keep live geocoding data intact until an import succeeds.
 abstract final class GeocodingStagingStore {
+  /// Creates staging tables when missing (e.g. DB migrated past the staging
+  /// migration without applying it, or migrations not yet run on first boot).
+  static Future<void> ensureStagingTablesReady(Session session) async {
+    await session.db.unsafeExecute('''
+CREATE TABLE IF NOT EXISTS "geocode_place_staging" (
+    "id" bigserial PRIMARY KEY,
+    "name" text NOT NULL,
+    "displayName" text,
+    "latitude" double precision NOT NULL,
+    "longitude" double precision NOT NULL,
+    "placeRank" bigint NOT NULL,
+    "importance" double precision NOT NULL,
+    "countryCode" text,
+    "featureClass" text,
+    "featureType" text
+);
+
+CREATE TABLE IF NOT EXISTS "geocode_housenumber_staging" (
+    "id" bigserial PRIMARY KEY,
+    "streetId" text NOT NULL,
+    "street" text NOT NULL,
+    "housenumber" text NOT NULL,
+    "latitude" double precision NOT NULL,
+    "longitude" double precision NOT NULL
+);
+''');
+  }
+
   static Future<void> preparePlacesStaging(Session session) async {
+    await ensureStagingTablesReady(session);
     await session.db.unsafeExecute(
       'TRUNCATE "geocode_place_staging" RESTART IDENTITY',
     );
   }
 
   static Future<void> prepareHousenumbersStaging(Session session) async {
+    await ensureStagingTablesReady(session);
     await session.db.unsafeExecute(
       'TRUNCATE "geocode_housenumber_staging" RESTART IDENTITY',
     );
@@ -24,6 +54,7 @@ abstract final class GeocodingStagingStore {
       return;
     }
 
+    await ensureStagingTablesReady(session);
     final values = batch.map(_placeValues).join(',\n');
     await session.db.unsafeExecute('''
 INSERT INTO "geocode_place_staging" (
@@ -50,6 +81,7 @@ $values
       return;
     }
 
+    await ensureStagingTablesReady(session);
     final values = batch.map(_housenumberValues).join(',\n');
     await session.db.unsafeExecute('''
 INSERT INTO "geocode_housenumber_staging" (
@@ -65,6 +97,7 @@ $values
   }
 
   static Future<void> commitPlacesImport(Session session) async {
+    await ensureStagingTablesReady(session);
     await session.db.transaction((transaction) async {
       await session.db.unsafeExecute(
         'TRUNCATE "geocode_place" RESTART IDENTITY',
@@ -105,6 +138,7 @@ FROM "geocode_place_staging"
   }
 
   static Future<void> commitHousenumbersImport(Session session) async {
+    await ensureStagingTablesReady(session);
     await session.db.transaction((transaction) async {
       await session.db.unsafeExecute(
         'TRUNCATE "geocode_housenumber" RESTART IDENTITY',
@@ -137,12 +171,14 @@ FROM "geocode_housenumber_staging"
   }
 
   static Future<void> discardPlacesStaging(Session session) async {
+    await ensureStagingTablesReady(session);
     await session.db.unsafeExecute(
       'TRUNCATE "geocode_place_staging" RESTART IDENTITY',
     );
   }
 
   static Future<void> discardHousenumbersStaging(Session session) async {
+    await ensureStagingTablesReady(session);
     await session.db.unsafeExecute(
       'TRUNCATE "geocode_housenumber_staging" RESTART IDENTITY',
     );

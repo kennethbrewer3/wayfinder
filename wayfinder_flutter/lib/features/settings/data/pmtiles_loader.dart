@@ -129,6 +129,7 @@ Future<PmtilesMapLayerConfig> buildPmtilesMapLayer(
         tileType: archive.tileType,
         tileProvider: PmTilesVectorTileProvider.fromArchive(archive),
         theme: offlineStyle.theme,
+        backgroundTheme: offlineStyle.backgroundTheme,
         sprites: offlineStyle.sprites,
       );
     case TileType.png:

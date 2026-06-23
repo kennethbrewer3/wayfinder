@@ -21,7 +21,7 @@ class GeocodingDownloadProgress {
 
   final Serverpod serverpod;
   final String logLabel;
-  final int totalBytes;
+  int totalBytes;
   final Future<void> Function({
     required String importStatus,
     required int importedRowCount,

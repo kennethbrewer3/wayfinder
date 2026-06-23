@@ -136,27 +136,28 @@ abstract final class GeocodingHousenumbersImporter {
       }
 
       var importedRows = 0;
+      late final GeocodingDownloadProgress progress;
+      progress = GeocodingDownloadProgress(
+        serverpod: serverpod,
+        logLabel: 'housenumbers',
+        totalBytes: -1,
+        updateStatus: ({
+          required String importStatus,
+          required int importedRowCount,
+          required double importProgress,
+        }) =>
+            _updateProgress(
+          serverpod,
+          importStatus: importStatus,
+          importedRowCount: importedRowCount,
+          importProgress: importProgress,
+        ),
+      );
       await GeocodingRemoteFetch.withDownload(
         url,
-        (response) async {
-          final totalBytes = response.contentLength;
-          final progress = GeocodingDownloadProgress(
-            serverpod: serverpod,
-            logLabel: 'housenumbers',
-            totalBytes: totalBytes,
-            updateStatus: ({
-              required String importStatus,
-              required int importedRowCount,
-              required double importProgress,
-            }) =>
-                _updateProgress(
-              serverpod,
-              importStatus: importStatus,
-              importedRowCount: importedRowCount,
-              importProgress: importProgress,
-            ),
-          );
-          final lineStream = response
+        (byteStream, contentLength) async {
+          progress.totalBytes = contentLength;
+          final lineStream = byteStream
               .map((chunk) {
                 progress.addStreamBytes(chunk.length);
                 return chunk;
@@ -189,7 +190,7 @@ abstract final class GeocodingHousenumbersImporter {
                 null,
                 'geocoding',
                 '🏠 Housenumbers import started parsing rows '
-                'totalBytes=${totalBytes >= 0 ? GeocodingDownloadProgress.formatBytes(totalBytes) : 'unknown'}',
+                'totalBytes=${contentLength >= 0 ? GeocodingDownloadProgress.formatBytes(contentLength) : 'unknown'}',
               );
               continue;
             }
@@ -236,6 +237,18 @@ abstract final class GeocodingHousenumbersImporter {
             importedRowCount: importedRows,
             importProgress: progress.computeProgress(
               phase: GeocodingImportProgressPhase.committing,
+            ),
+          );
+        },
+        onDownloadProgress: (bytesReceived, totalBytes) {
+          if (totalBytes != null && totalBytes > 0) {
+            progress.totalBytes = totalBytes;
+          }
+          progress.processedBytes = bytesReceived;
+          unawaited(
+            progress.maybeReport(
+              importStatus: GeocodingConstants.statusDownloading,
+              phase: 'download',
             ),
           );
         },

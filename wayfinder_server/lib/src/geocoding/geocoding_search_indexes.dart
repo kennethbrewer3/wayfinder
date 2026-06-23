@@ -46,7 +46,34 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
   ];
 
   static Future<void> ensureReady(Session session) async {
+    await session.db.unsafeExecute(
+      'CREATE EXTENSION IF NOT EXISTS pg_trgm',
+    );
+
     final existing = await _loadExistingIndexNames(session);
+    final invalid = <String>[];
+    for (final indexName in indexNames) {
+      if (!existing.contains(indexName)) {
+        continue;
+      }
+      if (!await _indexMatchesExpected(session, indexName)) {
+        invalid.add(indexName);
+      }
+    }
+
+    if (invalid.isNotEmpty) {
+      WfLog.warn(
+        session,
+        'geocoding',
+        '🔎 Recreating geocoding search indexes with incompatible metadata: '
+        '${invalid.join(', ')}',
+      );
+      for (final indexName in invalid) {
+        await session.db.unsafeExecute('DROP INDEX IF EXISTS "$indexName"');
+        existing.remove(indexName);
+      }
+    }
+
     final missing = indexNames.where((name) => !existing.contains(name)).toList();
     if (missing.isEmpty) {
       WfLog.info(null, 'geocoding', '🔎 Geocoding search indexes already present');
@@ -54,9 +81,6 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
     }
 
     GeocodingSearchIndexStatus.markBuildStarted();
-    await session.db.unsafeExecute(
-      'CREATE EXTENSION IF NOT EXISTS pg_trgm',
-    );
 
     for (var i = 0; i < _indexes.length; i++) {
       final indexName = indexNames[i];
@@ -69,6 +93,37 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
     }
 
     WfLog.info(null, 'geocoding', '🔎 Geocoding search indexes ready');
+  }
+
+  static Future<bool> _indexMatchesExpected(
+    Session session,
+    String indexName,
+  ) async {
+    final rows = await session.db.unsafeQuery(
+      '''
+SELECT indexdef
+FROM pg_indexes
+WHERE schemaname = 'public'
+  AND indexname = '$indexName'
+''',
+    );
+    if (rows.isEmpty) {
+      return false;
+    }
+
+    final definition = (rows.first[0] as String).toLowerCase();
+    if (!definition.contains('using gin')) {
+      return false;
+    }
+    if (!definition.contains('gin_trgm_ops')) {
+      return false;
+    }
+
+    if (indexName == 'geocode_housenumber_label_trgm_idx') {
+      return definition.contains('housenumber') && definition.contains('street');
+    }
+
+    return true;
   }
 
   static Future<Set<String>> _loadExistingIndexNames(Session session) async {

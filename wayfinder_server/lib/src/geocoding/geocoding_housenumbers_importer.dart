@@ -223,6 +223,13 @@ abstract final class GeocodingHousenumbersImporter {
             progress.importedRows = importedRows;
           }
 
+          WfLog.info(
+            null,
+            'geocoding',
+            '🏠 Housenumbers import finished parsing rows=$importedRows — '
+            'flushing staging to live table next',
+          );
+
           await _updateProgress(
             serverpod,
             importStatus: GeocodingConstants.statusImporting,
@@ -257,6 +264,13 @@ abstract final class GeocodingHousenumbersImporter {
       );
 
       GeocodingImportControl.checkCancelled();
+
+      WfLog.info(
+        null,
+        'geocoding',
+        '🏠 Housenumbers import committing rows=$importedRows '
+        '(copying staging → live table; this can take a long time)',
+      );
 
       final commitSession = await serverpod.createSession();
       try {

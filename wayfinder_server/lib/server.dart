@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
@@ -10,8 +9,6 @@ import 'src/generated/protocol.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/core/wayfinder_env.dart';
 import 'src/settings/app_settings_store.dart';
-import 'src/geocoding/geocoding_import_recovery.dart';
-import 'src/geocoding/geocoding_search_indexes.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
@@ -115,24 +112,6 @@ void run(List<String> args) async {
     );
   }
 
-  // Geocoding search indexes are declared in [Protocol.targetTableDefinitions]
-  // but built outside Serverpod migrations. Create them before pod.start() so
-  // development-mode schema verification does not exit the process first.
-  final indexSession = await pod.createSession();
-  try {
-    await GeocodingSearchIndexes.ensureReady(indexSession);
-  } catch (error, stackTrace) {
-    WfLog.error(
-      indexSession,
-      'geocoding',
-      '🔎 Failed to build geocoding search indexes before startup',
-      error: error,
-      stackTrace: stackTrace,
-    );
-  } finally {
-    await indexSession.close();
-  }
-
   // Start the server.
   WfLog.info(null, 'server', '🎬 Calling pod.start()');
   await pod.start();
@@ -158,40 +137,11 @@ void run(List<String> args) async {
         '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
       );
     }
-    try {
-      await GeocodingImportRecovery.recoverStaleImportsOnStartup(syncSession);
-    } catch (error, stackTrace) {
-      WfLog.error(
-        syncSession,
-        'geocoding',
-        '⚠️ Stale import recovery failed on startup (server will continue)',
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-    unawaited(_ensureGeocodingSearchIndexes(pod));
   } finally {
     await syncSession.close();
   }
 
   WfLog.success(null, 'server', '🏁 Server started');
-}
-
-Future<void> _ensureGeocodingSearchIndexes(Serverpod pod) async {
-  final session = await pod.createSession();
-  try {
-    await GeocodingSearchIndexes.ensureReady(session);
-  } catch (error, stackTrace) {
-    WfLog.error(
-      null,
-      'geocoding',
-      '🔎 Failed to build geocoding search indexes',
-      error: error,
-      stackTrace: stackTrace,
-    );
-  } finally {
-    await session.close();
-  }
 }
 
 void _sendRegistrationCode(

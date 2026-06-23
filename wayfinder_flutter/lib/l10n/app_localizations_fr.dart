@@ -1022,6 +1022,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchReadinessNotReadyTooltip => 'Recherche complète non prête';
 
   @override
+  String get searchReadinessGeocodingNotConfiguredTooltip =>
+      'Serveur de géocodage non configuré';
+
+  @override
+  String get searchReadinessGeocodingUnavailableTooltip =>
+      'Serveur de géocodage indisponible';
+
+  @override
   String searchReadinessImportInProgressTooltip(String phase) {
     return 'Importation en cours : $phase';
   }
@@ -1156,7 +1164,29 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get geocodingDescription =>
-      'Téléchargez les données OSMNames sur le serveur pour la recherche hors ligne. Les noms de lieux et les adresses postales sont importés séparément.';
+      'Téléchargez les données OSMNames sur le serveur de géocodage pour la recherche hors ligne. Les noms de lieux et les adresses postales sont importés séparément.';
+
+  @override
+  String get geocodingServerConnectionTitle => 'Serveur de géocodage';
+
+  @override
+  String get geocodingServerConnectionDescription =>
+      'Séparé du serveur principal Wayfinder. Exécutez la pile de géocodage sur une autre machine lorsque les importations nécessitent une grande base de données.';
+
+  @override
+  String get geocodingServerUrlLabel => 'URL web du serveur de géocodage';
+
+  @override
+  String get geocodingSaveServerUrl =>
+      'Enregistrer l\'URL du serveur de géocodage';
+
+  @override
+  String get geocodingServerNotConfiguredMessage =>
+      'Configurez l\'URL du serveur de géocodage pour activer la recherche de lieux et d\'adresses. Redémarrez l\'application après l\'enregistrement.';
+
+  @override
+  String get geocodingServerUrlSavedRestart =>
+      'URL du serveur de géocodage enregistrée. Redémarrez l\'application pour vous connecter.';
 
   @override
   String get geocodingPlacesSectionTitle => 'Noms de lieux (geonames.tsv)';

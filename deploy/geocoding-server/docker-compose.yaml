@@ -1,0 +1,60 @@
+# Wayfinder geocoding server — pull pre-built image from GitHub Container Registry.
+#
+# Quick start (no git clone):
+#   mkdir wayfinder-geocoding-server && cd wayfinder-geocoding-server
+#   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/geocoding-server/docker-compose.yaml
+#   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/geocoding-server/.env.example
+#   cp .env.example .env
+#   # Edit .env, then:
+#   docker compose pull
+#   docker compose up -d
+
+name: wayfinder-geocoding-server
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: wayfinder-geocoding-postgres
+    ports:
+      - "${WAYFINDER_GEOCODING_DB_PORT:-18290}:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: wayfinder_geocoding
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+    volumes:
+      - ${WAYFINDER_GEOCODING_DATA_PATH:-./storage/data}/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d wayfinder_geocoding"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  server:
+    image: ${WAYFINDER_GEOCODING_SERVER_IMAGE:-ghcr.io/kennethbrewer3/wayfinder-geocoding-server:latest}
+    container_name: wayfinder-geocoding-server
+    pull_policy: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${SERVERPOD_API_SERVER_PORT:-18180}:18180"
+      - "${SERVERPOD_INSIGHTS_SERVER_PORT:-18181}:18181"
+      - "${SERVERPOD_WEB_SERVER_PORT:-18182}:18182"
+    environment:
+      runmode: development
+      SERVERPOD_RUN_MODE: development
+      SERVERPOD_APPLY_MIGRATIONS: "true"
+      SERVERPOD_DATABASE_HOST: postgres
+      SERVERPOD_DATABASE_PORT: "5432"
+      SERVERPOD_DATABASE_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      SERVERPOD_API_SERVER_PORT: "18180"
+      SERVERPOD_INSIGHTS_SERVER_PORT: "18181"
+      SERVERPOD_WEB_SERVER_PORT: "18182"
+      SERVERPOD_API_SERVER_PUBLIC_HOST: "${SERVERPOD_API_SERVER_PUBLIC_HOST:-localhost}"
+      SERVERPOD_API_SERVER_PUBLIC_PORT: "${SERVERPOD_API_SERVER_PUBLIC_PORT:-18180}"
+      SERVERPOD_API_SERVER_PUBLIC_SCHEME: "${SERVERPOD_API_SERVER_PUBLIC_SCHEME:-http}"
+      SERVERPOD_WEB_SERVER_PUBLIC_HOST: "${SERVERPOD_WEB_SERVER_PUBLIC_HOST:-localhost}"
+      SERVERPOD_WEB_SERVER_PUBLIC_PORT: "${SERVERPOD_WEB_SERVER_PUBLIC_PORT:-18182}"
+      SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: "${SERVERPOD_WEB_SERVER_PUBLIC_SCHEME:-http}"
+    restart: unless-stopped

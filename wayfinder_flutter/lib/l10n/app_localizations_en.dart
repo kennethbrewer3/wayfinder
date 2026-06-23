@@ -1005,6 +1005,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchReadinessNotReadyTooltip => 'Full search not ready';
 
   @override
+  String get searchReadinessGeocodingNotConfiguredTooltip =>
+      'Geocoding server not configured';
+
+  @override
+  String get searchReadinessGeocodingUnavailableTooltip =>
+      'Geocoding server unavailable';
+
+  @override
   String searchReadinessImportInProgressTooltip(String phase) {
     return 'Import in progress: $phase';
   }
@@ -1137,7 +1145,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get geocodingDescription =>
-      'Download OSMNames data to the server for offline search. Place names and street addresses are imported separately.';
+      'Download OSMNames data to the geocoding server for offline search. Place names and street addresses are imported separately.';
+
+  @override
+  String get geocodingServerConnectionTitle => 'Geocoding server';
+
+  @override
+  String get geocodingServerConnectionDescription =>
+      'Separate from your main Wayfinder server. Run the geocoding stack on another machine when imports need a large database.';
+
+  @override
+  String get geocodingServerUrlLabel => 'Geocoding server web URL';
+
+  @override
+  String get geocodingSaveServerUrl => 'Save geocoding server URL';
+
+  @override
+  String get geocodingServerNotConfiguredMessage =>
+      'Configure a geocoding server URL to enable place and address search. Restart the app after saving.';
+
+  @override
+  String get geocodingServerUrlSavedRestart =>
+      'Geocoding server URL saved. Restart the app to connect.';
 
   @override
   String get geocodingPlacesSectionTitle => 'Place names (geonames.tsv)';

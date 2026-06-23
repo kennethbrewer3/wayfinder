@@ -470,6 +470,8 @@
   "searchReadinessFullReadyTooltip": "Recherche complète prête",
   "searchReadinessBuildingTooltip": "Construction des index de recherche…",
   "searchReadinessNotReadyTooltip": "Recherche complète non prête",
+  "searchReadinessGeocodingNotConfiguredTooltip": "Serveur de géocodage non configuré",
+  "searchReadinessGeocodingUnavailableTooltip": "Serveur de géocodage indisponible",
   "searchReadinessImportInProgressTooltip": "Importation en cours : {phase}",
   "@searchReadinessImportInProgressTooltip": {
     "placeholders": {
@@ -587,7 +589,13 @@
   },
   "geocodingAbortImport": "Annuler l'importation",
   "geocodingTitle": "Géocodage",
-  "geocodingDescription": "Téléchargez les données OSMNames sur le serveur pour la recherche hors ligne. Les noms de lieux et les adresses postales sont importés séparément.",
+  "geocodingDescription": "Téléchargez les données OSMNames sur le serveur de géocodage pour la recherche hors ligne. Les noms de lieux et les adresses postales sont importés séparément.",
+  "geocodingServerConnectionTitle": "Serveur de géocodage",
+  "geocodingServerConnectionDescription": "Séparé du serveur principal Wayfinder. Exécutez la pile de géocodage sur une autre machine lorsque les importations nécessitent une grande base de données.",
+  "geocodingServerUrlLabel": "URL web du serveur de géocodage",
+  "geocodingSaveServerUrl": "Enregistrer l'URL du serveur de géocodage",
+  "geocodingServerNotConfiguredMessage": "Configurez l'URL du serveur de géocodage pour activer la recherche de lieux et d'adresses. Redémarrez l'application après l'enregistrement.",
+  "geocodingServerUrlSavedRestart": "URL du serveur de géocodage enregistrée. Redémarrez l'application pour vous connecter.",
   "geocodingPlacesSectionTitle": "Noms de lieux (geonames.tsv)",
   "geocodingPlaceDatasetLabel": "Jeu de données de lieux",
   "geocodingCustomPlaceUrlLabel": "URL de données de lieux personnalisée",

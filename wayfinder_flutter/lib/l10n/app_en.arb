@@ -470,6 +470,8 @@
   "searchReadinessFullReadyTooltip": "Full search ready",
   "searchReadinessBuildingTooltip": "Building search indexes…",
   "searchReadinessNotReadyTooltip": "Full search not ready",
+  "searchReadinessGeocodingNotConfiguredTooltip": "Geocoding server not configured",
+  "searchReadinessGeocodingUnavailableTooltip": "Geocoding server unavailable",
   "searchReadinessImportInProgressTooltip": "Import in progress: {phase}",
   "@searchReadinessImportInProgressTooltip": {
     "placeholders": {
@@ -587,7 +589,13 @@
   },
   "geocodingAbortImport": "Abort import",
   "geocodingTitle": "Geocoding",
-  "geocodingDescription": "Download OSMNames data to the server for offline search. Place names and street addresses are imported separately.",
+  "geocodingDescription": "Download OSMNames data to the geocoding server for offline search. Place names and street addresses are imported separately.",
+  "geocodingServerConnectionTitle": "Geocoding server",
+  "geocodingServerConnectionDescription": "Separate from your main Wayfinder server. Run the geocoding stack on another machine when imports need a large database.",
+  "geocodingServerUrlLabel": "Geocoding server web URL",
+  "geocodingSaveServerUrl": "Save geocoding server URL",
+  "geocodingServerNotConfiguredMessage": "Configure a geocoding server URL to enable place and address search. Restart the app after saving.",
+  "geocodingServerUrlSavedRestart": "Geocoding server URL saved. Restart the app to connect.",
   "geocodingPlacesSectionTitle": "Place names (geonames.tsv)",
   "geocodingPlaceDatasetLabel": "Place dataset",
   "geocodingCustomPlaceUrlLabel": "Custom place data URL",

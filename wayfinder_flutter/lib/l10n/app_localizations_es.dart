@@ -1018,6 +1018,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchReadinessNotReadyTooltip => 'Búsqueda completa no lista';
 
   @override
+  String get searchReadinessGeocodingNotConfiguredTooltip =>
+      'Servidor de geocodificación no configurado';
+
+  @override
+  String get searchReadinessGeocodingUnavailableTooltip =>
+      'Servidor de geocodificación no disponible';
+
+  @override
   String searchReadinessImportInProgressTooltip(String phase) {
     return 'Importación en curso: $phase';
   }
@@ -1152,7 +1160,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get geocodingDescription =>
-      'Descargue datos OSMNames al servidor para búsqueda sin conexión. Los nombres de lugares y las direcciones se importan por separado.';
+      'Descargue datos OSMNames al servidor de geocodificación para búsqueda sin conexión. Los nombres de lugares y las direcciones se importan por separado.';
+
+  @override
+  String get geocodingServerConnectionTitle => 'Servidor de geocodificación';
+
+  @override
+  String get geocodingServerConnectionDescription =>
+      'Separado del servidor principal de Wayfinder. Ejecute la pila de geocodificación en otra máquina cuando las importaciones necesiten una base de datos grande.';
+
+  @override
+  String get geocodingServerUrlLabel =>
+      'URL web del servidor de geocodificación';
+
+  @override
+  String get geocodingSaveServerUrl =>
+      'Guardar URL del servidor de geocodificación';
+
+  @override
+  String get geocodingServerNotConfiguredMessage =>
+      'Configure la URL del servidor de geocodificación para habilitar la búsqueda de lugares y direcciones. Reinicie la aplicación después de guardar.';
+
+  @override
+  String get geocodingServerUrlSavedRestart =>
+      'URL del servidor de geocodificación guardada. Reinicie la aplicación para conectar.';
 
   @override
   String get geocodingPlacesSectionTitle => 'Nombres de lugares (geonames.tsv)';

@@ -1,15 +1,16 @@
 # Deploying Wayfinder on separate machines
 
-Wayfinder is split into two Docker Compose stacks. **You do not need to clone the repository** — download two small files per machine and pull pre-built images from GitHub Container Registry.
+Wayfinder is split into **three** independent Docker Compose stacks. **You do not need to clone the repository** — download a small set of files per machine and pull pre-built images from GitHub Container Registry.
 
 | Stack | Files | Image |
 |-------|-------|-------|
 | **Server** | `deploy/server/docker-compose.yaml` + `.env` | `ghcr.io/kennethbrewer3/wayfinder-server` |
+| **Geocoding server** (optional) | `deploy/geocoding-server/docker-compose.yaml` + `.env` | `ghcr.io/kennethbrewer3/wayfinder-geocoding-server` |
 | **Client** | `deploy/client/docker-compose.yaml` + `.env` | `ghcr.io/kennethbrewer3/wayfinder-client` |
 
 Images are built automatically on every push to `main` (see [.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml)).
 
-Run the server on the machine that holds your database and PMTiles. Run the client on any machine where users open the map UI.
+Run the **server** on the machine that holds your database and PMTiles. Run the **geocoding server** on a machine with enough disk for OSMNames imports (often a different host). Run the **client** on any machine where users open the map UI. Address and place search only runs when the client is configured with a reachable geocoding server URL.
 
 ## 1. Server machine
 
@@ -72,7 +73,62 @@ docker compose ps
 
 Migrations run automatically on server startup.
 
-## 2. Client machine
+## 2. Geocoding server (optional, separate machine)
+
+The geocoding stack holds OSMNames place and address data. Planet imports can use **tens of gigabytes** of Postgres storage, so run this on a machine with enough free disk — it does not need to be the same host as the main server.
+
+### Setup (no git clone)
+
+```bash
+mkdir wayfinder-geocoding-server && cd wayfinder-geocoding-server
+
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/geocoding-server/docker-compose.yaml
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/geocoding-server/.env.example
+cp .env.example .env
+```
+
+Edit `.env`:
+
+- **`POSTGRES_PASSWORD`** — required; choose a strong value
+- **`WAYFINDER_GEOCODING_DATA_PATH`** — host folder for geocoding Postgres (can grow very large during import)
+- **`SERVERPOD_*_PUBLIC_HOST`** — this machine's LAN IP or DNS if browsers on other machines will connect
+
+Example:
+
+```env
+POSTGRES_PASSWORD=your-strong-postgres-password
+WAYFINDER_GEOCODING_DATA_PATH=/mnt/storage/wayfinder-geocoding
+SERVERPOD_WEB_SERVER_PUBLIC_HOST=192.168.1.11
+SERVERPOD_WEB_SERVER_PUBLIC_PORT=18182
+```
+
+### Start
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+Keep the stack running during OSMNames imports — the final database commit phase can take a long time.
+
+### Verify
+
+| Port | Service |
+|------|---------|
+| 18180 | Serverpod API |
+| 18182 | Web server (REST geocoding API) |
+| 18290 | PostgreSQL (optional external access) |
+
+```bash
+curl http://localhost:18182/api/health
+docker compose ps
+```
+
+Import places and addresses from **Settings → Geocoding** in the client after pointing it at this server (see client setup below).
+
+If you previously imported geocoding data into the main Wayfinder server, export that Postgres data and restore it into the geocoding server's database volume, or re-import from OSMNames on the new stack.
+
+## 3. Client machine
 
 The client serves the Flutter web UI. It does not need Postgres, Redis, or PMTiles.
 
@@ -91,12 +147,15 @@ Edit `.env` — URLs must be reachable from the **browser**, not from inside Doc
 ```env
 WAYFINDER_API_URL=http://192.168.1.10:18080
 WAYFINDER_WEB_URL=http://192.168.1.10:18082
+WAYFINDER_GEOCODING_WEB_URL=http://192.168.1.11:18182
 WAYFINDER_CLIENT_PORT=8080
 ```
 
 `WAYFINDER_WEB_URL` is optional if your API URL uses port **18080** — the client container derives the web URL on port **18082** automatically.
 
-Replace `192.168.1.10` with your server machine's IP or hostname.
+`WAYFINDER_GEOCODING_WEB_URL` is optional. When omitted, place and address search is disabled. When set, the client only queries geocoding if that server responds to `/api/health`.
+
+Replace `192.168.1.10` with your main server machine's IP or hostname, and `192.168.1.11` with your geocoding server (they may be the same host with different ports).
 
 ### Start
 
@@ -131,6 +190,7 @@ Client `.env` on the same host:
 ```env
 WAYFINDER_API_URL=http://localhost:18080
 WAYFINDER_WEB_URL=http://localhost:18082
+WAYFINDER_GEOCODING_WEB_URL=http://localhost:18182
 ```
 
 ## Pinning a release
@@ -139,6 +199,7 @@ By default, compose pulls `:latest` (last successful build from `main`). To pin 
 
 ```env
 WAYFINDER_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-server:v1.0.0
+WAYFINDER_GEOCODING_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-geocoding-server:v1.0.0
 WAYFINDER_CLIENT_IMAGE=ghcr.io/kennethbrewer3/wayfinder-client:v1.0.0
 ```
 
@@ -150,6 +211,11 @@ On the **server** machine, allow inbound TCP:
 
 - `18080` — API
 - `18082` — web (REST, PMTiles)
+
+On the **geocoding server** machine (if separate), allow inbound TCP:
+
+- `18182` — web (REST geocoding API)
+- `18180` — API (optional, for Serverpod RPC)
 
 On the **client** machine, allow inbound TCP on `8080` (or your `WAYFINDER_CLIENT_PORT`) if users connect from other devices.
 
@@ -164,6 +230,9 @@ If you have cloned the repository, you can build images locally instead of pulli
 ```bash
 # Server
 cd wayfinder_server && docker compose up -d --build
+
+# Geocoding server
+cd wayfinder_geocoding_server && docker compose up -d --build
 
 # Client
 cd wayfinder_flutter && docker compose up -d --build

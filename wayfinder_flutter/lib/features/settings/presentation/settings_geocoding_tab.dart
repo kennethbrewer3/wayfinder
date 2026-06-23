@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/app_globals.dart';
 import '../../../core/file_save.dart';
 import '../../../core/format/locale_count_format.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/server_config.dart';
+import '../../../core/server_config_storage.dart';
 import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/models/geocoding_datasets.dart';
 import '../../geocoding/models/geocoding_models.dart';
@@ -29,7 +32,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   final _housenumbersUrlController = TextEditingController(
     text: geocodingHousenumbersSourceUrl,
   );
+  late final TextEditingController _geocodingServerUrlController;
   bool _initializedFromServer = false;
+  bool _isSavingGeocodingServerUrl = false;
   bool _isStartingPlacesImport = false;
   bool _isStartingHousenumbersImport = false;
   bool _isCancellingPlacesImport = false;
@@ -39,11 +44,52 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   Timer? _pollTimer;
 
   @override
+  void initState() {
+    super.initState();
+    _geocodingServerUrlController = TextEditingController(
+      text: appServerConfig.geocodingWebUrl ?? '',
+    );
+  }
+
+  @override
   void dispose() {
     _pollTimer?.cancel();
     _customUrlController.dispose();
     _housenumbersUrlController.dispose();
+    _geocodingServerUrlController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveGeocodingServerUrl() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isSavingGeocodingServerUrl = true);
+    try {
+      final trimmed = _geocodingServerUrlController.text.trim();
+      final storage = ServerConfigStorage();
+      if (trimmed.isEmpty) {
+        await storage.clearGeocodingWebUrl();
+      } else {
+        await storage.saveGeocodingWebUrl(normalizeWebUrl(trimmed));
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingServerUrlSavedRestart)),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🌍 Geocoding server URL save failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSavingGeocodingServerUrl = false);
+      }
+    }
   }
 
   void _syncFromServer(GeocodingImportState settings) {
@@ -679,17 +725,76 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     );
   }
 
+  Widget _buildGeocodingServerConnection(AppLocalizations l10n) {
+    final repository = ref.watch(geocodingRepositoryProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.geocodingServerConnectionTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.geocodingServerConnectionDescription,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _geocodingServerUrlController,
+          decoration: InputDecoration(
+            labelText: l10n.geocodingServerUrlLabel,
+            hintText: defaultGeocodingWebUrl,
+            border: const OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.url,
+          autocorrect: false,
+          autofillHints: const [AutofillHints.url],
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FilledButton(
+            onPressed: _isSavingGeocodingServerUrl ? null : _saveGeocodingServerUrl,
+            child: Text(
+              _isSavingGeocodingServerUrl
+                  ? l10n.actionSaving
+                  : l10n.geocodingSaveServerUrl,
+            ),
+          ),
+        ),
+        if (!repository.isConfigured) ...[
+          const SizedBox(height: 12),
+          Text(
+            l10n.geocodingServerNotConfiguredMessage,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+          ),
+        ],
+        const SizedBox(height: 24),
+        const Divider(),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final settingsAsync = ref.watch(geocodingSettingsProvider);
+    final repository = ref.watch(geocodingRepositoryProvider);
+    final settingsAsync = repository.isConfigured
+        ? ref.watch(geocodingSettingsProvider)
+        : null;
     final description = _selectedDescription(l10n);
 
-    ref.listen(geocodingSettingsProvider, (previous, next) {
-      next.whenData((settings) {
-        _schedulePolling(isRunning: settings.isRunning);
+    if (settingsAsync != null) {
+      ref.listen(geocodingSettingsProvider, (previous, next) {
+        next.whenData((settings) {
+          _schedulePolling(isRunning: settings.isRunning);
+        });
       });
-    });
+    }
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -704,7 +809,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
-        settingsAsync.when(
+        _buildGeocodingServerConnection(l10n),
+        if (!repository.isConfigured)
+          const SizedBox.shrink()
+        else
+          settingsAsync!.when(
           loading: () => const LinearProgressIndicator(),
           error: (error, _) => Text(
             l10n.geocodingSettingsLoadFailed(error.toString()),

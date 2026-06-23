@@ -1,0 +1,36 @@
+# Wayfinder geocoding server — local development.
+# Default ports are offset from the main Wayfinder server so both can run locally.
+
+apiServer:
+  port: 18180
+  publicHost: localhost
+  publicPort: 18180
+  publicScheme: http
+
+insightsServer:
+  port: 18181
+  publicHost: localhost
+  publicPort: 18181
+  publicScheme: http
+
+webServer:
+  port: 18182
+  publicHost: localhost
+  publicPort: 18182
+  publicScheme: http
+
+database:
+  host: localhost
+  port: 18290
+  name: wayfinder_geocoding
+  user: postgres
+
+redis:
+  enabled: false
+
+maxRequestSize: 524288
+
+sessionLogs:
+  persistentEnabled: true
+  consoleEnabled: true
+  consoleLogFormat: text

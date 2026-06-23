@@ -17,4 +17,22 @@ class ServerConfigStorage {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(AppConstants.serverApiUrlStorageKey);
   }
+
+  Future<String?> loadGeocodingWebUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(AppConstants.geocodingWebUrlStorageKey);
+  }
+
+  Future<void> saveGeocodingWebUrl(String geocodingWebUrl) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      AppConstants.geocodingWebUrlStorageKey,
+      geocodingWebUrl,
+    );
+  }
+
+  Future<void> clearGeocodingWebUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AppConstants.geocodingWebUrlStorageKey);
+  }
 }

@@ -12,38 +12,28 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'categories/category.dart' as _i2;
-import 'geocoding/geocode_housenumber.dart' as _i3;
-import 'geocoding/geocode_place.dart' as _i4;
-import 'geocoding/geocode_search_result.dart' as _i5;
-import 'geocoding/geocoding_settings.dart' as _i6;
-import 'greetings/greeting.dart' as _i7;
-import 'layers/map_layer.dart' as _i8;
-import 'map/map_data_restore_summary.dart' as _i9;
-import 'map/map_marker.dart' as _i10;
-import 'pmtiles/pmtiles_file.dart' as _i11;
-import 'pmtiles/pmtiles_file_group_link.dart' as _i12;
-import 'pmtiles/pmtiles_group.dart' as _i13;
-import 'settings/app_settings.dart' as _i14;
-import 'zones/map_zone.dart' as _i15;
-import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i16;
-import 'package:wayfinder_client/src/protocol/geocoding/geocode_search_result.dart'
-    as _i17;
-import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i18;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i19;
+import 'greetings/greeting.dart' as _i3;
+import 'layers/map_layer.dart' as _i4;
+import 'map/map_data_restore_summary.dart' as _i5;
+import 'map/map_marker.dart' as _i6;
+import 'pmtiles/pmtiles_file.dart' as _i7;
+import 'pmtiles/pmtiles_file_group_link.dart' as _i8;
+import 'pmtiles/pmtiles_group.dart' as _i9;
+import 'settings/app_settings.dart' as _i10;
+import 'zones/map_zone.dart' as _i11;
+import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i12;
+import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i13;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i14;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
-    as _i20;
+    as _i15;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
-    as _i21;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i22;
+    as _i16;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i17;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i23;
+    as _i18;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i24;
+    as _i19;
 export 'categories/category.dart';
-export 'geocoding/geocode_housenumber.dart';
-export 'geocoding/geocode_place.dart';
-export 'geocoding/geocode_search_result.dart';
-export 'geocoding/geocoding_settings.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
 export 'map/map_data_restore_summary.dart';
@@ -92,89 +82,64 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i2.Category) {
       return _i2.Category.fromJson(data) as T;
     }
-    if (t == _i3.GeocodeHousenumber) {
-      return _i3.GeocodeHousenumber.fromJson(data) as T;
+    if (t == _i3.Greeting) {
+      return _i3.Greeting.fromJson(data) as T;
     }
-    if (t == _i4.GeocodePlace) {
-      return _i4.GeocodePlace.fromJson(data) as T;
+    if (t == _i4.MapLayer) {
+      return _i4.MapLayer.fromJson(data) as T;
     }
-    if (t == _i5.GeocodeSearchResult) {
-      return _i5.GeocodeSearchResult.fromJson(data) as T;
+    if (t == _i5.MapDataRestoreSummary) {
+      return _i5.MapDataRestoreSummary.fromJson(data) as T;
     }
-    if (t == _i6.GeocodingSettings) {
-      return _i6.GeocodingSettings.fromJson(data) as T;
+    if (t == _i6.MapMarker) {
+      return _i6.MapMarker.fromJson(data) as T;
     }
-    if (t == _i7.Greeting) {
-      return _i7.Greeting.fromJson(data) as T;
+    if (t == _i7.PmtilesFile) {
+      return _i7.PmtilesFile.fromJson(data) as T;
     }
-    if (t == _i8.MapLayer) {
-      return _i8.MapLayer.fromJson(data) as T;
+    if (t == _i8.PmtilesFileGroupLink) {
+      return _i8.PmtilesFileGroupLink.fromJson(data) as T;
     }
-    if (t == _i9.MapDataRestoreSummary) {
-      return _i9.MapDataRestoreSummary.fromJson(data) as T;
+    if (t == _i9.PmtilesGroup) {
+      return _i9.PmtilesGroup.fromJson(data) as T;
     }
-    if (t == _i10.MapMarker) {
-      return _i10.MapMarker.fromJson(data) as T;
+    if (t == _i10.AppSettings) {
+      return _i10.AppSettings.fromJson(data) as T;
     }
-    if (t == _i11.PmtilesFile) {
-      return _i11.PmtilesFile.fromJson(data) as T;
-    }
-    if (t == _i12.PmtilesFileGroupLink) {
-      return _i12.PmtilesFileGroupLink.fromJson(data) as T;
-    }
-    if (t == _i13.PmtilesGroup) {
-      return _i13.PmtilesGroup.fromJson(data) as T;
-    }
-    if (t == _i14.AppSettings) {
-      return _i14.AppSettings.fromJson(data) as T;
-    }
-    if (t == _i15.MapZone) {
-      return _i15.MapZone.fromJson(data) as T;
+    if (t == _i11.MapZone) {
+      return _i11.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Category?>()) {
       return (data != null ? _i2.Category.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i3.GeocodeHousenumber?>()) {
-      return (data != null ? _i3.GeocodeHousenumber.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i3.Greeting?>()) {
+      return (data != null ? _i3.Greeting.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.GeocodePlace?>()) {
-      return (data != null ? _i4.GeocodePlace.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.MapLayer?>()) {
+      return (data != null ? _i4.MapLayer.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.GeocodeSearchResult?>()) {
-      return (data != null ? _i5.GeocodeSearchResult.fromJson(data) : null)
+    if (t == _i1.getType<_i5.MapDataRestoreSummary?>()) {
+      return (data != null ? _i5.MapDataRestoreSummary.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i6.GeocodingSettings?>()) {
-      return (data != null ? _i6.GeocodingSettings.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.MapMarker?>()) {
+      return (data != null ? _i6.MapMarker.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Greeting?>()) {
-      return (data != null ? _i7.Greeting.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.PmtilesFile?>()) {
+      return (data != null ? _i7.PmtilesFile.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.MapLayer?>()) {
-      return (data != null ? _i8.MapLayer.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i9.MapDataRestoreSummary?>()) {
-      return (data != null ? _i9.MapDataRestoreSummary.fromJson(data) : null)
+    if (t == _i1.getType<_i8.PmtilesFileGroupLink?>()) {
+      return (data != null ? _i8.PmtilesFileGroupLink.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i10.MapMarker?>()) {
-      return (data != null ? _i10.MapMarker.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.PmtilesGroup?>()) {
+      return (data != null ? _i9.PmtilesGroup.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.PmtilesFile?>()) {
-      return (data != null ? _i11.PmtilesFile.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.AppSettings?>()) {
+      return (data != null ? _i10.AppSettings.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.PmtilesFileGroupLink?>()) {
-      return (data != null ? _i12.PmtilesFileGroupLink.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i13.PmtilesGroup?>()) {
-      return (data != null ? _i13.PmtilesGroup.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i14.AppSettings?>()) {
-      return (data != null ? _i14.AppSettings.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i15.MapZone?>()) {
-      return (data != null ? _i15.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i11.MapZone?>()) {
+      return (data != null ? _i11.MapZone.fromJson(data) : null) as T;
     }
     if (t == List<_i1.UuidValue>) {
       return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
@@ -188,54 +153,39 @@ class Protocol extends _i1.SerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i16.Category>) {
-      return (data as List).map((e) => deserialize<_i16.Category>(e)).toList()
+    if (t == List<_i12.Category>) {
+      return (data as List).map((e) => deserialize<_i12.Category>(e)).toList()
           as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-              ? (data as List).map((e) => deserialize<String>(e)).toList()
-              : null)
+    if (t == List<_i13.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i13.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i17.GeocodeSearchResult>) {
+    if (t == List<_i14.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i14.MapMarker>(e)).toList()
+          as T;
+    }
+    if (t == List<_i15.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i17.GeocodeSearchResult>(e))
+              .map((e) => deserialize<_i15.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i18.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i18.MapLayer>(e)).toList()
-          as T;
-    }
-    if (t == List<_i19.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i19.MapMarker>(e)).toList()
-          as T;
-    }
-    if (t == List<_i20.PmtilesFile>) {
+    if (t == List<_i16.PmtilesGroup>) {
       return (data as List)
-              .map((e) => deserialize<_i20.PmtilesFile>(e))
+              .map((e) => deserialize<_i16.PmtilesGroup>(e))
               .toList()
           as T;
     }
-    if (t == List<_i21.PmtilesGroup>) {
-      return (data as List)
-              .map((e) => deserialize<_i21.PmtilesGroup>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i22.MapZone>) {
-      return (data as List).map((e) => deserialize<_i22.MapZone>(e)).toList()
+    if (t == List<_i17.MapZone>) {
+      return (data as List).map((e) => deserialize<_i17.MapZone>(e)).toList()
           as T;
     }
     try {
-      return _i23.Protocol().deserialize<T>(data, t);
+      return _i18.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i24.Protocol().deserialize<T>(data, t);
+      return _i19.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -243,19 +193,15 @@ class Protocol extends _i1.SerializationManager {
   static String? getClassNameForType(Type type) {
     return switch (type) {
       _i2.Category => 'Category',
-      _i3.GeocodeHousenumber => 'GeocodeHousenumber',
-      _i4.GeocodePlace => 'GeocodePlace',
-      _i5.GeocodeSearchResult => 'GeocodeSearchResult',
-      _i6.GeocodingSettings => 'GeocodingSettings',
-      _i7.Greeting => 'Greeting',
-      _i8.MapLayer => 'MapLayer',
-      _i9.MapDataRestoreSummary => 'MapDataRestoreSummary',
-      _i10.MapMarker => 'MapMarker',
-      _i11.PmtilesFile => 'PmtilesFile',
-      _i12.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
-      _i13.PmtilesGroup => 'PmtilesGroup',
-      _i14.AppSettings => 'AppSettings',
-      _i15.MapZone => 'MapZone',
+      _i3.Greeting => 'Greeting',
+      _i4.MapLayer => 'MapLayer',
+      _i5.MapDataRestoreSummary => 'MapDataRestoreSummary',
+      _i6.MapMarker => 'MapMarker',
+      _i7.PmtilesFile => 'PmtilesFile',
+      _i8.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
+      _i9.PmtilesGroup => 'PmtilesGroup',
+      _i10.AppSettings => 'AppSettings',
+      _i11.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -272,38 +218,30 @@ class Protocol extends _i1.SerializationManager {
     switch (data) {
       case _i2.Category():
         return 'Category';
-      case _i3.GeocodeHousenumber():
-        return 'GeocodeHousenumber';
-      case _i4.GeocodePlace():
-        return 'GeocodePlace';
-      case _i5.GeocodeSearchResult():
-        return 'GeocodeSearchResult';
-      case _i6.GeocodingSettings():
-        return 'GeocodingSettings';
-      case _i7.Greeting():
+      case _i3.Greeting():
         return 'Greeting';
-      case _i8.MapLayer():
+      case _i4.MapLayer():
         return 'MapLayer';
-      case _i9.MapDataRestoreSummary():
+      case _i5.MapDataRestoreSummary():
         return 'MapDataRestoreSummary';
-      case _i10.MapMarker():
+      case _i6.MapMarker():
         return 'MapMarker';
-      case _i11.PmtilesFile():
+      case _i7.PmtilesFile():
         return 'PmtilesFile';
-      case _i12.PmtilesFileGroupLink():
+      case _i8.PmtilesFileGroupLink():
         return 'PmtilesFileGroupLink';
-      case _i13.PmtilesGroup():
+      case _i9.PmtilesGroup():
         return 'PmtilesGroup';
-      case _i14.AppSettings():
+      case _i10.AppSettings():
         return 'AppSettings';
-      case _i15.MapZone():
+      case _i11.MapZone():
         return 'MapZone';
     }
-    className = _i23.Protocol().getClassNameForObject(data);
+    className = _i18.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i24.Protocol().getClassNameForObject(data);
+    className = _i19.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -319,52 +257,40 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Category') {
       return deserialize<_i2.Category>(data['data']);
     }
-    if (dataClassName == 'GeocodeHousenumber') {
-      return deserialize<_i3.GeocodeHousenumber>(data['data']);
-    }
-    if (dataClassName == 'GeocodePlace') {
-      return deserialize<_i4.GeocodePlace>(data['data']);
-    }
-    if (dataClassName == 'GeocodeSearchResult') {
-      return deserialize<_i5.GeocodeSearchResult>(data['data']);
-    }
-    if (dataClassName == 'GeocodingSettings') {
-      return deserialize<_i6.GeocodingSettings>(data['data']);
-    }
     if (dataClassName == 'Greeting') {
-      return deserialize<_i7.Greeting>(data['data']);
+      return deserialize<_i3.Greeting>(data['data']);
     }
     if (dataClassName == 'MapLayer') {
-      return deserialize<_i8.MapLayer>(data['data']);
+      return deserialize<_i4.MapLayer>(data['data']);
     }
     if (dataClassName == 'MapDataRestoreSummary') {
-      return deserialize<_i9.MapDataRestoreSummary>(data['data']);
+      return deserialize<_i5.MapDataRestoreSummary>(data['data']);
     }
     if (dataClassName == 'MapMarker') {
-      return deserialize<_i10.MapMarker>(data['data']);
+      return deserialize<_i6.MapMarker>(data['data']);
     }
     if (dataClassName == 'PmtilesFile') {
-      return deserialize<_i11.PmtilesFile>(data['data']);
+      return deserialize<_i7.PmtilesFile>(data['data']);
     }
     if (dataClassName == 'PmtilesFileGroupLink') {
-      return deserialize<_i12.PmtilesFileGroupLink>(data['data']);
+      return deserialize<_i8.PmtilesFileGroupLink>(data['data']);
     }
     if (dataClassName == 'PmtilesGroup') {
-      return deserialize<_i13.PmtilesGroup>(data['data']);
+      return deserialize<_i9.PmtilesGroup>(data['data']);
     }
     if (dataClassName == 'AppSettings') {
-      return deserialize<_i14.AppSettings>(data['data']);
+      return deserialize<_i10.AppSettings>(data['data']);
     }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i15.MapZone>(data['data']);
+      return deserialize<_i11.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i23.Protocol().deserializeByClassName(data);
+      return _i18.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i24.Protocol().deserializeByClassName(data);
+      return _i19.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -379,10 +305,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i23.Protocol().mapRecordToJson(record);
+      return _i18.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i24.Protocol().mapRecordToJson(record);
+      return _i19.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

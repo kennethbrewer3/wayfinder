@@ -1906,6 +1906,18 @@ abstract class AppLocalizations {
   /// **'Full search not ready'**
   String get searchReadinessNotReadyTooltip;
 
+  /// No description provided for @searchReadinessGeocodingNotConfiguredTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server not configured'**
+  String get searchReadinessGeocodingNotConfiguredTooltip;
+
+  /// No description provided for @searchReadinessGeocodingUnavailableTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server unavailable'**
+  String get searchReadinessGeocodingUnavailableTooltip;
+
   /// No description provided for @searchReadinessImportInProgressTooltip.
   ///
   /// In en, this message translates to:
@@ -2113,8 +2125,44 @@ abstract class AppLocalizations {
   /// No description provided for @geocodingDescription.
   ///
   /// In en, this message translates to:
-  /// **'Download OSMNames data to the server for offline search. Place names and street addresses are imported separately.'**
+  /// **'Download OSMNames data to the geocoding server for offline search. Place names and street addresses are imported separately.'**
   String get geocodingDescription;
+
+  /// No description provided for @geocodingServerConnectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server'**
+  String get geocodingServerConnectionTitle;
+
+  /// No description provided for @geocodingServerConnectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate from your main Wayfinder server. Run the geocoding stack on another machine when imports need a large database.'**
+  String get geocodingServerConnectionDescription;
+
+  /// No description provided for @geocodingServerUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server web URL'**
+  String get geocodingServerUrlLabel;
+
+  /// No description provided for @geocodingSaveServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Save geocoding server URL'**
+  String get geocodingSaveServerUrl;
+
+  /// No description provided for @geocodingServerNotConfiguredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure a geocoding server URL to enable place and address search. Restart the app after saving.'**
+  String get geocodingServerNotConfiguredMessage;
+
+  /// No description provided for @geocodingServerUrlSavedRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server URL saved. Restart the app to connect.'**
+  String get geocodingServerUrlSavedRestart;
 
   /// No description provided for @geocodingPlacesSectionTitle.
   ///

@@ -1,0 +1,15 @@
+geocoding:
+  - getSettings:
+  - updateSourceUrl:
+  - startImport:
+  - startHousenumbersImport:
+  - cancelImport:
+  - cancelHousenumbersImport:
+  - searchPlaces:
+  - isSearchReady:
+  - exportPlacesArchive:
+  - exportHousenumbersArchive:
+  - importPlacesArchive:
+  - importHousenumbersArchive:
+  - clearPlaces:
+  - clearHousenumbers:

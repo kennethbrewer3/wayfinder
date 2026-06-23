@@ -22,8 +22,27 @@ class GeocodingSearchReadinessNotifier
   @override
   Future<GeocodingSearchReadiness> build() async {
     ref.onDispose(() => _pollTimer?.cancel());
-    final readiness =
-        await ref.read(geocodingRepositoryProvider).getSearchReadiness();
+    final repository = ref.read(geocodingRepositoryProvider);
+    if (!repository.isConfigured) {
+      return const GeocodingSearchReadiness(
+        isAddressSearchReady: false,
+        isFullSearchReady: false,
+        indexesBuilding: false,
+        readyIndexCount: 0,
+        totalIndexCount: 0,
+      );
+    }
+    if (!await repository.isServerReachable()) {
+      return const GeocodingSearchReadiness(
+        isAddressSearchReady: false,
+        isFullSearchReady: false,
+        indexesBuilding: false,
+        readyIndexCount: 0,
+        totalIndexCount: 0,
+        statusMessage: 'Geocoding server unavailable',
+      );
+    }
+    final readiness = await repository.getSearchReadiness();
     _schedulePolling(readiness);
     return readiness;
   }
@@ -104,6 +123,26 @@ class _AddressSearchReadinessIndicatorState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final repository = ref.watch(geocodingRepositoryProvider);
+    if (!repository.isConfigured) {
+      return AnimatedStatusDotIconButton(
+        isReady: false,
+        isLoading: false,
+        tooltip: l10n.searchReadinessGeocodingNotConfiguredTooltip,
+        icon: Icons.travel_explore,
+        onPressed: () => _showReadinessDialog(
+          context,
+          initialReadiness: const GeocodingSearchReadiness(
+            isAddressSearchReady: false,
+            isFullSearchReady: false,
+            indexesBuilding: false,
+            readyIndexCount: 0,
+            totalIndexCount: 0,
+          ),
+        ),
+      );
+    }
+
     final readinessAsync = ref.watch(geocodingSearchReadinessProvider);
     final settingsAsync = ref.watch(geocodingSettingsProvider);
     final importSettings = settingsAsync.maybeWhen(
@@ -203,6 +242,20 @@ class _AddressSearchReadinessIndicatorState
         return Consumer(
           builder: (context, ref, _) {
             final l10n = AppLocalizations.of(context)!;
+            final repository = ref.watch(geocodingRepositoryProvider);
+            if (!repository.isConfigured) {
+              return AlertDialog(
+                title: Text(l10n.searchReadinessNotReadyTitle),
+                content: Text(l10n.geocodingServerNotConfiguredMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(l10n.actionClose),
+                  ),
+                ],
+              );
+            }
+
             final readinessAsync = ref.watch(geocodingSearchReadinessProvider);
             final settingsAsync = ref.watch(geocodingSettingsProvider);
             final settings = settingsAsync.maybeWhen(

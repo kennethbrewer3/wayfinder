@@ -17,23 +17,19 @@ import 'dart:async' as _i3;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
 import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i5;
-import 'package:wayfinder_client/src/protocol/geocoding/geocoding_settings.dart'
-    as _i6;
-import 'package:wayfinder_client/src/protocol/geocoding/geocode_search_result.dart'
-    as _i7;
-import 'package:wayfinder_client/src/protocol/greetings/greeting.dart' as _i8;
-import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i9;
+import 'package:wayfinder_client/src/protocol/greetings/greeting.dart' as _i6;
+import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i7;
 import 'package:wayfinder_client/src/protocol/map/map_data_restore_summary.dart'
-    as _i10;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i11;
+    as _i8;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i9;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
-    as _i12;
+    as _i10;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
-    as _i13;
+    as _i11;
 import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
-    as _i14;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i15;
-import 'protocol.dart' as _i16;
+    as _i12;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i13;
+import 'protocol.dart' as _i14;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -299,119 +295,6 @@ class EndpointCategory extends _i2.EndpointRef {
       );
 }
 
-/// {@category Endpoint}
-class EndpointGeocoding extends _i2.EndpointRef {
-  EndpointGeocoding(_i2.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'geocoding';
-
-  _i3.Future<_i6.GeocodingSettings> getSettings() =>
-      caller.callServerEndpoint<_i6.GeocodingSettings>(
-        'geocoding',
-        'getSettings',
-        {},
-      );
-
-  _i3.Future<_i6.GeocodingSettings> updateSourceUrl(
-    String sourceUrl, {
-    List<String>? countryCodes,
-  }) => caller.callServerEndpoint<_i6.GeocodingSettings>(
-    'geocoding',
-    'updateSourceUrl',
-    {
-      'sourceUrl': sourceUrl,
-      'countryCodes': countryCodes,
-    },
-  );
-
-  _i3.Future<_i6.GeocodingSettings> startImport({
-    String? sourceUrl,
-    List<String>? countryCodes,
-  }) => caller.callServerEndpoint<_i6.GeocodingSettings>(
-    'geocoding',
-    'startImport',
-    {
-      'sourceUrl': sourceUrl,
-      'countryCodes': countryCodes,
-    },
-  );
-
-  _i3.Future<_i6.GeocodingSettings> startHousenumbersImport({
-    String? sourceUrl,
-  }) => caller.callServerEndpoint<_i6.GeocodingSettings>(
-    'geocoding',
-    'startHousenumbersImport',
-    {'sourceUrl': sourceUrl},
-  );
-
-  _i3.Future<_i6.GeocodingSettings> cancelImport() =>
-      caller.callServerEndpoint<_i6.GeocodingSettings>(
-        'geocoding',
-        'cancelImport',
-        {},
-      );
-
-  _i3.Future<_i6.GeocodingSettings> cancelHousenumbersImport() =>
-      caller.callServerEndpoint<_i6.GeocodingSettings>(
-        'geocoding',
-        'cancelHousenumbersImport',
-        {},
-      );
-
-  _i3.Future<List<_i7.GeocodeSearchResult>> searchPlaces(String query) =>
-      caller.callServerEndpoint<List<_i7.GeocodeSearchResult>>(
-        'geocoding',
-        'searchPlaces',
-        {'query': query},
-      );
-
-  _i3.Future<bool> isSearchReady() => caller.callServerEndpoint<bool>(
-    'geocoding',
-    'isSearchReady',
-    {},
-  );
-
-  _i3.Future<String> exportPlacesArchive() => caller.callServerEndpoint<String>(
-    'geocoding',
-    'exportPlacesArchive',
-    {},
-  );
-
-  _i3.Future<String> exportHousenumbersArchive() =>
-      caller.callServerEndpoint<String>(
-        'geocoding',
-        'exportHousenumbersArchive',
-        {},
-      );
-
-  _i3.Future<int> importPlacesArchive(String archiveJson) =>
-      caller.callServerEndpoint<int>(
-        'geocoding',
-        'importPlacesArchive',
-        {'archiveJson': archiveJson},
-      );
-
-  _i3.Future<int> importHousenumbersArchive(String archiveJson) =>
-      caller.callServerEndpoint<int>(
-        'geocoding',
-        'importHousenumbersArchive',
-        {'archiveJson': archiveJson},
-      );
-
-  _i3.Future<int> clearPlaces() => caller.callServerEndpoint<int>(
-    'geocoding',
-    'clearPlaces',
-    {},
-  );
-
-  _i3.Future<int> clearHousenumbers() => caller.callServerEndpoint<int>(
-    'geocoding',
-    'clearHousenumbers',
-    {},
-  );
-}
-
 /// This is an example endpoint that returns a greeting message through
 /// its [hello] method.
 /// {@category Endpoint}
@@ -422,8 +305,8 @@ class EndpointGreeting extends _i2.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i3.Future<_i8.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i8.Greeting>(
+  _i3.Future<_i6.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i6.Greeting>(
         'greeting',
         'hello',
         {'name': name},
@@ -437,29 +320,29 @@ class EndpointMapLayer extends _i2.EndpointRef {
   @override
   String get name => 'mapLayer';
 
-  _i3.Future<List<_i9.MapLayer>> listLayers() =>
-      caller.callServerEndpoint<List<_i9.MapLayer>>(
+  _i3.Future<List<_i7.MapLayer>> listLayers() =>
+      caller.callServerEndpoint<List<_i7.MapLayer>>(
         'mapLayer',
         'listLayers',
         {},
       );
 
-  _i3.Future<_i9.MapLayer?> getLayer(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i9.MapLayer?>(
+  _i3.Future<_i7.MapLayer?> getLayer(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i7.MapLayer?>(
         'mapLayer',
         'getLayer',
         {'id': id},
       );
 
-  _i3.Future<_i9.MapLayer> createLayer(_i9.MapLayer layer) =>
-      caller.callServerEndpoint<_i9.MapLayer>(
+  _i3.Future<_i7.MapLayer> createLayer(_i7.MapLayer layer) =>
+      caller.callServerEndpoint<_i7.MapLayer>(
         'mapLayer',
         'createLayer',
         {'layer': layer},
       );
 
-  _i3.Future<_i9.MapLayer> updateLayer(_i9.MapLayer layer) =>
-      caller.callServerEndpoint<_i9.MapLayer>(
+  _i3.Future<_i7.MapLayer> updateLayer(_i7.MapLayer layer) =>
+      caller.callServerEndpoint<_i7.MapLayer>(
         'mapLayer',
         'updateLayer',
         {'layer': layer},
@@ -472,8 +355,8 @@ class EndpointMapLayer extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<List<_i9.MapLayer>> reorderLayers(List<_i9.MapLayer> layers) =>
-      caller.callServerEndpoint<List<_i9.MapLayer>>(
+  _i3.Future<List<_i7.MapLayer>> reorderLayers(List<_i7.MapLayer> layers) =>
+      caller.callServerEndpoint<List<_i7.MapLayer>>(
         'mapLayer',
         'reorderLayers',
         {'layers': layers},
@@ -493,8 +376,8 @@ class EndpointMapData extends _i2.EndpointRef {
     {},
   );
 
-  _i3.Future<_i10.MapDataRestoreSummary> restoreMapData(String backupJson) =>
-      caller.callServerEndpoint<_i10.MapDataRestoreSummary>(
+  _i3.Future<_i8.MapDataRestoreSummary> restoreMapData(String backupJson) =>
+      caller.callServerEndpoint<_i8.MapDataRestoreSummary>(
         'mapData',
         'restoreMapData',
         {'backupJson': backupJson},
@@ -508,29 +391,29 @@ class EndpointMapMarker extends _i2.EndpointRef {
   @override
   String get name => 'mapMarker';
 
-  _i3.Future<List<_i11.MapMarker>> listMarkers() =>
-      caller.callServerEndpoint<List<_i11.MapMarker>>(
+  _i3.Future<List<_i9.MapMarker>> listMarkers() =>
+      caller.callServerEndpoint<List<_i9.MapMarker>>(
         'mapMarker',
         'listMarkers',
         {},
       );
 
-  _i3.Future<_i11.MapMarker?> getMarker(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i11.MapMarker?>(
+  _i3.Future<_i9.MapMarker?> getMarker(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i9.MapMarker?>(
         'mapMarker',
         'getMarker',
         {'id': id},
       );
 
-  _i3.Future<_i11.MapMarker> createMarker(_i11.MapMarker marker) =>
-      caller.callServerEndpoint<_i11.MapMarker>(
+  _i3.Future<_i9.MapMarker> createMarker(_i9.MapMarker marker) =>
+      caller.callServerEndpoint<_i9.MapMarker>(
         'mapMarker',
         'createMarker',
         {'marker': marker},
       );
 
-  _i3.Future<_i11.MapMarker> updateMarker(_i11.MapMarker marker) =>
-      caller.callServerEndpoint<_i11.MapMarker>(
+  _i3.Future<_i9.MapMarker> updateMarker(_i9.MapMarker marker) =>
+      caller.callServerEndpoint<_i9.MapMarker>(
         'mapMarker',
         'updateMarker',
         {'marker': marker},
@@ -551,31 +434,31 @@ class EndpointPmtiles extends _i2.EndpointRef {
   @override
   String get name => 'pmtiles';
 
-  _i3.Future<List<_i12.PmtilesFile>> listFiles() =>
-      caller.callServerEndpoint<List<_i12.PmtilesFile>>(
+  _i3.Future<List<_i10.PmtilesFile>> listFiles() =>
+      caller.callServerEndpoint<List<_i10.PmtilesFile>>(
         'pmtiles',
         'listFiles',
         {},
       );
 
-  _i3.Future<List<_i13.PmtilesGroup>> listGroups() =>
-      caller.callServerEndpoint<List<_i13.PmtilesGroup>>(
+  _i3.Future<List<_i11.PmtilesGroup>> listGroups() =>
+      caller.callServerEndpoint<List<_i11.PmtilesGroup>>(
         'pmtiles',
         'listGroups',
         {},
       );
 
-  _i3.Future<_i13.PmtilesGroup> createGroup(String name) =>
-      caller.callServerEndpoint<_i13.PmtilesGroup>(
+  _i3.Future<_i11.PmtilesGroup> createGroup(String name) =>
+      caller.callServerEndpoint<_i11.PmtilesGroup>(
         'pmtiles',
         'createGroup',
         {'name': name},
       );
 
-  _i3.Future<_i13.PmtilesGroup> renameGroup(
+  _i3.Future<_i11.PmtilesGroup> renameGroup(
     _i2.UuidValue id,
     String name,
-  ) => caller.callServerEndpoint<_i13.PmtilesGroup>(
+  ) => caller.callServerEndpoint<_i11.PmtilesGroup>(
     'pmtiles',
     'renameGroup',
     {
@@ -694,18 +577,18 @@ class EndpointAppSettings extends _i2.EndpointRef {
   @override
   String get name => 'appSettings';
 
-  _i3.Future<_i14.AppSettings> getSettings() =>
-      caller.callServerEndpoint<_i14.AppSettings>(
+  _i3.Future<_i12.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i12.AppSettings>(
         'appSettings',
         'getSettings',
         {},
       );
 
-  _i3.Future<_i14.AppSettings> updateHomeLocation(
+  _i3.Future<_i12.AppSettings> updateHomeLocation(
     double latitude,
     double longitude,
     double zoom,
-  ) => caller.callServerEndpoint<_i14.AppSettings>(
+  ) => caller.callServerEndpoint<_i12.AppSettings>(
     'appSettings',
     'updateHomeLocation',
     {
@@ -715,27 +598,27 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i14.AppSettings> resetHomeLocation() =>
-      caller.callServerEndpoint<_i14.AppSettings>(
+  _i3.Future<_i12.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i12.AppSettings>(
         'appSettings',
         'resetHomeLocation',
         {},
       );
 
-  _i3.Future<_i14.AppSettings> updatePmtilesStoragePath(String storagePath) =>
-      caller.callServerEndpoint<_i14.AppSettings>(
+  _i3.Future<_i12.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i12.AppSettings>(
         'appSettings',
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
 
-  _i3.Future<_i14.AppSettings> updateClientPreferences(
+  _i3.Future<_i12.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
-  ) => caller.callServerEndpoint<_i14.AppSettings>(
+  ) => caller.callServerEndpoint<_i12.AppSettings>(
     'appSettings',
     'updateClientPreferences',
     {
@@ -755,29 +638,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i15.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i15.MapZone>>(
+  _i3.Future<List<_i13.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i13.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i15.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i15.MapZone?>(
+  _i3.Future<_i13.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i13.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i15.MapZone> createZone(_i15.MapZone zone) =>
-      caller.callServerEndpoint<_i15.MapZone>(
+  _i3.Future<_i13.MapZone> createZone(_i13.MapZone zone) =>
+      caller.callServerEndpoint<_i13.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i15.MapZone> updateZone(_i15.MapZone zone) =>
-      caller.callServerEndpoint<_i15.MapZone>(
+  _i3.Future<_i13.MapZone> updateZone(_i13.MapZone zone) =>
+      caller.callServerEndpoint<_i13.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -822,7 +705,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i16.Protocol(),
+         _i14.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -834,7 +717,6 @@ class Client extends _i2.ServerpodClientShared {
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     category = EndpointCategory(this);
-    geocoding = EndpointGeocoding(this);
     greeting = EndpointGreeting(this);
     mapLayer = EndpointMapLayer(this);
     mapData = EndpointMapData(this);
@@ -850,8 +732,6 @@ class Client extends _i2.ServerpodClientShared {
   late final EndpointJwtRefresh jwtRefresh;
 
   late final EndpointCategory category;
-
-  late final EndpointGeocoding geocoding;
 
   late final EndpointGreeting greeting;
 
@@ -874,7 +754,6 @@ class Client extends _i2.ServerpodClientShared {
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'category': category,
-    'geocoding': geocoding,
     'greeting': greeting,
     'mapLayer': mapLayer,
     'mapData': mapData,

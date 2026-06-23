@@ -18,6 +18,7 @@ class AppConstants {
   static const angleDisplayFormatStorageKey = 'wayfinder.settings.angleDisplayFormat';
   static const circleSizeDisplayStorageKey = 'wayfinder.settings.circleSizeDisplay';
   static const serverApiUrlStorageKey = 'wayfinder.settings.serverApiUrl';
+  static const geocodingWebUrlStorageKey = 'wayfinder.settings.geocodingWebUrl';
   static const appThemeStorageKey = 'wayfinder.settings.appTheme';
   static const appLocaleStorageKey = 'wayfinder.settings.appLocale';
 }

@@ -24,6 +24,7 @@ void main() async {
     data: {
       'apiUrl': appServerConfig.apiUrl,
       'webUrl': appServerConfig.webUrl,
+      'geocodingWebUrl': appServerConfig.geocodingWebUrl,
     },
   );
 

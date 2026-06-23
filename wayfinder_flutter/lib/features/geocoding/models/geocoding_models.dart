@@ -69,6 +69,37 @@ bool isSearchableGeocodingImport(String status, int rowCount) {
       status != geocodingStatusImporting;
 }
 
+/// Matches server progress weights in [GeocodingDownloadProgress].
+enum GeocodingImportPhase {
+  idle,
+  downloading,
+  importing,
+  finalizing,
+  committing,
+}
+
+GeocodingImportPhase resolveGeocodingImportPhase({
+  required bool isRunning,
+  required String status,
+  required double progress,
+}) {
+  if (!isRunning &&
+      status != geocodingStatusDownloading &&
+      status != geocodingStatusImporting) {
+    return GeocodingImportPhase.idle;
+  }
+  if (status == geocodingStatusDownloading) {
+    return GeocodingImportPhase.downloading;
+  }
+  if (progress >= 0.97) {
+    return GeocodingImportPhase.committing;
+  }
+  if (progress >= 0.92) {
+    return GeocodingImportPhase.finalizing;
+  }
+  return GeocodingImportPhase.importing;
+}
+
 class GeocodingSearchReadiness {
   const GeocodingSearchReadiness({
     required this.isAddressSearchReady,

@@ -1022,6 +1022,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchReadinessNotReadyTooltip => 'Recherche complète non prête';
 
   @override
+  String searchReadinessImportInProgressTooltip(String phase) {
+    return 'Importation en cours : $phase';
+  }
+
+  @override
+  String get searchReadinessImportPlacesDialogTitle =>
+      'Importation des données de lieux';
+
+  @override
+  String get searchReadinessImportAddressesDialogTitle =>
+      'Importation des données d\'adresses';
+
+  @override
   String get searchReadinessFullReadyTitle => 'Recherche complète prête';
 
   @override
@@ -1245,6 +1258,51 @@ class AppLocalizationsFr extends AppLocalizations {
   ) {
     return '$percent % · $count $rowLabel importé(s)';
   }
+
+  @override
+  String get geocodingImportPhaseDownloadingTitle =>
+      'Téléchargement du jeu de données';
+
+  @override
+  String get geocodingImportPhaseDownloadingDetail =>
+      'Récupération du fichier compressé de noms de lieux depuis Internet.';
+
+  @override
+  String get geocodingImportPhaseImportingTitle => 'Lecture des noms de lieux';
+
+  @override
+  String get geocodingImportPhaseImportingDetail =>
+      'Enregistrement des lieux sur le serveur au fur et à mesure de la lecture du fichier.';
+
+  @override
+  String get geocodingImportPhaseImportingAddressesTitle =>
+      'Lecture des adresses';
+
+  @override
+  String get geocodingImportPhaseImportingAddressesDetail =>
+      'Enregistrement des adresses sur le serveur au fur et à mesure de la lecture du fichier.';
+
+  @override
+  String get geocodingImportPhaseFinalizingTitle => 'Finalisation';
+
+  @override
+  String get geocodingImportPhaseFinalizingDetail =>
+      'Enregistrement du dernier lot avant l\'étape finale.';
+
+  @override
+  String get geocodingImportPhaseCommittingTitle => 'Presque terminé';
+
+  @override
+  String geocodingImportPhaseCommittingDetail(String count, String rowLabel) {
+    return 'Les $count $rowLabel ont tous été lus. Le serveur les enregistre maintenant pour la recherche. Cela peut prendre une à trois heures et la barre de progression peut s\'arrêter ici.';
+  }
+
+  @override
+  String get geocodingImportDoNotRestartTitle => 'Gardez le serveur en marche';
+
+  @override
+  String get geocodingImportDoNotRestartMessage =>
+      'Ne redémarrez pas et n\'arrêtez pas le serveur pendant cette étape. Sinon, l\'importation sera annulée et vous devrez recommencer depuis le début.';
 
   @override
   String get geocodingSourceUrlRequired =>

@@ -470,6 +470,16 @@
   "searchReadinessFullReadyTooltip": "Búsqueda completa lista",
   "searchReadinessBuildingTooltip": "Construyendo índices de búsqueda…",
   "searchReadinessNotReadyTooltip": "Búsqueda completa no lista",
+  "searchReadinessImportInProgressTooltip": "Importación en curso: {phase}",
+  "@searchReadinessImportInProgressTooltip": {
+    "placeholders": {
+      "phase": {
+        "type": "String"
+      }
+    }
+  },
+  "searchReadinessImportPlacesDialogTitle": "Importación de datos de lugares",
+  "searchReadinessImportAddressesDialogTitle": "Importación de datos de direcciones",
   "searchReadinessFullReadyTitle": "Búsqueda completa lista",
   "searchReadinessAddressReadyTitle": "Búsqueda de direcciones lista",
   "searchReadinessNotReadyTitle": "Búsqueda aún no lista",
@@ -655,6 +665,28 @@
       }
     }
   },
+  "geocodingImportPhaseDownloadingTitle": "Descargando conjunto de datos",
+  "geocodingImportPhaseDownloadingDetail": "Obteniendo el archivo comprimido de nombres de lugares desde internet.",
+  "geocodingImportPhaseImportingTitle": "Leyendo nombres de lugares",
+  "geocodingImportPhaseImportingDetail": "Guardando lugares en el servidor a medida que se leen del archivo.",
+  "geocodingImportPhaseImportingAddressesTitle": "Leyendo direcciones",
+  "geocodingImportPhaseImportingAddressesDetail": "Guardando direcciones en el servidor a medida que se leen del archivo.",
+  "geocodingImportPhaseFinalizingTitle": "Finalizando",
+  "geocodingImportPhaseFinalizingDetail": "Guardando el último lote antes del paso final.",
+  "geocodingImportPhaseCommittingTitle": "Casi listo",
+  "geocodingImportPhaseCommittingDetail": "Se han leído todos los {count} {rowLabel}. El servidor ahora los guarda para la búsqueda. Esto puede tardar de una a tres horas y la barra de progreso puede detenerse aquí.",
+  "@geocodingImportPhaseCommittingDetail": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "rowLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingImportDoNotRestartTitle": "Mantenga el servidor en ejecución",
+  "geocodingImportDoNotRestartMessage": "No reinicie ni detenga el servidor durante este paso. Si lo hace, la importación se cancelará y tendrá que empezar de nuevo desde el principio.",
   "geocodingSourceUrlRequired": "La URL de origen de geocodificación es obligatoria.",
   "geocodingPlanetImportStarted": "Importación planetaria de lugares iniciada. Puede tardar muchas horas.",
   "geocodingPlaceImportStarted": "Importación de nombres de lugares iniciada.",

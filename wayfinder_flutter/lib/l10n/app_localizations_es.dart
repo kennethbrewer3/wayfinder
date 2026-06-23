@@ -1018,6 +1018,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchReadinessNotReadyTooltip => 'Búsqueda completa no lista';
 
   @override
+  String searchReadinessImportInProgressTooltip(String phase) {
+    return 'Importación en curso: $phase';
+  }
+
+  @override
+  String get searchReadinessImportPlacesDialogTitle =>
+      'Importación de datos de lugares';
+
+  @override
+  String get searchReadinessImportAddressesDialogTitle =>
+      'Importación de datos de direcciones';
+
+  @override
   String get searchReadinessFullReadyTitle => 'Búsqueda completa lista';
 
   @override
@@ -1241,6 +1254,52 @@ class AppLocalizationsEs extends AppLocalizations {
   ) {
     return '$percent % · $count $rowLabel importado(s)';
   }
+
+  @override
+  String get geocodingImportPhaseDownloadingTitle =>
+      'Descargando conjunto de datos';
+
+  @override
+  String get geocodingImportPhaseDownloadingDetail =>
+      'Obteniendo el archivo comprimido de nombres de lugares desde internet.';
+
+  @override
+  String get geocodingImportPhaseImportingTitle => 'Leyendo nombres de lugares';
+
+  @override
+  String get geocodingImportPhaseImportingDetail =>
+      'Guardando lugares en el servidor a medida que se leen del archivo.';
+
+  @override
+  String get geocodingImportPhaseImportingAddressesTitle =>
+      'Leyendo direcciones';
+
+  @override
+  String get geocodingImportPhaseImportingAddressesDetail =>
+      'Guardando direcciones en el servidor a medida que se leen del archivo.';
+
+  @override
+  String get geocodingImportPhaseFinalizingTitle => 'Finalizando';
+
+  @override
+  String get geocodingImportPhaseFinalizingDetail =>
+      'Guardando el último lote antes del paso final.';
+
+  @override
+  String get geocodingImportPhaseCommittingTitle => 'Casi listo';
+
+  @override
+  String geocodingImportPhaseCommittingDetail(String count, String rowLabel) {
+    return 'Se han leído todos los $count $rowLabel. El servidor ahora los guarda para la búsqueda. Esto puede tardar de una a tres horas y la barra de progreso puede detenerse aquí.';
+  }
+
+  @override
+  String get geocodingImportDoNotRestartTitle =>
+      'Mantenga el servidor en ejecución';
+
+  @override
+  String get geocodingImportDoNotRestartMessage =>
+      'No reinicie ni detenga el servidor durante este paso. Si lo hace, la importación se cancelará y tendrá que empezar de nuevo desde el principio.';
 
   @override
   String get geocodingSourceUrlRequired =>

@@ -1005,6 +1005,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchReadinessNotReadyTooltip => 'Full search not ready';
 
   @override
+  String searchReadinessImportInProgressTooltip(String phase) {
+    return 'Import in progress: $phase';
+  }
+
+  @override
+  String get searchReadinessImportPlacesDialogTitle =>
+      'Place search data import';
+
+  @override
+  String get searchReadinessImportAddressesDialogTitle =>
+      'Street address data import';
+
+  @override
   String get searchReadinessFullReadyTitle => 'Full search ready';
 
   @override
@@ -1223,6 +1236,50 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return '$percent% · $count $rowLabel imported';
   }
+
+  @override
+  String get geocodingImportPhaseDownloadingTitle => 'Downloading dataset';
+
+  @override
+  String get geocodingImportPhaseDownloadingDetail =>
+      'Fetching the compressed place-name file from the internet.';
+
+  @override
+  String get geocodingImportPhaseImportingTitle => 'Reading place names';
+
+  @override
+  String get geocodingImportPhaseImportingDetail =>
+      'Saving places to the server as they are read from the file.';
+
+  @override
+  String get geocodingImportPhaseImportingAddressesTitle =>
+      'Reading street addresses';
+
+  @override
+  String get geocodingImportPhaseImportingAddressesDetail =>
+      'Saving addresses to the server as they are read from the file.';
+
+  @override
+  String get geocodingImportPhaseFinalizingTitle => 'Wrapping up';
+
+  @override
+  String get geocodingImportPhaseFinalizingDetail =>
+      'Saving the last batch before the final step.';
+
+  @override
+  String get geocodingImportPhaseCommittingTitle => 'Almost done';
+
+  @override
+  String geocodingImportPhaseCommittingDetail(String count, String rowLabel) {
+    return 'All $count $rowLabel have been read. The server is now saving them for search. This can take one to three hours and the progress bar may pause here.';
+  }
+
+  @override
+  String get geocodingImportDoNotRestartTitle => 'Keep the server running';
+
+  @override
+  String get geocodingImportDoNotRestartMessage =>
+      'Do not restart or stop the server during this step. If you do, the import will be cancelled and you\'ll need to start over from the beginning.';
 
   @override
   String get geocodingSourceUrlRequired => 'Geocoding source URL is required.';

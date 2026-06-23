@@ -10,6 +10,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/models/geocoding_datasets.dart';
 import '../../geocoding/models/geocoding_models.dart';
+import '../../geocoding/presentation/geocoding_import_progress_panel.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
 
 class SettingsGeocodingTab extends ConsumerStatefulWidget {
@@ -616,7 +617,16 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     required String status,
     required int rowCount,
     required String readyLabel,
+    GeocodingImportPhase? activePhase,
+    bool isAddresses = false,
   }) {
+    if (activePhase != null && activePhase != GeocodingImportPhase.idle) {
+      return geocodingImportPhaseTitle(
+        l10n,
+        activePhase,
+        isAddresses: isAddresses,
+      );
+    }
     final formattedCount = _formatCount(rowCount);
     return switch (status) {
       geocodingStatusIdle => l10n.geocodingStatusNotImported,
@@ -645,11 +655,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   }
 
   Widget _buildImportProgress({
-    required AppLocalizations l10n,
     required bool isRunning,
+    required String importStatus,
     required double progress,
     required int importedRowCount,
     required String rowLabel,
+    required bool isAddresses,
     required bool isCancelling,
     required VoidCallback? onAbort,
   }) {
@@ -657,39 +668,14 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       return const SizedBox.shrink();
     }
 
-    final progressPercent =
-        (progress * 100).clamp(0, 100).toStringAsFixed(1);
-    final formattedCount = _formatCount(importedRowCount);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 8),
-        LinearProgressIndicator(value: progress),
-        const SizedBox(height: 4),
-        Text(
-          l10n.geocodingImportProgress(progressPercent, formattedCount, rowLabel),
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        if (onAbort != null) ...[
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: OutlinedButton.icon(
-              onPressed: isCancelling ? null : onAbort,
-              icon: isCancelling
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.stop_circle_outlined),
-              label: Text(
-                isCancelling ? l10n.actionAborting : l10n.geocodingAbortImport,
-              ),
-            ),
-          ),
-        ],
-      ],
+    return GeocodingImportProgressPanel(
+      importStatus: importStatus,
+      progress: progress,
+      importedRowCount: importedRowCount,
+      rowLabel: rowLabel,
+      isAddresses: isAddresses,
+      onAbort: onAbort,
+      isCancelling: isCancelling,
     );
   }
 
@@ -810,6 +796,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                       status: settings.importStatus,
                       rowCount: settings.importedRowCount,
                       readyLabel: l10n.geocodingRowLabelPlaces,
+                      activePhase: settings.isPlacesRunning
+                          ? resolveGeocodingImportPhase(
+                              isRunning: settings.isPlacesRunning,
+                              status: settings.importStatus,
+                              progress: settings.importProgress,
+                            )
+                          : null,
                     ),
                   ),
                   style: Theme.of(context).textTheme.bodySmall,
@@ -824,11 +817,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   ),
                 ],
                 _buildImportProgress(
-                  l10n: l10n,
                   isRunning: settings.isPlacesRunning,
+                  importStatus: settings.importStatus,
                   progress: settings.importProgress,
                   importedRowCount: settings.importedRowCount,
                   rowLabel: l10n.geocodingRowLabelRows,
+                  isAddresses: false,
                   isCancelling: _isCancellingPlacesImport,
                   onAbort: settings.isPlacesRunning ? _cancelPlacesImport : null,
                 ),
@@ -916,16 +910,25 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                       status: settings.housenumbersImportStatus,
                       rowCount: settings.housenumbersImportedRowCount,
                       readyLabel: l10n.geocodingRowLabelAddresses,
+                      activePhase: settings.isHousenumbersRunning
+                          ? resolveGeocodingImportPhase(
+                              isRunning: settings.isHousenumbersRunning,
+                              status: settings.housenumbersImportStatus,
+                              progress: settings.housenumbersImportProgress,
+                            )
+                          : null,
+                      isAddresses: true,
                     ),
                   ),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 _buildImportProgress(
-                  l10n: l10n,
                   isRunning: settings.isHousenumbersRunning,
+                  importStatus: settings.housenumbersImportStatus,
                   progress: settings.housenumbersImportProgress,
                   importedRowCount: settings.housenumbersImportedRowCount,
                   rowLabel: l10n.geocodingRowLabelAddresses,
+                  isAddresses: true,
                   isCancelling: _isCancellingHousenumbersImport,
                   onAbort: settings.isHousenumbersRunning
                       ? _cancelHousenumbersImport

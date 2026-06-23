@@ -1906,6 +1906,24 @@ abstract class AppLocalizations {
   /// **'Full search not ready'**
   String get searchReadinessNotReadyTooltip;
 
+  /// No description provided for @searchReadinessImportInProgressTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Import in progress: {phase}'**
+  String searchReadinessImportInProgressTooltip(String phase);
+
+  /// No description provided for @searchReadinessImportPlacesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Place search data import'**
+  String get searchReadinessImportPlacesDialogTitle;
+
+  /// No description provided for @searchReadinessImportAddressesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Street address data import'**
+  String get searchReadinessImportAddressesDialogTitle;
+
   /// No description provided for @searchReadinessFullReadyTitle.
   ///
   /// In en, this message translates to:
@@ -2253,6 +2271,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent}% · {count} {rowLabel} imported'**
   String geocodingImportProgress(String percent, String count, String rowLabel);
+
+  /// No description provided for @geocodingImportPhaseDownloadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading dataset'**
+  String get geocodingImportPhaseDownloadingTitle;
+
+  /// No description provided for @geocodingImportPhaseDownloadingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the compressed place-name file from the internet.'**
+  String get geocodingImportPhaseDownloadingDetail;
+
+  /// No description provided for @geocodingImportPhaseImportingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading place names'**
+  String get geocodingImportPhaseImportingTitle;
+
+  /// No description provided for @geocodingImportPhaseImportingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving places to the server as they are read from the file.'**
+  String get geocodingImportPhaseImportingDetail;
+
+  /// No description provided for @geocodingImportPhaseImportingAddressesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading street addresses'**
+  String get geocodingImportPhaseImportingAddressesTitle;
+
+  /// No description provided for @geocodingImportPhaseImportingAddressesDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving addresses to the server as they are read from the file.'**
+  String get geocodingImportPhaseImportingAddressesDetail;
+
+  /// No description provided for @geocodingImportPhaseFinalizingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrapping up'**
+  String get geocodingImportPhaseFinalizingTitle;
+
+  /// No description provided for @geocodingImportPhaseFinalizingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving the last batch before the final step.'**
+  String get geocodingImportPhaseFinalizingDetail;
+
+  /// No description provided for @geocodingImportPhaseCommittingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost done'**
+  String get geocodingImportPhaseCommittingTitle;
+
+  /// No description provided for @geocodingImportPhaseCommittingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'All {count} {rowLabel} have been read. The server is now saving them for search. This can take one to three hours and the progress bar may pause here.'**
+  String geocodingImportPhaseCommittingDetail(String count, String rowLabel);
+
+  /// No description provided for @geocodingImportDoNotRestartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the server running'**
+  String get geocodingImportDoNotRestartTitle;
+
+  /// No description provided for @geocodingImportDoNotRestartMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not restart or stop the server during this step. If you do, the import will be cancelled and you\'ll need to start over from the beginning.'**
+  String get geocodingImportDoNotRestartMessage;
 
   /// No description provided for @geocodingSourceUrlRequired.
   ///

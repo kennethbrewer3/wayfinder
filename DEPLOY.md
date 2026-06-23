@@ -94,6 +94,8 @@ WAYFINDER_WEB_URL=http://192.168.1.10:18082
 WAYFINDER_CLIENT_PORT=8080
 ```
 
+`WAYFINDER_WEB_URL` is optional if your API URL uses port **18080** — the client container derives the web URL on port **18082** automatically.
+
 Replace `192.168.1.10` with your server machine's IP or hostname.
 
 ### Start
@@ -158,6 +160,26 @@ cd wayfinder_flutter && docker compose up -d --build
 ```
 
 ## Troubleshooting
+
+**Client `docker compose up` fails before starting (missing `WAYFINDER_WEB_URL`)**
+
+Recent compose files require `WAYFINDER_API_URL` in `.env`. If you see:
+
+```text
+required variable WAYFINDER_WEB_URL is missing a value
+```
+
+Either add the web URL to `.env`:
+
+```env
+WAYFINDER_WEB_URL=http://YOUR_SERVER:18082
+```
+
+Or re-download the latest `deploy/client/docker-compose.yaml` (web URL is optional and derived from the API URL when omitted).
+
+**Client container exits or `Bind for … failed: port is already allocated`**
+
+Another service is using `WAYFINDER_CLIENT_PORT` (default **8080**). On the same host as the Wayfinder **server**, do not map the client to **18080** — that port is already used by the Serverpod API. Use `8080` for the client UI, or pick another free port in `.env`.
 
 **`could not find .../wayfinder_server` or `[+] Building` when you did not expect a build**
 

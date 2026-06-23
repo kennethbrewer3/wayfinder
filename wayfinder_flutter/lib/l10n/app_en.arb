@@ -470,6 +470,16 @@
   "searchReadinessFullReadyTooltip": "Full search ready",
   "searchReadinessBuildingTooltip": "Building search indexes…",
   "searchReadinessNotReadyTooltip": "Full search not ready",
+  "searchReadinessImportInProgressTooltip": "Import in progress: {phase}",
+  "@searchReadinessImportInProgressTooltip": {
+    "placeholders": {
+      "phase": {
+        "type": "String"
+      }
+    }
+  },
+  "searchReadinessImportPlacesDialogTitle": "Place search data import",
+  "searchReadinessImportAddressesDialogTitle": "Street address data import",
   "searchReadinessFullReadyTitle": "Full search ready",
   "searchReadinessAddressReadyTitle": "Address search ready",
   "searchReadinessNotReadyTitle": "Search not ready yet",
@@ -655,6 +665,28 @@
       }
     }
   },
+  "geocodingImportPhaseDownloadingTitle": "Downloading dataset",
+  "geocodingImportPhaseDownloadingDetail": "Fetching the compressed place-name file from the internet.",
+  "geocodingImportPhaseImportingTitle": "Reading place names",
+  "geocodingImportPhaseImportingDetail": "Saving places to the server as they are read from the file.",
+  "geocodingImportPhaseImportingAddressesTitle": "Reading street addresses",
+  "geocodingImportPhaseImportingAddressesDetail": "Saving addresses to the server as they are read from the file.",
+  "geocodingImportPhaseFinalizingTitle": "Wrapping up",
+  "geocodingImportPhaseFinalizingDetail": "Saving the last batch before the final step.",
+  "geocodingImportPhaseCommittingTitle": "Almost done",
+  "geocodingImportPhaseCommittingDetail": "All {count} {rowLabel} have been read. The server is now saving them for search. This can take one to three hours and the progress bar may pause here.",
+  "@geocodingImportPhaseCommittingDetail": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "rowLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingImportDoNotRestartTitle": "Keep the server running",
+  "geocodingImportDoNotRestartMessage": "Do not restart or stop the server during this step. If you do, the import will be cancelled and you'll need to start over from the beginning.",
   "geocodingSourceUrlRequired": "Geocoding source URL is required.",
   "geocodingPlanetImportStarted": "Full planet place import started. This can take many hours.",
   "geocodingPlaceImportStarted": "Place-name import started.",

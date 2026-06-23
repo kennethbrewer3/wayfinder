@@ -196,8 +196,21 @@ chmod +x start.sh stop.sh
 3. Start with the helper script (uses `docker run`, not Compose):
 
 ```bash
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/docker_lib.sh
+chmod +x start.sh stop.sh
+./stop.sh
 ./start.sh
 ```
+
+If you still see `container name is already in use` but `docker ps` shows nothing, the container was likely created with **sudo docker** while you are removing it without sudo (or the reverse). Remove both:
+
+```bash
+docker rm -f wayfinder-client
+sudo docker rm -f wayfinder-client
+./start.sh
+```
+
+Use either `docker` or `sudo docker` consistently on a host — not both.
 
 If `./start.sh` also hangs, check Docker disk space (`df -h /var/lib/docker`) and restart the daemon (`sudo systemctl restart docker`).
 

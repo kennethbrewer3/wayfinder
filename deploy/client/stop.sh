@@ -2,10 +2,13 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
+# shellcheck disable=SC1091
+source "$(dirname "$0")/docker_lib.sh"
 
-NAME="wayfinder-client"
+NAME="$WAYFINDER_CLIENT_CONTAINER_NAME"
 
-docker rm -f "$NAME" 2>/dev/null || true
+remove_wayfinder_client_container
 docker compose down --remove-orphans 2>/dev/null || true
+sudo docker compose down --remove-orphans 2>/dev/null || true
 
 echo "Stopped ${NAME}."

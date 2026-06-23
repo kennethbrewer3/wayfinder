@@ -204,11 +204,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.';
 
   @override
-  String get settingsLineArrowsTitle => 'Line direction arrows';
-
-  @override
-  String get settingsLineArrowsDescription =>
-      'Control how often direction arrows appear along lines on the map. Stored on the server so every browser uses the same spacing.';
+  String get lineArrowDensityLabel => 'Arrow frequency';
 
   @override
   String get lineArrowDensitySparse => 'Sparse';

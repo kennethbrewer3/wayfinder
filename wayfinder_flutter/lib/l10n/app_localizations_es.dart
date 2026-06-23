@@ -204,11 +204,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Elija cómo se muestran los ángulos relativos en el mapa y en los gráficos de rumbo.';
 
   @override
-  String get settingsLineArrowsTitle => 'Flechas de dirección en líneas';
-
-  @override
-  String get settingsLineArrowsDescription =>
-      'Controla con qué frecuencia aparecen flechas de dirección a lo largo de las líneas en el mapa. Se guarda en el servidor para que todos los navegadores usen el mismo espaciado.';
+  String get lineArrowDensityLabel => 'Frecuencia de flechas';
 
   @override
   String get lineArrowDensitySparse => 'Escaso';

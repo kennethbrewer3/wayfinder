@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import 'line_arrow_density.dart';
+
 const lineZoneType = 'line';
 
 enum LinePathMode {
@@ -23,6 +25,7 @@ class LineGeometry {
   const LineGeometry({
     required this.points,
     required this.showArrows,
+    this.arrowDensity = const LineArrowDensity(LineArrowDensity.defaultLevel),
     this.pathMode = LinePathMode.straight,
     this.notes,
     this.showDistanceLabel = true,
@@ -31,6 +34,7 @@ class LineGeometry {
 
   final List<LatLng> points;
   final bool showArrows;
+  final LineArrowDensity arrowDensity;
   final LinePathMode pathMode;
   final String? notes;
   final bool showDistanceLabel;
@@ -47,6 +51,7 @@ class LineGeometry {
   LineGeometry copyWith({
     List<LatLng>? points,
     bool? showArrows,
+    LineArrowDensity? arrowDensity,
     LinePathMode? pathMode,
     String? notes,
     bool? showDistanceLabel,
@@ -56,6 +61,7 @@ class LineGeometry {
     return LineGeometry(
       points: points ?? this.points,
       showArrows: showArrows ?? this.showArrows,
+      arrowDensity: arrowDensity ?? this.arrowDensity,
       pathMode: pathMode ?? this.pathMode,
       notes: clearNotes ? null : notes ?? this.notes,
       showDistanceLabel: showDistanceLabel ?? this.showDistanceLabel,
@@ -74,6 +80,7 @@ class LineGeometry {
           )
           .toList(),
       'showArrows': showArrows,
+      if (showArrows) 'arrowDensity': lineArrowDensityToStorage(arrowDensity),
       'showDistanceLabel': showDistanceLabel,
       'showNameLabel': showNameLabel,
       if (pathMode != LinePathMode.straight)
@@ -125,6 +132,7 @@ class LineGeometry {
     return LineGeometry(
       points: points,
       showArrows: json['showArrows'] == true,
+      arrowDensity: lineArrowDensityFromStorage(json['arrowDensity'] as int?),
       pathMode: linePathModeFromJson(json['pathMode'] as String?),
       notes: json['notes'] as String?,
       showDistanceLabel: json['showDistanceLabel'] != false,

@@ -33,7 +33,6 @@ class LineDirectionArrowsOverlay extends StatefulWidget {
     super.key,
     required this.zones,
     required this.mapController,
-    required this.density,
     this.geometryOverrides,
     this.previewStart,
     this.previewEnd,
@@ -45,7 +44,6 @@ class LineDirectionArrowsOverlay extends StatefulWidget {
 
   final List<MapZone> zones;
   final MapController mapController;
-  final LineArrowDensity density;
   final Map<UuidValue, LineGeometry>? geometryOverrides;
   final LatLng? previewStart;
   final LatLng? previewEnd;
@@ -112,7 +110,7 @@ class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay>
           mapSize: mapSize,
           renderPoints: geometry.renderPoints,
           color: parseMarkerColor(zone.color),
-          density: widget.density,
+          density: geometry.arrowDensity,
         ),
       );
     }
@@ -126,7 +124,7 @@ class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay>
               mapSize: mapSize,
               renderPoints: [start, end],
               color: color,
-              density: widget.density,
+              density: const LineArrowDensity(LineArrowDensity.defaultLevel),
             ),
           );
         }
@@ -142,7 +140,7 @@ class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay>
               mapSize: mapSize,
               renderPoints: [start, end],
               color: color,
-              density: widget.density,
+              density: const LineArrowDensity(LineArrowDensity.defaultLevel),
             ),
           );
         }

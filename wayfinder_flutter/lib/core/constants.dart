@@ -20,5 +20,4 @@ class AppConstants {
   static const serverApiUrlStorageKey = 'wayfinder.settings.serverApiUrl';
   static const appThemeStorageKey = 'wayfinder.settings.appTheme';
   static const appLocaleStorageKey = 'wayfinder.settings.appLocale';
-  static const lineArrowDensityStorageKey = 'wayfinder.settings.lineArrowDensity';
 }

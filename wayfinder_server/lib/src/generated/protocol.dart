@@ -137,13 +137,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'system\'::text',
         ),
         _i2.ColumnDefinition(
-          name: 'lineArrowDensity',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '3',
-        ),
-        _i2.ColumnDefinition(
           name: 'updatedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,

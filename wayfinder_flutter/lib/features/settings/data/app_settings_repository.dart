@@ -112,12 +112,11 @@ class AppSettingsRepository {
     final payload = preferences.toJson();
     try {
       final settings = await _client.appSettings.updateClientPreferences(
-        payload['measurementUnits'] as String,
-        payload['angleDisplayFormat'] as String,
-        payload['circleSizeDisplay'] as String,
-        payload['appTheme'] as String,
-        payload['appLocale'] as String,
-        payload['lineArrowDensity'] as int,
+        payload['measurementUnits']!,
+        payload['angleDisplayFormat']!,
+        payload['circleSizeDisplay']!,
+        payload['appTheme']!,
+        payload['appLocale']!,
       );
       return ClientPreferences.fromAppSettings(settings);
     } catch (error, _) {

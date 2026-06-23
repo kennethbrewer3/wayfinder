@@ -204,11 +204,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisissez comment les angles relatifs sont affichés sur la carte et dans les graphiques de relèvement. Enregistré sur le serveur pour que chaque navigateur utilise le même format.';
 
   @override
-  String get settingsLineArrowsTitle => 'Flèches de direction des lignes';
-
-  @override
-  String get settingsLineArrowsDescription =>
-      'Contrôlez la fréquence des flèches de direction le long des lignes sur la carte. Enregistré sur le serveur pour que tous les navigateurs utilisent le même espacement.';
+  String get lineArrowDensityLabel => 'Fréquence des flèches';
 
   @override
   String get lineArrowDensitySparse => 'Clairsemé';

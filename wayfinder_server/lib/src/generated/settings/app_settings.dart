@@ -25,14 +25,12 @@ abstract class AppSettings
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
        appTheme = appTheme ?? 'light',
-       appLocale = appLocale ?? 'system',
-       lineArrowDensity = lineArrowDensity ?? 3;
+       appLocale = appLocale ?? 'system';
 
   factory AppSettings({
     int? id,
@@ -45,7 +43,6 @@ abstract class AppSettings
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -61,7 +58,6 @@ abstract class AppSettings
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
       appLocale: jsonSerialization['appLocale'] as String?,
-      lineArrowDensity: jsonSerialization['lineArrowDensity'] as int?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -93,8 +89,6 @@ abstract class AppSettings
 
   String appLocale;
 
-  int lineArrowDensity;
-
   DateTime updatedAt;
 
   @override
@@ -114,7 +108,6 @@ abstract class AppSettings
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     DateTime? updatedAt,
   });
   @override
@@ -131,7 +124,6 @@ abstract class AppSettings
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
-      'lineArrowDensity': lineArrowDensity,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -150,7 +142,6 @@ abstract class AppSettings
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
-      'lineArrowDensity': lineArrowDensity,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -199,7 +190,6 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -212,7 +202,6 @@ class _AppSettingsImpl extends AppSettings {
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
          appLocale: appLocale,
-         lineArrowDensity: lineArrowDensity,
          updatedAt: updatedAt,
        );
 
@@ -231,7 +220,6 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -245,7 +233,6 @@ class _AppSettingsImpl extends AppSettings {
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
-      lineArrowDensity: lineArrowDensity ?? this.lineArrowDensity,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -304,11 +291,6 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
     value,
   );
 
-  _i1.ColumnValue<int, int> lineArrowDensity(int value) => _i1.ColumnValue(
-    table.lineArrowDensity,
-    value,
-  );
-
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
       _i1.ColumnValue(
         table.updatedAt,
@@ -360,11 +342,6 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    lineArrowDensity = _i1.ColumnInt(
-      'lineArrowDensity',
-      this,
-      hasDefault: true,
-    );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
@@ -391,8 +368,6 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString appLocale;
 
-  late final _i1.ColumnInt lineArrowDensity;
-
   late final _i1.ColumnDateTime updatedAt;
 
   @override
@@ -407,7 +382,6 @@ class AppSettingsTable extends _i1.Table<int?> {
     circleSizeDisplay,
     appTheme,
     appLocale,
-    lineArrowDensity,
     updatedAt,
   ];
 }

@@ -44,6 +44,7 @@ Future<bool> createLineBetweenPoints({
   final geometry = LineGeometry(
     points: [formData.start, formData.end],
     showArrows: formData.showArrows,
+    arrowDensity: formData.arrowDensity,
     notes: formData.notes,
   );
 
@@ -92,6 +93,7 @@ Future<bool> updateLineFromForm({
     initialColor: parseMarkerColor(zone.color),
     initialBorderPattern: lineBorderPatternFromStorage(zone.borderPattern),
     initialShowArrows: geometry.showArrows,
+    initialArrowDensity: geometry.arrowDensity,
     initialLayerId: zone.layerId,
   );
   if (formData == null || !context.mounted) {
@@ -106,6 +108,7 @@ Future<bool> updateLineFromForm({
   final updatedGeometry = geometry.copyWith(
     points: points,
     showArrows: formData.showArrows,
+    arrowDensity: formData.arrowDensity,
     notes: formData.notes,
     showDistanceLabel: geometry.showDistanceLabel,
     showNameLabel: geometry.showNameLabel,

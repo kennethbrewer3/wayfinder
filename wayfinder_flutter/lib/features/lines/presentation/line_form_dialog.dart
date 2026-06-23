@@ -10,6 +10,7 @@ import '../../layers/presentation/layer_picker_field.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/marker_notes_editor.dart';
+import '../models/line_arrow_density.dart';
 import '../models/measurement_units.dart';
 import '../utils/line_distance.dart';
 
@@ -43,6 +44,7 @@ class LineFormData {
     required this.color,
     required this.borderPattern,
     required this.showArrows,
+    required this.arrowDensity,
     required this.layerId,
     required this.start,
     required this.end,
@@ -53,6 +55,7 @@ class LineFormData {
   final Color color;
   final LineBorderPattern borderPattern;
   final bool showArrows;
+  final LineArrowDensity arrowDensity;
   final UuidValue? layerId;
   final LatLng start;
   final LatLng end;
@@ -71,6 +74,8 @@ Future<LineFormData?> showLineFormDialog({
   Color? initialColor,
   LineBorderPattern initialBorderPattern = LineBorderPattern.solid,
   bool initialShowArrows = true,
+  LineArrowDensity initialArrowDensity =
+      const LineArrowDensity(LineArrowDensity.defaultLevel),
   UuidValue? initialLayerId,
 }) {
   return showDialog<LineFormData>(
@@ -89,6 +94,7 @@ Future<LineFormData?> showLineFormDialog({
         initialColor: initialColor ?? parseMarkerColor('#1B4965'),
         initialBorderPattern: initialBorderPattern,
         initialShowArrows: initialShowArrows,
+        initialArrowDensity: initialArrowDensity,
         initialLayerId: initialLayerId,
       );
     },
@@ -109,6 +115,8 @@ class LineFormDialog extends StatefulWidget {
     required this.initialColor,
     required this.initialBorderPattern,
     required this.initialShowArrows,
+    this.initialArrowDensity =
+        const LineArrowDensity(LineArrowDensity.defaultLevel),
     this.initialLayerId,
   });
 
@@ -123,6 +131,7 @@ class LineFormDialog extends StatefulWidget {
   final Color initialColor;
   final LineBorderPattern initialBorderPattern;
   final bool initialShowArrows;
+  final LineArrowDensity initialArrowDensity;
   final UuidValue? initialLayerId;
 
   @override
@@ -139,6 +148,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
   late Color _selectedColor;
   late LineBorderPattern _borderPattern;
   late bool _showArrows;
+  late LineArrowDensity _arrowDensity;
   UuidValue? _selectedLayerId;
 
   @override
@@ -163,6 +173,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
     _selectedColor = widget.initialColor;
     _borderPattern = widget.initialBorderPattern;
     _showArrows = widget.initialShowArrows;
+    _arrowDensity = widget.initialArrowDensity;
     _selectedLayerId = widget.initialLayerId;
     for (final controller in [
       _startLatitudeController,
@@ -217,6 +228,7 @@ class _LineFormDialogState extends State<LineFormDialog> {
         color: _selectedColor,
         borderPattern: _borderPattern,
         showArrows: _showArrows,
+        arrowDensity: _arrowDensity,
         layerId: _selectedLayerId,
         start: start,
         end: end,
@@ -319,6 +331,46 @@ class _LineFormDialogState extends State<LineFormDialog> {
                 value: _showArrows,
                 onChanged: (value) => setState(() => _showArrows = value),
               ),
+              if (_showArrows) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.lineArrowDensityLabel,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      l10n.lineArrowDensitySparse,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: _arrowDensity.level.toDouble(),
+                        min: LineArrowDensity.minLevel.toDouble(),
+                        max: LineArrowDensity.maxLevel.toDouble(),
+                        divisions:
+                            LineArrowDensity.maxLevel - LineArrowDensity.minLevel,
+                        label: _arrowDensity.localizedLabel(l10n),
+                        onChanged: (value) {
+                          setState(() {
+                            _arrowDensity = LineArrowDensity.fromLevel(
+                              value.round(),
+                            );
+                          });
+                        },
+                      ),
+                    ),
+                    Text(
+                      l10n.lineArrowDensityDense,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
+                ),
+                Text(
+                  _arrowDensity.localizedLabel(l10n),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
               const SizedBox(height: 16),
               MarkerColorPickerField(
                 color: _selectedColor,

@@ -24,14 +24,12 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
        appTheme = appTheme ?? 'light',
-       appLocale = appLocale ?? 'system',
-       lineArrowDensity = lineArrowDensity ?? 3;
+       appLocale = appLocale ?? 'system';
 
   factory AppSettings({
     int? id,
@@ -44,7 +42,6 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -60,7 +57,6 @@ abstract class AppSettings implements _i1.SerializableModel {
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
       appLocale: jsonSerialization['appLocale'] as String?,
-      lineArrowDensity: jsonSerialization['lineArrowDensity'] as int?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -90,8 +86,6 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   String appLocale;
 
-  int lineArrowDensity;
-
   DateTime updatedAt;
 
   /// Returns a shallow copy of this [AppSettings]
@@ -108,7 +102,6 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     DateTime? updatedAt,
   });
   @override
@@ -125,7 +118,6 @@ abstract class AppSettings implements _i1.SerializableModel {
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
-      'lineArrowDensity': lineArrowDensity,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -150,7 +142,6 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -163,7 +154,6 @@ class _AppSettingsImpl extends AppSettings {
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
          appLocale: appLocale,
-         lineArrowDensity: lineArrowDensity,
          updatedAt: updatedAt,
        );
 
@@ -182,7 +172,6 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
-    int? lineArrowDensity,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -196,7 +185,6 @@ class _AppSettingsImpl extends AppSettings {
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
-      lineArrowDensity: lineArrowDensity ?? this.lineArrowDensity,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

@@ -113,17 +113,14 @@ abstract final class AppSettingsRestHandlers {
       final circleSizeDisplay = _readString(body['circleSizeDisplay']);
       final appTheme = _readString(body['appTheme']);
       final appLocale = _readString(body['appLocale']);
-      final lineArrowDensity = _readInt(body['lineArrowDensity']);
       if (measurementUnits == null ||
           angleDisplayFormat == null ||
           circleSizeDisplay == null ||
           appTheme == null ||
-          appLocale == null ||
-          lineArrowDensity == null) {
+          appLocale == null) {
         throw const FormatException(
           'Fields "measurementUnits", "angleDisplayFormat", '
-          '"circleSizeDisplay", "appTheme", "appLocale", and '
-          '"lineArrowDensity" are required.',
+          '"circleSizeDisplay", "appTheme", and "appLocale" are required.',
         );
       }
 
@@ -133,7 +130,6 @@ abstract final class AppSettingsRestHandlers {
         circleSizeDisplay: circleSizeDisplay,
         appTheme: appTheme,
         appLocale: appLocale,
-        lineArrowDensity: lineArrowDensity,
       );
 
       final settings = await AppSettingsStore.getOrCreate(session);
@@ -145,7 +141,6 @@ abstract final class AppSettingsRestHandlers {
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
           appLocale: appLocale,
-          lineArrowDensity: lineArrowDensity,
         ),
       );
       return RestJson.ok(_encodeClientPreferences(updated));
@@ -159,7 +154,6 @@ abstract final class AppSettingsRestHandlers {
       'circleSizeDisplay': settings.circleSizeDisplay,
       'appTheme': settings.appTheme,
       'appLocale': settings.appLocale,
-      'lineArrowDensity': settings.lineArrowDensity,
       'updatedAt': settings.updatedAt.toIso8601String(),
     };
   }
@@ -198,18 +192,5 @@ abstract final class AppSettingsRestHandlers {
     }
     final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
-  }
-
-  static int? _readInt(Object? value) {
-    if (value is int) {
-      return value;
-    }
-    if (value is num) {
-      return value.toInt();
-    }
-    if (value is String) {
-      return int.tryParse(value.trim());
-    }
-    return null;
   }
 }

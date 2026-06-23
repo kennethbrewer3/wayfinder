@@ -13,6 +13,9 @@ import '../utils/line_path.dart';
 
 const _arrowBoxSize = 24.0;
 const _arrowIconSize = 18.0;
+const _arrowSpacingMeters = 75.0;
+const _minArrowSpacingPixels = 48.0;
+const _maxArrowsPerLine = 16;
 
 class _ArrowDraw {
   const _ArrowDraw({
@@ -171,7 +174,6 @@ List<_ArrowDraw> _arrowsForPath({
   required Size mapSize,
   required List<LatLng> renderPoints,
   required Color color,
-  int count = 3,
 }) {
   if (renderPoints.length < 2) {
     return const [];
@@ -194,7 +196,10 @@ List<_ArrowDraw> _arrowsForPath({
     return const [];
   }
 
-  final arrowCount = totalMeters < 50 ? 1 : count;
+  final arrowCount = _arrowCountForPath(
+    totalMeters: totalMeters,
+    totalPixels: totalPixels,
+  );
   final arrows = <_ArrowDraw>[];
 
   for (var index = 1; index <= arrowCount; index++) {
@@ -221,6 +226,16 @@ List<_ArrowDraw> _arrowsForPath({
   }
 
   return arrows;
+}
+
+int _arrowCountForPath({
+  required double totalMeters,
+  required double totalPixels,
+}) {
+  var count = math.max(1, (totalMeters / _arrowSpacingMeters).round());
+  final maxByPixels = math.max(1, (totalPixels / _minArrowSpacingPixels).floor());
+  count = math.min(count, maxByPixels);
+  return math.min(count, _maxArrowsPerLine);
 }
 
 class _ProjectedPlacement {

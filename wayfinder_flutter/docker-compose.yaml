@@ -7,13 +7,18 @@
 # End users (no clone): use deploy/client/ and pull ghcr.io/kennethbrewer3/wayfinder-client
 # See ../DEPLOY.md
 
+name: wayfinder-client-dev
+
 services:
-  client:
+  wayfinder-client:
+    container_name: wayfinder-client-dev
     build:
       context: ..
       dockerfile: wayfinder_flutter/Dockerfile
     ports:
-      - "${WAYFINDER_CLIENT_PORT:-8080}:8080"
+      - target: 8080
+        published: ${WAYFINDER_CLIENT_PORT:-8080}
+        protocol: tcp
     environment:
       WAYFINDER_API_URL: ${WAYFINDER_API_URL:?Set WAYFINDER_API_URL in .env — e.g. http://192.168.1.10:18080}
       WAYFINDER_WEB_URL: ${WAYFINDER_WEB_URL:-}

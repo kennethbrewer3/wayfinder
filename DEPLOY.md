@@ -100,12 +100,22 @@ Replace `192.168.1.10` with your server machine's IP or hostname.
 
 ### Start
 
+Recommended (avoids Compose "Creating" hangs on some hosts):
+
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+Or with Compose:
+
 ```bash
 docker compose pull
 docker compose up -d
+docker compose ps
 ```
 
-Open `http://localhost:8080` on the client machine.
+Open `http://localhost:8080` on the client machine (or your `WAYFINDER_CLIENT_PORT`).
 
 ## Same machine (server + client)
 
@@ -160,6 +170,36 @@ cd wayfinder_flutter && docker compose up -d --build
 ```
 
 ## Troubleshooting
+
+**Client `docker compose up` hangs at "Creating" or `client-client-1` name conflict**
+
+Older compose files used the service name `client`, which produced containers named `client-client-1`. Interrupted runs can leave ghost names or hang for minutes with empty `docker compose ps`.
+
+1. Stop and remove stale containers:
+
+```bash
+chmod +x stop.sh start.sh
+./stop.sh
+docker rm -f wayfinder-client client-client-1 2>/dev/null || true
+docker compose down --remove-orphans 2>/dev/null || true
+```
+
+2. Re-download the latest files (fixed project/container names):
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/docker-compose.yaml
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/start.sh
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/stop.sh
+chmod +x start.sh stop.sh
+```
+
+3. Start with the helper script (uses `docker run`, not Compose):
+
+```bash
+./start.sh
+```
+
+If `./start.sh` also hangs, check Docker disk space (`df -h /var/lib/docker`) and restart the daemon (`sudo systemctl restart docker`).
 
 **Client `docker compose up` fails before starting (missing `WAYFINDER_WEB_URL`)**
 

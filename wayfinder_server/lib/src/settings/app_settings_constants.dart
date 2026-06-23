@@ -10,6 +10,9 @@ abstract final class AppSettingsConstants {
   static const defaultCircleSizeDisplay = 'radius';
   static const defaultAppTheme = 'light';
   static const defaultAppLocale = 'system';
+  static const defaultLineArrowDensity = 3;
+  static const minLineArrowDensity = 1;
+  static const maxLineArrowDensity = 5;
 
   static const allowedMeasurementUnits = {'metric', 'imperial', 'nautical'};
   static const allowedAngleDisplayFormats = {'decimal', 'dms'};

@@ -15,8 +15,10 @@ import '../../../core/server_config.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/providers/circle_size_display_provider.dart';
 import '../../lines/models/angle_display_format.dart';
+import '../../lines/models/line_arrow_density.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
+import '../../lines/providers/line_arrow_density_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
@@ -237,6 +239,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final l10n = AppLocalizations.of(context)!;
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
+    final lineArrowDensity = ref.watch(lineArrowDensityProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
@@ -501,6 +504,47 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 .read(angleDisplayFormatProvider.notifier)
                 .setFormat(selection.first);
           },
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsLineArrowsTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsLineArrowsDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Text(
+              l10n.lineArrowDensitySparse,
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+            Expanded(
+              child: Slider(
+                value: lineArrowDensity.level.toDouble(),
+                min: LineArrowDensity.minLevel.toDouble(),
+                max: LineArrowDensity.maxLevel.toDouble(),
+                divisions: LineArrowDensity.maxLevel - LineArrowDensity.minLevel,
+                label: lineArrowDensity.localizedLabel(l10n),
+                onChanged: (value) {
+                  ref.read(lineArrowDensityProvider.notifier).setDensity(
+                        LineArrowDensity.fromLevel(value.round()),
+                      );
+                },
+              ),
+            ),
+            Text(
+              l10n.lineArrowDensityDense,
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          ],
+        ),
+        Text(
+          lineArrowDensity.localizedLabel(l10n),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 32),
         Text(

@@ -33,6 +33,7 @@ import '../../lines/presentation/line_distance_labels.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
+import '../../lines/providers/line_arrow_density_provider.dart';
 import '../../circles/utils/circle_hit_test.dart';
 import '../../lines/providers/bearing_plot_provider.dart';
 import '../../lines/providers/line_drawing_provider.dart';
@@ -1905,6 +1906,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final selectedMapObject = ref.watch(selectedMapObjectProvider);
     final selectedLineId = selectedMapObject.selectedZoneId;
     final measurementUnits = ref.watch(measurementUnitsProvider);
+    final lineArrowDensity = ref.watch(lineArrowDensityProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final previewColor = Theme.of(context).colorScheme.primary;
     final previewFillColor = previewColor.withValues(alpha: 0.25);
@@ -2228,6 +2230,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       LineDirectionArrowsOverlay(
                         zones: filterZonesForMap(value, layersById),
                         mapController: _mapController,
+                        density: lineArrowDensity,
                         geometryOverrides: lineGeometryOverrides,
                         previewStart: lineDrawing.start,
                         previewEnd: lineDrawing.previewEnd,

@@ -1261,6 +1261,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'lineArrowDensity': _i1.ParameterDescription(
+              name: 'lineArrowDensity',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -1274,6 +1279,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['circleSizeDisplay'],
                     params['appTheme'],
                     params['appLocale'],
+                    params['lineArrowDensity'],
                   ),
         ),
       },

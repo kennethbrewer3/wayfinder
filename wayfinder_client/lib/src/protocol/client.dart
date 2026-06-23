@@ -735,6 +735,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
+    int lineArrowDensity,
   ) => caller.callServerEndpoint<_i14.AppSettings>(
     'appSettings',
     'updateClientPreferences',
@@ -744,6 +745,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
+      'lineArrowDensity': lineArrowDensity,
     },
   );
 }

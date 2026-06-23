@@ -8,14 +8,12 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../markers/models/marker_color.dart';
 import '../models/line_geometry.dart';
+import '../models/line_arrow_density.dart';
 import '../utils/line_distance.dart';
 import '../utils/line_path.dart';
 
 const _arrowBoxSize = 24.0;
 const _arrowIconSize = 18.0;
-const _arrowSpacingMeters = 75.0;
-const _minArrowSpacingPixels = 48.0;
-const _maxArrowsPerLine = 16;
 
 class _ArrowDraw {
   const _ArrowDraw({
@@ -35,6 +33,7 @@ class LineDirectionArrowsOverlay extends StatefulWidget {
     super.key,
     required this.zones,
     required this.mapController,
+    required this.density,
     this.geometryOverrides,
     this.previewStart,
     this.previewEnd,
@@ -46,6 +45,7 @@ class LineDirectionArrowsOverlay extends StatefulWidget {
 
   final List<MapZone> zones;
   final MapController mapController;
+  final LineArrowDensity density;
   final Map<UuidValue, LineGeometry>? geometryOverrides;
   final LatLng? previewStart;
   final LatLng? previewEnd;
@@ -112,6 +112,7 @@ class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay>
           mapSize: mapSize,
           renderPoints: geometry.renderPoints,
           color: parseMarkerColor(zone.color),
+          density: widget.density,
         ),
       );
     }
@@ -125,6 +126,7 @@ class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay>
               mapSize: mapSize,
               renderPoints: [start, end],
               color: color,
+              density: widget.density,
             ),
           );
         }
@@ -140,6 +142,7 @@ class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay>
               mapSize: mapSize,
               renderPoints: [start, end],
               color: color,
+              density: widget.density,
             ),
           );
         }
@@ -174,6 +177,7 @@ List<_ArrowDraw> _arrowsForPath({
   required Size mapSize,
   required List<LatLng> renderPoints,
   required Color color,
+  required LineArrowDensity density,
 }) {
   if (renderPoints.length < 2) {
     return const [];
@@ -196,7 +200,7 @@ List<_ArrowDraw> _arrowsForPath({
     return const [];
   }
 
-  final arrowCount = _arrowCountForPath(
+  final arrowCount = density.arrowCountForPath(
     totalMeters: totalMeters,
     totalPixels: totalPixels,
   );
@@ -226,16 +230,6 @@ List<_ArrowDraw> _arrowsForPath({
   }
 
   return arrows;
-}
-
-int _arrowCountForPath({
-  required double totalMeters,
-  required double totalPixels,
-}) {
-  var count = math.max(1, (totalMeters / _arrowSpacingMeters).round());
-  final maxByPixels = math.max(1, (totalPixels / _minArrowSpacingPixels).floor());
-  count = math.min(count, maxByPixels);
-  return math.min(count, _maxArrowsPerLine);
 }
 
 class _ProjectedPlacement {

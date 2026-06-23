@@ -11,4 +11,5 @@ fields:
   circleSizeDisplay: String, default="radius"
   appTheme: String, default="light"
   appLocale: String, default="system"
+  lineArrowDensity: int, default=3
   updatedAt: DateTime

@@ -4,6 +4,7 @@ import '../../../app/app_locale_choice.dart';
 import '../../../app/app_theme_choice.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../lines/models/angle_display_format.dart';
+import '../../lines/models/line_arrow_density.dart';
 import '../../lines/models/measurement_units.dart';
 
 class ClientPreferences {
@@ -13,6 +14,7 @@ class ClientPreferences {
     required this.circleSizeDisplay,
     required this.appTheme,
     required this.appLocale,
+    required this.lineArrowDensity,
   });
 
   final MeasurementUnits measurementUnits;
@@ -20,6 +22,7 @@ class ClientPreferences {
   final CircleSizeDisplay circleSizeDisplay;
   final AppThemeChoice appTheme;
   final AppLocaleChoice appLocale;
+  final LineArrowDensity lineArrowDensity;
 
   static const defaults = ClientPreferences(
     measurementUnits: MeasurementUnits.metric,
@@ -27,6 +30,7 @@ class ClientPreferences {
     circleSizeDisplay: CircleSizeDisplay.radius,
     appTheme: AppThemeChoice.light,
     appLocale: AppLocaleChoice.system,
+    lineArrowDensity: LineArrowDensity(LineArrowDensity.defaultLevel),
   );
 
   factory ClientPreferences.fromAppSettings(wf.AppSettings settings) {
@@ -38,6 +42,8 @@ class ClientPreferences {
           circleSizeDisplayFromStorage(settings.circleSizeDisplay),
       appTheme: appThemeChoiceFromStorage(settings.appTheme),
       appLocale: appLocaleChoiceFromStorage(settings.appLocale),
+      lineArrowDensity:
+          lineArrowDensityFromStorage(settings.lineArrowDensity),
     );
   }
 
@@ -54,6 +60,9 @@ class ClientPreferences {
       ),
       appTheme: appThemeChoiceFromStorage(json['appTheme'] as String?),
       appLocale: appLocaleChoiceFromStorage(json['appLocale'] as String?),
+      lineArrowDensity: lineArrowDensityFromStorage(
+        _readInt(json['lineArrowDensity']),
+      ),
     );
   }
 
@@ -63,6 +72,7 @@ class ClientPreferences {
     CircleSizeDisplay? circleSizeDisplay,
     AppThemeChoice? appTheme,
     AppLocaleChoice? appLocale,
+    LineArrowDensity? lineArrowDensity,
   }) {
     return ClientPreferences(
       measurementUnits: measurementUnits ?? this.measurementUnits,
@@ -70,16 +80,31 @@ class ClientPreferences {
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
+      lineArrowDensity: lineArrowDensity ?? this.lineArrowDensity,
     );
   }
 
-  Map<String, String> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'measurementUnits': measurementUnitsToStorage(measurementUnits),
       'angleDisplayFormat': angleDisplayFormatToStorage(angleDisplayFormat),
       'circleSizeDisplay': circleSizeDisplayToStorage(circleSizeDisplay),
       'appTheme': appThemeChoiceToStorage(appTheme),
       'appLocale': appLocaleChoiceToStorage(appLocale),
+      'lineArrowDensity': lineArrowDensityToStorage(lineArrowDensity),
     };
   }
+}
+
+int? _readInt(Object? value) {
+  if (value is int) {
+    return value;
+  }
+  if (value is num) {
+    return value.toInt();
+  }
+  if (value is String) {
+    return int.tryParse(value.trim());
+  }
+  return null;
 }

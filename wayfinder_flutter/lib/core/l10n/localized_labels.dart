@@ -5,6 +5,7 @@ import '../../app/app_theme_choice.dart';
 import '../../features/circles/models/circle_geometry.dart';
 import '../../features/circles/models/circle_size_display.dart';
 import '../../features/lines/models/angle_display_format.dart';
+import '../../features/lines/models/line_arrow_density.dart';
 import '../../features/lines/models/line_geometry.dart';
 import '../../features/lines/models/measurement_units.dart';
 import '../../features/lines/presentation/line_form_dialog.dart';
@@ -67,6 +68,17 @@ extension AngleDisplayFormatL10n on AngleDisplayFormat {
   String localizedShortLabel(AppLocalizations l10n) => switch (this) {
         AngleDisplayFormat.decimal => l10n.angleFormatDecimalShort,
         AngleDisplayFormat.degreesMinutesSeconds => l10n.angleFormatDmsShort,
+      };
+}
+
+extension LineArrowDensityL10n on LineArrowDensity {
+  String localizedLabel(AppLocalizations l10n) => switch (level) {
+        1 => l10n.lineArrowDensitySparse,
+        2 => l10n.lineArrowDensityLight,
+        3 => l10n.lineArrowDensityBalanced,
+        4 => l10n.lineArrowDensityFrequent,
+        5 => l10n.lineArrowDensityDense,
+        _ => l10n.lineArrowDensityBalanced,
       };
 }
 

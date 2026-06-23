@@ -120,17 +120,30 @@ abstract final class AppSettingsStore {
     }
   }
 
+  static void validateLineArrowDensity(int value) {
+    if (value < AppSettingsConstants.minLineArrowDensity ||
+        value > AppSettingsConstants.maxLineArrowDensity) {
+      throw FormatException(
+        'Line arrow density must be between '
+        '${AppSettingsConstants.minLineArrowDensity} and '
+        '${AppSettingsConstants.maxLineArrowDensity}.',
+      );
+    }
+  }
+
   static void validateClientPreferences({
     required String measurementUnits,
     required String angleDisplayFormat,
     required String circleSizeDisplay,
     required String appTheme,
     required String appLocale,
+    required int lineArrowDensity,
   }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);
     validateCircleSizeDisplay(circleSizeDisplay);
     validateAppTheme(appTheme);
     validateAppLocale(appLocale);
+    validateLineArrowDensity(lineArrowDensity);
   }
 }

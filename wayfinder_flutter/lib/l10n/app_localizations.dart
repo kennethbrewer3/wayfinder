@@ -466,6 +466,48 @@ abstract class AppLocalizations {
   /// **'Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.'**
   String get settingsAnglesDescription;
 
+  /// No description provided for @settingsLineArrowsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Line direction arrows'**
+  String get settingsLineArrowsTitle;
+
+  /// No description provided for @settingsLineArrowsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Control how often direction arrows appear along lines on the map. Stored on the server so every browser uses the same spacing.'**
+  String get settingsLineArrowsDescription;
+
+  /// No description provided for @lineArrowDensitySparse.
+  ///
+  /// In en, this message translates to:
+  /// **'Sparse'**
+  String get lineArrowDensitySparse;
+
+  /// No description provided for @lineArrowDensityLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get lineArrowDensityLight;
+
+  /// No description provided for @lineArrowDensityBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Balanced'**
+  String get lineArrowDensityBalanced;
+
+  /// No description provided for @lineArrowDensityFrequent.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequent'**
+  String get lineArrowDensityFrequent;
+
+  /// No description provided for @lineArrowDensityDense.
+  ///
+  /// In en, this message translates to:
+  /// **'Dense'**
+  String get lineArrowDensityDense;
+
   /// No description provided for @settingsCirclesTitle.
   ///
   /// In en, this message translates to:

@@ -89,14 +89,6 @@ List<Widget> buildStackedMapLayerChildren({
         ),
       ),
     );
-    widgets.add(
-      MarkerLayer(
-        markers: buildSavedLineArrowMarkers(
-          layerZones,
-          geometryOverrides: geometryOverrides,
-        ),
-      ),
-    );
   }
 
   for (final layer in visibleMapLayersForRendering(layers)) {

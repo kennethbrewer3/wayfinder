@@ -41,7 +41,7 @@ import '../../map/providers/map_providers.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
 import '../../lines/utils/bearing_utils.dart';
-import '../../lines/utils/line_arrows.dart';
+import '../../lines/presentation/line_direction_arrows_overlay.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_snap.dart';
@@ -2121,12 +2121,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           end: bearingPlot.previewEnd,
                           color: previewColor,
                         ),
-                        if (bearingPlot.previewEnd case final previewEnd?)
-                          ...buildDirectionArrowMarkers(
-                            start: anchor,
-                            end: previewEnd,
-                            color: previewColor,
-                          ),
                       ],
                     ),
                   if (circleDrawing.center case final center?)
@@ -2219,12 +2213,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           end: lineDrawing.previewEnd,
                           color: previewColor,
                         ),
-                        if (lineDrawing.previewEnd case final previewEnd?)
-                          ...buildDirectionArrowMarkers(
-                            start: start,
-                            end: previewEnd,
-                            color: previewColor,
-                          ),
                       ],
                     ),
                 ],
@@ -2235,7 +2223,23 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               if (widget.zonesAsync.valueOrNull case final value?)
                 Positioned.fill(
                 child: IgnorePointer(
-                  child: LineMapLabelsOverlay(
+                  child: Stack(
+                    children: [
+                      LineDirectionArrowsOverlay(
+                        zones: filterZonesForMap(value, layersById),
+                        mapController: _mapController,
+                        geometryOverrides: lineGeometryOverrides,
+                        previewStart: lineDrawing.start,
+                        previewEnd: lineDrawing.previewEnd,
+                        previewColor:
+                            lineDrawing.active ? previewColor : null,
+                        bearingPreviewStart:
+                            bearingPlot.active ? bearingPlot.anchor : null,
+                        bearingPreviewEnd: bearingPlot.previewEnd,
+                        bearingPreviewColor:
+                            bearingPlot.active ? previewColor : null,
+                      ),
+                      LineMapLabelsOverlay(
                     zones: filterZonesForMap(value, layersById),
                     units: measurementUnits,
                     mapController: _mapController,
@@ -2263,6 +2267,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         : null,
                     previewRectangleColor:
                         rectangleDrawing.active ? previewColor : null,
+                      ),
+                    ],
                   ),
                 ),
               ),

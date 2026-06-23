@@ -6,7 +6,6 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../markers/models/marker_color.dart';
 import '../models/line_geometry.dart';
 import '../utils/bearing_utils.dart';
-import '../utils/line_arrows.dart';
 import '../utils/line_distance.dart';
 import '../utils/line_path.dart';
 
@@ -37,30 +36,6 @@ List<Polyline<UuidValue>> buildSavedLinePolylines(
     );
   }
   return polylines;
-}
-
-List<Marker> buildSavedLineArrowMarkers(
-  List<MapZone> zones, {
-  Map<UuidValue, LineGeometry>? geometryOverrides,
-}) {
-  final markers = <Marker>[];
-  for (final zone in zones) {
-    if (!zone.visible || zone.type != lineZoneType) {
-      continue;
-    }
-    final geometry =
-        geometryOverrides?[zone.id] ?? LineGeometry.fromZone(zone);
-    if (geometry == null || !geometry.isValid || !geometry.showArrows) {
-      continue;
-    }
-    markers.addAll(
-      buildDirectionArrowMarkersForPath(
-        renderPoints: geometry.renderPoints,
-        color: parseMarkerColor(zone.color),
-      ),
-    );
-  }
-  return markers;
 }
 
 List<Marker> buildLineSnapPointMarkers({

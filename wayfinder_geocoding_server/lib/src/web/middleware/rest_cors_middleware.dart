@@ -55,5 +55,6 @@ class RestCorsMiddleware extends MiddlewareObject {
       'Authorization',
       'X-API-Key',
     ]);
+    mh.accessControlMaxAge = 86400;
   }
 }

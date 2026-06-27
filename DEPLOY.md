@@ -330,6 +330,24 @@ docker compose up -d
 
 Generate values with `openssl rand -base64 32`.
 
+**Geocoding import blocked by CORS (`No 'Access-Control-Allow-Origin' header`)**
+
+The client (port 9080/8080) calls the geocoding server (port 18182) cross-origin. Pull the latest `wayfinder-geocoding-server` image — older builds returned 405 on OPTIONS for `/api/geocoding/settings` without CORS headers.
+
+**Geocoding server logs: `relation "geocode_place" does not exist` or migration module mismatch**
+
+The geocoding stack uses its own Postgres database (`wayfinder_geocoding`). If the database volume was created before migrations were fixed, reset it and restart:
+
+```bash
+docker compose down
+# Delete only the geocoding Postgres data folder from WAYFINDER_GEOCODING_DATA_PATH
+rm -rf ./storage/data/postgres   # or your configured path
+docker compose pull
+docker compose up -d
+```
+
+Watch startup logs for all geocoding migrations applying (not just the search-index migration).
+
 **Server container restart loop (`geocode_housenumber_label_trgm_idx` mismatch)**
 
 The geocoding search index on `(housenumber || street)` must match Postgres's expression-index metadata. Pull the latest server image (`docker compose pull && docker compose up -d`). If the loop persists after updating, recreate the index:

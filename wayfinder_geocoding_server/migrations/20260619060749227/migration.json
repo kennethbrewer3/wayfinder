@@ -8,7 +8,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "geocode_housenumber",
         "dartName": "GeocodeHousenumber",
-        "module": "wayfinder",
+        "module": "wayfinder_geocoding",
         "schema": "public",
         "columns": [
           {

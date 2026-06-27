@@ -10,10 +10,7 @@ class GeocodingRestApiRoute extends Route {
   @override
   void injectIn(RelicRouter router) {
     router
-      ..options('/geocoding/import', _preflight)
-      ..options('/geocoding/import/cancel', _preflight)
-      ..options('/geocoding/import/housenumbers', _preflight)
-      ..options('/geocoding/import/housenumbers/cancel', _preflight)
+      ..options('/**', _preflight)
       ..get('/', _index)
       ..get('/health', _health)
       ..get('/geocoding/settings', GeocodingRestHandlers.getSettings)

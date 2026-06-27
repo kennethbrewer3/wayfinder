@@ -1,12 +1,12 @@
 {
   "__className__": "serverpod.DatabaseDefinition",
-  "moduleName": "wayfinder",
+  "moduleName": "wayfinder_geocoding",
   "tables": [
     {
       "__className__": "serverpod.TableDefinition",
       "name": "app_settings",
       "dartName": "AppSettings",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -76,7 +76,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "category",
       "dartName": "Category",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -146,7 +146,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "geocode_housenumber",
       "dartName": "GeocodeHousenumber",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -244,7 +244,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "geocode_place",
       "dartName": "GeocodePlace",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -370,7 +370,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "geocoding_settings",
       "dartName": "GeocodingSettings",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -510,7 +510,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "map_layer",
       "dartName": "MapLayer",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -594,7 +594,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "map_marker",
       "dartName": "MapMarker",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -735,7 +735,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "map_zone",
       "dartName": "MapZone",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -889,7 +889,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "pmtiles_file",
       "dartName": "PmtilesFile",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -1029,7 +1029,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "pmtiles_group",
       "dartName": "PmtilesGroup",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "schema": "public",
       "columns": [
         {
@@ -4240,7 +4240,7 @@
   "installedModules": [
     {
       "__className__": "serverpod.DatabaseMigrationVersion",
-      "module": "wayfinder",
+      "module": "wayfinder_geocoding",
       "version": "20260620211732894"
     },
     {

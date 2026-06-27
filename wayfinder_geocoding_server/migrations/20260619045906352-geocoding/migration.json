@@ -8,7 +8,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "geocode_place",
         "dartName": "GeocodePlace",
-        "module": "wayfinder",
+        "module": "wayfinder_geocoding",
         "schema": "public",
         "columns": [
           {
@@ -138,7 +138,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "geocoding_settings",
         "dartName": "GeocodingSettings",
-        "module": "wayfinder",
+        "module": "wayfinder_geocoding",
         "schema": "public",
         "columns": [
           {

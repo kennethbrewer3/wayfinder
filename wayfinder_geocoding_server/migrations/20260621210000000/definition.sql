@@ -888,9 +888,9 @@ ALTER TABLE ONLY "serverpod_auth_core_session"
 -- MIGRATION VERSION FOR wayfinder_geocoding
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder_geocoding', '20260620211732894', now())
+    VALUES ('wayfinder_geocoding', '20260621210000000', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20260620211732894', "timestamp" = now();
+    DO UPDATE SET "version" = '20260621210000000', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

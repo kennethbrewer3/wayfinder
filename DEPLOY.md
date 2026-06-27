@@ -336,7 +336,7 @@ The client (port 9080/8080) calls the geocoding server (port 18182) cross-origin
 
 **Geocoding server logs: `relation "geocode_place" does not exist` or migration module mismatch**
 
-The geocoding stack uses its own Postgres database (`wayfinder_geocoding`). If the database volume was created before migrations were fixed, reset it and restart:
+The geocoding stack uses its own Postgres database (`wayfinder_geocoding`). If migrations failed partway through, reset the volume and restart with the latest image:
 
 ```bash
 docker compose down
@@ -344,9 +344,10 @@ docker compose down
 rm -rf ./storage/data/postgres   # or your configured path
 docker compose pull
 docker compose up -d
+docker compose logs -f server
 ```
 
-Watch startup logs for all geocoding migrations applying (not just the search-index migration).
+Watch startup logs for migrations applying cleanly and `🏁 Geocoding server started`. If you see `DB has migration version … registered but it is not found in the project files`, the Postgres volume still has stale migration metadata — wipe it again after pulling the latest image.
 
 **Server container restart loop (`geocode_housenumber_label_trgm_idx` mismatch)**
 

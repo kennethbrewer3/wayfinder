@@ -26,7 +26,7 @@ void run(List<String> args) async {
   if (webConfig == null) {
     WfLog.warn(null, 'server', '🌐 Web server disabled — REST API unavailable');
   } else {
-    pod.webServer.addMiddleware(const RestCorsMiddleware(), '/api');
+    pod.webServer.addMiddleware(const RestCorsMiddleware(), '/');
     pod.webServer.addRoute(GeocodingRestApiRoute(), '/api');
     WfLog.info(null, 'server', '🌐 Geocoding REST API available at /api/geocoding/*');
   }

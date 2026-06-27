@@ -4241,7 +4241,7 @@
     {
       "__className__": "serverpod.DatabaseMigrationVersion",
       "module": "wayfinder_geocoding",
-      "version": "20260620211732894"
+      "version": "20260622000000000-geocoding-search-indexes"
     },
     {
       "__className__": "serverpod.DatabaseMigrationVersion",

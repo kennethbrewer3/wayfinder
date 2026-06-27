@@ -91,7 +91,7 @@ class MapView extends ConsumerWidget {
           AppLogger.logNav.info(
             '🧭 Navigating to settings from map error placeholder',
           );
-          context.push('/settings');
+          context.push('/settings/map-tiles');
         },
       );
     }
@@ -115,7 +115,7 @@ class MapView extends ConsumerWidget {
           _saveSearchCoordinateMarker(context, ref, marker),
       onOpenSettings: () {
         AppLogger.logNav.info('🧭 Navigating to settings from map placeholder');
-        context.push('/settings');
+        context.push('/settings/map-tiles');
       },
     );
   }

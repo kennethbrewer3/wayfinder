@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/logging/app_logger.dart';
 import '../features/map/presentation/map_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
+import '../features/settings/settings_tab.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/maps',
@@ -26,10 +27,30 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/settings',
-      builder: (context, state) {
-        AppLogger.logNav.debug('🧭 Route /settings');
-        return const SettingsScreen();
+      redirect: (context, state) {
+        final path = state.uri.path;
+        if (path == '/settings' || path == '/settings/') {
+          return SettingsTab.general.routePath;
+        }
+        return null;
       },
+      routes: [
+        GoRoute(
+          path: ':tab',
+          redirect: (context, state) {
+            final slug = state.pathParameters['tab'];
+            if (!SettingsTab.isValidSlug(slug)) {
+              return SettingsTab.general.routePath;
+            }
+            return null;
+          },
+          builder: (context, state) {
+            final tab = SettingsTab.fromSlug(state.pathParameters['tab']);
+            AppLogger.logNav.debug('🧭 Route ${tab.routePath}');
+            return SettingsScreen(tab: tab);
+          },
+        ),
+      ],
     ),
   ],
 );

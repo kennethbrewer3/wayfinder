@@ -145,7 +145,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             icon: const Icon(Icons.settings),
             onPressed: () {
               AppLogger.logNav.info('🧭 Navigating to settings from app bar');
-              context.push('/settings');
+              context.push('/settings/general');
             },
           ),
         ],

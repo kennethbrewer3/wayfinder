@@ -5,23 +5,26 @@ import 'rest_json.dart';
 
 /// Geocoding-only REST API mounted at `/api`.
 class GeocodingRestApiRoute extends Route {
-  GeocodingRestApiRoute() : super(methods: {Method.options});
+  GeocodingRestApiRoute();
 
   @override
   void injectIn(RelicRouter router) {
     router
-      ..options('/**', _preflight)
       ..get('/', _index)
       ..get('/health', _health)
+      ..options('/geocoding/settings', _preflight)
       ..get('/geocoding/settings', GeocodingRestHandlers.getSettings)
+      ..put('/geocoding/settings', GeocodingRestHandlers.updateSettings)
       ..get(
         '/geocoding/search-readiness',
         GeocodingRestHandlers.getSearchReadiness,
       )
-      ..put('/geocoding/settings', GeocodingRestHandlers.updateSettings)
+      ..options('/geocoding/import', _preflight)
       ..post('/geocoding/import', GeocodingRestHandlers.startImport)
       ..delete('/geocoding/import', GeocodingRestHandlers.cancelImport)
+      ..options('/geocoding/import/cancel', _preflight)
       ..post('/geocoding/import/cancel', GeocodingRestHandlers.cancelImport)
+      ..options('/geocoding/import/housenumbers', _preflight)
       ..post(
         '/geocoding/import/housenumbers',
         GeocodingRestHandlers.startHousenumbersImport,
@@ -30,6 +33,7 @@ class GeocodingRestApiRoute extends Route {
         '/geocoding/import/housenumbers',
         GeocodingRestHandlers.cancelHousenumbersImport,
       )
+      ..options('/geocoding/import/housenumbers/cancel', _preflight)
       ..post(
         '/geocoding/import/housenumbers/cancel',
         GeocodingRestHandlers.cancelHousenumbersImport,
@@ -40,12 +44,16 @@ class GeocodingRestApiRoute extends Route {
         '/geocoding/export/housenumbers',
         GeocodingRestHandlers.exportHousenumbers,
       )
+      ..options('/geocoding/archive/places', _preflight)
       ..post('/geocoding/archive/places', GeocodingRestHandlers.importPlaces)
+      ..options('/geocoding/archive/housenumbers', _preflight)
       ..post(
         '/geocoding/archive/housenumbers',
         GeocodingRestHandlers.importHousenumbers,
       )
+      ..options('/geocoding/places', _preflight)
       ..delete('/geocoding/places', GeocodingRestHandlers.clearPlaces)
+      ..options('/geocoding/housenumbers', _preflight)
       ..delete('/geocoding/housenumbers', GeocodingRestHandlers.clearHousenumbers);
   }
 
@@ -69,6 +77,7 @@ class GeocodingRestApiRoute extends Route {
           'Authorization',
           'X-API-Key',
         ]);
+        mh.accessControlMaxAge = 86400;
       }),
     );
   }

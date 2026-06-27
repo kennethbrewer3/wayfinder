@@ -2,7 +2,7 @@
 FROM dart:3.8.0 AS build
 WORKDIR /app
 
-COPY pubspec.docker.yaml pubspec.yaml
+COPY pubspec.docker.geocoding.yaml pubspec.yaml
 COPY wayfinder_geocoding_client/pubspec.yaml wayfinder_geocoding_client/pubspec.yaml
 COPY wayfinder_geocoding_client/lib wayfinder_geocoding_client/lib
 COPY wayfinder_geocoding_server/pubspec.yaml wayfinder_geocoding_server/pubspec.yaml

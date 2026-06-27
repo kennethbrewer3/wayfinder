@@ -5,5 +5,5 @@ environment:
   sdk: '^3.8.0'
 
 workspace:
-  - wayfinder_client
-  - wayfinder_server
+  - wayfinder_geocoding_client
+  - wayfinder_geocoding_server

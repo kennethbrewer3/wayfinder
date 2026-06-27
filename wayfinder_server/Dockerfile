@@ -2,7 +2,7 @@
 FROM dart:3.8.0 AS build
 WORKDIR /app
 
-COPY pubspec.docker.yaml pubspec.yaml
+COPY pubspec.docker.server.yaml pubspec.yaml
 COPY wayfinder_client/pubspec.yaml wayfinder_client/pubspec.yaml
 COPY wayfinder_client/lib wayfinder_client/lib
 COPY wayfinder_client/dartdoc_options.yaml wayfinder_client/dartdoc_options.yaml

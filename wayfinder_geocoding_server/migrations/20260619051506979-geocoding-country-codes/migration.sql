@@ -6,10 +6,10 @@ BEGIN;
 ALTER TABLE "geocoding_settings" ADD COLUMN "countryCodes" text;
 
 --
--- MIGRATION VERSION FOR wayfinder
+-- MIGRATION VERSION FOR wayfinder_geocoding
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260619051506979-geocoding-country-codes', now())
+    VALUES ('wayfinder_geocoding', '20260619051506979-geocoding-country-codes', now())
     ON CONFLICT ("module")
     DO UPDATE SET "version" = '20260619051506979-geocoding-country-codes', "timestamp" = now();
 

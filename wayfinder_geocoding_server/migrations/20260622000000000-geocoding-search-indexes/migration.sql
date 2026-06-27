@@ -8,7 +8,7 @@ BEGIN;
 --
 
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260622000000000-geocoding-search-indexes', now())
+    VALUES ('wayfinder_geocoding', '20260622000000000-geocoding-search-indexes', now())
     ON CONFLICT ("module")
     DO UPDATE SET "version" = '20260622000000000-geocoding-search-indexes', "timestamp" = now();
 

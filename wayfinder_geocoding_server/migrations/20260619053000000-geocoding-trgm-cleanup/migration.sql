@@ -8,10 +8,10 @@ DROP INDEX IF EXISTS "geocode_place_name_trgm_idx";
 DROP INDEX IF EXISTS "geocode_place_display_name_trgm_idx";
 
 --
--- MIGRATION VERSION FOR wayfinder
+-- MIGRATION VERSION FOR wayfinder_geocoding
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260619053000000-geocoding-trgm-cleanup', now())
+    VALUES ('wayfinder_geocoding', '20260619053000000-geocoding-trgm-cleanup', now())
     ON CONFLICT ("module")
     DO UPDATE SET "version" = '20260619053000000-geocoding-trgm-cleanup', "timestamp" = now();
 

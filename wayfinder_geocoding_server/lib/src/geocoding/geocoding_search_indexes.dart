@@ -9,9 +9,8 @@ import 'geocoding_search_index_status.dart';
 /// Serverpod's schema check accepts them across restarts. Expression indexes
 /// must use type `expression` and match Postgres's normalized definition (see
 /// `pg_get_indexdef`). Re-apply that patch in `lib/src/generated/protocol.dart`
-/// after `serverpod generate` if geocoding models change, and keep
-/// [GeocodingSearchIndexes.ensureReady] running before `pod.start()` in
-/// `server.dart` so development-mode verification does not exit first.
+/// after `serverpod generate` if geocoding models change. Indexes are built
+/// after `pod.start()` once migrations have created the geocoding tables.
 abstract final class GeocodingSearchIndexes {
   static const indexNames = [
     'geocode_place_name_trgm_idx',
@@ -46,6 +45,15 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
   ];
 
   static Future<void> ensureReady(Session session) async {
+    if (!await _geocodingTablesExist(session)) {
+      WfLog.info(
+        null,
+        'geocoding',
+        '🔎 Skipping search index build until geocoding tables exist',
+      );
+      return;
+    }
+
     await session.db.unsafeExecute(
       'CREATE EXTENSION IF NOT EXISTS pg_trgm',
     );
@@ -124,6 +132,19 @@ WHERE schemaname = 'public'
     }
 
     return true;
+  }
+
+  static Future<bool> _geocodingTablesExist(Session session) async {
+    final rows = await session.db.unsafeQuery(
+      '''
+SELECT 1
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_name IN ('geocode_place', 'geocode_housenumber')
+LIMIT 1
+''',
+    );
+    return rows.isNotEmpty;
   }
 
   static Future<Set<String>> _loadExistingIndexNames(Session session) async {

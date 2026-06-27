@@ -23,7 +23,7 @@ CREATE TABLE "geocode_housenumber_staging" (
 );
 
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260621210000000', now())
+    VALUES ('wayfinder_geocoding', '20260621210000000', now())
     ON CONFLICT ("module")
     DO UPDATE SET "version" = '20260621210000000', "timestamp" = now();
 

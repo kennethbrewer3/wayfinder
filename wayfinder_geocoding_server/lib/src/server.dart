@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
@@ -37,27 +36,11 @@ void run(List<String> args) async {
     pod.webServer.addRoute(StaticRoute.directory(root), '/');
   }
 
-  final indexSession = await pod.createSession();
-  try {
-    await GeocodingSearchIndexes.ensureReady(indexSession);
-  } catch (error, stackTrace) {
-    WfLog.error(
-      indexSession,
-      'geocoding',
-      '🔎 Failed to build geocoding search indexes before startup',
-      error: error,
-      stackTrace: stackTrace,
-    );
-  } finally {
-    await indexSession.close();
-  }
-
   await pod.start();
 
   final recoverySession = await pod.createSession();
   try {
     await GeocodingImportRecovery.recoverStaleImportsOnStartup(recoverySession);
-    unawaited(_ensureGeocodingSearchIndexes(pod));
   } catch (error, stackTrace) {
     WfLog.error(
       recoverySession,
@@ -69,6 +52,8 @@ void run(List<String> args) async {
   } finally {
     await recoverySession.close();
   }
+
+  await _ensureGeocodingSearchIndexes(pod);
 
   WfLog.success(null, 'server', '🏁 Geocoding server started');
 }

@@ -27,10 +27,10 @@ ALTER TABLE "geocoding_settings" ADD COLUMN "housenumbersImportError" text;
 ALTER TABLE "geocoding_settings" ADD COLUMN "housenumbersImportedAt" timestamp without time zone;
 
 --
--- MIGRATION VERSION FOR wayfinder
+-- MIGRATION VERSION FOR wayfinder_geocoding
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260619060749227', now())
+    VALUES ('wayfinder_geocoding', '20260619060749227', now())
     ON CONFLICT ("module")
     DO UPDATE SET "version" = '20260619060749227', "timestamp" = now();
 

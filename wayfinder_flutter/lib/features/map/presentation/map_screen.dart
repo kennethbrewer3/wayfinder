@@ -237,6 +237,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             onPressed: _goHome,
           ),
           IconButton(
+            tooltip: l10n.mapManualTooltip,
+            icon: const Icon(Icons.menu_book_outlined),
+            onPressed: () {
+              AppLogger.logNav.info('🧭 Navigating to user manual from app bar');
+              context.push('/manual');
+            },
+          ),
+          IconButton(
             tooltip: l10n.mapSettingsTooltip,
             icon: const Icon(Icons.settings),
             onPressed: () {

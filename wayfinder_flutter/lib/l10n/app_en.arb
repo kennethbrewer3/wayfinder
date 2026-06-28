@@ -12,6 +12,7 @@
   "settingsTabAbout": "About",
   "settingsAboutTitle": "About Wayfinder",
   "settingsAboutDescription": "Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.",
+  "settingsAboutOpenManual": "Open user manual",
   "settingsAboutLoading": "Loading app info…",
   "settingsAboutLoadFailed": "Could not load app info: {error}",
   "@settingsAboutLoadFailed": {
@@ -418,6 +419,18 @@
   "rectangleCenterMoveHelp": "Moving the center shifts the whole rectangle on the map.",
   "mapHomeTooltip": "Home",
   "mapSettingsTooltip": "Settings",
+  "mapManualTooltip": "User manual",
+  "userManualTitle": "User Manual",
+  "userManualContentsTitle": "Contents",
+  "userManualLoadFailed": "Could not load the user manual: {error}",
+  "@userManualLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "userManualEmpty": "The user manual is empty.",
   "mapShowObjectsTooltip": "Show map objects",
   "mapLoadFailed": "Failed to load map: {error}",
   "@mapLoadFailed": {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/app_globals.dart';
@@ -38,6 +39,15 @@ class SettingsAboutTab extends ConsumerWidget {
               Text(
                 l10n.settingsAboutDescription,
                 style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push('/manual'),
+                  icon: const Icon(Icons.menu_book_outlined),
+                  label: Text(l10n.settingsAboutOpenManual),
+                ),
               ),
               const SizedBox(height: 24),
               _InfoSection(

@@ -37,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.';
 
   @override
+  String get settingsAboutOpenManual => 'Open user manual';
+
+  @override
   String get settingsAboutLoading => 'Loading app info…';
 
   @override
@@ -816,6 +819,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapSettingsTooltip => 'Settings';
+
+  @override
+  String get mapManualTooltip => 'User manual';
+
+  @override
+  String get userManualTitle => 'User Manual';
+
+  @override
+  String get userManualContentsTitle => 'Contents';
+
+  @override
+  String userManualLoadFailed(String error) {
+    return 'Could not load the user manual: $error';
+  }
+
+  @override
+  String get userManualEmpty => 'The user manual is empty.';
 
   @override
   String get mapShowObjectsTooltip => 'Show map objects';

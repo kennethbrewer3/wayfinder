@@ -154,6 +154,12 @@ abstract class AppLocalizations {
   /// **'Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.'**
   String get settingsAboutDescription;
 
+  /// No description provided for @settingsAboutOpenManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Open user manual'**
+  String get settingsAboutOpenManual;
+
   /// No description provided for @settingsAboutLoading.
   ///
   /// In en, this message translates to:
@@ -1551,6 +1557,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get mapSettingsTooltip;
+
+  /// No description provided for @mapManualTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'User manual'**
+  String get mapManualTooltip;
+
+  /// No description provided for @userManualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'User Manual'**
+  String get userManualTitle;
+
+  /// No description provided for @userManualContentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contents'**
+  String get userManualContentsTitle;
+
+  /// No description provided for @userManualLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the user manual: {error}'**
+  String userManualLoadFailed(String error);
+
+  /// No description provided for @userManualEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The user manual is empty.'**
+  String get userManualEmpty;
 
   /// No description provided for @mapShowObjectsTooltip.
   ///

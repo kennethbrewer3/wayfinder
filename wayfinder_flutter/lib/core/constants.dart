@@ -21,4 +21,6 @@ class AppConstants {
   static const geocodingWebUrlStorageKey = 'wayfinder.settings.geocodingWebUrl';
   static const appThemeStorageKey = 'wayfinder.settings.appTheme';
   static const appLocaleStorageKey = 'wayfinder.settings.appLocale';
+  static const mapViewportDebugBorderStorageKey =
+      'wayfinder.settings.mapViewportDebugBorder';
 }

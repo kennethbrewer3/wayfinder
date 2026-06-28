@@ -293,6 +293,21 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisissez l\'étiquette de taille par défaut affichée sur les nouvelles zones circulaires. Enregistré sur le serveur pour que chaque navigateur utilise la même valeur par défaut.';
 
   @override
+  String get settingsMapDebugTitle => 'Débogage de la carte';
+
+  @override
+  String get settingsMapDebugDescription =>
+      'Aides visuelles enregistrées uniquement dans ce navigateur.';
+
+  @override
+  String get settingsMapViewportDebugBorderTitle =>
+      'Afficher la bordure du viewport de la carte';
+
+  @override
+  String get settingsMapViewportDebugBorderDescription =>
+      'Dessine un contour rouge autour du canevas de la carte. Utilisez-le pour vérifier si la carte remplit son panneau lors du redimensionnement de la fenêtre ou de la barre latérale.';
+
+  @override
   String get settingsHomeLocationSaved => 'Point d\'accueil enregistré.';
 
   @override

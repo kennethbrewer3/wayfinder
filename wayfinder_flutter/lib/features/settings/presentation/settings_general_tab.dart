@@ -21,6 +21,7 @@ import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
+import '../../map/providers/map_viewport_debug_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
@@ -238,6 +239,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
+    final showMapViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
     ref.listen<HomeLocation>(homeLocationProvider, (previous, next) {
@@ -528,6 +530,28 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             ref
                 .read(circleSizeDisplayProvider.notifier)
                 .setDisplay(selection.first);
+          },
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsMapDebugTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsMapDebugDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsMapViewportDebugBorderTitle),
+          subtitle: Text(l10n.settingsMapViewportDebugBorderDescription),
+          value: showMapViewportDebugBorder,
+          onChanged: (enabled) {
+            ref
+                .read(mapViewportDebugBorderProvider.notifier)
+                .setEnabled(enabled);
           },
         ),
       ],

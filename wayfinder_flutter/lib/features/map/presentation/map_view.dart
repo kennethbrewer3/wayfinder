@@ -59,6 +59,7 @@ import '../data/viewport_priority_tile_provider.dart';
 import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
+import '../providers/map_viewport_debug_provider.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
 import 'map_radial_menu.dart';
@@ -203,6 +204,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Timer? _viewportLayerUpdateTimer;
   Timer? _viewportTileWarmupTimer;
   int _layerLoadGeneration = 0;
+  Size? _lastMapSize;
 
   LatLng? _cursorLocation;
   Offset? _cursorScreenPosition;
@@ -2047,6 +2049,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final mapTilesDisplayed = !widget.metadataLoading &&
         widget.enabledEntries.isNotEmpty &&
         mapLayers.isNotEmpty;
+    final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
@@ -2082,6 +2085,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final mapSize = Size(constraints.maxWidth, constraints.maxHeight);
+        if (_lastMapSize != null &&
+            (_lastMapSize!.width != mapSize.width ||
+                _lastMapSize!.height != mapSize.height)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) {
+              return;
+            }
+            _scheduleVisibleLayerUpdate(immediate: true);
+            _scheduleViewportTileWarmup();
+          });
+        }
+        _lastMapSize = mapSize;
         final labelPosition = _cursorScreenPosition == null
             ? null
             : _cursorLabelPosition(mapSize);
@@ -2487,6 +2502,42 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 right: 0,
                 top: 0,
                 child: _rectangleDrawingBanner(rectangleDrawing),
+              ),
+            if (showViewportDebugBorder)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: Stack(
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.red, width: 3),
+                        ),
+                      ),
+                      Positioned(
+                        left: 8,
+                        top: 8,
+                        child: ColoredBox(
+                          color: Colors.red.withValues(alpha: 0.9),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: Text(
+                              '${mapSize.width.toStringAsFixed(0)} × ${mapSize.height.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'monospace',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
           ],
         );

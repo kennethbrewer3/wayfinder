@@ -628,6 +628,30 @@ abstract class AppLocalizations {
   /// **'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.'**
   String get settingsCirclesDescription;
 
+  /// No description provided for @settingsMapDebugTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map debugging'**
+  String get settingsMapDebugTitle;
+
+  /// No description provided for @settingsMapDebugDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual aids stored in this browser only.'**
+  String get settingsMapDebugDescription;
+
+  /// No description provided for @settingsMapViewportDebugBorderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show map viewport border'**
+  String get settingsMapViewportDebugBorderTitle;
+
+  /// No description provided for @settingsMapViewportDebugBorderDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Draws a red outline around the map canvas. Use this to check whether the map fills its panel when the window or sidebar is resized.'**
+  String get settingsMapViewportDebugBorderDescription;
+
   /// No description provided for @settingsHomeLocationSaved.
   ///
   /// In en, this message translates to:

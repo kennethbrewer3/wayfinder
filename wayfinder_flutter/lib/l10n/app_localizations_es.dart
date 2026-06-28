@@ -292,6 +292,21 @@ class AppLocalizationsEs extends AppLocalizations {
       'Elija la etiqueta de tamaño predeterminada mostrada en las nuevas zonas circulares.';
 
   @override
+  String get settingsMapDebugTitle => 'Depuración del mapa';
+
+  @override
+  String get settingsMapDebugDescription =>
+      'Ayudas visuales guardadas solo en este navegador.';
+
+  @override
+  String get settingsMapViewportDebugBorderTitle =>
+      'Mostrar borde del viewport del mapa';
+
+  @override
+  String get settingsMapViewportDebugBorderDescription =>
+      'Dibuja un contorno rojo alrededor del lienzo del mapa. Úselo para comprobar si el mapa llena su panel cuando se cambia el tamaño de la ventana o la barra lateral.';
+
+  @override
   String get settingsHomeLocationSaved => 'Ubicación de inicio guardada.';
 
   @override

@@ -292,6 +292,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.';
 
   @override
+  String get settingsMapDebugTitle => 'Map debugging';
+
+  @override
+  String get settingsMapDebugDescription =>
+      'Visual aids stored in this browser only.';
+
+  @override
+  String get settingsMapViewportDebugBorderTitle => 'Show map viewport border';
+
+  @override
+  String get settingsMapViewportDebugBorderDescription =>
+      'Draws a red outline around the map canvas. Use this to check whether the map fills its panel when the window or sidebar is resized.';
+
+  @override
   String get settingsHomeLocationSaved => 'Home location saved.';
 
   @override

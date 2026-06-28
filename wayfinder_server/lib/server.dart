@@ -72,7 +72,7 @@ void run(List<String> args) async {
     );
 
     // Serve uploaded PMTiles archives with HTTP range support for all clients.
-    pod.webServer.addMiddleware(const CorsMiddleware(), '/pmtiles');
+    pod.webServer.addMiddleware(const CorsMiddleware().call, '/pmtiles');
     pod.webServer.addRoute(
       PmtilesUploadRoute(),
       '/pmtiles/upload',
@@ -82,8 +82,8 @@ void run(List<String> args) async {
       '/pmtiles/files',
     );
 
-    pod.webServer.addMiddleware(const RestCorsMiddleware(), '/api');
-    pod.webServer.addMiddleware(const RestAuthMiddleware(), '/api');
+    pod.webServer.addMiddleware(const RestCorsMiddleware().call, '/api');
+    pod.webServer.addMiddleware(const RestAuthMiddleware().call, '/api');
     pod.webServer.addRoute(RestApiRoute(), '/api');
     WfLog.info(null, 'server', '🌐 REST API available at /api');
     if (WayfinderEnv.restApiKey != null) {

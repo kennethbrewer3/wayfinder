@@ -1,5 +1,5 @@
-import 'dart:html' as html;
+import 'package:web/web.dart';
 
 void restartApp() {
-  html.window.location.reload();
+  window.location.reload();
 }

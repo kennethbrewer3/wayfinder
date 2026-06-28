@@ -41,7 +41,7 @@ class AppLogger {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    final buffer = StringBuffer('$message');
+    final buffer = StringBuffer(message);
     if (data != null) buffer.write(' | $data');
     if (error != null) buffer.write('\n💥 $error');
     if (stackTrace != null) buffer.write('\n📚 $stackTrace');

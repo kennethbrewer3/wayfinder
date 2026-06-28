@@ -229,7 +229,7 @@ class MapSearchResults extends ConsumerWidget {
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: results.length,
-                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (context, index) {
                       final result = results[index];
                       return ListTile(

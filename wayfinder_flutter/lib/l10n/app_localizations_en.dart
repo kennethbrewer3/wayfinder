@@ -2128,6 +2128,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconPowerPlant => 'Power plant';
 
   @override
+  String get markerIconNuclearPowerPlant => 'Nuclear power plant';
+
+  @override
   String get markerIconNuclearWeaponsFacility => 'Nuclear weapons facility';
 
   @override

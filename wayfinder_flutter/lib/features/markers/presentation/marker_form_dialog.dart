@@ -267,8 +267,8 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
               if (_latitudeController != null && _longitudeController != null) ...[
                 const SizedBox(height: 16),
                 CoordinateFormFields(
-                  latitudeController: _latitudeController!,
-                  longitudeController: _longitudeController!,
+                  latitudeController: _latitudeController,
+                  longitudeController: _longitudeController,
                 ),
               ],
               const SizedBox(height: 16),

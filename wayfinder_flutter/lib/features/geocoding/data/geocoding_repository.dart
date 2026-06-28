@@ -17,7 +17,7 @@ class GeocodingRepository {
   static final _log = AppLogger.logSettings;
 
   bool get isConfigured =>
-      _webServerUrl != null && _webServerUrl!.trim().isNotEmpty;
+      _webServerUrl != null && _webServerUrl.trim().isNotEmpty;
 
   String get baseUrl {
     final url = _webServerUrl;

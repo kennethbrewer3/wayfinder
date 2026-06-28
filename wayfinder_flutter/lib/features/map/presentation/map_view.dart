@@ -2124,7 +2124,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   onPointerDown: _handlePointerDown,
                   onPointerMove: _handlePointerMove,
                   onPointerUp: _handlePointerUp,
-                  onPointerCancel: (_, __) => _handlePointerCancel(),
+                  onPointerCancel: (_, _) => _handlePointerCancel(),
                 ),
                 children: [
                   if (enabledEntries.isEmpty && !widget.metadataLoading)
@@ -2212,21 +2212,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     PolylineLayer(
                       polylines: [
                         if (bearingReference case final reference?)
-                          if (buildReferenceCoursePolyline(
-                                anchor: anchor,
-                                referenceBearing: reference,
-                                previewEnd: bearingPlot.previewEnd,
-                                color: referenceColor,
-                              )
-                              case final referenceLine?)
-                            referenceLine,
-                        if (buildPreviewLinePolyline(
-                              start: anchor,
-                              previewEnd: bearingPlot.previewEnd,
-                              color: previewColor,
-                            )
-                            case final preview?)
-                          preview,
+                          ?buildReferenceCoursePolyline(
+                            anchor: anchor,
+                            referenceBearing: reference,
+                            previewEnd: bearingPlot.previewEnd,
+                            color: referenceColor,
+                          ),
+                        ?buildPreviewLinePolyline(
+                          start: anchor,
+                          previewEnd: bearingPlot.previewEnd,
+                          color: previewColor,
+                        ),
                       ],
                     ),
                   if (bearingAnchor case final anchor?)
@@ -2242,26 +2238,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   if (circleDrawing.center case final center?)
                     PolygonLayer(
                       polygons: [
-                        if (buildPreviewCirclePolygon(
-                              center: center,
-                              radiusMeters: circleDrawing.previewRadiusMeters,
-                              borderColor: previewColor,
-                              fillColor: previewFillColor,
-                            )
-                            case final preview?)
-                          preview,
+                        ?buildPreviewCirclePolygon(
+                          center: center,
+                          radiusMeters: circleDrawing.previewRadiusMeters,
+                          borderColor: previewColor,
+                          fillColor: previewFillColor,
+                        ),
                       ],
                     ),
                   if (circleDrawing.center case final center?)
                     PolylineLayer(
                       polylines: [
-                        if (buildPreviewCircleRadiusLine(
-                              center: center,
-                              radiusMeters: circleDrawing.previewRadiusMeters,
-                              color: previewColor,
-                            )
-                            case final preview?)
-                          preview,
+                        ?buildPreviewCircleRadiusLine(
+                          center: center,
+                          radiusMeters: circleDrawing.previewRadiusMeters,
+                          color: previewColor,
+                        ),
                       ],
                     ),
                   if (circleDrawing.center case final center?)
@@ -2276,13 +2268,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   if (activeRectanglePreviewBounds case final bounds?)
                     PolygonLayer(
                       polygons: [
-                        if (buildPreviewRectanglePolygon(
-                              bounds: bounds,
-                              borderColor: previewColor,
-                              fillColor: previewFillColor,
-                            )
-                            case final preview?)
-                          preview,
+                        ?buildPreviewRectanglePolygon(
+                          bounds: bounds,
+                          borderColor: previewColor,
+                          fillColor: previewFillColor,
+                        ),
                       ],
                     ),
                   if (rectangleDrawing.mode ==
@@ -2290,12 +2280,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       rectangleDrawing.anchor != null)
                     MarkerLayer(
                       markers: [
-                        if (buildPreviewRectangleCenterMarker(
-                              center: rectangleDrawing.anchor,
-                              color: previewColor,
-                            )
-                            case final preview?)
-                          preview,
+                        ?buildPreviewRectangleCenterMarker(
+                          center: rectangleDrawing.anchor,
+                          color: previewColor,
+                        ),
                       ],
                     ),
                   if (rectangleDrawing.mode == RectangleCreationMode.corners &&
@@ -2312,13 +2300,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   if (lineDrawing.start case final start?)
                     PolylineLayer(
                       polylines: [
-                        if (buildPreviewLinePolyline(
-                              start: start,
-                              previewEnd: lineDrawing.previewEnd,
-                              color: previewColor,
-                            )
-                            case final preview?)
-                          preview,
+                        ?buildPreviewLinePolyline(
+                          start: start,
+                          previewEnd: lineDrawing.previewEnd,
+                          color: previewColor,
+                        ),
                       ],
                     ),
                   if (lineDrawing.start case final start?)

@@ -97,7 +97,7 @@ abstract final class RestApiKeyService {
     String? preview;
     final storedHash = await storedKeyHash(session);
     if (storedHash != null && storedHash.isNotEmpty) {
-      preview = '${keyPrefix}••••••••';
+      preview = '$keyPrefix••••••••';
     } else if (envKeyConfigured) {
       preview = keyPreview(configuredEnvKey!);
     }

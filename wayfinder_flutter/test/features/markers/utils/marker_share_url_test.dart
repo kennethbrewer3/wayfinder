@@ -1,5 +1,5 @@
 import 'package:latlong2/latlong.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/features/map/models/map_viewport.dart';
 import 'package:wayfinder_flutter/features/markers/utils/marker_share_url.dart';

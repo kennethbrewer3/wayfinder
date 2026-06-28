@@ -3850,6 +3850,12 @@ abstract class AppLocalizations {
   /// **'Power plant'**
   String get markerIconPowerPlant;
 
+  /// No description provided for @markerIconNuclearPowerPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Nuclear power plant'**
+  String get markerIconNuclearPowerPlant;
+
   /// No description provided for @markerIconNuclearWeaponsFacility.
   ///
   /// In en, this message translates to:

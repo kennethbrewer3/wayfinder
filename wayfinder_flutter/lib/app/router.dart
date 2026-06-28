@@ -16,7 +16,7 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      redirect: (_, __) => '/maps',
+      redirect: (_, _) => '/maps',
     ),
     GoRoute(
       path: '/maps',

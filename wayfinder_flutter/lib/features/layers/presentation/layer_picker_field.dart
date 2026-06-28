@@ -27,7 +27,7 @@ class LayerPickerField extends ConsumerWidget {
         decoration: InputDecoration(labelText: l10n.layerLabel),
         child: Text(l10n.statusLoading),
       ),
-      error: (_, __) => InputDecorator(
+      error: (_, _) => InputDecorator(
         decoration: InputDecoration(labelText: l10n.layerLabel),
         child: Text(
           layerNameForObject(

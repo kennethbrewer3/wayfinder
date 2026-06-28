@@ -193,6 +193,7 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'lookout' => l10n.markerIconLookout,
     'power' => l10n.markerIconPower,
     'power_plant' => l10n.markerIconPowerPlant,
+    'nuclear_power_plant' => l10n.markerIconNuclearPowerPlant,
     'nuclear_weapons_facility' => l10n.markerIconNuclearWeaponsFacility,
     'garden' => l10n.markerIconGarden,
     'staging' => l10n.markerIconStaging,

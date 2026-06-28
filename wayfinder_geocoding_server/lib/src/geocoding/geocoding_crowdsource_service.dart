@@ -381,7 +381,7 @@ abstract final class GeocodingCrowdsourceService {
         jsonEncode({
           'message': message,
           'content': base64Encode(utf8.encode(content)),
-          if (sha != null) 'sha': sha,
+          'sha': ?sha,
         }),
       );
       final response = await request.close();

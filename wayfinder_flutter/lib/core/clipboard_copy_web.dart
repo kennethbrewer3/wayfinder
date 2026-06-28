@@ -1,7 +1,7 @@
-// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
-import 'dart:html' as html;
+import 'dart:js_interop';
 
 import 'package:flutter/services.dart';
+import 'package:web/web.dart' hide Clipboard;
 
 Future<bool> copyTextToClipboard(String text) async {
   // Run synchronously in the click handler so Brave/Chrome keep user activation.
@@ -10,11 +10,8 @@ Future<bool> copyTextToClipboard(String text) async {
   }
 
   try {
-    final clipboard = html.window.navigator.clipboard;
-    if (clipboard != null) {
-      await clipboard.writeText(text);
-      return true;
-    }
+    await window.navigator.clipboard.writeText(text).toDart;
+    return true;
   } catch (_) {}
 
   try {
@@ -26,17 +23,17 @@ Future<bool> copyTextToClipboard(String text) async {
 }
 
 bool _copyWithExecCommand(String text) {
-  final textarea = html.TextAreaElement()
+  final textarea = HTMLTextAreaElement()
     ..value = text
     ..readOnly = true
     ..style.position = 'fixed'
     ..style.left = '-9999px'
     ..style.top = '0';
-  html.document.body?.children.add(textarea);
+  document.body?.append(textarea);
   textarea.focus();
   textarea.select();
   textarea.setSelectionRange(0, text.length);
-  final copied = html.document.execCommand('copy');
+  final copied = document.execCommand('copy');
   textarea.remove();
   return copied;
 }

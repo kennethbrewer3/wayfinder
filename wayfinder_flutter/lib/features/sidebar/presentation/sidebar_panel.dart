@@ -957,7 +957,7 @@ class _MapObjectTreeScaffold<T> extends StatelessWidget {
       shrinkWrap: nested,
       physics: nested ? const NeverScrollableScrollPhysics() : null,
       itemCount: groups.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final group = groups[index];
         return Theme(

@@ -221,8 +221,8 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
     LatLng? cornerB;
     if (_centerLatitudeController != null && _centerLongitudeController != null) {
       center = parseLatLngFields(
-        _centerLatitudeController!.text,
-        _centerLongitudeController!.text,
+        _centerLatitudeController.text,
+        _centerLongitudeController.text,
       );
       if (center == null) {
         return;
@@ -232,12 +232,12 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
         _cornerBLatitudeController != null &&
         _cornerBLongitudeController != null) {
       cornerA = parseLatLngFields(
-        _cornerALatitudeController!.text,
-        _cornerALongitudeController!.text,
+        _cornerALatitudeController.text,
+        _cornerALongitudeController.text,
       );
       cornerB = parseLatLngFields(
-        _cornerBLatitudeController!.text,
-        _cornerBLongitudeController!.text,
+        _cornerBLatitudeController.text,
+        _cornerBLongitudeController.text,
       );
       if (cornerA == null || cornerB == null) {
         return;
@@ -325,8 +325,8 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                   _centerLongitudeController != null)
                 CoordinateFormFields(
                   title: l10n.circleCenterLabel,
-                  latitudeController: _centerLatitudeController!,
-                  longitudeController: _centerLongitudeController!,
+                  latitudeController: _centerLatitudeController,
+                  longitudeController: _centerLongitudeController,
                   helperText: l10n.rectangleCenterMoveHelp,
                 )
               else if (_cornerALatitudeController != null &&
@@ -335,14 +335,14 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                   _cornerBLongitudeController != null) ...[
                 CoordinateFormFields(
                   title: l10n.rectangleCornerALabel,
-                  latitudeController: _cornerALatitudeController!,
-                  longitudeController: _cornerALongitudeController!,
+                  latitudeController: _cornerALatitudeController,
+                  longitudeController: _cornerALongitudeController,
                 ),
                 const SizedBox(height: 16),
                 CoordinateFormFields(
                   title: l10n.rectangleCornerBLabel,
-                  latitudeController: _cornerBLatitudeController!,
-                  longitudeController: _cornerBLongitudeController!,
+                  latitudeController: _cornerBLatitudeController,
+                  longitudeController: _cornerBLongitudeController,
                 ),
               ],
               const SizedBox(height: 8),

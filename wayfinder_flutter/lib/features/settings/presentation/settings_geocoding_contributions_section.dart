@@ -707,7 +707,8 @@ class _SettingsGeocodingContributionsSectionState
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String?>(
-                  value: _selectedCountryCode,
+                  key: ValueKey(_selectedCountryCode),
+                  initialValue: _selectedCountryCode,
                   decoration: InputDecoration(
                     labelText: l10n.geocodingContributionCountryLabel,
                     border: const OutlineInputBorder(),

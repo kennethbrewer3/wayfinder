@@ -104,6 +104,8 @@ class PmtilesStorage {
         }
       case FileSystemEntityType.directory:
         _scanDirectory(Directory(link.path), results);
+      case FileSystemEntityType.unixDomainSock:
+      case FileSystemEntityType.pipe:
       case FileSystemEntityType.link:
       case FileSystemEntityType.notFound:
         return;

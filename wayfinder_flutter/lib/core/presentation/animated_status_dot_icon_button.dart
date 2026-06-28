@@ -148,8 +148,7 @@ class ActivityProgressBar extends StatelessWidget {
         if (label != null || percentLabel != null) ...[
           const SizedBox(height: 4),
           Text(
-            [if (label != null) label!, if (percentLabel != null) percentLabel]
-                .join(' · '),
+            [?label, ?percentLabel].join(' · '),
             style: theme.textTheme.bodySmall,
           ),
         ],

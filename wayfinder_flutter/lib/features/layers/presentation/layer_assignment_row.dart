@@ -30,7 +30,7 @@ class LayerAssignmentRow extends ConsumerWidget {
         title: Text(l10n.layerLabel),
         subtitle: Text(l10n.statusLoading),
       ),
-      error: (_, __) => ListTile(
+      error: (_, _) => ListTile(
         dense: true,
         title: Text(l10n.layerLabel),
         subtitle: Text(

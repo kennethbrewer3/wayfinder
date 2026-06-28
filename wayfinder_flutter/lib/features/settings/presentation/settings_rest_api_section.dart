@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/clipboard_copy.dart';
 import '../../../core/rest_api_key_storage.dart';
 import '../data/app_settings_repository.dart';
 
@@ -145,10 +145,19 @@ class _SettingsRestApiSectionState extends ConsumerState<SettingsRestApiSection>
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: apiKey));
+            onPressed: () async {
+              final copied = await copyTextToClipboard(apiKey);
+              if (!context.mounted) {
+                return;
+              }
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.settingsRestApiCopied)),
+                SnackBar(
+                  content: Text(
+                    copied
+                        ? l10n.settingsRestApiCopied
+                        : l10n.mapDebugOverlayCopyFailedTitle,
+                  ),
+                ),
               );
             },
             child: Text(l10n.settingsRestApiCopyAction),

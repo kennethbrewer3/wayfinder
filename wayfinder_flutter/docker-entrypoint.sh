@@ -47,4 +47,12 @@ else
 EOF
 fi
 
+cat > /usr/share/nginx/html/runtime-info.json <<EOF
+{
+  "dockerImageId": "${WAYFINDER_DOCKER_IMAGE_ID:-}",
+  "dockerImageRef": "${WAYFINDER_DOCKER_IMAGE_REF:-}",
+  "containerStartedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+
 exec nginx -g 'daemon off;'

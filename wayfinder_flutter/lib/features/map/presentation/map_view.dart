@@ -63,6 +63,7 @@ import '../providers/map_viewport_debug_provider.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
 import 'map_radial_menu.dart';
+import 'map_viewport_debug_overlay.dart';
 
 class MapView extends ConsumerWidget {
   const MapView({
@@ -2504,40 +2505,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 child: _rectangleDrawingBanner(rectangleDrawing),
               ),
             if (showViewportDebugBorder)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: Stack(
-                    children: [
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red, width: 3),
-                        ),
-                      ),
-                      Positioned(
-                        left: 8,
-                        top: 8,
-                        child: ColoredBox(
-                          color: Colors.red.withValues(alpha: 0.9),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            child: Text(
-                              '${mapSize.width.toStringAsFixed(0)} × ${mapSize.height.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'monospace',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              Positioned(
+                left: 0,
+                top: 0,
+                width: mapSize.width,
+                height: mapSize.height,
+                child: MapViewportDebugOverlay(mapSize: mapSize),
               ),
           ],
         );

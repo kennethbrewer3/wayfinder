@@ -52,6 +52,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsAboutConnectionSection => 'Connexion';
 
   @override
+  String get settingsAboutDeploymentSection => 'Déploiement';
+
+  @override
+  String get settingsAboutDockerImageId => 'ID d\'image Docker';
+
+  @override
+  String get settingsAboutDockerImageIdUnavailable =>
+      'Non disponible — recréez le conteneur après un pull pour enregistrer l\'ID d\'image au démarrage.';
+
+  @override
+  String get settingsAboutDockerImageRef => 'Référence d\'image Docker';
+
+  @override
+  String get settingsAboutContainerStarted => 'Conteneur démarré';
+
+  @override
+  String settingsAboutDockerImageIdHint(String imageIdPrefix) {
+    return 'L\'ID d\'image Docker change à chaque nouveau pull. Il devrait commencer par $imageIdPrefix et correspondre à la colonne IMAGE ID de docker compose images ou docker image inspect.';
+  }
+
+  @override
+  String get settingsAboutDockerImageIdHintUnavailable =>
+      'Après docker compose pull, exécutez docker compose up -d --force-recreate pour que le conteneur enregistre ici l\'ID d\'image actuel. L\'ID change à chaque nouvelle compilation même si l\'étiquette reste :latest.';
+
+  @override
   String get settingsAboutAppName => 'Nom de l\'application';
 
   @override

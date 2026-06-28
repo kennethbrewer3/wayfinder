@@ -78,6 +78,34 @@ class SettingsAboutTab extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               _InfoSection(
+                title: l10n.settingsAboutDeploymentSection,
+                rows: [
+                  if (buildInfo.dockerImageId != null)
+                    _InfoRow(
+                      label: l10n.settingsAboutDockerImageId,
+                      value: buildInfo.dockerImageId!,
+                      monospace: true,
+                    )
+                  else
+                    _InfoRow(
+                      label: l10n.settingsAboutDockerImageId,
+                      value: l10n.settingsAboutDockerImageIdUnavailable,
+                    ),
+                  if (buildInfo.dockerImageRef != null)
+                    _InfoRow(
+                      label: l10n.settingsAboutDockerImageRef,
+                      value: buildInfo.dockerImageRef!,
+                      monospace: true,
+                    ),
+                  if (buildInfo.containerStartedAt != null)
+                    _InfoRow(
+                      label: l10n.settingsAboutContainerStarted,
+                      value: buildInfo.containerStartedAt!,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              _InfoSection(
                 title: l10n.settingsAboutConnectionSection,
                 rows: [
                   _InfoRow(
@@ -102,6 +130,21 @@ class SettingsAboutTab extends ConsumerWidget {
                 const SizedBox(height: 16),
                 Text(
                   l10n.settingsAboutCommitHint(buildInfo.shortGitCommit!),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+              if (buildInfo.shortDockerImageId != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.settingsAboutDockerImageIdHint(
+                    buildInfo.shortDockerImageId!,
+                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ] else ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.settingsAboutDockerImageIdHintUnavailable,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],

@@ -26,6 +26,8 @@ RUN flutter pub get
 RUN flutter build web --release \
   --dart-define=APP_BUILD_COMMIT=${APP_BUILD_COMMIT} \
   --dart-define=APP_BUILD_TIME=${APP_BUILD_TIME}
+RUN printf '{"gitCommit":"%s","buildTime":"%s"}\n' \
+  "${APP_BUILD_COMMIT}" "${APP_BUILD_TIME}" > build/web/build-info.json
 
 FROM nginx:1.27-alpine
 

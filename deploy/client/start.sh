@@ -38,6 +38,8 @@ echo "Pulling ${IMAGE}..."
 # shellcheck disable=SC2086
 $DOCKER pull "$IMAGE"
 
+IMAGE_ID="$($DOCKER image inspect "$IMAGE" --format '{{.Id}}')"
+
 remove_wayfinder_client_container
 
 echo "Starting ${NAME} on port ${PORT}..."
@@ -48,6 +50,8 @@ $DOCKER run -d \
   -p "${PORT}:8080" \
   -e "WAYFINDER_API_URL=${WAYFINDER_API_URL}" \
   -e "WAYFINDER_WEB_URL=${WAYFINDER_WEB_URL:-}" \
+  -e "WAYFINDER_DOCKER_IMAGE_ID=${IMAGE_ID}" \
+  -e "WAYFINDER_DOCKER_IMAGE_REF=${IMAGE}" \
   "$IMAGE"
 
 echo

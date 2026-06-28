@@ -178,6 +178,48 @@ abstract class AppLocalizations {
   /// **'Connection'**
   String get settingsAboutConnectionSection;
 
+  /// No description provided for @settingsAboutDeploymentSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Deployment'**
+  String get settingsAboutDeploymentSection;
+
+  /// No description provided for @settingsAboutDockerImageId.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker image ID'**
+  String get settingsAboutDockerImageId;
+
+  /// No description provided for @settingsAboutDockerImageIdUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available — recreate the container after pulling so the image ID is recorded at startup.'**
+  String get settingsAboutDockerImageIdUnavailable;
+
+  /// No description provided for @settingsAboutDockerImageRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker image reference'**
+  String get settingsAboutDockerImageRef;
+
+  /// No description provided for @settingsAboutContainerStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Container started'**
+  String get settingsAboutContainerStarted;
+
+  /// No description provided for @settingsAboutDockerImageIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The Docker image ID changes whenever you pull a new build. It should start with {imageIdPrefix} and match the IMAGE ID column from docker compose images or docker image inspect.'**
+  String settingsAboutDockerImageIdHint(String imageIdPrefix);
+
+  /// No description provided for @settingsAboutDockerImageIdHintUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'After docker compose pull, run docker compose up -d --force-recreate so the container records the current image ID here. The ID changes on every new image build even when the tag stays :latest.'**
+  String get settingsAboutDockerImageIdHintUnavailable;
+
   /// No description provided for @settingsAboutAppName.
   ///
   /// In en, this message translates to:

@@ -12,7 +12,8 @@
 #
 # Or manually:
 #   docker compose pull
-#   docker compose up -d
+#   export WAYFINDER_DOCKER_IMAGE_ID="$(docker image inspect "${WAYFINDER_CLIENT_IMAGE:-ghcr.io/kennethbrewer3/wayfinder-client:latest}" --format '{{.Id}}')"
+#   docker compose up -d --force-recreate
 #
 # Open http://localhost:8080 (or your WAYFINDER_CLIENT_PORT)
 
@@ -30,6 +31,8 @@ services:
       WAYFINDER_API_URL: ${WAYFINDER_API_URL:?Set WAYFINDER_API_URL in .env — e.g. http://192.168.1.10:18080}
       WAYFINDER_WEB_URL: ${WAYFINDER_WEB_URL:-}
       WAYFINDER_GEOCODING_WEB_URL: ${WAYFINDER_GEOCODING_WEB_URL:-}
+      WAYFINDER_DOCKER_IMAGE_ID: ${WAYFINDER_DOCKER_IMAGE_ID:-}
+      WAYFINDER_DOCKER_IMAGE_REF: ${WAYFINDER_CLIENT_IMAGE:-ghcr.io/kennethbrewer3/wayfinder-client:latest}
     restart: unless-stopped
     healthcheck:
       test:

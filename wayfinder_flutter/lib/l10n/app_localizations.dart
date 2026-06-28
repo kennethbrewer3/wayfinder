@@ -3844,6 +3844,18 @@ abstract class AppLocalizations {
   /// **'Power'**
   String get markerIconPower;
 
+  /// No description provided for @markerIconPowerPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Power plant'**
+  String get markerIconPowerPlant;
+
+  /// No description provided for @markerIconNuclearWeaponsFacility.
+  ///
+  /// In en, this message translates to:
+  /// **'Nuclear weapons facility'**
+  String get markerIconNuclearWeaponsFacility;
+
   /// No description provided for @markerIconGarden.
   ///
   /// In en, this message translates to:
@@ -3886,6 +3898,42 @@ abstract class AppLocalizations {
   /// **'Boat'**
   String get markerIconBoat;
 
+  /// No description provided for @markerIconPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get markerIconPort;
+
+  /// No description provided for @markerIconDock.
+  ///
+  /// In en, this message translates to:
+  /// **'Dock'**
+  String get markerIconDock;
+
+  /// No description provided for @markerIconFerry.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferry'**
+  String get markerIconFerry;
+
+  /// No description provided for @markerIconYacht.
+  ///
+  /// In en, this message translates to:
+  /// **'Yacht'**
+  String get markerIconYacht;
+
+  /// No description provided for @markerIconSailboat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sailboat'**
+  String get markerIconSailboat;
+
+  /// No description provided for @markerIconRiverBoat.
+  ///
+  /// In en, this message translates to:
+  /// **'River boat'**
+  String get markerIconRiverBoat;
+
   /// No description provided for @markerIconAirstrip.
   ///
   /// In en, this message translates to:
@@ -3897,6 +3945,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Defense'**
   String get markerIconDefense;
+
+  /// No description provided for @markerIconArmyBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Army base'**
+  String get markerIconArmyBase;
+
+  /// No description provided for @markerIconNavyBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Navy base'**
+  String get markerIconNavyBase;
+
+  /// No description provided for @markerIconMarineCorpsBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Marine Corps base'**
+  String get markerIconMarineCorpsBase;
+
+  /// No description provided for @markerIconAirForceBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Air Force base'**
+  String get markerIconAirForceBase;
+
+  /// No description provided for @markerIconSpaceForceBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Force base'**
+  String get markerIconSpaceForceBase;
+
+  /// No description provided for @markerIconCoastGuardBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Coast Guard base'**
+  String get markerIconCoastGuardBase;
 
   /// No description provided for @markerIconHunting.
   ///

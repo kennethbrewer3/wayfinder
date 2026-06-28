@@ -2165,6 +2165,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconPower => 'Énergie';
 
   @override
+  String get markerIconPowerPlant => 'Centrale électrique';
+
+  @override
+  String get markerIconNuclearWeaponsFacility =>
+      'Installation nucléaire d\'armes';
+
+  @override
   String get markerIconGarden => 'Jardin';
 
   @override
@@ -2186,10 +2193,46 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconBoat => 'Bateau';
 
   @override
+  String get markerIconPort => 'Port';
+
+  @override
+  String get markerIconDock => 'Quai';
+
+  @override
+  String get markerIconFerry => 'Ferry';
+
+  @override
+  String get markerIconYacht => 'Yacht';
+
+  @override
+  String get markerIconSailboat => 'Voilier';
+
+  @override
+  String get markerIconRiverBoat => 'Bateau fluvial';
+
+  @override
   String get markerIconAirstrip => 'Piste d\'atterrissage';
 
   @override
   String get markerIconDefense => 'Défense';
+
+  @override
+  String get markerIconArmyBase => 'Base de l\'Armée';
+
+  @override
+  String get markerIconNavyBase => 'Base navale';
+
+  @override
+  String get markerIconMarineCorpsBase => 'Base du Corps des Marines';
+
+  @override
+  String get markerIconAirForceBase => 'Base de l\'Armée de l\'air';
+
+  @override
+  String get markerIconSpaceForceBase => 'Base de l\'espace';
+
+  @override
+  String get markerIconCoastGuardBase => 'Base de la Garde côtière';
 
   @override
   String get markerIconHunting => 'Chasse';

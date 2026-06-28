@@ -2125,6 +2125,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconPower => 'Power';
 
   @override
+  String get markerIconPowerPlant => 'Power plant';
+
+  @override
+  String get markerIconNuclearWeaponsFacility => 'Nuclear weapons facility';
+
+  @override
   String get markerIconGarden => 'Garden';
 
   @override
@@ -2146,10 +2152,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconBoat => 'Boat';
 
   @override
+  String get markerIconPort => 'Port';
+
+  @override
+  String get markerIconDock => 'Dock';
+
+  @override
+  String get markerIconFerry => 'Ferry';
+
+  @override
+  String get markerIconYacht => 'Yacht';
+
+  @override
+  String get markerIconSailboat => 'Sailboat';
+
+  @override
+  String get markerIconRiverBoat => 'River boat';
+
+  @override
   String get markerIconAirstrip => 'Airstrip';
 
   @override
   String get markerIconDefense => 'Defense';
+
+  @override
+  String get markerIconArmyBase => 'Army base';
+
+  @override
+  String get markerIconNavyBase => 'Navy base';
+
+  @override
+  String get markerIconMarineCorpsBase => 'Marine Corps base';
+
+  @override
+  String get markerIconAirForceBase => 'Air Force base';
+
+  @override
+  String get markerIconSpaceForceBase => 'Space Force base';
+
+  @override
+  String get markerIconCoastGuardBase => 'Coast Guard base';
 
   @override
   String get markerIconHunting => 'Hunting';

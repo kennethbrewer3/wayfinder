@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-import '../../../core/constants.dart';
 import '../../map/models/map_viewport.dart';
 
 const markerUrlQueryParam = 'marker';
@@ -24,15 +22,23 @@ Uri buildMapShareUri({
   required MapViewport viewport,
   UuidValue? markerId,
 }) {
-  final queryParameters = <String, String>{
-    'lat': viewport.center.latitude.toStringAsFixed(6),
-    'lng': viewport.center.longitude.toStringAsFixed(6),
-    'zoom': viewport.zoom.toStringAsFixed(2),
-  };
   if (markerId != null) {
-    queryParameters[markerUrlQueryParam] = markerId.toString();
+    return Uri(
+      path: '/maps',
+      queryParameters: {
+        markerUrlQueryParam: markerId.toString(),
+      },
+    );
   }
-  return Uri(path: '/maps', queryParameters: queryParameters);
+
+  return Uri(
+    path: '/maps',
+    queryParameters: {
+      'lat': viewport.center.latitude.toStringAsFixed(6),
+      'lng': viewport.center.longitude.toStringAsFixed(6),
+      'zoom': viewport.zoom.toStringAsFixed(2),
+    },
+  );
 }
 
 String buildMapShareUrl({
@@ -54,15 +60,23 @@ String buildMapShareUrl({
 
 String buildMarkerShareUrl({
   required MapMarker marker,
-  double zoom = markerShareDefaultZoom,
 }) {
-  return buildMapShareUrl(
-    viewport: MapViewport(
-      center: LatLng(marker.latitude, marker.longitude),
-      zoom: zoom.clamp(0, AppConstants.maxMapZoom),
-    ),
-    markerId: marker.id,
+  final uri = Uri(
+    path: '/maps',
+    queryParameters: {
+      markerUrlQueryParam: marker.id.toString(),
+    },
   );
+  if (kIsWeb) {
+    return Uri.base
+        .replace(
+          path: uri.path,
+          queryParameters: uri.queryParameters,
+          fragment: uri.fragment,
+        )
+        .toString();
+  }
+  return uri.toString();
 }
 
 MapMarker? findMarkerById(List<MapMarker> markers, UuidValue id) {

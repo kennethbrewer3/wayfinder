@@ -329,7 +329,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapViewportDebugBorderDescription =>
-      'Dibuja un contorno rojo alrededor del lienzo del mapa. Úselo para comprobar si el mapa llena su panel cuando se cambia el tamaño de la ventana o la barra lateral.';
+      'Dibuja un contorno rojo alrededor del lienzo del mapa con detalles del archivo, zoom y tile central.';
+
+  @override
+  String get settingsMapTileBorderDebugTitle => 'Mostrar bordes de tiles';
+
+  @override
+  String get settingsMapTileBorderDebugDescription =>
+      'Dibuja bordes verdes alrededor de cada tile del mapa. Requiere la superposición de depuración del viewport anterior.';
 
   @override
   String get settingsHomeLocationSaved => 'Ubicación de inicio guardada.';

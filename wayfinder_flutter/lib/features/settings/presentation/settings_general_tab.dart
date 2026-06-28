@@ -240,6 +240,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
     final showMapViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
+    final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
     ref.listen<HomeLocation>(homeLocationProvider, (previous, next) {
@@ -548,11 +549,29 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           title: Text(l10n.settingsMapViewportDebugBorderTitle),
           subtitle: Text(l10n.settingsMapViewportDebugBorderDescription),
           value: showMapViewportDebugBorder,
-          onChanged: (enabled) {
-            ref
+          onChanged: (enabled) async {
+            await ref
                 .read(mapViewportDebugBorderProvider.notifier)
                 .setEnabled(enabled);
+            if (!enabled) {
+              await ref
+                  .read(mapTileBorderDebugProvider.notifier)
+                  .setEnabled(false);
+            }
           },
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsMapTileBorderDebugTitle),
+          subtitle: Text(l10n.settingsMapTileBorderDebugDescription),
+          value: showMapViewportDebugBorder && showMapTileBorderDebug,
+          onChanged: showMapViewportDebugBorder
+              ? (enabled) {
+                  ref
+                      .read(mapTileBorderDebugProvider.notifier)
+                      .setEnabled(enabled);
+                }
+              : null,
         ),
       ],
     );

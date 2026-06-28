@@ -691,8 +691,20 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapViewportDebugBorderDescription.
   ///
   /// In en, this message translates to:
-  /// **'Draws a red outline around the map canvas. Use this to check whether the map fills its panel when the window or sidebar is resized.'**
+  /// **'Draws a red outline around the map canvas with archive, zoom, and center-tile details.'**
   String get settingsMapViewportDebugBorderDescription;
+
+  /// No description provided for @settingsMapTileBorderDebugTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show tile borders'**
+  String get settingsMapTileBorderDebugTitle;
+
+  /// No description provided for @settingsMapTileBorderDebugDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Draws green borders around each map tile. Requires the viewport debug overlay above.'**
+  String get settingsMapTileBorderDebugDescription;
 
   /// No description provided for @settingsHomeLocationSaved.
   ///

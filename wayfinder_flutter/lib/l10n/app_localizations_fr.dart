@@ -330,7 +330,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapViewportDebugBorderDescription =>
-      'Dessine un contour rouge autour du canevas de la carte. Utilisez-le pour vérifier si la carte remplit son panneau lors du redimensionnement de la fenêtre ou de la barre latérale.';
+      'Dessine un contour rouge autour du canevas de la carte avec les détails d\'archive, de zoom et de tuile centrale.';
+
+  @override
+  String get settingsMapTileBorderDebugTitle =>
+      'Afficher les bordures de tuiles';
+
+  @override
+  String get settingsMapTileBorderDebugDescription =>
+      'Dessine des bordures vertes autour de chaque tuile de la carte. Nécessite la superposition de débogage du viewport ci-dessus.';
 
   @override
   String get settingsHomeLocationSaved => 'Point d\'accueil enregistré.';

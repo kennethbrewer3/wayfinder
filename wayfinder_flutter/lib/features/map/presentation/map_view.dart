@@ -2005,6 +2005,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         widget.enabledEntries.isNotEmpty &&
         mapLayers.isNotEmpty;
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
+    final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
@@ -2140,7 +2141,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 maximumTileSubstitutionDifference: 3,
                                 memoryTileDataCacheMaxSize: 99,
                                 memoryTileCacheMaxSize: 32 * 1024 * 1024,
-                                showTileDebugInfo: showViewportDebugBorder,
+                                showTileDebugInfo:
+                                    showViewportDebugBorder && showTileBorderDebug,
                                 tileProviders: TileProviders({
                                   'protomaps': tileProvider,
                                 }),

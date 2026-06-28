@@ -23,4 +23,6 @@ class AppConstants {
   static const appLocaleStorageKey = 'wayfinder.settings.appLocale';
   static const mapViewportDebugBorderStorageKey =
       'wayfinder.settings.mapViewportDebugBorder';
+  static const mapTileBorderDebugStorageKey =
+      'wayfinder.settings.mapTileBorderDebug';
 }

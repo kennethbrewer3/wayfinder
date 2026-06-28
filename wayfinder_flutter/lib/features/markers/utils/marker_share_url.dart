@@ -6,16 +6,75 @@ import '../../map/models/map_viewport.dart';
 const markerUrlQueryParam = 'marker';
 const markerShareDefaultZoom = 16.0;
 
-UuidValue? parseMarkerIdFromUri(Uri uri) {
-  final raw = uri.queryParameters[markerUrlQueryParam]?.trim();
-  if (raw == null || raw.isEmpty) {
+UuidValue? _parseMarkerIdFromRaw(String? raw) {
+  final trimmed = raw?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
     return null;
   }
   try {
-    return UuidValue.fromString(raw);
+    return UuidValue.fromString(trimmed);
   } catch (_) {
     return null;
   }
+}
+
+Uri _routeUri({
+  required String path,
+  required Map<String, String> queryParameters,
+}) {
+  return Uri(path: path, queryParameters: queryParameters);
+}
+
+/// Relative app route for go_router, e.g. `/maps?marker=…`.
+String mapShareLocation(Uri routeUri) {
+  if (!routeUri.hasQuery) {
+    return routeUri.path;
+  }
+  return '${routeUri.path}?${routeUri.query}';
+}
+
+Uri absoluteWebShareUri(Uri routeUri) {
+  final base = Uri.base;
+  return Uri(
+    scheme: base.scheme,
+    host: base.host,
+    port: base.hasPort ? base.port : null,
+    path: routeUri.path,
+    queryParameters: routeUri.queryParameters,
+  );
+}
+
+String formatMapShareUrl(Uri routeUri) {
+  if (kIsWeb) {
+    return absoluteWebShareUri(routeUri).toString();
+  }
+  return mapShareLocation(routeUri);
+}
+
+UuidValue? parseMarkerIdFromUri(Uri uri) {
+  final direct = _parseMarkerIdFromRaw(uri.queryParameters[markerUrlQueryParam]);
+  if (direct != null) {
+    return direct;
+  }
+
+  if (uri.fragment.isNotEmpty) {
+    final fragment =
+        uri.fragment.startsWith('/') ? uri.fragment : '/${uri.fragment}';
+    final fromFragment = parseMarkerIdFromUri(Uri.parse('http://local$fragment'));
+    if (fromFragment != null) {
+      return fromFragment;
+    }
+  }
+
+  final decodedPath = Uri.decodeComponent(uri.path);
+  if (decodedPath.contains('?')) {
+    final fromPath = parseMarkerIdFromUri(Uri.parse('http://local$decodedPath'));
+    if (fromPath != null) {
+      return fromPath;
+    }
+  }
+
+  return null;
 }
 
 Uri buildMapShareUri({
@@ -23,7 +82,7 @@ Uri buildMapShareUri({
   UuidValue? markerId,
 }) {
   if (markerId != null) {
-    return Uri(
+    return _routeUri(
       path: '/maps',
       queryParameters: {
         markerUrlQueryParam: markerId.toString(),
@@ -31,7 +90,7 @@ Uri buildMapShareUri({
     );
   }
 
-  return Uri(
+  return _routeUri(
     path: '/maps',
     queryParameters: {
       'lat': viewport.center.latitude.toStringAsFixed(6),
@@ -45,38 +104,22 @@ String buildMapShareUrl({
   required MapViewport viewport,
   UuidValue? markerId,
 }) {
-  final uri = buildMapShareUri(viewport: viewport, markerId: markerId);
-  if (kIsWeb) {
-    return Uri.base
-        .replace(
-          path: uri.path,
-          queryParameters: uri.queryParameters,
-          fragment: uri.fragment,
-        )
-        .toString();
-  }
-  return uri.toString();
+  return formatMapShareUrl(
+    buildMapShareUri(viewport: viewport, markerId: markerId),
+  );
 }
 
 String buildMarkerShareUrl({
   required MapMarker marker,
 }) {
-  final uri = Uri(
-    path: '/maps',
-    queryParameters: {
-      markerUrlQueryParam: marker.id.toString(),
-    },
+  return formatMapShareUrl(
+    _routeUri(
+      path: '/maps',
+      queryParameters: {
+        markerUrlQueryParam: marker.id.toString(),
+      },
+    ),
   );
-  if (kIsWeb) {
-    return Uri.base
-        .replace(
-          path: uri.path,
-          queryParameters: uri.queryParameters,
-          fragment: uri.fragment,
-        )
-        .toString();
-  }
-  return uri.toString();
 }
 
 MapMarker? findMarkerById(List<MapMarker> markers, UuidValue id) {
@@ -87,4 +130,9 @@ MapMarker? findMarkerById(List<MapMarker> markers, UuidValue id) {
     }
   }
   return null;
+}
+
+bool mapShareRoutesMatch(Uri current, Uri next) {
+  return current.path == next.path &&
+      current.queryParameters.toString() == next.queryParameters.toString();
 }

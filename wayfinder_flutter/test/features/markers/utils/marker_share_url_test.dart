@@ -19,27 +19,38 @@ void main() {
       updatedAt: DateTime.utc(2026),
     );
 
-    final url = buildMarkerShareUrl(marker: marker);
-    final uri = Uri.parse(url.startsWith('/') ? 'https://example.com$url' : url);
-
-    expect(uri.path, '/maps');
-    expect(uri.queryParameters, {
-      'marker': marker.id.toString(),
-    });
+    expect(
+      buildMarkerShareUrl(marker: marker),
+      '/maps?marker=${marker.id}',
+    );
   });
 
-  test('buildMapShareUri uses marker id only when marker is selected', () {
-    final markerId = UuidValue.fromString('22222222-2222-4222-8222-222222222222');
+  test('mapShareLocation builds a go_router location string', () {
     final uri = buildMapShareUri(
-      viewport: MapViewport(
-        center: LatLng(1, 2),
-        zoom: 12,
-      ),
-      markerId: markerId,
+      viewport: MapViewport(center: LatLng(1, 2), zoom: 12),
+      markerId: UuidValue.fromString('22222222-2222-4222-8222-222222222222'),
     );
 
-    expect(uri.queryParameters, {'marker': markerId.toString()});
-    expect(parseMarkerIdFromUri(uri), markerId);
+    expect(mapShareLocation(uri), '/maps?marker=22222222-2222-4222-8222-222222222222');
+  });
+
+  test('absoluteWebShareUri keeps query in query string without fragment', () {
+    final routeUri = buildMapShareUri(
+      viewport: MapViewport(center: LatLng(1, 2), zoom: 12),
+      markerId: UuidValue.fromString('3e006b9c-621b-41bf-a4e8-05e1f8a12117'),
+    );
+
+    final absolute = absoluteWebShareUri(routeUri).replace(
+      scheme: 'http',
+      host: 'atlas.brewerhomestead.com',
+      port: 9080,
+    );
+
+    expect(
+      absolute.toString(),
+      'http://atlas.brewerhomestead.com:9080/maps?marker=3e006b9c-621b-41bf-a4e8-05e1f8a12117',
+    );
+    expect(absolute.fragment, isEmpty);
   });
 
   test('buildMapShareUri keeps viewport params when no marker is selected', () {
@@ -78,6 +89,28 @@ void main() {
     expect(
       parseMarkerIdFromUri(uri),
       UuidValue.fromString('c98fee7e-f549-4964-be20-1cc0fc4127d9'),
+    );
+  });
+
+  test('parseMarkerIdFromUri reads marker from malformed encoded path', () {
+    final uri = Uri.parse(
+      'http://atlas.brewerhomestead.com:9080/maps%3Fmarker=3e006b9c-621b-41bf-a4e8-05e1f8a12117#/maps',
+    );
+
+    expect(
+      parseMarkerIdFromUri(uri),
+      UuidValue.fromString('3e006b9c-621b-41bf-a4e8-05e1f8a12117'),
+    );
+  });
+
+  test('parseMarkerIdFromUri reads marker from hash-route fragment', () {
+    final uri = Uri.parse(
+      'http://atlas.brewerhomestead.com:9080/#/maps?marker=3e006b9c-621b-41bf-a4e8-05e1f8a12117',
+    );
+
+    expect(
+      parseMarkerIdFromUri(uri),
+      UuidValue.fromString('3e006b9c-621b-41bf-a4e8-05e1f8a12117'),
     );
   });
 }

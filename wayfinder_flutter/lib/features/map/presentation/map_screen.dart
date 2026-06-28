@@ -118,12 +118,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       markerId: markerId,
     );
     final currentUri = GoRouterState.of(context).uri;
-    if (currentUri.path == nextUri.path &&
-        currentUri.queryParameters.toString() ==
-            nextUri.queryParameters.toString()) {
+    if (mapShareRoutesMatch(currentUri, nextUri)) {
       return;
     }
-    context.go(nextUri.toString());
+    context.go(mapShareLocation(nextUri));
   }
 
   Future<void> _handleViewportChanged(MapViewport viewport) async {

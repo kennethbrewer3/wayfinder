@@ -94,10 +94,13 @@ final geocodingSearchProvider =
       return const [];
     }
 
+    // Read the map center once per submitted query. Watching the viewport
+    // refetches on every pan and rebuilds the app bar search dropdown.
+    final viewport = ref.read(mapViewportProvider).valueOrNull;
     return repository.searchPlaces(
       trimmed,
-      nearLatitude: ref.watch(mapViewportProvider).valueOrNull?.center.latitude,
-      nearLongitude: ref.watch(mapViewportProvider).valueOrNull?.center.longitude,
+      nearLatitude: viewport?.center.latitude,
+      nearLongitude: viewport?.center.longitude,
     );
   },
 );

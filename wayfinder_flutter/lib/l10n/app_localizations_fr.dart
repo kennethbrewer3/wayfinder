@@ -1854,6 +1854,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconPark => 'Parc';
 
   @override
+  String get markerIconMonument => 'Monument';
+
+  @override
+  String get markerIconGeocache => 'Géocache';
+
+  @override
   String get markerIconFlag => 'Drapeau';
 
   @override
@@ -1882,4 +1888,79 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get markerIconRadioRepeater => 'Répéteur radio';
+
+  @override
+  String get markerIconWater => 'Eau';
+
+  @override
+  String get markerIconSupplyCache => 'Cache de ravitaillement';
+
+  @override
+  String get markerIconRetreat => 'Retraite';
+
+  @override
+  String get markerIconCamp => 'Camp';
+
+  @override
+  String get markerIconFuel => 'Carburant';
+
+  @override
+  String get markerIconGate => 'Portail';
+
+  @override
+  String get markerIconCrossing => 'Traversée';
+
+  @override
+  String get markerIconLookout => 'Poste d\'observation';
+
+  @override
+  String get markerIconPower => 'Énergie';
+
+  @override
+  String get markerIconGarden => 'Jardin';
+
+  @override
+  String get markerIconStaging => 'Zone de rassemblement';
+
+  @override
+  String get markerIconHazard => 'Danger';
+
+  @override
+  String get markerIconRestricted => 'Interdit';
+
+  @override
+  String get markerIconRally => 'Point de rendez-vous';
+
+  @override
+  String get markerIconWorkshop => 'Atelier';
+
+  @override
+  String get markerIconBoat => 'Bateau';
+
+  @override
+  String get markerIconAirstrip => 'Piste d\'atterrissage';
+
+  @override
+  String get markerIconDefense => 'Défense';
+
+  @override
+  String get markerIconHunting => 'Chasse';
+
+  @override
+  String get markerIconFishing => 'Pêche';
+
+  @override
+  String get markerIconCave => 'Grotte';
+
+  @override
+  String get markerIconDeadZone => 'Zone sans signal';
+
+  @override
+  String get markerIconEvacRoute => 'Route d\'évacuation';
+
+  @override
+  String get markerIconLivestock => 'Bétail';
+
+  @override
+  String get markerIconPharmacy => 'Pharmacie';
 }

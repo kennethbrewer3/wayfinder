@@ -3286,6 +3286,18 @@ abstract class AppLocalizations {
   /// **'Park'**
   String get markerIconPark;
 
+  /// No description provided for @markerIconMonument.
+  ///
+  /// In en, this message translates to:
+  /// **'Monument'**
+  String get markerIconMonument;
+
+  /// No description provided for @markerIconGeocache.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocache'**
+  String get markerIconGeocache;
+
   /// No description provided for @markerIconFlag.
   ///
   /// In en, this message translates to:
@@ -3345,6 +3357,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Radio repeater'**
   String get markerIconRadioRepeater;
+
+  /// No description provided for @markerIconWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get markerIconWater;
+
+  /// No description provided for @markerIconSupplyCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Supply cache'**
+  String get markerIconSupplyCache;
+
+  /// No description provided for @markerIconRetreat.
+  ///
+  /// In en, this message translates to:
+  /// **'Retreat'**
+  String get markerIconRetreat;
+
+  /// No description provided for @markerIconCamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Camp'**
+  String get markerIconCamp;
+
+  /// No description provided for @markerIconFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get markerIconFuel;
+
+  /// No description provided for @markerIconGate.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate'**
+  String get markerIconGate;
+
+  /// No description provided for @markerIconCrossing.
+  ///
+  /// In en, this message translates to:
+  /// **'Crossing'**
+  String get markerIconCrossing;
+
+  /// No description provided for @markerIconLookout.
+  ///
+  /// In en, this message translates to:
+  /// **'Lookout'**
+  String get markerIconLookout;
+
+  /// No description provided for @markerIconPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Power'**
+  String get markerIconPower;
+
+  /// No description provided for @markerIconGarden.
+  ///
+  /// In en, this message translates to:
+  /// **'Garden'**
+  String get markerIconGarden;
+
+  /// No description provided for @markerIconStaging.
+  ///
+  /// In en, this message translates to:
+  /// **'Staging'**
+  String get markerIconStaging;
+
+  /// No description provided for @markerIconHazard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hazard'**
+  String get markerIconHazard;
+
+  /// No description provided for @markerIconRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'Restricted'**
+  String get markerIconRestricted;
+
+  /// No description provided for @markerIconRally.
+  ///
+  /// In en, this message translates to:
+  /// **'Rally point'**
+  String get markerIconRally;
+
+  /// No description provided for @markerIconWorkshop.
+  ///
+  /// In en, this message translates to:
+  /// **'Workshop'**
+  String get markerIconWorkshop;
+
+  /// No description provided for @markerIconBoat.
+  ///
+  /// In en, this message translates to:
+  /// **'Boat'**
+  String get markerIconBoat;
+
+  /// No description provided for @markerIconAirstrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Airstrip'**
+  String get markerIconAirstrip;
+
+  /// No description provided for @markerIconDefense.
+  ///
+  /// In en, this message translates to:
+  /// **'Defense'**
+  String get markerIconDefense;
+
+  /// No description provided for @markerIconHunting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hunting'**
+  String get markerIconHunting;
+
+  /// No description provided for @markerIconFishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Fishing'**
+  String get markerIconFishing;
+
+  /// No description provided for @markerIconCave.
+  ///
+  /// In en, this message translates to:
+  /// **'Cave'**
+  String get markerIconCave;
+
+  /// No description provided for @markerIconDeadZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead zone'**
+  String get markerIconDeadZone;
+
+  /// No description provided for @markerIconEvacRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Evac route'**
+  String get markerIconEvacRoute;
+
+  /// No description provided for @markerIconLivestock.
+  ///
+  /// In en, this message translates to:
+  /// **'Livestock'**
+  String get markerIconLivestock;
+
+  /// No description provided for @markerIconPharmacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Pharmacy'**
+  String get markerIconPharmacy;
 }
 
 class _AppLocalizationsDelegate

@@ -1815,6 +1815,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconPark => 'Park';
 
   @override
+  String get markerIconMonument => 'Monument';
+
+  @override
+  String get markerIconGeocache => 'Geocache';
+
+  @override
   String get markerIconFlag => 'Flag';
 
   @override
@@ -1843,4 +1849,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconRadioRepeater => 'Radio repeater';
+
+  @override
+  String get markerIconWater => 'Water';
+
+  @override
+  String get markerIconSupplyCache => 'Supply cache';
+
+  @override
+  String get markerIconRetreat => 'Retreat';
+
+  @override
+  String get markerIconCamp => 'Camp';
+
+  @override
+  String get markerIconFuel => 'Fuel';
+
+  @override
+  String get markerIconGate => 'Gate';
+
+  @override
+  String get markerIconCrossing => 'Crossing';
+
+  @override
+  String get markerIconLookout => 'Lookout';
+
+  @override
+  String get markerIconPower => 'Power';
+
+  @override
+  String get markerIconGarden => 'Garden';
+
+  @override
+  String get markerIconStaging => 'Staging';
+
+  @override
+  String get markerIconHazard => 'Hazard';
+
+  @override
+  String get markerIconRestricted => 'Restricted';
+
+  @override
+  String get markerIconRally => 'Rally point';
+
+  @override
+  String get markerIconWorkshop => 'Workshop';
+
+  @override
+  String get markerIconBoat => 'Boat';
+
+  @override
+  String get markerIconAirstrip => 'Airstrip';
+
+  @override
+  String get markerIconDefense => 'Defense';
+
+  @override
+  String get markerIconHunting => 'Hunting';
+
+  @override
+  String get markerIconFishing => 'Fishing';
+
+  @override
+  String get markerIconCave => 'Cave';
+
+  @override
+  String get markerIconDeadZone => 'Dead zone';
+
+  @override
+  String get markerIconEvacRoute => 'Evac route';
+
+  @override
+  String get markerIconLivestock => 'Livestock';
+
+  @override
+  String get markerIconPharmacy => 'Pharmacy';
 }

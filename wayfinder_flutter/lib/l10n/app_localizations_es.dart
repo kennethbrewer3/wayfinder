@@ -1849,6 +1849,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconPark => 'Parque';
 
   @override
+  String get markerIconMonument => 'Monumento';
+
+  @override
+  String get markerIconGeocache => 'Geocaché';
+
+  @override
   String get markerIconFlag => 'Bandera';
 
   @override
@@ -1877,4 +1883,79 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerIconRadioRepeater => 'Repetidor de radio';
+
+  @override
+  String get markerIconWater => 'Agua';
+
+  @override
+  String get markerIconSupplyCache => 'Alijo de suministros';
+
+  @override
+  String get markerIconRetreat => 'Refugio';
+
+  @override
+  String get markerIconCamp => 'Campamento';
+
+  @override
+  String get markerIconFuel => 'Combustible';
+
+  @override
+  String get markerIconGate => 'Portón';
+
+  @override
+  String get markerIconCrossing => 'Cruce';
+
+  @override
+  String get markerIconLookout => 'Observación';
+
+  @override
+  String get markerIconPower => 'Energía';
+
+  @override
+  String get markerIconGarden => 'Huerto';
+
+  @override
+  String get markerIconStaging => 'Área de espera';
+
+  @override
+  String get markerIconHazard => 'Peligro';
+
+  @override
+  String get markerIconRestricted => 'Restringido';
+
+  @override
+  String get markerIconRally => 'Punto de reunión';
+
+  @override
+  String get markerIconWorkshop => 'Taller';
+
+  @override
+  String get markerIconBoat => 'Barco';
+
+  @override
+  String get markerIconAirstrip => 'Pista de aterrizaje';
+
+  @override
+  String get markerIconDefense => 'Defensa';
+
+  @override
+  String get markerIconHunting => 'Caza';
+
+  @override
+  String get markerIconFishing => 'Pesca';
+
+  @override
+  String get markerIconCave => 'Cueva';
+
+  @override
+  String get markerIconDeadZone => 'Zona sin señal';
+
+  @override
+  String get markerIconEvacRoute => 'Ruta de evacuación';
+
+  @override
+  String get markerIconLivestock => 'Ganado';
+
+  @override
+  String get markerIconPharmacy => 'Farmacia';
 }

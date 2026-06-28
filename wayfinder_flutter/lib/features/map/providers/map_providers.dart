@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
@@ -22,10 +24,31 @@ class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
 
   final MapViewportStorage _storage;
   final AppSettingsRepository _appSettingsRepository;
+  MapViewport? _deepLinkViewport;
+
+  /// URL `/maps?lat=…` should win over persisted viewport on cold start.
+  void setDeepLinkViewport(MapViewport viewport) {
+    _deepLinkViewport = viewport;
+    if (state.isLoading) {
+      return;
+    }
+    unawaited(_applyDeepLink(viewport));
+  }
+
+  Future<void> _applyDeepLink(MapViewport viewport) async {
+    _deepLinkViewport = null;
+    await setViewport(viewport);
+  }
 
   Future<void> _load() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
+      final deepLink = _deepLinkViewport;
+      if (deepLink != null) {
+        _deepLinkViewport = null;
+        await _storage.saveViewport(deepLink);
+        return deepLink;
+      }
       final saved = await _storage.loadSavedViewport();
       if (saved != null) {
         return saved;

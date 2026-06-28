@@ -40,4 +40,17 @@ void main() {
 
     expect(parseMarkerIdFromUri(uri), markerId);
   });
+
+  test('parseMarkerIdFromUri reads marker from full share URL', () {
+    final uri = Uri.parse(
+      'http://atlas.brewerhomestead.com:9080/maps'
+      '?lat=38.915912&lng=-77.511064&zoom=16.00'
+      '&marker=c98fee7e-f549-4964-be20-1cc0fc4127d9#',
+    );
+
+    expect(
+      parseMarkerIdFromUri(uri),
+      UuidValue.fromString('c98fee7e-f549-4964-be20-1cc0fc4127d9'),
+    );
+  });
 }

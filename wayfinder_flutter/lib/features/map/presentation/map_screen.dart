@@ -40,50 +40,67 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  bool _appliedInitialViewport = false;
+  bool _queuedInitialViewportDeepLink = false;
   bool _appliedInitialMarkerLink = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _applyInitialViewport();
-    });
+  void didUpdateWidget(MapScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialViewport != widget.initialViewport ||
+        oldWidget.initialMarkerId != widget.initialMarkerId) {
+      _queuedInitialViewportDeepLink = false;
+      _appliedInitialMarkerLink = false;
+    }
   }
 
-  void _applyInitialViewport() {
-    if (_appliedInitialViewport) return;
+  void _queueInitialViewportDeepLink() {
+    if (_queuedInitialViewportDeepLink) {
+      return;
+    }
     final initial = widget.initialViewport;
-    if (initial == null) return;
+    if (initial == null) {
+      return;
+    }
 
-    _appliedInitialViewport = true;
-    ref.read(mapViewportProvider.notifier).moveTo(
-          center: initial.center,
-          zoom: initial.zoom,
-        );
+    _queuedInitialViewportDeepLink = true;
+    ref.read(mapViewportProvider.notifier).setDeepLinkViewport(initial);
   }
 
-  void _applyInitialMarkerLink(List<MapMarker>? markers) {
+  void _applyInitialMarkerLink(AsyncValue<List<MapMarker>> markersAsync) {
     if (_appliedInitialMarkerLink) {
       return;
     }
-    final markerId = widget.initialMarkerId;
-    if (markerId == null || markers == null) {
+    if (!ref.read(mapViewportProvider).hasValue) {
       return;
     }
 
-    final marker = findMarkerById(markers, markerId);
+    final markerId = widget.initialMarkerId;
+    if (markerId == null) {
+      _appliedInitialMarkerLink = true;
+      return;
+    }
+    if (markersAsync.isLoading) {
+      return;
+    }
+    if (markersAsync.hasError) {
+      _appliedInitialMarkerLink = true;
+      return;
+    }
+
+    final marker = findMarkerById(
+      markersAsync.valueOrNull ?? const [],
+      markerId,
+    );
+    _appliedInitialMarkerLink = true;
     if (marker == null) {
       return;
     }
 
-    _appliedInitialMarkerLink = true;
-    if (widget.initialViewport == null) {
-      ref.read(mapViewportProvider.notifier).moveTo(
-            center: LatLng(marker.latitude, marker.longitude),
-            zoom: markerShareDefaultZoom,
-          );
-    }
+    final zoom = widget.initialViewport?.zoom ?? markerShareDefaultZoom;
+    ref.read(mapViewportProvider.notifier).moveTo(
+          center: LatLng(marker.latitude, marker.longitude),
+          zoom: zoom,
+        );
     ref.read(selectedMapObjectProvider.notifier).selectMarker(markerId);
   }
 
@@ -173,9 +190,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    _queueInitialViewportDeepLink();
     final viewportAsync = ref.watch(mapViewportProvider);
     final markersAsync = ref.watch(markersProvider);
-    _applyInitialMarkerLink(markersAsync.valueOrNull);
+    _applyInitialMarkerLink(markersAsync);
 
     ref.listen<SelectedMapObject?>(
       selectedMapObjectProvider,

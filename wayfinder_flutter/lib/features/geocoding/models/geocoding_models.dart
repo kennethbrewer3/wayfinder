@@ -192,7 +192,7 @@ class GeocodingPlaceResult {
 
   bool get isAddress => resultType == geocodingResultTypeAddress;
 
-  String get label => displayName ?? name;
+  String get label => isAddress ? name : (displayName ?? name);
 
   String get subtitle {
     if (isAddress) {

@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'geocoding_address_query.dart';
 import 'geocoding_constants.dart';
 import 'geocoding_import_status.dart';
 
@@ -39,8 +40,22 @@ abstract final class GeocodingSearch {
         : 0;
 
     if (addressesReady && addressLimit > 0) {
-      final addressRows = await session.db.unsafeQuery(
-        '''
+      final parsedAddress = parseAddressSearchQuery(trimmed);
+      if (parsedAddress != null) {
+        final structured = buildStructuredAddressSearch(parsedAddress);
+        final structuredRows = await session.db.unsafeQuery(
+          '${structured.sql}\nLIMIT @limit',
+          parameters: QueryParameters.named({
+            ...structured.parameters,
+            'limit': addressLimit,
+          }),
+        );
+        _appendAddressRows(results, structuredRows);
+      }
+
+      if (results.isEmpty) {
+        final addressRows = await session.db.unsafeQuery(
+          '''
         SELECT
           "id",
           "housenumber",
@@ -64,27 +79,12 @@ abstract final class GeocodingSearch {
           "housenumber"
         LIMIT @limit
         ''',
-        parameters: QueryParameters.named({
-          'pattern': pattern,
-          'limit': addressLimit,
-        }),
-      );
-
-      for (final row in addressRows) {
-        final housenumber = row[1] as String;
-        final street = row[2] as String;
-        final label = '$housenumber $street';
-        results.add(
-          GeocodeSearchResult(
-            id: row[0] as int,
-            name: label,
-            displayName: street,
-            latitude: row[4] as double,
-            longitude: row[3] as double,
-            importance: 0.85,
-            resultType: GeocodingConstants.resultTypeAddress,
-          ),
+          parameters: QueryParameters.named({
+            'pattern': pattern,
+            'limit': addressLimit,
+          }),
         );
+        _appendAddressRows(results, addressRows);
       }
     }
 
@@ -133,6 +133,28 @@ abstract final class GeocodingSearch {
 
   static bool _looksLikeAddress(String input) {
     return RegExp(r'\d').hasMatch(input);
+  }
+
+  static void _appendAddressRows(
+    List<GeocodeSearchResult> results,
+    List<List<dynamic>> rows,
+  ) {
+    for (final row in rows) {
+      final housenumber = row[1] as String;
+      final street = row[2] as String;
+      final label = '$housenumber $street';
+      results.add(
+        GeocodeSearchResult(
+          id: row[0] as int,
+          name: label,
+          displayName: label,
+          latitude: row[4] as double,
+          longitude: row[3] as double,
+          importance: 0.85,
+          resultType: GeocodingConstants.resultTypeAddress,
+        ),
+      );
+    }
   }
 
   static String _escapeLike(String input) {

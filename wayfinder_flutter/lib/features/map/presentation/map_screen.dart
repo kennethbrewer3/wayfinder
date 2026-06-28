@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/constants.dart';
@@ -11,14 +12,16 @@ import '../../geocoding/providers/geocoding_providers.dart';
 import 'map_tiles_load_indicator.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
+import '../../markers/utils/marker_share_url.dart';
 import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../search/presentation/map_search_bar.dart';
 import '../../sidebar/presentation/sidebar_panel.dart';
 import '../models/map_viewport.dart';
-import '../../map/providers/home_location_provider.dart';
-import '../../map/providers/map_providers.dart';
+import '../providers/home_location_provider.dart';
+import '../providers/map_providers.dart';
+import '../providers/selected_map_object_provider.dart';
 import 'map_object_selection_listener.dart';
 import 'map_view.dart';
 
@@ -26,9 +29,11 @@ class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({
     super.key,
     this.initialViewport,
+    this.initialMarkerId,
   });
 
   final MapViewport? initialViewport;
+  final UuidValue? initialMarkerId;
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -36,6 +41,7 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _appliedInitialViewport = false;
+  bool _appliedInitialMarkerLink = false;
 
   @override
   void initState() {
@@ -57,19 +63,57 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         );
   }
 
+  void _applyInitialMarkerLink(List<MapMarker>? markers) {
+    if (_appliedInitialMarkerLink) {
+      return;
+    }
+    final markerId = widget.initialMarkerId;
+    if (markerId == null || markers == null) {
+      return;
+    }
+
+    final marker = findMarkerById(markers, markerId);
+    if (marker == null) {
+      return;
+    }
+
+    _appliedInitialMarkerLink = true;
+    if (widget.initialViewport == null) {
+      ref.read(mapViewportProvider.notifier).moveTo(
+            center: LatLng(marker.latitude, marker.longitude),
+            zoom: markerShareDefaultZoom,
+          );
+    }
+    ref.read(selectedMapObjectProvider.notifier).selectMarker(markerId);
+  }
+
+  void _syncMapUrl({
+    required MapViewport viewport,
+    UuidValue? markerId,
+  }) {
+    final nextUri = buildMapShareUri(
+      viewport: viewport,
+      markerId: markerId,
+    );
+    final currentUri = GoRouterState.of(context).uri;
+    if (currentUri.path == nextUri.path &&
+        currentUri.queryParameters.toString() ==
+            nextUri.queryParameters.toString()) {
+      return;
+    }
+    context.go(nextUri.toString());
+  }
+
   Future<void> _handleViewportChanged(MapViewport viewport) async {
     await ref.read(mapViewportProvider.notifier).setViewport(viewport);
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
-    final uri = Uri(
-      path: '/maps',
-      queryParameters: {
-        'lat': viewport.center.latitude.toStringAsFixed(6),
-        'lng': viewport.center.longitude.toStringAsFixed(6),
-        'zoom': viewport.zoom.toStringAsFixed(2),
-      },
+    _syncMapUrl(
+      viewport: viewport,
+      markerId: ref.read(selectedMapObjectProvider).selectedMarkerId,
     );
-    context.go(uri.toString());
   }
 
   Future<void> _handleSearchResult(SearchResult result) async {
@@ -130,6 +174,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final viewportAsync = ref.watch(mapViewportProvider);
+    final markersAsync = ref.watch(markersProvider);
+    _applyInitialMarkerLink(markersAsync.valueOrNull);
+
+    ref.listen<SelectedMapObject?>(
+      selectedMapObjectProvider,
+      (previous, next) {
+        final viewport = ref.read(mapViewportProvider).valueOrNull;
+        if (viewport == null || !mounted) {
+          return;
+        }
+        _syncMapUrl(
+          viewport: viewport,
+          markerId: next?.selectedMarkerId,
+        );
+      },
+    );
+
     final searchResults = watchCombinedSearchResults(ref, l10n);
     final debouncedQuery = ref.watch(debouncedMapSearchQueryProvider).trim();
     final geocodingLoading = debouncedQuery.length >= mapSearchMinGeocodingLength &&

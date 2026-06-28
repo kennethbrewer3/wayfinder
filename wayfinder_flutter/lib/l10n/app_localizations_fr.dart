@@ -1717,6 +1717,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Coordonnées copiées dans le presse-papiers.';
 
   @override
+  String get mapMarkerShareUrlLabel => 'Lien';
+
+  @override
+  String get mapMarkerCopyUrlTooltip => 'Copier le lien du marqueur';
+
+  @override
+  String get mapMarkerUrlCopied =>
+      'Lien du marqueur copié dans le presse-papiers.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

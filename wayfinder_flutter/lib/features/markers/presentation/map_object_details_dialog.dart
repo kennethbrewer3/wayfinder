@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/copy_coordinates.dart';
+import '../../markers/utils/marker_share_url.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
@@ -150,6 +151,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     }
 
     final notes = marker.notes?.trim();
+    final shareUrl = buildMarkerShareUrl(marker: marker);
 
     return _DetailsDialogShell(
       title: marker.name,
@@ -174,6 +176,16 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
             LatLng(marker.latitude, marker.longitude),
           ),
           copyTooltip: l10n.mapRadialCopyCoordinates,
+        ),
+        _DetailRow(
+          label: l10n.mapMarkerShareUrlLabel,
+          value: shareUrl,
+          onCopy: () => copyTextWithFeedback(
+            context,
+            text: shareUrl,
+            copiedMessage: l10n.mapMarkerUrlCopied,
+          ),
+          copyTooltip: l10n.mapMarkerCopyUrlTooltip,
         ),
         _DetailRow(
           label: l10n.mapObjectDetailElevation,
@@ -564,12 +576,21 @@ class _DetailRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            child: onCopy != null
+                ? SelectableText(
+                    value,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                      height: 1.35,
+                    ),
+                  )
+                : Text(
+                    value,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
           ),
           if (onCopy != null)
             IconButton(

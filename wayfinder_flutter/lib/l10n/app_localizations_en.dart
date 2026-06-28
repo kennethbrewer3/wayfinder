@@ -1679,6 +1679,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapCoordinatesCopied => 'Coordinates copied to clipboard.';
 
   @override
+  String get mapMarkerShareUrlLabel => 'Link';
+
+  @override
+  String get mapMarkerCopyUrlTooltip => 'Copy marker link';
+
+  @override
+  String get mapMarkerUrlCopied => 'Marker link copied to clipboard.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

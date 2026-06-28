@@ -3022,6 +3022,24 @@ abstract class AppLocalizations {
   /// **'Coordinates copied to clipboard.'**
   String get mapCoordinatesCopied;
 
+  /// No description provided for @mapMarkerShareUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get mapMarkerShareUrlLabel;
+
+  /// No description provided for @mapMarkerCopyUrlTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy marker link'**
+  String get mapMarkerCopyUrlTooltip;
+
+  /// No description provided for @mapMarkerUrlCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker link copied to clipboard.'**
+  String get mapMarkerUrlCopied;
+
   /// No description provided for @mapRelativeAngleLabel.
   ///
   /// In en, this message translates to:

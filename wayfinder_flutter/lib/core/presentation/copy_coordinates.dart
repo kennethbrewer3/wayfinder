@@ -12,11 +12,11 @@ String formatLatLng(LatLng point) {
   return formatCoordinates(point.latitude, point.longitude);
 }
 
-Future<void> copyCoordinatesToClipboard(
-  BuildContext context,
-  LatLng point,
-) async {
-  final text = formatLatLng(point);
+Future<void> copyTextWithFeedback(
+  BuildContext context, {
+  required String text,
+  required String copiedMessage,
+}) async {
   final copied = await copyTextToClipboard(text);
   if (!context.mounted) {
     return;
@@ -25,7 +25,7 @@ Future<void> copyCoordinatesToClipboard(
   if (copied) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(l10n.mapCoordinatesCopied),
+        content: Text(copiedMessage),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -53,5 +53,17 @@ Future<void> copyCoordinatesToClipboard(
         ],
       );
     },
+  );
+}
+
+Future<void> copyCoordinatesToClipboard(
+  BuildContext context,
+  LatLng point,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  await copyTextWithFeedback(
+    context,
+    text: formatLatLng(point),
+    copiedMessage: l10n.mapCoordinatesCopied,
   );
 }

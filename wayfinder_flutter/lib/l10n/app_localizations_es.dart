@@ -1712,6 +1712,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapCoordinatesCopied => 'Coordenadas copiadas al portapapeles.';
 
   @override
+  String get mapMarkerShareUrlLabel => 'Enlace';
+
+  @override
+  String get mapMarkerCopyUrlTooltip => 'Copiar enlace del marcador';
+
+  @override
+  String get mapMarkerUrlCopied =>
+      'Enlace del marcador copiado al portapapeles.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

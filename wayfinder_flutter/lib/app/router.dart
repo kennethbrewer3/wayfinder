@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/logging/app_logger.dart';
+import '../features/markers/utils/marker_share_url.dart';
 import '../features/map/presentation/map_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/settings/settings_tab.dart';
@@ -22,6 +23,7 @@ final appRouter = GoRouter(
         AppLogger.logNav.debug('🧭 Route /maps', data: state.uri.toString());
         return MapScreen(
           initialViewport: parseMapViewportFromUri(state.uri),
+          initialMarkerId: parseMarkerIdFromUri(state.uri),
         );
       },
     ),

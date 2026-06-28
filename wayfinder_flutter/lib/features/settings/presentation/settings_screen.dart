@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../settings_tab.dart';
+import 'settings_about_tab.dart';
 import 'settings_backup_tab.dart';
 import 'settings_general_tab.dart';
 import 'settings_geocoding_tab.dart';
@@ -89,6 +90,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             Tab(text: l10n.settingsTabMapTiles),
             Tab(text: l10n.settingsTabGeocoding),
             Tab(text: l10n.settingsTabBackup),
+            Tab(text: l10n.settingsTabAbout),
           ],
         ),
       ),
@@ -99,6 +101,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsMapTilesTab(),
           SettingsGeocodingTab(),
           SettingsBackupTab(),
+          SettingsAboutTab(),
         ],
       ),
     );

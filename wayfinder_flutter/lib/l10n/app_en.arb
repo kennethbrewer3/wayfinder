@@ -9,6 +9,39 @@
   "settingsTabMapTiles": "Map tiles",
   "settingsTabGeocoding": "Geocoding",
   "settingsTabBackup": "Backup",
+  "settingsTabAbout": "About",
+  "settingsAboutTitle": "About Wayfinder",
+  "settingsAboutDescription": "Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.",
+  "settingsAboutLoading": "Loading app info…",
+  "settingsAboutLoadFailed": "Could not load app info: {error}",
+  "@settingsAboutLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAboutAppSection": "Application",
+  "settingsAboutConnectionSection": "Connection",
+  "settingsAboutAppName": "App name",
+  "settingsAboutVersion": "Version",
+  "settingsAboutGitCommit": "Git commit",
+  "settingsAboutGitCommitUnavailable": "Not available (local dev build)",
+  "settingsAboutBuildTime": "Built",
+  "settingsAboutPlatform": "Platform",
+  "settingsAboutPackage": "Package",
+  "settingsAboutApiServer": "API server",
+  "settingsAboutWebServer": "Web server",
+  "settingsAboutGeocodingServer": "Geocoding server",
+  "settingsAboutGeocodingServerNotConfigured": "Not configured",
+  "settingsAboutCommitHint": "Deployed builds include a git commit (for example {commit}). Compare it to the latest commit on main or the image tag you pulled.",
+  "@settingsAboutCommitHint": {
+    "placeholders": {
+      "commit": {
+        "type": "String"
+      }
+    }
+  },
   "actionSave": "Save",
   "actionSearch": "Search",
   "actionCancel": "Cancel",

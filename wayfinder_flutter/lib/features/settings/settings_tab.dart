@@ -3,7 +3,8 @@ enum SettingsTab {
   general('general'),
   mapTiles('map-tiles'),
   geocoding('geocoding'),
-  backup('backup');
+  backup('backup'),
+  about('about');
 
   const SettingsTab(this.slug);
 

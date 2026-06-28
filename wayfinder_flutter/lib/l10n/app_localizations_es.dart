@@ -27,6 +27,69 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTabBackup => 'Copia de seguridad';
 
   @override
+  String get settingsTabAbout => 'Acerca de';
+
+  @override
+  String get settingsAboutTitle => 'Acerca de Wayfinder';
+
+  @override
+  String get settingsAboutDescription =>
+      'Detalles de compilación y conexión de solo lectura para este cliente. Use el commit de git para confirmar si se está ejecutando la compilación más reciente.';
+
+  @override
+  String get settingsAboutLoading => 'Cargando información de la app…';
+
+  @override
+  String settingsAboutLoadFailed(String error) {
+    return 'No se pudo cargar la información de la app: $error';
+  }
+
+  @override
+  String get settingsAboutAppSection => 'Aplicación';
+
+  @override
+  String get settingsAboutConnectionSection => 'Conexión';
+
+  @override
+  String get settingsAboutAppName => 'Nombre de la app';
+
+  @override
+  String get settingsAboutVersion => 'Versión';
+
+  @override
+  String get settingsAboutGitCommit => 'Commit de git';
+
+  @override
+  String get settingsAboutGitCommitUnavailable =>
+      'No disponible (compilación local de desarrollo)';
+
+  @override
+  String get settingsAboutBuildTime => 'Compilada';
+
+  @override
+  String get settingsAboutPlatform => 'Plataforma';
+
+  @override
+  String get settingsAboutPackage => 'Paquete';
+
+  @override
+  String get settingsAboutApiServer => 'Servidor API';
+
+  @override
+  String get settingsAboutWebServer => 'Servidor web';
+
+  @override
+  String get settingsAboutGeocodingServer => 'Servidor de geocodificación';
+
+  @override
+  String get settingsAboutGeocodingServerNotConfigured => 'No configurado';
+
+  @override
+  String settingsAboutCommitHint(String commit) {
+    return 'Las compilaciones desplegadas incluyen un commit de git (por ejemplo $commit). Compárelo con el último commit en main o con la etiqueta de imagen que descargó.';
+  }
+
+  @override
   String get actionSave => 'Guardar';
 
   @override

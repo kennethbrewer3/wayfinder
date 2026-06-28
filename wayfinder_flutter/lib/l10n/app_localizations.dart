@@ -136,6 +136,120 @@ abstract class AppLocalizations {
   /// **'Backup'**
   String get settingsTabBackup;
 
+  /// No description provided for @settingsTabAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsTabAbout;
+
+  /// No description provided for @settingsAboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About Wayfinder'**
+  String get settingsAboutTitle;
+
+  /// No description provided for @settingsAboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.'**
+  String get settingsAboutDescription;
+
+  /// No description provided for @settingsAboutLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading app info…'**
+  String get settingsAboutLoading;
+
+  /// No description provided for @settingsAboutLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load app info: {error}'**
+  String settingsAboutLoadFailed(String error);
+
+  /// No description provided for @settingsAboutAppSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Application'**
+  String get settingsAboutAppSection;
+
+  /// No description provided for @settingsAboutConnectionSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get settingsAboutConnectionSection;
+
+  /// No description provided for @settingsAboutAppName.
+  ///
+  /// In en, this message translates to:
+  /// **'App name'**
+  String get settingsAboutAppName;
+
+  /// No description provided for @settingsAboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get settingsAboutVersion;
+
+  /// No description provided for @settingsAboutGitCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Git commit'**
+  String get settingsAboutGitCommit;
+
+  /// No description provided for @settingsAboutGitCommitUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available (local dev build)'**
+  String get settingsAboutGitCommitUnavailable;
+
+  /// No description provided for @settingsAboutBuildTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Built'**
+  String get settingsAboutBuildTime;
+
+  /// No description provided for @settingsAboutPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get settingsAboutPlatform;
+
+  /// No description provided for @settingsAboutPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Package'**
+  String get settingsAboutPackage;
+
+  /// No description provided for @settingsAboutApiServer.
+  ///
+  /// In en, this message translates to:
+  /// **'API server'**
+  String get settingsAboutApiServer;
+
+  /// No description provided for @settingsAboutWebServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Web server'**
+  String get settingsAboutWebServer;
+
+  /// No description provided for @settingsAboutGeocodingServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server'**
+  String get settingsAboutGeocodingServer;
+
+  /// No description provided for @settingsAboutGeocodingServerNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Not configured'**
+  String get settingsAboutGeocodingServerNotConfigured;
+
+  /// No description provided for @settingsAboutCommitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Deployed builds include a git commit (for example {commit}). Compare it to the latest commit on main or the image tag you pulled.'**
+  String settingsAboutCommitHint(String commit);
+
   /// No description provided for @actionSave.
   ///
   /// In en, this message translates to:

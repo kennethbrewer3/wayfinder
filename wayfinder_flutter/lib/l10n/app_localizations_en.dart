@@ -27,6 +27,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabBackup => 'Backup';
 
   @override
+  String get settingsTabAbout => 'About';
+
+  @override
+  String get settingsAboutTitle => 'About Wayfinder';
+
+  @override
+  String get settingsAboutDescription =>
+      'Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.';
+
+  @override
+  String get settingsAboutLoading => 'Loading app info…';
+
+  @override
+  String settingsAboutLoadFailed(String error) {
+    return 'Could not load app info: $error';
+  }
+
+  @override
+  String get settingsAboutAppSection => 'Application';
+
+  @override
+  String get settingsAboutConnectionSection => 'Connection';
+
+  @override
+  String get settingsAboutAppName => 'App name';
+
+  @override
+  String get settingsAboutVersion => 'Version';
+
+  @override
+  String get settingsAboutGitCommit => 'Git commit';
+
+  @override
+  String get settingsAboutGitCommitUnavailable =>
+      'Not available (local dev build)';
+
+  @override
+  String get settingsAboutBuildTime => 'Built';
+
+  @override
+  String get settingsAboutPlatform => 'Platform';
+
+  @override
+  String get settingsAboutPackage => 'Package';
+
+  @override
+  String get settingsAboutApiServer => 'API server';
+
+  @override
+  String get settingsAboutWebServer => 'Web server';
+
+  @override
+  String get settingsAboutGeocodingServer => 'Geocoding server';
+
+  @override
+  String get settingsAboutGeocodingServerNotConfigured => 'Not configured';
+
+  @override
+  String settingsAboutCommitHint(String commit) {
+    return 'Deployed builds include a git commit (for example $commit). Compare it to the latest commit on main or the image tag you pulled.';
+  }
+
+  @override
   String get actionSave => 'Save';
 
   @override

@@ -27,6 +27,70 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabBackup => 'Sauvegarde';
 
   @override
+  String get settingsTabAbout => 'À propos';
+
+  @override
+  String get settingsAboutTitle => 'À propos de Wayfinder';
+
+  @override
+  String get settingsAboutDescription =>
+      'Détails de compilation et de connexion en lecture seule pour ce client. Utilisez le commit git pour vérifier si la dernière compilation est en cours d\'exécution.';
+
+  @override
+  String get settingsAboutLoading =>
+      'Chargement des informations de l\'application…';
+
+  @override
+  String settingsAboutLoadFailed(String error) {
+    return 'Impossible de charger les informations de l\'application : $error';
+  }
+
+  @override
+  String get settingsAboutAppSection => 'Application';
+
+  @override
+  String get settingsAboutConnectionSection => 'Connexion';
+
+  @override
+  String get settingsAboutAppName => 'Nom de l\'application';
+
+  @override
+  String get settingsAboutVersion => 'Version';
+
+  @override
+  String get settingsAboutGitCommit => 'Commit git';
+
+  @override
+  String get settingsAboutGitCommitUnavailable =>
+      'Non disponible (compilation locale de développement)';
+
+  @override
+  String get settingsAboutBuildTime => 'Compilée';
+
+  @override
+  String get settingsAboutPlatform => 'Plateforme';
+
+  @override
+  String get settingsAboutPackage => 'Paquet';
+
+  @override
+  String get settingsAboutApiServer => 'Serveur API';
+
+  @override
+  String get settingsAboutWebServer => 'Serveur web';
+
+  @override
+  String get settingsAboutGeocodingServer => 'Serveur de géocodage';
+
+  @override
+  String get settingsAboutGeocodingServerNotConfigured => 'Non configuré';
+
+  @override
+  String settingsAboutCommitHint(String commit) {
+    return 'Les compilations déployées incluent un commit git (par exemple $commit). Comparez-le au dernier commit sur main ou à l\'étiquette d\'image que vous avez téléchargée.';
+  }
+
+  @override
   String get actionSave => 'Enregistrer';
 
   @override

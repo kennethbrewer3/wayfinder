@@ -18,8 +18,14 @@ COPY wayfinder_flutter/assets wayfinder_flutter/assets
 COPY wayfinder_flutter/analysis_options.yaml wayfinder_flutter/analysis_options.yaml
 
 WORKDIR /app/wayfinder_flutter
+
+ARG APP_BUILD_COMMIT=dev
+ARG APP_BUILD_TIME=
+
 RUN flutter pub get
-RUN flutter build web --release
+RUN flutter build web --release \
+  --dart-define=APP_BUILD_COMMIT=${APP_BUILD_COMMIT} \
+  --dart-define=APP_BUILD_TIME=${APP_BUILD_TIME}
 
 FROM nginx:1.27-alpine
 

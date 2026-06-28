@@ -1,15 +1,19 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'geocoding_address_locality.dart';
 import 'geocoding_address_query.dart';
 import 'geocoding_constants.dart';
 import 'geocoding_import_status.dart';
+import 'geocoding_search_ranking.dart';
 
 abstract final class GeocodingSearch {
   static Future<List<GeocodeSearchResult>> search(
     Session session, {
     required String query,
     int limit = GeocodingConstants.maxSearchResults,
+    double? nearLatitude,
+    double? nearLongitude,
   }) async {
     final trimmed = query.trim();
     if (trimmed.length < GeocodingConstants.minSearchLength) {
@@ -86,6 +90,13 @@ abstract final class GeocodingSearch {
         );
         _appendAddressRows(results, addressRows);
       }
+
+      await _finalizeAddressResults(
+        session,
+        results,
+        nearLatitude: nearLatitude,
+        nearLongitude: nearLongitude,
+      );
     }
 
     final remaining = limit - results.length;
@@ -147,12 +158,52 @@ abstract final class GeocodingSearch {
         GeocodeSearchResult(
           id: row[0] as int,
           name: label,
-          displayName: label,
+          displayName: null,
           latitude: row[4] as double,
           longitude: row[3] as double,
           importance: 0.85,
           resultType: GeocodingConstants.resultTypeAddress,
         ),
+      );
+    }
+  }
+
+  static Future<void> _finalizeAddressResults(
+    Session session,
+    List<GeocodeSearchResult> results, {
+    double? nearLatitude,
+    double? nearLongitude,
+  }) async {
+    final localityCache = <String, String?>{};
+
+    for (var index = 0; index < results.length; index++) {
+      final result = results[index];
+      if (result.resultType != GeocodingConstants.resultTypeAddress) {
+        continue;
+      }
+
+      final cacheKey =
+          '${result.latitude.toStringAsFixed(3)}:${result.longitude.toStringAsFixed(3)}';
+      localityCache[cacheKey] ??= await GeocodingAddressLocality.resolve(
+        session,
+        latitude: result.latitude,
+        longitude: result.longitude,
+      );
+      final resolvedLocality = localityCache[cacheKey];
+      results[index] = result.copyWith(
+        displayName: resolvedLocality ??
+            GeocodingAddressLocality.formatCoordinates(
+              result.latitude,
+              result.longitude,
+            ),
+      );
+    }
+
+    if (nearLatitude != null && nearLongitude != null) {
+      sortAddressResultsByProximity(
+        results,
+        latitude: nearLatitude,
+        longitude: nearLongitude,
       );
     }
   }

@@ -95,7 +95,11 @@ class GeocodingRepository {
 
   Future<int> clearHousenumbers() => _clearHousenumbersRest();
 
-  Future<List<GeocodingPlaceResult>> searchPlaces(String query) async {
+  Future<List<GeocodingPlaceResult>> searchPlaces(
+    String query, {
+    double? nearLatitude,
+    double? nearLongitude,
+  }) async {
     if (!isConfigured) {
       return const [];
     }
@@ -106,7 +110,11 @@ class GeocodingRepository {
     if (!await isServerReachable()) {
       return const [];
     }
-    return _searchRest(trimmed);
+    return _searchRest(
+      trimmed,
+      nearLatitude: nearLatitude,
+      nearLongitude: nearLongitude,
+    );
   }
 
   Future<GeocodingImportState> _getSettingsRest() async {
@@ -292,9 +300,18 @@ class GeocodingRepository {
     return 0;
   }
 
-  Future<List<GeocodingPlaceResult>> _searchRest(String query) async {
+  Future<List<GeocodingPlaceResult>> _searchRest(
+    String query, {
+    double? nearLatitude,
+    double? nearLongitude,
+  }) async {
+    final queryParameters = <String, String>{'q': query};
+    if (nearLatitude != null && nearLongitude != null) {
+      queryParameters['nearLat'] = nearLatitude.toString();
+      queryParameters['nearLon'] = nearLongitude.toString();
+    }
     final uri = Uri.parse('$baseUrl/api/geocoding/search').replace(
-      queryParameters: {'q': query},
+      queryParameters: queryParameters,
     );
     final response = await http.get(uri);
     if (response.statusCode != 200) {

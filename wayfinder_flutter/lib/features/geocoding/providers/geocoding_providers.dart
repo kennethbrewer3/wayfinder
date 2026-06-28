@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../search/providers/search_query_provider.dart';
+import '../../map/providers/map_providers.dart';
 import '../data/geocoding_repository.dart';
 import '../models/geocoding_models.dart';
 import 'geocoding_server_provider.dart';
@@ -93,7 +94,11 @@ final geocodingSearchProvider =
       return const [];
     }
 
-    return repository.searchPlaces(trimmed);
+    return repository.searchPlaces(
+      trimmed,
+      nearLatitude: ref.watch(mapViewportProvider).valueOrNull?.center.latitude,
+      nearLongitude: ref.watch(mapViewportProvider).valueOrNull?.center.longitude,
+    );
   },
 );
 

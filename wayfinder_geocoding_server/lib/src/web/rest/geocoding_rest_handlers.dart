@@ -100,9 +100,27 @@ abstract final class GeocodingRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final query = request.url.queryParameters['q']?.trim() ?? '';
-      final results = await GeocodingSearch.search(session, query: query);
+      final nearLatitude = _parseOptionalDouble(
+        request.url.queryParameters['nearLat'],
+      );
+      final nearLongitude = _parseOptionalDouble(
+        request.url.queryParameters['nearLon'],
+      );
+      final results = await GeocodingSearch.search(
+        session,
+        query: query,
+        nearLatitude: nearLatitude,
+        nearLongitude: nearLongitude,
+      );
       return RestJson.ok(RestJson.encodeModels(results));
     });
+  }
+
+  static double? _parseOptionalDouble(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    return double.tryParse(value.trim());
   }
 
   static Future<Result> exportPlaces(Request request) async {

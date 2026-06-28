@@ -196,7 +196,11 @@ class GeocodingPlaceResult {
 
   String get subtitle {
     if (isAddress) {
-      return 'Address';
+      final locality = displayName;
+      if (locality != null && locality.isNotEmpty) {
+        return locality;
+      }
+      return '${latitude.toStringAsFixed(5)}, ${longitude.toStringAsFixed(5)}';
     }
     final parts = <String>['Place'];
     if (countryCode != null && countryCode!.isNotEmpty) {

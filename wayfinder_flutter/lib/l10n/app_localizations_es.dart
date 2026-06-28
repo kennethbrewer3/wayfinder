@@ -2189,7 +2189,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconPort => 'Puerto';
 
   @override
-  String get markerIconDock => 'Muelle';
+  String get markerIconDock => 'Muelle lacustre';
 
   @override
   String get markerIconFerry => 'Ferry';
@@ -2204,7 +2204,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconRiverBoat => 'Barco fluvial';
 
   @override
-  String get markerIconAirstrip => 'Pista de aterrizaje';
+  String get markerIconAirstrip => 'Pista / Aeropuerto';
 
   @override
   String get markerIconDefense => 'Defensa';

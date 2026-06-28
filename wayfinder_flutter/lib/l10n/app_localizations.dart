@@ -3010,6 +3010,18 @@ abstract class AppLocalizations {
   /// **'Rect corners'**
   String get mapRadialRectCorners;
 
+  /// No description provided for @mapRadialCopyCoordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy coordinates'**
+  String get mapRadialCopyCoordinates;
+
+  /// No description provided for @mapCoordinatesCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates copied to clipboard.'**
+  String get mapCoordinatesCopied;
+
   /// No description provided for @mapRelativeAngleLabel.
   ///
   /// In en, this message translates to:

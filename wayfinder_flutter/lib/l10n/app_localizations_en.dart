@@ -1673,6 +1673,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect corners';
 
   @override
+  String get mapRadialCopyCoordinates => 'Copy coordinates';
+
+  @override
+  String get mapCoordinatesCopied => 'Coordinates copied to clipboard.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

@@ -1706,6 +1706,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect. esquinas';
 
   @override
+  String get mapRadialCopyCoordinates => 'Copiar coordenadas';
+
+  @override
+  String get mapCoordinatesCopied => 'Coordenadas copiadas al portapapeles.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

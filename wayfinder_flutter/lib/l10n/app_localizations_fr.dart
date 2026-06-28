@@ -1710,6 +1710,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect. coins';
 
   @override
+  String get mapRadialCopyCoordinates => 'Copier les coordonnées';
+
+  @override
+  String get mapCoordinatesCopied =>
+      'Coordonnées copiées dans le presse-papiers.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

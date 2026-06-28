@@ -861,6 +861,8 @@
   "mapRadialCircle": "Círculo",
   "mapRadialRectCenter": "Rect. centro",
   "mapRadialRectCorners": "Rect. esquinas",
+  "mapRadialCopyCoordinates": "Copiar coordenadas",
+  "mapCoordinatesCopied": "Coordenadas copiadas al portapapeles.",
   "mapRelativeAngleLabel": "Rel°",
   "sortName": "Nombre",
   "sortHue": "Tono",

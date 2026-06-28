@@ -14,6 +14,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/browser_context_menu.dart';
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/presentation/map_circle_layer.dart';
 import '../../circles/providers/circle_drawing_provider.dart';
@@ -1613,6 +1614,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _cancelPendingLongPress();
   }
 
+  void _copyRadialMenuCoordinates() {
+    final point = _radialMenuPoint;
+    _closeRadialMenu();
+    if (point == null) {
+      return;
+    }
+    unawaited(copyCoordinatesToClipboard(context, point));
+  }
+
   void _beginLineDrawing() {
     final point = _radialMenuPoint;
     _closeRadialMenu();
@@ -2421,6 +2431,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     icon: Icons.select_all,
                     label: l10n.mapRadialRectCorners,
                     onSelected: _beginCornersRectDrawing,
+                  ),
+                  MapRadialMenuAction(
+                    icon: Icons.copy,
+                    label: l10n.mapRadialCopyCoordinates,
+                    onSelected: _copyRadialMenuCoordinates,
                   ),
                 ],
               ),

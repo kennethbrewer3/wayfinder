@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
@@ -167,7 +168,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         ),
         _DetailRow(
           label: l10n.mapObjectDetailCoordinates,
-          value: _formatCoordinates(marker.latitude, marker.longitude),
+          value: formatCoordinates(marker.latitude, marker.longitude),
+          onCopy: () => copyCoordinatesToClipboard(
+            context,
+            LatLng(marker.latitude, marker.longitude),
+          ),
+          copyTooltip: l10n.mapRadialCopyCoordinates,
         ),
         _DetailRow(
           label: l10n.mapObjectDetailElevation,
@@ -530,10 +536,14 @@ class _DetailRow extends StatelessWidget {
   const _DetailRow({
     required this.label,
     required this.value,
+    this.onCopy,
+    this.copyTooltip,
   });
 
   final String label;
   final String value;
+  final VoidCallback? onCopy;
+  final String? copyTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -561,6 +571,18 @@ class _DetailRow extends StatelessWidget {
               ),
             ),
           ),
+          if (onCopy != null)
+            IconButton(
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(
+                minWidth: 32,
+                minHeight: 32,
+              ),
+              tooltip: copyTooltip,
+              onPressed: onCopy,
+              icon: const Icon(Icons.copy, size: 18),
+            ),
         ],
       ),
     );
@@ -625,10 +647,6 @@ class _ZoneTypeAvatar extends StatelessWidget {
   }
 }
 
-String _formatCoordinates(double latitude, double longitude) {
-  return '${latitude.toStringAsFixed(5)}, ${longitude.toStringAsFixed(5)}';
-}
-
 String _formatElevation(double elevation) {
   if (elevation == elevation.roundToDouble()) {
     return '${elevation.toInt()} m';
@@ -637,5 +655,5 @@ String _formatElevation(double elevation) {
 }
 
 String _formatLatLng(LatLng point) {
-  return _formatCoordinates(point.latitude, point.longitude);
+  return formatLatLng(point);
 }

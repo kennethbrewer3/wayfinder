@@ -54,14 +54,12 @@ const markerIconOptions = <MarkerIconOption>[
     icon: Icons.pets,
     assetPath: 'assets/markers/cat.svg',
     label: 'Cat',
-    glyphScale: 1.08,
   ),
   MarkerIconOption(
     key: 'dog',
     icon: Icons.pets,
     assetPath: 'assets/markers/dog.svg',
     label: 'Dog',
-    glyphScale: 1.08,
   ),
   MarkerIconOption(key: 'cell_tower', icon: Icons.cell_tower, label: 'Radio tower'),
   MarkerIconOption(

@@ -2,18 +2,28 @@ import 'package:flutter/material.dart';
 
 import 'marker_icon_glyph.dart';
 
-const mapMarkerWidth = 36.0;
+const mapMarkerWidth = 44.0;
 const mapMarkerHeight = 44.0;
 
-/// Anchors the geographic [Marker.point] to the pin tip at the bottom of the
-/// widget (flutter_map uses [Alignment.topCenter] to place the marker above the
-/// point, so its bottom edge sits on the coordinates).
+/// Geographic [Marker.point] is anchored to the bottom-center of this widget
+/// ([Alignment.topCenter] in flutter_map), so the painted tip at
+/// `(width / 2, height)` sits on the coordinates.
 const mapMarkerAnchorAlignment = Alignment.topCenter;
 
-const mapMarkerHeadCenterY = 12.0;
-const mapMarkerHeadRadius = 10.0;
-const mapMarkerIconSize = 17.0;
-const mapMarkerInnerHeadRadiusRatio = 0.72;
+const mapMarkerHeadCenterY = 16.0;
+const mapMarkerHeadRadius = 16.0;
+const mapMarkerInnerHeadRadiusRatio = 0.58;
+const mapMarkerIconPaddingRatio = 0.11;
+
+const mapMarkerTailAttachYFactor = 0.36;
+const mapMarkerTailAttachXFactor = 0.48;
+const mapMarkerTailCurveExtra = 4.0;
+
+double mapMarkerInnerDiameter(double scale) =>
+    mapMarkerHeadRadius * 2 * mapMarkerInnerHeadRadiusRatio * scale;
+
+double mapMarkerIconSizeForScale(double scale) =>
+    mapMarkerInnerDiameter(scale) * (1 - 2 * mapMarkerIconPaddingRatio);
 
 class MapMarkerIcon extends StatelessWidget {
   const MapMarkerIcon({
@@ -37,7 +47,8 @@ class MapMarkerIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final scale = width / mapMarkerWidth;
     final headCenterY = mapMarkerHeadCenterY * scale;
-    final iconSize = mapMarkerIconSize * scale;
+    final innerDiameter = mapMarkerInnerDiameter(scale);
+    final iconSize = mapMarkerIconSizeForScale(scale);
 
     return SizedBox(
       width: width,
@@ -54,11 +65,19 @@ class MapMarkerIcon extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: headCenterY - iconSize / 2,
-            child: MarkerIconGlyph(
-              iconName: iconName,
-              size: iconSize,
-              color: color,
+            top: headCenterY - innerDiameter / 2,
+            child: ClipOval(
+              child: SizedBox(
+                width: innerDiameter,
+                height: innerDiameter,
+                child: Center(
+                  child: MarkerIconGlyph(
+                    iconName: iconName,
+                    size: iconSize,
+                    color: color,
+                  ),
+                ),
+              ),
             ),
           ),
           if (badgeIcon != null)
@@ -101,38 +120,40 @@ class _MarkerPinPainter extends CustomPainter {
     final centerX = size.width / 2;
     final headCenterY = mapMarkerHeadCenterY * scale;
     final headRadius = mapMarkerHeadRadius * scale;
-    final tipY = size.height;
+    final innerRadius = headRadius * mapMarkerInnerHeadRadiusRatio;
+    final tip = Offset(centerX, size.height);
 
     final fillPaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
 
-    final headRect = Rect.fromCircle(
-      center: Offset(centerX, headCenterY),
-      radius: headRadius,
-    );
-    canvas.drawCircle(headRect.center, headRadius, fillPaint);
+    final headCenter = Offset(centerX, headCenterY);
+    canvas.drawCircle(headCenter, headRadius, fillPaint);
+
+    final attachY = headCenterY + headRadius * mapMarkerTailAttachYFactor;
+    final attachHalfWidth = headRadius * mapMarkerTailAttachXFactor;
+    final curveY = headCenterY + headRadius + mapMarkerTailCurveExtra * scale;
 
     final tailPath = Path()
-      ..moveTo(centerX - headRadius * 0.62, headCenterY + headRadius * 0.45)
+      ..moveTo(centerX - attachHalfWidth, attachY)
       ..quadraticBezierTo(
-        centerX - headRadius * 0.35,
-        headCenterY + headRadius + 10 * scale,
-        centerX,
-        tipY,
+        centerX - attachHalfWidth * 0.55,
+        curveY,
+        tip.dx,
+        tip.dy,
       )
       ..quadraticBezierTo(
-        centerX + headRadius * 0.35,
-        headCenterY + headRadius + 10 * scale,
-        centerX + headRadius * 0.62,
-        headCenterY + headRadius * 0.45,
+        centerX + attachHalfWidth * 0.55,
+        curveY,
+        centerX + attachHalfWidth,
+        attachY,
       )
       ..close();
     canvas.drawPath(tailPath, fillPaint);
 
     canvas.drawCircle(
-      Offset(centerX, headCenterY),
-      headRadius * mapMarkerInnerHeadRadiusRatio,
+      headCenter,
+      innerRadius,
       Paint()..color = Colors.white,
     );
 
@@ -140,7 +161,7 @@ class _MarkerPinPainter extends CustomPainter {
       ..color = color.withValues(alpha: 0.35)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.75 * scale;
-    canvas.drawCircle(headRect.center, headRadius, outlinePaint);
+    canvas.drawCircle(headCenter, headRadius, outlinePaint);
   }
 
   @override

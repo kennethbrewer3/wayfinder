@@ -12,7 +12,8 @@ const mapMarkerAnchorAlignment = Alignment.topCenter;
 
 const mapMarkerHeadCenterY = 12.0;
 const mapMarkerHeadRadius = 10.0;
-const mapMarkerIconSize = 14.0;
+const mapMarkerIconSize = 17.0;
+const mapMarkerInnerHeadRadiusRatio = 0.72;
 
 class MapMarkerIcon extends StatelessWidget {
   const MapMarkerIcon({
@@ -131,7 +132,7 @@ class _MarkerPinPainter extends CustomPainter {
 
     canvas.drawCircle(
       Offset(centerX, headCenterY),
-      headRadius * 0.62,
+      headRadius * mapMarkerInnerHeadRadiusRatio,
       Paint()..color = Colors.white,
     );
 

@@ -1942,6 +1942,15 @@ class AppLocalizationsEs extends AppLocalizations {
       'Enlace del marcador copiado al portapapeles.';
 
   @override
+  String get mapMarkerIdLabel => 'ID del marcador';
+
+  @override
+  String get mapMarkerCopyIdTooltip => 'Copiar ID del marcador';
+
+  @override
+  String get mapMarkerIdCopied => 'ID del marcador copiado al portapapeles.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

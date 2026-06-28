@@ -176,6 +176,16 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           value: l10n.mapObjectTypeMarker,
         ),
         _DetailRow(
+          label: l10n.mapMarkerIdLabel,
+          value: marker.id.toString(),
+          onCopy: () => copyTextWithFeedback(
+            context,
+            text: marker.id.toString(),
+            copiedMessage: l10n.mapMarkerIdCopied,
+          ),
+          copyTooltip: l10n.mapMarkerCopyIdTooltip,
+        ),
+        _DetailRow(
           label: l10n.mapObjectDetailCoordinates,
           value: formatCoordinates(marker.latitude, marker.longitude),
           onCopy: () => copyCoordinatesToClipboard(

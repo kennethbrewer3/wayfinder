@@ -3418,6 +3418,24 @@ abstract class AppLocalizations {
   /// **'Marker link copied to clipboard.'**
   String get mapMarkerUrlCopied;
 
+  /// No description provided for @mapMarkerIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker ID'**
+  String get mapMarkerIdLabel;
+
+  /// No description provided for @mapMarkerCopyIdTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy marker ID'**
+  String get mapMarkerCopyIdTooltip;
+
+  /// No description provided for @mapMarkerIdCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker ID copied to clipboard.'**
+  String get mapMarkerIdCopied;
+
   /// No description provided for @mapRelativeAngleLabel.
   ///
   /// In en, this message translates to:

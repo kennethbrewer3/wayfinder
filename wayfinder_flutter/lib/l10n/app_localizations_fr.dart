@@ -1947,6 +1947,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Lien du marqueur copié dans le presse-papiers.';
 
   @override
+  String get mapMarkerIdLabel => 'ID du marqueur';
+
+  @override
+  String get mapMarkerCopyIdTooltip => 'Copier l\'ID du marqueur';
+
+  @override
+  String get mapMarkerIdCopied =>
+      'ID du marqueur copié dans le presse-papiers.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

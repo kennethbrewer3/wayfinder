@@ -1908,6 +1908,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapMarkerUrlCopied => 'Marker link copied to clipboard.';
 
   @override
+  String get mapMarkerIdLabel => 'Marker ID';
+
+  @override
+  String get mapMarkerCopyIdTooltip => 'Copy marker ID';
+
+  @override
+  String get mapMarkerIdCopied => 'Marker ID copied to clipboard.';
+
+  @override
   String get mapRelativeAngleLabel => 'Rel°';
 
   @override

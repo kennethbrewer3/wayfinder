@@ -6,12 +6,14 @@ class MarkerIconOption {
     required this.icon,
     required this.label,
     this.assetPath,
+    this.glyphScale = 1.0,
   });
 
   final String key;
   final IconData icon;
   final String label;
   final String? assetPath;
+  final double glyphScale;
 }
 
 const markerIconOptions = <MarkerIconOption>[
@@ -52,12 +54,14 @@ const markerIconOptions = <MarkerIconOption>[
     icon: Icons.pets,
     assetPath: 'assets/markers/cat.svg',
     label: 'Cat',
+    glyphScale: 1.08,
   ),
   MarkerIconOption(
     key: 'dog',
     icon: Icons.pets,
     assetPath: 'assets/markers/dog.svg',
     label: 'Dog',
+    glyphScale: 1.08,
   ),
   MarkerIconOption(key: 'cell_tower', icon: Icons.cell_tower, label: 'Radio tower'),
   MarkerIconOption(
@@ -135,6 +139,15 @@ String? markerIconAsset(String iconName) {
     }
   }
   return null;
+}
+
+double markerIconGlyphScale(String iconName) {
+  for (final option in markerIconOptions) {
+    if (option.key == iconName) {
+      return option.glyphScale;
+    }
+  }
+  return 1.0;
 }
 
 String? suggestMarkerIconForName(String name) {

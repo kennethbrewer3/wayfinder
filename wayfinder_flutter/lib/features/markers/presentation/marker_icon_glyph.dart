@@ -17,19 +17,20 @@ class MarkerIconGlyph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final glyphSize = size * markerIconGlyphScale(iconName);
     final assetPath = markerIconAsset(iconName);
     if (assetPath != null) {
       return SvgPicture.asset(
         assetPath,
-        width: size,
-        height: size,
+        width: glyphSize,
+        height: glyphSize,
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
     }
 
     return Icon(
       markerIconData(iconName),
-      size: size,
+      size: glyphSize,
       color: color,
     );
   }

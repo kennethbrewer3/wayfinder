@@ -799,10 +799,16 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     if (settingsAsync != null) {
       ref.listen(geocodingSettingsProvider, (previous, next) {
         next.whenData((settings) {
+          _syncFromServer(settings);
           _schedulePolling(isRunning: settings.isRunning);
         });
       });
     }
+
+    final osmSettings =
+        settingsAsync?.valueOrNull ?? defaultGeocodingImportState();
+    final settingsLoading = settingsAsync?.isLoading ?? false;
+    final settingsError = settingsAsync?.hasError ?? false;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -833,20 +839,44 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   color: Theme.of(context).colorScheme.secondary,
                 ),
           )
-        else
-          settingsAsync!.when(
-          loading: () => const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: LinearProgressIndicator(),
-          ),
-          error: (error, _) => Text(
-            l10n.geocodingSettingsLoadFailed(error.toString()),
-          ),
-          data: (settings) {
-            _syncFromServer(settings);
-            return _buildDownloadedDatasetSections(l10n, settings, description);
-          },
-        ),
+        else ...[
+          if (settingsLoading)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: LinearProgressIndicator(),
+            ),
+          if (settingsError)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Card(
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.cloud_off_outlined,
+                        color: Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.geocodingServerUnreachable(repository.baseUrl),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onErrorContainer,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          _buildDownloadedDatasetSections(l10n, osmSettings, description),
+        ],
       ],
     );
   }

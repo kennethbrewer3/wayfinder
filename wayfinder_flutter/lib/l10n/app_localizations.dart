@@ -2572,6 +2572,42 @@ abstract class AppLocalizations {
   /// **'Save a geocoding server URL above, then restart the app, to add and list custom locations.'**
   String get geocodingContributionsConfigureServerHint;
 
+  /// No description provided for @geocodingServerUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reach the geocoding server. Check that it is running and that {url} is reachable from your browser.'**
+  String geocodingServerUnreachable(String url);
+
+  /// No description provided for @geocodingContributionFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a location'**
+  String get geocodingContributionFormTitle;
+
+  /// No description provided for @geocodingContributionFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit location'**
+  String get geocodingContributionFormEditTitle;
+
+  /// No description provided for @geocodingContributionSaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save location'**
+  String get geocodingContributionSaveAction;
+
+  /// No description provided for @geocodingContributionClearForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear form'**
+  String get geocodingContributionClearForm;
+
+  /// No description provided for @geocodingContributionsListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved locations'**
+  String get geocodingContributionsListTitle;
+
   /// No description provided for @geocodingContributionsEmpty.
   ///
   /// In en, this message translates to:

@@ -35,6 +35,13 @@ class _SettingsGeocodingContributionsSectionState
   static final _log = AppLogger.logSettings;
 
   late final TextEditingController _crowdsourceUrlController;
+  final _nameController = TextEditingController();
+  final _latitudeController = TextEditingController();
+  final _longitudeController = TextEditingController();
+  final _notesController = TextEditingController();
+  final _countryController = TextEditingController();
+  int? _editingId;
+  bool _savingContribution = false;
   List<GeocodingContribution> _contributions = const [];
   bool _loadingContributions = false;
   String? _loadError;
@@ -78,7 +85,103 @@ class _SettingsGeocodingContributionsSectionState
   @override
   void dispose() {
     _crowdsourceUrlController.dispose();
+    _nameController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
+    _notesController.dispose();
+    _countryController.dispose();
     super.dispose();
+  }
+
+  void _clearForm() {
+    setState(() => _editingId = null);
+    _nameController.clear();
+    _latitudeController.clear();
+    _longitudeController.clear();
+    _notesController.clear();
+    _countryController.clear();
+  }
+
+  void _startEdit(GeocodingContribution row) {
+    setState(() => _editingId = row.id);
+    _nameController.text = row.name;
+    _latitudeController.text = row.latitude.toString();
+    _longitudeController.text = row.longitude.toString();
+    _notesController.text = row.notes ?? '';
+    _countryController.text = row.countryCode ?? '';
+  }
+
+  Future<void> _saveFromForm() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (!widget.serverConfigured) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingContributionsConfigureServerHint)),
+      );
+      return;
+    }
+
+    final name = _nameController.text.trim();
+    final notes = _notesController.text.trim();
+    final countryCode = _countryController.text.trim();
+    final latitude = double.tryParse(_latitudeController.text.trim());
+    final longitude = double.tryParse(_longitudeController.text.trim());
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingContributionNameLabel)),
+      );
+      return;
+    }
+    if (latitude == null || longitude == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingContributionInvalidCoordinates)),
+      );
+      return;
+    }
+
+    setState(() => _savingContribution = true);
+    try {
+      final repository = ref.read(geocodingRepositoryProvider);
+      if (_editingId == null) {
+        await repository.createContribution(
+          name: name,
+          latitude: latitude,
+          longitude: longitude,
+          notes: notes,
+          countryCode: countryCode,
+        );
+      } else {
+        await repository.updateContribution(
+          id: _editingId!,
+          name: name,
+          latitude: latitude,
+          longitude: longitude,
+          notes: notes,
+          countryCode: countryCode,
+        );
+      }
+      refreshGeocoding(ref);
+      await _loadContributions();
+      _clearForm();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingContributionSaved)),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '📍 Contribution save failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _savingContribution = false);
+      }
+    }
   }
 
   Future<void> _loadContributions() async {
@@ -139,164 +242,6 @@ class _SettingsGeocodingContributionsSectionState
       },
     );
     return confirmed == true;
-  }
-
-  Future<void> _showContributionDialog({GeocodingContribution? existing}) async {
-    final l10n = AppLocalizations.of(context)!;
-    final nameController = TextEditingController(text: existing?.name ?? '');
-    final latitudeController = TextEditingController(
-      text: existing?.latitude.toString() ?? '',
-    );
-    final longitudeController = TextEditingController(
-      text: existing?.longitude.toString() ?? '',
-    );
-    final notesController = TextEditingController(text: existing?.notes ?? '');
-    final countryController = TextEditingController(
-      text: existing?.countryCode ?? '',
-    );
-
-    final saved = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            existing == null
-                ? l10n.geocodingContributionAddTitle
-                : l10n.geocodingContributionEditTitle,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingContributionNameLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  textCapitalization: TextCapitalization.words,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: latitudeController,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingContributionLatitudeLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: longitudeController,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingContributionLongitudeLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: notesController,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingContributionNotesLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: countryController,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingContributionCountryLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  maxLength: 2,
-                  textCapitalization: TextCapitalization.characters,
-                  inputFormatters: const [UpperCaseTextFormatter()],
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.actionCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.actionSave),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (saved != true || !mounted) {
-      nameController.dispose();
-      latitudeController.dispose();
-      longitudeController.dispose();
-      notesController.dispose();
-      countryController.dispose();
-      return;
-    }
-
-    final name = nameController.text.trim();
-    final notes = notesController.text.trim();
-    final countryCode = countryController.text.trim();
-    final latitude = double.tryParse(latitudeController.text.trim());
-    final longitude = double.tryParse(longitudeController.text.trim());
-    nameController.dispose();
-    latitudeController.dispose();
-    longitudeController.dispose();
-    notesController.dispose();
-    countryController.dispose();
-
-    if (latitude == null || longitude == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.geocodingContributionInvalidCoordinates)),
-      );
-      return;
-    }
-
-    try {
-      final repository = ref.read(geocodingRepositoryProvider);
-      if (existing == null) {
-        await repository.createContribution(
-          name: name,
-          latitude: latitude,
-          longitude: longitude,
-          notes: notes,
-          countryCode: countryCode,
-        );
-      } else {
-        await repository.updateContribution(
-          id: existing.id,
-          name: name,
-          latitude: latitude,
-          longitude: longitude,
-          notes: notes,
-          countryCode: countryCode,
-        );
-      }
-      refreshGeocoding(ref);
-      await _loadContributions();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.geocodingContributionSaved)),
-      );
-    } catch (error, stackTrace) {
-      _log.error(
-        '📍 Contribution save failed',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString())),
-      );
-    }
   }
 
   Future<void> _deleteContribution(GeocodingContribution contribution) async {
@@ -637,47 +582,130 @@ class _SettingsGeocodingContributionsSectionState
             ),
           ),
         if (!widget.serverConfigured) const SizedBox(height: 12),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    l10n.geocodingContributionsSectionTitle,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.geocodingContributionsSectionDescription,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            FilledButton.icon(
-              onPressed: () {
-                if (!widget.serverConfigured) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.geocodingContributionsConfigureServerHint),
-                    ),
-                  );
-                  return;
-                }
-                if (!controlsEnabled) {
-                  return;
-                }
-                _showContributionDialog();
-              },
-              icon: const Icon(Icons.add_location_alt_outlined, size: 18),
-              label: Text(l10n.geocodingContributionAddAction),
-            ),
-          ],
+        Text(
+          l10n.geocodingContributionsSectionTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.geocodingContributionsSectionDescription,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          _editingId == null
+              ? l10n.geocodingContributionFormTitle
+              : l10n.geocodingContributionFormEditTitle,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 12),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: l10n.geocodingContributionNameLabel,
+                    border: const OutlineInputBorder(),
+                  ),
+                  textCapitalization: TextCapitalization.words,
+                  enabled: widget.serverConfigured && !_savingContribution,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _latitudeController,
+                        decoration: InputDecoration(
+                          labelText: l10n.geocodingContributionLatitudeLabel,
+                          border: const OutlineInputBorder(),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        enabled:
+                            widget.serverConfigured && !_savingContribution,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: _longitudeController,
+                        decoration: InputDecoration(
+                          labelText: l10n.geocodingContributionLongitudeLabel,
+                          border: const OutlineInputBorder(),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        enabled:
+                            widget.serverConfigured && !_savingContribution,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _notesController,
+                  decoration: InputDecoration(
+                    labelText: l10n.geocodingContributionNotesLabel,
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLines: 2,
+                  enabled: widget.serverConfigured && !_savingContribution,
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _countryController,
+                  decoration: InputDecoration(
+                    labelText: l10n.geocodingContributionCountryLabel,
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLength: 2,
+                  textCapitalization: TextCapitalization.characters,
+                  inputFormatters: const [UpperCaseTextFormatter()],
+                  enabled: widget.serverConfigured && !_savingContribution,
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    FilledButton.icon(
+                      onPressed: widget.serverConfigured &&
+                              !_savingContribution &&
+                              widget.enabled
+                          ? _saveFromForm
+                          : null,
+                      icon: _savingContribution
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.save_outlined),
+                      label: Text(l10n.geocodingContributionSaveAction),
+                    ),
+                    OutlinedButton(
+                      onPressed: _savingContribution ? null : _clearForm,
+                      child: Text(l10n.geocodingContributionClearForm),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          l10n.geocodingContributionsListTitle,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 8),
         Text(
           l10n.geocodingStatusLabel(
             l10n.geocodingStatusReady(
@@ -723,7 +751,9 @@ class _SettingsGeocodingContributionsSectionState
           const LinearProgressIndicator()
         else if (_loadError != null)
           Text(
-            l10n.geocodingContributionsLoadFailed,
+            l10n.geocodingServerUnreachable(
+              ref.read(geocodingRepositoryProvider).baseUrl,
+            ),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.error,
                 ),
@@ -762,9 +792,7 @@ class _SettingsGeocodingContributionsSectionState
                           children: [
                             IconButton(
                               tooltip: l10n.actionEdit,
-                              onPressed: () => _showContributionDialog(
-                                existing: row,
-                              ),
+                              onPressed: () => _startEdit(row),
                               icon: const Icon(Icons.edit_outlined),
                             ),
                             IconButton(

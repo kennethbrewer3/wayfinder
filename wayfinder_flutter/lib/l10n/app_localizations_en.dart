@@ -1404,6 +1404,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Save a geocoding server URL above, then restart the app, to add and list custom locations.';
 
   @override
+  String geocodingServerUnreachable(String url) {
+    return 'Cannot reach the geocoding server. Check that it is running and that $url is reachable from your browser.';
+  }
+
+  @override
+  String get geocodingContributionFormTitle => 'Add a location';
+
+  @override
+  String get geocodingContributionFormEditTitle => 'Edit location';
+
+  @override
+  String get geocodingContributionSaveAction => 'Save location';
+
+  @override
+  String get geocodingContributionClearForm => 'Clear form';
+
+  @override
+  String get geocodingContributionsListTitle => 'Saved locations';
+
+  @override
   String get geocodingContributionsEmpty =>
       'No custom locations yet. Tap Add location to create one.';
 

@@ -706,6 +706,19 @@
   "geocodingContributionsSectionTitle": "Custom locations",
   "geocodingContributionsSectionDescription": "Add place names and coordinates that are not in OSMNames. These are stored separately from downloaded datasets and appear in search.",
   "geocodingContributionsConfigureServerHint": "Save a geocoding server URL above, then restart the app, to add and list custom locations.",
+  "geocodingServerUnreachable": "Cannot reach the geocoding server. Check that it is running and that {url} is reachable from your browser.",
+  "@geocodingServerUnreachable": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "geocodingContributionFormTitle": "Add a location",
+  "geocodingContributionFormEditTitle": "Edit location",
+  "geocodingContributionSaveAction": "Save location",
+  "geocodingContributionClearForm": "Clear form",
+  "geocodingContributionsListTitle": "Saved locations",
   "geocodingContributionsEmpty": "No custom locations yet. Tap Add location to create one.",
   "geocodingContributionsLoadFailed": "Could not load custom locations. Update the geocoding server to the latest version.",
   "geocodingContributionsFilterAll": "All",

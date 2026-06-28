@@ -1023,12 +1023,7 @@ class _MarkerListTile extends ConsumerWidget {
       children: [
         InkWell(
           onTap: () {
-            final notifier = ref.read(selectedMapObjectProvider.notifier);
-            if (isSelected) {
-              notifier.clear();
-            } else {
-              notifier.selectMarker(marker.id);
-            }
+            ref.read(selectedMapObjectProvider.notifier).clear();
             onZoomTo(LatLng(marker.latitude, marker.longitude));
           },
           child: Padding(
@@ -1197,12 +1192,7 @@ class _LineZoneListTile extends ConsumerWidget {
         children: [
           InkWell(
             onTap: () {
-              final notifier = ref.read(selectedMapObjectProvider.notifier);
-              if (isSelected) {
-                notifier.clear();
-              } else {
-                notifier.selectZone(zone.id);
-              }
+              ref.read(selectedMapObjectProvider.notifier).clear();
               final center = lineZoneCenter(zone);
               if (center != null) {
                 onZoomTo(center);
@@ -1360,12 +1350,7 @@ class _CircleZoneListTile extends ConsumerWidget {
       children: [
         InkWell(
           onTap: () {
-            final notifier = ref.read(selectedMapObjectProvider.notifier);
-            if (isSelected) {
-              notifier.clear();
-            } else {
-              notifier.selectZone(zone.id);
-            }
+            ref.read(selectedMapObjectProvider.notifier).clear();
             onZoomTo(geometry.center);
           },
           child: Padding(
@@ -1518,12 +1503,7 @@ class _RectangleZoneListTile extends ConsumerWidget {
         children: [
           InkWell(
             onTap: () {
-              final notifier = ref.read(selectedMapObjectProvider.notifier);
-              if (isSelected) {
-                notifier.clear();
-              } else {
-                notifier.selectZone(zone.id);
-              }
+              ref.read(selectedMapObjectProvider.notifier).clear();
               onZoomTo(geometry.bounds.center);
             },
             child: Padding(
@@ -1663,12 +1643,7 @@ class _GenericZoneListTile extends ConsumerWidget {
       children: [
         InkWell(
           onTap: () {
-            final notifier = ref.read(selectedMapObjectProvider.notifier);
-            if (isSelected) {
-              notifier.clear();
-            } else {
-              notifier.selectZone(zone.id);
-            }
+            ref.read(selectedMapObjectProvider.notifier).clear();
             final center = rectangleZoneCenter(zone) ??
                 circleZoneCenter(zone) ??
                 lineZoneCenter(zone);

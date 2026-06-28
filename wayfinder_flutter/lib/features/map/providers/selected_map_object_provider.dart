@@ -49,16 +49,31 @@ final selectedMapObjectProvider =
 class SelectedMapObjectNotifier extends StateNotifier<SelectedMapObject?> {
   SelectedMapObjectNotifier() : super(null);
 
-  void select(SelectedMapObject object) {
+  bool _openDetailsForSelection = true;
+
+  bool consumeOpenDetailsForSelection() {
+    final openDetails = _openDetailsForSelection;
+    _openDetailsForSelection = true;
+    return openDetails;
+  }
+
+  void select(SelectedMapObject object, {bool openDetails = true}) {
+    _openDetailsForSelection = openDetails;
     state = object;
   }
 
-  void selectMarker(UuidValue id) {
-    state = SelectedMapObject(kind: SelectedMapObjectKind.marker, id: id);
+  void selectMarker(UuidValue id, {bool openDetails = true}) {
+    select(
+      SelectedMapObject(kind: SelectedMapObjectKind.marker, id: id),
+      openDetails: openDetails,
+    );
   }
 
-  void selectZone(UuidValue id) {
-    state = SelectedMapObject(kind: SelectedMapObjectKind.zone, id: id);
+  void selectZone(UuidValue id, {bool openDetails = true}) {
+    select(
+      SelectedMapObject(kind: SelectedMapObjectKind.zone, id: id),
+      openDetails: openDetails,
+    );
   }
 
   void clear() {

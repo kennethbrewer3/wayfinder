@@ -36,6 +36,13 @@ class _MapObjectSelectionListenerState
           return;
         }
 
+        if (!ref
+            .read(selectedMapObjectProvider.notifier)
+            .consumeOpenDetailsForSelection()) {
+          _lastDialogSelection = next;
+          return;
+        }
+
         if (next == _lastDialogSelection && _detailsDialogOpen) {
           return;
         }

@@ -97,11 +97,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
 
     final zoom = widget.initialViewport?.zoom ?? markerShareDefaultZoom;
-    ref.read(mapViewportProvider.notifier).moveTo(
-          center: LatLng(marker.latitude, marker.longitude),
-          zoom: zoom,
-        );
-    ref.read(selectedMapObjectProvider.notifier).selectMarker(markerId);
+    final targetViewport = MapViewport(
+      center: LatLng(marker.latitude, marker.longitude),
+      zoom: zoom,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(mapViewportProvider.notifier).setDeepLinkViewport(targetViewport);
+    });
   }
 
   void _syncMapUrl({

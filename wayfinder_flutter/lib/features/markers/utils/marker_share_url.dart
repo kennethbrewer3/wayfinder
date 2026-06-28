@@ -80,8 +80,9 @@ String buildMarkerShareUrl({
 }
 
 MapMarker? findMarkerById(List<MapMarker> markers, UuidValue id) {
+  final target = id.toString().toLowerCase();
   for (final marker in markers) {
-    if (marker.id == id) {
+    if (marker.id.toString().toLowerCase() == target) {
       return marker;
     }
   }

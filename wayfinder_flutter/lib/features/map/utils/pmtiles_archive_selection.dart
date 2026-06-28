@@ -127,16 +127,20 @@ Future<ArchiveCenterTileScore> scoreArchiveAtCenter({
   }
 }
 
-int _compareScores(ArchiveCenterTileScore a, ArchiveCenterTileScore b) {
+/// Prefers archives probed at higher zoom (more detail), then richer tiles.
+int compareArchiveCenterTileScores(
+  ArchiveCenterTileScore a,
+  ArchiveCenterTileScore b,
+) {
+  final probeZoom = b.tileZoom.compareTo(a.tileZoom);
+  if (probeZoom != 0) {
+    return probeZoom;
+  }
   final mapFeatures = b.mapFeatureCount.compareTo(a.mapFeatureCount);
   if (mapFeatures != 0) {
     return mapFeatures;
   }
-  final totalFeatures = b.featureCount.compareTo(a.featureCount);
-  if (totalFeatures != 0) {
-    return totalFeatures;
-  }
-  return b.tileZoom.compareTo(a.tileZoom);
+  return b.featureCount.compareTo(a.featureCount);
 }
 
 ArchiveCenterTileScore? _pickBestScoredArchive(
@@ -147,13 +151,13 @@ ArchiveCenterTileScore? _pickBestScoredArchive(
   }
 
   final withMapContent = scores.where((score) => score.hasMapContent).toList()
-    ..sort(_compareScores);
+    ..sort(compareArchiveCenterTileScores);
   if (withMapContent.isNotEmpty) {
     return withMapContent.first;
   }
 
   final withAnyTile = scores.where((score) => score.tileFound).toList()
-    ..sort(_compareScores);
+    ..sort(compareArchiveCenterTileScores);
   if (withAnyTile.isNotEmpty) {
     return withAnyTile.first;
   }
@@ -252,7 +256,7 @@ Future<ArchiveSelectionResult> resolveActiveArchiveForViewport({
       entry: best.entry,
       scores: scores,
       reason: best.hasMapContent
-          ? 'picked highest map feature count at center'
+          ? 'picked highest zoom detail at center'
           : 'picked best available center tile',
     );
   }

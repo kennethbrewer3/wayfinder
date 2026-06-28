@@ -4,9 +4,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../lines/utils/bearing_utils.dart';
 import '../presentation/map_marker_icon.dart';
 
 const markerHitRadiusPx = 20.0;
+const markerLocationMatchToleranceMeters = 25.0;
 
 bool markerBoundsContainsScreenPoint({
   required Offset tapScreen,
@@ -51,4 +53,21 @@ UuidValue? hitTestMarkerAtPoint({
   }
 
   return hitId;
+}
+
+bool hasMarkerNearLocation({
+  required List<MapMarker> markers,
+  required LatLng location,
+  double toleranceMeters = markerLocationMatchToleranceMeters,
+}) {
+  for (final marker in markers) {
+    if (arePointsNear(
+      location,
+      LatLng(marker.latitude, marker.longitude),
+      toleranceMeters: toleranceMeters,
+    )) {
+      return true;
+    }
+  }
+  return false;
 }

@@ -2179,9 +2179,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               cursor: SystemMouseCursors.click,
                               child: Tooltip(
                                 message: l10n.markerSaveSearchedCoordinatesConfirm,
-                                child: const MapMarkerIcon(
-                                  color: Color(0xFFE07A24),
-                                  iconName: 'my_location',
+                                child: MapMarkerIcon(
+                                  color: const Color(0xFFE07A24),
+                                  iconName: marker.iconName,
                                 ),
                               ),
                             ),

@@ -5,17 +5,27 @@ class SearchCoordinateMarker {
   const SearchCoordinateMarker({
     required this.location,
     required this.label,
+    this.iconName = 'my_location',
   });
 
   final LatLng location;
   final String label;
+  final String iconName;
 }
 
 class SearchCoordinateMarkerNotifier extends StateNotifier<SearchCoordinateMarker?> {
   SearchCoordinateMarkerNotifier() : super(null);
 
-  void set(LatLng location, String label) {
-    state = SearchCoordinateMarker(location: location, label: label);
+  void set(
+    LatLng location,
+    String label, {
+    String iconName = 'my_location',
+  }) {
+    state = SearchCoordinateMarker(
+      location: location,
+      label: label,
+      iconName: iconName,
+    );
   }
 
   void clear() {

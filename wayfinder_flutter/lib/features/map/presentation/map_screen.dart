@@ -9,6 +9,8 @@ import '../../../core/logging/app_logger.dart';
 import '../../geocoding/presentation/address_search_readiness_indicator.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
 import 'map_tiles_load_indicator.dart';
+import '../../markers/providers/markers_provider.dart';
+import '../../markers/utils/marker_hit_test.dart';
 import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
@@ -106,9 +108,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   Future<void> _goHome() {
     final home = ref.read(homeLocationProvider);
+    final l10n = AppLocalizations.of(context)!;
     AppLogger.logNav.info(
       '🏠 Home — moving to ${home.latitude}, ${home.longitude} @ ${home.zoom}',
     );
+    final markers = ref.read(markersProvider).valueOrNull ?? const [];
+    final markerNotifier = ref.read(searchCoordinateMarkerProvider.notifier);
+    if (hasMarkerNearLocation(markers: markers, location: home.center)) {
+      markerNotifier.clear();
+    } else {
+      markerNotifier.set(
+        home.center,
+        l10n.mapHomeTooltip,
+        iconName: 'home',
+      );
+    }
     return ref.read(mapViewportProvider.notifier).goHome(home);
   }
 

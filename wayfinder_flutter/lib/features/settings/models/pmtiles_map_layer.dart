@@ -1,7 +1,6 @@
 import 'package:flutter_map_pmtiles/flutter_map_pmtiles.dart';
 import 'package:pmtiles/pmtiles.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
-import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart';
 
 /// Resolved map layer configuration for an active PMTiles archive.
@@ -43,7 +42,7 @@ class PmtilesVectorMapLayerConfig extends PmtilesMapLayerConfig {
     required this.sprites,
   });
 
-  final PmTilesVectorTileProvider tileProvider;
+  final VectorTileProvider tileProvider;
   final Theme theme;
   final Theme backgroundTheme;
   final SpriteStyle sprites;

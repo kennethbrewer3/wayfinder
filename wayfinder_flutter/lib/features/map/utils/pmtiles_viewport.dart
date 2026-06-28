@@ -132,3 +132,66 @@ List<PmtilesArchiveEntry> selectArchivesForViewport({
   );
   return matching.take(maxLayers).toList();
 }
+
+/// Ranks enabled archives for the current viewport, best match first.
+List<PmtilesArchiveEntry> rankArchivesForViewport({
+  required List<PmtilesArchiveEntry> entries,
+  required LatLngBounds viewportBounds,
+  required LatLng viewportCenter,
+  required double viewportZoom,
+}) {
+  if (entries.isEmpty) {
+    return const [];
+  }
+
+  final paddedViewport = expandLatLngBounds(
+    viewportBounds,
+    fraction: _viewportPaddingFraction,
+  );
+
+  final withKnownBounds =
+      entries.where((entry) => entry.boundsKnown).toList();
+  final candidates = withKnownBounds.isEmpty ? entries : withKnownBounds;
+
+  final matching = candidates
+      .where(
+        (entry) => archiveIntersectsViewport(
+          entry: entry,
+          viewportBounds: paddedViewport,
+          viewportZoom: viewportZoom,
+        ),
+      )
+      .toList();
+
+  if (matching.isEmpty && withKnownBounds.isEmpty) {
+    return List<PmtilesArchiveEntry>.from(entries);
+  }
+
+  if (matching.isEmpty) {
+    return const [];
+  }
+
+  final containingCenter = matching
+      .where((entry) => entry.bounds.contains(viewportCenter))
+      .toList();
+  if (containingCenter.isNotEmpty) {
+    containingCenter.sort(
+      (a, b) => a.bounds.geographicArea.compareTo(b.bounds.geographicArea),
+    );
+    final containingIds = containingCenter.map((entry) => entry.id).toSet();
+    final remainder = matching
+        .where((entry) => !containingIds.contains(entry.id))
+        .toList()
+      ..sort(
+        (a, b) => _intersectionArea(b.bounds, paddedViewport)
+            .compareTo(_intersectionArea(a.bounds, paddedViewport)),
+      );
+    return [...containingCenter, ...remainder];
+  }
+
+  matching.sort(
+    (a, b) => _intersectionArea(b.bounds, paddedViewport)
+        .compareTo(_intersectionArea(a.bounds, paddedViewport)),
+  );
+  return matching;
+}

@@ -356,7 +356,7 @@ Watch startup logs for migrations applying cleanly and `🏁 Geocoding server st
 The geocoding search index on `(housenumber || street)` must match Postgres's expression-index metadata. Pull the latest server image (`docker compose pull && docker compose up -d`). If the loop persists after updating, recreate the index:
 
 ```bash
-docker compose exec postgres psql -U postgres -d wayfinder \
+docker compose exec postgres psql -U postgres -d wayfinder_geocoding \
   -c 'DROP INDEX IF EXISTS geocode_housenumber_label_trgm_idx;'
 docker compose restart server
 ```

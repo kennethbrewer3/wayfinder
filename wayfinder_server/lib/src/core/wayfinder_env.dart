@@ -32,6 +32,20 @@ class WayfinderEnv {
     return 'storage/pmtiles';
   }
 
+  /// Optional shared secret for `/api` REST requests.
+  ///
+  /// When set (via process env or `.env`), REST clients must send this value in
+  /// the `X-API-Key` header or as `Authorization: Bearer <key>`.
+  static String? get restApiKey {
+    for (final key in ['WAYFINDER_REST_API_KEY']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+    return _readDotEnv('WAYFINDER_REST_API_KEY');
+  }
+
   static String? _readDotEnv(String key) {
     _dotEnvCache ??= _loadDotEnv();
     return _dotEnvCache![key];

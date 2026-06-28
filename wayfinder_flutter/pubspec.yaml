@@ -109,6 +109,7 @@ flutter:
   assets:
     - assets/config.json
     - assets/manual/user_manual.md
+    - assets/markers/
     - assets/protomaps/sprites/v4/light/light@2x.json
     - assets/protomaps/sprites/v4/light/light@2x.png
     - assets/protomaps/fonts/NotoSans-Regular.ttf

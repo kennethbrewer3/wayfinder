@@ -6,6 +6,7 @@ import '../pmtiles/pmtiles_catalog_sync.dart';
 import '../pmtiles/pmtiles_storage.dart';
 import 'app_settings_constants.dart';
 import 'app_settings_store.dart';
+import 'rest_api_key_service.dart';
 
 class AppSettingsEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'appSettings';
@@ -138,6 +139,36 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           'circles=${settings.circleSizeDisplay} '
           'theme=${settings.appTheme} '
           'locale=${settings.appLocale}',
+    );
+  }
+
+  Future<RestApiKeyInfo> getRestApiKeyStatus(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'getRestApiKeyStatus',
+      () => RestApiKeyService.readStatus(session),
+      onSuccess: (info) => 'enabled=${info.enabled}',
+    );
+  }
+
+  Future<RestApiKeyInfo> generateRestApiKey(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'generateRestApiKey',
+      () => RestApiKeyService.generateAndStore(session),
+      onSuccess: (info) => 'preview=${info.keyPreview}',
+    );
+  }
+
+  Future<RestApiKeyInfo> clearRestApiKey(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'clearRestApiKey',
+      () => RestApiKeyService.clearStoredKey(session),
+      onSuccess: (info) => 'enabled=${info.enabled}',
     );
   }
 }

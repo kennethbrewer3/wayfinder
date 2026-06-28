@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
+import '../../map/map_marker_change_broadcast.dart';
 import 'rest_json.dart';
 
 abstract final class MarkersRestHandlers {
@@ -38,6 +39,7 @@ abstract final class MarkersRestHandlers {
       final body = await RestJson.readObject(request);
       final marker = _markerFromCreateBody(body);
       final created = await MapMarker.db.insertRow(session, marker);
+      await MapMarkerChangeBroadcast.created(session, created);
       return RestJson.created(RestJson.encodeModel(created));
     });
   }
@@ -59,6 +61,7 @@ abstract final class MarkersRestHandlers {
         session,
         _mergeMarker(existing, body),
       );
+      await MapMarkerChangeBroadcast.updated(session, updated);
       return RestJson.ok(RestJson.encodeModel(updated));
     });
   }
@@ -77,6 +80,7 @@ abstract final class MarkersRestHandlers {
       if (deleted.isEmpty) {
         return RestJson.error(404, 'Marker not found');
       }
+      await MapMarkerChangeBroadcast.deleted(session, id);
       return RestJson.noContent();
     });
   }

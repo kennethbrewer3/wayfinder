@@ -3724,6 +3724,42 @@ abstract class AppLocalizations {
   /// **'Pets'**
   String get markerIconPets;
 
+  /// No description provided for @markerIconMan.
+  ///
+  /// In en, this message translates to:
+  /// **'Man'**
+  String get markerIconMan;
+
+  /// No description provided for @markerIconWoman.
+  ///
+  /// In en, this message translates to:
+  /// **'Woman'**
+  String get markerIconWoman;
+
+  /// No description provided for @markerIconBoy.
+  ///
+  /// In en, this message translates to:
+  /// **'Boy'**
+  String get markerIconBoy;
+
+  /// No description provided for @markerIconGirl.
+  ///
+  /// In en, this message translates to:
+  /// **'Girl'**
+  String get markerIconGirl;
+
+  /// No description provided for @markerIconCat.
+  ///
+  /// In en, this message translates to:
+  /// **'Cat'**
+  String get markerIconCat;
+
+  /// No description provided for @markerIconDog.
+  ///
+  /// In en, this message translates to:
+  /// **'Dog'**
+  String get markerIconDog;
+
   /// No description provided for @markerIconRadioTower.
   ///
   /// In en, this message translates to:
@@ -3885,6 +3921,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pharmacy'**
   String get markerIconPharmacy;
+
+  /// No description provided for @settingsRestApiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'REST API access'**
+  String get settingsRestApiTitle;
+
+  /// No description provided for @settingsRestApiDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.'**
+  String get settingsRestApiDescription;
+
+  /// No description provided for @settingsRestApiStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Protection'**
+  String get settingsRestApiStatusLabel;
+
+  /// No description provided for @settingsRestApiStatusEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get settingsRestApiStatusEnabled;
+
+  /// No description provided for @settingsRestApiStatusDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get settingsRestApiStatusDisabled;
+
+  /// No description provided for @settingsRestApiPreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active key'**
+  String get settingsRestApiPreviewLabel;
+
+  /// No description provided for @settingsRestApiGenerateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate API key'**
+  String get settingsRestApiGenerateAction;
+
+  /// No description provided for @settingsRestApiRotateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate API key'**
+  String get settingsRestApiRotateAction;
+
+  /// No description provided for @settingsRestApiClearAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable protection'**
+  String get settingsRestApiClearAction;
+
+  /// No description provided for @settingsRestApiClearConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable REST API protection?'**
+  String get settingsRestApiClearConfirmTitle;
+
+  /// No description provided for @settingsRestApiClearConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The REST API will be open again until you generate a new key.'**
+  String get settingsRestApiClearConfirmMessage;
+
+  /// No description provided for @settingsRestApiCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'REST API protection disabled.'**
+  String get settingsRestApiCleared;
+
+  /// No description provided for @settingsRestApiGeneratedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New API key'**
+  String get settingsRestApiGeneratedTitle;
+
+  /// No description provided for @settingsRestApiGeneratedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy this key now. It is shown only once. Use it as X-API-Key or Authorization: Bearer <key>.'**
+  String get settingsRestApiGeneratedMessage;
+
+  /// No description provided for @settingsRestApiCopyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy key'**
+  String get settingsRestApiCopyAction;
+
+  /// No description provided for @settingsRestApiCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'API key copied.'**
+  String get settingsRestApiCopied;
+
+  /// No description provided for @settingsRestApiLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load REST API settings: {error}'**
+  String settingsRestApiLoadFailed(String error);
+
+  /// No description provided for @settingsRestApiClientKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Key on this device'**
+  String get settingsRestApiClientKeyTitle;
+
+  /// No description provided for @settingsRestApiClientKeyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Store the API key here so this app can call REST fallbacks (backup restore, settings sync, etc.).'**
+  String get settingsRestApiClientKeyDescription;
+
+  /// No description provided for @settingsRestApiClientKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'API key'**
+  String get settingsRestApiClientKeyLabel;
+
+  /// No description provided for @settingsRestApiSaveClientKeyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save key on this device'**
+  String get settingsRestApiSaveClientKeyAction;
+
+  /// No description provided for @settingsRestApiKeySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'API key saved on this device.'**
+  String get settingsRestApiKeySaved;
 }
 
 class _AppLocalizationsDelegate

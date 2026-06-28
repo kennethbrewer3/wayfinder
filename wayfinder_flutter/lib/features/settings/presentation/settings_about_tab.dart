@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/app_globals.dart';
 import '../providers/app_build_info_provider.dart';
+import 'settings_rest_api_section.dart';
 
 class SettingsAboutTab extends ConsumerWidget {
   const SettingsAboutTab({super.key});
@@ -49,6 +50,8 @@ class SettingsAboutTab extends ConsumerWidget {
                   label: Text(l10n.settingsAboutOpenManual),
                 ),
               ),
+              const SizedBox(height: 24),
+              const SettingsRestApiSection(),
               const SizedBox(height: 24),
               _InfoSection(
                 title: l10n.settingsAboutAppSection,

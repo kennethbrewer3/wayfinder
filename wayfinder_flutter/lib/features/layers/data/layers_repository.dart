@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/app_globals.dart';
+import '../../../core/rest_api_headers.dart';
 
 bool isLayersEndpointUnavailable(Object error) {
   final text = error.toString().toLowerCase();
@@ -33,7 +34,10 @@ Future<List<MapLayer>> fetchMapLayers(Client client) async {
 
 Future<List<MapLayer>> _fetchLayersViaRest() async {
   final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
-  final response = await http.get(Uri.parse('$base/api/layers'));
+  final response = await http.get(
+    Uri.parse('$base/api/layers'),
+    headers: await RestApiHeaders.readOnly(),
+  );
   if (response.statusCode == 404) {
     throw Exception('GET /api/layers returned 404');
   }

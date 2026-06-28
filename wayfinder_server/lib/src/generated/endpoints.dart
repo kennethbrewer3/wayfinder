@@ -652,6 +652,19 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['id'],
                   ),
         ),
+        'markerChanges': _i1.MethodStreamConnector(
+          name: 'markerChanges',
+          params: {},
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['mapMarker'] as _i8.MapMarkerEndpoint)
+                  .markerChanges(session),
+        ),
       },
     );
     connectors['pmtiles'] = _i1.EndpointConnector(
@@ -1056,6 +1069,36 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['appTheme'],
                     params['appLocale'],
                   ),
+        ),
+        'getRestApiKeyStatus': _i1.MethodConnector(
+          name: 'getRestApiKeyStatus',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
+                  .getRestApiKeyStatus(session),
+        ),
+        'generateRestApiKey': _i1.MethodConnector(
+          name: 'generateRestApiKey',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
+                  .generateRestApiKey(session),
+        ),
+        'clearRestApiKey': _i1.MethodConnector(
+          name: 'clearRestApiKey',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
+                  .clearRestApiKey(session),
         ),
       },
     );

@@ -22,14 +22,18 @@ import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i7;
 import 'package:wayfinder_client/src/protocol/map/map_data_restore_summary.dart'
     as _i8;
 import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i9;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_client/src/protocol/map/map_marker_change.dart'
     as _i10;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i11;
-import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i12;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i13;
-import 'protocol.dart' as _i14;
+import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+    as _i13;
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
+    as _i14;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i15;
+import 'protocol.dart' as _i16;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -425,6 +429,17 @@ class EndpointMapMarker extends _i2.EndpointRef {
         'deleteMarker',
         {'id': id},
       );
+
+  _i3.Stream<_i10.MapMarkerChange> markerChanges() =>
+      caller.callStreamingServerEndpoint<
+        _i3.Stream<_i10.MapMarkerChange>,
+        _i10.MapMarkerChange
+      >(
+        'mapMarker',
+        'markerChanges',
+        {},
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -434,31 +449,31 @@ class EndpointPmtiles extends _i2.EndpointRef {
   @override
   String get name => 'pmtiles';
 
-  _i3.Future<List<_i10.PmtilesFile>> listFiles() =>
-      caller.callServerEndpoint<List<_i10.PmtilesFile>>(
+  _i3.Future<List<_i11.PmtilesFile>> listFiles() =>
+      caller.callServerEndpoint<List<_i11.PmtilesFile>>(
         'pmtiles',
         'listFiles',
         {},
       );
 
-  _i3.Future<List<_i11.PmtilesGroup>> listGroups() =>
-      caller.callServerEndpoint<List<_i11.PmtilesGroup>>(
+  _i3.Future<List<_i12.PmtilesGroup>> listGroups() =>
+      caller.callServerEndpoint<List<_i12.PmtilesGroup>>(
         'pmtiles',
         'listGroups',
         {},
       );
 
-  _i3.Future<_i11.PmtilesGroup> createGroup(String name) =>
-      caller.callServerEndpoint<_i11.PmtilesGroup>(
+  _i3.Future<_i12.PmtilesGroup> createGroup(String name) =>
+      caller.callServerEndpoint<_i12.PmtilesGroup>(
         'pmtiles',
         'createGroup',
         {'name': name},
       );
 
-  _i3.Future<_i11.PmtilesGroup> renameGroup(
+  _i3.Future<_i12.PmtilesGroup> renameGroup(
     _i2.UuidValue id,
     String name,
-  ) => caller.callServerEndpoint<_i11.PmtilesGroup>(
+  ) => caller.callServerEndpoint<_i12.PmtilesGroup>(
     'pmtiles',
     'renameGroup',
     {
@@ -577,18 +592,18 @@ class EndpointAppSettings extends _i2.EndpointRef {
   @override
   String get name => 'appSettings';
 
-  _i3.Future<_i12.AppSettings> getSettings() =>
-      caller.callServerEndpoint<_i12.AppSettings>(
+  _i3.Future<_i13.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i13.AppSettings>(
         'appSettings',
         'getSettings',
         {},
       );
 
-  _i3.Future<_i12.AppSettings> updateHomeLocation(
+  _i3.Future<_i13.AppSettings> updateHomeLocation(
     double latitude,
     double longitude,
     double zoom,
-  ) => caller.callServerEndpoint<_i12.AppSettings>(
+  ) => caller.callServerEndpoint<_i13.AppSettings>(
     'appSettings',
     'updateHomeLocation',
     {
@@ -598,27 +613,27 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i12.AppSettings> resetHomeLocation() =>
-      caller.callServerEndpoint<_i12.AppSettings>(
+  _i3.Future<_i13.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i13.AppSettings>(
         'appSettings',
         'resetHomeLocation',
         {},
       );
 
-  _i3.Future<_i12.AppSettings> updatePmtilesStoragePath(String storagePath) =>
-      caller.callServerEndpoint<_i12.AppSettings>(
+  _i3.Future<_i13.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i13.AppSettings>(
         'appSettings',
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
 
-  _i3.Future<_i12.AppSettings> updateClientPreferences(
+  _i3.Future<_i13.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
-  ) => caller.callServerEndpoint<_i12.AppSettings>(
+  ) => caller.callServerEndpoint<_i13.AppSettings>(
     'appSettings',
     'updateClientPreferences',
     {
@@ -629,6 +644,27 @@ class EndpointAppSettings extends _i2.EndpointRef {
       'appLocale': appLocale,
     },
   );
+
+  _i3.Future<_i14.RestApiKeyInfo> getRestApiKeyStatus() =>
+      caller.callServerEndpoint<_i14.RestApiKeyInfo>(
+        'appSettings',
+        'getRestApiKeyStatus',
+        {},
+      );
+
+  _i3.Future<_i14.RestApiKeyInfo> generateRestApiKey() =>
+      caller.callServerEndpoint<_i14.RestApiKeyInfo>(
+        'appSettings',
+        'generateRestApiKey',
+        {},
+      );
+
+  _i3.Future<_i14.RestApiKeyInfo> clearRestApiKey() =>
+      caller.callServerEndpoint<_i14.RestApiKeyInfo>(
+        'appSettings',
+        'clearRestApiKey',
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -638,29 +674,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i13.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i13.MapZone>>(
+  _i3.Future<List<_i15.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i15.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i13.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i13.MapZone?>(
+  _i3.Future<_i15.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i15.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i13.MapZone> createZone(_i13.MapZone zone) =>
-      caller.callServerEndpoint<_i13.MapZone>(
+  _i3.Future<_i15.MapZone> createZone(_i15.MapZone zone) =>
+      caller.callServerEndpoint<_i15.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i13.MapZone> updateZone(_i13.MapZone zone) =>
-      caller.callServerEndpoint<_i13.MapZone>(
+  _i3.Future<_i15.MapZone> updateZone(_i15.MapZone zone) =>
+      caller.callServerEndpoint<_i15.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -705,7 +741,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i14.Protocol(),
+         _i16.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

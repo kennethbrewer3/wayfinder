@@ -1,0 +1,6 @@
+class: MapMarkerChange
+fields:
+  ### One of: created, updated, deleted, bulk
+  type: String
+  marker: MapMarker?
+  markerId: UuidValue?

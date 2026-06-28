@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/marker_icon_registry.dart';
+import 'marker_icon_glyph.dart';
 
 const mapMarkerWidth = 36.0;
 const mapMarkerHeight = 44.0;
@@ -54,8 +54,8 @@ class MapMarkerIcon extends StatelessWidget {
           ),
           Positioned(
             top: headCenterY - iconSize / 2,
-            child: Icon(
-              markerIconData(iconName),
+            child: MarkerIconGlyph(
+              iconName: iconName,
               size: iconSize,
               color: color,
             ),

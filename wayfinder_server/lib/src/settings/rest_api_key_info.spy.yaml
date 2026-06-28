@@ -1,0 +1,6 @@
+class: RestApiKeyInfo
+fields:
+  enabled: bool
+  keyPreview: String?
+  ### Plaintext key; only returned immediately after generate or rotate.
+  apiKey: String?

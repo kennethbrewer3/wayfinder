@@ -33,6 +33,7 @@ mapMarker:
   - createMarker:
   - updateMarker:
   - deleteMarker:
+  - markerChanges:
 pmtiles:
   - listFiles:
   - listGroups:
@@ -56,6 +57,9 @@ appSettings:
   - resetHomeLocation:
   - updatePmtilesStoragePath:
   - updateClientPreferences:
+  - getRestApiKeyStatus:
+  - generateRestApiKey:
+  - clearRestApiKey:
 mapZone:
   - listZones:
   - getZone:

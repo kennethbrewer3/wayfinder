@@ -2104,6 +2104,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconPets => 'Animaux';
 
   @override
+  String get markerIconMan => 'Homme';
+
+  @override
+  String get markerIconWoman => 'Femme';
+
+  @override
+  String get markerIconBoy => 'Garçon';
+
+  @override
+  String get markerIconGirl => 'Fille';
+
+  @override
+  String get markerIconCat => 'Chat';
+
+  @override
+  String get markerIconDog => 'Chien';
+
+  @override
   String get markerIconRadioTower => 'Tour radio';
 
   @override
@@ -2183,4 +2201,76 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get markerIconPharmacy => 'Pharmacie';
+
+  @override
+  String get settingsRestApiTitle => 'REST API access';
+
+  @override
+  String get settingsRestApiDescription =>
+      'Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.';
+
+  @override
+  String get settingsRestApiStatusLabel => 'Protection';
+
+  @override
+  String get settingsRestApiStatusEnabled => 'Enabled';
+
+  @override
+  String get settingsRestApiStatusDisabled => 'Disabled';
+
+  @override
+  String get settingsRestApiPreviewLabel => 'Active key';
+
+  @override
+  String get settingsRestApiGenerateAction => 'Generate API key';
+
+  @override
+  String get settingsRestApiRotateAction => 'Rotate API key';
+
+  @override
+  String get settingsRestApiClearAction => 'Disable protection';
+
+  @override
+  String get settingsRestApiClearConfirmTitle => 'Disable REST API protection?';
+
+  @override
+  String get settingsRestApiClearConfirmMessage =>
+      'The REST API will be open again until you generate a new key.';
+
+  @override
+  String get settingsRestApiCleared => 'REST API protection disabled.';
+
+  @override
+  String get settingsRestApiGeneratedTitle => 'New API key';
+
+  @override
+  String get settingsRestApiGeneratedMessage =>
+      'Copy this key now. It is shown only once. Use it as X-API-Key or Authorization: Bearer <key>.';
+
+  @override
+  String get settingsRestApiCopyAction => 'Copy key';
+
+  @override
+  String get settingsRestApiCopied => 'API key copied.';
+
+  @override
+  String settingsRestApiLoadFailed(String error) {
+    return 'Could not load REST API settings: $error';
+  }
+
+  @override
+  String get settingsRestApiClientKeyTitle => 'Key on this device';
+
+  @override
+  String get settingsRestApiClientKeyDescription =>
+      'Store the API key here so this app can call REST fallbacks (backup restore, settings sync, etc.).';
+
+  @override
+  String get settingsRestApiClientKeyLabel => 'API key';
+
+  @override
+  String get settingsRestApiSaveClientKeyAction => 'Save key on this device';
+
+  @override
+  String get settingsRestApiKeySaved => 'API key saved on this device.';
 }

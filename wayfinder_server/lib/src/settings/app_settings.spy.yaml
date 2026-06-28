@@ -11,4 +11,5 @@ fields:
   circleSizeDisplay: String, default="radius"
   appTheme: String, default="light"
   appLocale: String, default="system"
+  restApiKeyHash: String?
   updatedAt: DateTime

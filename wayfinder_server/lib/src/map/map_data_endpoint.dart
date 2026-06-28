@@ -5,6 +5,7 @@ import 'package:serverpod/serverpod.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'map_data_service.dart';
+import 'map_marker_change_broadcast.dart';
 
 class MapDataEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapData';
@@ -36,6 +37,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           throw const FormatException('Backup must be a JSON object');
         }
         final counts = await restoreMapDataBundle(session, decoded);
+        await MapMarkerChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,

@@ -1071,6 +1071,12 @@
   "markerIconLocation": "Location",
   "markerIconPhoto": "Photo",
   "markerIconPets": "Pets",
+  "markerIconMan": "Man",
+  "markerIconWoman": "Woman",
+  "markerIconBoy": "Boy",
+  "markerIconGirl": "Girl",
+  "markerIconCat": "Cat",
+  "markerIconDog": "Dog",
   "markerIconRadioTower": "Radio tower",
   "markerIconRadioRepeater": "Radio repeater",
   "markerIconWater": "Water",
@@ -1097,5 +1103,34 @@
   "markerIconDeadZone": "Dead zone",
   "markerIconEvacRoute": "Evac route",
   "markerIconLivestock": "Livestock",
-  "markerIconPharmacy": "Pharmacy"
+  "markerIconPharmacy": "Pharmacy",
+  "settingsRestApiTitle": "REST API access",
+  "settingsRestApiDescription": "Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.",
+  "settingsRestApiStatusLabel": "Protection",
+  "settingsRestApiStatusEnabled": "Enabled",
+  "settingsRestApiStatusDisabled": "Disabled",
+  "settingsRestApiPreviewLabel": "Active key",
+  "settingsRestApiGenerateAction": "Generate API key",
+  "settingsRestApiRotateAction": "Rotate API key",
+  "settingsRestApiClearAction": "Disable protection",
+  "settingsRestApiClearConfirmTitle": "Disable REST API protection?",
+  "settingsRestApiClearConfirmMessage": "The REST API will be open again until you generate a new key.",
+  "settingsRestApiCleared": "REST API protection disabled.",
+  "settingsRestApiGeneratedTitle": "New API key",
+  "settingsRestApiGeneratedMessage": "Copy this key now. It is shown only once. Use it as X-API-Key or Authorization: Bearer <key>.",
+  "settingsRestApiCopyAction": "Copy key",
+  "settingsRestApiCopied": "API key copied.",
+  "settingsRestApiLoadFailed": "Could not load REST API settings: {error}",
+  "@settingsRestApiLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRestApiClientKeyTitle": "Key on this device",
+  "settingsRestApiClientKeyDescription": "Store the API key here so this app can call REST fallbacks (backup restore, settings sync, etc.).",
+  "settingsRestApiClientKeyLabel": "API key",
+  "settingsRestApiSaveClientKeyAction": "Save key on this device",
+  "settingsRestApiKeySaved": "API key saved on this device."
 }

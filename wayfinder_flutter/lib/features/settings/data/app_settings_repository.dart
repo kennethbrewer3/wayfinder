@@ -6,6 +6,7 @@ import 'package:wayfinder_client/wayfinder_client.dart' as wf;
 
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/rest_api_headers.dart';
 import '../../map/models/home_location.dart';
 import '../models/client_preferences.dart';
 
@@ -138,6 +139,7 @@ class AppSettingsRepository {
   Future<ClientPreferences> _getClientPreferencesRest() async {
     final response = await http.get(
       Uri.parse('$_webServerUrl/api/settings/client-preferences'),
+      headers: await RestApiHeaders.readOnly(),
     );
     if (response.statusCode != 200) {
       throw Exception(
@@ -154,7 +156,7 @@ class AppSettingsRepository {
   ) async {
     final response = await http.put(
       Uri.parse('$_webServerUrl/api/settings/client-preferences'),
-      headers: const {'Content-Type': 'application/json'},
+      headers: await RestApiHeaders.json(),
       body: jsonEncode(preferences.toJson()),
     );
     if (response.statusCode != 200) {
@@ -169,7 +171,10 @@ class AppSettingsRepository {
 
   Future<HomeLocation> _getHomeLocationRest() async {
     final response =
-        await http.get(Uri.parse('$_webServerUrl/api/settings/home'));
+        await http.get(
+      Uri.parse('$_webServerUrl/api/settings/home'),
+      headers: await RestApiHeaders.readOnly(),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'GET /api/settings/home returned ${response.statusCode}',
@@ -181,7 +186,7 @@ class AppSettingsRepository {
   Future<HomeLocation> _updateHomeLocationRest(HomeLocation location) async {
     final response = await http.put(
       Uri.parse('$_webServerUrl/api/settings/home'),
-      headers: const {'Content-Type': 'application/json'},
+      headers: await RestApiHeaders.json(),
       body: jsonEncode({
         'latitude': location.latitude,
         'longitude': location.longitude,
@@ -197,8 +202,10 @@ class AppSettingsRepository {
   }
 
   Future<HomeLocation> _resetHomeLocationRest() async {
-    final response =
-        await http.delete(Uri.parse('$_webServerUrl/api/settings/home'));
+    final response = await http.delete(
+      Uri.parse('$_webServerUrl/api/settings/home'),
+      headers: await RestApiHeaders.readOnly(),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'DELETE /api/settings/home returned ${response.statusCode}',
@@ -210,6 +217,7 @@ class AppSettingsRepository {
   Future<PmtilesStorageSettings> _getPmtilesStoragePathRest() async {
     final response = await http.get(
       Uri.parse('$_webServerUrl/api/settings/pmtiles-storage'),
+      headers: await RestApiHeaders.readOnly(),
     );
     if (response.statusCode != 200) {
       throw Exception(
@@ -224,7 +232,7 @@ class AppSettingsRepository {
   ) async {
     final response = await http.put(
       Uri.parse('$_webServerUrl/api/settings/pmtiles-storage'),
-      headers: const {'Content-Type': 'application/json'},
+      headers: await RestApiHeaders.json(),
       body: jsonEncode({'storagePath': storagePath}),
     );
     if (response.statusCode != 200) {
@@ -233,6 +241,18 @@ class AppSettingsRepository {
       );
     }
     return _mapPmtilesStorageJson(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+
+  Future<wf.RestApiKeyInfo> getRestApiKeyStatus() {
+    return _client.appSettings.getRestApiKeyStatus();
+  }
+
+  Future<wf.RestApiKeyInfo> generateRestApiKey() {
+    return _client.appSettings.generateRestApiKey();
+  }
+
+  Future<wf.RestApiKeyInfo> clearRestApiKey() {
+    return _client.appSettings.clearRestApiKey();
   }
 
   HomeLocation _mapHomeLocation(wf.AppSettings settings) {

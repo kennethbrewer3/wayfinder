@@ -48,7 +48,28 @@ Errors return JSON with an `error` message:
 
 ### Authentication
 
-The REST API does not currently require authentication. The Flutter app uses separate Serverpod RPC endpoints on port **18080** with JWT auth.
+When a REST API key is configured, all endpoints except `GET /api/` and `GET /api/health` require authentication.
+
+Send the key using either header:
+
+```bash
+curl -H "X-API-Key: wf_your_key_here" http://localhost:18082/api/markers
+```
+
+```bash
+curl -H "Authorization: Bearer wf_your_key_here" http://localhost:18082/api/markers
+```
+
+**Configure a key**
+
+1. In the Wayfinder app: **Settings → About → REST API access → Generate API key**
+2. Or set `WAYFINDER_REST_API_KEY` in the server `.env` file (useful for Docker/scripts)
+
+Keys are stored on the server as a SHA-256 hash. The plaintext key is shown only once when generated.
+
+Signed-in Serverpod users can also call the REST API with a JWT access token in the `Authorization: Bearer` header (tokens that start with `wf_` are treated as API keys).
+
+When no key is configured, the REST API remains open (intended for local development only).
 
 ---
 

@@ -12,6 +12,7 @@ import 'src/settings/app_settings_store.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
+import 'src/web/middleware/rest_auth_middleware.dart';
 import 'src/web/middleware/rest_cors_middleware.dart';
 import 'src/web/routes/app_config_route.dart';
 import 'src/web/routes/pmtiles_file_route.dart';
@@ -82,8 +83,16 @@ void run(List<String> args) async {
     );
 
     pod.webServer.addMiddleware(const RestCorsMiddleware(), '/api');
+    pod.webServer.addMiddleware(const RestAuthMiddleware(), '/api');
     pod.webServer.addRoute(RestApiRoute(), '/api');
     WfLog.info(null, 'server', '🌐 REST API available at /api');
+    if (WayfinderEnv.restApiKey != null) {
+      WfLog.info(
+        null,
+        'server',
+        '🔐 REST API key auth enabled via WAYFINDER_REST_API_KEY',
+      );
+    }
   }
 
   // Checks if the flutter web app has been built and serves it if it has.

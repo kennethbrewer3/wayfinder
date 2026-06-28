@@ -5,11 +5,13 @@ class MarkerIconOption {
     required this.key,
     required this.icon,
     required this.label,
+    this.assetPath,
   });
 
   final String key;
   final IconData icon;
   final String label;
+  final String? assetPath;
 }
 
 const markerIconOptions = <MarkerIconOption>[
@@ -41,6 +43,22 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'my_location', icon: Icons.my_location, label: 'Location'),
   MarkerIconOption(key: 'camera', icon: Icons.camera_alt, label: 'Photo'),
   MarkerIconOption(key: 'pets', icon: Icons.pets, label: 'Pets'),
+  MarkerIconOption(key: 'man', icon: Icons.man, label: 'Man'),
+  MarkerIconOption(key: 'woman', icon: Icons.woman, label: 'Woman'),
+  MarkerIconOption(key: 'boy', icon: Icons.boy, label: 'Boy'),
+  MarkerIconOption(key: 'girl', icon: Icons.girl, label: 'Girl'),
+  MarkerIconOption(
+    key: 'cat',
+    icon: Icons.pets,
+    assetPath: 'assets/markers/cat.svg',
+    label: 'Cat',
+  ),
+  MarkerIconOption(
+    key: 'dog',
+    icon: Icons.pets,
+    assetPath: 'assets/markers/dog.svg',
+    label: 'Dog',
+  ),
   MarkerIconOption(key: 'cell_tower', icon: Icons.cell_tower, label: 'Radio tower'),
   MarkerIconOption(
     key: 'radio_repeater',
@@ -105,6 +123,15 @@ MarkerIconOption? markerIconOption(String iconName) {
   for (final option in markerIconOptions) {
     if (option.key == iconName) {
       return option;
+    }
+  }
+  return null;
+}
+
+String? markerIconAsset(String iconName) {
+  for (final option in markerIconOptions) {
+    if (option.key == iconName) {
+      return option.assetPath;
     }
   }
   return null;
@@ -205,6 +232,20 @@ String? suggestMarkerIconForName(String name) {
     'star': 'star',
     'pet': 'pets',
     'pets': 'pets',
+    'man': 'man',
+    'woman': 'woman',
+    'boy': 'boy',
+    'girl': 'girl',
+    'dad': 'man',
+    'father': 'man',
+    'mom': 'woman',
+    'mother': 'woman',
+    'son': 'boy',
+    'daughter': 'girl',
+    'cat': 'cat',
+    'kitten': 'cat',
+    'dog': 'dog',
+    'puppy': 'dog',
     'repeater': 'radio_repeater',
     'radio repeater': 'radio_repeater',
     'tower': 'cell_tower',

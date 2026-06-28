@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../map/map_data_service.dart';
+import '../../map/map_marker_change_broadcast.dart';
 import 'rest_json.dart';
 
 abstract final class MapDataRestHandlers {
@@ -17,6 +18,7 @@ abstract final class MapDataRestHandlers {
       final session = await request.session;
       final body = await RestJson.readObject(request);
       final summary = await restoreMapDataBundle(session, body);
+      await MapMarkerChangeBroadcast.bulk(session);
       return RestJson.ok({
         'restored': summary.toJson(),
       });

@@ -24,6 +24,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    this.restApiKeyHash,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
@@ -42,6 +43,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    String? restApiKeyHash,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
 
@@ -57,6 +59,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
       appLocale: jsonSerialization['appLocale'] as String?,
+      restApiKeyHash: jsonSerialization['restApiKeyHash'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -86,6 +89,8 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   String appLocale;
 
+  String? restApiKeyHash;
+
   DateTime updatedAt;
 
   /// Returns a shallow copy of this [AppSettings]
@@ -102,6 +107,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    String? restApiKeyHash,
     DateTime? updatedAt,
   });
   @override
@@ -118,6 +124,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
+      if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -142,6 +149,7 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    String? restApiKeyHash,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -154,6 +162,7 @@ class _AppSettingsImpl extends AppSettings {
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
          appLocale: appLocale,
+         restApiKeyHash: restApiKeyHash,
          updatedAt: updatedAt,
        );
 
@@ -172,6 +181,7 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    Object? restApiKeyHash = _Undefined,
     DateTime? updatedAt,
   }) {
     return AppSettings(
@@ -185,6 +195,9 @@ class _AppSettingsImpl extends AppSettings {
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
+      restApiKeyHash: restApiKeyHash is String?
+          ? restApiKeyHash
+          : this.restApiKeyHash,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

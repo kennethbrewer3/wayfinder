@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/marker_icon_registry.dart';
 import 'map_marker_icon.dart';
+import 'marker_icon_glyph.dart';
 
 class MarkerIconPicker extends StatefulWidget {
   const MarkerIconPicker({
@@ -70,8 +71,8 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Icon(
-                        selectedOption.icon,
+                      child: MarkerIconGlyph(
+                        iconName: selectedOption.key,
                         color: widget.color,
                         size: 22,
                       ),
@@ -165,11 +166,12 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  option.icon,
+                                MarkerIconGlyph(
+                                  iconName: option.key,
                                   color: selected
                                       ? widget.color
-                                      : theme.iconTheme.color,
+                                      : theme.iconTheme.color ??
+                                          theme.colorScheme.onSurface,
                                   size: MarkerIconPicker._gridIconSize,
                                 ),
                                 const SizedBox(height: 2),

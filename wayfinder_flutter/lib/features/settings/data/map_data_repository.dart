@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/app_globals.dart';
+import '../../../core/rest_api_headers.dart';
 
 const mapDataBackupVersion = 1;
 
@@ -73,7 +74,7 @@ class MapDataRepository {
   ) async {
     final response = await http.post(
       _restoreUri,
-      headers: const {'Content-Type': 'application/json'},
+      headers: await RestApiHeaders.json(),
       body: jsonEncode(decoded),
     );
 

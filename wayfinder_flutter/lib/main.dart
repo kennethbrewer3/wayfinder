@@ -9,9 +9,11 @@ import 'app/app.dart';
 import 'core/app_globals.dart';
 import 'core/logging/app_logger.dart';
 import 'core/server_config.dart';
+import 'core/url_strategy_setup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  configureUrlStrategy();
 
   FlutterError.onError = logUncaughtFlutterError;
   PlatformDispatcher.instance.onError = logUncaughtAsyncError;

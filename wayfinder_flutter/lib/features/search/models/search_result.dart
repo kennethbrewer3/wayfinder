@@ -93,18 +93,33 @@ List<SearchResult> buildSearchResults({
 SearchResult geocodingPlaceToSearchResult(GeocodingPlaceResult place) {
   final type = place.isAddress
       ? SearchResultType.address
-      : SearchResultType.place;
+      : place.isContribution
+          ? SearchResultType.place
+          : SearchResultType.place;
   return SearchResult(
-    id: '${type.name}-${place.id}',
+    id: place.isContribution
+        ? 'contribution-${place.id}'
+        : '${type.name}-${place.id}',
     label: place.label,
     subtitle: place.subtitle,
     type: type,
     location: LatLng(place.latitude, place.longitude),
-    zoom: _zoomForImportance(place.importance, isAddress: place.isAddress),
+    zoom: _zoomForImportance(
+      place.importance,
+      isAddress: place.isAddress,
+      isContribution: place.isContribution,
+    ),
   );
 }
 
-double _zoomForImportance(double importance, {required bool isAddress}) {
+double _zoomForImportance(
+  double importance, {
+  required bool isAddress,
+  bool isContribution = false,
+}) {
+  if (isContribution) {
+    return 14;
+  }
   if (isAddress) {
     return 18;
   }

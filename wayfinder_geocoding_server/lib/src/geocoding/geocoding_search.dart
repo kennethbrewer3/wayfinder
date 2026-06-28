@@ -33,7 +33,9 @@ abstract final class GeocodingSearch {
       settings.housenumbersImportStatus,
       settings.housenumbersImportedRowCount,
     );
-    if (!placesReady && !addressesReady) {
+    final contributionCount = await GeocodeContribution.db.count(session);
+    final contributionsReady = contributionCount > 0;
+    if (!placesReady && !addressesReady && !contributionsReady) {
       return const [];
     }
 
@@ -134,6 +136,46 @@ abstract final class GeocodingSearch {
             countryCode: row[5] as String?,
             importance: row[6] as double,
             resultType: GeocodingConstants.resultTypePlace,
+          ),
+        );
+      }
+    }
+
+    final remainingAfterPlaces = limit - results.length;
+    if (contributionsReady && remainingAfterPlaces > 0) {
+      final contributionRows = await session.db.unsafeQuery(
+        '''
+        SELECT
+          "id",
+          "name",
+          "notes",
+          "latitude",
+          "longitude",
+          "countryCode"
+        FROM "geocode_contribution"
+        WHERE "name" ILIKE @pattern ESCAPE '\\'
+           OR "notes" ILIKE @pattern ESCAPE '\\'
+        ORDER BY "name"
+        LIMIT @limit
+        ''',
+        parameters: QueryParameters.named({
+          'pattern': pattern,
+          'limit': remainingAfterPlaces,
+        }),
+      );
+
+      for (final row in contributionRows) {
+        final notes = row[2] as String?;
+        results.add(
+          GeocodeSearchResult(
+            id: row[0] as int,
+            name: row[1] as String,
+            displayName: notes,
+            latitude: row[3] as double,
+            longitude: row[4] as double,
+            countryCode: row[5] as String?,
+            importance: 0.95,
+            resultType: GeocodingConstants.resultTypeContribution,
           ),
         );
       }

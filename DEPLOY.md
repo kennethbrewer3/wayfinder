@@ -126,6 +126,8 @@ docker compose ps
 
 Import places and addresses from **Settings → Geocoding** in the client after pointing it at this server (see client setup below).
 
+**Custom locations and crowdsource:** The geocoding tab also supports user-added locations (stored in a separate `geocode_contribution` table), JSON export/import of that data, and anonymous import/submit to the public bundle at `geocoding-crowdsource/contributions.json`. To enable direct anonymous uploads from the server, set `GEOCODING_CROWDSOURCE_GITHUB_TOKEN` (and optionally `GEOCODING_CROWDSOURCE_GITHUB_REPO` / `GEOCODING_CROWDSOURCE_GITHUB_FILE`) in the geocoding server environment — see `deploy/geocoding-server/.env.example`.
+
 If you previously imported geocoding data into the main Wayfinder server, export that Postgres data and restore it into the geocoding server's database volume, or re-import from OSMNames on the new stack.
 
 ## 3. Client machine

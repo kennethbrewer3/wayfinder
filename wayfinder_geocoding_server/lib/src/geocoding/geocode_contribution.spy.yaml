@@ -1,0 +1,20 @@
+class: GeocodeContribution
+table: geocode_contribution
+fields:
+  id: int?
+  name: String
+  latitude: double
+  longitude: double
+  notes: String?
+  countryCode: String?
+  contentKey: String
+  importedFromCrowd: bool, default=false
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  geocode_contribution_content_key_idx:
+    fields: contentKey
+    unique: true
+  geocode_contribution_name_idx:
+    fields: name

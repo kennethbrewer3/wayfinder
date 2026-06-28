@@ -316,6 +316,12 @@ abstract class AppLocalizations {
   /// **'Reset'**
   String get actionReset;
 
+  /// No description provided for @actionRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get actionRefresh;
+
   /// No description provided for @actionLater.
   ///
   /// In en, this message translates to:
@@ -2446,11 +2452,29 @@ abstract class AppLocalizations {
   /// **'Geocoding server URL saved. Restart the app to connect.'**
   String get geocodingServerUrlSavedRestart;
 
+  /// No description provided for @geocodingServerUrlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding server URL saved.'**
+  String get geocodingServerUrlSaved;
+
   /// No description provided for @geocodingPlacesSectionTitle.
   ///
   /// In en, this message translates to:
   /// **'Place names (geonames.tsv)'**
   String get geocodingPlacesSectionTitle;
+
+  /// No description provided for @geocodingDownloadedDatasetsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded datasets (OSMNames)'**
+  String get geocodingDownloadedDatasetsSectionTitle;
+
+  /// No description provided for @geocodingDownloadedDatasetsSectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Large planet or regional imports from OSMNames. Custom locations above work without importing these.'**
+  String get geocodingDownloadedDatasetsSectionDescription;
 
   /// No description provided for @geocodingPlaceDatasetLabel.
   ///
@@ -2529,6 +2553,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download and import housenumbers'**
   String get geocodingDownloadImportHousenumbers;
+
+  /// No description provided for @geocodingContributionsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom locations'**
+  String get geocodingContributionsSectionTitle;
+
+  /// No description provided for @geocodingContributionsSectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add place names and coordinates that are not in OSMNames. These are stored separately from downloaded datasets and appear in search.'**
+  String get geocodingContributionsSectionDescription;
+
+  /// No description provided for @geocodingContributionsConfigureServerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a geocoding server URL above, then restart the app, to add and list custom locations.'**
+  String get geocodingContributionsConfigureServerHint;
+
+  /// No description provided for @geocodingContributionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No custom locations yet. Tap Add location to create one.'**
+  String get geocodingContributionsEmpty;
+
+  /// No description provided for @geocodingContributionsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load custom locations. Update the geocoding server to the latest version.'**
+  String get geocodingContributionsLoadFailed;
+
+  /// No description provided for @geocodingContributionsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get geocodingContributionsFilterAll;
+
+  /// No description provided for @geocodingContributionsFilterYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours'**
+  String get geocodingContributionsFilterYours;
+
+  /// No description provided for @geocodingContributionsFilterCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get geocodingContributionsFilterCommunity;
+
+  /// No description provided for @geocodingContributionsSourceYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by you'**
+  String get geocodingContributionsSourceYours;
+
+  /// No description provided for @geocodingContributionsSourceCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'From crowdsource'**
+  String get geocodingContributionsSourceCommunity;
+
+  /// No description provided for @geocodingContributionAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add location'**
+  String get geocodingContributionAddTitle;
+
+  /// No description provided for @geocodingContributionEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit location'**
+  String get geocodingContributionEditTitle;
+
+  /// No description provided for @geocodingContributionAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add location'**
+  String get geocodingContributionAddAction;
+
+  /// No description provided for @geocodingContributionNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get geocodingContributionNameLabel;
+
+  /// No description provided for @geocodingContributionLatitudeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get geocodingContributionLatitudeLabel;
+
+  /// No description provided for @geocodingContributionLongitudeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get geocodingContributionLongitudeLabel;
+
+  /// No description provided for @geocodingContributionNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get geocodingContributionNotesLabel;
+
+  /// No description provided for @geocodingContributionCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country code (optional)'**
+  String get geocodingContributionCountryLabel;
+
+  /// No description provided for @geocodingContributionInvalidCoordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter valid latitude and longitude values.'**
+  String get geocodingContributionInvalidCoordinates;
+
+  /// No description provided for @geocodingContributionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Location saved.'**
+  String get geocodingContributionSaved;
+
+  /// No description provided for @geocodingContributionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Location removed.'**
+  String get geocodingContributionDeleted;
+
+  /// No description provided for @geocodingContributionDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove location?'**
+  String get geocodingContributionDeleteTitle;
+
+  /// No description provided for @geocodingContributionDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{name}\" from custom geocoding data?'**
+  String geocodingContributionDeleteMessage(String name);
+
+  /// No description provided for @geocodingContributionImportedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'community'**
+  String get geocodingContributionImportedBadge;
+
+  /// No description provided for @geocodingContributionsArchiveDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Export or import custom locations as a separate JSON file, or remove all custom records from the server.'**
+  String get geocodingContributionsArchiveDescription;
+
+  /// No description provided for @geocodingContributionDataExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom location data exported.'**
+  String get geocodingContributionDataExported;
+
+  /// No description provided for @geocodingImportContributionArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import custom locations?'**
+  String get geocodingImportContributionArchiveTitle;
+
+  /// No description provided for @geocodingImportContributionArchiveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge locations from the selected file into the server. Existing entries with the same name and coordinates are updated.'**
+  String get geocodingImportContributionArchiveMessage;
+
+  /// No description provided for @geocodingContributionArchiveImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} custom locations.'**
+  String geocodingContributionArchiveImported(int count);
+
+  /// No description provided for @geocodingRemoveAllContributionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove all custom locations?'**
+  String get geocodingRemoveAllContributionsTitle;
+
+  /// No description provided for @geocodingRemoveAllContributionsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes every custom location from the geocoding server. Downloaded OSMNames data is not affected.'**
+  String get geocodingRemoveAllContributionsMessage;
+
+  /// No description provided for @geocodingContributionsRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {count} custom locations.'**
+  String geocodingContributionsRemoved(int count);
+
+  /// No description provided for @geocodingRowLabelContributions.
+  ///
+  /// In en, this message translates to:
+  /// **'locations'**
+  String get geocodingRowLabelContributions;
+
+  /// No description provided for @geocodingCrowdsourceSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crowdsource geocoding'**
+  String get geocodingCrowdsourceSectionTitle;
+
+  /// No description provided for @geocodingCrowdsourceSectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Import anonymous community locations from a public git repository, or submit your local locations without sharing any personal information.'**
+  String get geocodingCrowdsourceSectionDescription;
+
+  /// No description provided for @geocodingCrowdsourceUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crowdsource data URL'**
+  String get geocodingCrowdsourceUrlLabel;
+
+  /// No description provided for @geocodingCrowdsourceUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a crowdsource data URL.'**
+  String get geocodingCrowdsourceUrlRequired;
+
+  /// No description provided for @geocodingCrowdsourceSaveUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Save crowdsource URL'**
+  String get geocodingCrowdsourceSaveUrl;
+
+  /// No description provided for @geocodingCrowdsourceUrlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Crowdsource URL saved.'**
+  String get geocodingCrowdsourceUrlSaved;
+
+  /// No description provided for @geocodingCrowdsourceImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import crowdsource data'**
+  String get geocodingCrowdsourceImportAction;
+
+  /// No description provided for @geocodingCrowdsourceSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit to crowdsource'**
+  String get geocodingCrowdsourceSubmitAction;
+
+  /// No description provided for @geocodingCrowdsourceSubmitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit anonymously?'**
+  String get geocodingCrowdsourceSubmitTitle;
+
+  /// No description provided for @geocodingCrowdsourceSubmitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Only location names and coordinates are shared. No account information or personal identifiers are included.'**
+  String get geocodingCrowdsourceSubmitMessage;
+
+  /// No description provided for @geocodingCrowdsourceImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} crowdsource locations.'**
+  String geocodingCrowdsourceImported(int count);
+
+  /// No description provided for @geocodingCrowdsourceSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted {count} anonymous locations to the crowdsource repository.'**
+  String geocodingCrowdsourceSubmitted(int count);
+
+  /// No description provided for @geocodingCrowdsourceBundleSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved an anonymous bundle with {count} locations. Submit it to the crowdsource repository manually.'**
+  String geocodingCrowdsourceBundleSaved(int count);
 
   /// No description provided for @geocodingSettingsLoadFailed.
   ///

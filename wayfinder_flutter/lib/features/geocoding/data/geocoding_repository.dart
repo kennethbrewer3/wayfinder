@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
+import '../models/geocoding_contribution.dart';
 import '../models/geocoding_models.dart';
 
 class GeocodingRepository {
@@ -94,6 +95,61 @@ class GeocodingRepository {
   Future<int> clearPlaces() => _clearPlacesRest();
 
   Future<int> clearHousenumbers() => _clearHousenumbersRest();
+
+  Future<List<GeocodingContribution>> listContributions() =>
+      _listContributionsRest();
+
+  Future<GeocodingContribution> createContribution({
+    required String name,
+    required double latitude,
+    required double longitude,
+    String? notes,
+    String? countryCode,
+  }) =>
+      _createContributionRest(
+        name: name,
+        latitude: latitude,
+        longitude: longitude,
+        notes: notes,
+        countryCode: countryCode,
+      );
+
+  Future<GeocodingContribution> updateContribution({
+    required int id,
+    required String name,
+    required double latitude,
+    required double longitude,
+    String? notes,
+    String? countryCode,
+  }) =>
+      _updateContributionRest(
+        id: id,
+        name: name,
+        latitude: latitude,
+        longitude: longitude,
+        notes: notes,
+        countryCode: countryCode,
+      );
+
+  Future<void> deleteContribution(int id) => _deleteContributionRest(id);
+
+  Future<String> exportContributionsArchive() => _exportContributionsRest();
+
+  Future<int> importContributionsArchive(String archiveJson) =>
+      _importContributionsRest(archiveJson);
+
+  Future<int> clearContributions() => _clearContributionsRest();
+
+  Future<int> importCrowdsource({String? sourceUrl}) =>
+      _importCrowdsourceRest(sourceUrl: sourceUrl);
+
+  Future<GeocodingCrowdsourceSubmitResult> submitCrowdsource() =>
+      _submitCrowdsourceRest();
+
+  Future<GeocodingImportState> updateCrowdsourceConfig({
+    required String crowdsourceSourceUrl,
+  }) =>
+      _updateCrowdsourceConfigRest(crowdsourceSourceUrl);
 
   Future<List<GeocodingPlaceResult>> searchPlaces(
     String query, {
@@ -295,9 +351,200 @@ class GeocodingRepository {
     }
     final decoded = jsonDecode(response.body);
     if (decoded is Map<String, dynamic>) {
-      return (decoded['removedRowCount'] as num?)?.toInt() ?? 0;
+      return (decoded['removedRowCount'] as num?)?.toInt() ??
+          (decoded['removed'] as num?)?.toInt() ??
+          0;
     }
     return 0;
+  }
+
+  Future<List<GeocodingContribution>> _listContributionsRest() async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/api/geocoding/contributions'));
+    if (response.statusCode != 200) {
+      throw Exception(
+        'GET /api/geocoding/contributions returned ${response.statusCode}',
+      );
+    }
+    final decoded = jsonDecode(response.body);
+    if (decoded is! List) {
+      return const [];
+    }
+    return [
+      for (final item in decoded)
+        if (item is Map<String, dynamic>)
+          GeocodingContribution.fromJson(item),
+    ];
+  }
+
+  Future<GeocodingContribution> _createContributionRest({
+    required String name,
+    required double latitude,
+    required double longitude,
+    String? notes,
+    String? countryCode,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/geocoding/contributions'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'latitude': latitude,
+        'longitude': longitude,
+        if (notes != null && notes.isNotEmpty) 'notes': notes,
+        if (countryCode != null && countryCode.isNotEmpty)
+          'countryCode': countryCode,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'POST /api/geocoding/contributions returned ${response.statusCode}',
+      );
+    }
+    return GeocodingContribution.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+  }
+
+  Future<GeocodingContribution> _updateContributionRest({
+    required int id,
+    required String name,
+    required double latitude,
+    required double longitude,
+    String? notes,
+    String? countryCode,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/geocoding/contributions/$id'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'latitude': latitude,
+        'longitude': longitude,
+        if (notes != null && notes.isNotEmpty) 'notes': notes,
+        if (countryCode != null && countryCode.isNotEmpty)
+          'countryCode': countryCode,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'PUT /api/geocoding/contributions/$id returned ${response.statusCode}',
+      );
+    }
+    return GeocodingContribution.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+  }
+
+  Future<void> _deleteContributionRest(int id) async {
+    final response =
+        await http.delete(Uri.parse('$baseUrl/api/geocoding/contributions/$id'));
+    if (response.statusCode != 200) {
+      throw Exception(
+        'DELETE /api/geocoding/contributions/$id returned ${response.statusCode}',
+      );
+    }
+  }
+
+  Future<String> _exportContributionsRest() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/geocoding/export/contributions'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'GET /api/geocoding/export/contributions returned ${response.statusCode}',
+      );
+    }
+    return response.body;
+  }
+
+  Future<int> _importContributionsRest(String archiveJson) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/geocoding/archive/contributions'),
+      headers: const {'Content-Type': 'application/json'},
+      body: archiveJson,
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'POST /api/geocoding/archive/contributions returned ${response.statusCode}',
+      );
+    }
+    final decoded = jsonDecode(response.body);
+    if (decoded is Map<String, dynamic>) {
+      return (decoded['rowCount'] as num?)?.toInt() ?? 0;
+    }
+    return 0;
+  }
+
+  Future<int> _clearContributionsRest() async {
+    final response =
+        await http.delete(Uri.parse('$baseUrl/api/geocoding/contributions'));
+    if (response.statusCode != 200) {
+      throw Exception(
+        'DELETE /api/geocoding/contributions returned ${response.statusCode}',
+      );
+    }
+    final decoded = jsonDecode(response.body);
+    if (decoded is Map<String, dynamic>) {
+      return (decoded['removed'] as num?)?.toInt() ?? 0;
+    }
+    return 0;
+  }
+
+  Future<int> _importCrowdsourceRest({String? sourceUrl}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/geocoding/crowdsource/import'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        if (sourceUrl != null && sourceUrl.isNotEmpty) 'sourceUrl': sourceUrl,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'POST /api/geocoding/crowdsource/import returned ${response.statusCode}',
+      );
+    }
+    final decoded = jsonDecode(response.body);
+    if (decoded is Map<String, dynamic>) {
+      return (decoded['rowCount'] as num?)?.toInt() ?? 0;
+    }
+    return 0;
+  }
+
+  Future<GeocodingCrowdsourceSubmitResult> _submitCrowdsourceRest() async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/geocoding/crowdsource/submit'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'POST /api/geocoding/crowdsource/submit returned ${response.statusCode}',
+      );
+    }
+    return GeocodingCrowdsourceSubmitResult.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+  }
+
+  Future<GeocodingImportState> _updateCrowdsourceConfigRest(
+    String crowdsourceSourceUrl,
+  ) async {
+    final settings = await getSettings();
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/geocoding/settings'),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'sourceUrl': settings.sourceUrl,
+        if (settings.countryCodes != null && settings.countryCodes!.isNotEmpty)
+          'countryCodes': settings.countryCodes,
+        'crowdsourceSourceUrl': crowdsourceSourceUrl,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'PUT /api/geocoding/settings returned ${response.statusCode}',
+      );
+    }
+    return _mapSettingsJson(jsonDecode(response.body) as Map<String, dynamic>);
   }
 
   Future<List<GeocodingPlaceResult>> _searchRest(
@@ -352,6 +599,10 @@ class GeocodingRepository {
       isRunning: json['isRunning'] as bool? ?? false,
       isPlacesRunning: json['isPlacesRunning'] as bool? ?? false,
       isHousenumbersRunning: json['isHousenumbersRunning'] as bool? ?? false,
+      crowdsourceSourceUrl: json['crowdsourceSourceUrl'] as String? ??
+          defaultCrowdsourceSourceUrl,
+      contributionCount: (json['contributionCount'] as num?)?.toInt() ?? 0,
+      isContributionsReady: json['isContributionsReady'] as bool? ?? false,
     );
   }
 
@@ -388,8 +639,12 @@ class GeocodingRepository {
   }
 }
 
+/// Current geocoding web URL; updated when the user saves Settings → Geocoding.
+final geocodingWebUrlProvider = StateProvider<String?>(
+  (ref) => appServerConfig.geocodingWebUrl,
+);
+
 final geocodingRepositoryProvider = Provider<GeocodingRepository>((ref) {
-  return GeocodingRepository(
-    geocodingWebServerUrl: appServerConfig.geocodingWebUrl,
-  );
+  final url = ref.watch(geocodingWebUrlProvider);
+  return GeocodingRepository(geocodingWebServerUrl: url);
 });

@@ -8,6 +8,7 @@ environment:
 resolution: workspace
 
 dependencies:
+  crypto: ^3.0.6
   serverpod: 3.4.8
 
 dev_dependencies:

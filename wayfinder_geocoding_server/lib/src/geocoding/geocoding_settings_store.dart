@@ -21,6 +21,7 @@ abstract final class GeocodingSettingsStore {
         housenumbersImportStatus: GeocodingConstants.statusIdle,
         housenumbersImportedRowCount: 0,
         housenumbersImportProgress: 0,
+        crowdsourceSourceUrl: GeocodingConstants.defaultCrowdsourceSourceUrl,
         updatedAt: DateTime.now().toUtc(),
       ),
     );

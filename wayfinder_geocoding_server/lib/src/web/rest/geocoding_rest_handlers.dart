@@ -3,6 +3,8 @@ import 'package:serverpod/serverpod.dart';
 import '../../generated/protocol.dart';
 import '../../geocoding/geocoding_archive_service.dart';
 import '../../geocoding/geocoding_constants.dart';
+import '../../geocoding/geocoding_contribution_service.dart';
+import '../../geocoding/geocoding_crowdsource_service.dart';
 import '../../geocoding/geocoding_housenumbers_importer.dart';
 import '../../geocoding/geocoding_importer.dart';
 import '../../geocoding/geocoding_import_status.dart';
@@ -12,6 +14,7 @@ import '../../geocoding/geocoding_settings_store.dart';
 import 'rest_json.dart';
 
 abstract final class GeocodingRestHandlers {
+  static final _contributionIdParam = PathParam<String>(#id, (value) => value);
   static Future<Result> getSettings(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
@@ -39,6 +42,8 @@ abstract final class GeocodingRestHandlers {
       }
 
       final countryCodes = _parseCountryCodes(body['countryCodes']);
+      final crowdsourceSourceUrl =
+          (body['crowdsourceSourceUrl'] as String?)?.trim();
 
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       final updated = await GeocodingSettingsStore.update(
@@ -46,6 +51,10 @@ abstract final class GeocodingRestHandlers {
         settings.copyWith(
           sourceUrl: sourceUrl,
           countryCodes: _joinCountryCodes(countryCodes),
+          crowdsourceSourceUrl:
+              crowdsourceSourceUrl != null && crowdsourceSourceUrl.isNotEmpty
+              ? crowdsourceSourceUrl
+              : settings.crowdsourceSourceUrl,
         ),
       );
       return RestJson.ok(await _encodeSettings(session, updated));
@@ -199,14 +208,172 @@ abstract final class GeocodingRestHandlers {
     });
   }
 
+  static Future<Result> listContributions(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final rows = await GeocodingContributionService.list(session);
+      return RestJson.ok([
+        for (final row in rows)
+          GeocodingContributionService.encodeContributionJson(row),
+      ]);
+    });
+  }
+
+  static Future<Result> createContribution(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final body = await RestJson.readObject(request);
+      final name = (body['name'] as String?)?.trim() ?? '';
+      final latitude = _parseRequiredDouble(body['latitude'], field: 'latitude');
+      final longitude =
+          _parseRequiredDouble(body['longitude'], field: 'longitude');
+      final row = await GeocodingContributionService.create(
+        session,
+        name: name,
+        latitude: latitude,
+        longitude: longitude,
+        notes: body['notes'] as String?,
+        countryCode: body['countryCode'] as String?,
+      );
+      return RestJson.ok(
+        GeocodingContributionService.encodeContributionJson(row),
+      );
+    });
+  }
+
+  static Future<Result> updateContribution(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final id = _parsePathId(request);
+      final body = await RestJson.readObject(request);
+      final name = (body['name'] as String?)?.trim() ?? '';
+      final latitude = _parseRequiredDouble(body['latitude'], field: 'latitude');
+      final longitude =
+          _parseRequiredDouble(body['longitude'], field: 'longitude');
+      final row = await GeocodingContributionService.update(
+        session,
+        id: id,
+        name: name,
+        latitude: latitude,
+        longitude: longitude,
+        notes: body['notes'] as String?,
+        countryCode: body['countryCode'] as String?,
+      );
+      return RestJson.ok(
+        GeocodingContributionService.encodeContributionJson(row),
+      );
+    });
+  }
+
+  static Future<Result> deleteContribution(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final id = _parsePathId(request);
+      final removed = await GeocodingContributionService.delete(session, id);
+      if (!removed) {
+        return RestJson.error(404, 'Contribution not found.');
+      }
+      return RestJson.ok({'removed': true});
+    });
+  }
+
+  static Future<Result> exportContributions(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final payload = await GeocodingContributionService.exportArchive(session);
+      return Response.ok(
+        body: Body.fromString(payload, mimeType: MimeType.json),
+      );
+    });
+  }
+
+  static Future<Result> importContributions(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final archiveJson = await request.readAsString();
+      final rowCount = await GeocodingContributionService.importArchive(
+        session,
+        archiveJson,
+      );
+      final settings = await GeocodingSettingsStore.getOrCreate(session);
+      return RestJson.ok({
+        'rowCount': rowCount,
+        ...(await _encodeSettings(session, settings)),
+      });
+    });
+  }
+
+  static Future<Result> clearContributions(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final removed = await GeocodingContributionService.clearAll(session);
+      final settings = await GeocodingSettingsStore.getOrCreate(session);
+      return RestJson.ok({
+        'removed': removed,
+        ...(await _encodeSettings(session, settings)),
+      });
+    });
+  }
+
+  static Future<Result> importCrowdsource(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final body = await RestJson.readObject(request);
+      final sourceUrl = (body['sourceUrl'] as String?)?.trim();
+      final rowCount = await GeocodingCrowdsourceService.importFromUrl(
+        session,
+        sourceUrl: sourceUrl,
+      );
+      final settings = await GeocodingSettingsStore.getOrCreate(session);
+      return RestJson.ok({
+        'rowCount': rowCount,
+        ...(await _encodeSettings(session, settings)),
+      });
+    });
+  }
+
+  static Future<Result> submitCrowdsource(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final result = await GeocodingCrowdsourceService.submitAnonymous(session);
+      return RestJson.ok({
+        'submittedCount': result.submittedCount,
+        'uploadedToGit': result.uploadedToGit,
+        if (result.bundleJson != null) 'bundleJson': result.bundleJson,
+        if (result.message != null) 'message': result.message,
+      });
+    });
+  }
+
+  static int _parsePathId(Request request) {
+    final raw = request.pathParameters.get(_contributionIdParam);
+    final id = int.tryParse(raw);
+    if (id == null) {
+      throw FormatException('Invalid contribution id: $raw');
+    }
+    return id;
+  }
+
+  static double _parseRequiredDouble(Object? value, {required String field}) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    throw FormatException('Field "$field" is required.');
+  }
+
   static Future<Map<String, Object?>> _encodeSettings(
     Session session,
     GeocodingSettings settings,
   ) async {
     final indexStatus = await GeocodingSearchIndexStatus.get(session, settings);
+    final contributionCount = await GeocodingContributionService.count(session);
+    final isContributionsReady = contributionCount > 0;
     return {
       'sourceUrl': settings.sourceUrl,
       'countryCodes': settings.countryCodes,
+      'crowdsourceSourceUrl': settings.crowdsourceSourceUrl,
+      'contributionCount': contributionCount,
+      'isContributionsReady': isContributionsReady,
       'importStatus': settings.importStatus,
       'importedRowCount': settings.importedRowCount,
       'importProgress': settings.importProgress,
@@ -226,7 +393,8 @@ abstract final class GeocodingRestHandlers {
           GeocodingImportStatus.isSearchable(
             settings.housenumbersImportStatus,
             settings.housenumbersImportedRowCount,
-          ),
+          ) ||
+          isContributionsReady,
       'isPlacesReady': GeocodingImportStatus.isSearchable(
         settings.importStatus,
         settings.importedRowCount,

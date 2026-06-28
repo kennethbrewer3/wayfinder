@@ -28,6 +28,7 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
     double? housenumbersImportProgress,
     this.housenumbersImportError,
     this.housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     required this.updatedAt,
   }) : importStatus = importStatus ?? 'idle',
        importedRowCount = importedRowCount ?? 0,
@@ -37,7 +38,10 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
            'https://github.com/OSMNames/OSMNames/releases/download/v2.0.4/planet-latest_housenumbers.tsv.gz',
        housenumbersImportStatus = housenumbersImportStatus ?? 'idle',
        housenumbersImportedRowCount = housenumbersImportedRowCount ?? 0,
-       housenumbersImportProgress = housenumbersImportProgress ?? 0.0;
+       housenumbersImportProgress = housenumbersImportProgress ?? 0.0,
+       crowdsourceSourceUrl =
+           crowdsourceSourceUrl ??
+           'https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/geocoding-crowdsource/contributions.json';
 
   factory GeocodingSettings({
     int? id,
@@ -54,6 +58,7 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
     double? housenumbersImportProgress,
     String? housenumbersImportError,
     DateTime? housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     required DateTime updatedAt,
   }) = _GeocodingSettingsImpl;
 
@@ -85,6 +90,8 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['housenumbersImportedAt'],
             ),
+      crowdsourceSourceUrl:
+          jsonSerialization['crowdsourceSourceUrl'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -122,6 +129,8 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
 
   DateTime? housenumbersImportedAt;
 
+  String crowdsourceSourceUrl;
+
   DateTime updatedAt;
 
   /// Returns a shallow copy of this [GeocodingSettings]
@@ -142,6 +151,7 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
     double? housenumbersImportProgress,
     String? housenumbersImportError,
     DateTime? housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     DateTime? updatedAt,
   });
   @override
@@ -164,6 +174,7 @@ abstract class GeocodingSettings implements _i1.SerializableModel {
         'housenumbersImportError': housenumbersImportError,
       if (housenumbersImportedAt != null)
         'housenumbersImportedAt': housenumbersImportedAt?.toJson(),
+      'crowdsourceSourceUrl': crowdsourceSourceUrl,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -192,6 +203,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
     double? housenumbersImportProgress,
     String? housenumbersImportError,
     DateTime? housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -208,6 +220,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
          housenumbersImportProgress: housenumbersImportProgress,
          housenumbersImportError: housenumbersImportError,
          housenumbersImportedAt: housenumbersImportedAt,
+         crowdsourceSourceUrl: crowdsourceSourceUrl,
          updatedAt: updatedAt,
        );
 
@@ -230,6 +243,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
     double? housenumbersImportProgress,
     Object? housenumbersImportError = _Undefined,
     Object? housenumbersImportedAt = _Undefined,
+    String? crowdsourceSourceUrl,
     DateTime? updatedAt,
   }) {
     return GeocodingSettings(
@@ -255,6 +269,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
       housenumbersImportedAt: housenumbersImportedAt is DateTime?
           ? housenumbersImportedAt
           : this.housenumbersImportedAt,
+      crowdsourceSourceUrl: crowdsourceSourceUrl ?? this.crowdsourceSourceUrl,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

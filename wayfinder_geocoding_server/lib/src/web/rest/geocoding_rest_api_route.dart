@@ -54,7 +54,39 @@ class GeocodingRestApiRoute extends Route {
       ..options('/geocoding/places', _preflight)
       ..delete('/geocoding/places', GeocodingRestHandlers.clearPlaces)
       ..options('/geocoding/housenumbers', _preflight)
-      ..delete('/geocoding/housenumbers', GeocodingRestHandlers.clearHousenumbers);
+      ..delete('/geocoding/housenumbers', GeocodingRestHandlers.clearHousenumbers)
+      ..options('/geocoding/contributions', _preflight)
+      ..get('/geocoding/contributions', GeocodingRestHandlers.listContributions)
+      ..post('/geocoding/contributions', GeocodingRestHandlers.createContribution)
+      ..delete('/geocoding/contributions', GeocodingRestHandlers.clearContributions)
+      ..options('/geocoding/contributions/:id', _preflight)
+      ..put(
+        '/geocoding/contributions/:id',
+        GeocodingRestHandlers.updateContribution,
+      )
+      ..delete(
+        '/geocoding/contributions/:id',
+        GeocodingRestHandlers.deleteContribution,
+      )
+      ..get(
+        '/geocoding/export/contributions',
+        GeocodingRestHandlers.exportContributions,
+      )
+      ..options('/geocoding/archive/contributions', _preflight)
+      ..post(
+        '/geocoding/archive/contributions',
+        GeocodingRestHandlers.importContributions,
+      )
+      ..options('/geocoding/crowdsource/import', _preflight)
+      ..post(
+        '/geocoding/crowdsource/import',
+        GeocodingRestHandlers.importCrowdsource,
+      )
+      ..options('/geocoding/crowdsource/submit', _preflight)
+      ..post(
+        '/geocoding/crowdsource/submit',
+        GeocodingRestHandlers.submitCrowdsource,
+      );
   }
 
   static Future<Result> _preflight(Request request) async {

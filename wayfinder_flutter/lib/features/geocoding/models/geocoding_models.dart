@@ -12,6 +12,10 @@ const geocodingStatusCancelled = 'cancelled';
 
 const geocodingResultTypePlace = 'place';
 const geocodingResultTypeAddress = 'address';
+const geocodingResultTypeContribution = 'contribution';
+
+const defaultCrowdsourceSourceUrl =
+    'https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/geocoding-crowdsource/contributions.json';
 
 class GeocodingImportState {
   const GeocodingImportState({
@@ -28,6 +32,9 @@ class GeocodingImportState {
     required this.isRunning,
     required this.isPlacesRunning,
     required this.isHousenumbersRunning,
+    required this.crowdsourceSourceUrl,
+    required this.contributionCount,
+    required this.isContributionsReady,
     this.importError,
     this.importedAt,
     this.housenumbersImportError,
@@ -51,6 +58,9 @@ class GeocodingImportState {
   final bool isRunning;
   final bool isPlacesRunning;
   final bool isHousenumbersRunning;
+  final String crowdsourceSourceUrl;
+  final int contributionCount;
+  final bool isContributionsReady;
 
   bool get isPlacesReady =>
       isSearchableGeocodingImport(importStatus, importedRowCount);
@@ -59,6 +69,27 @@ class GeocodingImportState {
         housenumbersImportStatus,
         housenumbersImportedRowCount,
       );
+}
+
+GeocodingImportState defaultGeocodingImportState() {
+  return GeocodingImportState(
+    sourceUrl: defaultGeocodingSourceUrl,
+    countryCodes: null,
+    importStatus: geocodingStatusIdle,
+    importedRowCount: 0,
+    importProgress: 0,
+    housenumbersSourceUrl: defaultHousenumbersSourceUrl,
+    housenumbersImportStatus: geocodingStatusIdle,
+    housenumbersImportedRowCount: 0,
+    housenumbersImportProgress: 0,
+    isReady: false,
+    isRunning: false,
+    isPlacesRunning: false,
+    isHousenumbersRunning: false,
+    crowdsourceSourceUrl: defaultCrowdsourceSourceUrl,
+    contributionCount: 0,
+    isContributionsReady: false,
+  );
 }
 
 bool isSearchableGeocodingImport(String status, int rowCount) {
@@ -192,7 +223,19 @@ class GeocodingPlaceResult {
 
   bool get isAddress => resultType == geocodingResultTypeAddress;
 
-  String get label => isAddress ? name : (displayName ?? name);
+  bool get isContribution => resultType == geocodingResultTypeContribution;
+
+  String get label {
+    if (isAddress) {
+      return name;
+    }
+    if (isContribution) {
+      return displayName == null || displayName!.isEmpty
+          ? name
+          : '$name — ${displayName!}';
+    }
+    return displayName ?? name;
+  }
 
   String get subtitle {
     if (isAddress) {
@@ -201,6 +244,13 @@ class GeocodingPlaceResult {
         return locality;
       }
       return '${latitude.toStringAsFixed(5)}, ${longitude.toStringAsFixed(5)}';
+    }
+    if (isContribution) {
+      final parts = <String>['Community location'];
+      if (countryCode != null && countryCode!.isNotEmpty) {
+        parts.add(countryCode!.toUpperCase());
+      }
+      return parts.join(' · ');
     }
     final parts = <String>['Place'];
     if (countryCode != null && countryCode!.isNotEmpty) {

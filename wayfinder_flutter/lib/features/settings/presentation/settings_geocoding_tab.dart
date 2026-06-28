@@ -15,6 +15,7 @@ import '../../geocoding/models/geocoding_datasets.dart';
 import '../../geocoding/models/geocoding_models.dart';
 import '../../geocoding/presentation/geocoding_import_progress_panel.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
+import 'settings_geocoding_contributions_section.dart';
 
 class SettingsGeocodingTab extends ConsumerStatefulWidget {
   const SettingsGeocodingTab({super.key});
@@ -68,12 +69,16 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       final storage = ServerConfigStorage();
       if (trimmed.isEmpty) {
         await storage.clearGeocodingWebUrl();
+        ref.read(geocodingWebUrlProvider.notifier).state = null;
       } else {
-        await storage.saveGeocodingWebUrl(normalizeWebUrl(trimmed));
+        final normalized = normalizeWebUrl(trimmed);
+        await storage.saveGeocodingWebUrl(normalized);
+        ref.read(geocodingWebUrlProvider.notifier).state = normalized;
       }
+      refreshGeocoding(ref);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.geocodingServerUrlSavedRestart)),
+        SnackBar(content: Text(l10n.geocodingServerUrlSaved)),
       );
     } catch (error, stackTrace) {
       _log.error(
@@ -783,10 +788,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final repository = ref.watch(geocodingRepositoryProvider);
-    final settingsAsync = repository.isConfigured
-        ? ref.watch(geocodingSettingsProvider)
-        : null;
+    final configured = repository.isConfigured;
+    final settingsAsync =
+        configured ? ref.watch(geocodingSettingsProvider) : null;
     final description = _selectedDescription(l10n);
+    final contributionSettings =
+        settingsAsync?.valueOrNull ?? defaultGeocodingImportState();
+    final importRunning = settingsAsync?.valueOrNull?.isRunning ?? false;
 
     if (settingsAsync != null) {
       ref.listen(geocodingSettingsProvider, (previous, next) {
@@ -810,16 +818,44 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         ),
         const SizedBox(height: 16),
         _buildGeocodingServerConnection(l10n),
-        if (!repository.isConfigured)
-          const SizedBox.shrink()
+        SettingsGeocodingContributionsSection(
+          settings: contributionSettings,
+          enabled: configured && !importRunning,
+          serverConfigured: configured,
+        ),
+        const SizedBox(height: 32),
+        const Divider(),
+        const SizedBox(height: 16),
+        if (!configured)
+          Text(
+            l10n.geocodingServerNotConfiguredMessage,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+          )
         else
           settingsAsync!.when(
-          loading: () => const LinearProgressIndicator(),
+          loading: () => const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: LinearProgressIndicator(),
+          ),
           error: (error, _) => Text(
             l10n.geocodingSettingsLoadFailed(error.toString()),
           ),
           data: (settings) {
             _syncFromServer(settings);
+            return _buildDownloadedDatasetSections(l10n, settings, description);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDownloadedDatasetSections(
+    AppLocalizations l10n,
+    GeocodingImportState settings,
+    String? description,
+  ) {
             final placesControlsEnabled = !settings.isPlacesRunning &&
                 !_isStartingPlacesImport &&
                 !_isPlacesArchiveBusy &&
@@ -837,6 +873,16 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Text(
+                  l10n.geocodingDownloadedDatasetsSectionTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.geocodingDownloadedDatasetsSectionDescription,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 24),
                 Text(
                   l10n.geocodingPlacesSectionTitle,
                   style: Theme.of(context).textTheme.titleMedium,
@@ -1097,9 +1143,5 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 ),
               ],
             );
-          },
-        ),
-      ],
-    );
   }
 }

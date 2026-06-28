@@ -127,6 +127,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get actionReset => 'Restablecer';
 
   @override
+  String get actionRefresh => 'Refresh';
+
+  @override
   String get actionLater => 'Más tarde';
 
   @override
@@ -1349,7 +1352,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'URL del servidor de geocodificación guardada. Reinicie la aplicación para conectar.';
 
   @override
+  String get geocodingServerUrlSaved => 'Geocoding server URL saved.';
+
+  @override
   String get geocodingPlacesSectionTitle => 'Nombres de lugares (geonames.tsv)';
+
+  @override
+  String get geocodingDownloadedDatasetsSectionTitle =>
+      'Downloaded datasets (OSMNames)';
+
+  @override
+  String get geocodingDownloadedDatasetsSectionDescription =>
+      'Large planet or regional imports from OSMNames. Custom locations above work without importing these.';
 
   @override
   String get geocodingPlaceDatasetLabel => 'Conjunto de datos de lugares';
@@ -1402,6 +1416,169 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get geocodingDownloadImportHousenumbers =>
       'Descargar e importar housenumbers';
+
+  @override
+  String get geocodingContributionsSectionTitle => 'Custom locations';
+
+  @override
+  String get geocodingContributionsSectionDescription =>
+      'Add place names and coordinates that are not in OSMNames. These are stored separately from downloaded datasets and appear in search.';
+
+  @override
+  String get geocodingContributionsConfigureServerHint =>
+      'Save a geocoding server URL above, then restart the app, to add and list custom locations.';
+
+  @override
+  String get geocodingContributionsEmpty =>
+      'No custom locations yet. Tap Add location to create one.';
+
+  @override
+  String get geocodingContributionsLoadFailed =>
+      'Could not load custom locations. Update the geocoding server to the latest version.';
+
+  @override
+  String get geocodingContributionsFilterAll => 'All';
+
+  @override
+  String get geocodingContributionsFilterYours => 'Yours';
+
+  @override
+  String get geocodingContributionsFilterCommunity => 'Community';
+
+  @override
+  String get geocodingContributionsSourceYours => 'Added by you';
+
+  @override
+  String get geocodingContributionsSourceCommunity => 'From crowdsource';
+
+  @override
+  String get geocodingContributionAddTitle => 'Add location';
+
+  @override
+  String get geocodingContributionEditTitle => 'Edit location';
+
+  @override
+  String get geocodingContributionAddAction => 'Add location';
+
+  @override
+  String get geocodingContributionNameLabel => 'Name';
+
+  @override
+  String get geocodingContributionLatitudeLabel => 'Latitude';
+
+  @override
+  String get geocodingContributionLongitudeLabel => 'Longitude';
+
+  @override
+  String get geocodingContributionNotesLabel => 'Notes (optional)';
+
+  @override
+  String get geocodingContributionCountryLabel => 'Country code (optional)';
+
+  @override
+  String get geocodingContributionInvalidCoordinates =>
+      'Enter valid latitude and longitude values.';
+
+  @override
+  String get geocodingContributionSaved => 'Location saved.';
+
+  @override
+  String get geocodingContributionDeleted => 'Location removed.';
+
+  @override
+  String get geocodingContributionDeleteTitle => 'Remove location?';
+
+  @override
+  String geocodingContributionDeleteMessage(String name) {
+    return 'Remove \"$name\" from custom geocoding data?';
+  }
+
+  @override
+  String get geocodingContributionImportedBadge => 'community';
+
+  @override
+  String get geocodingContributionsArchiveDescription =>
+      'Export or import custom locations as a separate JSON file, or remove all custom records from the server.';
+
+  @override
+  String get geocodingContributionDataExported =>
+      'Custom location data exported.';
+
+  @override
+  String get geocodingImportContributionArchiveTitle =>
+      'Import custom locations?';
+
+  @override
+  String get geocodingImportContributionArchiveMessage =>
+      'Merge locations from the selected file into the server. Existing entries with the same name and coordinates are updated.';
+
+  @override
+  String geocodingContributionArchiveImported(int count) {
+    return 'Imported $count custom locations.';
+  }
+
+  @override
+  String get geocodingRemoveAllContributionsTitle =>
+      'Remove all custom locations?';
+
+  @override
+  String get geocodingRemoveAllContributionsMessage =>
+      'This removes every custom location from the geocoding server. Downloaded OSMNames data is not affected.';
+
+  @override
+  String geocodingContributionsRemoved(int count) {
+    return 'Removed $count custom locations.';
+  }
+
+  @override
+  String get geocodingRowLabelContributions => 'locations';
+
+  @override
+  String get geocodingCrowdsourceSectionTitle => 'Crowdsource geocoding';
+
+  @override
+  String get geocodingCrowdsourceSectionDescription =>
+      'Import anonymous community locations from a public git repository, or submit your local locations without sharing any personal information.';
+
+  @override
+  String get geocodingCrowdsourceUrlLabel => 'Crowdsource data URL';
+
+  @override
+  String get geocodingCrowdsourceUrlRequired => 'Enter a crowdsource data URL.';
+
+  @override
+  String get geocodingCrowdsourceSaveUrl => 'Save crowdsource URL';
+
+  @override
+  String get geocodingCrowdsourceUrlSaved => 'Crowdsource URL saved.';
+
+  @override
+  String get geocodingCrowdsourceImportAction => 'Import crowdsource data';
+
+  @override
+  String get geocodingCrowdsourceSubmitAction => 'Submit to crowdsource';
+
+  @override
+  String get geocodingCrowdsourceSubmitTitle => 'Submit anonymously?';
+
+  @override
+  String get geocodingCrowdsourceSubmitMessage =>
+      'Only location names and coordinates are shared. No account information or personal identifiers are included.';
+
+  @override
+  String geocodingCrowdsourceImported(int count) {
+    return 'Imported $count crowdsource locations.';
+  }
+
+  @override
+  String geocodingCrowdsourceSubmitted(int count) {
+    return 'Submitted $count anonymous locations to the crowdsource repository.';
+  }
+
+  @override
+  String geocodingCrowdsourceBundleSaved(int count) {
+    return 'Saved an anonymous bundle with $count locations. Submit it to the crowdsource repository manually.';
+  }
 
   @override
   String geocodingSettingsLoadFailed(String error) {

@@ -12,12 +12,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
-import 'geocoding/geocode_housenumber.dart' as _i3;
-import 'geocoding/geocode_place.dart' as _i4;
-import 'geocoding/geocode_search_result.dart' as _i5;
-import 'geocoding/geocoding_settings.dart' as _i6;
+import 'geocoding/geocode_contribution.dart' as _i3;
+import 'geocoding/geocode_housenumber.dart' as _i4;
+import 'geocoding/geocode_place.dart' as _i5;
+import 'geocoding/geocode_search_result.dart' as _i6;
+import 'geocoding/geocoding_settings.dart' as _i7;
 import 'package:wayfinder_geocoding_server/src/generated/geocoding/geocode_search_result.dart'
-    as _i7;
+    as _i8;
+export 'geocoding/geocode_contribution.dart';
 export 'geocoding/geocode_housenumber.dart';
 export 'geocoding/geocode_place.dart';
 export 'geocoding/geocode_search_result.dart';
@@ -31,6 +33,119 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'geocode_contribution',
+      dartName: 'GeocodeContribution',
+      schema: 'public',
+      module: 'wayfinder_geocoding',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'geocode_contribution_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'latitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'longitude',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'notes',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'countryCode',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'contentKey',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'importedFromCrowd',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'geocode_contribution_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_contribution_content_key_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'contentKey',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'geocode_contribution_name_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'geocode_housenumber',
       dartName: 'GeocodeHousenumber',
@@ -113,45 +228,6 @@ class Protocol extends _i1.SerializationManagerServer {
             ),
           ],
           type: 'btree',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_housenumber_street_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'street',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_housenumber_housenumber_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'housenumber',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_housenumber_label_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.expression,
-              definition: '((housenumber || \' \'::text) || street)',
-            ),
-          ],
-          type: 'gin',
           isUnique: false,
           isPrimary: false,
         ),
@@ -267,32 +343,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_place_name_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'geocode_place_display_name_trgm_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'displayName',
-            ),
-          ],
-          type: 'gin',
-          isUnique: false,
-          isPrimary: false,
-        ),
       ],
       managed: true,
     ),
@@ -396,6 +446,14 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'DateTime?',
         ),
         _i2.ColumnDefinition(
+          name: 'crowdsourceSourceUrl',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault:
+              '\'https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/geocoding-crowdsource/contributions.json\'::text',
+        ),
+        _i2.ColumnDefinition(
           name: 'updatedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -450,30 +508,37 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i3.GeocodeHousenumber) {
-      return _i3.GeocodeHousenumber.fromJson(data) as T;
+    if (t == _i3.GeocodeContribution) {
+      return _i3.GeocodeContribution.fromJson(data) as T;
     }
-    if (t == _i4.GeocodePlace) {
-      return _i4.GeocodePlace.fromJson(data) as T;
+    if (t == _i4.GeocodeHousenumber) {
+      return _i4.GeocodeHousenumber.fromJson(data) as T;
     }
-    if (t == _i5.GeocodeSearchResult) {
-      return _i5.GeocodeSearchResult.fromJson(data) as T;
+    if (t == _i5.GeocodePlace) {
+      return _i5.GeocodePlace.fromJson(data) as T;
     }
-    if (t == _i6.GeocodingSettings) {
-      return _i6.GeocodingSettings.fromJson(data) as T;
+    if (t == _i6.GeocodeSearchResult) {
+      return _i6.GeocodeSearchResult.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i3.GeocodeHousenumber?>()) {
-      return (data != null ? _i3.GeocodeHousenumber.fromJson(data) : null) as T;
+    if (t == _i7.GeocodingSettings) {
+      return _i7.GeocodingSettings.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.GeocodePlace?>()) {
-      return (data != null ? _i4.GeocodePlace.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i5.GeocodeSearchResult?>()) {
-      return (data != null ? _i5.GeocodeSearchResult.fromJson(data) : null)
+    if (t == _i1.getType<_i3.GeocodeContribution?>()) {
+      return (data != null ? _i3.GeocodeContribution.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i6.GeocodingSettings?>()) {
-      return (data != null ? _i6.GeocodingSettings.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.GeocodeHousenumber?>()) {
+      return (data != null ? _i4.GeocodeHousenumber.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i5.GeocodePlace?>()) {
+      return (data != null ? _i5.GeocodePlace.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.GeocodeSearchResult?>()) {
+      return (data != null ? _i6.GeocodeSearchResult.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i7.GeocodingSettings?>()) {
+      return (data != null ? _i7.GeocodingSettings.fromJson(data) : null) as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
@@ -484,9 +549,9 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i7.GeocodeSearchResult>) {
+    if (t == List<_i8.GeocodeSearchResult>) {
       return (data as List)
-              .map((e) => deserialize<_i7.GeocodeSearchResult>(e))
+              .map((e) => deserialize<_i8.GeocodeSearchResult>(e))
               .toList()
           as T;
     }
@@ -498,10 +563,11 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i3.GeocodeHousenumber => 'GeocodeHousenumber',
-      _i4.GeocodePlace => 'GeocodePlace',
-      _i5.GeocodeSearchResult => 'GeocodeSearchResult',
-      _i6.GeocodingSettings => 'GeocodingSettings',
+      _i3.GeocodeContribution => 'GeocodeContribution',
+      _i4.GeocodeHousenumber => 'GeocodeHousenumber',
+      _i5.GeocodePlace => 'GeocodePlace',
+      _i6.GeocodeSearchResult => 'GeocodeSearchResult',
+      _i7.GeocodingSettings => 'GeocodingSettings',
       _ => null,
     };
   }
@@ -519,13 +585,15 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i3.GeocodeHousenumber():
+      case _i3.GeocodeContribution():
+        return 'GeocodeContribution';
+      case _i4.GeocodeHousenumber():
         return 'GeocodeHousenumber';
-      case _i4.GeocodePlace():
+      case _i5.GeocodePlace():
         return 'GeocodePlace';
-      case _i5.GeocodeSearchResult():
+      case _i6.GeocodeSearchResult():
         return 'GeocodeSearchResult';
-      case _i6.GeocodingSettings():
+      case _i7.GeocodingSettings():
         return 'GeocodingSettings';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -541,17 +609,20 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'GeocodeContribution') {
+      return deserialize<_i3.GeocodeContribution>(data['data']);
+    }
     if (dataClassName == 'GeocodeHousenumber') {
-      return deserialize<_i3.GeocodeHousenumber>(data['data']);
+      return deserialize<_i4.GeocodeHousenumber>(data['data']);
     }
     if (dataClassName == 'GeocodePlace') {
-      return deserialize<_i4.GeocodePlace>(data['data']);
+      return deserialize<_i5.GeocodePlace>(data['data']);
     }
     if (dataClassName == 'GeocodeSearchResult') {
-      return deserialize<_i5.GeocodeSearchResult>(data['data']);
+      return deserialize<_i6.GeocodeSearchResult>(data['data']);
     }
     if (dataClassName == 'GeocodingSettings') {
-      return deserialize<_i6.GeocodingSettings>(data['data']);
+      return deserialize<_i7.GeocodingSettings>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -569,12 +640,14 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i3.GeocodeHousenumber:
-        return _i3.GeocodeHousenumber.t;
-      case _i4.GeocodePlace:
-        return _i4.GeocodePlace.t;
-      case _i6.GeocodingSettings:
-        return _i6.GeocodingSettings.t;
+      case _i3.GeocodeContribution:
+        return _i3.GeocodeContribution.t;
+      case _i4.GeocodeHousenumber:
+        return _i4.GeocodeHousenumber.t;
+      case _i5.GeocodePlace:
+        return _i5.GeocodePlace.t;
+      case _i7.GeocodingSettings:
+        return _i7.GeocodingSettings.t;
     }
     return null;
   }

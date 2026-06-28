@@ -15,4 +15,5 @@ fields:
   housenumbersImportProgress: double, default=0
   housenumbersImportError: String?
   housenumbersImportedAt: DateTime?
+  crowdsourceSourceUrl: String, default="https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/geocoding-crowdsource/contributions.json"
   updatedAt: DateTime

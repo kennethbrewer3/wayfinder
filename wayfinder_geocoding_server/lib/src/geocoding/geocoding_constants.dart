@@ -8,6 +8,10 @@ abstract final class GeocodingConstants {
 
   static const resultTypePlace = 'place';
   static const resultTypeAddress = 'address';
+  static const resultTypeContribution = 'contribution';
+
+  static const defaultCrowdsourceSourceUrl =
+      'https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/geocoding-crowdsource/contributions.json';
 
   static const statusIdle = 'idle';
   static const statusDownloading = 'downloading';

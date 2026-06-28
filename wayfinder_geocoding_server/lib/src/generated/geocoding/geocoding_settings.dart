@@ -29,6 +29,7 @@ abstract class GeocodingSettings
     double? housenumbersImportProgress,
     this.housenumbersImportError,
     this.housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     required this.updatedAt,
   }) : importStatus = importStatus ?? 'idle',
        importedRowCount = importedRowCount ?? 0,
@@ -38,7 +39,10 @@ abstract class GeocodingSettings
            'https://github.com/OSMNames/OSMNames/releases/download/v2.0.4/planet-latest_housenumbers.tsv.gz',
        housenumbersImportStatus = housenumbersImportStatus ?? 'idle',
        housenumbersImportedRowCount = housenumbersImportedRowCount ?? 0,
-       housenumbersImportProgress = housenumbersImportProgress ?? 0.0;
+       housenumbersImportProgress = housenumbersImportProgress ?? 0.0,
+       crowdsourceSourceUrl =
+           crowdsourceSourceUrl ??
+           'https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/geocoding-crowdsource/contributions.json';
 
   factory GeocodingSettings({
     int? id,
@@ -55,6 +59,7 @@ abstract class GeocodingSettings
     double? housenumbersImportProgress,
     String? housenumbersImportError,
     DateTime? housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     required DateTime updatedAt,
   }) = _GeocodingSettingsImpl;
 
@@ -86,6 +91,8 @@ abstract class GeocodingSettings
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['housenumbersImportedAt'],
             ),
+      crowdsourceSourceUrl:
+          jsonSerialization['crowdsourceSourceUrl'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
       ),
@@ -125,6 +132,8 @@ abstract class GeocodingSettings
 
   DateTime? housenumbersImportedAt;
 
+  String crowdsourceSourceUrl;
+
   DateTime updatedAt;
 
   @override
@@ -148,6 +157,7 @@ abstract class GeocodingSettings
     double? housenumbersImportProgress,
     String? housenumbersImportError,
     DateTime? housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     DateTime? updatedAt,
   });
   @override
@@ -170,6 +180,7 @@ abstract class GeocodingSettings
         'housenumbersImportError': housenumbersImportError,
       if (housenumbersImportedAt != null)
         'housenumbersImportedAt': housenumbersImportedAt?.toJson(),
+      'crowdsourceSourceUrl': crowdsourceSourceUrl,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -194,6 +205,7 @@ abstract class GeocodingSettings
         'housenumbersImportError': housenumbersImportError,
       if (housenumbersImportedAt != null)
         'housenumbersImportedAt': housenumbersImportedAt?.toJson(),
+      'crowdsourceSourceUrl': crowdsourceSourceUrl,
       'updatedAt': updatedAt.toJson(),
     };
   }
@@ -246,6 +258,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
     double? housenumbersImportProgress,
     String? housenumbersImportError,
     DateTime? housenumbersImportedAt,
+    String? crowdsourceSourceUrl,
     required DateTime updatedAt,
   }) : super._(
          id: id,
@@ -262,6 +275,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
          housenumbersImportProgress: housenumbersImportProgress,
          housenumbersImportError: housenumbersImportError,
          housenumbersImportedAt: housenumbersImportedAt,
+         crowdsourceSourceUrl: crowdsourceSourceUrl,
          updatedAt: updatedAt,
        );
 
@@ -284,6 +298,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
     double? housenumbersImportProgress,
     Object? housenumbersImportError = _Undefined,
     Object? housenumbersImportedAt = _Undefined,
+    String? crowdsourceSourceUrl,
     DateTime? updatedAt,
   }) {
     return GeocodingSettings(
@@ -309,6 +324,7 @@ class _GeocodingSettingsImpl extends GeocodingSettings {
       housenumbersImportedAt: housenumbersImportedAt is DateTime?
           ? housenumbersImportedAt
           : this.housenumbersImportedAt,
+      crowdsourceSourceUrl: crowdsourceSourceUrl ?? this.crowdsourceSourceUrl,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -392,6 +408,12 @@ class GeocodingSettingsUpdateTable
         value,
       );
 
+  _i1.ColumnValue<String, String> crowdsourceSourceUrl(String value) =>
+      _i1.ColumnValue(
+        table.crowdsourceSourceUrl,
+        value,
+      );
+
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
       _i1.ColumnValue(
         table.updatedAt,
@@ -462,6 +484,11 @@ class GeocodingSettingsTable extends _i1.Table<int?> {
       'housenumbersImportedAt',
       this,
     );
+    crowdsourceSourceUrl = _i1.ColumnString(
+      'crowdsourceSourceUrl',
+      this,
+      hasDefault: true,
+    );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
@@ -496,6 +523,8 @@ class GeocodingSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime housenumbersImportedAt;
 
+  late final _i1.ColumnString crowdsourceSourceUrl;
+
   late final _i1.ColumnDateTime updatedAt;
 
   @override
@@ -514,6 +543,7 @@ class GeocodingSettingsTable extends _i1.Table<int?> {
     housenumbersImportProgress,
     housenumbersImportError,
     housenumbersImportedAt,
+    crowdsourceSourceUrl,
     updatedAt,
   ];
 }

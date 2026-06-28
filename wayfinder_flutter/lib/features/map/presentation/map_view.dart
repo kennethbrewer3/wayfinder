@@ -198,6 +198,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   final Map<String, String> _layerLoadErrors = {};
   List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
   String? _activeLayerCatalogId;
+  PmtilesArchiveEntry? _resolvedActiveEntry;
   Timer? _viewportLayerUpdateTimer;
   int _layerLoadGeneration = 0;
   Size? _lastMapSize;
@@ -253,6 +254,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final newIds = widget.enabledEntries.map((entry) => entry.id).toSet();
     if (oldIds != newIds) {
       _evictRemovedLayers(oldIds.difference(newIds));
+      _resolvedActiveEntry = null;
       _scheduleVisibleLayerUpdate(preload: true, immediate: true);
     } else if (oldWidget.enabledEntries != widget.enabledEntries ||
         (oldWidget.metadataLoading && !widget.metadataLoading)) {
@@ -260,6 +262,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         _evictAllLayers();
         setState(() {
           _activeLayerCatalogId = null;
+          _resolvedActiveEntry = null;
           _visibleMapLayers = const [];
         });
       } else {
@@ -338,12 +341,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final loadedCount =
         entries.where((entry) => _layerCache.containsKey(entry.id)).length;
-    final selectedEntries = selectArchivesForViewport(
-      entries: entries,
-      viewportBounds: _currentViewportBounds(),
-      viewportCenter: _currentViewportCenter(),
-      viewportZoom: _currentViewportZoom(),
-    );
+    final selectedEntries = _resolvedActiveEntry == null
+        ? selectArchivesForViewport(
+            entries: entries,
+            viewportBounds: _currentViewportBounds(),
+            viewportCenter: _currentViewportCenter(),
+            viewportZoom: _currentViewportZoom(),
+          )
+        : [_resolvedActiveEntry!];
     final activeEntry =
         selectedEntries.isEmpty ? null : selectedEntries.first;
     final activeLayer =
@@ -502,14 +507,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _publishPmtilesLoadStatus();
 
     try {
-      final selectedEntries = selectArchivesForViewport(
+      final resolveGeneration = ++_layerLoadGeneration;
+      final activeEntry = await resolveActiveArchiveForViewport(
         entries: widget.enabledEntries,
         viewportBounds: _currentViewportBounds(),
         viewportCenter: _currentViewportCenter(),
         viewportZoom: _currentViewportZoom(),
       );
-      final activeEntry =
-          selectedEntries.isEmpty ? null : selectedEntries.first;
+      if (!mounted || resolveGeneration != _layerLoadGeneration) {
+        return;
+      }
+      _resolvedActiveEntry = activeEntry;
       var generation = _layerLoadGeneration;
 
       if (activeEntry != null && !_layerCache.containsKey(activeEntry.id)) {
@@ -564,13 +572,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    final selectedEntries = selectArchivesForViewport(
+    final fallback = selectArchivesForViewport(
       entries: widget.enabledEntries,
       viewportBounds: _currentViewportBounds(),
       viewportCenter: _currentViewportCenter(),
       viewportZoom: _currentViewportZoom(),
     );
-    final activeEntry = selectedEntries.isEmpty ? null : selectedEntries.first;
+    final activeEntry = _resolvedActiveEntry ??
+        (fallback.isEmpty ? null : fallback.first);
     final activeLayer =
         activeEntry == null ? null : _layerCache[activeEntry.id];
     final nextCatalogId = activeLayer?.catalogId;
@@ -605,11 +614,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final tileZoom = tileZoomForViewport(zoom);
     final center = _currentViewportCenter();
     final centerTile = latLngToTile(center, tileZoom);
-    PmtilesArchiveEntry? activeEntry;
-    for (final entry in widget.enabledEntries) {
-      if (entry.id == _activeLayerCatalogId) {
-        activeEntry = entry;
-        break;
+    PmtilesArchiveEntry? activeEntry = _resolvedActiveEntry;
+    if (activeEntry == null) {
+      for (final entry in widget.enabledEntries) {
+        if (entry.id == _activeLayerCatalogId) {
+          activeEntry = entry;
+          break;
+        }
       }
     }
     final archiveLine = activeEntry == null

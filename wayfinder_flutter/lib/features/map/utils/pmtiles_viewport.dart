@@ -81,6 +81,13 @@ double _intersectionArea(PmtilesGeoBounds archive, LatLngBounds viewport) {
   return (north - south) * (east - west);
 }
 
+double _centerDistanceSquared(PmtilesGeoBounds bounds, LatLng point) {
+  final center = bounds.center;
+  final dLat = center.latitude - point.latitude;
+  final dLng = center.longitude - point.longitude;
+  return (dLat * dLat) + (dLng * dLng);
+}
+
 bool archiveIntersectsViewport({
   required PmtilesArchiveEntry entry,
   required LatLngBounds viewportBounds,
@@ -98,11 +105,73 @@ bool archiveIntersectsViewport({
   return archiveBounds.isOverlapping(viewportBounds);
 }
 
-/// Picks enabled archives that overlap the viewport, capped for performance.
+List<PmtilesArchiveEntry> _matchingArchivesForViewport({
+  required List<PmtilesArchiveEntry> entries,
+  required LatLngBounds paddedViewport,
+  required double viewportZoom,
+}) {
+  final withKnownBounds =
+      entries.where((entry) => entry.boundsKnown).toList();
+  final candidates = withKnownBounds.isEmpty ? entries : withKnownBounds;
+
+  final matching = candidates
+      .where(
+        (entry) => archiveIntersectsViewport(
+          entry: entry,
+          viewportBounds: paddedViewport,
+          viewportZoom: viewportZoom,
+        ),
+      )
+      .toList();
+
+  if (matching.isEmpty && withKnownBounds.isEmpty) {
+    return entries.toList();
+  }
+
+  return matching;
+}
+
+/// Archives whose header bounds contain [viewportCenter], best probe order first.
 ///
-/// When multiple archives overlap (common for neighboring states whose header
-/// bounds are rectangles), prefers the archive whose bounds contain the map
-/// center and has the smallest geographic area.
+/// Neighboring state archives often have overlapping rectangular bounds. Smallest
+/// area is a poor tie-break (Maryland wins over Virginia near DC). Prefer the
+/// archive that overlaps the current viewport most, then the one whose center is
+/// closest to the map center.
+List<PmtilesArchiveEntry> rankArchivesContainingCenter({
+  required List<PmtilesArchiveEntry> entries,
+  required LatLngBounds paddedViewport,
+  required LatLng viewportCenter,
+  required double viewportZoom,
+}) {
+  final matching = _matchingArchivesForViewport(
+    entries: entries,
+    paddedViewport: paddedViewport,
+    viewportZoom: viewportZoom,
+  );
+  if (matching.isEmpty) {
+    return const [];
+  }
+
+  final containingCenter = matching
+      .where((entry) => entry.bounds.contains(viewportCenter))
+      .toList();
+  if (containingCenter.isEmpty) {
+    return const [];
+  }
+
+  containingCenter.sort((a, b) {
+    final intersection = _intersectionArea(b.bounds, paddedViewport)
+        .compareTo(_intersectionArea(a.bounds, paddedViewport));
+    if (intersection != 0) {
+      return intersection;
+    }
+    return _centerDistanceSquared(a.bounds, viewportCenter)
+        .compareTo(_centerDistanceSquared(b.bounds, viewportCenter));
+  });
+  return containingCenter;
+}
+
+/// Picks enabled archives that overlap the viewport, capped for performance.
 List<PmtilesArchiveEntry> selectArchivesForViewport({
   required List<PmtilesArchiveEntry> entries,
   required LatLngBounds viewportBounds,
@@ -119,35 +188,23 @@ List<PmtilesArchiveEntry> selectArchivesForViewport({
     fraction: _viewportPaddingFraction,
   );
 
-  final withKnownBounds =
-      entries.where((entry) => entry.boundsKnown).toList();
-  final candidates = withKnownBounds.isEmpty ? entries : withKnownBounds;
-
-  final matching = candidates
-      .where(
-        (entry) => archiveIntersectsViewport(
-          entry: entry,
-          viewportBounds: paddedViewport,
-          viewportZoom: viewportZoom,
-        ),
-      )
-      .toList();
-
-  if (matching.isEmpty && withKnownBounds.isEmpty) {
-    return entries.take(maxLayers).toList();
-  }
+  final matching = _matchingArchivesForViewport(
+    entries: entries,
+    paddedViewport: paddedViewport,
+    viewportZoom: viewportZoom,
+  );
 
   if (matching.isEmpty) {
     return const [];
   }
 
-  final containingCenter = matching
-      .where((entry) => entry.bounds.contains(viewportCenter))
-      .toList();
+  final containingCenter = rankArchivesContainingCenter(
+    entries: entries,
+    paddedViewport: paddedViewport,
+    viewportCenter: viewportCenter,
+    viewportZoom: viewportZoom,
+  );
   if (containingCenter.isNotEmpty) {
-    containingCenter.sort(
-      (a, b) => a.bounds.geographicArea.compareTo(b.bounds.geographicArea),
-    );
     return containingCenter.take(maxLayers).toList();
   }
 
@@ -178,35 +235,23 @@ List<PmtilesArchiveEntry> rankArchivesForViewport({
     fraction: _viewportPaddingFraction,
   );
 
-  final withKnownBounds =
-      entries.where((entry) => entry.boundsKnown).toList();
-  final candidates = withKnownBounds.isEmpty ? entries : withKnownBounds;
-
-  final matching = candidates
-      .where(
-        (entry) => archiveIntersectsViewport(
-          entry: entry,
-          viewportBounds: paddedViewport,
-          viewportZoom: viewportZoom,
-        ),
-      )
-      .toList();
-
-  if (matching.isEmpty && withKnownBounds.isEmpty) {
-    return List<PmtilesArchiveEntry>.from(entries);
-  }
+  final matching = _matchingArchivesForViewport(
+    entries: entries,
+    paddedViewport: paddedViewport,
+    viewportZoom: viewportZoom,
+  );
 
   if (matching.isEmpty) {
     return const [];
   }
 
-  final containingCenter = matching
-      .where((entry) => entry.bounds.contains(viewportCenter))
-      .toList();
+  final containingCenter = rankArchivesContainingCenter(
+    entries: entries,
+    paddedViewport: paddedViewport,
+    viewportCenter: viewportCenter,
+    viewportZoom: viewportZoom,
+  );
   if (containingCenter.isNotEmpty) {
-    containingCenter.sort(
-      (a, b) => a.bounds.geographicArea.compareTo(b.bounds.geographicArea),
-    );
     final containingIds = containingCenter.map((entry) => entry.id).toSet();
     final remainder = matching
         .where((entry) => !containingIds.contains(entry.id))

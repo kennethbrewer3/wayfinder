@@ -339,6 +339,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Dibuja bordes verdes alrededor de cada tile del mapa. Requiere la superposición de depuración del viewport anterior.';
 
   @override
+  String get mapDebugOverlayCopyTooltip => 'Copiar información de depuración';
+
+  @override
+  String get mapDebugOverlayCopied =>
+      'Información de depuración copiada al portapapeles.';
+
+  @override
   String get settingsHomeLocationSaved => 'Ubicación de inicio guardada.';
 
   @override

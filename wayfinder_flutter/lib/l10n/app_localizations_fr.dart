@@ -341,6 +341,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Dessine des bordures vertes autour de chaque tuile de la carte. Nécessite la superposition de débogage du viewport ci-dessus.';
 
   @override
+  String get mapDebugOverlayCopyTooltip => 'Copier les infos de débogage';
+
+  @override
+  String get mapDebugOverlayCopied =>
+      'Infos de débogage copiées dans le presse-papiers.';
+
+  @override
   String get settingsHomeLocationSaved => 'Point d\'accueil enregistré.';
 
   @override

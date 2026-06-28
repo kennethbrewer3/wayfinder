@@ -125,6 +125,8 @@
   "settingsMapViewportDebugBorderDescription": "Dessine un contour rouge autour du canevas de la carte avec les détails d'archive, de zoom et de tuile centrale.",
   "settingsMapTileBorderDebugTitle": "Afficher les bordures de tuiles",
   "settingsMapTileBorderDebugDescription": "Dessine des bordures vertes autour de chaque tuile de la carte. Nécessite la superposition de débogage du viewport ci-dessus.",
+  "mapDebugOverlayCopyTooltip": "Copier les infos de débogage",
+  "mapDebugOverlayCopied": "Infos de débogage copiées dans le presse-papiers.",
   "settingsHomeLocationSaved": "Point d'accueil enregistré.",
   "settingsHomeLocationReset": "Point d'accueil réinitialisé par défaut.",
   "settingsOpenMapFirst": "Ouvrez d'abord la carte pour capturer sa vue.",

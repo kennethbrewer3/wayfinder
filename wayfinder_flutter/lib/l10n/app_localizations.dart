@@ -706,6 +706,18 @@ abstract class AppLocalizations {
   /// **'Draws green borders around each map tile. Requires the viewport debug overlay above.'**
   String get settingsMapTileBorderDebugDescription;
 
+  /// No description provided for @mapDebugOverlayCopyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy debug info'**
+  String get mapDebugOverlayCopyTooltip;
+
+  /// No description provided for @mapDebugOverlayCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug info copied to clipboard.'**
+  String get mapDebugOverlayCopied;
+
   /// No description provided for @settingsHomeLocationSaved.
   ///
   /// In en, this message translates to:

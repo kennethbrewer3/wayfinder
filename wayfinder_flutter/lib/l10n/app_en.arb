@@ -146,6 +146,8 @@
   "settingsMapViewportDebugBorderDescription": "Draws a red outline around the map canvas with archive, zoom, and center-tile details.",
   "settingsMapTileBorderDebugTitle": "Show tile borders",
   "settingsMapTileBorderDebugDescription": "Draws green borders around each map tile. Requires the viewport debug overlay above.",
+  "mapDebugOverlayCopyTooltip": "Copy debug info",
+  "mapDebugOverlayCopied": "Debug info copied to clipboard.",
   "settingsHomeLocationSaved": "Home location saved.",
   "settingsHomeLocationReset": "Home location reset to default.",
   "settingsOpenMapFirst": "Open the map first to capture its view.",

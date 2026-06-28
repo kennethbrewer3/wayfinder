@@ -338,6 +338,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Draws green borders around each map tile. Requires the viewport debug overlay above.';
 
   @override
+  String get mapDebugOverlayCopyTooltip => 'Copy debug info';
+
+  @override
+  String get mapDebugOverlayCopied => 'Debug info copied to clipboard.';
+
+  @override
   String get settingsHomeLocationSaved => 'Home location saved.';
 
   @override

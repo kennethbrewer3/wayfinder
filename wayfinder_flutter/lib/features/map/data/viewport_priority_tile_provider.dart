@@ -7,9 +7,14 @@ import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 
+/// Tile zoom used by [vector_map_tiles] for a fractional map zoom.
+int tileZoomForViewport(double mapZoom) {
+  return math.max(1, mapZoom.floor());
+}
+
 /// Limits concurrent tile reads and serves closest-to-viewport tiles first.
 class ViewportPriorityTileScheduler {
-  ViewportPriorityTileScheduler({this.maxConcurrent = 8});
+  ViewportPriorityTileScheduler({this.maxConcurrent = 12});
 
   final int maxConcurrent;
   var _active = 0;
@@ -99,7 +104,7 @@ List<TileIdentity> spiralTilesForViewport({
   required LatLngBounds bounds,
   required LatLng center,
   required int zoom,
-  int maxTiles = 36,
+  int? maxTiles,
 }) {
   final scale = 1 << zoom;
   final minX = ((bounds.west + 180) / 360 * scale).floor().clamp(0, scale - 1);
@@ -120,10 +125,25 @@ List<TileIdentity> spiralTilesForViewport({
   }
 
   ranked.sort((a, b) => a.distance.compareTo(b.distance));
-  return [
-    for (final tile in ranked.take(maxTiles))
+  final tiles = [
+    for (final tile in ranked)
       TileIdentity(zoom, tile.x, tile.y),
   ];
+  if (maxTiles == null || tiles.length <= maxTiles) {
+    return tiles;
+  }
+  return tiles.take(maxTiles).toList(growable: false);
+}
+
+int visibleTileCountForViewport({
+  required LatLngBounds bounds,
+  required int zoom,
+}) {
+  return spiralTilesForViewport(
+    bounds: bounds,
+    center: bounds.center,
+    zoom: zoom,
+  ).length;
 }
 
 int _latToTileY(double latitude, int zoom) {
@@ -179,14 +199,29 @@ class ViewportPriorityPmTilesVectorTileProvider extends VectorTileProvider {
     required LatLngBounds bounds,
     required LatLng center,
     required int zoom,
-    int maxTiles = 36,
+    int substitutionLevels = 2,
+    int? maxTiles,
   }) async {
-    final tiles = spiralTilesForViewport(
+    final tileLimit = maxTiles ?? math.max(48, visibleTileCountForViewport(
       bounds: bounds,
-      center: center,
       zoom: zoom,
-      maxTiles: maxTiles,
-    );
+    ));
+    final tiles = <TileIdentity>{};
+    for (var level = 0; level <= substitutionLevels; level++) {
+      final tileZoom = zoom - level;
+      if (tileZoom < minimumZoom) {
+        break;
+      }
+      tiles.addAll(
+        spiralTilesForViewport(
+          bounds: bounds,
+          center: center,
+          zoom: tileZoom,
+          maxTiles: tileLimit,
+        ),
+      );
+    }
+
     await Future.wait(
       tiles.map(
         (tile) => provide(tile).catchError((_) => Uint8List(0)),

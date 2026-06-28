@@ -539,7 +539,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _scheduleViewportTileWarmup() {
     _viewportTileWarmupTimer?.cancel();
-    _viewportTileWarmupTimer = Timer(const Duration(milliseconds: 150), () {
+    _viewportTileWarmupTimer = Timer(const Duration(milliseconds: 75), () {
       unawaited(_warmActiveLayerTiles());
     });
   }
@@ -555,13 +555,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    final zoom = _currentViewportZoom()
-        .round()
+    final mapZoom = _currentViewportZoom();
+    final zoom = tileZoomForViewport(mapZoom)
         .clamp(layer.minZoom, layer.maxZoom);
+    final bounds = _currentViewportBounds();
     await provider.warmViewport(
-      bounds: _currentViewportBounds(),
+      bounds: bounds,
       center: _currentViewportCenter(),
       zoom: zoom,
+      substitutionLevels: 2,
     );
   }
 
@@ -2126,6 +2128,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   ),
                   onPositionChanged: (position, hasGesture) {
                     _scheduleVisibleLayerUpdate();
+                    _scheduleViewportTileWarmup();
                     if (!hasGesture) return;
                     widget.onViewportChanged(
                       MapViewport(
@@ -2162,8 +2165,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 theme: theme,
                                 backgroundTheme: backgroundTheme,
                                 sprites: sprites,
-                                maximumTileSubstitutionDifference: 2,
-                                memoryTileDataCacheMaxSize: 32,
+                                concurrency: 8,
+                                maximumTileSubstitutionDifference: 3,
+                                memoryTileDataCacheMaxSize: 96,
                                 tileProviders: TileProviders({
                                   'protomaps': tileProvider,
                                 }),

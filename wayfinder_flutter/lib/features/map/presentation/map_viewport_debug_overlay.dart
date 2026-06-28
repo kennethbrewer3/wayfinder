@@ -5,9 +5,11 @@ class MapViewportDebugOverlay extends StatelessWidget {
   const MapViewportDebugOverlay({
     super.key,
     required this.mapSize,
+    required this.details,
   });
 
   final Size mapSize;
+  final String details;
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +31,13 @@ class MapViewportDebugOverlay extends StatelessWidget {
                     vertical: 4,
                   ),
                   child: Text(
-                    '${mapSize.width.toStringAsFixed(0)} × ${mapSize.height.toStringAsFixed(0)}',
+                    '${mapSize.width.toStringAsFixed(0)} × ${mapSize.height.toStringAsFixed(0)}\n$details',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'monospace',
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
+                      height: 1.35,
                     ),
                   ),
                 ),

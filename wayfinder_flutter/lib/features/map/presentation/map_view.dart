@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
-import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
@@ -55,7 +54,6 @@ import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../settings/data/pmtiles_loader.dart';
-import '../data/viewport_priority_tile_provider.dart';
 import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
@@ -198,12 +196,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   final GlobalKey _mapHostKey = GlobalKey();
   final Map<String, PmtilesMapLayerConfig> _layerCache = {};
   final Map<String, String> _layerLoadErrors = {};
-  final Map<String, ViewportPriorityPmTilesVectorTileProvider>
-      _priorityVectorProviders = {};
   List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
   String? _activeLayerCatalogId;
   Timer? _viewportLayerUpdateTimer;
-  Timer? _viewportTileWarmupTimer;
   int _layerLoadGeneration = 0;
   Size? _lastMapSize;
 
@@ -241,12 +236,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   @override
   void dispose() {
     _viewportLayerUpdateTimer?.cancel();
-    _viewportTileWarmupTimer?.cancel();
     _longPressTimer?.cancel();
-    for (final provider in _priorityVectorProviders.values) {
-      provider.dispose();
-    }
-    _priorityVectorProviders.clear();
     setBrowserContextMenuEnabled(true);
     super.dispose();
   }
@@ -306,7 +296,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     try {
       return _mapController.camera.visibleBounds;
     } catch (_) {
-      return approximateVisibleBounds(widget.viewport);
+      return approximateVisibleBounds(
+        widget.viewport,
+        mapSize: _lastMapSize,
+      );
     }
   }
 
@@ -437,60 +430,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     for (final id in removedIds) {
       _layerCache.remove(id);
       _layerLoadErrors.remove(id);
-      _priorityVectorProviders.remove(id)?.dispose();
     }
   }
 
   void _evictAllLayers() {
     _layerCache.clear();
     _layerLoadErrors.clear();
-    for (final provider in _priorityVectorProviders.values) {
-      provider.dispose();
-    }
-    _priorityVectorProviders.clear();
-  }
-
-  PmtilesMapLayerConfig _wrapLayerWithViewportPriority(
-    PmtilesMapLayerConfig layer,
-  ) {
-    if (layer is! PmtilesVectorMapLayerConfig) {
-      return layer;
-    }
-    if (layer.tileProvider is ViewportPriorityPmTilesVectorTileProvider) {
-      return layer;
-    }
-    final delegate = layer.tileProvider as PmTilesVectorTileProvider;
-
-    final existing = _priorityVectorProviders[layer.catalogId];
-    if (existing != null && existing.delegate == delegate) {
-      return PmtilesVectorMapLayerConfig(
-        catalogId: layer.catalogId,
-        minZoom: layer.minZoom,
-        maxZoom: layer.maxZoom,
-        tileType: layer.tileType,
-        tileProvider: existing,
-        theme: layer.theme,
-        backgroundTheme: layer.backgroundTheme,
-        sprites: layer.sprites,
-      );
-    }
-
-    existing?.dispose();
-    final wrapped = ViewportPriorityPmTilesVectorTileProvider(
-      delegate: delegate,
-      viewportCenter: _currentViewportCenter,
-    );
-    _priorityVectorProviders[layer.catalogId] = wrapped;
-    return PmtilesVectorMapLayerConfig(
-      catalogId: layer.catalogId,
-      minZoom: layer.minZoom,
-      maxZoom: layer.maxZoom,
-      tileType: layer.tileType,
-      tileProvider: wrapped,
-      theme: layer.theme,
-      backgroundTheme: layer.backgroundTheme,
-      sprites: layer.sprites,
-    );
   }
 
   Future<void> _loadLayerEntry(
@@ -498,11 +443,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     int generation,
   ) async {
     try {
-      final layer = _wrapLayerWithViewportPriority(
-        await buildPmtilesMapLayer(
-          entry.source,
-          catalogId: entry.id,
-        ),
+      final layer = await buildPmtilesMapLayer(
+        entry.source,
+        catalogId: entry.id,
       );
       if (mounted && generation == _layerLoadGeneration) {
         _layerCache[entry.id] = layer;
@@ -540,36 +483,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
   }
 
-  void _scheduleViewportTileWarmup() {
-    _viewportTileWarmupTimer?.cancel();
-    _viewportTileWarmupTimer = Timer(const Duration(milliseconds: 75), () {
-      unawaited(_warmActiveLayerTiles());
-    });
-  }
-
-  Future<void> _warmActiveLayerTiles() async {
-    if (!mounted || _activeLayerCatalogId == null) {
-      return;
-    }
-
-    final provider = _priorityVectorProviders[_activeLayerCatalogId!];
-    final layer = _layerCache[_activeLayerCatalogId!];
-    if (provider == null || layer is! PmtilesVectorMapLayerConfig) {
-      return;
-    }
-
-    final mapZoom = _currentViewportZoom();
-    final zoom = tileZoomForViewport(mapZoom)
-        .clamp(layer.minZoom, layer.maxZoom);
-    final bounds = _currentViewportBounds();
-    await provider.warmViewport(
-      bounds: bounds,
-      center: _currentViewportCenter(),
-      zoom: zoom,
-      substitutionLevels: 2,
-    );
-  }
-
   Future<void> _syncMapLayers({required bool preload}) async {
     if (!mounted) {
       return;
@@ -597,15 +510,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       );
       final activeEntry =
           selectedEntries.isEmpty ? null : selectedEntries.first;
-      final generation = ++_layerLoadGeneration;
+      var generation = _layerLoadGeneration;
 
       if (activeEntry != null && !_layerCache.containsKey(activeEntry.id)) {
+        generation = ++_layerLoadGeneration;
         await _loadLayerEntry(activeEntry, generation);
         if (!mounted || generation != _layerLoadGeneration) {
           return;
         }
         _applyVisibleLayerSelection();
-        _scheduleViewportTileWarmup();
       }
 
       if (preload) {
@@ -620,6 +533,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             .where((entry) => entry.id != activeEntry?.id)
             .toList();
         if (backgroundEntries.isNotEmpty) {
+          generation = ++_layerLoadGeneration;
           unawaited(_loadBackgroundLayers(generation, backgroundEntries));
         }
       }
@@ -681,10 +595,32 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         data:
             'id=${activeEntry!.id} name="${activeEntry.name}" enabled=${widget.enabledEntries.length}',
       );
-      _scheduleViewportTileWarmup();
     }
 
     _publishPmtilesLoadStatus();
+  }
+
+  String _viewportDebugDetails() {
+    final zoom = _currentViewportZoom();
+    final tileZoom = tileZoomForViewport(zoom);
+    final center = _currentViewportCenter();
+    final centerTile = latLngToTile(center, tileZoom);
+    PmtilesArchiveEntry? activeEntry;
+    for (final entry in widget.enabledEntries) {
+      if (entry.id == _activeLayerCatalogId) {
+        activeEntry = entry;
+        break;
+      }
+    }
+    final archiveLine = activeEntry == null
+        ? 'archive: none'
+        : 'archive: ${activeEntry.name} (z${activeEntry.minZoom}-${activeEntry.maxZoom})';
+    return [
+      'zoom=${zoom.toStringAsFixed(2)} tileZ=$tileZoom',
+      'center=${center.latitude.toStringAsFixed(5)}, ${center.longitude.toStringAsFixed(5)}',
+      'tile=${centerTile.z}/${centerTile.x}/${centerTile.y}',
+      archiveLine,
+    ].join('\n');
   }
 
   RenderBox? get _mapRenderBox =>
@@ -2094,10 +2030,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               return;
             }
             _scheduleVisibleLayerUpdate(immediate: true);
-            _scheduleViewportTileWarmup();
           });
         }
         _lastMapSize = mapSize;
+        final viewportDebugDetails = showViewportDebugBorder
+            ? _viewportDebugDetails()
+            : '';
         final labelPosition = _cursorScreenPosition == null
             ? null
             : _cursorLabelPosition(mapSize);
@@ -2144,7 +2082,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   ),
                   onPositionChanged: (position, hasGesture) {
                     _scheduleVisibleLayerUpdate();
-                    _scheduleViewportTileWarmup();
                     if (!hasGesture) return;
                     widget.onViewportChanged(
                       MapViewport(
@@ -2181,9 +2118,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 theme: theme,
                                 backgroundTheme: backgroundTheme,
                                 sprites: sprites,
-                                concurrency: 8,
+                                concurrency: 6,
                                 maximumTileSubstitutionDifference: 3,
-                                memoryTileDataCacheMaxSize: 96,
+                                memoryTileDataCacheMaxSize: 99,
+                                memoryTileCacheMaxSize: 32 * 1024 * 1024,
+                                showTileDebugInfo: showViewportDebugBorder,
                                 tileProviders: TileProviders({
                                   'protomaps': tileProvider,
                                 }),
@@ -2510,7 +2449,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 top: 0,
                 width: mapSize.width,
                 height: mapSize.height,
-                child: MapViewportDebugOverlay(mapSize: mapSize),
+                child: MapViewportDebugOverlay(
+                  mapSize: mapSize,
+                  details: viewportDebugDetails,
+                ),
               ),
           ],
         );

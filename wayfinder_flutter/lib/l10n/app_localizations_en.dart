@@ -328,7 +328,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMapViewportDebugBorderDescription =>
-      'Draws a red outline around the map canvas. Use this to check whether the map fills its panel when the window or sidebar is resized.';
+      'Draws a red outline around the map canvas and green tile borders with archive, zoom, and center-tile details. Use this to check whether the map fills its panel and which tiles are loading.';
 
   @override
   String get settingsHomeLocationSaved => 'Home location saved.';

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show Size;
 
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -30,15 +31,43 @@ LatLngBounds expandLatLngBounds(LatLngBounds bounds, {double fraction = 0.2}) {
   );
 }
 
-LatLngBounds approximateVisibleBounds(MapViewport viewport) {
-  final latSpan = 180 / math.pow(2, viewport.zoom);
-  final lngSpan = 360 / math.pow(2, viewport.zoom);
+LatLngBounds approximateVisibleBounds(
+  MapViewport viewport, {
+  Size? mapSize,
+}) {
+  final width = mapSize?.width ?? 256;
+  final height = mapSize?.height ?? 256;
+  final scale = math.pow(2, viewport.zoom);
+  final latSpan = (height / 256) * 180 / scale;
+  final lngSpan = (width / 256) * 360 / scale;
   return LatLngBounds.unsafe(
-    south: (viewport.center.latitude - latSpan).clamp(-90.0, 90.0),
-    west: (viewport.center.longitude - lngSpan).clamp(-180.0, 180.0),
-    north: (viewport.center.latitude + latSpan).clamp(-90.0, 90.0),
-    east: (viewport.center.longitude + lngSpan).clamp(-180.0, 180.0),
+    south: (viewport.center.latitude - latSpan / 2).clamp(-90.0, 90.0),
+    west: (viewport.center.longitude - lngSpan / 2).clamp(-180.0, 180.0),
+    north: (viewport.center.latitude + latSpan / 2).clamp(-90.0, 90.0),
+    east: (viewport.center.longitude + lngSpan / 2).clamp(-180.0, 180.0),
   );
+}
+
+/// Tile zoom used by [vector_map_tiles] for a fractional map zoom.
+int tileZoomForViewport(double mapZoom) {
+  return math.max(1, mapZoom.floor());
+}
+
+TileCoordinates latLngToTile(LatLng point, int zoom) {
+  final scale = 1 << zoom;
+  final latRad = point.latitude * math.pi / 180;
+  final x = ((point.longitude + 180) / 360 * scale)
+      .floor()
+      .clamp(0, scale - 1)
+      .toInt();
+  final y = ((1 -
+              math.log(math.tan(latRad) + 1 / math.cos(latRad)) / math.pi) /
+          2 *
+          scale)
+      .floor()
+      .clamp(0, scale - 1)
+      .toInt();
+  return TileCoordinates(x, y, zoom);
 }
 
 double _intersectionArea(PmtilesGeoBounds archive, LatLngBounds viewport) {

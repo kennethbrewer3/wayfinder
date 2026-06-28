@@ -58,6 +58,7 @@ import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
 import '../providers/map_viewport_debug_provider.dart';
+import '../utils/pmtiles_archive_selection.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
 import 'map_radial_menu.dart';
@@ -199,6 +200,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
   String? _activeLayerCatalogId;
   PmtilesArchiveEntry? _resolvedActiveEntry;
+  String _archiveSelectionDebug = '';
   Timer? _viewportLayerUpdateTimer;
   int _layerLoadGeneration = 0;
   Size? _lastMapSize;
@@ -255,6 +257,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (oldIds != newIds) {
       _evictRemovedLayers(oldIds.difference(newIds));
       _resolvedActiveEntry = null;
+      _archiveSelectionDebug = '';
       _scheduleVisibleLayerUpdate(preload: true, immediate: true);
     } else if (oldWidget.enabledEntries != widget.enabledEntries ||
         (oldWidget.metadataLoading && !widget.metadataLoading)) {
@@ -263,6 +266,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         setState(() {
           _activeLayerCatalogId = null;
           _resolvedActiveEntry = null;
+          _archiveSelectionDebug = '';
           _visibleMapLayers = const [];
         });
       } else {
@@ -508,7 +512,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     try {
       final resolveGeneration = ++_layerLoadGeneration;
-      final activeEntry = await resolveActiveArchiveForViewport(
+      final selection = await resolveActiveArchiveForViewport(
         entries: widget.enabledEntries,
         viewportBounds: _currentViewportBounds(),
         viewportCenter: _currentViewportCenter(),
@@ -517,7 +521,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       if (!mounted || resolveGeneration != _layerLoadGeneration) {
         return;
       }
-      _resolvedActiveEntry = activeEntry;
+      _resolvedActiveEntry = selection.entry;
+      _archiveSelectionDebug = selection.debugSummary;
+      final activeEntry = selection.entry;
       var generation = _layerLoadGeneration;
 
       if (activeEntry != null && !_layerCache.containsKey(activeEntry.id)) {
@@ -631,6 +637,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       'center=${center.latitude.toStringAsFixed(5)}, ${center.longitude.toStringAsFixed(5)}',
       'tile=${centerTile.z}/${centerTile.x}/${centerTile.y}',
       archiveLine,
+      if (_archiveSelectionDebug.isNotEmpty) _archiveSelectionDebug,
     ].join('\n');
   }
 

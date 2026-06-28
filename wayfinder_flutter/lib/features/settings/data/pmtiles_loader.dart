@@ -1,14 +1,11 @@
 import 'dart:math' as math;
 
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_pmtiles/flutter_map_pmtiles.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:pmtiles/pmtiles.dart';
 import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../map/data/protomaps_offline_assets.dart';
-import '../../map/utils/pmtiles_viewport.dart';
 import '../models/pmtiles_archive_entry.dart';
 import '../models/pmtiles_geo_bounds.dart';
 import '../models/pmtiles_map_layer.dart';
@@ -112,96 +109,6 @@ Future<List<PmtilesArchiveEntry>> readPmtilesArchiveEntries(
     entries.addAll(batchEntries);
   }
   return entries;
-}
-
-Future<bool> archiveHasMapDataAtCenter({
-  required PmtilesArchiveEntry entry,
-  required LatLng center,
-  required double viewportZoom,
-}) async {
-  final requestedZoom = tileZoomForViewport(viewportZoom);
-  final maxZoom = math.min(requestedZoom, entry.maxZoom);
-  final minZoom = entry.minZoom;
-
-  final archive = await openPmtilesArchive(entry.source);
-  try {
-    for (var zoom = maxZoom; zoom >= minZoom; zoom--) {
-      final coords = latLngToTile(center, zoom);
-      final tileId = ZXY(coords.z, coords.x, coords.y).toTileId();
-      final tile = await archive.tile(tileId);
-      try {
-        final bytes = tile.bytes();
-        if (bytes.isNotEmpty) {
-          return true;
-        }
-      } catch (_) {
-        continue;
-      }
-    }
-    return false;
-  } finally {
-    await archive.close();
-  }
-}
-
-/// Chooses the archive that actually contains map tiles at the viewport center.
-///
-/// Header bounds for neighboring states overlap near borders; probing avoids
-/// picking a smaller state archive whose rectangle contains the point but has
-/// no tile data there.
-Future<PmtilesArchiveEntry?> resolveActiveArchiveForViewport({
-  required List<PmtilesArchiveEntry> entries,
-  required LatLngBounds viewportBounds,
-  required LatLng viewportCenter,
-  required double viewportZoom,
-}) async {
-  if (entries.isEmpty) {
-    return null;
-  }
-
-  final paddedViewport = expandLatLngBounds(viewportBounds);
-
-  final containingCenter = rankArchivesContainingCenter(
-    entries: entries,
-    paddedViewport: paddedViewport,
-    viewportCenter: viewportCenter,
-    viewportZoom: viewportZoom,
-  );
-
-  if (containingCenter.isEmpty) {
-    final fallback = selectArchivesForViewport(
-      entries: entries,
-      viewportBounds: viewportBounds,
-      viewportCenter: viewportCenter,
-      viewportZoom: viewportZoom,
-    );
-    return fallback.isEmpty ? null : fallback.first;
-  }
-
-  if (containingCenter.length == 1) {
-    return containingCenter.first;
-  }
-
-  for (final entry in containingCenter) {
-    if (await archiveHasMapDataAtCenter(
-      entry: entry,
-      center: viewportCenter,
-      viewportZoom: viewportZoom,
-    )) {
-      AppLogger.logPmtiles.info(
-        '🗺️ Selected archive by center tile probe',
-        data: 'id=${entry.id} name="${entry.name}"',
-      );
-      return entry;
-    }
-  }
-
-  AppLogger.logPmtiles.warn(
-    '🗺️ No archive had center tile data; using best bounds match',
-    data:
-        'center=${viewportCenter.latitude},${viewportCenter.longitude} candidates=${containingCenter.map((e) => e.name).join(', ')}',
-  );
-  return containingCenter.first;
 }
 
 Future<PmtilesMapLayerConfig> buildPmtilesMapLayer(

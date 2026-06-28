@@ -348,6 +348,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Infos de débogage copiées dans le presse-papiers.';
 
   @override
+  String get mapDebugOverlayCopyFailedTitle =>
+      'Copie bloquée — sélectionnez et copiez manuellement';
+
+  @override
   String get settingsHomeLocationSaved => 'Point d\'accueil enregistré.';
 
   @override

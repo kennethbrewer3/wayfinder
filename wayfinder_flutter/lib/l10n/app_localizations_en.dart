@@ -344,6 +344,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapDebugOverlayCopied => 'Debug info copied to clipboard.';
 
   @override
+  String get mapDebugOverlayCopyFailedTitle =>
+      'Copy blocked — select and copy manually';
+
+  @override
   String get settingsHomeLocationSaved => 'Home location saved.';
 
   @override

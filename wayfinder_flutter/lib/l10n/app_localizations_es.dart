@@ -346,6 +346,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Información de depuración copiada al portapapeles.';
 
   @override
+  String get mapDebugOverlayCopyFailedTitle =>
+      'Copia bloqueada — seleccione y copie manualmente';
+
+  @override
   String get settingsHomeLocationSaved => 'Ubicación de inicio guardada.';
 
   @override

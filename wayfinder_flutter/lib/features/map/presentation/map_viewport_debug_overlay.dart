@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+import '../../../core/clipboard_copy.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// Outlines the map canvas for layout debugging.
@@ -18,16 +18,42 @@ class MapViewportDebugOverlay extends StatelessWidget {
       '${mapSize.width.toStringAsFixed(0)} × ${mapSize.height.toStringAsFixed(0)}\n$details';
 
   Future<void> _copyToClipboard(BuildContext context) async {
-    await Clipboard.setData(ClipboardData(text: _fullText));
+    final copied = await copyTextToClipboard(_fullText);
     if (!context.mounted) {
       return;
     }
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.mapDebugOverlayCopied),
-        duration: const Duration(seconds: 2),
-      ),
+    if (copied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.mapDebugOverlayCopied),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.mapDebugOverlayCopyFailedTitle),
+          content: SelectableText(
+            _fullText,
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 12,
+              height: 1.35,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.actionClose),
+            ),
+          ],
+        );
+      },
     );
   }
 

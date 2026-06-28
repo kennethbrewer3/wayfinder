@@ -718,6 +718,12 @@ abstract class AppLocalizations {
   /// **'Debug info copied to clipboard.'**
   String get mapDebugOverlayCopied;
 
+  /// No description provided for @mapDebugOverlayCopyFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy blocked — select and copy manually'**
+  String get mapDebugOverlayCopyFailedTitle;
+
   /// No description provided for @settingsHomeLocationSaved.
   ///
   /// In en, this message translates to:

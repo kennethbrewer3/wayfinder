@@ -127,6 +127,7 @@
   "settingsMapTileBorderDebugDescription": "Dibuja bordes verdes alrededor de cada tile del mapa. Requiere la superposición de depuración del viewport anterior.",
   "mapDebugOverlayCopyTooltip": "Copiar información de depuración",
   "mapDebugOverlayCopied": "Información de depuración copiada al portapapeles.",
+  "mapDebugOverlayCopyFailedTitle": "Copia bloqueada — seleccione y copie manualmente",
   "settingsHomeLocationSaved": "Ubicación de inicio guardada.",
   "settingsHomeLocationReset": "Ubicación de inicio restablecida a los valores predeterminados.",
   "settingsOpenMapFirst": "Abra el mapa primero para capturar su vista.",

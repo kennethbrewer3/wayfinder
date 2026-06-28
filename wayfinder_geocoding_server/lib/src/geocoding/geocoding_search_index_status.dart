@@ -7,6 +7,9 @@ import 'geocoding_search_indexes.dart';
 /// Reports whether geocoding search indexes exist and are building.
 class GeocodingSearchIndexStatus {
   GeocodingSearchIndexStatus({
+    required this.isPlacesDataReady,
+    required this.isAddressDataReady,
+    required this.isPlacesSearchReady,
     required this.isAddressSearchReady,
     required this.isFullSearchReady,
     required this.indexesBuilding,
@@ -18,6 +21,9 @@ class GeocodingSearchIndexStatus {
     this.statusMessage,
   });
 
+  final bool isPlacesDataReady;
+  final bool isAddressDataReady;
+  final bool isPlacesSearchReady;
   final bool isAddressSearchReady;
   final bool isFullSearchReady;
   final bool indexesBuilding;
@@ -87,11 +93,11 @@ class GeocodingSearchIndexStatus {
     final progress = await _loadBuildProgress(session);
     final indexesBuilding = progress != null;
 
+    final isPlacesSearchReady = placesDataReady &&
+        readyPlaceIndexes == _placeIndexNames.length;
     final isAddressSearchReady =
         addressDataReady && readyAddressIndexes == _addressIndexNames.length;
-    final isFullSearchReady = placesDataReady &&
-        isAddressSearchReady &&
-        readyPlaceIndexes == _placeIndexNames.length;
+    final isFullSearchReady = isPlacesSearchReady && isAddressSearchReady;
 
     double? buildProgress;
     int? etaSeconds;
@@ -99,11 +105,19 @@ class GeocodingSearchIndexStatus {
     String? statusMessage;
 
     if (!addressDataReady && !placesDataReady) {
-      statusMessage = 'Geocoding data has not been imported yet.';
+      statusMessage = readyIndexCount >= totalIndexCount && totalIndexCount > 0
+          ? 'Search indexes are ready. Import place and street address data in Settings → Geocoding.'
+          : 'Geocoding data has not been imported yet.';
     } else if (isFullSearchReady) {
       statusMessage = 'Place and address search are ready.';
-    } else if (isAddressSearchReady && !placesDataReady) {
-      statusMessage = 'Address search is ready. Place data is not imported.';
+    } else if (isPlacesSearchReady && !isAddressSearchReady) {
+      statusMessage = addressDataReady
+          ? 'Place search is ready. Street address search indexes are still being prepared.'
+          : 'Place search is ready. Import street address data in Settings → Geocoding for address search.';
+    } else if (isAddressSearchReady && !isPlacesSearchReady) {
+      statusMessage = placesDataReady
+          ? 'Street address search is ready. Place-name search indexes are still being prepared.'
+          : 'Street address search is ready. Import place data in Settings → Geocoding for place search.';
     } else if (indexesBuilding) {
       final activeProgress = progress;
       currentIndexName = activeProgress.indexName;
@@ -120,17 +134,39 @@ class GeocodingSearchIndexStatus {
       }
       statusMessage = 'Building search indexes ($currentIndexName)…';
     } else if (addressDataReady || placesDataReady) {
-      buildProgress = readyIndexCount / totalIndexCount;
-      statusMessage = readyIndexCount == 0
-          ? 'Search indexes have not been built yet. Restart the server or wait for indexing to begin.'
-          : 'Search indexes are partially built ($readyIndexCount of $totalIndexCount).';
-      etaSeconds = _estimateRemainingIndexEta(
-        readyIndexCount: readyIndexCount,
-        totalIndexCount: totalIndexCount,
-      );
+      buildProgress = totalIndexCount > 0
+          ? readyIndexCount / totalIndexCount
+          : null;
+      if (readyIndexCount >= totalIndexCount && totalIndexCount > 0) {
+        final missing = <String>[];
+        if (!placesDataReady) {
+          missing.add('place data');
+        }
+        if (!addressDataReady) {
+          missing.add('street address data');
+        }
+        statusMessage = missing.isEmpty
+            ? 'Search indexes are ready. Waiting for search to become available.'
+            : 'Search indexes are ready. Import ${missing.join(' and ')} in Settings → Geocoding.';
+      } else if (readyIndexCount == 0) {
+        statusMessage =
+            'Search indexes have not been built yet. Restart the server or wait for indexing to begin.';
+      } else {
+        statusMessage =
+            'Building search indexes ($readyIndexCount of $totalIndexCount).';
+      }
+      etaSeconds = readyIndexCount >= totalIndexCount
+          ? null
+          : _estimateRemainingIndexEta(
+              readyIndexCount: readyIndexCount,
+              totalIndexCount: totalIndexCount,
+            );
     }
 
     return GeocodingSearchIndexStatus(
+      isPlacesDataReady: placesDataReady,
+      isAddressDataReady: addressDataReady,
+      isPlacesSearchReady: isPlacesSearchReady,
       isAddressSearchReady: isAddressSearchReady,
       isFullSearchReady: isFullSearchReady,
       indexesBuilding: indexesBuilding,
@@ -250,6 +286,9 @@ LIMIT 1
 
   Map<String, Object?> toJson() {
     return {
+      'isPlacesDataReady': isPlacesDataReady,
+      'isAddressDataReady': isAddressDataReady,
+      'isPlacesSearchReady': isPlacesSearchReady,
       'isAddressSearchReady': isAddressSearchReady,
       'isFullSearchReady': isFullSearchReady,
       'indexesBuilding': indexesBuilding,

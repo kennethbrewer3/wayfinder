@@ -483,9 +483,11 @@
   "searchReadinessImportPlacesDialogTitle": "Importación de datos de lugares",
   "searchReadinessImportAddressesDialogTitle": "Importación de datos de direcciones",
   "searchReadinessFullReadyTitle": "Búsqueda completa lista",
+  "searchReadinessPlacesReadyTitle": "Búsqueda de lugares lista",
   "searchReadinessAddressReadyTitle": "Búsqueda de direcciones lista",
+  "searchReadinessWaitingForDataTitle": "Esperando datos de geocodificación",
   "searchReadinessNotReadyTitle": "Búsqueda aún no lista",
-  "searchReadinessIndexesBuilt": "Índices construidos: {ready} de {total}",
+  "searchReadinessIndexesBuilt": "Índices de búsqueda: {ready} de {total}",
   "@searchReadinessIndexesBuilt": {
     "placeholders": {
       "ready": {
@@ -498,7 +500,17 @@
   },
   "searchReadinessCheckingStatus": "Comprobando estado de búsqueda…",
   "searchReadinessFullReadyMessage": "Puede buscar lugares y direcciones postales desde la barra de búsqueda del mapa.",
-  "searchReadinessAddressOnlyMessage": "La búsqueda de direcciones está lista. La búsqueda de nombres de lugares aún se está preparando.",
+  "searchReadinessPlacesOnlyMessage": "Puede buscar nombres de lugares desde la barra de búsqueda del mapa. Importe datos de direcciones en Ajustes → Geocodificación para buscar direcciones.",
+  "searchReadinessAddressOnlyMessage": "Puede buscar direcciones postales desde la barra de búsqueda del mapa. Importe datos de lugares en Ajustes → Geocodificación para buscar nombres de lugares.",
+  "searchReadinessWaitingForDataMessage": "Los índices de búsqueda están listos. Importe los conjuntos de datos que faltan en Ajustes → Geocodificación para habilitar la búsqueda.",
+  "searchReadinessRequirementsTitle": "Requisitos de búsqueda",
+  "searchReadinessRequirementPlacesData": "Datos de lugares importados",
+  "searchReadinessRequirementAddressData": "Datos de direcciones importados",
+  "searchReadinessRequirementIndexes": "Índices de búsqueda construidos",
+  "searchReadinessRequirementReady": "Listo",
+  "searchReadinessRequirementMissing": "No listo",
+  "searchReadinessPartialReadyTooltip": "Búsqueda parcial lista",
+  "searchReadinessPlacesOnlyTooltip": "Búsqueda de lugares lista",
   "searchReadinessPercentComplete": "{percent} % completado",
   "@searchReadinessPercentComplete": {
     "placeholders": {

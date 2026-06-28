@@ -102,6 +102,9 @@ GeocodingImportPhase resolveGeocodingImportPhase({
 
 class GeocodingSearchReadiness {
   const GeocodingSearchReadiness({
+    required this.isPlacesDataReady,
+    required this.isAddressDataReady,
+    required this.isPlacesSearchReady,
     required this.isAddressSearchReady,
     required this.isFullSearchReady,
     required this.indexesBuilding,
@@ -113,6 +116,9 @@ class GeocodingSearchReadiness {
     this.statusMessage,
   });
 
+  final bool isPlacesDataReady;
+  final bool isAddressDataReady;
+  final bool isPlacesSearchReady;
   final bool isAddressSearchReady;
   final bool isFullSearchReady;
   final bool indexesBuilding;
@@ -123,8 +129,17 @@ class GeocodingSearchReadiness {
   final String? currentIndexName;
   final String? statusMessage;
 
+  bool get indexesReady =>
+      totalIndexCount > 0 && readyIndexCount >= totalIndexCount;
+
+  bool get anySearchReady =>
+      isFullSearchReady || isPlacesSearchReady || isAddressSearchReady;
+
   factory GeocodingSearchReadiness.fromJson(Map<String, dynamic> json) {
     return GeocodingSearchReadiness(
+      isPlacesDataReady: json['isPlacesDataReady'] as bool? ?? false,
+      isAddressDataReady: json['isAddressDataReady'] as bool? ?? false,
+      isPlacesSearchReady: json['isPlacesSearchReady'] as bool? ?? false,
       isAddressSearchReady: json['isAddressSearchReady'] as bool? ?? false,
       isFullSearchReady: json['isFullSearchReady'] as bool? ?? false,
       indexesBuilding: json['indexesBuilding'] as bool? ?? false,

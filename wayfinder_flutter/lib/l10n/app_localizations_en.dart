@@ -1029,14 +1029,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchReadinessFullReadyTitle => 'Full search ready';
 
   @override
+  String get searchReadinessPlacesReadyTitle => 'Place search ready';
+
+  @override
   String get searchReadinessAddressReadyTitle => 'Address search ready';
+
+  @override
+  String get searchReadinessWaitingForDataTitle => 'Waiting for geocoding data';
 
   @override
   String get searchReadinessNotReadyTitle => 'Search not ready yet';
 
   @override
   String searchReadinessIndexesBuilt(int ready, int total) {
-    return 'Indexes built: $ready of $total';
+    return 'Search indexes: $ready of $total';
   }
 
   @override
@@ -1047,8 +1053,41 @@ class AppLocalizationsEn extends AppLocalizations {
       'You can search for places and street addresses from the map search bar.';
 
   @override
+  String get searchReadinessPlacesOnlyMessage =>
+      'You can search for place names from the map search bar. Import street address data in Settings → Geocoding to search addresses.';
+
+  @override
   String get searchReadinessAddressOnlyMessage =>
-      'Street address search is ready. Place-name search is still being prepared.';
+      'You can search for street addresses from the map search bar. Import place data in Settings → Geocoding to search place names.';
+
+  @override
+  String get searchReadinessWaitingForDataMessage =>
+      'Search indexes are ready. Import the missing datasets in Settings → Geocoding to enable search.';
+
+  @override
+  String get searchReadinessRequirementsTitle => 'Search requirements';
+
+  @override
+  String get searchReadinessRequirementPlacesData => 'Place data imported';
+
+  @override
+  String get searchReadinessRequirementAddressData =>
+      'Street address data imported';
+
+  @override
+  String get searchReadinessRequirementIndexes => 'Search indexes built';
+
+  @override
+  String get searchReadinessRequirementReady => 'Ready';
+
+  @override
+  String get searchReadinessRequirementMissing => 'Not ready';
+
+  @override
+  String get searchReadinessPartialReadyTooltip => 'Partial search ready';
+
+  @override
+  String get searchReadinessPlacesOnlyTooltip => 'Place search ready';
 
   @override
   String searchReadinessPercentComplete(int percent) {

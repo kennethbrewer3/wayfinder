@@ -483,9 +483,11 @@
   "searchReadinessImportPlacesDialogTitle": "Place search data import",
   "searchReadinessImportAddressesDialogTitle": "Street address data import",
   "searchReadinessFullReadyTitle": "Full search ready",
+  "searchReadinessPlacesReadyTitle": "Place search ready",
   "searchReadinessAddressReadyTitle": "Address search ready",
+  "searchReadinessWaitingForDataTitle": "Waiting for geocoding data",
   "searchReadinessNotReadyTitle": "Search not ready yet",
-  "searchReadinessIndexesBuilt": "Indexes built: {ready} of {total}",
+  "searchReadinessIndexesBuilt": "Search indexes: {ready} of {total}",
   "@searchReadinessIndexesBuilt": {
     "placeholders": {
       "ready": {
@@ -498,7 +500,17 @@
   },
   "searchReadinessCheckingStatus": "Checking search status…",
   "searchReadinessFullReadyMessage": "You can search for places and street addresses from the map search bar.",
-  "searchReadinessAddressOnlyMessage": "Street address search is ready. Place-name search is still being prepared.",
+  "searchReadinessPlacesOnlyMessage": "You can search for place names from the map search bar. Import street address data in Settings → Geocoding to search addresses.",
+  "searchReadinessAddressOnlyMessage": "You can search for street addresses from the map search bar. Import place data in Settings → Geocoding to search place names.",
+  "searchReadinessWaitingForDataMessage": "Search indexes are ready. Import the missing datasets in Settings → Geocoding to enable search.",
+  "searchReadinessRequirementsTitle": "Search requirements",
+  "searchReadinessRequirementPlacesData": "Place data imported",
+  "searchReadinessRequirementAddressData": "Street address data imported",
+  "searchReadinessRequirementIndexes": "Search indexes built",
+  "searchReadinessRequirementReady": "Ready",
+  "searchReadinessRequirementMissing": "Not ready",
+  "searchReadinessPartialReadyTooltip": "Partial search ready",
+  "searchReadinessPlacesOnlyTooltip": "Place search ready",
   "searchReadinessPercentComplete": "{percent}% complete",
   "@searchReadinessPercentComplete": {
     "placeholders": {

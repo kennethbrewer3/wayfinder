@@ -10,56 +10,74 @@ import '../models/geocoding_models.dart';
 import '../providers/geocoding_providers.dart';
 import 'geocoding_import_progress_panel.dart';
 
-final geocodingSearchReadinessProvider =
-    AsyncNotifierProvider<GeocodingSearchReadinessNotifier, GeocodingSearchReadiness>(
-  GeocodingSearchReadinessNotifier.new,
-);
-
-class GeocodingSearchReadinessNotifier
-    extends AsyncNotifier<GeocodingSearchReadiness> {
-  Timer? _pollTimer;
-
-  @override
-  Future<GeocodingSearchReadiness> build() async {
-    ref.onDispose(() => _pollTimer?.cancel());
-    final repository = ref.read(geocodingRepositoryProvider);
-    if (!repository.isConfigured) {
-      return const GeocodingSearchReadiness(
-        isAddressSearchReady: false,
-        isFullSearchReady: false,
-        indexesBuilding: false,
-        readyIndexCount: 0,
-        totalIndexCount: 0,
-      );
-    }
-    if (!await repository.isServerReachable()) {
-      return const GeocodingSearchReadiness(
-        isAddressSearchReady: false,
-        isFullSearchReady: false,
-        indexesBuilding: false,
-        readyIndexCount: 0,
-        totalIndexCount: 0,
-        statusMessage: 'Geocoding server unavailable',
-      );
-    }
-    final readiness = await repository.getSearchReadiness();
-    _schedulePolling(readiness);
-    return readiness;
+String searchReadinessDialogTitle(
+  AppLocalizations l10n,
+  GeocodingSearchReadiness readiness,
+) {
+  if (readiness.isFullSearchReady) {
+    return l10n.searchReadinessFullReadyTitle;
   }
-
-  void _schedulePolling(GeocodingSearchReadiness readiness) {
-    _pollTimer?.cancel();
-    if (readiness.isFullSearchReady) {
-      return;
-    }
-
-    final interval = readiness.indexesBuilding
-        ? const Duration(seconds: 5)
-        : const Duration(seconds: 15);
-    _pollTimer = Timer(interval, () {
-      ref.invalidateSelf();
-    });
+  if (readiness.isPlacesSearchReady && readiness.isAddressSearchReady) {
+    return l10n.searchReadinessFullReadyTitle;
   }
+  if (readiness.isPlacesSearchReady) {
+    return l10n.searchReadinessPlacesReadyTitle;
+  }
+  if (readiness.isAddressSearchReady) {
+    return l10n.searchReadinessAddressReadyTitle;
+  }
+  if (readiness.indexesReady &&
+      (!readiness.isPlacesDataReady || !readiness.isAddressDataReady)) {
+    return l10n.searchReadinessWaitingForDataTitle;
+  }
+  if (readiness.indexesBuilding) {
+    return l10n.searchReadinessBuildingTooltip;
+  }
+  return l10n.searchReadinessNotReadyTitle;
+}
+
+String searchReadinessTooltip(
+  AppLocalizations l10n,
+  GeocodingSearchReadiness readiness,
+) {
+  if (readiness.isFullSearchReady) {
+    return l10n.searchReadinessFullReadyTooltip;
+  }
+  if (readiness.isPlacesSearchReady && readiness.isAddressSearchReady) {
+    return l10n.searchReadinessFullReadyTooltip;
+  }
+  if (readiness.isPlacesSearchReady || readiness.isAddressSearchReady) {
+    return readiness.isPlacesSearchReady
+        ? l10n.searchReadinessPlacesOnlyTooltip
+        : l10n.searchReadinessAddressReadyTitle;
+  }
+  if (readiness.indexesBuilding) {
+    return l10n.searchReadinessBuildingTooltip;
+  }
+  if (readiness.indexesReady) {
+    return l10n.searchReadinessWaitingForDataTitle;
+  }
+  return l10n.searchReadinessNotReadyTooltip;
+}
+
+String? searchReadinessSummaryMessage(
+  AppLocalizations l10n,
+  GeocodingSearchReadiness readiness,
+) {
+  if (readiness.isFullSearchReady) {
+    return l10n.searchReadinessFullReadyMessage;
+  }
+  if (readiness.isPlacesSearchReady && !readiness.isAddressSearchReady) {
+    return l10n.searchReadinessPlacesOnlyMessage;
+  }
+  if (readiness.isAddressSearchReady && !readiness.isPlacesSearchReady) {
+    return l10n.searchReadinessAddressOnlyMessage;
+  }
+  if (readiness.indexesReady &&
+      (!readiness.isPlacesDataReady || !readiness.isAddressDataReady)) {
+    return l10n.searchReadinessWaitingForDataMessage;
+  }
+  return readiness.statusMessage;
 }
 
 class AddressSearchReadinessIndicator extends ConsumerStatefulWidget {
@@ -132,13 +150,7 @@ class _AddressSearchReadinessIndicatorState
         icon: Icons.travel_explore,
         onPressed: () => _showReadinessDialog(
           context,
-          initialReadiness: const GeocodingSearchReadiness(
-            isAddressSearchReady: false,
-            isFullSearchReady: false,
-            indexesBuilding: false,
-            readyIndexCount: 0,
-            totalIndexCount: 0,
-          ),
+          initialReadiness: emptyGeocodingSearchReadiness,
         ),
       );
     }
@@ -202,6 +214,9 @@ class _AddressSearchReadinessIndicatorState
         onPressed: () => _showReadinessDialog(
           context,
           initialReadiness: GeocodingSearchReadiness(
+            isPlacesDataReady: false,
+            isAddressDataReady: false,
+            isPlacesSearchReady: false,
             isAddressSearchReady: false,
             isFullSearchReady: false,
             indexesBuilding: false,
@@ -213,14 +228,9 @@ class _AddressSearchReadinessIndicatorState
         ),
       ),
       data: (readiness) => AnimatedStatusDotIconButton(
-        isReady: readiness.isFullSearchReady && !importRunning,
+        isReady: readiness.anySearchReady && !importRunning,
         isLoading: readiness.indexesBuilding || importRunning,
-        tooltip: importTooltip ??
-            (readiness.isFullSearchReady
-                ? l10n.searchReadinessFullReadyTooltip
-                : readiness.indexesBuilding
-                    ? l10n.searchReadinessBuildingTooltip
-                    : l10n.searchReadinessNotReadyTooltip),
+        tooltip: importTooltip ?? searchReadinessTooltip(l10n, readiness),
         icon: Icons.travel_explore,
         onPressed: () => _showReadinessDialog(
           context,
@@ -264,32 +274,22 @@ class _AddressSearchReadinessIndicatorState
             );
             final readiness = readinessAsync.maybeWhen(
               data: (value) => value,
-              orElse: () =>
-                  initialReadiness ??
-                  GeocodingSearchReadiness(
-                    isAddressSearchReady: false,
-                    isFullSearchReady: false,
-                    indexesBuilding: false,
-                    readyIndexCount: 0,
-                    totalIndexCount: 0,
-                  ),
+              orElse: () => initialReadiness ?? emptyGeocodingSearchReadiness,
             );
-            final isLoading =
-                readinessAsync.isLoading || readiness.indexesBuilding;
+            final showIndexProgress = readiness.indexesBuilding ||
+                (!readiness.indexesReady && readiness.totalIndexCount > 0);
             final progressPercent = readiness.buildProgress == null
                 ? null
                 : (readiness.buildProgress! * 100).round();
             final etaLabel = readiness.etaLabel;
+            final summaryMessage =
+                searchReadinessSummaryMessage(l10n, readiness);
 
             final dialogTitle = settings != null && settings.isPlacesRunning
                 ? l10n.searchReadinessImportPlacesDialogTitle
                 : settings != null && settings.isHousenumbersRunning
                     ? l10n.searchReadinessImportAddressesDialogTitle
-                    : readiness.isFullSearchReady
-                        ? l10n.searchReadinessFullReadyTitle
-                        : readiness.isAddressSearchReady
-                            ? l10n.searchReadinessAddressReadyTitle
-                            : l10n.searchReadinessNotReadyTitle;
+                    : searchReadinessDialogTitle(l10n, readiness);
 
             return AlertDialog(
               title: Text(dialogTitle),
@@ -317,7 +317,7 @@ class _AddressSearchReadinessIndicatorState
                         showTopSpacing: false,
                       )
                     else ...[
-                      if (isLoading && !readiness.isFullSearchReady) ...[
+                      if (showIndexProgress) ...[
                         ActivityProgressBar(
                           progress: readiness.buildProgress,
                           label: readiness.totalIndexCount > 0
@@ -331,45 +331,29 @@ class _AddressSearchReadinessIndicatorState
                         ),
                         const SizedBox(height: 12),
                       ],
-                      if (readiness.statusMessage != null)
-                        Text(readiness.statusMessage!),
-                      if (readiness.isFullSearchReady) ...[
+                      _SearchReadinessChecklist(readiness: readiness),
+                      if (summaryMessage != null) ...[
                         const SizedBox(height: 12),
-                        Text(l10n.searchReadinessFullReadyMessage),
-                      ] else if (readiness.isAddressSearchReady) ...[
+                        Text(summaryMessage),
+                      ],
+                      if (showIndexProgress && progressPercent != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.searchReadinessPercentComplete(progressPercent),
+                        ),
+                      ],
+                      if (showIndexProgress && etaLabel != null) ...[
                         const SizedBox(height: 12),
-                        Text(l10n.searchReadinessAddressOnlyMessage),
-                      ] else ...[
-                        if (!isLoading && readiness.totalIndexCount > 0) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            l10n.searchReadinessIndexesBuilt(
-                              readiness.readyIndexCount,
-                              readiness.totalIndexCount,
-                            ),
+                        Text(l10n.searchReadinessEta(etaLabel)),
+                      ],
+                      if (readiness.currentIndexName != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.searchReadinessCurrentIndex(
+                            readiness.currentIndexName!,
                           ),
-                        ],
-                        if (!isLoading && progressPercent != null) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.searchReadinessPercentComplete(
-                              progressPercent,
-                            ),
-                          ),
-                        ],
-                        if (etaLabel != null) ...[
-                          const SizedBox(height: 12),
-                          Text(l10n.searchReadinessEta(etaLabel)),
-                        ],
-                        if (readiness.currentIndexName != null) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.searchReadinessCurrentIndex(
-                              readiness.currentIndexName!,
-                            ),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ],
                     ],
                   ],
@@ -385,6 +369,109 @@ class _AddressSearchReadinessIndicatorState
           },
         );
       },
+    );
+  }
+}
+
+class _SearchReadinessChecklist extends StatelessWidget {
+  const _SearchReadinessChecklist({required this.readiness});
+
+  final GeocodingSearchReadiness readiness;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.searchReadinessRequirementsTitle,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 8),
+        _SearchReadinessRequirementRow(
+          label: l10n.searchReadinessRequirementPlacesData,
+          isReady: readiness.isPlacesDataReady,
+          readyLabel: l10n.searchReadinessRequirementReady,
+          missingLabel: l10n.searchReadinessRequirementMissing,
+          colorScheme: colorScheme,
+        ),
+        const SizedBox(height: 4),
+        _SearchReadinessRequirementRow(
+          label: l10n.searchReadinessRequirementAddressData,
+          isReady: readiness.isAddressDataReady,
+          readyLabel: l10n.searchReadinessRequirementReady,
+          missingLabel: l10n.searchReadinessRequirementMissing,
+          colorScheme: colorScheme,
+        ),
+        const SizedBox(height: 4),
+        _SearchReadinessRequirementRow(
+          label: l10n.searchReadinessRequirementIndexes,
+          isReady: readiness.indexesReady,
+          readyLabel: readiness.totalIndexCount > 0
+              ? l10n.searchReadinessIndexesBuilt(
+                  readiness.readyIndexCount,
+                  readiness.totalIndexCount,
+                )
+              : l10n.searchReadinessRequirementReady,
+          missingLabel: readiness.totalIndexCount > 0
+              ? l10n.searchReadinessIndexesBuilt(
+                  readiness.readyIndexCount,
+                  readiness.totalIndexCount,
+                )
+              : l10n.searchReadinessRequirementMissing,
+          colorScheme: colorScheme,
+        ),
+      ],
+    );
+  }
+}
+
+class _SearchReadinessRequirementRow extends StatelessWidget {
+  const _SearchReadinessRequirementRow({
+    required this.label,
+    required this.isReady,
+    required this.readyLabel,
+    required this.missingLabel,
+    required this.colorScheme,
+  });
+
+  final String label;
+  final bool isReady;
+  final String readyLabel;
+  final String missingLabel;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          isReady ? Icons.check_circle_outline : Icons.radio_button_unchecked,
+          size: 18,
+          color: isReady ? colorScheme.primary : colorScheme.outline,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label),
+              Text(
+                isReady ? readyLabel : missingLabel,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: isReady
+                          ? colorScheme.primary
+                          : colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

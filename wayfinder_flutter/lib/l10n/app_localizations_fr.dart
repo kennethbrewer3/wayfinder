@@ -1046,14 +1046,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchReadinessFullReadyTitle => 'Recherche complète prête';
 
   @override
+  String get searchReadinessPlacesReadyTitle => 'Recherche de lieux prête';
+
+  @override
   String get searchReadinessAddressReadyTitle => 'Recherche d\'adresses prête';
+
+  @override
+  String get searchReadinessWaitingForDataTitle =>
+      'En attente des données de géocodage';
 
   @override
   String get searchReadinessNotReadyTitle => 'Recherche pas encore prête';
 
   @override
   String searchReadinessIndexesBuilt(int ready, int total) {
-    return 'Index construits : $ready sur $total';
+    return 'Index de recherche : $ready sur $total';
   }
 
   @override
@@ -1065,8 +1072,43 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vous pouvez rechercher des lieux et des adresses postales depuis la barre de recherche de la carte.';
 
   @override
+  String get searchReadinessPlacesOnlyMessage =>
+      'Vous pouvez rechercher des noms de lieux depuis la barre de recherche de la carte. Importez les données d\'adresses dans Paramètres → Géocodage pour rechercher des adresses.';
+
+  @override
   String get searchReadinessAddressOnlyMessage =>
-      'La recherche d\'adresses est prête. La recherche de noms de lieux est encore en préparation.';
+      'Vous pouvez rechercher des adresses postales depuis la barre de recherche de la carte. Importez les données de lieux dans Paramètres → Géocodage pour rechercher des noms de lieux.';
+
+  @override
+  String get searchReadinessWaitingForDataMessage =>
+      'Les index de recherche sont prêts. Importez les jeux de données manquants dans Paramètres → Géocodage pour activer la recherche.';
+
+  @override
+  String get searchReadinessRequirementsTitle => 'Conditions de recherche';
+
+  @override
+  String get searchReadinessRequirementPlacesData =>
+      'Données de lieux importées';
+
+  @override
+  String get searchReadinessRequirementAddressData =>
+      'Données d\'adresses importées';
+
+  @override
+  String get searchReadinessRequirementIndexes =>
+      'Index de recherche construits';
+
+  @override
+  String get searchReadinessRequirementReady => 'Prêt';
+
+  @override
+  String get searchReadinessRequirementMissing => 'Pas prêt';
+
+  @override
+  String get searchReadinessPartialReadyTooltip => 'Recherche partielle prête';
+
+  @override
+  String get searchReadinessPlacesOnlyTooltip => 'Recherche de lieux prête';
 
   @override
   String searchReadinessPercentComplete(int percent) {

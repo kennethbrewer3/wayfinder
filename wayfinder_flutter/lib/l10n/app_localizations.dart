@@ -1942,11 +1942,23 @@ abstract class AppLocalizations {
   /// **'Full search ready'**
   String get searchReadinessFullReadyTitle;
 
+  /// No description provided for @searchReadinessPlacesReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Place search ready'**
+  String get searchReadinessPlacesReadyTitle;
+
   /// No description provided for @searchReadinessAddressReadyTitle.
   ///
   /// In en, this message translates to:
   /// **'Address search ready'**
   String get searchReadinessAddressReadyTitle;
+
+  /// No description provided for @searchReadinessWaitingForDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for geocoding data'**
+  String get searchReadinessWaitingForDataTitle;
 
   /// No description provided for @searchReadinessNotReadyTitle.
   ///
@@ -1957,7 +1969,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchReadinessIndexesBuilt.
   ///
   /// In en, this message translates to:
-  /// **'Indexes built: {ready} of {total}'**
+  /// **'Search indexes: {ready} of {total}'**
   String searchReadinessIndexesBuilt(int ready, int total);
 
   /// No description provided for @searchReadinessCheckingStatus.
@@ -1972,11 +1984,71 @@ abstract class AppLocalizations {
   /// **'You can search for places and street addresses from the map search bar.'**
   String get searchReadinessFullReadyMessage;
 
+  /// No description provided for @searchReadinessPlacesOnlyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can search for place names from the map search bar. Import street address data in Settings → Geocoding to search addresses.'**
+  String get searchReadinessPlacesOnlyMessage;
+
   /// No description provided for @searchReadinessAddressOnlyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Street address search is ready. Place-name search is still being prepared.'**
+  /// **'You can search for street addresses from the map search bar. Import place data in Settings → Geocoding to search place names.'**
   String get searchReadinessAddressOnlyMessage;
+
+  /// No description provided for @searchReadinessWaitingForDataMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Search indexes are ready. Import the missing datasets in Settings → Geocoding to enable search.'**
+  String get searchReadinessWaitingForDataMessage;
+
+  /// No description provided for @searchReadinessRequirementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search requirements'**
+  String get searchReadinessRequirementsTitle;
+
+  /// No description provided for @searchReadinessRequirementPlacesData.
+  ///
+  /// In en, this message translates to:
+  /// **'Place data imported'**
+  String get searchReadinessRequirementPlacesData;
+
+  /// No description provided for @searchReadinessRequirementAddressData.
+  ///
+  /// In en, this message translates to:
+  /// **'Street address data imported'**
+  String get searchReadinessRequirementAddressData;
+
+  /// No description provided for @searchReadinessRequirementIndexes.
+  ///
+  /// In en, this message translates to:
+  /// **'Search indexes built'**
+  String get searchReadinessRequirementIndexes;
+
+  /// No description provided for @searchReadinessRequirementReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get searchReadinessRequirementReady;
+
+  /// No description provided for @searchReadinessRequirementMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not ready'**
+  String get searchReadinessRequirementMissing;
+
+  /// No description provided for @searchReadinessPartialReadyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial search ready'**
+  String get searchReadinessPartialReadyTooltip;
+
+  /// No description provided for @searchReadinessPlacesOnlyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Place search ready'**
+  String get searchReadinessPlacesOnlyTooltip;
 
   /// No description provided for @searchReadinessPercentComplete.
   ///

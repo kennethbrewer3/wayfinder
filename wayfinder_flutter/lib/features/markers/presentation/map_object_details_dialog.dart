@@ -152,6 +152,11 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     final notes = marker.notes?.trim();
     final shareUrl = buildMarkerShareUrl(marker: marker);
+    void copyShareUrl() => copyTextWithFeedback(
+          context,
+          text: shareUrl,
+          copiedMessage: l10n.mapMarkerUrlCopied,
+        );
 
     return _DetailsDialogShell(
       title: marker.name,
@@ -163,6 +168,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       ),
       onEdit: onEdit,
       l10n: l10n,
+      shareUrl: shareUrl,
+      onCopyShareUrl: copyShareUrl,
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
@@ -177,15 +184,11 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           ),
           copyTooltip: l10n.mapRadialCopyCoordinates,
         ),
-        _DetailRow(
+        _MarkerShareLinkSection(
           label: l10n.mapMarkerShareUrlLabel,
-          value: shareUrl,
-          onCopy: () => copyTextWithFeedback(
-            context,
-            text: shareUrl,
-            copiedMessage: l10n.mapMarkerUrlCopied,
-          ),
-          copyTooltip: l10n.mapMarkerCopyUrlTooltip,
+          url: shareUrl,
+          copyLabel: l10n.mapMarkerCopyUrlTooltip,
+          onCopy: copyShareUrl,
         ),
         _DetailRow(
           label: l10n.mapObjectDetailElevation,
@@ -501,6 +504,8 @@ class _DetailsDialogShell extends StatelessWidget {
     required this.onEdit,
     required this.l10n,
     required this.children,
+    this.shareUrl,
+    this.onCopyShareUrl,
   });
 
   final String title;
@@ -508,6 +513,8 @@ class _DetailsDialogShell extends StatelessWidget {
   final VoidCallback onEdit;
   final AppLocalizations l10n;
   final List<Widget> children;
+  final String? shareUrl;
+  final VoidCallback? onCopyShareUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -531,6 +538,12 @@ class _DetailsDialogShell extends StatelessWidget {
         ),
       ),
       actions: [
+        if (shareUrl != null && onCopyShareUrl != null)
+          TextButton.icon(
+            onPressed: onCopyShareUrl,
+            icon: const Icon(Icons.link),
+            label: Text(l10n.mapMarkerCopyUrlTooltip),
+          ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.actionClose),
@@ -540,6 +553,58 @@ class _DetailsDialogShell extends StatelessWidget {
           child: Text(l10n.actionEdit),
         ),
       ],
+    );
+  }
+}
+
+class _MarkerShareLinkSection extends StatelessWidget {
+  const _MarkerShareLinkSection({
+    required this.label,
+    required this.url,
+    required this.copyLabel,
+    required this.onCopy,
+  });
+
+  final String label;
+  final String url;
+  final String copyLabel;
+  final VoidCallback onCopy;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 6),
+          SelectableText(
+            url,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: onCopy,
+              icon: const Icon(Icons.link, size: 18),
+              label: Text(copyLabel),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -375,9 +375,38 @@ The About tab shows:
 - Git commit and build time (when available)
 - Platform and package name
 - Configured server and geocoding URLs
-- Deployment notes for Docker-based installs
+- Docker image metadata (when running from a container)
+- **REST API access** — generate, rotate, or disable the shared API key
 
 Use this information when reporting bugs or verifying you are on the expected build.
+
+### REST API access
+
+Wayfinder exposes a JSON REST API on the web server (port **18082** by default) under `/api`. Use it with `curl`, scripts, automation, or external tools.
+
+**Protect the API**
+
+1. Open **Settings → About → REST API access**.
+2. Tap **Generate API key**. Copy the key immediately — it is shown only once.
+3. Optionally store the same key under **REST API key (this device)** so the app can use REST fallbacks (backup restore, settings sync).
+
+When a key is configured, every endpoint except `GET /api/` and `GET /api/health` requires the key in a request header:
+
+- `X-API-Key: wf_…`, or
+- `Authorization: Bearer wf_…`
+
+**Example — move a marker**
+
+```bash
+curl -X PATCH 'http://YOUR_SERVER:18082/api/markers/MARKER_UUID' \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: wf_your_key_here' \
+  -d '{"latitude":38.91201,"longitude":-77.17357}'
+```
+
+`PUT` and `PATCH` accept partial JSON bodies — only include fields you want to change. Markers, zones, layers, map-data backup/restore, and PMTiles management are all available over REST.
+
+Server administrators can also set `WAYFINDER_REST_API_KEY` in the server environment (useful for Docker installs before first login).
 
 ---
 
@@ -453,6 +482,7 @@ Use this information when reporting bugs or verifying you are on the expected bu
 | Search | Type in app bar search field |
 | Share marker | Marker details → Share link |
 | Backup data | Settings → Backup → Export |
+| Script with curl | Settings → About → REST API access → generate key |
 | Add map tiles | Settings → Map tiles → Upload |
 | Enable address search | Settings → Geocoding → import housenumbers |
 | Change units | Settings → General → Measurement units |

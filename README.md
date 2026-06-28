@@ -91,6 +91,8 @@ docker compose pull && docker compose up -d
 
 See **[DEPLOY.md](DEPLOY.md)** for the full guide (separate machines, firewall, pinning releases).
 
+Running on **[Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad)? See **[deploy/project-nomad/README.md](deploy/project-nomad/README.md)**.
+
 Developers with a repo clone can build locally when changing server code:
 
 ```bash

@@ -4,6 +4,7 @@ import '../../generated/protocol.dart';
 import '../../geocoding/geocoding_archive_service.dart';
 import '../../geocoding/geocoding_constants.dart';
 import '../../geocoding/geocoding_contribution_service.dart';
+import '../../geocoding/geocoding_country_catalog.dart';
 import '../../geocoding/geocoding_crowdsource_service.dart';
 import '../../geocoding/geocoding_housenumbers_importer.dart';
 import '../../geocoding/geocoding_importer.dart';
@@ -29,6 +30,12 @@ abstract final class GeocodingRestHandlers {
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       final status = await GeocodingSearchIndexStatus.get(session, settings);
       return RestJson.ok(status.toJson());
+    });
+  }
+
+  static Future<Result> getCountryCatalog(Request request) async {
+    return RestJson.handleErrors(() async {
+      return RestJson.ok(GeocodingCountryCatalog.toJson());
     });
   }
 

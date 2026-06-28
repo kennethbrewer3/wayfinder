@@ -34,6 +34,24 @@ class GeocodingDatasetOption {
   String get countryCodesValue =>
       countryCodes.map((code) => code.toUpperCase()).join(',');
 
+  factory GeocodingDatasetOption.fromServerJson(Map<String, dynamic> json) {
+    final countryCodesRaw = json['countryCodes'];
+    final countryCodes = countryCodesRaw is List
+        ? countryCodesRaw
+            .whereType<String>()
+            .map((code) => code.trim().toUpperCase())
+            .where((code) => code.length == 2)
+            .toList()
+        : const <String>[];
+    return GeocodingDatasetOption(
+      id: json['id'] as String,
+      label: json['label'] as String,
+      sourceUrl: json['sourceUrl'] as String? ?? '',
+      countryCodes: countryCodes,
+      description: json['description'] as String?,
+    );
+  }
+
   static GeocodingDatasetOption? byId(String id) {
     for (final option in geocodingDatasetOptions) {
       if (option.id == id) {
@@ -46,9 +64,10 @@ class GeocodingDatasetOption {
   static GeocodingDatasetOption match({
     required String sourceUrl,
     required String? countryCodes,
+    List<GeocodingDatasetOption> options = geocodingDatasetOptions,
   }) {
     final normalizedCodes = _normalizeCountryCodes(countryCodes);
-    for (final option in geocodingDatasetOptions) {
+    for (final option in options) {
       if (option.isCustom) {
         continue;
       }
@@ -58,7 +77,7 @@ class GeocodingDatasetOption {
         return option;
       }
     }
-    return geocodingDatasetOptions.last;
+    return options.last;
   }
 }
 

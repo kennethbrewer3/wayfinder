@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
 import '../models/geocoding_contribution.dart';
+import '../models/geocoding_country_catalog.dart';
 import '../models/geocoding_models.dart';
 
 class GeocodingRepository {
@@ -42,6 +43,36 @@ class GeocodingRepository {
   }
 
   Future<GeocodingImportState> getSettings() => _getSettingsRest();
+
+  Future<GeocodingCountryCatalog> getCountryCatalog() async {
+    if (!isConfigured) {
+      return GeocodingCountryCatalog.fallback();
+    }
+    try {
+      final uri = Uri.parse('$baseUrl/api/geocoding/country-codes');
+      final response = await http.get(uri).timeout(const Duration(seconds: 10));
+      if (response.statusCode != 200) {
+        throw Exception(
+          'GET /api/geocoding/country-codes returned ${response.statusCode}',
+        );
+      }
+      final decoded = jsonDecode(response.body);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException('Invalid country catalog response');
+      }
+      final catalog = GeocodingCountryCatalog.fromJson(decoded);
+      if (catalog.countries.isEmpty || catalog.importPresets.isEmpty) {
+        return GeocodingCountryCatalog.fallback();
+      }
+      return catalog;
+    } catch (error, _) {
+      _log.warn(
+        '🌍 Geocoding country catalog fetch failed; using fallback',
+        error: error,
+      );
+      return GeocodingCountryCatalog.fallback();
+    }
+  }
 
   Future<GeocodingSearchReadiness> getSearchReadiness() async {
     final uri = Uri.parse('$baseUrl/api/geocoding/search-readiness');

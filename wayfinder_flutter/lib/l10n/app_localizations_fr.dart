@@ -1498,7 +1498,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get geocodingContributionNotesLabel => 'Notes (optional)';
 
   @override
-  String get geocodingContributionCountryLabel => 'Country code (optional)';
+  String get geocodingContributionCountryLabel => 'Country (optional)';
+
+  @override
+  String get geocodingContributionCountryNone => 'None';
 
   @override
   String get geocodingContributionInvalidCoordinates =>

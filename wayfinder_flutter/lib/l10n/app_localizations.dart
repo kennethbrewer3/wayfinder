@@ -2695,8 +2695,14 @@ abstract class AppLocalizations {
   /// No description provided for @geocodingContributionCountryLabel.
   ///
   /// In en, this message translates to:
-  /// **'Country code (optional)'**
+  /// **'Country (optional)'**
   String get geocodingContributionCountryLabel;
+
+  /// No description provided for @geocodingContributionCountryNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get geocodingContributionCountryNone;
 
   /// No description provided for @geocodingContributionInvalidCoordinates.
   ///

@@ -97,7 +97,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     }
   }
 
-  void _syncFromServer(GeocodingImportState settings) {
+  void _syncFromServer(
+    GeocodingImportState settings, {
+    List<GeocodingDatasetOption> datasetOptions = geocodingDatasetOptions,
+  }) {
     if (_initializedFromServer) {
       return;
     }
@@ -105,6 +108,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     _selectedDataset = GeocodingDatasetOption.match(
       sourceUrl: settings.sourceUrl,
       countryCodes: settings.countryCodes,
+      options: datasetOptions,
     );
     _customUrlController.text = _selectedDataset.isCustom
         ? settings.sourceUrl
@@ -693,11 +697,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
 
   String _activeDatasetLabel(
     AppLocalizations l10n,
-    GeocodingImportState settings,
-  ) {
+    GeocodingImportState settings, {
+    List<GeocodingDatasetOption> datasetOptions = geocodingDatasetOptions,
+  }) {
     final option = GeocodingDatasetOption.match(
       sourceUrl: settings.sourceUrl,
       countryCodes: settings.countryCodes,
+      options: datasetOptions,
     );
     if (option.isCustom) {
       return l10n.geocodingCustomUrlLabel;
@@ -789,6 +795,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     final l10n = AppLocalizations.of(context)!;
     final repository = ref.watch(geocodingRepositoryProvider);
     final configured = repository.isConfigured;
+    final catalogAsync = configured
+        ? ref.watch(geocodingCountryCatalogProvider)
+        : null;
+    final datasetOptions = catalogAsync?.valueOrNull?.importPresets.isNotEmpty ==
+            true
+        ? catalogAsync!.value!.importPresets
+        : geocodingDatasetOptions;
     final settingsAsync =
         configured ? ref.watch(geocodingSettingsProvider) : null;
     final description = _selectedDescription(l10n);
@@ -799,7 +812,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     if (settingsAsync != null) {
       ref.listen(geocodingSettingsProvider, (previous, next) {
         next.whenData((settings) {
-          _syncFromServer(settings);
+          _syncFromServer(settings, datasetOptions: datasetOptions);
           _schedulePolling(isRunning: settings.isRunning);
         });
       });
@@ -875,7 +888,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                 ),
               ),
             ),
-          _buildDownloadedDatasetSections(l10n, osmSettings, description),
+          _buildDownloadedDatasetSections(
+            l10n,
+            osmSettings,
+            description,
+            datasetOptions: datasetOptions,
+          ),
         ],
       ],
     );
@@ -884,8 +902,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   Widget _buildDownloadedDatasetSections(
     AppLocalizations l10n,
     GeocodingImportState settings,
-    String? description,
-  ) {
+    String? description, {
+    required List<GeocodingDatasetOption> datasetOptions,
+  }) {
             final placesControlsEnabled = !settings.isPlacesRunning &&
                 !_isStartingPlacesImport &&
                 !_isPlacesArchiveBusy &&
@@ -933,7 +952,7 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                     border: const OutlineInputBorder(),
                   ),
                   items: [
-                    for (final option in geocodingDatasetOptions)
+                    for (final option in datasetOptions)
                       DropdownMenuItem(
                         value: option,
                         child: Text(_datasetLabel(l10n, option)),
@@ -996,7 +1015,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                   const SizedBox(height: 4),
                   Text(
                     l10n.geocodingLastSelection(
-                      _activeDatasetLabel(l10n, settings),
+                      _activeDatasetLabel(
+                        l10n,
+                        settings,
+                        datasetOptions: datasetOptions,
+                      ),
                     ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),

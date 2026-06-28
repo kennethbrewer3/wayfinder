@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
@@ -8,6 +7,7 @@ import '../../../core/format/locale_count_format.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/models/geocoding_contribution.dart';
+import '../../geocoding/models/geocoding_country_catalog.dart';
 import '../../geocoding/models/geocoding_models.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
 
@@ -39,8 +39,9 @@ class _SettingsGeocodingContributionsSectionState
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
   final _notesController = TextEditingController();
-  final _countryController = TextEditingController();
+  String? _selectedCountryCode;
   int? _editingId;
+  bool _countryPrefilledFromSettings = false;
   bool _savingContribution = false;
   List<GeocodingContribution> _contributions = const [];
   bool _loadingContributions = false;
@@ -59,6 +60,9 @@ class _SettingsGeocodingContributionsSectionState
     if (widget.serverConfigured) {
       _loadContributions();
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybePrefillCountryFromSettings();
+    });
   }
 
   @override
@@ -74,6 +78,7 @@ class _SettingsGeocodingContributionsSectionState
                 widget.settings.contributionCount)) {
       _loadContributions();
     }
+    _maybePrefillCountryFromSettings();
     if (!widget.serverConfigured && oldWidget.serverConfigured) {
       setState(() {
         _contributions = const [];
@@ -89,8 +94,24 @@ class _SettingsGeocodingContributionsSectionState
     _latitudeController.dispose();
     _longitudeController.dispose();
     _notesController.dispose();
-    _countryController.dispose();
     super.dispose();
+  }
+
+  void _maybePrefillCountryFromSettings() {
+    if (_countryPrefilledFromSettings ||
+        _editingId != null ||
+        _selectedCountryCode != null) {
+      return;
+    }
+    final defaultCode = GeocodingCountryCatalog.fallback()
+        .defaultCountryCode(widget.settings.countryCodes);
+    if (defaultCode == null) {
+      return;
+    }
+    setState(() {
+      _selectedCountryCode = defaultCode;
+      _countryPrefilledFromSettings = true;
+    });
   }
 
   void _clearForm() {
@@ -99,7 +120,8 @@ class _SettingsGeocodingContributionsSectionState
     _latitudeController.clear();
     _longitudeController.clear();
     _notesController.clear();
-    _countryController.clear();
+    _selectedCountryCode = null;
+    _countryPrefilledFromSettings = false;
   }
 
   void _startEdit(GeocodingContribution row) {
@@ -108,7 +130,8 @@ class _SettingsGeocodingContributionsSectionState
     _latitudeController.text = row.latitude.toString();
     _longitudeController.text = row.longitude.toString();
     _notesController.text = row.notes ?? '';
-    _countryController.text = row.countryCode ?? '';
+    _selectedCountryCode = row.countryCode;
+    _countryPrefilledFromSettings = true;
   }
 
   Future<void> _saveFromForm() async {
@@ -122,7 +145,7 @@ class _SettingsGeocodingContributionsSectionState
 
     final name = _nameController.text.trim();
     final notes = _notesController.text.trim();
-    final countryCode = _countryController.text.trim();
+    final countryCode = _selectedCountryCode?.trim();
     final latitude = double.tryParse(_latitudeController.text.trim());
     final longitude = double.tryParse(_longitudeController.text.trim());
 
@@ -148,7 +171,8 @@ class _SettingsGeocodingContributionsSectionState
           latitude: latitude,
           longitude: longitude,
           notes: notes,
-          countryCode: countryCode,
+          countryCode:
+              countryCode != null && countryCode.isNotEmpty ? countryCode : null,
         );
       } else {
         await repository.updateContribution(
@@ -157,7 +181,8 @@ class _SettingsGeocodingContributionsSectionState
           latitude: latitude,
           longitude: longitude,
           notes: notes,
-          countryCode: countryCode,
+          countryCode:
+              countryCode != null && countryCode.isNotEmpty ? countryCode : null,
         );
       }
       refreshGeocoding(ref);
@@ -550,6 +575,28 @@ class _SettingsGeocodingContributionsSectionState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final catalogAsync = widget.serverConfigured
+        ? ref.watch(geocodingCountryCatalogProvider)
+        : null;
+    final catalog = catalogAsync?.valueOrNull ?? GeocodingCountryCatalog.fallback();
+    ref.listen(geocodingCountryCatalogProvider, (previous, next) {
+      next.whenData((loadedCatalog) {
+        if (_countryPrefilledFromSettings ||
+            _editingId != null ||
+            _selectedCountryCode != null) {
+          return;
+        }
+        final defaultCode =
+            loadedCatalog.defaultCountryCode(widget.settings.countryCodes);
+        if (defaultCode == null) {
+          return;
+        }
+        setState(() {
+          _selectedCountryCode = defaultCode;
+          _countryPrefilledFromSettings = true;
+        });
+      });
+    });
     final controlsEnabled =
         widget.serverConfigured && widget.enabled && !_archiveBusy && !_crowdsourceBusy;
     final archiveEnabled = widget.serverConfigured && widget.enabled && !_archiveBusy;
@@ -659,16 +706,29 @@ class _SettingsGeocodingContributionsSectionState
                   enabled: widget.serverConfigured && !_savingContribution,
                 ),
                 const SizedBox(height: 12),
-                TextField(
-                  controller: _countryController,
+                DropdownButtonFormField<String?>(
+                  value: _selectedCountryCode,
                   decoration: InputDecoration(
                     labelText: l10n.geocodingContributionCountryLabel,
                     border: const OutlineInputBorder(),
                   ),
-                  maxLength: 2,
-                  textCapitalization: TextCapitalization.characters,
-                  inputFormatters: const [UpperCaseTextFormatter()],
-                  enabled: widget.serverConfigured && !_savingContribution,
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text(l10n.geocodingContributionCountryNone),
+                    ),
+                    for (final country in catalog.countries)
+                      DropdownMenuItem<String?>(
+                        value: country.code,
+                        child: Text(country.displayLabel),
+                      ),
+                  ],
+                  onChanged: widget.serverConfigured && !_savingContribution
+                      ? (value) {
+                          setState(() => _selectedCountryCode = value);
+                        }
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Wrap(
@@ -914,17 +974,5 @@ class _SettingsGeocodingContributionsSectionState
         ),
       ],
     );
-  }
-}
-
-class UpperCaseTextFormatter extends TextInputFormatter {
-  const UpperCaseTextFormatter();
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    return newValue.copyWith(text: newValue.text.toUpperCase());
   }
 }

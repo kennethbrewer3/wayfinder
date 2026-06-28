@@ -19,6 +19,10 @@ class GeocodingRestApiRoute extends Route {
         '/geocoding/search-readiness',
         GeocodingRestHandlers.getSearchReadiness,
       )
+      ..get(
+        '/geocoding/country-codes',
+        GeocodingRestHandlers.getCountryCatalog,
+      )
       ..options('/geocoding/import', _preflight)
       ..post('/geocoding/import', GeocodingRestHandlers.startImport)
       ..delete('/geocoding/import', GeocodingRestHandlers.cancelImport)
@@ -120,6 +124,7 @@ class GeocodingRestApiRoute extends Route {
       'resources': {
         'health': '/api/health',
         'geocodingSettings': '/api/geocoding/settings',
+        'geocodingCountryCodes': '/api/geocoding/country-codes',
         'geocodingSearchReadiness': '/api/geocoding/search-readiness',
         'geocodingImport': '/api/geocoding/import',
         'geocodingSearch': '/api/geocoding/search?q=<query>',

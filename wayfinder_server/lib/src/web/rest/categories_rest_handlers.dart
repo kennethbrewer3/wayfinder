@@ -109,8 +109,9 @@ abstract final class CategoriesRestHandlers {
           ? RestJson.parseOptionalUuid(body['parentId'], label: 'parentId')
           : existing.parentId,
       name: body['name'] is String ? body['name'] as String : existing.name,
-      sortOrder:
-          body['sortOrder'] is int ? body['sortOrder'] as int : existing.sortOrder,
+      sortOrder: body['sortOrder'] is int
+          ? body['sortOrder'] as int
+          : existing.sortOrder,
     );
   }
 }

@@ -161,8 +161,9 @@ abstract final class AppSettingsRestHandlers {
   static Map<String, Object?> _encodePmtilesStorage(AppSettings settings) {
     return {
       'storagePath': settings.pmtilesStoragePath,
-      'effectiveStoragePath':
-          AppSettingsStore.effectivePmtilesStoragePath(settings),
+      'effectiveStoragePath': AppSettingsStore.effectivePmtilesStoragePath(
+        settings,
+      ),
       'updatedAt': settings.updatedAt.toIso8601String(),
     };
   }

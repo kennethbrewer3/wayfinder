@@ -86,7 +86,9 @@ abstract final class AppSettingsStore {
       throw const FormatException('PMTiles storage path is required.');
     }
     if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-      throw const FormatException('PMTiles storage path must be a local folder.');
+      throw const FormatException(
+        'PMTiles storage path must be a local folder.',
+      );
     }
   }
 

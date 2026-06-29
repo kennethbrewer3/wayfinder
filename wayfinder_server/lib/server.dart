@@ -30,9 +30,9 @@ void run(List<String> args) async {
     null,
     'server',
     '⚙️ Serverpod initialized | apiPort=${pod.config.apiServer.port} '
-    'webPort=${pod.config.webServer?.port} '
-    'db=${pod.config.database?.name}@${pod.config.database?.host}:${pod.config.database?.port} '
-    'pmtiles=${WayfinderEnv.pmtilesStoragePath}',
+        'webPort=${pod.config.webServer?.port} '
+        'db=${pod.config.database?.name}@${pod.config.database?.host}:${pod.config.database?.port} '
+        'pmtiles=${WayfinderEnv.pmtilesStoragePath}',
   );
 
   // Initialize authentication services for the server.
@@ -64,7 +64,11 @@ void run(List<String> args) async {
 
   final webConfig = pod.config.webServer;
   if (webConfig == null) {
-    WfLog.warn(null, 'server', '🌐 Web server disabled — PMTiles HTTP routes skipped');
+    WfLog.warn(
+      null,
+      'server',
+      '🌐 Web server disabled — PMTiles HTTP routes skipped',
+    );
   } else {
     pod.webServer.addRoute(
       AppConfigRoute(apiConfig: pod.config.apiServer, webConfig: webConfig),
@@ -98,7 +102,11 @@ void run(List<String> args) async {
   // Checks if the flutter web app has been built and serves it if it has.
   final appDir = Directory(Uri(path: 'web/app').toFilePath());
   if (appDir.existsSync()) {
-    WfLog.success(null, 'server', '🌐 Serving Flutter web app from web/app at /app');
+    WfLog.success(
+      null,
+      'server',
+      '🌐 Serving Flutter web app from web/app at /app',
+    );
     // Serve the flutter web app under the /app path.
     pod.webServer.addRoute(
       FlutterRoute(
@@ -109,7 +117,11 @@ void run(List<String> args) async {
       '/app',
     );
   } else {
-    WfLog.warn(null, 'server', '🌐 Flutter web build not found — serving build instructions at /app');
+    WfLog.warn(
+      null,
+      'server',
+      '🌐 Flutter web build not found — serving build instructions at /app',
+    );
     // If the flutter web app has not been built, serve the build app page.
     pod.webServer.addRoute(
       StaticRoute.file(
@@ -143,7 +155,7 @@ void run(List<String> args) async {
         syncSession,
         'server',
         '🗺️ PMTiles storage unavailable | path=$pmtilesPath '
-        '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
+            '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
       );
     }
   } finally {

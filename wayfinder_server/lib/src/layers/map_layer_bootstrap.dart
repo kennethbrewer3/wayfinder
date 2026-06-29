@@ -3,8 +3,9 @@ import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 
 /// Stable id for the seeded default layer (matches migration SQL).
-final defaultMapLayerId =
-    UuidValue.fromString('00000000-0000-4000-8000-000000000001');
+final defaultMapLayerId = UuidValue.fromString(
+  '00000000-0000-4000-8000-000000000001',
+);
 
 /// Returns all layers, creating and backfilling a default layer when needed.
 Future<List<MapLayer>> listLayersEnsuringDefault(Session session) async {

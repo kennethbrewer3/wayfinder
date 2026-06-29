@@ -6,8 +6,7 @@ import '../../pmtiles/pmtiles_storage.dart';
 /// Serves a catalog [PmtilesFile] by database id, resolving either uploaded
 /// `{uuid}` blobs or pre-existing `{name}.pmtiles` files on disk.
 class PmtilesFileRoute extends Route {
-  PmtilesFileRoute()
-      : super(methods: {Method.get, Method.head}, path: '/**');
+  PmtilesFileRoute() : super(methods: {Method.get, Method.head}, path: '/**');
 
   @override
   Future<Result> handleCall(Session session, Request request) async {

@@ -4,10 +4,12 @@ class AppConfigWidget extends JsonWidget {
   AppConfigWidget({
     required this.apiUrl,
     required this.webUrl,
-  }) : super(object: {
-          'apiUrl': apiUrl,
-          'webUrl': webUrl,
-        });
+  }) : super(
+         object: {
+           'apiUrl': apiUrl,
+           'webUrl': webUrl,
+         },
+       );
 
   final String apiUrl;
   final String webUrl;
@@ -18,9 +20,9 @@ class AppConfigRoute extends WidgetRoute {
     required ServerConfig apiConfig,
     required ServerConfig webConfig,
   }) : widget = AppConfigWidget(
-          apiUrl: apiConfig.publicUrl.toString(),
-          webUrl: webConfig.publicUrl.toString(),
-        );
+         apiUrl: apiConfig.publicUrl.toString(),
+         webUrl: webConfig.publicUrl.toString(),
+       );
 
   final AppConfigWidget widget;
 
@@ -32,8 +34,8 @@ class AppConfigRoute extends WidgetRoute {
 
 extension on ServerConfig {
   Uri get publicUrl => Uri(
-        scheme: publicScheme,
-        host: publicHost,
-        port: publicPort,
-      );
+    scheme: publicScheme,
+    host: publicHost,
+    port: publicPort,
+  );
 }

@@ -26,29 +26,29 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
     );
   }
 
-    final storage = PmtilesStorage();
-    final id = const Uuid().v4obj();
-    final storageId = id.uuid;
+  final storage = PmtilesStorage();
+  final id = const Uuid().v4obj();
+  final storageId = id.uuid;
 
-    try {
-      await storage.writeStream(storageId, request.read());
-      final storedFile = storage.fileFor(storageId);
-      final sizeBytes = await storedFile.length();
-      final bounds = await PmtilesHeaderBounds.readFromFile(storedFile);
+  try {
+    await storage.writeStream(storageId, request.read());
+    final storedFile = storage.fileFor(storageId);
+    final sizeBytes = await storedFile.length();
+    final bounds = await PmtilesHeaderBounds.readFromFile(storedFile);
 
-      final entry = PmtilesFile(
-        id: id,
-        name: name,
-        sizeBytes: sizeBytes,
-        isActive: true,
-        addedAt: DateTime.now().toUtc(),
-        minZoom: bounds.minZoom,
-        maxZoom: bounds.maxZoom,
-        minLatitude: bounds.minLatitude,
-        minLongitude: bounds.minLongitude,
-        maxLatitude: bounds.maxLatitude,
-        maxLongitude: bounds.maxLongitude,
-      );
+    final entry = PmtilesFile(
+      id: id,
+      name: name,
+      sizeBytes: sizeBytes,
+      isActive: true,
+      addedAt: DateTime.now().toUtc(),
+      minZoom: bounds.minZoom,
+      maxZoom: bounds.maxZoom,
+      minLatitude: bounds.minLatitude,
+      minLongitude: bounds.minLongitude,
+      maxLatitude: bounds.maxLatitude,
+      maxLongitude: bounds.maxLongitude,
+    );
     await PmtilesFile.db.insertRow(session, entry);
 
     final json = Map<String, dynamic>.from(entry.toJson());

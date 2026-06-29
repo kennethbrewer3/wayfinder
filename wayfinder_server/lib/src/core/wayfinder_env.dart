@@ -15,14 +15,20 @@ class WayfinderEnv {
 
   /// Resolves the initial PMTiles folder from process env and `.env`.
   static String resolveInitialPmtilesStoragePath() {
-    for (final key in ['WAYFINDER_PMTILES_STORAGE', 'WAYFINDER_PMTILES_HOST_PATH']) {
+    for (final key in [
+      'WAYFINDER_PMTILES_STORAGE',
+      'WAYFINDER_PMTILES_HOST_PATH',
+    ]) {
       final value = Platform.environment[key]?.trim();
       if (value != null && value.isNotEmpty) {
         return value;
       }
     }
 
-    for (final key in ['WAYFINDER_PMTILES_HOST_PATH', 'WAYFINDER_PMTILES_STORAGE']) {
+    for (final key in [
+      'WAYFINDER_PMTILES_HOST_PATH',
+      'WAYFINDER_PMTILES_STORAGE',
+    ]) {
       final value = _readDotEnv(key);
       if (value != null && value.isNotEmpty) {
         return value;

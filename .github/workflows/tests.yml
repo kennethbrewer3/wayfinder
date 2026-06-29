@@ -29,6 +29,11 @@ jobs:
         with:
           sdk: 3.8.0
 
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
       - name: Start containers
         working-directory: wayfinder_server
         run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml up --quiet-pull --build -d

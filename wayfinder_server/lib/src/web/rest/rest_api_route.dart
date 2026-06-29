@@ -55,10 +55,22 @@ class RestApiRoute extends Route {
       ..get('/settings/home', AppSettingsRestHandlers.getHomeLocation)
       ..put('/settings/home', AppSettingsRestHandlers.updateHomeLocation)
       ..delete('/settings/home', AppSettingsRestHandlers.resetHomeLocation)
-      ..get('/settings/pmtiles-storage', AppSettingsRestHandlers.getPmtilesStoragePath)
-      ..put('/settings/pmtiles-storage', AppSettingsRestHandlers.updatePmtilesStoragePath)
-      ..get('/settings/client-preferences', AppSettingsRestHandlers.getClientPreferences)
-      ..put('/settings/client-preferences', AppSettingsRestHandlers.updateClientPreferences);
+      ..get(
+        '/settings/pmtiles-storage',
+        AppSettingsRestHandlers.getPmtilesStoragePath,
+      )
+      ..put(
+        '/settings/pmtiles-storage',
+        AppSettingsRestHandlers.updatePmtilesStoragePath,
+      )
+      ..get(
+        '/settings/client-preferences',
+        AppSettingsRestHandlers.getClientPreferences,
+      )
+      ..put(
+        '/settings/client-preferences',
+        AppSettingsRestHandlers.updateClientPreferences,
+      );
   }
 
   static Future<Result> _index(Request request) async {

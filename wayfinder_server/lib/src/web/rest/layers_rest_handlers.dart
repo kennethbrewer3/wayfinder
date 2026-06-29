@@ -159,12 +159,17 @@ abstract final class LayersRestHandlers {
     );
     final nextSortOrder = existing.isEmpty
         ? 0
-        : existing.map((layer) => layer.sortOrder).reduce((a, b) => a > b ? a : b) + 1;
+        : existing
+                  .map((layer) => layer.sortOrder)
+                  .reduce((a, b) => a > b ? a : b) +
+              1;
 
     final now = DateTime.now().toUtc();
     return MapLayer(
       name: name,
-      sortOrder: body['sortOrder'] is int ? body['sortOrder'] as int : nextSortOrder,
+      sortOrder: body['sortOrder'] is int
+          ? body['sortOrder'] as int
+          : nextSortOrder,
       visible: body['visible'] is bool ? body['visible'] as bool : true,
       createdAt: now,
       updatedAt: now,
@@ -180,7 +185,9 @@ abstract final class LayersRestHandlers {
       sortOrder: body['sortOrder'] is int
           ? body['sortOrder'] as int
           : existing.sortOrder,
-      visible: body['visible'] is bool ? body['visible'] as bool : existing.visible,
+      visible: body['visible'] is bool
+          ? body['visible'] as bool
+          : existing.visible,
       updatedAt: DateTime.now().toUtc(),
     );
   }

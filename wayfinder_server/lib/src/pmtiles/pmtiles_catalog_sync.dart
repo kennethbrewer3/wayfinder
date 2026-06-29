@@ -24,8 +24,7 @@ abstract final class PmtilesCatalogSync {
 
     final discovered = storage.discoverNamedArchives();
     final discoveredByName = <String, File>{
-      for (final file in discovered)
-        storage.relativeCatalogName(file): file,
+      for (final file in discovered) storage.relativeCatalogName(file): file,
     };
     final discoveredByBasename = <String, String>{};
     for (final name in discoveredByName.keys) {
@@ -52,7 +51,7 @@ abstract final class PmtilesCatalogSync {
         session,
         'pmtiles',
         '📂 PMTiles catalog sync found 0 files on disk but '
-        '${existing.length} catalog entries — skipping removals',
+            '${existing.length} catalog entries — skipping removals',
       );
     }
 
@@ -143,8 +142,8 @@ abstract final class PmtilesCatalogSync {
         session,
         'pmtiles',
         '📂 PMTiles catalog sync from ${storage.root.path}: '
-        'imported=$imported removed=$removed relocated=$relocated '
-        'boundsUpdated=$boundsUpdated discovered=${discovered.length}',
+            'imported=$imported removed=$removed relocated=$relocated '
+            'boundsUpdated=$boundsUpdated discovered=${discovered.length}',
       );
     }
   }

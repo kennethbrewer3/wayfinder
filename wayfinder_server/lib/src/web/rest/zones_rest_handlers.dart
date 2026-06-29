@@ -143,7 +143,9 @@ abstract final class ZonesRestHandlers {
       fillColor: body['fillColor'] is String
           ? body['fillColor'] as String
           : existing.fillColor,
-      visible: body['visible'] is bool ? body['visible'] as bool : existing.visible,
+      visible: body['visible'] is bool
+          ? body['visible'] as bool
+          : existing.visible,
       geometryJson: body['geometryJson'] is String
           ? body['geometryJson'] as String
           : existing.geometryJson,

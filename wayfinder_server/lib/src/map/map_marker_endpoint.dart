@@ -26,7 +26,8 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'getMarker',
       () => MapMarker.db.findById(session, id),
-      onSuccess: (marker) => marker == null ? 'not found id=$id' : 'found id=$id',
+      onSuccess: (marker) =>
+          marker == null ? 'not found id=$id' : 'found id=$id',
     );
   }
 

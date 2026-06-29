@@ -64,7 +64,10 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         final groups = await PmtilesGroup.db.find(session);
         final nextSortOrder = groups.isEmpty
             ? 0
-            : groups.map((group) => group.sortOrder).reduce((a, b) => a > b ? a : b) + 1;
+            : groups
+                      .map((group) => group.sortOrder)
+                      .reduce((a, b) => a > b ? a : b) +
+                  1;
 
         return PmtilesGroup.db.insertRow(
           session,
@@ -298,8 +301,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         if (file == null) {
           throw FormatException('PMTiles file not found: ${id.uuid}');
         }
-        if (enabled &&
-            !_storage.existsForEntry(id: id.uuid, name: file.name)) {
+        if (enabled && !_storage.existsForEntry(id: id.uuid, name: file.name)) {
           throw StateError('PMTiles file bytes missing on disk: ${id.uuid}');
         }
 

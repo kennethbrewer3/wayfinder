@@ -147,7 +147,9 @@ abstract final class MarkersRestHandlers {
           : existing.elevation,
       color: body['color'] is String ? body['color'] as String : existing.color,
       icon: body['icon'] is String ? body['icon'] as String : existing.icon,
-      visible: body['visible'] is bool ? body['visible'] as bool : existing.visible,
+      visible: body['visible'] is bool
+          ? body['visible'] as bool
+          : existing.visible,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
           : existing.layerId,

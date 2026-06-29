@@ -39,10 +39,10 @@ class MapDataRestoreCounts {
   final int zones;
 
   Map<String, dynamic> toJson() => {
-        'layers': layers,
-        'markers': markers,
-        'zones': zones,
-      };
+    'layers': layers,
+    'markers': markers,
+    'zones': zones,
+  };
 }
 
 /// Replaces all layers, markers, and zones with the backup payload.
@@ -172,6 +172,8 @@ List<T> _parseModelList<T>(
       if (entry is Map<String, dynamic>)
         fromJson(entry)
       else
-        throw FormatException('Each entry in "$fieldName" must be a JSON object'),
+        throw FormatException(
+          'Each entry in "$fieldName" must be a JSON object',
+        ),
   ];
 }

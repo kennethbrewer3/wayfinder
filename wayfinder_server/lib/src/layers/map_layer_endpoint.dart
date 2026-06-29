@@ -23,8 +23,7 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'getLayer',
       () => MapLayer.db.findById(session, id),
-      onSuccess: (layer) =>
-          layer == null ? 'not found id=$id' : 'found id=$id',
+      onSuccess: (layer) => layer == null ? 'not found id=$id' : 'found id=$id',
     );
   }
 

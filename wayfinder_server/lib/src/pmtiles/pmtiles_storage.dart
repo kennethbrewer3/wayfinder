@@ -161,7 +161,10 @@ class PmtilesStorage {
     }
   }
 
-  Future<void> deleteForEntry({required String id, required String name}) async {
+  Future<void> deleteForEntry({
+    required String id,
+    required String name,
+  }) async {
     final file = resolveFileForEntry(id: id, name: name);
     if (file.existsSync()) {
       await file.delete();

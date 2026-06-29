@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: '3.4.8'
-      SERVERPOD_PASSWORD_database: 'mA8uwnnQaPPF-RJuCw0xBQ8qV5ol7EH-'
-      SERVERPOD_PASSWORD_redis: '68i8nW9rJ80VZ_UEGd9xKshW1FvTdP0a'
+      SERVERPOD_PASSWORD_database: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
+      SERVERPOD_PASSWORD_redis: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
       POSTGRES_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
       REDIS_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
       POSTGRES_TEST_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
@@ -34,9 +34,18 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Start containers
+      - name: Start test database
         working-directory: wayfinder_server
-        run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml up --quiet-pull --build -d
+        run: |
+          docker compose --profile test up -d postgres_test
+          for i in $(seq 1 30); do
+            if docker compose exec -T postgres_test pg_isready -U postgres -d wayfinder_test; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker compose logs postgres_test
+          exit 1
 
       - name: Install server dependencies
         working-directory: wayfinder_server
@@ -61,4 +70,4 @@ jobs:
       - name: Stop containers
         if: always()
         working-directory: wayfinder_server
-        run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml down -v
+        run: docker compose --profile test down -v

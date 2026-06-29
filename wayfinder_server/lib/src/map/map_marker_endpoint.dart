@@ -131,7 +131,9 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
     if (effectiveAfter.isTracking &&
         effectiveAfter.trackZoneId == null &&
         before?.trackZoneId != null) {
-      effectiveAfter = effectiveAfter.copyWith(trackZoneId: before!.trackZoneId);
+      effectiveAfter = effectiveAfter.copyWith(
+        trackZoneId: before!.trackZoneId,
+      );
     }
 
     final processed = await MarkerTrackingService.processMarkerUpdate(

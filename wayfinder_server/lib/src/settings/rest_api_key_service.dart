@@ -72,7 +72,10 @@ abstract final class RestApiKeyService {
     return '${trimmed.substring(0, previewLength)}…';
   }
 
-  static Future<bool> matchesConfiguredKey(Session session, String provided) async {
+  static Future<bool> matchesConfiguredKey(
+    Session session,
+    String provided,
+  ) async {
     final trimmed = provided.trim();
     if (trimmed.isEmpty) {
       return false;

@@ -11,6 +11,7 @@ CREATE TABLE "rest_api_key" (
     "createdAt" timestamp without time zone NOT NULL
 );
 
+-- Indexes
 CREATE INDEX "rest_api_key_name_idx" ON "rest_api_key" USING btree ("name");
 
 --
@@ -27,9 +28,9 @@ UPDATE "app_settings" SET "restApiKeyHash" = NULL WHERE "restApiKeyHash" IS NOT 
 -- MIGRATION VERSION FOR wayfinder
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260630120000000-rest-api-keys', now())
+    VALUES ('wayfinder', '20260629173609059', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20260630120000000-rest-api-keys', "timestamp" = now();
+    DO UPDATE SET "version" = '20260629173609059', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

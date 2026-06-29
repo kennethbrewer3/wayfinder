@@ -291,7 +291,8 @@ abstract final class MarkerTrackingService {
     final phi1 = lat1 * math.pi / 180;
     final phi2 = lat2 * math.pi / 180;
     final deltaLon = (lon2 - lon1) * math.pi / 180;
-    final centralAngle = math.sin(phi1) * math.sin(phi2) +
+    final centralAngle =
+        math.sin(phi1) * math.sin(phi2) +
         math.cos(phi1) * math.cos(phi2) * math.cos(deltaLon);
     return earthRadiusMeters * math.acos(centralAngle.clamp(-1.0, 1.0));
   }

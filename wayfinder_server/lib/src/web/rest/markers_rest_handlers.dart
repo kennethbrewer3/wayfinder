@@ -38,8 +38,15 @@ abstract final class MarkersRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final body = await RestJson.readObject(request);
-      var created = await MapMarker.db.insertRow(session, _markerFromCreateBody(body));
-      created = await _applyTrackingChanges(session: session, before: null, after: created);
+      var created = await MapMarker.db.insertRow(
+        session,
+        _markerFromCreateBody(body),
+      );
+      created = await _applyTrackingChanges(
+        session: session,
+        before: null,
+        after: created,
+      );
       await MapMarkerChangeBroadcast.created(session, created);
       return RestJson.created(RestJson.encodeModel(created));
     });
@@ -131,9 +138,13 @@ abstract final class MarkersRestHandlers {
       color: color,
       icon: icon,
       visible: body['visible'] is bool ? body['visible'] as bool : true,
-      isTracking: body['isTracking'] is bool ? body['isTracking'] as bool : false,
-      trackZoneId:
-          RestJson.parseOptionalUuid(body['trackZoneId'], label: 'trackZoneId'),
+      isTracking: body['isTracking'] is bool
+          ? body['isTracking'] as bool
+          : false,
+      trackZoneId: RestJson.parseOptionalUuid(
+        body['trackZoneId'],
+        label: 'trackZoneId',
+      ),
       layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdAt: now,
       updatedAt: now,
@@ -168,7 +179,10 @@ abstract final class MarkersRestHandlers {
           ? body['isTracking'] as bool
           : existing.isTracking,
       trackZoneId: body.containsKey('trackZoneId')
-          ? RestJson.parseOptionalUuid(body['trackZoneId'], label: 'trackZoneId')
+          ? RestJson.parseOptionalUuid(
+              body['trackZoneId'],
+              label: 'trackZoneId',
+            )
           : existing.trackZoneId,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
@@ -187,7 +201,9 @@ abstract final class MarkersRestHandlers {
     if (effectiveAfter.isTracking &&
         effectiveAfter.trackZoneId == null &&
         before?.trackZoneId != null) {
-      effectiveAfter = effectiveAfter.copyWith(trackZoneId: before!.trackZoneId);
+      effectiveAfter = effectiveAfter.copyWith(
+        trackZoneId: before!.trackZoneId,
+      );
     }
 
     final processed = await MarkerTrackingService.processMarkerUpdate(

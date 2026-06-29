@@ -13,33 +13,31 @@ jobs:
       VERSION: '3.4.8'
       SERVERPOD_PASSWORD_database: 'mA8uwnnQaPPF-RJuCw0xBQ8qV5ol7EH-'
       SERVERPOD_PASSWORD_redis: '68i8nW9rJ80VZ_UEGd9xKshW1FvTdP0a'
+      POSTGRES_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
+      REDIS_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
+      POSTGRES_TEST_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
+      REDIS_TEST_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
+      SERVERPOD_PASSWORD_serviceSecret: 'ci-test-service-secret'
+      SERVERPOD_PASSWORD_emailSecretHashPepper: 'ci-test-email-pepper'
+      SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: 'ci-test-jwt-signing-key'
+      SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'ci-test-jwt-refresh-pepper'
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.8'
+          flutter-version: '3.35.3'
+          cache: true
 
       - name: Start containers
         working-directory: wayfinder_server
-        env:
-          POSTGRES_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
-          REDIS_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
-          POSTGRES_TEST_PASSWORD: 'hoMP8M6XziidHgRLWdYWIChJN64gcPhV'
-          REDIS_TEST_PASSWORD: 'jZSPtad_20Z4JmPOazsDurPauqOk9FlM'
-          SERVERPOD_PASSWORD_serviceSecret: 'ci-test-service-secret'
-          SERVERPOD_PASSWORD_emailSecretHashPepper: 'ci-test-email-pepper'
-          SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: 'ci-test-jwt-signing-key'
-          SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'ci-test-jwt-refresh-pepper'
         run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml up --quiet-pull --build -d
 
       - name: Install dependencies
-        working-directory: wayfinder_server
-        run: dart pub get
+        run: flutter pub get
 
       - name: Install Serverpod CLI
-        working-directory: wayfinder_server
         run: dart pub global activate serverpod_cli $VERSION
 
       - name: Run Serverpod generator
@@ -53,4 +51,4 @@ jobs:
       - name: Stop containers
         if: always()
         working-directory: wayfinder_server
-        run: docker compose down -v
+        run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml down -v

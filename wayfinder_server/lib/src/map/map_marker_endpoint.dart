@@ -66,9 +66,13 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
       'updateMarker',
       () async {
         final before = await MapMarker.db.findById(session, marker.id);
+        var incoming = marker;
+        if (incoming.trackZoneId == null && before?.trackZoneId != null) {
+          incoming = incoming.copyWith(trackZoneId: before!.trackZoneId);
+        }
         var updated = await MapMarker.db.updateRow(
           session,
-          marker.copyWith(updatedAt: DateTime.now().toUtc()),
+          incoming.copyWith(updatedAt: DateTime.now().toUtc()),
         );
         updated = await _applyTrackingChanges(
           session: session,
@@ -123,14 +127,21 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
     required MapMarker? before,
     required MapMarker after,
   }) async {
+    var effectiveAfter = after;
+    if (effectiveAfter.isTracking &&
+        effectiveAfter.trackZoneId == null &&
+        before?.trackZoneId != null) {
+      effectiveAfter = effectiveAfter.copyWith(trackZoneId: before!.trackZoneId);
+    }
+
     final processed = await MarkerTrackingService.processMarkerUpdate(
       session: session,
       before: before,
-      after: after,
+      after: effectiveAfter,
     );
-    if (processed.isTracking == after.isTracking &&
-        processed.trackZoneId == after.trackZoneId) {
-      return after;
+    if (processed.isTracking == effectiveAfter.isTracking &&
+        processed.trackZoneId == effectiveAfter.trackZoneId) {
+      return effectiveAfter;
     }
     return MapMarker.db.updateRow(
       session,

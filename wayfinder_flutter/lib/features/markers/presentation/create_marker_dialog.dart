@@ -56,7 +56,7 @@ Future<bool> createMarkerAtPoint({
   );
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
-  final created = await client.mapMarker.createMarker(
+  var created = await client.mapMarker.createMarker(
     MapMarker(
       name: formData.name,
       notes: formData.notes,
@@ -73,6 +73,9 @@ Future<bool> createMarkerAtPoint({
     ),
   );
   if (formData.isTracking) {
+    if (created.trackZoneId == null) {
+      created = await client.mapMarker.getMarker(created.id) ?? created;
+    }
     await _syncTrackTransportationMode(
       client: client,
       marker: created,
@@ -112,7 +115,7 @@ Future<bool> updateMarkerFromForm({
     return false;
   }
 
-  final updated = await client.mapMarker.updateMarker(
+  var updated = await client.mapMarker.updateMarker(
     marker.copyWith(
       name: formData.name,
       notes: formData.notes,
@@ -122,12 +125,14 @@ Future<bool> updateMarkerFromForm({
       icon: formData.icon,
       elevation: formData.elevation,
       isTracking: formData.isTracking,
-      trackZoneId: marker.trackZoneId,
       layerId: formData.layerId,
       updatedAt: DateTime.now().toUtc(),
     ),
   );
   if (formData.isTracking) {
+    if (updated.trackZoneId == null) {
+      updated = await client.mapMarker.getMarker(updated.id) ?? updated;
+    }
     await _syncTrackTransportationMode(
       client: client,
       marker: updated,

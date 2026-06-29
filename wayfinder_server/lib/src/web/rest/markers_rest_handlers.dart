@@ -183,14 +183,21 @@ abstract final class MarkersRestHandlers {
     required MapMarker? before,
     required MapMarker after,
   }) async {
+    var effectiveAfter = after;
+    if (effectiveAfter.isTracking &&
+        effectiveAfter.trackZoneId == null &&
+        before?.trackZoneId != null) {
+      effectiveAfter = effectiveAfter.copyWith(trackZoneId: before!.trackZoneId);
+    }
+
     final processed = await MarkerTrackingService.processMarkerUpdate(
       session: session,
       before: before,
-      after: after,
+      after: effectiveAfter,
     );
-    if (processed.isTracking == after.isTracking &&
-        processed.trackZoneId == after.trackZoneId) {
-      return after;
+    if (processed.isTracking == effectiveAfter.isTracking &&
+        processed.trackZoneId == effectiveAfter.trackZoneId) {
+      return effectiveAfter;
     }
     return MapMarker.db.updateRow(
       session,

@@ -130,7 +130,7 @@ With the server (and optional geocoding server) running, add the map UI through 
 | Field | Value |
 |-------|-------|
 | **Name** | Wayfinder |
-| **Image** | `ghcr.io/kennethbrewer3/wayfinder-client:latest` |
+| **Image** | `ghcr.io/kennethbrewer3/wayfinder-client:v1.0.1` |
 | **Port mapping** | Host `9080` → Container `8080` |
 | **Environment variables** | See below |
 
@@ -151,7 +151,7 @@ If you skipped the geocoding server, omit `WAYFINDER_GEOCODING_WEB_URL`.
 ### Supply Depot tips
 
 - **Custom launch URL:** If you use a reverse proxy, set **Manage → Edit → Custom launch URL** on the Wayfinder card.
-- **Updates:** Use **Manage → Update** on the card, or pin a release in the image tag (for example `:fe42932` instead of `:latest`).
+- **Updates:** Use **Manage → Update** on the card, or pin a release in the image tag (for example `:v1.0.1` instead of `:latest`).
 - **Logs:** **Manage → Logs** if the client fails health checks on startup.
 
 ### Alternative: client via Docker Compose

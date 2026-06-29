@@ -200,12 +200,12 @@ WAYFINDER_GEOCODING_WEB_URL=http://localhost:18182
 By default, compose pulls `:latest` (last successful build from `main`). To pin a version:
 
 ```env
-WAYFINDER_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-server:v1.0.0
-WAYFINDER_GEOCODING_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-geocoding-server:v1.0.0
-WAYFINDER_CLIENT_IMAGE=ghcr.io/kennethbrewer3/wayfinder-client:v1.0.0
+WAYFINDER_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-server:v1.0.1
+WAYFINDER_GEOCODING_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-geocoding-server:v1.0.1
+WAYFINDER_CLIENT_IMAGE=ghcr.io/kennethbrewer3/wayfinder-client:v1.0.1
 ```
 
-Tagged releases are published when you push a git tag like `v1.0.0`.
+Tagged releases are published when you push a git tag like `v1.0.1`. See [CHANGELOG.md](CHANGELOG.md).
 
 ## Firewall
 

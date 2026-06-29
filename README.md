@@ -17,8 +17,8 @@ This repo is a Dart workspace. Shared dependencies are resolved from the root `p
 - PMTiles basemap upload, catalog, and HTTP range serving
 - Map markers with color, icon, visibility, and Markdown notes
 - Zones: polylines, circles, and rectangles with labels and styling
-- Email/password authentication in the Flutter app (Serverpod Auth)
-- REST API for scripting and external integrations (`/api`)
+- REST API with optional shared API key for scripting and integrations (`/api`)
+- Serverpod Auth on the backend (no sign-in UI in the client yet — use network controls and REST API keys)
 
 ## Requirements
 
@@ -78,6 +78,7 @@ Pre-built images are published to GitHub Container Registry on every push to `ma
 | Stack | Install |
 |-------|---------|
 | Server | [deploy/server/](deploy/server/) — `docker-compose.yaml` + `.env` |
+| Geocoding server (optional) | [deploy/geocoding-server/](deploy/geocoding-server/) |
 | Client | [deploy/client/](deploy/client/) — `docker-compose.yaml` + `.env` |
 
 ```bash
@@ -89,9 +90,9 @@ cp .env.example .env
 docker compose pull && docker compose up -d
 ```
 
-See **[DEPLOY.md](DEPLOY.md)** for the full guide (separate machines, firewall, pinning releases).
+See **[DEPLOY.md](DEPLOY.md)** for the full guide (separate machines, firewall, pinning releases). Current stable tag: **`v1.0.1`**.
 
-Running on **[Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad)? See **[deploy/project-nomad/README.md](deploy/project-nomad/README.md)**.
+Running on [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad)? See [deploy/project-nomad/README.md](deploy/project-nomad/README.md).
 
 Developers with a repo clone can build locally when changing server code:
 
@@ -138,6 +139,9 @@ GET /pmtiles/files/{id}
 
 ## Further reading
 
+- [CHANGELOG.md](CHANGELOG.md) — release history
+- [SECURITY.md](SECURITY.md) — deployment security expectations
+- [CONTRIBUTING.md](CONTRIBUTING.md) — development and pull requests
 - [API.md](API.md) — REST API manual
 - [technical-architecture-specification.md](technical-architecture-specification.md) — architecture spec
 - [wayfinder_server/README.md](wayfinder_server/README.md) — server-specific notes

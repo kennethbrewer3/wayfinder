@@ -19,7 +19,9 @@ jobs:
 
       - name: Install server dependencies
         working-directory: wayfinder_server
-        run: dart pub get --no-workspace
+        run: |
+          sed -i '/^resolution: workspace$/d' pubspec.yaml
+          dart pub get
 
       - name: Check formatting
         working-directory: wayfinder_server

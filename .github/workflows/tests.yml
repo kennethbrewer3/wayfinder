@@ -35,10 +35,15 @@ jobs:
 
       - name: Install server dependencies
         working-directory: wayfinder_server
-        run: dart pub get --no-workspace
+        run: |
+          sed -i '/^resolution: workspace$/d' pubspec.yaml
+          dart pub get
 
       - name: Install Serverpod CLI
         run: dart pub global activate serverpod_cli $VERSION
+
+      - name: Add pub global bin to PATH
+        run: echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Run Serverpod generator
         working-directory: wayfinder_server

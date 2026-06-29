@@ -708,6 +708,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get formFillColorLabel => 'Color de relleno';
 
   @override
+  String get formUnitLabel => 'Unidad';
+
+  @override
   String get formFillOpacityHelp =>
       'Ajuste la opacidad para controlar la transparencia del relleno.';
 

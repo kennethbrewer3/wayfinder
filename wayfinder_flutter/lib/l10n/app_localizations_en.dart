@@ -700,6 +700,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get formFillColorLabel => 'Fill color';
 
   @override
+  String get formUnitLabel => 'Unit';
+
+  @override
   String get formFillOpacityHelp =>
       'Adjust opacity to control fill transparency.';
 

@@ -714,6 +714,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get formFillColorLabel => 'Couleur de remplissage';
 
   @override
+  String get formUnitLabel => 'Unité';
+
+  @override
   String get formFillOpacityHelp =>
       'Ajustez l\'opacité pour contrôler la transparence du remplissage.';
 

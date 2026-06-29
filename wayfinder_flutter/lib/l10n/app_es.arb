@@ -357,6 +357,7 @@
   "formShowNameOnMap": "Mostrar nombre en el mapa",
   "formBorderColorLabel": "Color del borde",
   "formFillColorLabel": "Color de relleno",
+  "formUnitLabel": "Unidad",
   "formFillOpacityHelp": "Ajuste la opacidad para controlar la transparencia del relleno.",
   "coordinatesTitle": "Coordenadas",
   "markerCreateTitle": "Crear marcador",

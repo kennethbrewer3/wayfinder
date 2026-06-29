@@ -1324,6 +1324,12 @@ abstract class AppLocalizations {
   /// **'Fill color'**
   String get formFillColorLabel;
 
+  /// No description provided for @formUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get formUnitLabel;
+
   /// No description provided for @formFillOpacityHelp.
   ///
   /// In en, this message translates to:

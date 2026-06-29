@@ -380,6 +380,7 @@
   "formShowNameOnMap": "Show name on map",
   "formBorderColorLabel": "Border color",
   "formFillColorLabel": "Fill color",
+  "formUnitLabel": "Unit",
   "formFillOpacityHelp": "Adjust opacity to control fill transparency.",
   "coordinatesTitle": "Coordinates",
   "markerCreateTitle": "Create marker",

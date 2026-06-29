@@ -8,6 +8,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/coordinate_form_fields.dart';
 import '../../layers/presentation/layer_picker_field.dart';
+import '../../lines/models/distance_input_unit.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
@@ -130,6 +131,8 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   late CircleSizeDisplay _sizeDisplay;
   late bool _showNameLabel;
   late bool _sizeInputIsDiameter;
+  late DistanceInputUnit _sizeInputUnit;
+  late final List<DistanceInputUnit> _availableSizeUnits;
   UuidValue? _selectedLayerId;
 
   @override
@@ -143,10 +146,15 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
       text: formatCoordinateField(widget.center.longitude),
     );
     _sizeInputIsDiameter = false;
+    _availableSizeUnits = distanceInputUnitsFor(widget.measurementUnits);
+    _sizeInputUnit = defaultDistanceInputUnit(
+      widget.radiusMeters,
+      widget.measurementUnits,
+    );
     _sizeController = TextEditingController(
       text: formatCircleSizeFieldValue(
         widget.radiusMeters,
-        widget.measurementUnits,
+        unit: _sizeInputUnit,
         asDiameter: _sizeInputIsDiameter,
       ),
     );
@@ -174,7 +182,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   void _onSizeInputModeChanged(bool isDiameter) {
     final radiusMeters = parseCircleSizeFieldValue(
           _sizeController.text,
-          widget.measurementUnits,
+          unit: _sizeInputUnit,
           asDiameter: _sizeInputIsDiameter,
         ) ??
         widget.radiusMeters;
@@ -182,22 +190,37 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
       _sizeInputIsDiameter = isDiameter;
       _sizeController.text = formatCircleSizeFieldValue(
         radiusMeters,
-        widget.measurementUnits,
+        unit: _sizeInputUnit,
         asDiameter: isDiameter,
       );
     });
   }
 
+  void _onSizeInputUnitChanged(DistanceInputUnit? unit) {
+    if (unit == null) {
+      return;
+    }
+
+    final radiusMeters = parseCircleSizeFieldValue(
+          _sizeController.text,
+          unit: _sizeInputUnit,
+          asDiameter: _sizeInputIsDiameter,
+        ) ??
+        widget.radiusMeters;
+    setState(() {
+      _sizeInputUnit = unit;
+      _sizeController.text = formatCircleSizeFieldValue(
+        radiusMeters,
+        unit: unit,
+        asDiameter: _sizeInputIsDiameter,
+      );
+    });
+  }
+
   String _sizeFieldLabel(AppLocalizations l10n) {
-    final unit = switch (widget.measurementUnits) {
-      MeasurementUnits.metric => 'm',
-      MeasurementUnits.imperial => 'ft',
-      MeasurementUnits.nautical => 'nm',
-    };
-    final dimension = _sizeInputIsDiameter
+    return _sizeInputIsDiameter
         ? l10n.circleSizeDiameter
         : l10n.circleSizeRadius;
-    return '$dimension ($unit)';
   }
 
   void _submit() {
@@ -220,7 +243,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
 
     final radiusMeters = parseCircleSizeFieldValue(
       _sizeController.text,
-      widget.measurementUnits,
+      unit: _sizeInputUnit,
       asDiameter: _sizeInputIsDiameter,
     );
     if (radiusMeters == null) {
@@ -297,15 +320,47 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
                 },
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _sizeController,
-                decoration: InputDecoration(
-                  labelText: _sizeFieldLabel(l10n),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                textInputAction: TextInputAction.next,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: TextField(
+                      controller: _sizeController,
+                      decoration: InputDecoration(
+                        labelText: _sizeFieldLabel(l10n),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      textInputAction: TextInputAction.next,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: l10n.formUnitLabel,
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<DistanceInputUnit>(
+                          value: _sizeInputUnit,
+                          isExpanded: true,
+                          items: _availableSizeUnits
+                              .map(
+                                (unit) => DropdownMenuItem(
+                                  value: unit,
+                                  child: Text(unit.shortLabel),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: _onSizeInputUnitChanged,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               CoordinateFormFields(

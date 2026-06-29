@@ -385,6 +385,8 @@
   "circleDefaultName": "Nuevo círculo",
   "circleNameHint": "p. ej. Área de búsqueda, Límite de propiedad",
   "circleMeasurementsLabel": "Medidas",
+  "circleCenterMoveHelp": "Edite la latitud y la longitud para mover el centro, por ejemplo para que coincida con un marcador.",
+  "circleInvalidSize": "Introduzca un tamaño válido de al menos 1 m de radio.",
   "circleCenterLabel": "Centro",
   "circleSizeLabelOnMap": "Etiqueta de tamaño en el mapa",
   "circleCenterMarkerLabel": "Marcador central",

@@ -20,6 +20,7 @@ class CircleFormData {
     required this.name,
     required this.notes,
     required this.center,
+    required this.radiusMeters,
     required this.centerMarkerColor,
     required this.borderColor,
     required this.fillColor,
@@ -31,6 +32,7 @@ class CircleFormData {
   final String name;
   final String? notes;
   final LatLng center;
+  final double radiusMeters;
   final Color centerMarkerColor;
   final Color borderColor;
   final Color fillColor;
@@ -120,12 +122,14 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _latitudeController;
   late final TextEditingController _longitudeController;
+  late final TextEditingController _sizeController;
   late final QuillController _notesController;
   late Color _centerMarkerColor;
   late Color _borderColor;
   late Color _fillColor;
   late CircleSizeDisplay _sizeDisplay;
   late bool _showNameLabel;
+  late bool _sizeInputIsDiameter;
   UuidValue? _selectedLayerId;
 
   @override
@@ -137,6 +141,14 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
     );
     _longitudeController = TextEditingController(
       text: formatCoordinateField(widget.center.longitude),
+    );
+    _sizeInputIsDiameter = false;
+    _sizeController = TextEditingController(
+      text: formatCircleSizeFieldValue(
+        widget.radiusMeters,
+        widget.measurementUnits,
+        asDiameter: _sizeInputIsDiameter,
+      ),
     );
     _notesController = createMarkerNotesController(
       markdown: widget.initialNotes,
@@ -154,11 +166,42 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
     _nameController.dispose();
     _latitudeController.dispose();
     _longitudeController.dispose();
+    _sizeController.dispose();
     _notesController.dispose();
     super.dispose();
   }
 
+  void _onSizeInputModeChanged(bool isDiameter) {
+    final radiusMeters = parseCircleSizeFieldValue(
+          _sizeController.text,
+          widget.measurementUnits,
+          asDiameter: _sizeInputIsDiameter,
+        ) ??
+        widget.radiusMeters;
+    setState(() {
+      _sizeInputIsDiameter = isDiameter;
+      _sizeController.text = formatCircleSizeFieldValue(
+        radiusMeters,
+        widget.measurementUnits,
+        asDiameter: isDiameter,
+      );
+    });
+  }
+
+  String _sizeFieldLabel(AppLocalizations l10n) {
+    final unit = switch (widget.measurementUnits) {
+      MeasurementUnits.metric => 'm',
+      MeasurementUnits.imperial => 'ft',
+      MeasurementUnits.nautical => 'nm',
+    };
+    final dimension = _sizeInputIsDiameter
+        ? l10n.circleSizeDiameter
+        : l10n.circleSizeRadius;
+    return '$dimension ($unit)';
+  }
+
   void _submit() {
+    final l10n = AppLocalizations.of(context)!;
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       return;
@@ -169,6 +212,21 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
       _longitudeController.text,
     );
     if (center == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingContributionInvalidCoordinates)),
+      );
+      return;
+    }
+
+    final radiusMeters = parseCircleSizeFieldValue(
+      _sizeController.text,
+      widget.measurementUnits,
+      asDiameter: _sizeInputIsDiameter,
+    );
+    if (radiusMeters == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.circleInvalidSize)),
+      );
       return;
     }
 
@@ -178,6 +236,7 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
         name: name,
         notes: notes.isEmpty ? null : notes,
         center: center,
+        radiusMeters: radiusMeters,
         centerMarkerColor: _centerMarkerColor,
         borderColor: _borderColor,
         fillColor: _fillColor,
@@ -191,16 +250,6 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final radiusLabel = formatCircleSize(
-      widget.radiusMeters,
-      widget.measurementUnits,
-      CircleSizeDisplay.radius,
-    );
-    final diameterLabel = formatCircleSize(
-      widget.radiusMeters,
-      widget.measurementUnits,
-      CircleSizeDisplay.diameter,
-    );
 
     return AlertDialog(
       title: Text(widget.title),
@@ -226,33 +275,44 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
                     setState(() => _selectedLayerId = layerId),
               ),
               const SizedBox(height: 16),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.circleMeasurementsLabel),
-                trailing: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'R $radiusLabel',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                    Text(
-                      'Ø $diameterLabel',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ],
-                ),
+              Text(
+                l10n.circleMeasurementsLabel,
+                style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
+              SegmentedButton<bool>(
+                segments: [
+                  ButtonSegment(
+                    value: false,
+                    label: Text(l10n.circleSizeRadius),
+                  ),
+                  ButtonSegment(
+                    value: true,
+                    label: Text(l10n.circleSizeDiameter),
+                  ),
+                ],
+                selected: {_sizeInputIsDiameter},
+                onSelectionChanged: (selection) {
+                  _onSizeInputModeChanged(selection.first);
+                },
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _sizeController,
+                decoration: InputDecoration(
+                  labelText: _sizeFieldLabel(l10n),
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
               CoordinateFormFields(
                 title: l10n.circleCenterLabel,
                 latitudeController: _latitudeController,
                 longitudeController: _longitudeController,
+                helperText: l10n.circleCenterMoveHelp,
               ),
               const SizedBox(height: 8),
               Text(

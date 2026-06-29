@@ -1492,6 +1492,18 @@ abstract class AppLocalizations {
   /// **'Measurements'**
   String get circleMeasurementsLabel;
 
+  /// No description provided for @circleCenterMoveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit latitude and longitude to move the center, for example to match a marker.'**
+  String get circleCenterMoveHelp;
+
+  /// No description provided for @circleInvalidSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid size of at least 1 m radius.'**
+  String get circleInvalidSize;
+
   /// No description provided for @circleCenterLabel.
   ///
   /// In en, this message translates to:

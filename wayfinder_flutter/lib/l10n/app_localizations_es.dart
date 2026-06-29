@@ -796,6 +796,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get circleMeasurementsLabel => 'Medidas';
 
   @override
+  String get circleCenterMoveHelp =>
+      'Edite la latitud y la longitud para mover el centro, por ejemplo para que coincida con un marcador.';
+
+  @override
+  String get circleInvalidSize =>
+      'Introduzca un tamaño válido de al menos 1 m de radio.';
+
+  @override
   String get circleCenterLabel => 'Centro';
 
   @override

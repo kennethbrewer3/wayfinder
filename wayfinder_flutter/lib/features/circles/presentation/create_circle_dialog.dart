@@ -40,14 +40,14 @@ Future<bool> createCircleAtCenter({
   AppLogger.logZones.info(
     '⭕ Creating circle',
     data:
-        'center=${center.latitude},${center.longitude} radius=${radiusMeters}m',
+        'center=${formData.center.latitude},${formData.center.longitude} radius=${formData.radiusMeters}m',
   );
 
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
   final geometry = CircleGeometry(
     center: formData.center,
-    radiusMeters: radiusMeters,
+    radiusMeters: formData.radiusMeters,
     notes: formData.notes,
     sizeDisplay: formData.sizeDisplay,
     showNameLabel: formData.showNameLabel,
@@ -108,6 +108,7 @@ Future<bool> updateCircleFromForm({
   final client = ref.read(serverClientProvider);
   final updatedGeometry = geometry.copyWith(
     center: formData.center,
+    radiusMeters: formData.radiusMeters,
     notes: formData.notes,
     sizeDisplay: formData.sizeDisplay,
     showNameLabel: formData.showNameLabel,

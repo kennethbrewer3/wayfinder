@@ -13,13 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - uses: dart-lang/setup-dart@v1
         with:
-          flutter-version: '3.38.5'
-          cache: true
+          sdk: 3.8.0
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Install server dependencies
+        working-directory: wayfinder_server
+        run: dart pub get --no-workspace
 
       - name: Check formatting
         working-directory: wayfinder_server

@@ -25,17 +25,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - uses: dart-lang/setup-dart@v1
         with:
-          flutter-version: '3.38.5'
-          cache: true
+          sdk: 3.8.0
 
       - name: Start containers
         working-directory: wayfinder_server
         run: docker compose -f docker-compose.yaml -f docker-compose.build.yaml up --quiet-pull --build -d
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Install server dependencies
+        working-directory: wayfinder_server
+        run: dart pub get --no-workspace
 
       - name: Install Serverpod CLI
         run: dart pub global activate serverpod_cli $VERSION

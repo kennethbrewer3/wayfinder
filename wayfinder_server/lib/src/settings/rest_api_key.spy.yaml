@@ -1,0 +1,12 @@
+class: RestApiKey
+table: rest_api_key
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  keyHash: String
+  keyPreview: String
+  createdAt: DateTime
+
+indexes:
+  rest_api_key_name_idx:
+    fields: name

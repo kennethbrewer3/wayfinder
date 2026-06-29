@@ -1,6 +1,7 @@
 class: RestApiKeyInfo
 fields:
   enabled: bool
-  keyPreview: String?
-  ### Plaintext key; only returned immediately after generate or rotate.
+  ### True when WAYFINDER_REST_API_KEY is set in the server environment.
+  envKeyConfigured: bool
+  ### Plaintext key; only returned immediately after create.
   apiKey: String?

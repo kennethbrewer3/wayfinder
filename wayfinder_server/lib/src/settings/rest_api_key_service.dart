@@ -9,12 +9,13 @@ import '../core/wayfinder_env.dart';
 import '../generated/protocol.dart';
 import 'app_settings_store.dart';
 
-/// Manages the REST API shared secret (stored as SHA-256 hash in [AppSettings]).
+/// Manages named REST API keys (stored as SHA-256 hashes in [RestApiKey] rows).
 abstract final class RestApiKeyService {
   static const keyPrefix = 'wf_';
   static const previewLength = 8;
+  static const legacyKeyName = 'Legacy key';
 
-  static String? _cachedHash;
+  static Set<String>? _cachedHashes;
 
   static String? get configuredEnvKey => WayfinderEnv.restApiKey;
 
@@ -27,24 +28,27 @@ abstract final class RestApiKeyService {
     if (envKeyConfigured) {
       return true;
     }
-    final hash = await storedKeyHash(session);
-    return hash != null && hash.isNotEmpty;
+    final hashes = await storedKeyHashes(session);
+    return hashes.isNotEmpty;
   }
 
-  static Future<String?> storedKeyHash(Session session) async {
-    final cached = _cachedHash;
+  static Future<Set<String>> storedKeyHashes(Session session) async {
+    final cached = _cachedHashes;
     if (cached != null) {
-      return cached.isEmpty ? null : cached;
+      return cached;
     }
 
-    final settings = await AppSettingsStore.getOrCreate(session);
-    final hash = settings.restApiKeyHash?.trim();
-    _cachedHash = hash ?? '';
-    return hash == null || hash.isEmpty ? null : hash;
+    await _migrateLegacyKeyIfNeeded(session);
+    final keys = await RestApiKey.db.find(session);
+    final hashes = keys.map((entry) => entry.keyHash.trim()).where((hash) {
+      return hash.isNotEmpty;
+    }).toSet();
+    _cachedHashes = hashes;
+    return hashes;
   }
 
   static void invalidateCache() {
-    _cachedHash = null;
+    _cachedHashes = null;
   }
 
   static String generatePlaintextKey() {
@@ -68,7 +72,7 @@ abstract final class RestApiKeyService {
     return '${trimmed.substring(0, previewLength)}…';
   }
 
-  static bool matchesConfiguredKey(String provided, String? storedHash) {
+  static Future<bool> matchesConfiguredKey(Session session, String provided) async {
     final trimmed = provided.trim();
     if (trimmed.isEmpty) {
       return false;
@@ -81,58 +85,128 @@ abstract final class RestApiKeyService {
       return true;
     }
 
-    if (storedHash == null || storedHash.isEmpty) {
+    final hashes = await storedKeyHashes(session);
+    if (hashes.isEmpty) {
       return false;
     }
 
-    return _secureCompare(hashKey(trimmed), storedHash);
+    final providedHash = hashKey(trimmed);
+    for (final storedHash in hashes) {
+      if (_secureCompare(providedHash, storedHash)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static Future<RestApiKeyInfo> readStatus(Session session) async {
     final enabled = await isAuthEnabled(session);
-    if (!enabled) {
-      return RestApiKeyInfo(enabled: false);
-    }
-
-    String? preview;
-    final storedHash = await storedKeyHash(session);
-    if (storedHash != null && storedHash.isNotEmpty) {
-      preview = '$keyPrefix••••••••';
-    } else if (envKeyConfigured) {
-      preview = keyPreview(configuredEnvKey!);
-    }
-
     return RestApiKeyInfo(
-      enabled: true,
-      keyPreview: preview,
+      enabled: enabled,
+      envKeyConfigured: envKeyConfigured,
     );
   }
 
-  static Future<RestApiKeyInfo> generateAndStore(Session session) async {
-    final apiKey = generatePlaintextKey();
-    final settings = await AppSettingsStore.getOrCreate(session);
-    await AppSettingsStore.update(
+  static Future<List<RestApiKey>> listKeys(Session session) async {
+    await _migrateLegacyKeyIfNeeded(session);
+    return RestApiKey.db.find(
       session,
-      settings.copyWith(restApiKeyHash: hashKey(apiKey)),
+      orderBy: (t) => t.createdAt,
+      orderDescending: true,
+    );
+  }
+
+  static Future<RestApiKeyCreated> createKey(
+    Session session,
+    String name,
+  ) async {
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) {
+      throw ArgumentError.value(name, 'name', 'API key name is required.');
+    }
+
+    await _migrateLegacyKeyIfNeeded(session);
+
+    final apiKey = generatePlaintextKey();
+    final now = DateTime.now().toUtc();
+    final entry = await RestApiKey.db.insertRow(
+      session,
+      RestApiKey(
+        name: trimmedName,
+        keyHash: hashKey(apiKey),
+        keyPreview: keyPreview(apiKey),
+        createdAt: now,
+      ),
     );
     invalidateCache();
-    await storedKeyHash(session);
+    await storedKeyHashes(session);
 
-    return RestApiKeyInfo(
-      enabled: true,
-      keyPreview: keyPreview(apiKey),
+    return RestApiKeyCreated(
+      key: entry,
       apiKey: apiKey,
     );
   }
 
-  static Future<RestApiKeyInfo> clearStoredKey(Session session) async {
+  static Future<bool> deleteKey(Session session, UuidValue id) async {
+    await _migrateLegacyKeyIfNeeded(session);
+    final deleted = await RestApiKey.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
+    if (deleted.isEmpty) {
+      return false;
+    }
+    invalidateCache();
+    return true;
+  }
+
+  static Future<void> clearStoredKeys(Session session) async {
+    await _migrateLegacyKeyIfNeeded(session);
+    final keys = await RestApiKey.db.find(session);
+    if (keys.isNotEmpty) {
+      await RestApiKey.db.delete(session, keys);
+    }
     final settings = await AppSettingsStore.getOrCreate(session);
+    if (settings.restApiKeyHash != null) {
+      await AppSettingsStore.update(
+        session,
+        settings.copyWith(restApiKeyHash: null),
+      );
+    }
+    invalidateCache();
+  }
+
+  static Future<void> _migrateLegacyKeyIfNeeded(Session session) async {
+    final settings = await AppSettingsStore.getOrCreate(session);
+    final legacyHash = settings.restApiKeyHash?.trim();
+    if (legacyHash == null || legacyHash.isEmpty) {
+      return;
+    }
+
+    final existing = await RestApiKey.db.find(session, limit: 1);
+    if (existing.isNotEmpty) {
+      await AppSettingsStore.update(
+        session,
+        settings.copyWith(restApiKeyHash: null),
+      );
+      invalidateCache();
+      return;
+    }
+
+    await RestApiKey.db.insertRow(
+      session,
+      RestApiKey(
+        name: legacyKeyName,
+        keyHash: legacyHash,
+        keyPreview: '$keyPrefix••••••••',
+        createdAt: DateTime.now().toUtc(),
+      ),
+    );
     await AppSettingsStore.update(
       session,
       settings.copyWith(restApiKeyHash: null),
     );
     invalidateCache();
-    return readStatus(session);
   }
 
   static bool _secureCompare(String a, String b) {

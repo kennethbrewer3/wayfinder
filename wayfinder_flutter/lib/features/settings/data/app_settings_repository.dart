@@ -247,12 +247,20 @@ class AppSettingsRepository {
     return _client.appSettings.getRestApiKeyStatus();
   }
 
-  Future<wf.RestApiKeyInfo> generateRestApiKey() {
-    return _client.appSettings.generateRestApiKey();
+  Future<List<wf.RestApiKey>> listRestApiKeys() {
+    return _client.appSettings.listRestApiKeys();
   }
 
-  Future<wf.RestApiKeyInfo> clearRestApiKey() {
-    return _client.appSettings.clearRestApiKey();
+  Future<wf.RestApiKeyCreated> createRestApiKey(String name) {
+    return _client.appSettings.createRestApiKey(name);
+  }
+
+  Future<bool> deleteRestApiKey(wf.UuidValue id) {
+    return _client.appSettings.deleteRestApiKey(id);
+  }
+
+  Future<wf.RestApiKeyInfo> clearRestApiKeys() {
+    return _client.appSettings.clearRestApiKeys();
   }
 
   HomeLocation _mapHomeLocation(wf.AppSettings settings) {

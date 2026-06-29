@@ -136,6 +136,7 @@ In the marker form:
 - **Coordinates** — latitude and longitude (editable when creating or editing).
 - **Layer** — which layer owns this marker.
 - **Tracking marker** — optional; records movement history as a trail (see below).
+- **Transportation** — when tracking is enabled, choose how the marker moves (on foot, bicycle, land vehicle, watercraft, or aircraft). This sets the trail icon style.
 - **Elevation** — optional height in your chosen units.
 - **Notes** — rich text stored as Markdown (links, lists, and basic formatting supported).
 
@@ -163,18 +164,32 @@ When tracking is **off**, no new points are recorded, but **existing history is 
 
 - The marker pin shows the current location.
 - A colored **polyline** shows the path taken so far.
-- **Footstep icons** along the trail indicate direction of travel (similar to direction arrows on lines).
+- **Trail icons** along the path indicate direction of travel. The icon matches the **Transportation** mode (footsteps, bicycle, car, boat, or aircraft).
+
+**Transportation mode**
+
+When **Tracking marker** is enabled, choose **Transportation** in the marker form:
+
+| Mode | Trail icon |
+|------|------------|
+| On foot | Walking figure |
+| Bicycle | Bicycle |
+| Land vehicle | Car |
+| Watercraft | Boat |
+| Aircraft | Airplane |
+
+You can change the mode later by editing the marker (while tracking is on) or by editing the companion track in the sidebar. To set transportation mode from automation, update the track zone’s `geometryJson` field with `"transportationMode": "bike"` (or `onFoot`, `landVehicle`, `watercraft`, `aircraft`).
 
 **Manage the trail separately from the marker**
 
-Enabling tracking creates a companion **track** object in the sidebar (footstep icon, usually named “*marker name* track”). The marker and track can live on **different layers**:
+Enabling tracking creates a companion **track** object in the sidebar (transportation icon, usually named “*marker name* track”). The marker and track can live on **different layers**:
 
 | Goal | How |
 |------|-----|
 | Move the trail to another layer | Sidebar → select the track → **Edit track** → choose **Layer** |
 | Hide the trail but keep the marker | Sidebar → track → **Hide** (visibility toggle) |
-| Hide only the footsteps | **Edit track** → turn off **Footsteps on map** |
-| Change trail color or name | **Edit track** |
+| Hide only the trail icons | **Edit track** → turn off **Trail icons on map** |
+| Change trail color, name, or transportation | **Edit track** |
 
 Hiding or moving the track does **not** delete its history. Disabling **Tracking marker** on the marker also does **not** clear the trail.
 
@@ -426,7 +441,7 @@ The About tab shows:
 - Platform and package name
 - Configured server and geocoding URLs
 - Docker image metadata (when running from a container)
-- **REST API access** — generate, rotate, or disable the shared API key
+- **REST API access** — create, list, and remove named API keys
 
 Use this information when reporting bugs or verifying you are on the expected build.
 
@@ -437,13 +452,24 @@ Wayfinder exposes a JSON REST API on the web server (port **18082** by default) 
 **Protect the API**
 
 1. Open **Settings → About → REST API access**.
-2. Tap **Generate API key**. Copy the key immediately — it is shown only once.
-3. Optionally store the same key under **REST API key (this device)** so the app can use REST fallbacks (backup restore, settings sync).
+2. Tap **Create API key**, enter a name for the app or device (for example “GPS tracker” or “Home automation”), and copy the key immediately — it is shown only once.
+3. Create additional keys for other integrations. Each key works independently; removing one does not affect the others.
+4. Optionally store a key under **Key on this device** so the Wayfinder app can use REST fallbacks (backup restore, settings sync).
 
-When a key is configured, every endpoint except `GET /api/` and `GET /api/health` requires the key in a request header:
+When at least one key is configured (or an environment key is set on the server), every endpoint except `GET /api/` and `GET /api/health` requires the key in a request header:
 
 - `X-API-Key: wf_…`, or
 - `Authorization: Bearer wf_…`
+
+**Manage keys**
+
+| Action | How |
+|--------|-----|
+| Create a key for a new app | **Create API key** → enter application name |
+| Revoke one integration | Tap **Remove** on that key’s row |
+| Remove all stored keys | **Remove all keys** (environment keys are unchanged) |
+
+Server administrators can also set `WAYFINDER_REST_API_KEY` in the server environment (useful for Docker installs before first login). That key cannot be removed from the app.
 
 **Example — move a marker**
 

@@ -1,0 +1,5 @@
+class: RestApiKeyCreated
+fields:
+  key: RestApiKey
+  ### Plaintext key; only returned immediately after create.
+  apiKey: String

@@ -2320,74 +2320,108 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconPharmacy => 'Farmacia';
 
   @override
-  String get settingsRestApiTitle => 'REST API access';
+  String get settingsRestApiTitle => 'Acceso a la API REST';
 
   @override
   String get settingsRestApiDescription =>
-      'Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.';
+      'Protege los endpoints REST /api con claves con nombre. Crea una clave distinta para cada app o dispositivo para poder revocar una sin afectar las demás.';
 
   @override
-  String get settingsRestApiStatusLabel => 'Protection';
+  String get settingsRestApiStatusLabel => 'Protección';
 
   @override
-  String get settingsRestApiStatusEnabled => 'Enabled';
+  String get settingsRestApiStatusEnabled => 'Activada';
 
   @override
-  String get settingsRestApiStatusDisabled => 'Disabled';
+  String get settingsRestApiStatusDisabled => 'Desactivada';
 
   @override
-  String get settingsRestApiPreviewLabel => 'Active key';
+  String get settingsRestApiKeysTitle => 'Claves API';
 
   @override
-  String get settingsRestApiGenerateAction => 'Generate API key';
+  String get settingsRestApiKeysEmpty =>
+      'Aún no hay claves API. Crea una para cada app o dispositivo que use la API REST.';
 
   @override
-  String get settingsRestApiRotateAction => 'Rotate API key';
+  String get settingsRestApiCreateAction => 'Crear clave API';
 
   @override
-  String get settingsRestApiClearAction => 'Disable protection';
+  String get settingsRestApiCreateNameLabel => 'Nombre de la aplicación';
 
   @override
-  String get settingsRestApiClearConfirmTitle => 'Disable REST API protection?';
+  String get settingsRestApiCreateNameHint => 'p. ej. Rastreador GPS, Domótica';
 
   @override
-  String get settingsRestApiClearConfirmMessage =>
-      'The REST API will be open again until you generate a new key.';
+  String get settingsRestApiDeleteAction => 'Eliminar';
 
   @override
-  String get settingsRestApiCleared => 'REST API protection disabled.';
+  String get settingsRestApiDeleteConfirmTitle => '¿Eliminar clave API?';
 
   @override
-  String get settingsRestApiGeneratedTitle => 'New API key';
-
-  @override
-  String get settingsRestApiGeneratedMessage =>
-      'Copy this key now. It is shown only once. Use it as X-API-Key or Authorization: Bearer <key>.';
-
-  @override
-  String get settingsRestApiCopyAction => 'Copy key';
-
-  @override
-  String get settingsRestApiCopied => 'API key copied.';
-
-  @override
-  String settingsRestApiLoadFailed(String error) {
-    return 'Could not load REST API settings: $error';
+  String settingsRestApiDeleteConfirmMessage(String name) {
+    return 'La clave \"$name\" dejará de funcionar de inmediato. Las demás claves no se verán afectadas.';
   }
 
   @override
-  String get settingsRestApiClientKeyTitle => 'Key on this device';
+  String get settingsRestApiDeleted => 'Clave API eliminada.';
+
+  @override
+  String get settingsRestApiEnvKeyNote =>
+      'También hay una clave API configurada en el entorno del servidor. No se puede eliminar desde esta pantalla.';
+
+  @override
+  String get settingsRestApiClearAction => 'Eliminar todas las claves';
+
+  @override
+  String get settingsRestApiClearConfirmTitle =>
+      '¿Eliminar todas las claves API?';
+
+  @override
+  String get settingsRestApiClearConfirmMessage =>
+      'Se eliminarán todas las claves almacenadas. La API REST quedará abierta salvo que haya una clave de entorno configurada.';
+
+  @override
+  String get settingsRestApiCleared =>
+      'Se eliminaron todas las claves almacenadas.';
+
+  @override
+  String get settingsRestApiGeneratedTitle => 'Nueva clave API';
+
+  @override
+  String settingsRestApiGeneratedFor(String name) {
+    return 'Creada para $name.';
+  }
+
+  @override
+  String get settingsRestApiGeneratedMessage =>
+      'Copia esta clave ahora. Solo se muestra una vez. Úsala como X-API-Key o Authorization: Bearer <clave>.';
+
+  @override
+  String get settingsRestApiCopyAction => 'Copiar clave';
+
+  @override
+  String get settingsRestApiCopied => 'Clave API copiada.';
+
+  @override
+  String settingsRestApiLoadFailed(String error) {
+    return 'No se pudieron cargar los ajustes de la API REST: $error';
+  }
+
+  @override
+  String get settingsRestApiClientKeyTitle => 'Clave en este dispositivo';
 
   @override
   String get settingsRestApiClientKeyDescription =>
-      'Store the API key here so this app can call REST fallbacks (backup restore, settings sync, etc.).';
+      'Guarda la clave aquí para que esta app pueda usar respaldos REST (restauración, sincronización de ajustes, etc.).';
 
   @override
-  String get settingsRestApiClientKeyLabel => 'API key';
+  String get settingsRestApiClientKeyLabel => 'Clave API';
 
   @override
-  String get settingsRestApiSaveClientKeyAction => 'Save key on this device';
+  String get settingsRestApiSaveClientKeyAction =>
+      'Guardar clave en este dispositivo';
 
   @override
-  String get settingsRestApiKeySaved => 'API key saved on this device.';
+  String get settingsRestApiKeySaved =>
+      'Clave API guardada en este dispositivo.';
 }

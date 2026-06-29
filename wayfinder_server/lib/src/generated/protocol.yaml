@@ -58,8 +58,10 @@ appSettings:
   - updatePmtilesStoragePath:
   - updateClientPreferences:
   - getRestApiKeyStatus:
-  - generateRestApiKey:
-  - clearRestApiKey:
+  - listRestApiKeys:
+  - createRestApiKey:
+  - deleteRestApiKey:
+  - clearRestApiKeys:
 mapZone:
   - listZones:
   - getZone:

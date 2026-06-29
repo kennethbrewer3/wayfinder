@@ -2289,7 +2289,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsRestApiDescription =>
-      'Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.';
+      'Protect the /api REST endpoints with named API keys. Create a separate key for each app or device so you can remove one without affecting the others.';
 
   @override
   String get settingsRestApiStatusLabel => 'Protection';
@@ -2301,29 +2301,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsRestApiStatusDisabled => 'Disabled';
 
   @override
-  String get settingsRestApiPreviewLabel => 'Active key';
+  String get settingsRestApiKeysTitle => 'API keys';
 
   @override
-  String get settingsRestApiGenerateAction => 'Generate API key';
+  String get settingsRestApiKeysEmpty =>
+      'No API keys yet. Create one for each app or device that calls the REST API.';
 
   @override
-  String get settingsRestApiRotateAction => 'Rotate API key';
+  String get settingsRestApiCreateAction => 'Create API key';
 
   @override
-  String get settingsRestApiClearAction => 'Disable protection';
+  String get settingsRestApiCreateNameLabel => 'Application name';
 
   @override
-  String get settingsRestApiClearConfirmTitle => 'Disable REST API protection?';
+  String get settingsRestApiCreateNameHint =>
+      'e.g. GPS tracker, Home automation';
+
+  @override
+  String get settingsRestApiDeleteAction => 'Remove';
+
+  @override
+  String get settingsRestApiDeleteConfirmTitle => 'Remove API key?';
+
+  @override
+  String settingsRestApiDeleteConfirmMessage(String name) {
+    return 'The key \"$name\" will stop working immediately. Other keys are unaffected.';
+  }
+
+  @override
+  String get settingsRestApiDeleted => 'API key removed.';
+
+  @override
+  String get settingsRestApiEnvKeyNote =>
+      'An environment API key is also configured on the server. It cannot be removed from this screen.';
+
+  @override
+  String get settingsRestApiClearAction => 'Remove all keys';
+
+  @override
+  String get settingsRestApiClearConfirmTitle => 'Remove all API keys?';
 
   @override
   String get settingsRestApiClearConfirmMessage =>
-      'The REST API will be open again until you generate a new key.';
+      'Every stored API key will be deleted. The REST API will be open again unless an environment key is configured.';
 
   @override
-  String get settingsRestApiCleared => 'REST API protection disabled.';
+  String get settingsRestApiCleared => 'All stored API keys removed.';
 
   @override
   String get settingsRestApiGeneratedTitle => 'New API key';
+
+  @override
+  String settingsRestApiGeneratedFor(String name) {
+    return 'Created for $name.';
+  }
 
   @override
   String get settingsRestApiGeneratedMessage =>

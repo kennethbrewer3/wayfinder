@@ -152,22 +152,45 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     );
   }
 
-  Future<RestApiKeyInfo> generateRestApiKey(Session session) {
+  Future<List<RestApiKey>> listRestApiKeys(Session session) {
     return loggedCall(
       session,
       _tag,
-      'generateRestApiKey',
-      () => RestApiKeyService.generateAndStore(session),
-      onSuccess: (info) => 'preview=${info.keyPreview}',
+      'listRestApiKeys',
+      () => RestApiKeyService.listKeys(session),
+      onSuccess: (keys) => 'count=${keys.length}',
     );
   }
 
-  Future<RestApiKeyInfo> clearRestApiKey(Session session) {
+  Future<RestApiKeyCreated> createRestApiKey(Session session, String name) {
     return loggedCall(
       session,
       _tag,
-      'clearRestApiKey',
-      () => RestApiKeyService.clearStoredKey(session),
+      'createRestApiKey',
+      () => RestApiKeyService.createKey(session, name),
+      onSuccess: (created) => 'name="${created.key.name}"',
+    );
+  }
+
+  Future<bool> deleteRestApiKey(Session session, UuidValue id) {
+    return loggedCall(
+      session,
+      _tag,
+      'deleteRestApiKey',
+      () => RestApiKeyService.deleteKey(session, id),
+      onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
+    );
+  }
+
+  Future<RestApiKeyInfo> clearRestApiKeys(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'clearRestApiKeys',
+      () async {
+        await RestApiKeyService.clearStoredKeys(session);
+        return RestApiKeyService.readStatus(session);
+      },
       onSuccess: (info) => 'enabled=${info.enabled}',
     );
   }

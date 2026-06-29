@@ -26,17 +26,21 @@ import 'pmtiles/pmtiles_file.dart' as _i11;
 import 'pmtiles/pmtiles_file_group_link.dart' as _i12;
 import 'pmtiles/pmtiles_group.dart' as _i13;
 import 'settings/app_settings.dart' as _i14;
-import 'settings/rest_api_key_info.dart' as _i15;
-import 'zones/map_zone.dart' as _i16;
+import 'settings/rest_api_key.dart' as _i15;
+import 'settings/rest_api_key_created.dart' as _i16;
+import 'settings/rest_api_key_info.dart' as _i17;
+import 'zones/map_zone.dart' as _i18;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
-    as _i17;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i18;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i19;
+    as _i19;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i20;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i21;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
-    as _i20;
+    as _i22;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
-    as _i21;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i22;
+    as _i23;
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+    as _i24;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i25;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
@@ -47,6 +51,8 @@ export 'pmtiles/pmtiles_file.dart';
 export 'pmtiles/pmtiles_file_group_link.dart';
 export 'pmtiles/pmtiles_group.dart';
 export 'settings/app_settings.dart';
+export 'settings/rest_api_key.dart';
+export 'settings/rest_api_key_created.dart';
 export 'settings/rest_api_key_info.dart';
 export 'zones/map_zone.dart';
 
@@ -836,6 +842,75 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
+    _i2.TableDefinition(
+      name: 'rest_api_key',
+      dartName: 'RestApiKey',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'gen_random_uuid()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'keyHash',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'keyPreview',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'rest_api_key_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'rest_api_key_name_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
     ..._i4.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
@@ -898,11 +973,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i14.AppSettings) {
       return _i14.AppSettings.fromJson(data) as T;
     }
-    if (t == _i15.RestApiKeyInfo) {
-      return _i15.RestApiKeyInfo.fromJson(data) as T;
+    if (t == _i15.RestApiKey) {
+      return _i15.RestApiKey.fromJson(data) as T;
     }
-    if (t == _i16.MapZone) {
-      return _i16.MapZone.fromJson(data) as T;
+    if (t == _i16.RestApiKeyCreated) {
+      return _i16.RestApiKeyCreated.fromJson(data) as T;
+    }
+    if (t == _i17.RestApiKeyInfo) {
+      return _i17.RestApiKeyInfo.fromJson(data) as T;
+    }
+    if (t == _i18.MapZone) {
+      return _i18.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Category?>()) {
       return (data != null ? _i5.Category.fromJson(data) : null) as T;
@@ -936,11 +1017,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i14.AppSettings?>()) {
       return (data != null ? _i14.AppSettings.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.RestApiKeyInfo?>()) {
-      return (data != null ? _i15.RestApiKeyInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.RestApiKey?>()) {
+      return (data != null ? _i15.RestApiKey.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.MapZone?>()) {
-      return (data != null ? _i16.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.RestApiKeyCreated?>()) {
+      return (data != null ? _i16.RestApiKeyCreated.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i17.RestApiKeyInfo?>()) {
+      return (data != null ? _i17.RestApiKeyInfo.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i18.MapZone?>()) {
+      return (data != null ? _i18.MapZone.fromJson(data) : null) as T;
     }
     if (t == List<_i1.UuidValue>) {
       return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
@@ -954,32 +1041,36 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i17.Category>) {
-      return (data as List).map((e) => deserialize<_i17.Category>(e)).toList()
+    if (t == List<_i19.Category>) {
+      return (data as List).map((e) => deserialize<_i19.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i18.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i18.MapLayer>(e)).toList()
+    if (t == List<_i20.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i20.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i19.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i19.MapMarker>(e)).toList()
+    if (t == List<_i21.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i21.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i20.PmtilesFile>) {
+    if (t == List<_i22.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i20.PmtilesFile>(e))
+              .map((e) => deserialize<_i22.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i21.PmtilesGroup>) {
+    if (t == List<_i23.PmtilesGroup>) {
       return (data as List)
-              .map((e) => deserialize<_i21.PmtilesGroup>(e))
+              .map((e) => deserialize<_i23.PmtilesGroup>(e))
               .toList()
           as T;
     }
-    if (t == List<_i22.MapZone>) {
-      return (data as List).map((e) => deserialize<_i22.MapZone>(e)).toList()
+    if (t == List<_i24.RestApiKey>) {
+      return (data as List).map((e) => deserialize<_i24.RestApiKey>(e)).toList()
+          as T;
+    }
+    if (t == List<_i25.MapZone>) {
+      return (data as List).map((e) => deserialize<_i25.MapZone>(e)).toList()
           as T;
     }
     try {
@@ -1006,8 +1097,10 @@ class Protocol extends _i1.SerializationManagerServer {
       _i12.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
       _i13.PmtilesGroup => 'PmtilesGroup',
       _i14.AppSettings => 'AppSettings',
-      _i15.RestApiKeyInfo => 'RestApiKeyInfo',
-      _i16.MapZone => 'MapZone',
+      _i15.RestApiKey => 'RestApiKey',
+      _i16.RestApiKeyCreated => 'RestApiKeyCreated',
+      _i17.RestApiKeyInfo => 'RestApiKeyInfo',
+      _i18.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -1042,9 +1135,13 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'PmtilesGroup';
       case _i14.AppSettings():
         return 'AppSettings';
-      case _i15.RestApiKeyInfo():
+      case _i15.RestApiKey():
+        return 'RestApiKey';
+      case _i16.RestApiKeyCreated():
+        return 'RestApiKeyCreated';
+      case _i17.RestApiKeyInfo():
         return 'RestApiKeyInfo';
-      case _i16.MapZone():
+      case _i18.MapZone():
         return 'MapZone';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1098,11 +1195,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'AppSettings') {
       return deserialize<_i14.AppSettings>(data['data']);
     }
+    if (dataClassName == 'RestApiKey') {
+      return deserialize<_i15.RestApiKey>(data['data']);
+    }
+    if (dataClassName == 'RestApiKeyCreated') {
+      return deserialize<_i16.RestApiKeyCreated>(data['data']);
+    }
     if (dataClassName == 'RestApiKeyInfo') {
-      return deserialize<_i15.RestApiKeyInfo>(data['data']);
+      return deserialize<_i17.RestApiKeyInfo>(data['data']);
     }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i16.MapZone>(data['data']);
+      return deserialize<_i18.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1154,8 +1257,10 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i13.PmtilesGroup.t;
       case _i14.AppSettings:
         return _i14.AppSettings.t;
-      case _i16.MapZone:
-        return _i16.MapZone.t;
+      case _i15.RestApiKey:
+        return _i15.RestApiKey.t;
+      case _i18.MapZone:
+        return _i18.MapZone.t;
     }
     return null;
   }

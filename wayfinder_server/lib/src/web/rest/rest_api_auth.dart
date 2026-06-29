@@ -45,8 +45,7 @@ abstract final class RestApiAuth {
     }
 
     if (credential.startsWith(RestApiKeyService.keyPrefix)) {
-      final storedHash = await RestApiKeyService.storedKeyHash(session);
-      return RestApiKeyService.matchesConfiguredKey(credential, storedHash);
+      return RestApiKeyService.matchesConfiguredKey(session, credential);
     }
 
     final authInfo = await session.server.authenticationHandler(

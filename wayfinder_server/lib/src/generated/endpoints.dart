@@ -1080,25 +1080,63 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
                   .getRestApiKeyStatus(session),
         ),
-        'generateRestApiKey': _i1.MethodConnector(
-          name: 'generateRestApiKey',
+        'listRestApiKeys': _i1.MethodConnector(
+          name: 'listRestApiKeys',
           params: {},
           call:
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
-                  .generateRestApiKey(session),
+                  .listRestApiKeys(session),
         ),
-        'clearRestApiKey': _i1.MethodConnector(
-          name: 'clearRestApiKey',
+        'createRestApiKey': _i1.MethodConnector(
+          name: 'createRestApiKey',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
+                  .createRestApiKey(
+                    session,
+                    params['name'],
+                  ),
+        ),
+        'deleteRestApiKey': _i1.MethodConnector(
+          name: 'deleteRestApiKey',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
+                  .deleteRestApiKey(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'clearRestApiKeys': _i1.MethodConnector(
+          name: 'clearRestApiKeys',
           params: {},
           call:
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async => (endpoints['appSettings'] as _i10.AppSettingsEndpoint)
-                  .clearRestApiKey(session),
+                  .clearRestApiKeys(session),
         ),
       },
     );

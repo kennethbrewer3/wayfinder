@@ -32,7 +32,11 @@ import 'package:wayfinder_server/src/generated/settings/app_settings.dart'
     as _i13;
 import 'package:wayfinder_server/src/generated/settings/rest_api_key_info.dart'
     as _i14;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i15;
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+    as _i15;
+import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
+    as _i16;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i17;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -1935,20 +1939,20 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i14.RestApiKeyInfo> generateRestApiKey(
+  _i3.Future<List<_i15.RestApiKey>> listRestApiKeys(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
             endpoint: 'appSettings',
-            method: 'generateRestApiKey',
+            method: 'listRestApiKeys',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'appSettings',
-          methodName: 'generateRestApiKey',
+          methodName: 'listRestApiKeys',
           parameters: _i1.testObjectToJson({}),
           serializationManager: _serializationManager,
         );
@@ -1957,7 +1961,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.RestApiKeyInfo>);
+                as _i3.Future<List<_i15.RestApiKey>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1965,20 +1969,82 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i14.RestApiKeyInfo> clearRestApiKey(
+  _i3.Future<_i16.RestApiKeyCreated> createRestApiKey(
+    _i1.TestSessionBuilder sessionBuilder,
+    String name,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'createRestApiKey',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'createRestApiKey',
+          parameters: _i1.testObjectToJson({'name': name}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i16.RestApiKeyCreated>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteRestApiKey(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'deleteRestApiKey',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'deleteRestApiKey',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i14.RestApiKeyInfo> clearRestApiKeys(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
             endpoint: 'appSettings',
-            method: 'clearRestApiKey',
+            method: 'clearRestApiKeys',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'appSettings',
-          methodName: 'clearRestApiKey',
+          methodName: 'clearRestApiKeys',
           parameters: _i1.testObjectToJson({}),
           serializationManager: _serializationManager,
         );
@@ -2006,7 +2072,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i15.MapZone>> listZones(
+  _i3.Future<List<_i17.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2028,7 +2094,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i15.MapZone>>);
+                as _i3.Future<List<_i17.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2036,7 +2102,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i15.MapZone?> getZone(
+  _i3.Future<_i17.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -2059,7 +2125,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i15.MapZone?>);
+                as _i3.Future<_i17.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2067,9 +2133,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i15.MapZone> createZone(
+  _i3.Future<_i17.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i15.MapZone zone,
+    _i17.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2090,7 +2156,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i15.MapZone>);
+                as _i3.Future<_i17.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2098,9 +2164,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i15.MapZone> updateZone(
+  _i3.Future<_i17.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i15.MapZone zone,
+    _i17.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2121,7 +2187,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i15.MapZone>);
+                as _i3.Future<_i17.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

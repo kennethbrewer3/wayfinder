@@ -15,29 +15,32 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class RestApiKeyInfo implements _i1.SerializableModel {
   RestApiKeyInfo._({
     required this.enabled,
-    this.keyPreview,
+    required this.envKeyConfigured,
     this.apiKey,
   });
 
   factory RestApiKeyInfo({
     required bool enabled,
-    String? keyPreview,
+    required bool envKeyConfigured,
     String? apiKey,
   }) = _RestApiKeyInfoImpl;
 
   factory RestApiKeyInfo.fromJson(Map<String, dynamic> jsonSerialization) {
     return RestApiKeyInfo(
       enabled: _i1.BoolJsonExtension.fromJson(jsonSerialization['enabled']),
-      keyPreview: jsonSerialization['keyPreview'] as String?,
+      envKeyConfigured: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['envKeyConfigured'],
+      ),
       apiKey: jsonSerialization['apiKey'] as String?,
     );
   }
 
   bool enabled;
 
-  String? keyPreview;
+  /// True when WAYFINDER_REST_API_KEY is set in the server environment.
+  bool envKeyConfigured;
 
-  /// Plaintext key; only returned immediately after generate or rotate.
+  /// Plaintext key; only returned immediately after create.
   String? apiKey;
 
   /// Returns a shallow copy of this [RestApiKeyInfo]
@@ -45,7 +48,7 @@ abstract class RestApiKeyInfo implements _i1.SerializableModel {
   @_i1.useResult
   RestApiKeyInfo copyWith({
     bool? enabled,
-    String? keyPreview,
+    bool? envKeyConfigured,
     String? apiKey,
   });
   @override
@@ -53,7 +56,7 @@ abstract class RestApiKeyInfo implements _i1.SerializableModel {
     return {
       '__className__': 'RestApiKeyInfo',
       'enabled': enabled,
-      if (keyPreview != null) 'keyPreview': keyPreview,
+      'envKeyConfigured': envKeyConfigured,
       if (apiKey != null) 'apiKey': apiKey,
     };
   }
@@ -69,11 +72,11 @@ class _Undefined {}
 class _RestApiKeyInfoImpl extends RestApiKeyInfo {
   _RestApiKeyInfoImpl({
     required bool enabled,
-    String? keyPreview,
+    required bool envKeyConfigured,
     String? apiKey,
   }) : super._(
          enabled: enabled,
-         keyPreview: keyPreview,
+         envKeyConfigured: envKeyConfigured,
          apiKey: apiKey,
        );
 
@@ -83,12 +86,12 @@ class _RestApiKeyInfoImpl extends RestApiKeyInfo {
   @override
   RestApiKeyInfo copyWith({
     bool? enabled,
-    Object? keyPreview = _Undefined,
+    bool? envKeyConfigured,
     Object? apiKey = _Undefined,
   }) {
     return RestApiKeyInfo(
       enabled: enabled ?? this.enabled,
-      keyPreview: keyPreview is String? ? keyPreview : this.keyPreview,
+      envKeyConfigured: envKeyConfigured ?? this.envKeyConfigured,
       apiKey: apiKey is String? ? apiKey : this.apiKey,
     );
   }

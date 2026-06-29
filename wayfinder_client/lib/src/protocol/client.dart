@@ -32,8 +32,12 @@ import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
     as _i13;
 import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
     as _i14;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i15;
-import 'protocol.dart' as _i16;
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
+    as _i15;
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
+    as _i16;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i17;
+import 'protocol.dart' as _i18;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -652,17 +656,31 @@ class EndpointAppSettings extends _i2.EndpointRef {
         {},
       );
 
-  _i3.Future<_i14.RestApiKeyInfo> generateRestApiKey() =>
-      caller.callServerEndpoint<_i14.RestApiKeyInfo>(
+  _i3.Future<List<_i15.RestApiKey>> listRestApiKeys() =>
+      caller.callServerEndpoint<List<_i15.RestApiKey>>(
         'appSettings',
-        'generateRestApiKey',
+        'listRestApiKeys',
         {},
       );
 
-  _i3.Future<_i14.RestApiKeyInfo> clearRestApiKey() =>
+  _i3.Future<_i16.RestApiKeyCreated> createRestApiKey(String name) =>
+      caller.callServerEndpoint<_i16.RestApiKeyCreated>(
+        'appSettings',
+        'createRestApiKey',
+        {'name': name},
+      );
+
+  _i3.Future<bool> deleteRestApiKey(_i2.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'appSettings',
+        'deleteRestApiKey',
+        {'id': id},
+      );
+
+  _i3.Future<_i14.RestApiKeyInfo> clearRestApiKeys() =>
       caller.callServerEndpoint<_i14.RestApiKeyInfo>(
         'appSettings',
-        'clearRestApiKey',
+        'clearRestApiKeys',
         {},
       );
 }
@@ -674,29 +692,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i15.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i15.MapZone>>(
+  _i3.Future<List<_i17.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i17.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i15.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i15.MapZone?>(
+  _i3.Future<_i17.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i17.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i15.MapZone> createZone(_i15.MapZone zone) =>
-      caller.callServerEndpoint<_i15.MapZone>(
+  _i3.Future<_i17.MapZone> createZone(_i17.MapZone zone) =>
+      caller.callServerEndpoint<_i17.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i15.MapZone> updateZone(_i15.MapZone zone) =>
-      caller.callServerEndpoint<_i15.MapZone>(
+  _i3.Future<_i17.MapZone> updateZone(_i17.MapZone zone) =>
+      caller.callServerEndpoint<_i17.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -741,7 +759,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i16.Protocol(),
+         _i18.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

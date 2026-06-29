@@ -4165,7 +4165,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsRestApiDescription.
   ///
   /// In en, this message translates to:
-  /// **'Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.'**
+  /// **'Protect the /api REST endpoints with named API keys. Create a separate key for each app or device so you can remove one without affecting the others.'**
   String get settingsRestApiDescription;
 
   /// No description provided for @settingsRestApiStatusLabel.
@@ -4186,46 +4186,88 @@ abstract class AppLocalizations {
   /// **'Disabled'**
   String get settingsRestApiStatusDisabled;
 
-  /// No description provided for @settingsRestApiPreviewLabel.
+  /// No description provided for @settingsRestApiKeysTitle.
   ///
   /// In en, this message translates to:
-  /// **'Active key'**
-  String get settingsRestApiPreviewLabel;
+  /// **'API keys'**
+  String get settingsRestApiKeysTitle;
 
-  /// No description provided for @settingsRestApiGenerateAction.
+  /// No description provided for @settingsRestApiKeysEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Generate API key'**
-  String get settingsRestApiGenerateAction;
+  /// **'No API keys yet. Create one for each app or device that calls the REST API.'**
+  String get settingsRestApiKeysEmpty;
 
-  /// No description provided for @settingsRestApiRotateAction.
+  /// No description provided for @settingsRestApiCreateAction.
   ///
   /// In en, this message translates to:
-  /// **'Rotate API key'**
-  String get settingsRestApiRotateAction;
+  /// **'Create API key'**
+  String get settingsRestApiCreateAction;
+
+  /// No description provided for @settingsRestApiCreateNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Application name'**
+  String get settingsRestApiCreateNameLabel;
+
+  /// No description provided for @settingsRestApiCreateNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. GPS tracker, Home automation'**
+  String get settingsRestApiCreateNameHint;
+
+  /// No description provided for @settingsRestApiDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get settingsRestApiDeleteAction;
+
+  /// No description provided for @settingsRestApiDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove API key?'**
+  String get settingsRestApiDeleteConfirmTitle;
+
+  /// No description provided for @settingsRestApiDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The key \"{name}\" will stop working immediately. Other keys are unaffected.'**
+  String settingsRestApiDeleteConfirmMessage(String name);
+
+  /// No description provided for @settingsRestApiDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'API key removed.'**
+  String get settingsRestApiDeleted;
+
+  /// No description provided for @settingsRestApiEnvKeyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'An environment API key is also configured on the server. It cannot be removed from this screen.'**
+  String get settingsRestApiEnvKeyNote;
 
   /// No description provided for @settingsRestApiClearAction.
   ///
   /// In en, this message translates to:
-  /// **'Disable protection'**
+  /// **'Remove all keys'**
   String get settingsRestApiClearAction;
 
   /// No description provided for @settingsRestApiClearConfirmTitle.
   ///
   /// In en, this message translates to:
-  /// **'Disable REST API protection?'**
+  /// **'Remove all API keys?'**
   String get settingsRestApiClearConfirmTitle;
 
   /// No description provided for @settingsRestApiClearConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'The REST API will be open again until you generate a new key.'**
+  /// **'Every stored API key will be deleted. The REST API will be open again unless an environment key is configured.'**
   String get settingsRestApiClearConfirmMessage;
 
   /// No description provided for @settingsRestApiCleared.
   ///
   /// In en, this message translates to:
-  /// **'REST API protection disabled.'**
+  /// **'All stored API keys removed.'**
   String get settingsRestApiCleared;
 
   /// No description provided for @settingsRestApiGeneratedTitle.
@@ -4233,6 +4275,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New API key'**
   String get settingsRestApiGeneratedTitle;
+
+  /// No description provided for @settingsRestApiGeneratedFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Created for {name}.'**
+  String settingsRestApiGeneratedFor(String name);
 
   /// No description provided for @settingsRestApiGeneratedMessage.
   ///

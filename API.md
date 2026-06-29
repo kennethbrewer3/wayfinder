@@ -60,12 +60,13 @@ curl -H "X-API-Key: wf_your_key_here" http://localhost:18082/api/markers
 curl -H "Authorization: Bearer wf_your_key_here" http://localhost:18082/api/markers
 ```
 
-**Configure a key**
+**Configure keys**
 
-1. In the Wayfinder app: **Settings → About → REST API access → Generate API key**
-2. Or set `WAYFINDER_REST_API_KEY` in the server `.env` file (useful for Docker/scripts)
+1. In the Wayfinder app: **Settings → About → REST API access → Create API key** (enter a name for each app or device)
+2. Create additional keys for other integrations; removing one key does not affect the others
+3. Or set `WAYFINDER_REST_API_KEY` in the server `.env` file (useful for Docker/scripts)
 
-Keys are stored on the server as a SHA-256 hash. The plaintext key is shown only once when generated.
+Keys are stored on the server as SHA-256 hashes. The plaintext key is shown only once when created.
 
 Signed-in Serverpod users can also call the REST API with a JWT access token in the `Authorization: Bearer` header (tokens that start with `wf_` are treated as API keys).
 

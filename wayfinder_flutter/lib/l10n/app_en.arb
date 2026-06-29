@@ -1144,18 +1144,40 @@
   "markerIconLivestock": "Livestock",
   "markerIconPharmacy": "Pharmacy",
   "settingsRestApiTitle": "REST API access",
-  "settingsRestApiDescription": "Protect the /api REST endpoints with a shared API key. External scripts and apps must send this key on every request except the health check.",
+  "settingsRestApiDescription": "Protect the /api REST endpoints with named API keys. Create a separate key for each app or device so you can remove one without affecting the others.",
   "settingsRestApiStatusLabel": "Protection",
   "settingsRestApiStatusEnabled": "Enabled",
   "settingsRestApiStatusDisabled": "Disabled",
-  "settingsRestApiPreviewLabel": "Active key",
-  "settingsRestApiGenerateAction": "Generate API key",
-  "settingsRestApiRotateAction": "Rotate API key",
-  "settingsRestApiClearAction": "Disable protection",
-  "settingsRestApiClearConfirmTitle": "Disable REST API protection?",
-  "settingsRestApiClearConfirmMessage": "The REST API will be open again until you generate a new key.",
-  "settingsRestApiCleared": "REST API protection disabled.",
+  "settingsRestApiKeysTitle": "API keys",
+  "settingsRestApiKeysEmpty": "No API keys yet. Create one for each app or device that calls the REST API.",
+  "settingsRestApiCreateAction": "Create API key",
+  "settingsRestApiCreateNameLabel": "Application name",
+  "settingsRestApiCreateNameHint": "e.g. GPS tracker, Home automation",
+  "settingsRestApiDeleteAction": "Remove",
+  "settingsRestApiDeleteConfirmTitle": "Remove API key?",
+  "settingsRestApiDeleteConfirmMessage": "The key \"{name}\" will stop working immediately. Other keys are unaffected.",
+  "@settingsRestApiDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRestApiDeleted": "API key removed.",
+  "settingsRestApiEnvKeyNote": "An environment API key is also configured on the server. It cannot be removed from this screen.",
+  "settingsRestApiClearAction": "Remove all keys",
+  "settingsRestApiClearConfirmTitle": "Remove all API keys?",
+  "settingsRestApiClearConfirmMessage": "Every stored API key will be deleted. The REST API will be open again unless an environment key is configured.",
+  "settingsRestApiCleared": "All stored API keys removed.",
   "settingsRestApiGeneratedTitle": "New API key",
+  "settingsRestApiGeneratedFor": "Created for {name}.",
+  "@settingsRestApiGeneratedFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "settingsRestApiGeneratedMessage": "Copy this key now. It is shown only once. Use it as X-API-Key or Authorization: Bearer <key>.",
   "settingsRestApiCopyAction": "Copy key",
   "settingsRestApiCopied": "API key copied.",

@@ -133,7 +133,9 @@ In the marker form:
 - **Name** — required label shown on the map and in search.
 - **Icon** — pick from the built-in icon set (map pins, shelters, water, and more).
 - **Color** — marker color on the map.
+- **Coordinates** — latitude and longitude (editable when creating or editing).
 - **Layer** — which layer owns this marker.
+- **Tracking marker** — optional; records movement history as a trail (see below).
 - **Elevation** — optional height in your chosen units.
 - **Notes** — rich text stored as Markdown (links, lists, and basic formatting supported).
 
@@ -144,7 +146,55 @@ Tap a marker on the map or choose it from the sidebar. The details dialog shows 
 - **Edit** — change any field.
 - **Copy coordinates** — to the clipboard.
 - **Share link** — copies a URL that opens the map centered on this marker (`?marker=<uuid>`).
-- **Delete** — remove the marker.
+- **Delete** — remove the marker (also removes its associated track, if any).
+
+### Tracking markers
+
+A **tracking marker** records where the marker has moved over time. Each time the position changes by at least about **5 meters**, a new point is saved and a **trail** is drawn on the map behind the marker. This is useful for following a pet, person, or vehicle when coordinates are updated from the app or over the REST API.
+
+**Turn tracking on or off**
+
+1. Create or edit a marker.
+2. Enable **Tracking marker** in the form and save.
+
+When tracking is **off**, no new points are recorded, but **existing history is kept** in the database. Turn tracking on again to resume appending to the same trail.
+
+**What you see on the map**
+
+- The marker pin shows the current location.
+- A colored **polyline** shows the path taken so far.
+- **Footstep icons** along the trail indicate direction of travel (similar to direction arrows on lines).
+
+**Manage the trail separately from the marker**
+
+Enabling tracking creates a companion **track** object in the sidebar (footstep icon, usually named “*marker name* track”). The marker and track can live on **different layers**:
+
+| Goal | How |
+|------|-----|
+| Move the trail to another layer | Sidebar → select the track → **Edit track** → choose **Layer** |
+| Hide the trail but keep the marker | Sidebar → track → **Hide** (visibility toggle) |
+| Hide only the footsteps | **Edit track** → turn off **Footsteps on map** |
+| Change trail color or name | **Edit track** |
+
+Hiding or moving the track does **not** delete its history. Disabling **Tracking marker** on the marker also does **not** clear the trail.
+
+**Update position from automation**
+
+For GPS trackers, scripts, or integrations, use the REST API to move the marker. Each qualifying move extends the trail while tracking is enabled. See **Settings → About → REST API access** for your API key.
+
+```bash
+# Enable tracking on an existing marker
+curl -X PATCH 'http://YOUR_SERVER:18082/api/markers/MARKER_UUID' \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: wf_your_key_here' \
+  -d '{"isTracking":true}'
+
+# Report a new position (trail updates when movement is ≥ ~5 m)
+curl -X PATCH 'http://YOUR_SERVER:18082/api/markers/MARKER_UUID' \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: wf_your_key_here' \
+  -d '{"latitude":38.91201,"longitude":-77.17357}'
+```
 
 ---
 
@@ -404,6 +454,20 @@ curl -X PATCH 'http://YOUR_SERVER:18082/api/markers/MARKER_UUID' \
   -d '{"latitude":38.91201,"longitude":-77.17357}'
 ```
 
+**Example — tracking marker (enable trail, then report positions)**
+
+```bash
+curl -X PATCH 'http://YOUR_SERVER:18082/api/markers/MARKER_UUID' \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: wf_your_key_here' \
+  -d '{"isTracking":true}'
+
+curl -X PATCH 'http://YOUR_SERVER:18082/api/markers/MARKER_UUID' \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: wf_your_key_here' \
+  -d '{"latitude":38.91201,"longitude":-77.17357}'
+```
+
 `PUT` and `PATCH` accept partial JSON bodies — only include fields you want to change. Markers, zones, layers, map-data backup/restore, and PMTiles management are all available over REST.
 
 Server administrators can also set `WAYFINDER_REST_API_KEY` in the server environment (useful for Docker installs before first login).
@@ -481,6 +545,7 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Draw line / shape | Long-press map → choose tool |
 | Search | Type in app bar search field |
 | Share marker | Marker details → Share link |
+| Tracking marker | Marker edit → Tracking marker; manage trail in sidebar (track) |
 | Backup data | Settings → Backup → Export |
 | Script with curl | Settings → About → REST API access → generate key |
 | Add map tiles | Settings → Map tiles → Upload |

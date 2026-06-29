@@ -795,11 +795,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackEditTitle => 'Edit track';
 
   @override
-  String get trackShowFootstepsLabel => 'Footsteps on map';
+  String get trackTransportationModeLabel => 'Transportation';
+
+  @override
+  String get trackTransportationModeOnFoot => 'On foot';
+
+  @override
+  String get trackTransportationModeBike => 'Bicycle';
+
+  @override
+  String get trackTransportationModeLandVehicle => 'Land vehicle';
+
+  @override
+  String get trackTransportationModeWatercraft => 'Watercraft';
+
+  @override
+  String get trackTransportationModeAircraft => 'Aircraft';
+
+  @override
+  String get trackShowFootstepsLabel => 'Trail icons on map';
 
   @override
   String get trackShowFootstepsHelp =>
-      'Show footstep icons along the movement trail.';
+      'Show transportation icons along the movement trail.';
 
   @override
   String get circleDefaultName => 'New circle';

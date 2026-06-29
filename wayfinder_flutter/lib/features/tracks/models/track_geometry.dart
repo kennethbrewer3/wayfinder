@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../lines/models/line_arrow_density.dart';
+import 'track_transportation_mode.dart';
 
 const trackZoneType = 'track';
 
@@ -23,12 +25,14 @@ class TrackGeometry {
     required this.points,
     this.showFootsteps = true,
     this.footstepDensity = const LineArrowDensity(LineArrowDensity.defaultLevel),
+    this.transportationMode = TrackTransportationMode.onFoot,
   });
 
   final UuidValue markerId;
   final List<TrackPoint> points;
   final bool showFootsteps;
   final LineArrowDensity footstepDensity;
+  final TrackTransportationMode transportationMode;
 
   bool get isValid => points.isNotEmpty;
 
@@ -41,12 +45,14 @@ class TrackGeometry {
     List<TrackPoint>? points,
     bool? showFootsteps,
     LineArrowDensity? footstepDensity,
+    TrackTransportationMode? transportationMode,
   }) {
     return TrackGeometry(
       markerId: markerId ?? this.markerId,
       points: points ?? this.points,
       showFootsteps: showFootsteps ?? this.showFootsteps,
       footstepDensity: footstepDensity ?? this.footstepDensity,
+      transportationMode: transportationMode ?? this.transportationMode,
     );
   }
 
@@ -64,6 +70,7 @@ class TrackGeometry {
       'showFootsteps': showFootsteps,
       if (showFootsteps)
         'footstepDensity': lineArrowDensityToStorage(footstepDensity),
+      'transportationMode': transportationMode.toJson(),
     };
   }
 
@@ -128,8 +135,49 @@ class TrackGeometry {
       footstepDensity: lineArrowDensityFromStorage(
         json['footstepDensity'] as int?,
       ),
+      transportationMode: TrackTransportationMode.fromJson(
+        json['transportationMode'],
+      ),
     );
   }
+}
+
+Future<void> applyTrackTransportationMode({
+  required Future<MapZone?> Function(UuidValue id) getZone,
+  required Future<MapZone> Function(MapZone zone) updateZone,
+  required MapMarker marker,
+  required TrackTransportationMode mode,
+}) async {
+  if (!marker.isTracking || marker.trackZoneId == null) {
+    return;
+  }
+
+  final zone = await getZone(marker.trackZoneId!);
+  if (zone == null) {
+    return;
+  }
+
+  final geometry = TrackGeometry.fromZone(zone);
+  if (geometry == null || geometry.transportationMode == mode) {
+    return;
+  }
+
+  await updateZone(
+    updateZoneTrackGeometry(
+      zone,
+      geometry.copyWith(transportationMode: mode),
+    ).copyWith(updatedAt: DateTime.now().toUtc()),
+  );
+}
+
+IconData trackIconForZone(MapZone zone) {
+  if (zone.type != trackZoneType) {
+    return Icons.layers;
+  }
+  final geometry = TrackGeometry.fromZone(zone);
+  return trackTransportationIcon(
+    geometry?.transportationMode ?? TrackTransportationMode.onFoot,
+  );
 }
 
 MapZone updateZoneTrackGeometry(MapZone zone, TrackGeometry geometry) {

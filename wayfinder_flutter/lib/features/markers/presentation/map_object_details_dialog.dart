@@ -30,6 +30,7 @@ import '../../rectangles/presentation/create_rectangle_dialog.dart';
 import '../../rectangles/utils/rectangle_dimensions.dart';
 import '../../tracks/presentation/create_track_dialog.dart';
 import '../../tracks/models/track_geometry.dart';
+import '../../tracks/models/track_transportation_mode.dart';
 
 Future<void> showMapObjectDetailsDialog({
   required BuildContext context,
@@ -371,7 +372,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       title: zone.name,
       leading: _ZoneTypeAvatar(
         color: parseMarkerColor(zone.color),
-        icon: Icons.directions_walk,
+        icon: trackTransportationIcon(geometry.transportationMode),
       ),
       onEdit: onEdit,
       l10n: l10n,
@@ -379,6 +380,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         _DetailRow(
           label: l10n.mapObjectDetailType,
           value: l10n.mapObjectTypeTrack,
+        ),
+        _DetailRow(
+          label: l10n.trackTransportationModeLabel,
+          value: geometry.transportationMode.label(l10n),
         ),
         _DetailRow(
           label: l10n.mapObjectDetailPointCount,

@@ -1373,8 +1373,8 @@ class _TrackZoneListTile extends ConsumerWidget {
                   CircleAvatar(
                     backgroundColor: _parseColor(zone.color),
                     radius: 18,
-                    child: const Icon(
-                      Icons.directions_walk,
+                    child: Icon(
+                      trackIconForZone(zone),
                       color: Colors.white,
                       size: 18,
                     ),

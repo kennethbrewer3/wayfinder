@@ -810,11 +810,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trackEditTitle => 'Modifier la trace';
 
   @override
-  String get trackShowFootstepsLabel => 'Empreintes sur la carte';
+  String get trackTransportationModeLabel => 'Transport';
+
+  @override
+  String get trackTransportationModeOnFoot => 'À pied';
+
+  @override
+  String get trackTransportationModeBike => 'Vélo';
+
+  @override
+  String get trackTransportationModeLandVehicle => 'Véhicule terrestre';
+
+  @override
+  String get trackTransportationModeWatercraft => 'Embarcation';
+
+  @override
+  String get trackTransportationModeAircraft => 'Aéronef';
+
+  @override
+  String get trackShowFootstepsLabel => 'Icônes de trace sur la carte';
 
   @override
   String get trackShowFootstepsHelp =>
-      'Affiche des icônes d\'empreintes le long de la trace de déplacement.';
+      'Affiche des icônes de transport le long de la trace de déplacement.';
 
   @override
   String get circleDefaultName => 'Nouveau cercle';

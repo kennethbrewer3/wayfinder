@@ -7,6 +7,7 @@ import '../generated/protocol.dart';
 
 const trackZoneType = 'track';
 const defaultFootstepDensity = 3;
+const defaultTransportationMode = 'onFoot';
 const minTrackMoveMeters = 5.0;
 
 abstract final class MarkerTrackingService {
@@ -169,6 +170,7 @@ abstract final class MarkerTrackingService {
           points: points,
           showFootsteps: _decodeShowFootsteps(zone.geometryJson),
           footstepDensity: _decodeFootstepDensity(zone.geometryJson),
+          transportationMode: _decodeTransportationMode(zone.geometryJson),
         ),
         updatedAt: DateTime.now().toUtc(),
       ),
@@ -180,6 +182,7 @@ abstract final class MarkerTrackingService {
     required List<_TrackPoint> points,
     bool showFootsteps = true,
     int footstepDensity = defaultFootstepDensity,
+    String transportationMode = defaultTransportationMode,
   }) {
     return jsonEncode({
       'markerId': markerId.toString(),
@@ -193,6 +196,7 @@ abstract final class MarkerTrackingService {
       ],
       'showFootsteps': showFootsteps,
       'footstepDensity': footstepDensity,
+      'transportationMode': transportationMode,
     });
   }
 
@@ -255,6 +259,26 @@ abstract final class MarkerTrackingService {
       }
     } catch (_) {}
     return defaultFootstepDensity;
+  }
+
+  static String _decodeTransportationMode(String geometryJson) {
+    const allowed = {
+      'onFoot',
+      'bike',
+      'landVehicle',
+      'watercraft',
+      'aircraft',
+    };
+    try {
+      final json = jsonDecode(geometryJson);
+      if (json is Map<String, dynamic>) {
+        final mode = json['transportationMode'];
+        if (mode is String && allowed.contains(mode)) {
+          return mode;
+        }
+      }
+    } catch (_) {}
+    return defaultTransportationMode;
   }
 
   static double _distanceMeters(

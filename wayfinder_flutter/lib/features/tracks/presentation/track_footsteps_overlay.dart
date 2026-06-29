@@ -10,6 +10,7 @@ import '../../lines/models/line_arrow_density.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../markers/models/marker_color.dart';
 import '../models/track_geometry.dart';
+import '../models/track_transportation_mode.dart';
 
 const _footstepBoxSize = 24.0;
 const _footstepIconSize = 18.0;
@@ -19,11 +20,13 @@ class _FootstepDraw {
     required this.screenPoint,
     required this.angle,
     required this.color,
+    required this.icon,
   });
 
   final Offset screenPoint;
   final double angle;
   final Color color;
+  final IconData icon;
 }
 
 /// Renders footstep icons in screen space along tracking marker paths.
@@ -96,6 +99,7 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
           renderPoints: geometry.pathPoints,
           color: parseMarkerColor(zone.color),
           density: geometry.footstepDensity,
+          icon: trackTransportationIcon(geometry.transportationMode),
         ),
       );
     }
@@ -112,7 +116,7 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
             child: Transform.rotate(
               angle: footstep.angle,
               child: Icon(
-                Icons.directions_walk,
+                footstep.icon,
                 size: _footstepIconSize,
                 color: footstep.color,
               ),
@@ -129,6 +133,7 @@ List<_FootstepDraw> _footstepsForPath({
   required List<LatLng> renderPoints,
   required Color color,
   required LineArrowDensity density,
+  required IconData icon,
 }) {
   if (renderPoints.length < 2) {
     return const [];
@@ -176,6 +181,7 @@ List<_FootstepDraw> _footstepsForPath({
           placement.segmentEnd.dx - placement.segmentStart.dx,
         ),
         color: color,
+        icon: icon,
       ),
     );
   }

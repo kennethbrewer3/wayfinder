@@ -30,6 +30,7 @@ Future<bool> updateTrackFromForm({
   final colorHex = formatMarkerColorHex(formData.color);
   final updatedGeometry = geometry.copyWith(
     showFootsteps: formData.showFootsteps,
+    transportationMode: formData.transportationMode,
   );
 
   final client = ref.read(serverClientProvider);

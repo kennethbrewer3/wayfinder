@@ -6,6 +6,8 @@ import '../../layers/presentation/layer_picker_field.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../models/track_geometry.dart';
+import '../models/track_transportation_mode.dart';
+import 'track_transportation_mode_field.dart';
 
 class TrackFormData {
   const TrackFormData({
@@ -13,12 +15,14 @@ class TrackFormData {
     required this.color,
     required this.showFootsteps,
     required this.layerId,
+    required this.transportationMode,
   });
 
   final String name;
   final Color color;
   final bool showFootsteps;
   final UuidValue? layerId;
+  final TrackTransportationMode transportationMode;
 }
 
 Future<TrackFormData?> showTrackFormDialog({
@@ -36,6 +40,7 @@ Future<TrackFormData?> showTrackFormDialog({
       initialColor: parseMarkerColor(zone.color),
       initialShowFootsteps: geometry.showFootsteps,
       initialLayerId: zone.layerId,
+      initialTransportationMode: geometry.transportationMode,
     ),
   );
 }
@@ -49,6 +54,7 @@ class TrackFormDialog extends StatefulWidget {
     required this.initialColor,
     required this.initialShowFootsteps,
     this.initialLayerId,
+    this.initialTransportationMode = TrackTransportationMode.onFoot,
   });
 
   final String title;
@@ -57,6 +63,7 @@ class TrackFormDialog extends StatefulWidget {
   final Color initialColor;
   final bool initialShowFootsteps;
   final UuidValue? initialLayerId;
+  final TrackTransportationMode initialTransportationMode;
 
   @override
   State<TrackFormDialog> createState() => _TrackFormDialogState();
@@ -66,6 +73,7 @@ class _TrackFormDialogState extends State<TrackFormDialog> {
   late final TextEditingController _nameController;
   late Color _selectedColor;
   late bool _showFootsteps;
+  late TrackTransportationMode _transportationMode;
   UuidValue? _selectedLayerId;
 
   @override
@@ -74,6 +82,7 @@ class _TrackFormDialogState extends State<TrackFormDialog> {
     _nameController = TextEditingController(text: widget.defaultName);
     _selectedColor = widget.initialColor;
     _showFootsteps = widget.initialShowFootsteps;
+    _transportationMode = widget.initialTransportationMode;
     _selectedLayerId = widget.initialLayerId;
   }
 
@@ -95,6 +104,7 @@ class _TrackFormDialogState extends State<TrackFormDialog> {
         color: _selectedColor,
         showFootsteps: _showFootsteps,
         layerId: _selectedLayerId,
+        transportationMode: _transportationMode,
       ),
     );
   }
@@ -129,6 +139,12 @@ class _TrackFormDialogState extends State<TrackFormDialog> {
               MarkerColorPickerField(
                 color: _selectedColor,
                 onChanged: (color) => setState(() => _selectedColor = color),
+              ),
+              const SizedBox(height: 16),
+              TrackTransportationModeField(
+                value: _transportationMode,
+                onChanged: (mode) =>
+                    setState(() => _transportationMode = mode),
               ),
               const SizedBox(height: 12),
               SwitchListTile(

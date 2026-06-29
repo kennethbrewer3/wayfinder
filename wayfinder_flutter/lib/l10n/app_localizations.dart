@@ -1504,16 +1504,52 @@ abstract class AppLocalizations {
   /// **'Edit track'**
   String get trackEditTitle;
 
+  /// No description provided for @trackTransportationModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get trackTransportationModeLabel;
+
+  /// No description provided for @trackTransportationModeOnFoot.
+  ///
+  /// In en, this message translates to:
+  /// **'On foot'**
+  String get trackTransportationModeOnFoot;
+
+  /// No description provided for @trackTransportationModeBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bicycle'**
+  String get trackTransportationModeBike;
+
+  /// No description provided for @trackTransportationModeLandVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Land vehicle'**
+  String get trackTransportationModeLandVehicle;
+
+  /// No description provided for @trackTransportationModeWatercraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Watercraft'**
+  String get trackTransportationModeWatercraft;
+
+  /// No description provided for @trackTransportationModeAircraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Aircraft'**
+  String get trackTransportationModeAircraft;
+
   /// No description provided for @trackShowFootstepsLabel.
   ///
   /// In en, this message translates to:
-  /// **'Footsteps on map'**
+  /// **'Trail icons on map'**
   String get trackShowFootstepsLabel;
 
   /// No description provided for @trackShowFootstepsHelp.
   ///
   /// In en, this message translates to:
-  /// **'Show footstep icons along the movement trail.'**
+  /// **'Show transportation icons along the movement trail.'**
   String get trackShowFootstepsHelp;
 
   /// No description provided for @circleDefaultName.

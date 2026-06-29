@@ -7,9 +7,24 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
+import '../../tracks/models/track_geometry.dart';
+import '../../tracks/models/track_transportation_mode.dart';
 import '../models/marker_color.dart';
 import '../providers/markers_provider.dart';
 import 'marker_form_dialog.dart';
+
+Future<void> _syncTrackTransportationMode({
+  required Client client,
+  required MapMarker marker,
+  required TrackTransportationMode mode,
+}) async {
+  await applyTrackTransportationMode(
+    getZone: client.mapZone.getZone,
+    updateZone: client.mapZone.updateZone,
+    marker: marker,
+    mode: mode,
+  );
+}
 
 Future<bool> createMarkerAtPoint({
   required BuildContext context,
@@ -41,7 +56,7 @@ Future<bool> createMarkerAtPoint({
   );
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
-  await client.mapMarker.createMarker(
+  final created = await client.mapMarker.createMarker(
     MapMarker(
       name: formData.name,
       notes: formData.notes,
@@ -57,6 +72,13 @@ Future<bool> createMarkerAtPoint({
       updatedAt: now,
     ),
   );
+  if (formData.isTracking) {
+    await _syncTrackTransportationMode(
+      client: client,
+      marker: created,
+      mode: formData.transportationMode,
+    );
+  }
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();
   AppLogger.logMarkers.success('📍 Marker created');
@@ -68,16 +90,29 @@ Future<bool> updateMarkerFromForm({
   required WidgetRef ref,
   required MapMarker marker,
 }) async {
+  final client = ref.read(serverClientProvider);
+  var initialTransportationMode = TrackTransportationMode.onFoot;
+  if (marker.trackZoneId != null) {
+    final zone = await client.mapZone.getZone(marker.trackZoneId!);
+    final geometry = zone == null ? null : TrackGeometry.fromZone(zone);
+    if (geometry != null) {
+      initialTransportationMode = geometry.transportationMode;
+    }
+  }
+  if (!context.mounted) {
+    return false;
+  }
+
   final formData = await showEditMarkerDialog(
     context: context,
     marker: marker,
+    initialTransportationMode: initialTransportationMode,
   );
   if (formData == null || !context.mounted) {
     return false;
   }
 
-  final client = ref.read(serverClientProvider);
-  await client.mapMarker.updateMarker(
+  final updated = await client.mapMarker.updateMarker(
     marker.copyWith(
       name: formData.name,
       notes: formData.notes,
@@ -92,6 +127,13 @@ Future<bool> updateMarkerFromForm({
       updatedAt: DateTime.now().toUtc(),
     ),
   );
+  if (formData.isTracking) {
+    await _syncTrackTransportationMode(
+      client: client,
+      marker: updated,
+      mode: formData.transportationMode,
+    );
+  }
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();
   return true;

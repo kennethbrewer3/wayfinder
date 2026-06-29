@@ -804,11 +804,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trackEditTitle => 'Editar rastro';
 
   @override
-  String get trackShowFootstepsLabel => 'Huellas en el mapa';
+  String get trackTransportationModeLabel => 'Transporte';
+
+  @override
+  String get trackTransportationModeOnFoot => 'A pie';
+
+  @override
+  String get trackTransportationModeBike => 'Bicicleta';
+
+  @override
+  String get trackTransportationModeLandVehicle => 'Vehículo terrestre';
+
+  @override
+  String get trackTransportationModeWatercraft => 'Embarcación';
+
+  @override
+  String get trackTransportationModeAircraft => 'Aeronave';
+
+  @override
+  String get trackShowFootstepsLabel => 'Iconos del rastro en el mapa';
 
   @override
   String get trackShowFootstepsHelp =>
-      'Muestra iconos de huellas a lo largo del rastro de movimiento.';
+      'Muestra iconos de transporte a lo largo del rastro de movimiento.';
 
   @override
   String get circleDefaultName => 'Nuevo círculo';

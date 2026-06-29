@@ -5,6 +5,8 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/coordinate_form_fields.dart';
 import '../../layers/presentation/layer_picker_field.dart';
+import '../../tracks/models/track_transportation_mode.dart';
+import '../../tracks/presentation/track_transportation_mode_field.dart';
 import '../models/marker_color.dart';
 import '../models/marker_icon_registry.dart';
 import 'marker_form_fields.dart';
@@ -21,6 +23,7 @@ class MarkerFormData {
     this.latitude,
     this.longitude,
     this.isTracking = false,
+    this.transportationMode = TrackTransportationMode.onFoot,
   });
 
   final String name;
@@ -32,6 +35,7 @@ class MarkerFormData {
   final double? latitude;
   final double? longitude;
   final bool isTracking;
+  final TrackTransportationMode transportationMode;
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -49,6 +53,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
   bool allowCoordinateEdit = false,
   bool allowTrackingToggle = false,
   bool initialIsTracking = false,
+  TrackTransportationMode initialTransportationMode = TrackTransportationMode.onFoot,
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -68,6 +73,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
         allowCoordinateEdit: allowCoordinateEdit,
         allowTrackingToggle: allowTrackingToggle,
         initialIsTracking: initialIsTracking,
+        initialTransportationMode: initialTransportationMode,
       );
     },
   );
@@ -76,6 +82,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
 Future<MarkerFormData?> showEditMarkerDialog({
   required BuildContext context,
   required MapMarker marker,
+  TrackTransportationMode initialTransportationMode = TrackTransportationMode.onFoot,
 }) {
   final l10n = AppLocalizations.of(context)!;
   return showMarkerFormDialog(
@@ -93,6 +100,7 @@ Future<MarkerFormData?> showEditMarkerDialog({
     allowCoordinateEdit: true,
     allowTrackingToggle: true,
     initialIsTracking: marker.isTracking,
+    initialTransportationMode: initialTransportationMode,
   );
 }
 
@@ -112,6 +120,7 @@ class MarkerFormDialog extends StatefulWidget {
     this.allowCoordinateEdit = false,
     this.allowTrackingToggle = false,
     this.initialIsTracking = false,
+    this.initialTransportationMode = TrackTransportationMode.onFoot,
   });
 
   final String title;
@@ -127,6 +136,7 @@ class MarkerFormDialog extends StatefulWidget {
   final bool allowCoordinateEdit;
   final bool allowTrackingToggle;
   final bool initialIsTracking;
+  final TrackTransportationMode initialTransportationMode;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -141,6 +151,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late Color _selectedColor;
   late String _selectedIcon;
   late bool _isTracking;
+  late TrackTransportationMode _transportationMode;
   UuidValue? _selectedLayerId;
 
   @override
@@ -170,6 +181,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     _selectedColor = widget.initialColor;
     _selectedIcon = widget.initialIcon;
     _isTracking = widget.initialIsTracking;
+    _transportationMode = widget.initialTransportationMode;
     _selectedLayerId = widget.initialLayerId;
   }
 
@@ -248,6 +260,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         latitude: coordinates?.latitude,
         longitude: coordinates?.longitude,
         isTracking: widget.allowTrackingToggle ? _isTracking : false,
+        transportationMode: _transportationMode,
       ),
     );
   }
@@ -308,6 +321,14 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                   value: _isTracking,
                   onChanged: (value) => setState(() => _isTracking = value),
                 ),
+                if (_isTracking) ...[
+                  const SizedBox(height: 8),
+                  TrackTransportationModeField(
+                    value: _transportationMode,
+                    onChanged: (mode) =>
+                        setState(() => _transportationMode = mode),
+                  ),
+                ],
               ],
               const SizedBox(height: 16),
               MarkerIconPicker(

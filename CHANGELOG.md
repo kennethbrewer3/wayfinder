@@ -6,6 +6,45 @@ pin all three to the same version when upgrading.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.0] - 2026-06-29
+
+### Added
+
+- **Tracking markers** — enable tracking on a marker to record movement as a
+  persistent trail (polyline + direction icons). Trails appear as companion
+  **track** objects in the sidebar; marker and track can use different layers.
+  Position updates via the app or REST API append points when movement is at
+  least ~5 m.
+- **Transportation mode** for tracks and tracking markers — on foot, bicycle,
+  land vehicle, watercraft, or aircraft; trail icons match the chosen mode.
+- **Named REST API keys** — create a separate key per app or device, revoke
+  individual keys without resetting everything, and migrate the previous single
+  shared key automatically.
+- Bash script `wayfinder_server/scripts/simulate_marker_walk.sh` to exercise
+  tracking over the REST API.
+
+### Fixed
+
+- Tracking markers no longer lose their trail link when saved from the app
+  (`trackZoneId` preserved on update).
+- REST API keys migration ships with complete Serverpod definition artifacts
+  (CI integration tests and fresh installs).
+
+### Changed
+
+- User manual updated for tracking markers, transportation mode, trail icons,
+  and named API key management.
+- REST API settings UI replaces single rotate/disable flow with a key list,
+  create-with-name, and per-key remove.
+
+## [1.0.2] - 2026-06-29
+
+### Added
+
+- Editable circle radius/diameter and center in the zone dialog.
+- Unit picker for circle size input (m/km, ft/mi, yd/nm).
+- Editable marker coordinates in create and edit dialogs.
+
 ## [1.0.1] - 2026-06-29
 
 ### Fixed
@@ -47,5 +86,7 @@ First public release of the Wayfinder map stack.
 - The UI does not expose a sign-in flow; protect network-exposed servers with
   a REST API key and LAN/firewall controls ([SECURITY.md](SECURITY.md)).
 
+[1.1.0]: https://github.com/kennethbrewer3/wayfinder/compare/v1.0.2...v1.1.0
+[1.0.2]: https://github.com/kennethbrewer3/wayfinder/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kennethbrewer3/wayfinder/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kennethbrewer3/wayfinder/releases/tag/v1.0.0

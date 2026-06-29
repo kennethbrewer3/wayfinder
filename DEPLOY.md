@@ -1,14 +1,18 @@
 # Deploying Wayfinder on separate machines
 
-Wayfinder is split into **three** independent Docker Compose stacks. **You do not need to clone the repository** — download a small set of files per machine and pull pre-built images from GitHub Container Registry.
+Wayfinder is split into **three** independent Docker stacks. **You do not need to clone the repository** — download a small set of files per machine and pull pre-built images from GitHub Container Registry.
 
-| Stack | Files | Image |
-|-------|-------|-------|
-| **Server** | `deploy/server/docker-compose.yaml` + `.env` | `ghcr.io/kennethbrewer3/wayfinder-server` |
-| **Geocoding server** (optional) | `deploy/geocoding-server/docker-compose.yaml` + `.env` | `ghcr.io/kennethbrewer3/wayfinder-geocoding-server` |
-| **Client** | `deploy/client/docker-compose.yaml` + `.env` | `ghcr.io/kennethbrewer3/wayfinder-client` |
+| Stack | Deployment guide | Image |
+|-------|------------------|-------|
+| **Server** | [deploy/server/README.md](deploy/server/README.md) | `ghcr.io/kennethbrewer3/wayfinder-server` |
+| **Geocoding server** (optional) | [deploy/geocoding-server/README.md](deploy/geocoding-server/README.md) | `ghcr.io/kennethbrewer3/wayfinder-geocoding-server` |
+| **Client** | [deploy/client/README.md](deploy/client/README.md) | `ghcr.io/kennethbrewer3/wayfinder-client` |
 
-Images are built automatically on every push to `main` (see [.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml)).
+**Project N.O.M.A.D.:** [deploy/project-nomad/README.md](deploy/project-nomad/README.md) — Supply Depot for the client; Compose over SSH for server and geocoding.
+
+Images are built on every push to `main` and on release tags (see [.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml)).
+
+The sections below summarize all three stacks. For file lists, `.env` tables, start/stop scripts, and Supply Depot fields, use the component guides above.
 
 Run the **server** on the machine that holds your database and PMTiles. Run the **geocoding server** on a machine with enough disk for OSMNames imports (often a different host). Run the **client** on any machine where users open the map UI. Address and place search only runs when the client is configured with a reachable geocoding server URL.
 
@@ -136,12 +140,18 @@ The client serves the Flutter web UI. It does not need Postgres, Redis, or PMTil
 
 ### Setup (no git clone)
 
+See [deploy/client/README.md](deploy/client/README.md) for the full file list (`docker-compose.yaml`, `.env.example`, `start.sh`, `stop.sh`, `docker_lib.sh`).
+
 ```bash
 mkdir wayfinder-client && cd wayfinder-client
 
 curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/docker-compose.yaml
 curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/.env.example
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/start.sh
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/stop.sh
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/docker_lib.sh
 cp .env.example .env
+chmod +x start.sh stop.sh
 ```
 
 Edit `.env` — URLs must be reachable from the **browser**, not from inside Docker:

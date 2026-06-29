@@ -4,10 +4,10 @@
 #   mkdir wayfinder-client && cd wayfinder-client
 #   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/docker-compose.yaml
 #   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/.env.example
-#   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/start.sh
+#   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/stop.sh
+#   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/client/docker_lib.sh
 #   cp .env.example .env
-#   # Edit WAYFINDER_API_URL, then:
-#   chmod +x start.sh
+#   chmod +x start.sh stop.sh
 #   ./start.sh
 #
 # Or manually:

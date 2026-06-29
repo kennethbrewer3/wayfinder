@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wayfinder_flutter/features/circles/utils/circle_distance.dart';
-import 'package:wayfinder_flutter/features/lines/models/distance_input_unit.dart';
 import 'package:wayfinder_flutter/features/lines/models/measurement_units.dart';
 
 void main() {

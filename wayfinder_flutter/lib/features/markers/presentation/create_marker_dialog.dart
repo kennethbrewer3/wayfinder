@@ -24,6 +24,9 @@ Future<bool> createMarkerAtPoint({
     confirmLabel: confirmLabel,
     defaultName: defaultName,
     initialLayerId: selectedLayerIdForCreate(ref),
+    initialLatitude: point.latitude,
+    initialLongitude: point.longitude,
+    allowCoordinateEdit: true,
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -31,7 +34,8 @@ Future<bool> createMarkerAtPoint({
 
   AppLogger.logMarkers.info(
     '📍 Creating marker',
-    data: 'lat=${point.latitude} lng=${point.longitude}',
+    data:
+        'lat=${formData.latitude ?? point.latitude} lng=${formData.longitude ?? point.longitude}',
   );
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
@@ -39,8 +43,8 @@ Future<bool> createMarkerAtPoint({
     MapMarker(
       name: formData.name,
       notes: formData.notes,
-      latitude: point.latitude,
-      longitude: point.longitude,
+      latitude: formData.latitude ?? point.latitude,
+      longitude: formData.longitude ?? point.longitude,
       elevation: formData.elevation,
       color: formatMarkerColorHex(formData.color),
       icon: formData.icon,

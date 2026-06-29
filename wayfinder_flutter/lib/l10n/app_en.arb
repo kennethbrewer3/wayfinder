@@ -386,6 +386,7 @@
   "markerCreateTitle": "Create marker",
   "markerEditTitle": "Edit marker",
   "markerDefaultName": "New marker",
+  "markerCoordinatesHelp": "Edit latitude and longitude to move the marker on the map.",
   "markerNameHint": "e.g. Home, Work, Trailhead",
   "markerElevationLabel": "Elevation (m)",
   "markerIconLabel": "Icon",

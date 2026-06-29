@@ -363,6 +363,7 @@
   "markerCreateTitle": "Crear marcador",
   "markerEditTitle": "Editar marcador",
   "markerDefaultName": "Nuevo marcador",
+  "markerCoordinatesHelp": "Edite la latitud y la longitud para mover el marcador en el mapa.",
   "markerNameHint": "p. ej. Casa, Trabajo, Inicio de sendero",
   "markerElevationLabel": "Elevación (m)",
   "markerIconLabel": "Icono",

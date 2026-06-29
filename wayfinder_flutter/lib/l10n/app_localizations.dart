@@ -1360,6 +1360,12 @@ abstract class AppLocalizations {
   /// **'New marker'**
   String get markerDefaultName;
 
+  /// No description provided for @markerCoordinatesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit latitude and longitude to move the marker on the map.'**
+  String get markerCoordinatesHelp;
+
   /// No description provided for @markerNameHint.
   ///
   /// In en, this message translates to:

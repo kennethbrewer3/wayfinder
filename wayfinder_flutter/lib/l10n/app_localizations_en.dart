@@ -719,6 +719,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerDefaultName => 'New marker';
 
   @override
+  String get markerCoordinatesHelp =>
+      'Edit latitude and longitude to move the marker on the map.';
+
+  @override
   String get markerNameHint => 'e.g. Home, Work, Trailhead';
 
   @override

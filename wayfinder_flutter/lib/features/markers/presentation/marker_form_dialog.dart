@@ -196,6 +196,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   }
 
   void _submit() {
+    final l10n = AppLocalizations.of(context)!;
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       return;
@@ -212,8 +213,12 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
             _longitudeController.text,
           )
         : null;
-    if (_latitudeController != null && _longitudeController != null &&
+    if (_latitudeController != null &&
+        _longitudeController != null &&
         coordinates == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geocodingContributionInvalidCoordinates)),
+      );
       return;
     }
 
@@ -253,6 +258,15 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                 autofocus: true,
                 textInputAction: TextInputAction.next,
               ),
+              if (_latitudeController != null && _longitudeController != null) ...[
+                const SizedBox(height: 16),
+                CoordinateFormFields(
+                  title: l10n.coordinatesTitle,
+                  latitudeController: _latitudeController,
+                  longitudeController: _longitudeController,
+                  helperText: l10n.markerCoordinatesHelp,
+                ),
+              ],
               const SizedBox(height: 16),
               TextField(
                 controller: _elevationController,
@@ -264,13 +278,6 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                     const TextInputType.numberWithOptions(decimal: true, signed: true),
                 textInputAction: TextInputAction.next,
               ),
-              if (_latitudeController != null && _longitudeController != null) ...[
-                const SizedBox(height: 16),
-                CoordinateFormFields(
-                  latitudeController: _latitudeController,
-                  longitudeController: _longitudeController,
-                ),
-              ],
               const SizedBox(height: 16),
               LayerPickerField(
                 selectedLayerId: _selectedLayerId,

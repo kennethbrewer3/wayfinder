@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../lines/providers/zones_provider.dart';
 import 'markers_provider.dart';
 
 const _reconnectDelay = Duration(seconds: 5);
@@ -48,6 +49,7 @@ class MapMarkerUpdatesListener {
             data: 'type=${change.type} id=${change.markerId}',
           );
           _ref.invalidate(markersProvider);
+          _ref.read(zonesProvider.notifier).reload();
         }
       } catch (error, stackTrace) {
         if (_stopped) {

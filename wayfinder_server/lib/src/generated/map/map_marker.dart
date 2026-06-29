@@ -24,11 +24,14 @@ abstract class MapMarker
     required this.color,
     required this.icon,
     required this.visible,
+    bool? isTracking,
+    this.trackZoneId,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       elevation = elevation ?? 0.0;
+       elevation = elevation ?? 0.0,
+       isTracking = isTracking ?? false;
 
   factory MapMarker({
     _i1.UuidValue? id,
@@ -40,6 +43,8 @@ abstract class MapMarker
     required String color,
     required String icon,
     required bool visible,
+    bool? isTracking,
+    _i1.UuidValue? trackZoneId,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -58,6 +63,14 @@ abstract class MapMarker
       color: jsonSerialization['color'] as String,
       icon: jsonSerialization['icon'] as String,
       visible: _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+      isTracking: jsonSerialization['isTracking'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isTracking']),
+      trackZoneId: jsonSerialization['trackZoneId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['trackZoneId'],
+            ),
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -93,6 +106,10 @@ abstract class MapMarker
 
   bool visible;
 
+  bool isTracking;
+
+  _i1.UuidValue? trackZoneId;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -115,6 +132,8 @@ abstract class MapMarker
     String? color,
     String? icon,
     bool? visible,
+    bool? isTracking,
+    _i1.UuidValue? trackZoneId,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -132,6 +151,8 @@ abstract class MapMarker
       'color': color,
       'icon': icon,
       'visible': visible,
+      'isTracking': isTracking,
+      if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -151,6 +172,8 @@ abstract class MapMarker
       'color': color,
       'icon': icon,
       'visible': visible,
+      'isTracking': isTracking,
+      if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -200,6 +223,8 @@ class _MapMarkerImpl extends MapMarker {
     required String color,
     required String icon,
     required bool visible,
+    bool? isTracking,
+    _i1.UuidValue? trackZoneId,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -213,6 +238,8 @@ class _MapMarkerImpl extends MapMarker {
          color: color,
          icon: icon,
          visible: visible,
+         isTracking: isTracking,
+         trackZoneId: trackZoneId,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -232,6 +259,8 @@ class _MapMarkerImpl extends MapMarker {
     String? color,
     String? icon,
     bool? visible,
+    bool? isTracking,
+    Object? trackZoneId = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -246,6 +275,10 @@ class _MapMarkerImpl extends MapMarker {
       color: color ?? this.color,
       icon: icon ?? this.icon,
       visible: visible ?? this.visible,
+      isTracking: isTracking ?? this.isTracking,
+      trackZoneId: trackZoneId is _i1.UuidValue?
+          ? trackZoneId
+          : this.trackZoneId,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -293,6 +326,18 @@ class MapMarkerUpdateTable extends _i1.UpdateTable<MapMarkerTable> {
 
   _i1.ColumnValue<bool, bool> visible(bool value) => _i1.ColumnValue(
     table.visible,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isTracking(bool value) => _i1.ColumnValue(
+    table.isTracking,
+    value,
+  );
+
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> trackZoneId(
+    _i1.UuidValue? value,
+  ) => _i1.ColumnValue(
+    table.trackZoneId,
     value,
   );
 
@@ -351,6 +396,15 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
       'visible',
       this,
     );
+    isTracking = _i1.ColumnBool(
+      'isTracking',
+      this,
+      hasDefault: true,
+    );
+    trackZoneId = _i1.ColumnUuid(
+      'trackZoneId',
+      this,
+    );
     layerId = _i1.ColumnUuid(
       'layerId',
       this,
@@ -383,6 +437,10 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnBool visible;
 
+  late final _i1.ColumnBool isTracking;
+
+  late final _i1.ColumnUuid trackZoneId;
+
   late final _i1.ColumnUuid layerId;
 
   late final _i1.ColumnDateTime createdAt;
@@ -400,6 +458,8 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
     color,
     icon,
     visible,
+    isTracking,
+    trackZoneId,
     layerId,
     createdAt,
     updatedAt,

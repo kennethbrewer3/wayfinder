@@ -42,6 +42,7 @@ import '../../map/providers/map_providers.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
 import '../../lines/utils/bearing_utils.dart';
+import '../../tracks/presentation/track_footsteps_overlay.dart';
 import '../../lines/presentation/line_direction_arrows_overlay.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../lines/utils/line_path.dart';
@@ -2340,6 +2341,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         bearingPreviewEnd: bearingPlot.previewEnd,
                         bearingPreviewColor:
                             bearingPlot.active ? previewColor : null,
+                      ),
+                      TrackFootstepsOverlay(
+                        zones: filterZonesForMap(value, layersById),
+                        mapController: _mapController,
                       ),
                       LineMapLabelsOverlay(
                     zones: filterZonesForMap(value, layersById),

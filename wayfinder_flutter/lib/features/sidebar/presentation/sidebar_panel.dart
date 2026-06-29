@@ -23,6 +23,10 @@ import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../lines/utils/line_path.dart';
+import '../../lines/utils/line_distance.dart';
+import '../../tracks/models/track_geometry.dart';
+import '../../tracks/presentation/create_track_dialog.dart';
+import '../../tracks/presentation/map_track_layer.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
@@ -1144,6 +1148,14 @@ class _ZoneListTile extends ConsumerWidget {
         onZoomTo: onZoomTo,
       );
     }
+    final isTrack = zone.type == trackZoneType;
+    if (isTrack) {
+      return _TrackZoneListTile(
+        key: ValueKey(zone.id),
+        zone: zone,
+        onZoomTo: onZoomTo,
+      );
+    }
     return _GenericZoneListTile(
       key: ValueKey(zone.id),
       zone: zone,
@@ -1291,6 +1303,134 @@ class _LineZoneListTile extends ConsumerWidget {
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteLine,
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.deleteZone(zoneId);
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrackZoneListTile extends ConsumerWidget {
+  const _TrackZoneListTile({
+    super.key,
+    required this.zone,
+    required this.onZoomTo,
+  });
+
+  final MapZone zone;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final zoneId = zone.id;
+    final geometry = TrackGeometry.fromZone(zone);
+    final measurementUnits = ref.watch(measurementUnitsProvider);
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
+        selected?.id == zone.id;
+
+    if (geometry == null || !geometry.isValid) {
+      return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
+    }
+
+    final distance = geometry.hasRenderablePath
+        ? formatLineDistance(
+            lineLengthMetersForPoints(geometry.pathPoints),
+            measurementUnits,
+          )
+        : '—';
+
+    return ColoredBox(
+      color: isSelected
+          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
+          : Colors.transparent,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              final center = trackZoneCenterPoint(zone);
+              if (center != null) {
+                onZoomTo(center);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _parseColor(zone.color),
+                    radius: 18,
+                    child: const Icon(
+                      Icons.directions_walk,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          zone.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${geometry.points.length} · $distance',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: zone.visible ? l10n.sidebarHideTrack : l10n.sidebarShowTrack,
+                icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: zone.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.updateZone(
+                    zone.copyWith(visible: !zone.visible),
+                  );
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarEditTrack,
+                icon: Icons.edit_outlined,
+                onPressed: () => updateTrackFromForm(
+                  context: context,
+                  ref: ref,
+                  zone: zone,
+                ),
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarDeleteTrack,
                 icon: Icons.delete_outline,
                 onPressed: () async {
                   final client = ref.read(serverClientProvider);

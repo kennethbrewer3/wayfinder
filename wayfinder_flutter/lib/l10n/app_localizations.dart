@@ -1366,6 +1366,18 @@ abstract class AppLocalizations {
   /// **'Edit latitude and longitude to move the marker on the map.'**
   String get markerCoordinatesHelp;
 
+  /// No description provided for @markerTrackingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking marker'**
+  String get markerTrackingLabel;
+
+  /// No description provided for @markerTrackingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Record movement history as a trail on the map.'**
+  String get markerTrackingHelp;
+
   /// No description provided for @markerNameHint.
   ///
   /// In en, this message translates to:
@@ -1485,6 +1497,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit circle'**
   String get circleEditTitle;
+
+  /// No description provided for @trackEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit track'**
+  String get trackEditTitle;
+
+  /// No description provided for @trackShowFootstepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Footsteps on map'**
+  String get trackShowFootstepsLabel;
+
+  /// No description provided for @trackShowFootstepsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Show footstep icons along the movement trail.'**
+  String get trackShowFootstepsHelp;
 
   /// No description provided for @circleDefaultName.
   ///
@@ -1672,6 +1702,12 @@ abstract class AppLocalizations {
   /// **'Line'**
   String get mapObjectTypeLine;
 
+  /// No description provided for @mapObjectTypeTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Track'**
+  String get mapObjectTypeTrack;
+
   /// No description provided for @mapObjectTypeCircle.
   ///
   /// In en, this message translates to:
@@ -1713,6 +1749,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Length'**
   String get mapObjectDetailLength;
+
+  /// No description provided for @mapObjectDetailPointCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get mapObjectDetailPointCount;
 
   /// No description provided for @mapObjectDetailStart.
   ///
@@ -2073,6 +2115,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit line'**
   String get sidebarEditLine;
+
+  /// No description provided for @sidebarEditTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit track'**
+  String get sidebarEditTrack;
+
+  /// No description provided for @sidebarDeleteTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete track'**
+  String get sidebarDeleteTrack;
+
+  /// No description provided for @sidebarShowTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Show track'**
+  String get sidebarShowTrack;
+
+  /// No description provided for @sidebarHideTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide track'**
+  String get sidebarHideTrack;
 
   /// No description provided for @sidebarDeleteLine.
   ///

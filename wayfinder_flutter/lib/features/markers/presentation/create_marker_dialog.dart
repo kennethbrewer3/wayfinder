@@ -6,6 +6,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
+import '../../lines/providers/zones_provider.dart';
 import '../models/marker_color.dart';
 import '../providers/markers_provider.dart';
 import 'marker_form_dialog.dart';
@@ -27,6 +28,7 @@ Future<bool> createMarkerAtPoint({
     initialLatitude: point.latitude,
     initialLongitude: point.longitude,
     allowCoordinateEdit: true,
+    allowTrackingToggle: true,
   );
   if (formData == null || !context.mounted) {
     return false;
@@ -49,12 +51,14 @@ Future<bool> createMarkerAtPoint({
       color: formatMarkerColorHex(formData.color),
       icon: formData.icon,
       visible: true,
+      isTracking: formData.isTracking,
       layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
       createdAt: now,
       updatedAt: now,
     ),
   );
   ref.invalidate(markersProvider);
+  ref.read(zonesProvider.notifier).reload();
   AppLogger.logMarkers.success('📍 Marker created');
   return true;
 }
@@ -82,10 +86,13 @@ Future<bool> updateMarkerFromForm({
       color: formatMarkerColorHex(formData.color),
       icon: formData.icon,
       elevation: formData.elevation,
+      isTracking: formData.isTracking,
+      trackZoneId: marker.trackZoneId,
       layerId: formData.layerId,
       updatedAt: DateTime.now().toUtc(),
     ),
   );
   ref.invalidate(markersProvider);
+  ref.read(zonesProvider.notifier).reload();
   return true;
 }

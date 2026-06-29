@@ -18,6 +18,7 @@ import '../../lines/presentation/map_line_layer.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../lines/utils/line_path.dart';
+import '../../lines/utils/line_distance.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
@@ -27,6 +28,8 @@ import '../../markers/providers/markers_provider.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
 import '../../rectangles/utils/rectangle_dimensions.dart';
+import '../../tracks/presentation/create_track_dialog.dart';
+import '../../tracks/models/track_geometry.dart';
 
 Future<void> showMapObjectDetailsDialog({
   required BuildContext context,
@@ -78,6 +81,12 @@ Future<void> _editSelectedObject({
           await updateCircleFromForm(context: context, ref: ref, zone: zone);
         case rectangleZoneType:
           await updateRectangleFromForm(
+            context: context,
+            ref: ref,
+            zone: zone,
+          );
+        case trackZoneType:
+          await updateTrackFromForm(
             context: context,
             ref: ref,
             zone: zone,
@@ -194,6 +203,11 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           ),
           copyTooltip: l10n.mapRadialCopyCoordinates,
         ),
+        if (marker.isTracking)
+          _DetailRow(
+            label: l10n.markerTrackingLabel,
+            value: l10n.mapObjectVisibilityVisible,
+          ),
         _MarkerShareLinkSection(
           label: l10n.mapMarkerShareUrlLabel,
           url: shareUrl,
@@ -265,6 +279,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           l10n: l10n,
           measurementUnits: measurementUnits,
         ),
+      trackZoneType => _trackDetails(
+          ref: ref,
+          zone: zone,
+          l10n: l10n,
+          measurementUnits: measurementUnits,
+        ),
       _ => _genericZoneDetails(ref: ref, zone: zone, l10n: l10n),
     };
   }
@@ -325,6 +345,53 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         _zoneLayerAssignment(ref, zone),
         if (notes != null && notes.isNotEmpty)
           _NotesSection(l10n: l10n, markdown: notes),
+      ],
+    );
+  }
+
+  Widget _trackDetails({
+    required WidgetRef ref,
+    required MapZone zone,
+    required AppLocalizations l10n,
+    required MeasurementUnits measurementUnits,
+  }) {
+    final geometry = TrackGeometry.fromZone(zone);
+    if (geometry == null || !geometry.isValid) {
+      return _genericZoneDetails(ref: ref, zone: zone, l10n: l10n);
+    }
+
+    final distance = geometry.hasRenderablePath
+        ? formatLineDistance(
+            lineLengthMetersForPoints(geometry.pathPoints),
+            measurementUnits,
+          )
+        : '—';
+
+    return _DetailsDialogShell(
+      title: zone.name,
+      leading: _ZoneTypeAvatar(
+        color: parseMarkerColor(zone.color),
+        icon: Icons.directions_walk,
+      ),
+      onEdit: onEdit,
+      l10n: l10n,
+      children: [
+        _DetailRow(
+          label: l10n.mapObjectDetailType,
+          value: l10n.mapObjectTypeTrack,
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailPointCount,
+          value: geometry.points.length.toString(),
+        ),
+        _DetailRow(label: l10n.mapObjectDetailLength, value: distance),
+        _DetailRow(
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
+        ),
+        _zoneLayerAssignment(ref, zone),
       ],
     );
   }

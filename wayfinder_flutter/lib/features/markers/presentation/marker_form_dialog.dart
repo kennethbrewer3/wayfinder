@@ -20,6 +20,7 @@ class MarkerFormData {
     required this.layerId,
     this.latitude,
     this.longitude,
+    this.isTracking = false,
   });
 
   final String name;
@@ -30,6 +31,7 @@ class MarkerFormData {
   final UuidValue? layerId;
   final double? latitude;
   final double? longitude;
+  final bool isTracking;
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -45,6 +47,8 @@ Future<MarkerFormData?> showMarkerFormDialog({
   double? initialLatitude,
   double? initialLongitude,
   bool allowCoordinateEdit = false,
+  bool allowTrackingToggle = false,
+  bool initialIsTracking = false,
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -62,6 +66,8 @@ Future<MarkerFormData?> showMarkerFormDialog({
         initialLatitude: initialLatitude,
         initialLongitude: initialLongitude,
         allowCoordinateEdit: allowCoordinateEdit,
+        allowTrackingToggle: allowTrackingToggle,
+        initialIsTracking: initialIsTracking,
       );
     },
   );
@@ -85,6 +91,8 @@ Future<MarkerFormData?> showEditMarkerDialog({
     initialLatitude: marker.latitude,
     initialLongitude: marker.longitude,
     allowCoordinateEdit: true,
+    allowTrackingToggle: true,
+    initialIsTracking: marker.isTracking,
   );
 }
 
@@ -102,6 +110,8 @@ class MarkerFormDialog extends StatefulWidget {
     this.initialLatitude,
     this.initialLongitude,
     this.allowCoordinateEdit = false,
+    this.allowTrackingToggle = false,
+    this.initialIsTracking = false,
   });
 
   final String title;
@@ -115,6 +125,8 @@ class MarkerFormDialog extends StatefulWidget {
   final double? initialLatitude;
   final double? initialLongitude;
   final bool allowCoordinateEdit;
+  final bool allowTrackingToggle;
+  final bool initialIsTracking;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -128,6 +140,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late final QuillController _notesController;
   late Color _selectedColor;
   late String _selectedIcon;
+  late bool _isTracking;
   UuidValue? _selectedLayerId;
 
   @override
@@ -156,6 +169,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     );
     _selectedColor = widget.initialColor;
     _selectedIcon = widget.initialIcon;
+    _isTracking = widget.initialIsTracking;
     _selectedLayerId = widget.initialLayerId;
   }
 
@@ -233,6 +247,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         layerId: _selectedLayerId,
         latitude: coordinates?.latitude,
         longitude: coordinates?.longitude,
+        isTracking: widget.allowTrackingToggle ? _isTracking : false,
       ),
     );
   }
@@ -284,6 +299,16 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                 onChanged: (layerId) =>
                     setState(() => _selectedLayerId = layerId),
               ),
+              if (widget.allowTrackingToggle) ...[
+                const SizedBox(height: 12),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.markerTrackingLabel),
+                  subtitle: Text(l10n.markerTrackingHelp),
+                  value: _isTracking,
+                  onChanged: (value) => setState(() => _isTracking = value),
+                ),
+              ],
               const SizedBox(height: 16),
               MarkerIconPicker(
                 selectedIcon: _selectedIcon,

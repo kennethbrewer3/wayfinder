@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../circles/presentation/map_circle_layer.dart';
+import '../../tracks/presentation/map_track_layer.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../markers/models/marker_color.dart';
@@ -69,7 +70,10 @@ List<Widget> buildStackedMapLayerChildren({
     );
     widgets.add(
       PolylineLayer(
-        polylines: buildSavedCircleRadiusLines(layerZones),
+        polylines: [
+          ...buildSavedCircleRadiusLines(layerZones),
+          ...buildSavedTrackPolylines(layerZones),
+        ],
       ),
     );
     widgets.add(

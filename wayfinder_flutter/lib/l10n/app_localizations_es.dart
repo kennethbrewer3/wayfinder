@@ -731,6 +731,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Edite la latitud y la longitud para mover el marcador en el mapa.';
 
   @override
+  String get markerTrackingLabel => 'Marcador de seguimiento';
+
+  @override
+  String get markerTrackingHelp =>
+      'Registre el historial de movimiento como un rastro en el mapa.';
+
+  @override
   String get markerNameHint => 'p. ej. Casa, Trabajo, Inicio de sendero';
 
   @override
@@ -792,6 +799,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get circleEditTitle => 'Editar círculo';
+
+  @override
+  String get trackEditTitle => 'Editar rastro';
+
+  @override
+  String get trackShowFootstepsLabel => 'Huellas en el mapa';
+
+  @override
+  String get trackShowFootstepsHelp =>
+      'Muestra iconos de huellas a lo largo del rastro de movimiento.';
 
   @override
   String get circleDefaultName => 'Nuevo círculo';
@@ -896,6 +913,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapObjectTypeLine => 'Línea';
 
   @override
+  String get mapObjectTypeTrack => 'Rastro';
+
+  @override
   String get mapObjectTypeCircle => 'Círculo';
 
   @override
@@ -915,6 +935,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapObjectDetailLength => 'Longitud';
+
+  @override
+  String get mapObjectDetailPointCount => 'Puntos';
 
   @override
   String get mapObjectDetailStart => 'Inicio';
@@ -1117,6 +1140,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sidebarEditLine => 'Editar línea';
+
+  @override
+  String get sidebarEditTrack => 'Editar rastro';
+
+  @override
+  String get sidebarDeleteTrack => 'Eliminar rastro';
+
+  @override
+  String get sidebarShowTrack => 'Mostrar rastro';
+
+  @override
+  String get sidebarHideTrack => 'Ocultar rastro';
 
   @override
   String get sidebarDeleteLine => 'Eliminar línea';

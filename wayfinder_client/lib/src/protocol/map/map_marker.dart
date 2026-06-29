@@ -23,11 +23,14 @@ abstract class MapMarker implements _i1.SerializableModel {
     required this.color,
     required this.icon,
     required this.visible,
+    bool? isTracking,
+    this.trackZoneId,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       elevation = elevation ?? 0.0;
+       elevation = elevation ?? 0.0,
+       isTracking = isTracking ?? false;
 
   factory MapMarker({
     _i1.UuidValue? id,
@@ -39,6 +42,8 @@ abstract class MapMarker implements _i1.SerializableModel {
     required String color,
     required String icon,
     required bool visible,
+    bool? isTracking,
+    _i1.UuidValue? trackZoneId,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -57,6 +62,14 @@ abstract class MapMarker implements _i1.SerializableModel {
       color: jsonSerialization['color'] as String,
       icon: jsonSerialization['icon'] as String,
       visible: _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+      isTracking: jsonSerialization['isTracking'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isTracking']),
+      trackZoneId: jsonSerialization['trackZoneId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['trackZoneId'],
+            ),
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -88,6 +101,10 @@ abstract class MapMarker implements _i1.SerializableModel {
 
   bool visible;
 
+  bool isTracking;
+
+  _i1.UuidValue? trackZoneId;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -107,6 +124,8 @@ abstract class MapMarker implements _i1.SerializableModel {
     String? color,
     String? icon,
     bool? visible,
+    bool? isTracking,
+    _i1.UuidValue? trackZoneId,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -124,6 +143,8 @@ abstract class MapMarker implements _i1.SerializableModel {
       'color': color,
       'icon': icon,
       'visible': visible,
+      'isTracking': isTracking,
+      if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -149,6 +170,8 @@ class _MapMarkerImpl extends MapMarker {
     required String color,
     required String icon,
     required bool visible,
+    bool? isTracking,
+    _i1.UuidValue? trackZoneId,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -162,6 +185,8 @@ class _MapMarkerImpl extends MapMarker {
          color: color,
          icon: icon,
          visible: visible,
+         isTracking: isTracking,
+         trackZoneId: trackZoneId,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -181,6 +206,8 @@ class _MapMarkerImpl extends MapMarker {
     String? color,
     String? icon,
     bool? visible,
+    bool? isTracking,
+    Object? trackZoneId = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -195,6 +222,10 @@ class _MapMarkerImpl extends MapMarker {
       color: color ?? this.color,
       icon: icon ?? this.icon,
       visible: visible ?? this.visible,
+      isTracking: isTracking ?? this.isTracking,
+      trackZoneId: trackZoneId is _i1.UuidValue?
+          ? trackZoneId
+          : this.trackZoneId,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

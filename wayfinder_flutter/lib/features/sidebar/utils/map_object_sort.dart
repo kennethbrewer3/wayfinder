@@ -6,6 +6,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../circles/models/circle_geometry.dart';
+import '../../tracks/models/track_geometry.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../map/providers/map_providers.dart';
@@ -83,8 +84,9 @@ String zoneTypeLabel(String type, AppLocalizations l10n) {
 int zoneTypeSortOrder(String type) {
   return switch (type) {
     lineZoneType => 0,
-    circleZoneType => 1,
-    rectangleZoneType => 2,
+    trackZoneType => 1,
+    circleZoneType => 2,
+    rectangleZoneType => 3,
     _ => 99,
   };
 }
@@ -323,6 +325,7 @@ Widget? zoneGroupLeading(String key, ZoneSortField sort) {
 IconData zoneTypeIcon(String type) {
   return switch (type) {
     lineZoneType => Icons.timeline,
+    trackZoneType => Icons.directions_walk,
     circleZoneType => Icons.radio_button_unchecked,
     rectangleZoneType => Icons.crop_square,
     _ => Icons.layers,

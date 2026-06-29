@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
 import '../../map/map_marker_change_broadcast.dart';
+import '../../map/marker_tracking_service.dart';
 import 'rest_json.dart';
 
 abstract final class MarkersRestHandlers {
@@ -37,8 +38,8 @@ abstract final class MarkersRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final body = await RestJson.readObject(request);
-      final marker = _markerFromCreateBody(body);
-      final created = await MapMarker.db.insertRow(session, marker);
+      var created = await MapMarker.db.insertRow(session, _markerFromCreateBody(body));
+      created = await _applyTrackingChanges(session: session, before: null, after: created);
       await MapMarkerChangeBroadcast.created(session, created);
       return RestJson.created(RestJson.encodeModel(created));
     });
@@ -57,9 +58,14 @@ abstract final class MarkersRestHandlers {
       }
 
       final body = await RestJson.readObject(request);
-      final updated = await MapMarker.db.updateRow(
+      var updated = await MapMarker.db.updateRow(
         session,
         _mergeMarker(existing, body),
+      );
+      updated = await _applyTrackingChanges(
+        session: session,
+        before: existing,
+        after: updated,
       );
       await MapMarkerChangeBroadcast.updated(session, updated);
       return RestJson.ok(RestJson.encodeModel(updated));
@@ -73,13 +79,18 @@ abstract final class MarkersRestHandlers {
         request.pathParameters.get(_idParam),
         label: 'marker id',
       );
-      final deleted = await MapMarker.db.deleteWhere(
+      final existing = await MapMarker.db.findById(session, id);
+      if (existing == null) {
+        return RestJson.error(404, 'Marker not found');
+      }
+      await MarkerTrackingService.processMarkerDelete(
+        session: session,
+        marker: existing,
+      );
+      await MapMarker.db.deleteWhere(
         session,
         where: (t) => t.id.equals(id),
       );
-      if (deleted.isEmpty) {
-        return RestJson.error(404, 'Marker not found');
-      }
       await MapMarkerChangeBroadcast.deleted(session, id);
       return RestJson.noContent();
     });
@@ -120,6 +131,9 @@ abstract final class MarkersRestHandlers {
       color: color,
       icon: icon,
       visible: body['visible'] is bool ? body['visible'] as bool : true,
+      isTracking: body['isTracking'] is bool ? body['isTracking'] as bool : false,
+      trackZoneId:
+          RestJson.parseOptionalUuid(body['trackZoneId'], label: 'trackZoneId'),
       layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdAt: now,
       updatedAt: now,
@@ -150,11 +164,37 @@ abstract final class MarkersRestHandlers {
       visible: body['visible'] is bool
           ? body['visible'] as bool
           : existing.visible,
+      isTracking: body['isTracking'] is bool
+          ? body['isTracking'] as bool
+          : existing.isTracking,
+      trackZoneId: body.containsKey('trackZoneId')
+          ? RestJson.parseOptionalUuid(body['trackZoneId'], label: 'trackZoneId')
+          : existing.trackZoneId,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
           : existing.layerId,
       createdAt: existing.createdAt,
       updatedAt: DateTime.now().toUtc(),
+    );
+  }
+
+  static Future<MapMarker> _applyTrackingChanges({
+    required Session session,
+    required MapMarker? before,
+    required MapMarker after,
+  }) async {
+    final processed = await MarkerTrackingService.processMarkerUpdate(
+      session: session,
+      before: before,
+      after: after,
+    );
+    if (processed.isTracking == after.isTracking &&
+        processed.trackZoneId == after.trackZoneId) {
+      return after;
+    }
+    return MapMarker.db.updateRow(
+      session,
+      processed.copyWith(updatedAt: DateTime.now().toUtc()),
     );
   }
 }

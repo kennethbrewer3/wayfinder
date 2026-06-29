@@ -737,6 +737,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Modifiez la latitude et la longitude pour déplacer le marqueur sur la carte.';
 
   @override
+  String get markerTrackingLabel => 'Marqueur de suivi';
+
+  @override
+  String get markerTrackingHelp =>
+      'Enregistrez l\'historique des déplacements sous forme de trace sur la carte.';
+
+  @override
   String get markerNameHint => 'p. ex. Maison, Travail, Départ de sentier';
 
   @override
@@ -798,6 +805,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get circleEditTitle => 'Modifier le cercle';
+
+  @override
+  String get trackEditTitle => 'Modifier la trace';
+
+  @override
+  String get trackShowFootstepsLabel => 'Empreintes sur la carte';
+
+  @override
+  String get trackShowFootstepsHelp =>
+      'Affiche des icônes d\'empreintes le long de la trace de déplacement.';
 
   @override
   String get circleDefaultName => 'Nouveau cercle';
@@ -902,6 +919,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapObjectTypeLine => 'Ligne';
 
   @override
+  String get mapObjectTypeTrack => 'Trace';
+
+  @override
   String get mapObjectTypeCircle => 'Cercle';
 
   @override
@@ -921,6 +941,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapObjectDetailLength => 'Longueur';
+
+  @override
+  String get mapObjectDetailPointCount => 'Points';
 
   @override
   String get mapObjectDetailStart => 'Début';
@@ -1123,6 +1146,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get sidebarEditLine => 'Modifier la ligne';
+
+  @override
+  String get sidebarEditTrack => 'Modifier la trace';
+
+  @override
+  String get sidebarDeleteTrack => 'Supprimer la trace';
+
+  @override
+  String get sidebarShowTrack => 'Afficher la trace';
+
+  @override
+  String get sidebarHideTrack => 'Masquer la trace';
 
   @override
   String get sidebarDeleteLine => 'Supprimer la ligne';

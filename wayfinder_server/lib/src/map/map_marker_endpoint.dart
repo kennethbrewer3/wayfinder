@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'map_marker_change_broadcast.dart';
+import 'marker_tracking_service.dart';
 
 class MapMarkerEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapMarker';
@@ -38,12 +39,17 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
       'createMarker',
       () async {
         final now = DateTime.now().toUtc();
-        final created = await MapMarker.db.insertRow(
+        var created = await MapMarker.db.insertRow(
           session,
           marker.copyWith(
             createdAt: now,
             updatedAt: now,
           ),
+        );
+        created = await _applyTrackingChanges(
+          session: session,
+          before: null,
+          after: created,
         );
         await MapMarkerChangeBroadcast.created(session, created);
         return created;
@@ -59,14 +65,21 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'updateMarker',
       () async {
-        final updated = await MapMarker.db.updateRow(
+        final before = await MapMarker.db.findById(session, marker.id);
+        var updated = await MapMarker.db.updateRow(
           session,
           marker.copyWith(updatedAt: DateTime.now().toUtc()),
+        );
+        updated = await _applyTrackingChanges(
+          session: session,
+          before: before,
+          after: updated,
         );
         await MapMarkerChangeBroadcast.updated(session, updated);
         return updated;
       },
-      onSuccess: (updated) => 'id=${updated.id} visible=${updated.visible}',
+      onSuccess: (updated) =>
+          'id=${updated.id} visible=${updated.visible} tracking=${updated.isTracking}',
     );
   }
 
@@ -76,6 +89,13 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'deleteMarker',
       () async {
+        final existing = await MapMarker.db.findById(session, id);
+        if (existing != null) {
+          await MarkerTrackingService.processMarkerDelete(
+            session: session,
+            marker: existing,
+          );
+        }
         final deleted = await MapMarker.db.deleteWhere(
           session,
           where: (t) => t.id.equals(id),
@@ -96,5 +116,25 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
     await for (final change in changes) {
       yield change;
     }
+  }
+
+  static Future<MapMarker> _applyTrackingChanges({
+    required Session session,
+    required MapMarker? before,
+    required MapMarker after,
+  }) async {
+    final processed = await MarkerTrackingService.processMarkerUpdate(
+      session: session,
+      before: before,
+      after: after,
+    );
+    if (processed.isTracking == after.isTracking &&
+        processed.trackZoneId == after.trackZoneId) {
+      return after;
+    }
+    return MapMarker.db.updateRow(
+      session,
+      processed.copyWith(updatedAt: DateTime.now().toUtc()),
+    );
   }
 }

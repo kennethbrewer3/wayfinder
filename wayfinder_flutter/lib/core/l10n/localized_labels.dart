@@ -12,6 +12,7 @@ import '../../features/lines/presentation/line_form_dialog.dart';
 import '../../features/map/providers/map_providers.dart';
 import '../../features/rectangles/models/rectangle_geometry.dart';
 import '../../features/rectangles/models/rectangle_size_display.dart';
+import '../../features/tracks/models/track_geometry.dart';
 
 extension AppLocaleChoiceL10n on AppLocaleChoice {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
@@ -230,6 +231,7 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
 String localizedZoneTypeLabel(AppLocalizations l10n, String type) {
   return switch (type) {
     lineZoneType => l10n.mapObjectTypeLine,
+    trackZoneType => l10n.mapObjectTypeTrack,
     circleZoneType => l10n.mapObjectTypeCircle,
     rectangleZoneType => l10n.mapObjectTypeRectangle,
     _ => type,

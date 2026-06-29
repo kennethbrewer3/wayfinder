@@ -10,6 +10,8 @@ fields:
   color: String
   icon: String
   visible: bool
+  isTracking: bool, defaultModel=false, defaultPersist=false
+  trackZoneId: UuidValue?
   layerId: UuidValue?
   createdAt: DateTime
   updatedAt: DateTime

@@ -2478,6 +2478,90 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconBalloon => 'Globo';
 
   @override
+  String get markerIconFalloutShelter => 'Refugio antinuclear';
+
+  @override
+  String get markerIconStormShelter => 'Refugio contra tormentas';
+
+  @override
+  String get markerIconBunker => 'Búnker';
+
+  @override
+  String get markerIconWaterWell => 'Pozo de agua';
+
+  @override
+  String get markerIconCistern => 'Cisterna';
+
+  @override
+  String get markerIconRootCellar => 'Bodega subterránea';
+
+  @override
+  String get markerIconGreenhouse => 'Invernadero';
+
+  @override
+  String get markerIconFuelDepot => 'Depósito de combustible';
+
+  @override
+  String get markerIconWindTurbine => 'Turbina eólica';
+
+  @override
+  String get markerIconHamShack => 'Estación de radioaficionado';
+
+  @override
+  String get markerIconSecurityPost => 'Puesto de seguridad';
+
+  @override
+  String get markerIconMedicalCache => 'Alijo médico';
+
+  @override
+  String get markerIconFirewoodCache => 'Reserva de leña';
+
+  @override
+  String get markerIconGrainSilo => 'Silo de grano';
+
+  @override
+  String get markerIconSafeRoom => 'Habitación segura';
+
+  @override
+  String get markerIconDeconStation => 'Estación de descontaminación';
+
+  @override
+  String get markerIconAmmoCache => 'Alijo de munición';
+
+  @override
+  String get markerIconPoliceDepartment => 'Departamento de policía';
+
+  @override
+  String get markerIconPostOffice => 'Oficina de correos';
+
+  @override
+  String get markerIconArmory => 'Arsenal';
+
+  @override
+  String get markerIconPrison => 'Prisión';
+
+  @override
+  String get markerIconJail => 'Cárcel';
+
+  @override
+  String get markerIconCollege => 'Universidad';
+
+  @override
+  String get markerIconFireStation => 'Estación de bomberos';
+
+  @override
+  String get markerIconCourthouse => 'Palacio de justicia';
+
+  @override
+  String get markerIconLibrary => 'Biblioteca';
+
+  @override
+  String get markerIconBank => 'Banco';
+
+  @override
+  String get markerIconCemetery => 'Cementerio';
+
+  @override
   String get markerIconWeatherStation => 'Estación meteorológica';
 
   @override

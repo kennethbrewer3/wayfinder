@@ -2443,6 +2443,90 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconBalloon => 'Balloon';
 
   @override
+  String get markerIconFalloutShelter => 'Fallout shelter';
+
+  @override
+  String get markerIconStormShelter => 'Storm shelter';
+
+  @override
+  String get markerIconBunker => 'Bunker';
+
+  @override
+  String get markerIconWaterWell => 'Water well';
+
+  @override
+  String get markerIconCistern => 'Cistern';
+
+  @override
+  String get markerIconRootCellar => 'Root cellar';
+
+  @override
+  String get markerIconGreenhouse => 'Greenhouse';
+
+  @override
+  String get markerIconFuelDepot => 'Fuel depot';
+
+  @override
+  String get markerIconWindTurbine => 'Wind turbine';
+
+  @override
+  String get markerIconHamShack => 'Ham shack';
+
+  @override
+  String get markerIconSecurityPost => 'Security post';
+
+  @override
+  String get markerIconMedicalCache => 'Medical cache';
+
+  @override
+  String get markerIconFirewoodCache => 'Firewood cache';
+
+  @override
+  String get markerIconGrainSilo => 'Grain silo';
+
+  @override
+  String get markerIconSafeRoom => 'Safe room';
+
+  @override
+  String get markerIconDeconStation => 'Decon station';
+
+  @override
+  String get markerIconAmmoCache => 'Ammo cache';
+
+  @override
+  String get markerIconPoliceDepartment => 'Police department';
+
+  @override
+  String get markerIconPostOffice => 'Post office';
+
+  @override
+  String get markerIconArmory => 'Armory';
+
+  @override
+  String get markerIconPrison => 'Prison';
+
+  @override
+  String get markerIconJail => 'Jail';
+
+  @override
+  String get markerIconCollege => 'College';
+
+  @override
+  String get markerIconFireStation => 'Fire station';
+
+  @override
+  String get markerIconCourthouse => 'Courthouse';
+
+  @override
+  String get markerIconLibrary => 'Library';
+
+  @override
+  String get markerIconBank => 'Bank';
+
+  @override
+  String get markerIconCemetery => 'Cemetery';
+
+  @override
   String get markerIconWeatherStation => 'Weather station';
 
   @override

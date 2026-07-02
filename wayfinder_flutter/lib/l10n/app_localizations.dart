@@ -4462,6 +4462,174 @@ abstract class AppLocalizations {
   /// **'Balloon'**
   String get markerIconBalloon;
 
+  /// No description provided for @markerIconFalloutShelter.
+  ///
+  /// In en, this message translates to:
+  /// **'Fallout shelter'**
+  String get markerIconFalloutShelter;
+
+  /// No description provided for @markerIconStormShelter.
+  ///
+  /// In en, this message translates to:
+  /// **'Storm shelter'**
+  String get markerIconStormShelter;
+
+  /// No description provided for @markerIconBunker.
+  ///
+  /// In en, this message translates to:
+  /// **'Bunker'**
+  String get markerIconBunker;
+
+  /// No description provided for @markerIconWaterWell.
+  ///
+  /// In en, this message translates to:
+  /// **'Water well'**
+  String get markerIconWaterWell;
+
+  /// No description provided for @markerIconCistern.
+  ///
+  /// In en, this message translates to:
+  /// **'Cistern'**
+  String get markerIconCistern;
+
+  /// No description provided for @markerIconRootCellar.
+  ///
+  /// In en, this message translates to:
+  /// **'Root cellar'**
+  String get markerIconRootCellar;
+
+  /// No description provided for @markerIconGreenhouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Greenhouse'**
+  String get markerIconGreenhouse;
+
+  /// No description provided for @markerIconFuelDepot.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel depot'**
+  String get markerIconFuelDepot;
+
+  /// No description provided for @markerIconWindTurbine.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind turbine'**
+  String get markerIconWindTurbine;
+
+  /// No description provided for @markerIconHamShack.
+  ///
+  /// In en, this message translates to:
+  /// **'Ham shack'**
+  String get markerIconHamShack;
+
+  /// No description provided for @markerIconSecurityPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Security post'**
+  String get markerIconSecurityPost;
+
+  /// No description provided for @markerIconMedicalCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical cache'**
+  String get markerIconMedicalCache;
+
+  /// No description provided for @markerIconFirewoodCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Firewood cache'**
+  String get markerIconFirewoodCache;
+
+  /// No description provided for @markerIconGrainSilo.
+  ///
+  /// In en, this message translates to:
+  /// **'Grain silo'**
+  String get markerIconGrainSilo;
+
+  /// No description provided for @markerIconSafeRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe room'**
+  String get markerIconSafeRoom;
+
+  /// No description provided for @markerIconDeconStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Decon station'**
+  String get markerIconDeconStation;
+
+  /// No description provided for @markerIconAmmoCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Ammo cache'**
+  String get markerIconAmmoCache;
+
+  /// No description provided for @markerIconPoliceDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Police department'**
+  String get markerIconPoliceDepartment;
+
+  /// No description provided for @markerIconPostOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Post office'**
+  String get markerIconPostOffice;
+
+  /// No description provided for @markerIconArmory.
+  ///
+  /// In en, this message translates to:
+  /// **'Armory'**
+  String get markerIconArmory;
+
+  /// No description provided for @markerIconPrison.
+  ///
+  /// In en, this message translates to:
+  /// **'Prison'**
+  String get markerIconPrison;
+
+  /// No description provided for @markerIconJail.
+  ///
+  /// In en, this message translates to:
+  /// **'Jail'**
+  String get markerIconJail;
+
+  /// No description provided for @markerIconCollege.
+  ///
+  /// In en, this message translates to:
+  /// **'College'**
+  String get markerIconCollege;
+
+  /// No description provided for @markerIconFireStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Fire station'**
+  String get markerIconFireStation;
+
+  /// No description provided for @markerIconCourthouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Courthouse'**
+  String get markerIconCourthouse;
+
+  /// No description provided for @markerIconLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get markerIconLibrary;
+
+  /// No description provided for @markerIconBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get markerIconBank;
+
+  /// No description provided for @markerIconCemetery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cemetery'**
+  String get markerIconCemetery;
+
   /// No description provided for @markerIconWeatherStation.
   ///
   /// In en, this message translates to:

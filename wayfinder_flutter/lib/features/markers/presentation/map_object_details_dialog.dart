@@ -31,6 +31,9 @@ import '../../rectangles/utils/rectangle_dimensions.dart';
 import '../../tracks/presentation/create_track_dialog.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
+import '../../weather/presentation/weather_station_details_section.dart';
+import '../../../core/l10n/localized_labels.dart';
+import 'marker_tracking_details_section.dart';
 
 Future<void> showMapObjectDetailsDialog({
   required BuildContext context,
@@ -180,10 +183,16 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       l10n: l10n,
       shareUrl: shareUrl,
       onCopyShareUrl: copyShareUrl,
+      contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
       children: [
+        if (isWeatherStationMarker(marker))
+          WeatherStationDetailsSection(marker: marker),
+        MarkerTrackingDetailsSection(marker: marker),
         _DetailRow(
           label: l10n.mapObjectDetailType,
-          value: l10n.mapObjectTypeMarker,
+          value: isWeatherStationMarker(marker)
+              ? localizedMarkerIconLabel(l10n, marker.icon)
+              : l10n.mapObjectTypeMarker,
         ),
         _DetailRow(
           label: l10n.mapMarkerIdLabel,
@@ -204,11 +213,6 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           ),
           copyTooltip: l10n.mapRadialCopyCoordinates,
         ),
-        if (marker.isTracking)
-          _DetailRow(
-            label: l10n.markerTrackingLabel,
-            value: l10n.mapObjectVisibilityVisible,
-          ),
         _MarkerShareLinkSection(
           label: l10n.mapMarkerShareUrlLabel,
           url: shareUrl,
@@ -588,6 +592,7 @@ class _DetailsDialogShell extends StatelessWidget {
     required this.children,
     this.shareUrl,
     this.onCopyShareUrl,
+    this.contentWidth = 520,
   });
 
   final String title;
@@ -597,6 +602,7 @@ class _DetailsDialogShell extends StatelessWidget {
   final List<Widget> children;
   final String? shareUrl;
   final VoidCallback? onCopyShareUrl;
+  final double contentWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -611,7 +617,7 @@ class _DetailsDialogShell extends StatelessWidget {
         ],
       ),
       content: SizedBox(
-        width: 520,
+        width: contentWidth,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

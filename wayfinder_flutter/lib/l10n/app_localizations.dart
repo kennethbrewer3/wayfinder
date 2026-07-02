@@ -1378,6 +1378,132 @@ abstract class AppLocalizations {
   /// **'Record movement history as a trail on the map.'**
   String get markerTrackingHelp;
 
+  /// No description provided for @markerTrackingStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get markerTrackingStatusActive;
+
+  /// No description provided for @weatherStationCurrentConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Current conditions'**
+  String get weatherStationCurrentConditions;
+
+  /// No description provided for @weatherNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No weather readings yet. Weather data is stored on the server when received from APRS or other local integrations.'**
+  String get weatherNoData;
+
+  /// No description provided for @weatherFeelsLike.
+  ///
+  /// In en, this message translates to:
+  /// **'Feels like'**
+  String get weatherFeelsLike;
+
+  /// No description provided for @weatherHumidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Humidity'**
+  String get weatherHumidity;
+
+  /// No description provided for @weatherWind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get weatherWind;
+
+  /// No description provided for @weatherPrecipitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Precipitation'**
+  String get weatherPrecipitation;
+
+  /// No description provided for @weatherPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Pressure'**
+  String get weatherPressure;
+
+  /// No description provided for @weatherHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent readings'**
+  String get weatherHistoryTitle;
+
+  /// No description provided for @weatherSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {source}'**
+  String weatherSource(String source);
+
+  /// No description provided for @weatherUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {time}'**
+  String weatherUpdatedAt(String time);
+
+  /// No description provided for @weatherConditionClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get weatherConditionClear;
+
+  /// No description provided for @weatherConditionPartlyCloudy.
+  ///
+  /// In en, this message translates to:
+  /// **'Partly cloudy'**
+  String get weatherConditionPartlyCloudy;
+
+  /// No description provided for @weatherConditionOvercast.
+  ///
+  /// In en, this message translates to:
+  /// **'Overcast'**
+  String get weatherConditionOvercast;
+
+  /// No description provided for @weatherConditionFog.
+  ///
+  /// In en, this message translates to:
+  /// **'Fog'**
+  String get weatherConditionFog;
+
+  /// No description provided for @weatherConditionDrizzle.
+  ///
+  /// In en, this message translates to:
+  /// **'Drizzle'**
+  String get weatherConditionDrizzle;
+
+  /// No description provided for @weatherConditionRain.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain'**
+  String get weatherConditionRain;
+
+  /// No description provided for @weatherConditionSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow'**
+  String get weatherConditionSnow;
+
+  /// No description provided for @weatherConditionShowers.
+  ///
+  /// In en, this message translates to:
+  /// **'Showers'**
+  String get weatherConditionShowers;
+
+  /// No description provided for @weatherConditionThunderstorm.
+  ///
+  /// In en, this message translates to:
+  /// **'Thunderstorm'**
+  String get weatherConditionThunderstorm;
+
+  /// No description provided for @weatherConditionUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get weatherConditionUnknown;
+
   /// No description provided for @markerNameHint.
   ///
   /// In en, this message translates to:
@@ -1516,11 +1642,29 @@ abstract class AppLocalizations {
   /// **'On foot'**
   String get trackTransportationModeOnFoot;
 
+  /// No description provided for @trackTransportationModeHorse.
+  ///
+  /// In en, this message translates to:
+  /// **'Horse'**
+  String get trackTransportationModeHorse;
+
   /// No description provided for @trackTransportationModeBike.
   ///
   /// In en, this message translates to:
   /// **'Bicycle'**
   String get trackTransportationModeBike;
+
+  /// No description provided for @trackTransportationModeMotorcycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Motorcycle'**
+  String get trackTransportationModeMotorcycle;
+
+  /// No description provided for @trackTransportationModeAtv.
+  ///
+  /// In en, this message translates to:
+  /// **'ATV'**
+  String get trackTransportationModeAtv;
 
   /// No description provided for @trackTransportationModeLandVehicle.
   ///
@@ -1528,11 +1672,65 @@ abstract class AppLocalizations {
   /// **'Land vehicle'**
   String get trackTransportationModeLandVehicle;
 
+  /// No description provided for @trackTransportationModeTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck'**
+  String get trackTransportationModeTruck;
+
+  /// No description provided for @trackTransportationModeBus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get trackTransportationModeBus;
+
+  /// No description provided for @trackTransportationModeRv.
+  ///
+  /// In en, this message translates to:
+  /// **'Recreational vehicle'**
+  String get trackTransportationModeRv;
+
+  /// No description provided for @trackTransportationModeTrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Train'**
+  String get trackTransportationModeTrain;
+
+  /// No description provided for @trackTransportationModeAmbulance.
+  ///
+  /// In en, this message translates to:
+  /// **'Ambulance'**
+  String get trackTransportationModeAmbulance;
+
+  /// No description provided for @trackTransportationModeFireTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Fire truck'**
+  String get trackTransportationModeFireTruck;
+
+  /// No description provided for @trackTransportationModeFarmVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm vehicle'**
+  String get trackTransportationModeFarmVehicle;
+
+  /// No description provided for @trackTransportationModeCanoe.
+  ///
+  /// In en, this message translates to:
+  /// **'Canoe'**
+  String get trackTransportationModeCanoe;
+
   /// No description provided for @trackTransportationModeWatercraft.
   ///
   /// In en, this message translates to:
   /// **'Watercraft'**
   String get trackTransportationModeWatercraft;
+
+  /// No description provided for @trackTransportationModeSailboat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sailboat'**
+  String get trackTransportationModeSailboat;
 
   /// No description provided for @trackTransportationModeAircraft.
   ///
@@ -1540,10 +1738,28 @@ abstract class AppLocalizations {
   /// **'Aircraft'**
   String get trackTransportationModeAircraft;
 
+  /// No description provided for @trackTransportationModeHelicopter.
+  ///
+  /// In en, this message translates to:
+  /// **'Helicopter'**
+  String get trackTransportationModeHelicopter;
+
+  /// No description provided for @trackTransportationModeGlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Glider'**
+  String get trackTransportationModeGlider;
+
+  /// No description provided for @trackTransportationModeBalloon.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon'**
+  String get trackTransportationModeBalloon;
+
   /// No description provided for @trackShowFootstepsLabel.
   ///
   /// In en, this message translates to:
-  /// **'Trail icons on map'**
+  /// **'Show trail on map'**
   String get trackShowFootstepsLabel;
 
   /// No description provided for @trackShowFootstepsHelp.
@@ -4155,6 +4371,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pharmacy'**
   String get markerIconPharmacy;
+
+  /// No description provided for @markerIconOnFoot.
+  ///
+  /// In en, this message translates to:
+  /// **'On foot'**
+  String get markerIconOnFoot;
+
+  /// No description provided for @markerIconHorse.
+  ///
+  /// In en, this message translates to:
+  /// **'Horse'**
+  String get markerIconHorse;
+
+  /// No description provided for @markerIconMotorcycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Motorcycle'**
+  String get markerIconMotorcycle;
+
+  /// No description provided for @markerIconAtv.
+  ///
+  /// In en, this message translates to:
+  /// **'ATV'**
+  String get markerIconAtv;
+
+  /// No description provided for @markerIconTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck'**
+  String get markerIconTruck;
+
+  /// No description provided for @markerIconBus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get markerIconBus;
+
+  /// No description provided for @markerIconRv.
+  ///
+  /// In en, this message translates to:
+  /// **'RV'**
+  String get markerIconRv;
+
+  /// No description provided for @markerIconTrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Train'**
+  String get markerIconTrain;
+
+  /// No description provided for @markerIconAmbulance.
+  ///
+  /// In en, this message translates to:
+  /// **'Ambulance'**
+  String get markerIconAmbulance;
+
+  /// No description provided for @markerIconFireTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Fire truck'**
+  String get markerIconFireTruck;
+
+  /// No description provided for @markerIconFarmVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm vehicle'**
+  String get markerIconFarmVehicle;
+
+  /// No description provided for @markerIconCanoe.
+  ///
+  /// In en, this message translates to:
+  /// **'Canoe'**
+  String get markerIconCanoe;
+
+  /// No description provided for @markerIconHelicopter.
+  ///
+  /// In en, this message translates to:
+  /// **'Helicopter'**
+  String get markerIconHelicopter;
+
+  /// No description provided for @markerIconGlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Glider'**
+  String get markerIconGlider;
+
+  /// No description provided for @markerIconBalloon.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon'**
+  String get markerIconBalloon;
+
+  /// No description provided for @markerIconWeatherStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather station'**
+  String get markerIconWeatherStation;
 
   /// No description provided for @settingsRestApiTitle.
   ///

@@ -59,5 +59,25 @@ void main() {
         );
       }
     });
+
+    test('assigns expected trail styles', () {
+      expect(TrackTransportationMode.onFoot.trailStyle, TrackTrailStyle.footprints);
+      expect(TrackTransportationMode.horse.trailStyle, TrackTrailStyle.footprints);
+      expect(TrackTransportationMode.bike.trailStyle, TrackTrailStyle.tread);
+      expect(TrackTransportationMode.landVehicle.trailStyle, TrackTrailStyle.road);
+      expect(TrackTransportationMode.train.trailStyle, TrackTrailStyle.railroad);
+      expect(TrackTransportationMode.watercraft.trailStyle, TrackTrailStyle.wake);
+      expect(TrackTransportationMode.aircraft.trailStyle, TrackTrailStyle.flight);
+      expect(TrackTransportationMode.balloon.trailStyle, TrackTrailStyle.balloon);
+    });
+
+    test('assigns expected trail variants', () {
+      expect(TrackTransportationMode.horse.footprintKind, FootprintTrailKind.hoof);
+      expect(TrackTransportationMode.farmVehicle.treadKind, TreadTrailKind.tractor);
+      expect(TrackTransportationMode.truck.roadKind, RoadTrailKind.wide);
+      expect(TrackTransportationMode.sailboat.wakeIntensity, WakeTrailIntensity.light);
+      expect(TrackTransportationMode.watercraft.wakeIntensity, WakeTrailIntensity.wide);
+      expect(TrackTransportationMode.glider.flightKind, FlightTrailKind.glider);
+    });
   });
 }

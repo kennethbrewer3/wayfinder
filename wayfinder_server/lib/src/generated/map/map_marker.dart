@@ -26,6 +26,7 @@ abstract class MapMarker
     required this.visible,
     bool? isTracking,
     this.trackZoneId,
+    this.weatherJson,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
@@ -45,6 +46,7 @@ abstract class MapMarker
     required bool visible,
     bool? isTracking,
     _i1.UuidValue? trackZoneId,
+    String? weatherJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -71,6 +73,7 @@ abstract class MapMarker
           : _i1.UuidValueJsonExtension.fromJson(
               jsonSerialization['trackZoneId'],
             ),
+      weatherJson: jsonSerialization['weatherJson'] as String?,
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -110,6 +113,8 @@ abstract class MapMarker
 
   _i1.UuidValue? trackZoneId;
 
+  String? weatherJson;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -134,6 +139,7 @@ abstract class MapMarker
     bool? visible,
     bool? isTracking,
     _i1.UuidValue? trackZoneId,
+    String? weatherJson,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -153,6 +159,7 @@ abstract class MapMarker
       'visible': visible,
       'isTracking': isTracking,
       if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
+      if (weatherJson != null) 'weatherJson': weatherJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -174,6 +181,7 @@ abstract class MapMarker
       'visible': visible,
       'isTracking': isTracking,
       if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
+      if (weatherJson != null) 'weatherJson': weatherJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -225,6 +233,7 @@ class _MapMarkerImpl extends MapMarker {
     required bool visible,
     bool? isTracking,
     _i1.UuidValue? trackZoneId,
+    String? weatherJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -240,6 +249,7 @@ class _MapMarkerImpl extends MapMarker {
          visible: visible,
          isTracking: isTracking,
          trackZoneId: trackZoneId,
+         weatherJson: weatherJson,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -261,6 +271,7 @@ class _MapMarkerImpl extends MapMarker {
     bool? visible,
     bool? isTracking,
     Object? trackZoneId = _Undefined,
+    Object? weatherJson = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -279,6 +290,7 @@ class _MapMarkerImpl extends MapMarker {
       trackZoneId: trackZoneId is _i1.UuidValue?
           ? trackZoneId
           : this.trackZoneId,
+      weatherJson: weatherJson is String? ? weatherJson : this.weatherJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -338,6 +350,11 @@ class MapMarkerUpdateTable extends _i1.UpdateTable<MapMarkerTable> {
     _i1.UuidValue? value,
   ) => _i1.ColumnValue(
     table.trackZoneId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> weatherJson(String? value) => _i1.ColumnValue(
+    table.weatherJson,
     value,
   );
 
@@ -405,6 +422,10 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
       'trackZoneId',
       this,
     );
+    weatherJson = _i1.ColumnString(
+      'weatherJson',
+      this,
+    );
     layerId = _i1.ColumnUuid(
       'layerId',
       this,
@@ -441,6 +462,8 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnUuid trackZoneId;
 
+  late final _i1.ColumnString weatherJson;
+
   late final _i1.ColumnUuid layerId;
 
   late final _i1.ColumnDateTime createdAt;
@@ -460,6 +483,7 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
     visible,
     isTracking,
     trackZoneId,
+    weatherJson,
     layerId,
     createdAt,
     updatedAt,

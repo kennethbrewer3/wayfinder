@@ -525,6 +525,20 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['layers'],
                   ),
         ),
+        'layerChanges': _i1.MethodStreamConnector(
+          name: 'layerChanges',
+          params: {},
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['mapLayer'] as _i6.MapLayerEndpoint).layerChanges(
+                session,
+              ),
+        ),
       },
     );
     connectors['mapData'] = _i1.EndpointConnector(

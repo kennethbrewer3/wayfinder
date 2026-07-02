@@ -2,6 +2,8 @@ import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
 import '../../layers/map_layer_bootstrap.dart';
+import '../../layers/map_layer_change_broadcast.dart';
+import '../../map/map_marker_change_broadcast.dart';
 import 'rest_json.dart';
 
 abstract final class LayersRestHandlers {
@@ -36,6 +38,7 @@ abstract final class LayersRestHandlers {
       final body = await RestJson.readObject(request);
       final layer = await _layerFromCreateBody(session, body);
       final created = await MapLayer.db.insertRow(session, layer);
+      await MapLayerChangeBroadcast.created(session, created);
       return RestJson.created(RestJson.encodeModel(created));
     });
   }
@@ -57,6 +60,7 @@ abstract final class LayersRestHandlers {
         session,
         _mergeLayer(existing, body),
       );
+      await MapLayerChangeBroadcast.updated(session, updated);
       return RestJson.ok(RestJson.encodeModel(updated));
     });
   }
@@ -99,6 +103,8 @@ abstract final class LayersRestHandlers {
         session,
         where: (t) => t.id.equals(id),
       );
+      await MapLayerChangeBroadcast.deleted(session, id);
+      await MapMarkerChangeBroadcast.bulk(session);
       return RestJson.noContent();
     });
   }
@@ -140,6 +146,7 @@ abstract final class LayersRestHandlers {
         session,
         orderBy: (t) => t.sortOrder,
       );
+      await MapLayerChangeBroadcast.bulk(session);
       return RestJson.ok(RestJson.encodeModels(layers));
     });
   }

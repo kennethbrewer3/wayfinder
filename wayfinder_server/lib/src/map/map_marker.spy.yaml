@@ -12,6 +12,7 @@ fields:
   visible: bool
   isTracking: bool, defaultModel=false, defaultPersist=false
   trackZoneId: UuidValue?
+  weatherJson: String?
   layerId: UuidValue?
   createdAt: DateTime
   updatedAt: DateTime

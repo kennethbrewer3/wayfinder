@@ -744,6 +744,74 @@ class AppLocalizationsFr extends AppLocalizations {
       'Enregistrez l\'historique des déplacements sous forme de trace sur la carte.';
 
   @override
+  String get markerTrackingStatusActive => 'Actif';
+
+  @override
+  String get weatherStationCurrentConditions => 'Conditions actuelles';
+
+  @override
+  String get weatherNoData =>
+      'Aucune lecture météo pour l\'instant. Les données sont stockées sur le serveur lorsqu\'elles arrivent via APRS ou d\'autres intégrations locales.';
+
+  @override
+  String get weatherFeelsLike => 'Ressenti';
+
+  @override
+  String get weatherHumidity => 'Humidité';
+
+  @override
+  String get weatherWind => 'Vent';
+
+  @override
+  String get weatherPrecipitation => 'Précipitations';
+
+  @override
+  String get weatherPressure => 'Pression';
+
+  @override
+  String get weatherHistoryTitle => 'Lectures récentes';
+
+  @override
+  String weatherSource(String source) {
+    return 'Source : $source';
+  }
+
+  @override
+  String weatherUpdatedAt(String time) {
+    return 'Mis à jour $time';
+  }
+
+  @override
+  String get weatherConditionClear => 'Dégagé';
+
+  @override
+  String get weatherConditionPartlyCloudy => 'Partiellement nuageux';
+
+  @override
+  String get weatherConditionOvercast => 'Couvert';
+
+  @override
+  String get weatherConditionFog => 'Brouillard';
+
+  @override
+  String get weatherConditionDrizzle => 'Bruine';
+
+  @override
+  String get weatherConditionRain => 'Pluie';
+
+  @override
+  String get weatherConditionSnow => 'Neige';
+
+  @override
+  String get weatherConditionShowers => 'Averses';
+
+  @override
+  String get weatherConditionThunderstorm => 'Orage';
+
+  @override
+  String get weatherConditionUnknown => 'Inconnu';
+
+  @override
   String get markerNameHint => 'p. ex. Maison, Travail, Départ de sentier';
 
   @override
@@ -816,19 +884,64 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trackTransportationModeOnFoot => 'À pied';
 
   @override
+  String get trackTransportationModeHorse => 'Cheval';
+
+  @override
   String get trackTransportationModeBike => 'Vélo';
+
+  @override
+  String get trackTransportationModeMotorcycle => 'Moto';
+
+  @override
+  String get trackTransportationModeAtv => 'VTT';
 
   @override
   String get trackTransportationModeLandVehicle => 'Véhicule terrestre';
 
   @override
+  String get trackTransportationModeTruck => 'Camion';
+
+  @override
+  String get trackTransportationModeBus => 'Bus';
+
+  @override
+  String get trackTransportationModeRv => 'Camping-car';
+
+  @override
+  String get trackTransportationModeTrain => 'Train';
+
+  @override
+  String get trackTransportationModeAmbulance => 'Ambulance';
+
+  @override
+  String get trackTransportationModeFireTruck => 'Camion de pompiers';
+
+  @override
+  String get trackTransportationModeFarmVehicle => 'Véhicule agricole';
+
+  @override
+  String get trackTransportationModeCanoe => 'Canoë';
+
+  @override
   String get trackTransportationModeWatercraft => 'Embarcation';
+
+  @override
+  String get trackTransportationModeSailboat => 'Voilier';
 
   @override
   String get trackTransportationModeAircraft => 'Aéronef';
 
   @override
-  String get trackShowFootstepsLabel => 'Icônes de trace sur la carte';
+  String get trackTransportationModeHelicopter => 'Hélicoptère';
+
+  @override
+  String get trackTransportationModeGlider => 'Planeur';
+
+  @override
+  String get trackTransportationModeBalloon => 'Montgolfière';
+
+  @override
+  String get trackShowFootstepsLabel => 'Afficher la trace sur la carte';
 
   @override
   String get trackShowFootstepsHelp =>
@@ -2325,6 +2438,54 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get markerIconPharmacy => 'Pharmacie';
+
+  @override
+  String get markerIconOnFoot => 'À pied';
+
+  @override
+  String get markerIconHorse => 'Cheval';
+
+  @override
+  String get markerIconMotorcycle => 'Moto';
+
+  @override
+  String get markerIconAtv => 'VTT';
+
+  @override
+  String get markerIconTruck => 'Camion';
+
+  @override
+  String get markerIconBus => 'Bus';
+
+  @override
+  String get markerIconRv => 'Camping-car';
+
+  @override
+  String get markerIconTrain => 'Train';
+
+  @override
+  String get markerIconAmbulance => 'Ambulance';
+
+  @override
+  String get markerIconFireTruck => 'Camion de pompiers';
+
+  @override
+  String get markerIconFarmVehicle => 'Véhicule agricole';
+
+  @override
+  String get markerIconCanoe => 'Canoë';
+
+  @override
+  String get markerIconHelicopter => 'Hélicoptère';
+
+  @override
+  String get markerIconGlider => 'Planeur';
+
+  @override
+  String get markerIconBalloon => 'Montgolfière';
+
+  @override
+  String get markerIconWeatherStation => 'Station météo';
 
   @override
   String get settingsRestApiTitle => 'Accès à l\'API REST';

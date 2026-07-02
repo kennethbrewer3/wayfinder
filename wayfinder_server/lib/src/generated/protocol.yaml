@@ -24,6 +24,7 @@ mapLayer:
   - updateLayer:
   - deleteLayer:
   - reorderLayers:
+  - layerChanges:
 mapData:
   - exportMapData:
   - restoreMapData:

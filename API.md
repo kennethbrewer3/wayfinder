@@ -180,6 +180,47 @@ curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d
 
 `PUT` works the same way.
 
+### Weather station readings
+
+Weather station markers (`icon: "weather_station"`) can store local weather readings on the server in `weatherJson`. This field is intended for data ingested from APRS or other offline/local integrations — Wayfinder does not fetch weather from the public internet.
+
+`weatherJson` is a JSON **string** containing the latest reading at the top level, with optional `history` for recent readings:
+
+```json
+{
+  "observedAt": "2026-06-29T15:00:00.000Z",
+  "source": "aprs",
+  "temperature": 22.4,
+  "temperatureUnit": "C",
+  "apparentTemperature": 21.0,
+  "humidityPercent": 58,
+  "precipitation": 0.0,
+  "precipitationUnit": "mm",
+  "weatherCode": 3,
+  "condition": "Overcast",
+  "windSpeed": 12.0,
+  "windSpeedUnit": "km/h",
+  "windDirectionDegrees": 225,
+  "pressure": 1015.0,
+  "pressureUnit": "hPa",
+  "history": [
+    {
+      "observedAt": "2026-06-29T14:00:00.000Z",
+      "temperature": 21.8,
+      "condition": "Cloudy"
+    }
+  ]
+}
+```
+
+Update a weather station marker via REST:
+
+```bash
+curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d82da6 \
+  -H "Content-Type: application/json" \
+  -d '{"weatherJson":"{\"observedAt\":\"2026-06-29T15:00:00.000Z\",\"source\":\"aprs\",\"temperature\":22.4,\"temperatureUnit\":\"C\",\"humidityPercent\":58,\"condition\":\"Overcast\"}"}'
+```
+
 ### Delete a marker
 
 ```bash

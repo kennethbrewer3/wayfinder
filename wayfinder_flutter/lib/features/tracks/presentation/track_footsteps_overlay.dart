@@ -1,35 +1,22 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-import '../../lines/models/line_arrow_density.dart';
-import '../../lines/utils/line_distance.dart';
 import '../../markers/models/marker_color.dart';
 import '../models/track_geometry.dart';
 import '../models/track_transportation_mode.dart';
+import 'balloon_trail_painter.dart';
+import 'flight_trail_painter.dart';
+import 'footprint_trail_painter.dart';
+import 'railroad_track_painter.dart';
+import 'road_trail_painter.dart';
+import 'track_trail_projection.dart';
+import 'tread_trail_painter.dart';
+import 'wake_trail_painter.dart';
 
-const _footstepBoxSize = 24.0;
-const _footstepIconSize = 18.0;
-
-class _FootstepDraw {
-  const _FootstepDraw({
-    required this.screenPoint,
-    required this.angle,
-    required this.color,
-    required this.icon,
-  });
-
-  final Offset screenPoint;
-  final double angle;
-  final Color color;
-  final IconData icon;
-}
-
-/// Renders footstep icons in screen space along tracking marker paths.
+/// Renders styled transportation trails in screen space along tracking paths.
 class TrackFootstepsOverlay extends StatefulWidget {
   const TrackFootstepsOverlay({
     super.key,
@@ -80,7 +67,7 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
   Widget build(BuildContext context) {
     final camera = widget.mapController.camera;
     final mapSize = camera.size;
-    final footsteps = <_FootstepDraw>[];
+    final batch = _TrailRenderBatch();
 
     for (final zone in widget.zones) {
       if (!zone.visible || zone.type != trackZoneType) {
@@ -92,150 +79,148 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
           !geometry.showFootsteps) {
         continue;
       }
-      footsteps.addAll(
-        _footstepsForPath(
+
+      batch.add(
+        mode: geometry.transportationMode,
+        color: parseMarkerColor(zone.color),
+        projection: projectStyledTrail(
           camera: camera,
           mapSize: mapSize,
           renderPoints: geometry.pathPoints,
-          color: parseMarkerColor(zone.color),
           density: geometry.footstepDensity,
-          icon: trackTransportationIcon(geometry.transportationMode),
+          includeMarkers: _usesMarkers(geometry.transportationMode.trailStyle),
         ),
       );
     }
 
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        for (final footstep in footsteps)
-          Positioned(
-            left: footstep.screenPoint.dx - _footstepBoxSize / 2,
-            top: footstep.screenPoint.dy - _footstepBoxSize / 2,
-            width: _footstepBoxSize,
-            height: _footstepBoxSize,
-            child: Transform.rotate(
-              angle: footstep.angle,
-              child: Icon(
-                footstep.icon,
-                size: _footstepIconSize,
-                color: footstep.color,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-List<_FootstepDraw> _footstepsForPath({
-  required MapCamera camera,
-  required Size mapSize,
-  required List<LatLng> renderPoints,
-  required Color color,
-  required LineArrowDensity density,
-  required IconData icon,
-}) {
-  if (renderPoints.length < 2) {
-    return const [];
-  }
-
-  final totalMeters = lineLengthMetersForPoints(renderPoints);
-  if (totalMeters < 1) {
-    return const [];
-  }
-
-  final projected = [
-    for (final point in renderPoints) camera.latLngToScreenOffset(point),
-  ];
-
-  var totalPixels = 0.0;
-  for (var index = 0; index < projected.length - 1; index++) {
-    totalPixels += (projected[index + 1] - projected[index]).distance;
-  }
-  if (totalPixels < 1) {
-    return const [];
-  }
-
-  final footstepCount = density.arrowCountForPath(
-    totalMeters: totalMeters,
-    totalPixels: totalPixels,
-  );
-  final footsteps = <_FootstepDraw>[];
-
-  for (var index = 1; index <= footstepCount; index++) {
-    final targetPixels = totalPixels * index / (footstepCount + 1);
-    final placement = _pointOnProjectedPath(projected, targetPixels);
-    if (placement == null) {
-      continue;
+    if (!batch.hasContent) {
+      return const SizedBox.shrink();
     }
 
-    if (!_isOnMap(placement.point, mapSize)) {
-      continue;
-    }
-
-    footsteps.add(
-      _FootstepDraw(
-        screenPoint: placement.point,
-        angle: math.atan2(
-          placement.segmentEnd.dy - placement.segmentStart.dy,
-          placement.segmentEnd.dx - placement.segmentStart.dx,
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: CustomPaint(
+          painter: _StyledTrailPainter(batch: batch),
         ),
-        color: color,
-        icon: icon,
       ),
     );
   }
 
-  return footsteps;
+  bool _usesMarkers(TrackTrailStyle style) {
+    return switch (style) {
+      TrackTrailStyle.road || TrackTrailStyle.balloon => false,
+      _ => true,
+    };
+  }
 }
 
-class _ProjectedPlacement {
-  const _ProjectedPlacement({
-    required this.point,
-    required this.segmentStart,
-    required this.segmentEnd,
-  });
+class _TrailRenderBatch {
+  final footprintPaths = <FootprintTrailPath>[];
+  final treadPaths = <TreadTrailPath>[];
+  final roadPaths = <RoadTrailPath>[];
+  final railroadPaths = <RailroadTrackPath>[];
+  final wakePaths = <WakeTrailPath>[];
+  final flightPaths = <FlightTrailPath>[];
+  final balloonPaths = <BalloonTrailPath>[];
 
-  final Offset point;
-  final Offset segmentStart;
-  final Offset segmentEnd;
-}
+  bool get hasContent =>
+      footprintPaths.isNotEmpty ||
+      treadPaths.isNotEmpty ||
+      roadPaths.isNotEmpty ||
+      railroadPaths.isNotEmpty ||
+      wakePaths.isNotEmpty ||
+      flightPaths.isNotEmpty ||
+      balloonPaths.isNotEmpty;
 
-_ProjectedPlacement? _pointOnProjectedPath(
-  List<Offset> projected,
-  double targetPixels,
-) {
-  var accumulated = 0.0;
-
-  for (var index = 0; index < projected.length - 1; index++) {
-    final start = projected[index];
-    final end = projected[index + 1];
-    final segmentLength = (end - start).distance;
-    if (accumulated + segmentLength >= targetPixels) {
-      if (segmentLength < 0.5) {
-        return _ProjectedPlacement(
-          point: start,
-          segmentStart: start,
-          segmentEnd: end,
-        );
-      }
-
-      final t = ((targetPixels - accumulated) / segmentLength).clamp(0.0, 1.0);
-      return _ProjectedPlacement(
-        point: Offset.lerp(start, end, t)!,
-        segmentStart: start,
-        segmentEnd: end,
-      );
+  void add({
+    required TrackTransportationMode mode,
+    required Color color,
+    required StyledTrailProjection? projection,
+  }) {
+    if (projection == null) {
+      return;
     }
-    accumulated += segmentLength;
+
+    switch (mode.trailStyle) {
+      case TrackTrailStyle.footprints:
+        footprintPaths.add(
+          FootprintTrailPath(
+            markers: projection.markers,
+            color: color,
+            kind: mode.footprintKind,
+          ),
+        );
+      case TrackTrailStyle.tread:
+        treadPaths.add(
+          TreadTrailPath(
+            markers: projection.markers,
+            color: color,
+            kind: mode.treadKind,
+          ),
+        );
+      case TrackTrailStyle.road:
+        roadPaths.add(
+          RoadTrailPath(
+            centerline: projection.projected,
+            color: color,
+            kind: mode.roadKind,
+          ),
+        );
+      case TrackTrailStyle.railroad:
+        railroadPaths.add(
+          RailroadTrackPath(
+            centerline: projection.projected,
+            ties: projection.markers,
+            color: color,
+          ),
+        );
+      case TrackTrailStyle.wake:
+        wakePaths.add(
+          WakeTrailPath(
+            centerline: projection.projected,
+            chevrons: projection.markers,
+            color: color,
+            intensity: mode.wakeIntensity,
+          ),
+        );
+      case TrackTrailStyle.flight:
+        flightPaths.add(
+          FlightTrailPath(
+            centerline: projection.projected,
+            markers: projection.markers,
+            color: color,
+            kind: mode.flightKind,
+          ),
+        );
+      case TrackTrailStyle.balloon:
+        balloonPaths.add(
+          BalloonTrailPath(
+            centerline: projection.projected,
+            color: color,
+          ),
+        );
+    }
+  }
+}
+
+class _StyledTrailPainter extends CustomPainter {
+  const _StyledTrailPainter({required this.batch});
+
+  final _TrailRenderBatch batch;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    FootprintTrailPainter(paths: batch.footprintPaths).paint(canvas, size);
+    TreadTrailPainter(paths: batch.treadPaths).paint(canvas, size);
+    RoadTrailPainter(paths: batch.roadPaths).paint(canvas, size);
+    RailroadTrackPainter(paths: batch.railroadPaths).paint(canvas, size);
+    WakeTrailPainter(paths: batch.wakePaths).paint(canvas, size);
+    FlightTrailPainter(paths: batch.flightPaths).paint(canvas, size);
+    BalloonTrailPainter(paths: batch.balloonPaths).paint(canvas, size);
   }
 
-  return null;
-}
-
-bool _isOnMap(Offset point, Size mapSize) {
-  return point.dx >= 0 &&
-      point.dy >= 0 &&
-      point.dx <= mapSize.width &&
-      point.dy <= mapSize.height;
+  @override
+  bool shouldRepaint(covariant _StyledTrailPainter oldDelegate) {
+    return oldDelegate.batch != batch;
+  }
 }

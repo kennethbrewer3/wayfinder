@@ -3,6 +3,8 @@ import 'package:serverpod/serverpod.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'map_layer_bootstrap.dart';
+import 'map_layer_change_broadcast.dart';
+import '../map/map_marker_change_broadcast.dart';
 
 class MapLayerEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapLayer';
@@ -32,7 +34,11 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'createLayer',
-      () => MapLayer.db.insertRow(session, layer),
+      () async {
+        final created = await MapLayer.db.insertRow(session, layer);
+        await MapLayerChangeBroadcast.created(session, created);
+        return created;
+      },
       onSuccess: (created) => 'id=${created.id} name="${created.name}"',
     );
   }
@@ -42,7 +48,11 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'updateLayer',
-      () => MapLayer.db.updateRow(session, layer),
+      () async {
+        final updated = await MapLayer.db.updateRow(session, layer);
+        await MapLayerChangeBroadcast.updated(session, updated);
+        return updated;
+      },
       onSuccess: (updated) =>
           'id=${updated.id} sortOrder=${updated.sortOrder} visible=${updated.visible}',
     );
@@ -82,6 +92,10 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
           session,
           where: (t) => t.id.equals(id),
         );
+        if (deleted.isNotEmpty) {
+          await MapLayerChangeBroadcast.deleted(session, id);
+          await MapMarkerChangeBroadcast.bulk(session);
+        }
         return deleted.isNotEmpty;
       },
       onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
@@ -101,12 +115,23 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
         for (final layer in layers) {
           updated.add(await MapLayer.db.updateRow(session, layer));
         }
-        return MapLayer.db.find(
+        final result = await MapLayer.db.find(
           session,
           orderBy: (t) => t.sortOrder,
         );
+        await MapLayerChangeBroadcast.bulk(session);
+        return result;
       },
       onSuccess: (result) => 'count=${result.length}',
     );
+  }
+
+  Stream<MapLayerChange> layerChanges(Session session) async* {
+    final changes = session.messages.createStream<MapLayerChange>(
+      MapLayerChangeBroadcast.channel,
+    );
+    await for (final change in changes) {
+      yield change;
+    }
   }
 }

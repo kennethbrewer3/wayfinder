@@ -136,7 +136,7 @@ In the marker form:
 - **Coordinates** — latitude and longitude (editable when creating or editing).
 - **Layer** — which layer owns this marker.
 - **Tracking marker** — optional; records movement history as a trail (see below).
-- **Transportation** — when tracking is enabled, choose how the marker moves (on foot, bicycle, land vehicle, watercraft, or aircraft). This sets the trail icon style.
+- **Transportation** — when tracking is enabled, choose how the marker moves. Options align with common APRS mobile symbols. Each mode renders a distinct **trail style** on the map (footprints, tread, road lane, railroad, wake, flight path, or balloon drift).
 - **Elevation** — optional height in your chosen units.
 - **Notes** — rich text stored as Markdown (links, lists, and basic formatting supported).
 
@@ -164,21 +164,36 @@ When tracking is **off**, no new points are recorded, but **existing history is 
 
 - The marker pin shows the current location.
 - A colored **polyline** shows the path taken so far.
-- **Trail icons** along the path indicate direction of travel. The icon matches the **Transportation** mode (footsteps, bicycle, car, boat, or aircraft).
+- **Styled trails** along the path indicate direction of travel. Each **Transportation** mode uses a distinct trail style (footprints, tire tread, road lane markings, railroad track, boat wake, contrail, or drifting balloon path).
 
 **Transportation mode**
 
 When **Tracking marker** is enabled, choose **Transportation** in the marker form:
 
-| Mode | Trail icon |
-|------|------------|
-| On foot | Walking figure |
-| Bicycle | Bicycle |
-| Land vehicle | Car |
-| Watercraft | Boat |
-| Aircraft | Airplane |
+| Mode | Trail style |
+|------|-------------|
+| On foot | Footprints |
+| Horse | Hoof prints |
+| Bicycle | Tire tread |
+| Motorcycle | Single tire tread |
+| ATV | Off-road tread |
+| Land vehicle | Road lane / dashed centerline |
+| Truck | Wide road lane |
+| Bus | Wide road lane |
+| Recreational vehicle | Wide road lane |
+| Train | Railroad track |
+| Ambulance | Road lane |
+| Fire truck | Wide road lane |
+| Farm vehicle | Tractor tread |
+| Canoe | Wake trail |
+| Watercraft | Wide wake trail |
+| Sailboat | Light wake trail |
+| Aircraft | Contrail / dashed flight path |
+| Helicopter | Dashed path with hover rings |
+| Glider | Smooth flight path |
+| Balloon | Wavy drift path |
 
-You can change the mode later by editing the marker (while tracking is on) or by editing the companion track in the sidebar. To set transportation mode from automation, update the track zone’s `geometryJson` field with `"transportationMode": "bike"` (or `onFoot`, `landVehicle`, `watercraft`, `aircraft`).
+You can change the mode later by editing the marker (while tracking is on) or by editing the companion track in the sidebar. To set transportation mode from automation, update the track zone’s `geometryJson` field with `"transportationMode": "train"` (or any other mode key such as `onFoot`, `bike`, `motorcycle`, `bus`, `helicopter`, `sailboat`, and so on).
 
 **Manage the trail separately from the marker**
 
@@ -188,7 +203,7 @@ Enabling tracking creates a companion **track** object in the sidebar (transport
 |------|-----|
 | Move the trail to another layer | Sidebar → select the track → **Edit track** → choose **Layer** |
 | Hide the trail but keep the marker | Sidebar → track → **Hide** (visibility toggle) |
-| Hide only the trail icons | **Edit track** → turn off **Trail icons on map** |
+| Hide only the trail | **Edit track** → turn off **Show trail on map** |
 | Change trail color, name, or transportation | **Edit track** |
 
 Hiding or moving the track does **not** delete its history. Disabling **Tracking marker** on the marker also does **not** clear the trail.

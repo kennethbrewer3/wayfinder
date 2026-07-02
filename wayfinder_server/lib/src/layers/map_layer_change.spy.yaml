@@ -1,0 +1,6 @@
+class: MapLayerChange
+fields:
+  ### One of: created, updated, deleted, bulk
+  type: String
+  layer: MapLayer?
+  layerId: UuidValue?

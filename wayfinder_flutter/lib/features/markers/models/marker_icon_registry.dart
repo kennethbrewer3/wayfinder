@@ -127,7 +127,8 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'navy_base', icon: Icons.anchor, label: 'Navy base'),
   MarkerIconOption(
     key: 'marine_corps_base',
-    icon: Icons.front_hand,
+    icon: Icons.shield,
+    assetPath: 'assets/markers/marine_corps_base.svg',
     label: 'Marine Corps base',
   ),
   MarkerIconOption(key: 'air_force_base', icon: Icons.flight, label: 'Air Force base'),
@@ -138,7 +139,8 @@ const markerIconOptions = <MarkerIconOption>[
   ),
   MarkerIconOption(
     key: 'coast_guard_base',
-    icon: Icons.emergency,
+    icon: Icons.waves,
+    assetPath: 'assets/markers/coast_guard_base.svg',
     label: 'Coast Guard base',
   ),
   MarkerIconOption(key: 'hunting', icon: Icons.track_changes, label: 'Hunting'),
@@ -156,13 +158,28 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'bus', icon: Icons.directions_bus, label: 'Bus'),
   MarkerIconOption(key: 'rv', icon: Icons.rv_hookup, label: 'RV'),
   MarkerIconOption(key: 'train', icon: Icons.train, label: 'Train'),
-  MarkerIconOption(key: 'ambulance', icon: Icons.emergency, label: 'Ambulance'),
+  MarkerIconOption(
+    key: 'ambulance',
+    icon: Icons.local_hospital,
+    assetPath: 'assets/markers/ambulance.svg',
+    label: 'Ambulance',
+  ),
   MarkerIconOption(key: 'fire_truck', icon: Icons.fire_truck, label: 'Fire truck'),
   MarkerIconOption(key: 'farm_vehicle', icon: Icons.agriculture, label: 'Farm vehicle'),
   MarkerIconOption(key: 'canoe', icon: Icons.kayaking, label: 'Canoe'),
-  MarkerIconOption(key: 'helicopter', icon: Icons.airlines, label: 'Helicopter'),
+  MarkerIconOption(
+    key: 'helicopter',
+    icon: Icons.air,
+    assetPath: 'assets/markers/helicopter.svg',
+    label: 'Helicopter',
+  ),
   MarkerIconOption(key: 'glider', icon: Icons.paragliding, label: 'Glider'),
-  MarkerIconOption(key: 'balloon', icon: Icons.air, label: 'Balloon'),
+  MarkerIconOption(
+    key: 'balloon',
+    icon: Icons.air,
+    assetPath: 'assets/markers/balloon.svg',
+    label: 'Balloon',
+  ),
 ];
 
 IconData markerIconData(String iconName) {

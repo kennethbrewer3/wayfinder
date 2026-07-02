@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/track_transportation_mode.dart';
+import 'track_transportation_icon.dart';
 
 class TrackTransportationModeField extends StatelessWidget {
   const TrackTransportationModeField({
@@ -29,7 +30,7 @@ class TrackTransportationModeField extends StatelessWidget {
             value: mode,
             child: Row(
               children: [
-                Icon(mode.icon, size: 20),
+                TrackTransportationIcon(mode, size: 20),
                 const SizedBox(width: 12),
                 Text(mode.label(l10n)),
               ],

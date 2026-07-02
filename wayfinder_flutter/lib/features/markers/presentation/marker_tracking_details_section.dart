@@ -9,6 +9,7 @@ import '../../lines/providers/zones_provider.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
+import '../../tracks/presentation/track_transportation_icon.dart';
 
 class MarkerTrackingDetailsSection extends ConsumerWidget {
   const MarkerTrackingDetailsSection({
@@ -80,8 +81,8 @@ class MarkerTrackingDetailsSection extends ConsumerWidget {
                     radius: 18,
                     backgroundColor:
                         theme.colorScheme.surface.withValues(alpha: 0.9),
-                    child: Icon(
-                      trackTransportationIcon(mode),
+                    child: TrackTransportationIcon(
+                      mode,
                       size: 18,
                       color: theme.colorScheme.primary,
                     ),

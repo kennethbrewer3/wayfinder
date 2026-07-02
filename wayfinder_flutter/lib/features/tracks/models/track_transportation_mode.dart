@@ -128,16 +128,24 @@ enum TrackTransportationMode {
         bus => Icons.directions_bus,
         rv => Icons.rv_hookup,
         train => Icons.train,
-        ambulance => Icons.emergency,
+        ambulance => Icons.local_hospital,
         fireTruck => Icons.fire_truck,
         farmVehicle => Icons.agriculture,
         canoe => Icons.kayaking,
         watercraft => Icons.directions_boat,
         sailboat => Icons.sailing,
         aircraft => Icons.flight,
-        helicopter => Icons.airlines,
+        helicopter => Icons.air,
         glider => Icons.paragliding,
         balloon => Icons.air,
+      };
+
+  /// Marker icon key when this mode uses a custom SVG glyph.
+  String? get markerIconKey => switch (this) {
+        balloon => 'balloon',
+        helicopter => 'helicopter',
+        ambulance => 'ambulance',
+        _ => null,
       };
 
   String label(AppLocalizations l10n) => switch (this) {

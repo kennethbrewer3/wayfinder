@@ -31,6 +31,7 @@ import '../../rectangles/utils/rectangle_dimensions.dart';
 import '../../tracks/presentation/create_track_dialog.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
+import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../weather/presentation/weather_station_details_section.dart';
 import '../../../core/l10n/localized_labels.dart';
 import 'marker_tracking_details_section.dart';
@@ -376,7 +377,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       title: zone.name,
       leading: _ZoneTypeAvatar(
         color: parseMarkerColor(zone.color),
-        icon: trackTransportationIcon(geometry.transportationMode),
+        transportationMode: geometry.transportationMode,
       ),
       onEdit: onEdit,
       l10n: l10n,
@@ -805,18 +806,26 @@ class _NotesSection extends StatelessWidget {
 class _ZoneTypeAvatar extends StatelessWidget {
   const _ZoneTypeAvatar({
     required this.color,
-    required this.icon,
-  });
+    this.icon,
+    this.transportationMode,
+  }) : assert(icon != null || transportationMode != null);
 
   final Color color;
-  final IconData icon;
+  final IconData? icon;
+  final TrackTransportationMode? transportationMode;
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
       backgroundColor: color,
       radius: 18,
-      child: Icon(icon, color: Colors.white, size: 18),
+      child: transportationMode != null
+          ? TrackTransportationIcon(
+              transportationMode!,
+              size: 18,
+              color: Colors.white,
+            )
+          : Icon(icon!, color: Colors.white, size: 18),
     );
   }
 }

@@ -26,6 +26,7 @@ import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/presentation/create_track_dialog.dart';
+import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../tracks/presentation/map_track_layer.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
@@ -1373,10 +1374,10 @@ class _TrackZoneListTile extends ConsumerWidget {
                   CircleAvatar(
                     backgroundColor: _parseColor(zone.color),
                     radius: 18,
-                    child: Icon(
-                      trackIconForZone(zone),
-                      color: Colors.white,
+                    child: TrackTransportationIcon(
+                      geometry.transportationMode,
                       size: 18,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(width: 12),

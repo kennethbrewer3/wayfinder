@@ -28,11 +28,14 @@ class MarkerIconGlyph extends StatelessWidget {
 
     final assetPath = markerIconAsset(iconName);
     if (assetPath != null) {
+      final preserveColors = markerIconColoredAsset(iconName);
       return SvgPicture.asset(
         assetPath,
         width: glyphSize,
         height: glyphSize,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        colorFilter: preserveColors
+            ? null
+            : ColorFilter.mode(color, BlendMode.srcIn),
       );
     }
 

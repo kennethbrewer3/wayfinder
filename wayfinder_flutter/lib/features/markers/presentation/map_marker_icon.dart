@@ -12,8 +12,8 @@ const mapMarkerAnchorAlignment = Alignment.topCenter;
 
 const mapMarkerHeadCenterY = 16.0;
 const mapMarkerHeadRadius = 16.0;
-const mapMarkerInnerHeadRadiusRatio = 0.58;
-const mapMarkerIconPaddingRatio = 0.11;
+const mapMarkerInnerHeadRadiusRatio = 0.74;
+const mapMarkerIconPaddingRatio = 0.05;
 
 const mapMarkerTailAttachYFactor = 0.36;
 const mapMarkerTailAttachXFactor = 0.48;

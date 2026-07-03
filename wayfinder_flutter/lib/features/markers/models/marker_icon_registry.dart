@@ -7,6 +7,7 @@ class MarkerIconOption {
     required this.label,
     this.assetPath,
     this.emoji,
+    this.coloredAsset = false,
     this.glyphScale = 1.0,
   });
 
@@ -15,6 +16,7 @@ class MarkerIconOption {
   final String label;
   final String? assetPath;
   final String? emoji;
+  final bool coloredAsset;
   final double glyphScale;
 }
 
@@ -156,7 +158,9 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'horse',
     icon: Icons.pets,
-    emoji: '🐎',
+    assetPath: 'assets/markers/horse.svg',
+    coloredAsset: true,
+    glyphScale: 0.94,
     label: 'Horse',
   ),
   MarkerIconOption(key: 'motorcycle', icon: Icons.two_wheeler, label: 'Motorcycle'),
@@ -168,7 +172,7 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'ambulance',
     icon: Icons.local_hospital,
-    emoji: '🚑',
+    assetPath: 'assets/markers/ambulance.svg',
     label: 'Ambulance',
   ),
   MarkerIconOption(key: 'fire_truck', icon: Icons.fire_truck, label: 'Fire truck'),
@@ -185,6 +189,7 @@ const markerIconOptions = <MarkerIconOption>[
     key: 'balloon',
     icon: Icons.air,
     assetPath: 'assets/markers/balloon.svg',
+    coloredAsset: true,
     label: 'Balloon',
   ),
   MarkerIconOption(
@@ -407,6 +412,15 @@ double markerIconGlyphScale(String iconName) {
     }
   }
   return 1.0;
+}
+
+bool markerIconColoredAsset(String iconName) {
+  for (final option in markerIconOptions) {
+    if (option.key == iconName) {
+      return option.coloredAsset;
+    }
+  }
+  return false;
 }
 
 String? suggestMarkerIconForName(String name) {

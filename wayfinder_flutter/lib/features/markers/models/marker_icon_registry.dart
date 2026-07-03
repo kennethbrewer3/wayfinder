@@ -6,6 +6,7 @@ class MarkerIconOption {
     required this.icon,
     required this.label,
     this.assetPath,
+    this.svgUrl,
     this.emoji,
     this.coloredAsset = false,
     this.glyphScale = 1.0,
@@ -15,6 +16,7 @@ class MarkerIconOption {
   final IconData icon;
   final String label;
   final String? assetPath;
+  final String? svgUrl;
   final String? emoji;
   final bool coloredAsset;
   final double glyphScale;

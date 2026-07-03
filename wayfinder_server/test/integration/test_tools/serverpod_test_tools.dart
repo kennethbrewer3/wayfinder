@@ -26,19 +26,21 @@ import 'package:wayfinder_server/src/generated/map/map_data_restore_summary.dart
 import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i10;
 import 'package:wayfinder_server/src/generated/map/map_marker_change.dart'
     as _i11;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_server/src/generated/markers/marker_icon_catalog_entry.dart'
     as _i12;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i13;
-import 'package:wayfinder_server/src/generated/settings/app_settings.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
     as _i14;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key_info.dart'
+import 'package:wayfinder_server/src/generated/settings/app_settings.dart'
     as _i15;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+import 'package:wayfinder_server/src/generated/settings/rest_api_key_info.dart'
     as _i16;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
     as _i17;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i18;
+import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
+    as _i18;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i19;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -167,6 +169,8 @@ class TestEndpoints {
 
   late final _MapMarkerEndpoint mapMarker;
 
+  late final _MarkerIconEndpoint markerIcon;
+
   late final _PmtilesEndpoint pmtiles;
 
   late final _AppSettingsEndpoint appSettings;
@@ -206,6 +210,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     mapMarker = _MapMarkerEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    markerIcon = _MarkerIconEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1244,6 +1252,47 @@ class _MapMarkerEndpoint {
   }
 }
 
+class _MarkerIconEndpoint {
+  _MarkerIconEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i12.MarkerIconCatalogEntry>> listCatalog(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'markerIcon',
+            method: 'listCatalog',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'markerIcon',
+          methodName: 'listCatalog',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i12.MarkerIconCatalogEntry>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _PmtilesEndpoint {
   _PmtilesEndpoint(
     this._endpointDispatch,
@@ -1254,7 +1303,7 @@ class _PmtilesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i12.PmtilesFile>> listFiles(
+  _i3.Future<List<_i13.PmtilesFile>> listFiles(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1276,7 +1325,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i12.PmtilesFile>>);
+                as _i3.Future<List<_i13.PmtilesFile>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1284,7 +1333,7 @@ class _PmtilesEndpoint {
     });
   }
 
-  _i3.Future<List<_i13.PmtilesGroup>> listGroups(
+  _i3.Future<List<_i14.PmtilesGroup>> listGroups(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1306,7 +1355,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i13.PmtilesGroup>>);
+                as _i3.Future<List<_i14.PmtilesGroup>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1314,7 +1363,7 @@ class _PmtilesEndpoint {
     });
   }
 
-  _i3.Future<_i13.PmtilesGroup> createGroup(
+  _i3.Future<_i14.PmtilesGroup> createGroup(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -1337,7 +1386,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i13.PmtilesGroup>);
+                as _i3.Future<_i14.PmtilesGroup>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1345,7 +1394,7 @@ class _PmtilesEndpoint {
     });
   }
 
-  _i3.Future<_i13.PmtilesGroup> renameGroup(
+  _i3.Future<_i14.PmtilesGroup> renameGroup(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
     String name,
@@ -1372,7 +1421,7 @@ class _PmtilesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i13.PmtilesGroup>);
+                as _i3.Future<_i14.PmtilesGroup>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1773,7 +1822,7 @@ class _AppSettingsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i14.AppSettings> getSettings(
+  _i3.Future<_i15.AppSettings> getSettings(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1795,7 +1844,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.AppSettings>);
+                as _i3.Future<_i15.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1803,7 +1852,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i14.AppSettings> updateHomeLocation(
+  _i3.Future<_i15.AppSettings> updateHomeLocation(
     _i1.TestSessionBuilder sessionBuilder,
     double latitude,
     double longitude,
@@ -1832,7 +1881,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.AppSettings>);
+                as _i3.Future<_i15.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1840,7 +1889,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i14.AppSettings> resetHomeLocation(
+  _i3.Future<_i15.AppSettings> resetHomeLocation(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1862,7 +1911,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.AppSettings>);
+                as _i3.Future<_i15.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1870,7 +1919,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i14.AppSettings> updatePmtilesStoragePath(
+  _i3.Future<_i15.AppSettings> updatePmtilesStoragePath(
     _i1.TestSessionBuilder sessionBuilder,
     String storagePath,
   ) async {
@@ -1893,7 +1942,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.AppSettings>);
+                as _i3.Future<_i15.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1901,7 +1950,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i14.AppSettings> updateClientPreferences(
+  _i3.Future<_i15.AppSettings> updateClientPreferences(
     _i1.TestSessionBuilder sessionBuilder,
     String measurementUnits,
     String angleDisplayFormat,
@@ -1934,7 +1983,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i14.AppSettings>);
+                as _i3.Future<_i15.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1942,7 +1991,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i15.RestApiKeyInfo> getRestApiKeyStatus(
+  _i3.Future<_i16.RestApiKeyInfo> getRestApiKeyStatus(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1964,7 +2013,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i15.RestApiKeyInfo>);
+                as _i3.Future<_i16.RestApiKeyInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1972,7 +2021,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<List<_i16.RestApiKey>> listRestApiKeys(
+  _i3.Future<List<_i17.RestApiKey>> listRestApiKeys(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1994,7 +2043,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i16.RestApiKey>>);
+                as _i3.Future<List<_i17.RestApiKey>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2002,7 +2051,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i17.RestApiKeyCreated> createRestApiKey(
+  _i3.Future<_i18.RestApiKeyCreated> createRestApiKey(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -2025,7 +2074,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.RestApiKeyCreated>);
+                as _i3.Future<_i18.RestApiKeyCreated>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2064,7 +2113,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i15.RestApiKeyInfo> clearRestApiKeys(
+  _i3.Future<_i16.RestApiKeyInfo> clearRestApiKeys(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2086,7 +2135,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i15.RestApiKeyInfo>);
+                as _i3.Future<_i16.RestApiKeyInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2105,7 +2154,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i18.MapZone>> listZones(
+  _i3.Future<List<_i19.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2127,7 +2176,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i18.MapZone>>);
+                as _i3.Future<List<_i19.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2135,7 +2184,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i18.MapZone?> getZone(
+  _i3.Future<_i19.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -2158,7 +2207,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.MapZone?>);
+                as _i3.Future<_i19.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2166,9 +2215,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i18.MapZone> createZone(
+  _i3.Future<_i19.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i18.MapZone zone,
+    _i19.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2189,7 +2238,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.MapZone>);
+                as _i3.Future<_i19.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2197,9 +2246,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i18.MapZone> updateZone(
+  _i3.Future<_i19.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i18.MapZone zone,
+    _i19.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2220,7 +2269,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.MapZone>);
+                as _i3.Future<_i19.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -21,6 +21,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabMapTiles => 'Tuiles cartographiques';
 
   @override
+  String get settingsTabMarkerIcons => 'Icônes de marqueurs';
+
+  @override
   String get settingsTabGeocoding => 'Géocodage';
 
   @override
@@ -678,6 +681,156 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapTilesHideAllFromMap => 'Tout masquer sur la carte';
+
+  @override
+  String get markerIconsTitle => 'Icônes de marqueurs';
+
+  @override
+  String get markerIconsDescription =>
+      'Téléversez des icônes SVG de marqueurs sur le serveur. Les clients les chargent à l\'exécution pour ajouter ou mettre à jour des icônes sans redéployer l\'application. L\'authentification REST peut être requise — configurez une clé dans Paramètres → À propos.';
+
+  @override
+  String get markerIconsAddButton => 'Ajouter une icône personnalisée';
+
+  @override
+  String get markerIconsServerCatalogTitle => 'Catalogue serveur';
+
+  @override
+  String get markerIconsNoServerEntries =>
+      'Aucune icône gérée par le serveur pour l\'instant. Ajoutez une icône personnalisée ou téléversez un SVG pour remplacer une icône intégrée ci-dessous.';
+
+  @override
+  String markerIconsLoadFailed(String error) {
+    return 'Échec du chargement des icônes : $error';
+  }
+
+  @override
+  String markerIconsEntryCustomSvg(String key) {
+    return '$key • SVG personnalisé';
+  }
+
+  @override
+  String markerIconsEntryMaterialFallback(String key) {
+    return '$key • icône Material de secours';
+  }
+
+  @override
+  String get markerIconsUploadSvgAction => 'Téléverser SVG';
+
+  @override
+  String get markerIconsEditAction => 'Modifier les métadonnées';
+
+  @override
+  String get markerIconsBuiltInTitle => 'Remplacer les icônes intégrées';
+
+  @override
+  String get markerIconsBuiltInDescription =>
+      'Téléversez un SVG pour une clé intégrée afin de remplacer le fichier embarqué sur tous les clients connectés.';
+
+  @override
+  String get markerIconsBuiltInExpandTitle => 'Icônes SVG intégrées';
+
+  @override
+  String markerIconsBuiltInExpandSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count icônes',
+      one: '1 icône',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String markerIconsUploadSuccess(String key) {
+    return 'SVG téléversé pour $key';
+  }
+
+  @override
+  String markerIconsUploadFailed(String error) {
+    return 'Échec du téléversement SVG : $error';
+  }
+
+  @override
+  String get markerIconsCreateTitle => 'Ajouter une icône de marqueur';
+
+  @override
+  String markerIconsCreateSuccess(String label) {
+    return 'Icône ajoutée : $label';
+  }
+
+  @override
+  String markerIconsCreateFailed(String error) {
+    return 'Impossible d\'ajouter l\'icône : $error';
+  }
+
+  @override
+  String markerIconsUpdateSuccess(String label) {
+    return 'Icône mise à jour : $label';
+  }
+
+  @override
+  String markerIconsUpdateFailed(String error) {
+    return 'Impossible de mettre à jour l\'icône : $error';
+  }
+
+  @override
+  String get markerIconsDeleteTitle => 'Supprimer l\'icône de marqueur ?';
+
+  @override
+  String markerIconsDeleteMessage(String label, String key) {
+    return 'Supprimer « $label » ($key) du serveur ? Les clients reviendront à l\'icône intégrée si elle existe.';
+  }
+
+  @override
+  String get markerIconsDeleteSuccess => 'Icône supprimée.';
+
+  @override
+  String markerIconsDeleteFailed(String error) {
+    return 'Impossible de supprimer l\'icône : $error';
+  }
+
+  @override
+  String get markerIconsKeyLabel => 'Clé de l\'icône';
+
+  @override
+  String get markerIconsKeyHint => 'custom_drone';
+
+  @override
+  String get markerIconsKeyRequired => 'La clé de l\'icône est obligatoire.';
+
+  @override
+  String get markerIconsKeyInvalid =>
+      'Utilisez des lettres minuscules, des chiffres et des traits de soulignement (max. 64).';
+
+  @override
+  String get markerIconsLabelField => 'Libellé affiché';
+
+  @override
+  String get markerIconsLabelRequired => 'Le libellé affiché est obligatoire.';
+
+  @override
+  String get markerIconsColoredAssetLabel => 'Conserver les couleurs du SVG';
+
+  @override
+  String get markerIconsColoredAssetHelp =>
+      'Conserver les couleurs d\'origine au lieu de teinter avec la couleur du marqueur.';
+
+  @override
+  String markerIconsGlyphScaleLabel(String value) {
+    return 'Échelle de l\'icône : $value';
+  }
+
+  @override
+  String get markerIconsPickSvgOptional => 'Choisir un SVG (facultatif)';
+
+  @override
+  String markerIconsPickSvgSelected(String name) {
+    return 'SVG : $name';
+  }
+
+  @override
+  String get markerIconsEditTitle => 'Modifier l\'icône de marqueur';
 
   @override
   String get layerLabel => 'Couche';

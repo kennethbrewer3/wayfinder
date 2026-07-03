@@ -70,6 +70,8 @@ services:
       SERVERPOD_WEB_SERVER_PUBLIC_PORT: "${SERVERPOD_WEB_SERVER_PUBLIC_PORT:-18082}"
       SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: "${SERVERPOD_WEB_SERVER_PUBLIC_SCHEME:-http}"
       WAYFINDER_PMTILES_STORAGE: /data/pmtiles
+      WAYFINDER_MARKER_ICON_STORAGE: /data/marker-icons
     volumes:
       - ${WAYFINDER_PMTILES_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/pmtiles}:/data/pmtiles${WAYFINDER_PMTILES_MOUNT_OPTIONS:-}
+      - ${WAYFINDER_MARKER_ICON_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/marker-icons}:/data/marker-icons
     restart: unless-stopped

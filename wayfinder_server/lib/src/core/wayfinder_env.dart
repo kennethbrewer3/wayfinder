@@ -38,6 +38,19 @@ class WayfinderEnv {
     return 'storage/pmtiles';
   }
 
+  /// Directory containing marker icon SVG files.
+  static String get markerIconStoragePath => resolveInitialMarkerIconStoragePath();
+
+  static String resolveInitialMarkerIconStoragePath() {
+    for (final key in ['WAYFINDER_MARKER_ICON_STORAGE']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+    return _readDotEnv('WAYFINDER_MARKER_ICON_STORAGE') ?? 'storage/marker-icons';
+  }
+
   /// Optional shared secret for `/api` REST requests.
   ///
   /// When set (via process env or `.env`), REST clients must send this value in

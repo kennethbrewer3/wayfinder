@@ -2,6 +2,7 @@
 enum SettingsTab {
   general('general'),
   mapTiles('map-tiles'),
+  markerIcons('marker-icons'),
   geocoding('geocoding'),
   backup('backup'),
   about('about');

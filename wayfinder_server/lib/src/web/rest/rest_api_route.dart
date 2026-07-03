@@ -6,6 +6,7 @@ import 'health_rest_handlers.dart';
 import 'layers_rest_handlers.dart';
 import 'map_data_rest_handlers.dart';
 import 'markers_rest_handlers.dart';
+import 'marker_icons_rest_handlers.dart';
 import 'pmtiles_rest_handlers.dart';
 import 'rest_json.dart';
 import 'zones_rest_handlers.dart';
@@ -52,6 +53,13 @@ class RestApiRoute extends Route {
       ..put('/pmtiles/active', PmtilesRestHandlers.setActive)
       ..delete('/pmtiles/active', PmtilesRestHandlers.clearActive)
       ..delete('/pmtiles/:id', PmtilesRestHandlers.delete)
+      ..get('/marker-icons', MarkerIconsRestHandlers.list)
+      ..post('/marker-icons', MarkerIconsRestHandlers.create)
+      ..get('/marker-icons/:key', MarkerIconsRestHandlers.get)
+      ..put('/marker-icons/:key', MarkerIconsRestHandlers.update)
+      ..patch('/marker-icons/:key', MarkerIconsRestHandlers.update)
+      ..delete('/marker-icons/:key', MarkerIconsRestHandlers.delete)
+      ..post('/marker-icons/:key/svg', MarkerIconsRestHandlers.uploadSvg)
       ..get('/settings/home', AppSettingsRestHandlers.getHomeLocation)
       ..put('/settings/home', AppSettingsRestHandlers.updateHomeLocation)
       ..delete('/settings/home', AppSettingsRestHandlers.resetHomeLocation)
@@ -87,6 +95,9 @@ class RestApiRoute extends Route {
         'pmtiles': '/api/pmtiles',
         'pmtilesUpload': '/api/pmtiles/upload?name=<file.pmtiles>',
         'pmtilesDownload': '/pmtiles/files/<id>',
+        'markerIcons': '/api/marker-icons',
+        'markerIconSvgUpload': '/api/marker-icons/<key>/svg',
+        'markerIconDownload': '/marker-icons/files/<key>.svg',
       },
     });
   }

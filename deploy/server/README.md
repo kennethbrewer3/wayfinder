@@ -39,6 +39,7 @@ Edit `.env` before the first start.
 | `SERVERPOD_WEB_SERVER_PUBLIC_HOST` | Yes* | Same as above for the web/REST port |
 | `WAYFINDER_PMTILES_HOST_PATH` | No | Mount PMTiles from a different host folder |
 | `WAYFINDER_PMTILES_MOUNT_OPTIONS` | No | e.g. `:ro` for read-only shared tiles |
+| `WAYFINDER_MARKER_ICON_HOST_PATH` | No | Mount marker icon SVGs from a different host folder (default `{WAYFINDER_DATA_PATH}/marker-icons`) |
 | `WAYFINDER_SERVER_IMAGE` | No | Pin a release, e.g. `ghcr.io/kennethbrewer3/wayfinder-server:v1.1.0` |
 
 Example:

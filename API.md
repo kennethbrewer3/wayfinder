@@ -640,6 +640,94 @@ If the backup has no layers, a default layer is created. Markers or zones refere
 
 ---
 
+## Marker icons
+
+Marker SVG icons can be managed on the server so clients pick up changes without an app redeploy. Built-in icons still ship with the app as fallbacks; server entries override matching keys or add new custom keys.
+
+SVG bytes are stored on disk (default `storage/marker-icons/{key}.svg`, override with `WAYFINDER_MARKER_ICON_STORAGE`). Metadata lives in the `marker_icon_catalog` table.
+
+### List marker icons
+
+```bash
+curl http://localhost:18082/api/marker-icons
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": "…",
+    "key": "horse",
+    "label": "Horse",
+    "materialIcon": "pets",
+    "coloredAsset": true,
+    "glyphScale": 0.94,
+    "hasCustomSvg": true,
+    "sortOrder": 0,
+    "createdAt": "…",
+    "updatedAt": "…",
+    "svgUrl": "/marker-icons/files/horse.svg"
+  }
+]
+```
+
+### Register a new icon (metadata only)
+
+Keys must match `[a-z0-9_]{1,64}`.
+
+```bash
+curl -X POST http://localhost:18082/api/marker-icons \
+  -H "Content-Type: application/json" \
+  -d '{
+    "key": "custom_drone",
+    "label": "Drone",
+    "materialIcon": "flight",
+    "coloredAsset": false,
+    "glyphScale": 1.0
+  }'
+```
+
+### Update icon metadata
+
+```bash
+curl -X PATCH http://localhost:18082/api/marker-icons/horse \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "Horse",
+    "coloredAsset": true,
+    "glyphScale": 0.94
+  }'
+```
+
+### Upload or replace SVG
+
+Send raw SVG bytes (`Content-Type: image/svg+xml`). Creates catalog metadata automatically when the key is new.
+
+```bash
+curl -X POST http://localhost:18082/api/marker-icons/horse/svg \
+  --data-binary @horse.svg \
+  -H "Content-Type: image/svg+xml"
+```
+
+### Download SVG
+
+Public, cacheable route (no `/api` prefix):
+
+```bash
+curl http://localhost:18082/marker-icons/files/horse.svg
+```
+
+### Delete icon
+
+Removes metadata and the SVG file from disk.
+
+```bash
+curl -X DELETE http://localhost:18082/api/marker-icons/custom_drone
+```
+
+---
+
 ## Endpoint summary
 
 | Method | Path | Description |
@@ -676,6 +764,13 @@ If the backup has no layers, a default layer is created. Markers or zones refere
 | DELETE | `/api/pmtiles/active` | Clear active file |
 | DELETE | `/api/pmtiles/:id` | Delete catalog entry and file |
 | GET | `/pmtiles/files/:id` | Download PMTiles bytes |
+| GET | `/api/marker-icons` | List marker icon catalog |
+| POST | `/api/marker-icons` | Register marker icon metadata |
+| GET | `/api/marker-icons/:key` | Get marker icon metadata |
+| PUT/PATCH | `/api/marker-icons/:key` | Update marker icon metadata |
+| POST | `/api/marker-icons/:key/svg` | Upload or replace SVG bytes |
+| DELETE | `/api/marker-icons/:key` | Delete marker icon and SVG |
+| GET | `/marker-icons/files/:key.svg` | Download marker SVG |
 
 ---
 

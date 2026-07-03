@@ -1,0 +1,17 @@
+class: MarkerIconCatalogEntry
+table: marker_icon_catalog
+fields:
+  id: UuidValue, defaultModel=random
+  key: String
+  label: String
+  materialIcon: String?
+  coloredAsset: bool
+  glyphScale: double
+  hasCustomSvg: bool
+  sortOrder: int
+  createdAt: DateTime
+  updatedAt: DateTime
+indexes:
+  marker_icon_catalog_key_idx:
+    fields: key
+    unique: true

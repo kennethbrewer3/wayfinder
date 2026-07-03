@@ -26,20 +26,22 @@ import 'package:wayfinder_client/src/protocol/map/map_data_restore_summary.dart'
 import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i10;
 import 'package:wayfinder_client/src/protocol/map/map_marker_change.dart'
     as _i11;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_icon_catalog_entry.dart'
     as _i12;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i13;
-import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i14;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
+import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
     as _i15;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
     as _i16;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
     as _i17;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i18;
-import 'protocol.dart' as _i19;
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
+    as _i18;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i19;
+import 'protocol.dart' as _i20;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -460,37 +462,52 @@ class EndpointMapMarker extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointMarkerIcon extends _i2.EndpointRef {
+  EndpointMarkerIcon(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'markerIcon';
+
+  _i3.Future<List<_i12.MarkerIconCatalogEntry>> listCatalog() =>
+      caller.callServerEndpoint<List<_i12.MarkerIconCatalogEntry>>(
+        'markerIcon',
+        'listCatalog',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointPmtiles extends _i2.EndpointRef {
   EndpointPmtiles(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'pmtiles';
 
-  _i3.Future<List<_i12.PmtilesFile>> listFiles() =>
-      caller.callServerEndpoint<List<_i12.PmtilesFile>>(
+  _i3.Future<List<_i13.PmtilesFile>> listFiles() =>
+      caller.callServerEndpoint<List<_i13.PmtilesFile>>(
         'pmtiles',
         'listFiles',
         {},
       );
 
-  _i3.Future<List<_i13.PmtilesGroup>> listGroups() =>
-      caller.callServerEndpoint<List<_i13.PmtilesGroup>>(
+  _i3.Future<List<_i14.PmtilesGroup>> listGroups() =>
+      caller.callServerEndpoint<List<_i14.PmtilesGroup>>(
         'pmtiles',
         'listGroups',
         {},
       );
 
-  _i3.Future<_i13.PmtilesGroup> createGroup(String name) =>
-      caller.callServerEndpoint<_i13.PmtilesGroup>(
+  _i3.Future<_i14.PmtilesGroup> createGroup(String name) =>
+      caller.callServerEndpoint<_i14.PmtilesGroup>(
         'pmtiles',
         'createGroup',
         {'name': name},
       );
 
-  _i3.Future<_i13.PmtilesGroup> renameGroup(
+  _i3.Future<_i14.PmtilesGroup> renameGroup(
     _i2.UuidValue id,
     String name,
-  ) => caller.callServerEndpoint<_i13.PmtilesGroup>(
+  ) => caller.callServerEndpoint<_i14.PmtilesGroup>(
     'pmtiles',
     'renameGroup',
     {
@@ -609,18 +626,18 @@ class EndpointAppSettings extends _i2.EndpointRef {
   @override
   String get name => 'appSettings';
 
-  _i3.Future<_i14.AppSettings> getSettings() =>
-      caller.callServerEndpoint<_i14.AppSettings>(
+  _i3.Future<_i15.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i15.AppSettings>(
         'appSettings',
         'getSettings',
         {},
       );
 
-  _i3.Future<_i14.AppSettings> updateHomeLocation(
+  _i3.Future<_i15.AppSettings> updateHomeLocation(
     double latitude,
     double longitude,
     double zoom,
-  ) => caller.callServerEndpoint<_i14.AppSettings>(
+  ) => caller.callServerEndpoint<_i15.AppSettings>(
     'appSettings',
     'updateHomeLocation',
     {
@@ -630,27 +647,27 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i14.AppSettings> resetHomeLocation() =>
-      caller.callServerEndpoint<_i14.AppSettings>(
+  _i3.Future<_i15.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i15.AppSettings>(
         'appSettings',
         'resetHomeLocation',
         {},
       );
 
-  _i3.Future<_i14.AppSettings> updatePmtilesStoragePath(String storagePath) =>
-      caller.callServerEndpoint<_i14.AppSettings>(
+  _i3.Future<_i15.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i15.AppSettings>(
         'appSettings',
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
 
-  _i3.Future<_i14.AppSettings> updateClientPreferences(
+  _i3.Future<_i15.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
-  ) => caller.callServerEndpoint<_i14.AppSettings>(
+  ) => caller.callServerEndpoint<_i15.AppSettings>(
     'appSettings',
     'updateClientPreferences',
     {
@@ -662,22 +679,22 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i15.RestApiKeyInfo> getRestApiKeyStatus() =>
-      caller.callServerEndpoint<_i15.RestApiKeyInfo>(
+  _i3.Future<_i16.RestApiKeyInfo> getRestApiKeyStatus() =>
+      caller.callServerEndpoint<_i16.RestApiKeyInfo>(
         'appSettings',
         'getRestApiKeyStatus',
         {},
       );
 
-  _i3.Future<List<_i16.RestApiKey>> listRestApiKeys() =>
-      caller.callServerEndpoint<List<_i16.RestApiKey>>(
+  _i3.Future<List<_i17.RestApiKey>> listRestApiKeys() =>
+      caller.callServerEndpoint<List<_i17.RestApiKey>>(
         'appSettings',
         'listRestApiKeys',
         {},
       );
 
-  _i3.Future<_i17.RestApiKeyCreated> createRestApiKey(String name) =>
-      caller.callServerEndpoint<_i17.RestApiKeyCreated>(
+  _i3.Future<_i18.RestApiKeyCreated> createRestApiKey(String name) =>
+      caller.callServerEndpoint<_i18.RestApiKeyCreated>(
         'appSettings',
         'createRestApiKey',
         {'name': name},
@@ -690,8 +707,8 @@ class EndpointAppSettings extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<_i15.RestApiKeyInfo> clearRestApiKeys() =>
-      caller.callServerEndpoint<_i15.RestApiKeyInfo>(
+  _i3.Future<_i16.RestApiKeyInfo> clearRestApiKeys() =>
+      caller.callServerEndpoint<_i16.RestApiKeyInfo>(
         'appSettings',
         'clearRestApiKeys',
         {},
@@ -705,29 +722,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i18.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i18.MapZone>>(
+  _i3.Future<List<_i19.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i19.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i18.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i18.MapZone?>(
+  _i3.Future<_i19.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i19.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i18.MapZone> createZone(_i18.MapZone zone) =>
-      caller.callServerEndpoint<_i18.MapZone>(
+  _i3.Future<_i19.MapZone> createZone(_i19.MapZone zone) =>
+      caller.callServerEndpoint<_i19.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i18.MapZone> updateZone(_i18.MapZone zone) =>
-      caller.callServerEndpoint<_i18.MapZone>(
+  _i3.Future<_i19.MapZone> updateZone(_i19.MapZone zone) =>
+      caller.callServerEndpoint<_i19.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -772,7 +789,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i19.Protocol(),
+         _i20.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -788,6 +805,7 @@ class Client extends _i2.ServerpodClientShared {
     mapLayer = EndpointMapLayer(this);
     mapData = EndpointMapData(this);
     mapMarker = EndpointMapMarker(this);
+    markerIcon = EndpointMarkerIcon(this);
     pmtiles = EndpointPmtiles(this);
     appSettings = EndpointAppSettings(this);
     mapZone = EndpointMapZone(this);
@@ -808,6 +826,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointMapMarker mapMarker;
 
+  late final EndpointMarkerIcon markerIcon;
+
   late final EndpointPmtiles pmtiles;
 
   late final EndpointAppSettings appSettings;
@@ -825,6 +845,7 @@ class Client extends _i2.ServerpodClientShared {
     'mapLayer': mapLayer,
     'mapData': mapData,
     'mapMarker': mapMarker,
+    'markerIcon': markerIcon,
     'pmtiles': pmtiles,
     'appSettings': appSettings,
     'mapZone': mapZone,

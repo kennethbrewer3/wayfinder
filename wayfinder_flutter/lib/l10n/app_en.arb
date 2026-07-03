@@ -7,6 +7,7 @@
   "settingsTitle": "Settings",
   "settingsTabGeneral": "General",
   "settingsTabMapTiles": "Map tiles",
+  "settingsTabMarkerIcons": "Marker icons",
   "settingsTabGeocoding": "Geocoding",
   "settingsTabBackup": "Backup",
   "settingsTabAbout": "About",
@@ -369,6 +370,144 @@
   "mapTilesNewGroup": "New group",
   "mapTilesShowAllOnMap": "Show all on map",
   "mapTilesHideAllFromMap": "Hide all from map",
+  "markerIconsTitle": "Marker icons",
+  "markerIconsDescription": "Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.",
+  "markerIconsAddButton": "Add custom icon",
+  "markerIconsServerCatalogTitle": "Server catalog",
+  "markerIconsNoServerEntries": "No server-managed icons yet. Add a custom icon or upload an SVG to override a built-in icon below.",
+  "markerIconsLoadFailed": "Failed to load marker icons: {error}",
+  "@markerIconsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsEntryCustomSvg": "{key} • custom SVG",
+  "@markerIconsEntryCustomSvg": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsEntryMaterialFallback": "{key} • material icon fallback",
+  "@markerIconsEntryMaterialFallback": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsUploadSvgAction": "Upload SVG",
+  "markerIconsEditAction": "Edit metadata",
+  "markerIconsBuiltInTitle": "Override built-in icons",
+  "markerIconsBuiltInDescription": "Upload an SVG for a built-in icon key to replace the bundled artwork on all connected clients.",
+  "markerIconsBuiltInExpandTitle": "Built-in SVG icons",
+  "markerIconsBuiltInExpandSubtitle": "{count, plural, =1{1 icon} other{{count} icons}}",
+  "@markerIconsBuiltInExpandSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerIconsUploadSuccess": "SVG uploaded for {key}",
+  "@markerIconsUploadSuccess": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsUploadFailed": "SVG upload failed: {error}",
+  "@markerIconsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsCreateTitle": "Add marker icon",
+  "markerIconsCreateSuccess": "Marker icon added: {label}",
+  "@markerIconsCreateSuccess": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsCreateFailed": "Could not add marker icon: {error}",
+  "@markerIconsCreateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsUpdateSuccess": "Marker icon updated: {label}",
+  "@markerIconsUpdateSuccess": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsUpdateFailed": "Could not update marker icon: {error}",
+  "@markerIconsUpdateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsDeleteTitle": "Delete marker icon?",
+  "markerIconsDeleteMessage": "Remove \"{label}\" ({key}) from the server? Connected clients will fall back to the built-in icon if one exists.",
+  "@markerIconsDeleteMessage": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsDeleteSuccess": "Marker icon deleted.",
+  "markerIconsDeleteFailed": "Could not delete marker icon: {error}",
+  "@markerIconsDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsKeyLabel": "Icon key",
+  "markerIconsKeyHint": "custom_drone",
+  "markerIconsKeyRequired": "Icon key is required.",
+  "markerIconsKeyInvalid": "Use lowercase letters, digits, and underscores (max 64).",
+  "markerIconsLabelField": "Display label",
+  "markerIconsLabelRequired": "Display label is required.",
+  "markerIconsColoredAssetLabel": "Preserve SVG colors",
+  "markerIconsColoredAssetHelp": "Keep original fill and stroke colors instead of tinting with the marker color.",
+  "markerIconsGlyphScaleLabel": "Icon scale: {value}",
+  "@markerIconsGlyphScaleLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsPickSvgOptional": "Choose SVG (optional)",
+  "markerIconsPickSvgSelected": "SVG: {name}",
+  "@markerIconsPickSvgSelected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconsEditTitle": "Edit marker icon",
   "layerLabel": "Layer",
   "layerUnassigned": "Unassigned",
   "layerUnknown": "Unknown layer",

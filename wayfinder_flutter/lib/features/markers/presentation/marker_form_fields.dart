@@ -1,13 +1,16 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../models/marker_icon_catalog.dart';
 import '../models/marker_icon_registry.dart';
+import '../providers/marker_icon_providers.dart';
 import 'map_marker_icon.dart';
 import 'marker_icon_glyph.dart';
 
-class MarkerIconPicker extends StatefulWidget {
+class MarkerIconPicker extends ConsumerStatefulWidget {
   const MarkerIconPicker({
     super.key,
     required this.selectedIcon,
@@ -27,10 +30,10 @@ class MarkerIconPicker extends StatefulWidget {
   static const _gridIconSize = 18.0;
 
   @override
-  State<MarkerIconPicker> createState() => _MarkerIconPickerState();
+  ConsumerState<MarkerIconPicker> createState() => _MarkerIconPickerState();
 }
 
-class _MarkerIconPickerState extends State<MarkerIconPicker> {
+class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
   late bool _expanded;
 
   @override
@@ -47,8 +50,11 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
+        MarkerIconCatalog.defaults();
+    final options = catalog.options;
     final selectedOption =
-        markerIconOption(widget.selectedIcon) ?? markerIconOptions.first;
+        catalog.option(widget.selectedIcon) ?? options.first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -134,9 +140,9 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
                     crossAxisSpacing: MarkerIconPicker._gridSpacing,
                     childAspectRatio: MarkerIconPicker._gridAspectRatio,
                   ),
-                  itemCount: markerIconOptions.length,
+                  itemCount: options.length,
                   itemBuilder: (context, index) {
-                    final option = markerIconOptions[index];
+                    final option = options[index];
                     final selected = widget.selectedIcon == option.key;
 
                     return Material(
@@ -176,7 +182,10 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  localizedMarkerIconLabel(l10n, option.key),
+                                  _markerIconPickerLabel(
+                                    l10n,
+                                    option,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: theme.textTheme.labelSmall?.copyWith(
@@ -200,6 +209,13 @@ class _MarkerIconPickerState extends State<MarkerIconPicker> {
       ],
     );
   }
+}
+
+String _markerIconPickerLabel(AppLocalizations l10n, MarkerIconOption option) {
+  if (markerIconOption(option.key) != null) {
+    return localizedMarkerIconLabel(l10n, option.key);
+  }
+  return option.label;
 }
 
 class MarkerColorPickerField extends StatelessWidget {

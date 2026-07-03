@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabMapTiles => 'Map tiles';
 
   @override
+  String get settingsTabMarkerIcons => 'Marker icons';
+
+  @override
   String get settingsTabGeocoding => 'Geocoding';
 
   @override
@@ -665,6 +668,156 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTilesHideAllFromMap => 'Hide all from map';
+
+  @override
+  String get markerIconsTitle => 'Marker icons';
+
+  @override
+  String get markerIconsDescription =>
+      'Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.';
+
+  @override
+  String get markerIconsAddButton => 'Add custom icon';
+
+  @override
+  String get markerIconsServerCatalogTitle => 'Server catalog';
+
+  @override
+  String get markerIconsNoServerEntries =>
+      'No server-managed icons yet. Add a custom icon or upload an SVG to override a built-in icon below.';
+
+  @override
+  String markerIconsLoadFailed(String error) {
+    return 'Failed to load marker icons: $error';
+  }
+
+  @override
+  String markerIconsEntryCustomSvg(String key) {
+    return '$key • custom SVG';
+  }
+
+  @override
+  String markerIconsEntryMaterialFallback(String key) {
+    return '$key • material icon fallback';
+  }
+
+  @override
+  String get markerIconsUploadSvgAction => 'Upload SVG';
+
+  @override
+  String get markerIconsEditAction => 'Edit metadata';
+
+  @override
+  String get markerIconsBuiltInTitle => 'Override built-in icons';
+
+  @override
+  String get markerIconsBuiltInDescription =>
+      'Upload an SVG for a built-in icon key to replace the bundled artwork on all connected clients.';
+
+  @override
+  String get markerIconsBuiltInExpandTitle => 'Built-in SVG icons';
+
+  @override
+  String markerIconsBuiltInExpandSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count icons',
+      one: '1 icon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String markerIconsUploadSuccess(String key) {
+    return 'SVG uploaded for $key';
+  }
+
+  @override
+  String markerIconsUploadFailed(String error) {
+    return 'SVG upload failed: $error';
+  }
+
+  @override
+  String get markerIconsCreateTitle => 'Add marker icon';
+
+  @override
+  String markerIconsCreateSuccess(String label) {
+    return 'Marker icon added: $label';
+  }
+
+  @override
+  String markerIconsCreateFailed(String error) {
+    return 'Could not add marker icon: $error';
+  }
+
+  @override
+  String markerIconsUpdateSuccess(String label) {
+    return 'Marker icon updated: $label';
+  }
+
+  @override
+  String markerIconsUpdateFailed(String error) {
+    return 'Could not update marker icon: $error';
+  }
+
+  @override
+  String get markerIconsDeleteTitle => 'Delete marker icon?';
+
+  @override
+  String markerIconsDeleteMessage(String label, String key) {
+    return 'Remove \"$label\" ($key) from the server? Connected clients will fall back to the built-in icon if one exists.';
+  }
+
+  @override
+  String get markerIconsDeleteSuccess => 'Marker icon deleted.';
+
+  @override
+  String markerIconsDeleteFailed(String error) {
+    return 'Could not delete marker icon: $error';
+  }
+
+  @override
+  String get markerIconsKeyLabel => 'Icon key';
+
+  @override
+  String get markerIconsKeyHint => 'custom_drone';
+
+  @override
+  String get markerIconsKeyRequired => 'Icon key is required.';
+
+  @override
+  String get markerIconsKeyInvalid =>
+      'Use lowercase letters, digits, and underscores (max 64).';
+
+  @override
+  String get markerIconsLabelField => 'Display label';
+
+  @override
+  String get markerIconsLabelRequired => 'Display label is required.';
+
+  @override
+  String get markerIconsColoredAssetLabel => 'Preserve SVG colors';
+
+  @override
+  String get markerIconsColoredAssetHelp =>
+      'Keep original fill and stroke colors instead of tinting with the marker color.';
+
+  @override
+  String markerIconsGlyphScaleLabel(String value) {
+    return 'Icon scale: $value';
+  }
+
+  @override
+  String get markerIconsPickSvgOptional => 'Choose SVG (optional)';
+
+  @override
+  String markerIconsPickSvgSelected(String name) {
+    return 'SVG: $name';
+  }
+
+  @override
+  String get markerIconsEditTitle => 'Edit marker icon';
 
   @override
   String get layerLabel => 'Layer';

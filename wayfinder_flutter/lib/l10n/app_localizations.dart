@@ -124,6 +124,12 @@ abstract class AppLocalizations {
   /// **'Map tiles'**
   String get settingsTabMapTiles;
 
+  /// No description provided for @settingsTabMarkerIcons.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker icons'**
+  String get settingsTabMarkerIcons;
+
   /// No description provided for @settingsTabGeocoding.
   ///
   /// In en, this message translates to:
@@ -1257,6 +1263,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide all from map'**
   String get mapTilesHideAllFromMap;
+
+  /// No description provided for @markerIconsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker icons'**
+  String get markerIconsTitle;
+
+  /// No description provided for @markerIconsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.'**
+  String get markerIconsDescription;
+
+  /// No description provided for @markerIconsAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add custom icon'**
+  String get markerIconsAddButton;
+
+  /// No description provided for @markerIconsServerCatalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server catalog'**
+  String get markerIconsServerCatalogTitle;
+
+  /// No description provided for @markerIconsNoServerEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'No server-managed icons yet. Add a custom icon or upload an SVG to override a built-in icon below.'**
+  String get markerIconsNoServerEntries;
+
+  /// No description provided for @markerIconsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load marker icons: {error}'**
+  String markerIconsLoadFailed(String error);
+
+  /// No description provided for @markerIconsEntryCustomSvg.
+  ///
+  /// In en, this message translates to:
+  /// **'{key} • custom SVG'**
+  String markerIconsEntryCustomSvg(String key);
+
+  /// No description provided for @markerIconsEntryMaterialFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'{key} • material icon fallback'**
+  String markerIconsEntryMaterialFallback(String key);
+
+  /// No description provided for @markerIconsUploadSvgAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload SVG'**
+  String get markerIconsUploadSvgAction;
+
+  /// No description provided for @markerIconsEditAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit metadata'**
+  String get markerIconsEditAction;
+
+  /// No description provided for @markerIconsBuiltInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Override built-in icons'**
+  String get markerIconsBuiltInTitle;
+
+  /// No description provided for @markerIconsBuiltInDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload an SVG for a built-in icon key to replace the bundled artwork on all connected clients.'**
+  String get markerIconsBuiltInDescription;
+
+  /// No description provided for @markerIconsBuiltInExpandTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in SVG icons'**
+  String get markerIconsBuiltInExpandTitle;
+
+  /// No description provided for @markerIconsBuiltInExpandSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 icon} other{{count} icons}}'**
+  String markerIconsBuiltInExpandSubtitle(int count);
+
+  /// No description provided for @markerIconsUploadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'SVG uploaded for {key}'**
+  String markerIconsUploadSuccess(String key);
+
+  /// No description provided for @markerIconsUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'SVG upload failed: {error}'**
+  String markerIconsUploadFailed(String error);
+
+  /// No description provided for @markerIconsCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add marker icon'**
+  String get markerIconsCreateTitle;
+
+  /// No description provided for @markerIconsCreateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker icon added: {label}'**
+  String markerIconsCreateSuccess(String label);
+
+  /// No description provided for @markerIconsCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add marker icon: {error}'**
+  String markerIconsCreateFailed(String error);
+
+  /// No description provided for @markerIconsUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker icon updated: {label}'**
+  String markerIconsUpdateSuccess(String label);
+
+  /// No description provided for @markerIconsUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update marker icon: {error}'**
+  String markerIconsUpdateFailed(String error);
+
+  /// No description provided for @markerIconsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete marker icon?'**
+  String get markerIconsDeleteTitle;
+
+  /// No description provided for @markerIconsDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{label}\" ({key}) from the server? Connected clients will fall back to the built-in icon if one exists.'**
+  String markerIconsDeleteMessage(String label, String key);
+
+  /// No description provided for @markerIconsDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker icon deleted.'**
+  String get markerIconsDeleteSuccess;
+
+  /// No description provided for @markerIconsDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete marker icon: {error}'**
+  String markerIconsDeleteFailed(String error);
+
+  /// No description provided for @markerIconsKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon key'**
+  String get markerIconsKeyLabel;
+
+  /// No description provided for @markerIconsKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'custom_drone'**
+  String get markerIconsKeyHint;
+
+  /// No description provided for @markerIconsKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon key is required.'**
+  String get markerIconsKeyRequired;
+
+  /// No description provided for @markerIconsKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Use lowercase letters, digits, and underscores (max 64).'**
+  String get markerIconsKeyInvalid;
+
+  /// No description provided for @markerIconsLabelField.
+  ///
+  /// In en, this message translates to:
+  /// **'Display label'**
+  String get markerIconsLabelField;
+
+  /// No description provided for @markerIconsLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Display label is required.'**
+  String get markerIconsLabelRequired;
+
+  /// No description provided for @markerIconsColoredAssetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preserve SVG colors'**
+  String get markerIconsColoredAssetLabel;
+
+  /// No description provided for @markerIconsColoredAssetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep original fill and stroke colors instead of tinting with the marker color.'**
+  String get markerIconsColoredAssetHelp;
+
+  /// No description provided for @markerIconsGlyphScaleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon scale: {value}'**
+  String markerIconsGlyphScaleLabel(String value);
+
+  /// No description provided for @markerIconsPickSvgOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose SVG (optional)'**
+  String get markerIconsPickSvgOptional;
+
+  /// No description provided for @markerIconsPickSvgSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'SVG: {name}'**
+  String markerIconsPickSvgSelected(String name);
+
+  /// No description provided for @markerIconsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit marker icon'**
+  String get markerIconsEditTitle;
 
   /// No description provided for @layerLabel.
   ///

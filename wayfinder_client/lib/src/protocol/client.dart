@@ -474,6 +474,52 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
         'listCatalog',
         {},
       );
+
+  _i3.Future<_i12.MarkerIconCatalogEntry> createIcon(
+    String key,
+    String label, {
+    String? materialIcon,
+    required bool coloredAsset,
+    required double glyphScale,
+    int? sortOrder,
+  }) => caller.callServerEndpoint<_i12.MarkerIconCatalogEntry>(
+    'markerIcon',
+    'createIcon',
+    {
+      'key': key,
+      'label': label,
+      'materialIcon': materialIcon,
+      'coloredAsset': coloredAsset,
+      'glyphScale': glyphScale,
+      'sortOrder': sortOrder,
+    },
+  );
+
+  _i3.Future<_i12.MarkerIconCatalogEntry> updateIcon(
+    String key,
+    String label, {
+    String? materialIcon,
+    bool? coloredAsset,
+    double? glyphScale,
+    int? sortOrder,
+  }) => caller.callServerEndpoint<_i12.MarkerIconCatalogEntry>(
+    'markerIcon',
+    'updateIcon',
+    {
+      'key': key,
+      'label': label,
+      'materialIcon': materialIcon,
+      'coloredAsset': coloredAsset,
+      'glyphScale': glyphScale,
+      'sortOrder': sortOrder,
+    },
+  );
+
+  _i3.Future<bool> deleteIcon(String key) => caller.callServerEndpoint<bool>(
+    'markerIcon',
+    'deleteIcon',
+    {'key': key},
+  );
 }
 
 /// {@category Endpoint}

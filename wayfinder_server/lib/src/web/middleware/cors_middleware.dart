@@ -34,6 +34,8 @@ class CorsMiddleware extends MiddlewareObject {
       'Content-Type',
       'Range',
       'X-Pmtiles-Name',
+      'X-API-Key',
+      'Authorization',
     ]);
     mh.accessControlExposeHeaders = AccessControlExposeHeadersHeader.headers([
       'Accept-Ranges',

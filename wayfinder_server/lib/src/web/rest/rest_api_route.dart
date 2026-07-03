@@ -97,6 +97,7 @@ class RestApiRoute extends Route {
         'pmtilesDownload': '/pmtiles/files/<id>',
         'markerIcons': '/api/marker-icons',
         'markerIconSvgUpload': '/api/marker-icons/<key>/svg',
+        'markerIconSvgUploadWeb': '/marker-icons/upload?key=<key>',
         'markerIconDownload': '/marker-icons/files/<key>.svg',
       },
     });

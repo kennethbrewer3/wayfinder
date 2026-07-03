@@ -6,7 +6,8 @@ import '../../markers/marker_icon_storage.dart';
 
 /// Serves `{key}.svg` marker icon files from server storage.
 class MarkerIconFileRoute extends Route {
-  MarkerIconFileRoute() : super(methods: {Method.get, Method.head}, path: '/**');
+  MarkerIconFileRoute()
+    : super(methods: {Method.get, Method.head}, path: '/**');
 
   @override
   Future<Result> handleCall(Session session, Request request) async {

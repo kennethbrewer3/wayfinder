@@ -37,6 +37,9 @@ mapMarker:
   - markerChanges:
 markerIcon:
   - listCatalog:
+  - createIcon:
+  - updateIcon:
+  - deleteIcon:
 pmtiles:
   - listFiles:
   - listGroups:

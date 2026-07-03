@@ -1,15 +1,13 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
+import '../../markers/marker_icon_catalog_service.dart';
 import '../../markers/marker_icon_key.dart';
-import '../../markers/marker_icon_storage.dart';
 import '../../markers/marker_icon_upload_handler.dart';
 import 'rest_json.dart';
 
 abstract final class MarkerIconsRestHandlers {
   static final _keyParam = PathParam<String>(#key, (value) => value);
-
-  static MarkerIconStorage get _storage => MarkerIconStorage();
 
   static Future<Result> list(Request request) async {
     return RestJson.handleErrors(() async {
@@ -40,32 +38,20 @@ abstract final class MarkerIconsRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final body = await RestJson.readObject(request);
-      final key = MarkerIconKey.normalize(body['key'] as String? ?? '');
-      final label = (body['label'] as String?)?.trim();
-      if (label == null || label.isEmpty) {
-        throw const FormatException('Field "label" is required');
-      }
-
-      final existing = await _findByKey(session, key);
-      if (existing != null) {
+      try {
+        final saved = await MarkerIconCatalogService.createEntry(
+          session,
+          key: body['key'] as String? ?? '',
+          label: body['label'] as String? ?? '',
+          materialIcon: _optionalString(body['materialIcon']),
+          coloredAsset: body['coloredAsset'] as bool? ?? false,
+          glyphScale: _parseGlyphScale(body['glyphScale']),
+          sortOrder: body['sortOrder'] as int?,
+        );
+        return RestJson.created(_encodeEntry(saved));
+      } on MarkerIconAlreadyExistsException {
         return RestJson.error(409, 'Marker icon already exists');
       }
-
-      final now = DateTime.now().toUtc();
-      final entry = MarkerIconCatalogEntry(
-        key: key,
-        label: label,
-        materialIcon: _optionalString(body['materialIcon']),
-        coloredAsset: body['coloredAsset'] as bool? ?? false,
-        glyphScale: _parseGlyphScale(body['glyphScale']),
-        hasCustomSvg: false,
-        sortOrder: body['sortOrder'] as int? ?? await _nextSortOrder(session),
-        createdAt: now,
-        updatedAt: now,
-      );
-
-      final saved = await MarkerIconCatalogEntry.db.insertRow(session, entry);
-      return RestJson.created(_encodeEntry(saved));
     });
   }
 
@@ -73,33 +59,29 @@ abstract final class MarkerIconsRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final key = _readKey(request);
-      final existing = await _findByKey(session, key);
-      if (existing == null) {
+      final body = await RestJson.readObject(request);
+      try {
+        final saved = await MarkerIconCatalogService.updateEntry(
+          session,
+          key: key,
+          label: body.containsKey('label') ? _requiredLabel(body['label']) : '',
+          materialIcon: body.containsKey('materialIcon')
+              ? _optionalString(body['materialIcon'])
+              : null,
+          coloredAsset: body.containsKey('coloredAsset')
+              ? body['coloredAsset'] as bool
+              : null,
+          glyphScale: body.containsKey('glyphScale')
+              ? _parseGlyphScale(body['glyphScale'])
+              : null,
+          sortOrder: body.containsKey('sortOrder')
+              ? body['sortOrder'] as int
+              : null,
+        );
+        return RestJson.ok(_encodeEntry(saved));
+      } on MarkerIconNotFoundException {
         return RestJson.error(404, 'Marker icon not found');
       }
-
-      final body = await RestJson.readObject(request);
-      final updated = existing.copyWith(
-        label: body.containsKey('label')
-            ? _requiredLabel(body['label'])
-            : existing.label,
-        materialIcon: body.containsKey('materialIcon')
-            ? _optionalString(body['materialIcon'])
-            : existing.materialIcon,
-        coloredAsset: body.containsKey('coloredAsset')
-            ? body['coloredAsset'] as bool
-            : existing.coloredAsset,
-        glyphScale: body.containsKey('glyphScale')
-            ? _parseGlyphScale(body['glyphScale'])
-            : existing.glyphScale,
-        sortOrder: body.containsKey('sortOrder')
-            ? body['sortOrder'] as int
-            : existing.sortOrder,
-        updatedAt: DateTime.now().toUtc(),
-      );
-
-      final saved = await MarkerIconCatalogEntry.db.updateRow(session, updated);
-      return RestJson.ok(_encodeEntry(saved));
     });
   }
 
@@ -107,13 +89,10 @@ abstract final class MarkerIconsRestHandlers {
     return RestJson.handleErrors(() async {
       final session = await request.session;
       final key = _readKey(request);
-      final existing = await _findByKey(session, key);
-      if (existing == null) {
+      final deleted = await MarkerIconCatalogService.deleteEntry(session, key);
+      if (!deleted) {
         return RestJson.error(404, 'Marker icon not found');
       }
-
-      await _storage.delete(key);
-      await MarkerIconCatalogEntry.db.deleteRow(session, existing);
       return RestJson.noContent();
     });
   }
@@ -174,23 +153,12 @@ abstract final class MarkerIconsRestHandlers {
     if (raw is num) {
       final value = raw.toDouble();
       if (value <= 0 || value > 2) {
-        throw const FormatException('Field "glyphScale" must be between 0 and 2');
+        throw const FormatException(
+          'Field "glyphScale" must be between 0 and 2',
+        );
       }
       return value;
     }
     throw const FormatException('Field "glyphScale" must be a number');
-  }
-
-  static Future<int> _nextSortOrder(Session session) async {
-    final rows = await MarkerIconCatalogEntry.db.find(
-      session,
-      orderBy: (t) => t.sortOrder,
-      orderDescending: true,
-      limit: 1,
-    );
-    if (rows.isEmpty) {
-      return 0;
-    }
-    return rows.first.sortOrder + 1;
   }
 }

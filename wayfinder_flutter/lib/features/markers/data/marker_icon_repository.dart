@@ -52,7 +52,9 @@ class MarkerIconRepository {
     required String key,
     required List<int> bytes,
   }) async {
-    final uri = Uri.parse('$_webServerUrl/api/marker-icons/$key/svg');
+    final uri = Uri.parse('$_webServerUrl/marker-icons/upload').replace(
+      queryParameters: {'key': key},
+    );
     final request = http.Request('POST', uri)
       ..headers.addAll(
         await RestApiHeaders.readOnly(
@@ -61,12 +63,15 @@ class MarkerIconRepository {
       )
       ..bodyBytes = bytes;
 
-    _log.debug('📍 Uploading marker icon SVG', data: 'key=$key bytes=${bytes.length}');
+    _log.debug(
+      '📍 Uploading marker icon SVG',
+      data: 'key=$key bytes=${bytes.length}',
+    );
     final response = await request.send();
     final body = await response.stream.bytesToString();
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      final message = _readErrorMessage(body) ??
-          'Upload failed (${response.statusCode})';
+      final message =
+          _readErrorMessage(body) ?? 'Upload failed (${response.statusCode})';
       throw StateError(message);
     }
     _log.success('📍 Marker icon SVG uploaded', data: 'key=$key');
@@ -77,7 +82,7 @@ class MarkerIconRepository {
     await uploadSvg(key: key, bytes: bytes);
   }
 
-  Future<Map<String, dynamic>> createIcon({
+  Future<MarkerIconCatalogEntry> createIcon({
     required String key,
     required String label,
     String? materialIcon,
@@ -85,56 +90,47 @@ class MarkerIconRepository {
     double glyphScale = 1.0,
     int? sortOrder,
   }) async {
-    final uri = Uri.parse('$_webServerUrl/api/marker-icons');
-    final payload = <String, dynamic>{
-      'key': key,
-      'label': label,
-      if (materialIcon != null) 'materialIcon': materialIcon,
-      'coloredAsset': coloredAsset,
-      'glyphScale': glyphScale,
-      if (sortOrder != null) 'sortOrder': sortOrder,
-    };
-    final response = await http.post(
-      uri,
-      headers: await RestApiHeaders.json(),
-      body: jsonEncode(payload),
+    _log.debug('📍 Creating marker icon metadata', data: 'key=$key');
+    final entry = await _client.markerIcon.createIcon(
+      key,
+      label,
+      materialIcon: materialIcon,
+      coloredAsset: coloredAsset,
+      glyphScale: glyphScale,
+      sortOrder: sortOrder,
     );
-    return _decodeJsonResponse(response);
+    _log.success('📍 Marker icon metadata created', data: 'key=$key');
+    return entry;
   }
 
-  Future<Map<String, dynamic>> updateIcon({
+  Future<MarkerIconCatalogEntry> updateIcon({
     required String key,
-    String? label,
+    required String label,
+    String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
     int? sortOrder,
   }) async {
-    final uri = Uri.parse('$_webServerUrl/api/marker-icons/$key');
-    final payload = <String, dynamic>{
-      if (label != null) 'label': label,
-      if (coloredAsset != null) 'coloredAsset': coloredAsset,
-      if (glyphScale != null) 'glyphScale': glyphScale,
-      if (sortOrder != null) 'sortOrder': sortOrder,
-    };
-    final response = await http.patch(
-      uri,
-      headers: await RestApiHeaders.json(),
-      body: jsonEncode(payload),
+    _log.debug('📍 Updating marker icon metadata', data: 'key=$key');
+    final entry = await _client.markerIcon.updateIcon(
+      key,
+      label,
+      materialIcon: materialIcon,
+      coloredAsset: coloredAsset,
+      glyphScale: glyphScale,
+      sortOrder: sortOrder,
     );
-    return _decodeJsonResponse(response);
+    _log.success('📍 Marker icon metadata updated', data: 'key=$key');
+    return entry;
   }
 
   Future<void> deleteIcon(String key) async {
-    final uri = Uri.parse('$_webServerUrl/api/marker-icons/$key');
-    final response = await http.delete(
-      uri,
-      headers: await RestApiHeaders.readOnly(),
-    );
-    if (response.statusCode == 204) {
-      _log.success('📍 Marker icon deleted', data: 'key=$key');
-      return;
+    _log.debug('📍 Deleting marker icon', data: 'key=$key');
+    final deleted = await _client.markerIcon.deleteIcon(key);
+    if (!deleted) {
+      throw StateError('Marker icon not found: $key');
     }
-    _decodeJsonResponse(response);
+    _log.success('📍 Marker icon deleted', data: 'key=$key');
   }
 
   Future<List<int>> _readFileBytes(PlatformFile file) async {
@@ -154,20 +150,6 @@ class MarkerIconRepository {
     throw StateError('Could not read SVG file bytes');
   }
 
-  Map<String, dynamic> _decodeJsonResponse(http.Response response) {
-    final decoded = jsonDecode(response.body);
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      final message = decoded is Map<String, dynamic>
-          ? decoded['error']?.toString()
-          : null;
-      throw StateError(message ?? 'Request failed (${response.statusCode})');
-    }
-    if (decoded is! Map<String, dynamic>) {
-      throw StateError('Unexpected response from marker icon API');
-    }
-    return decoded;
-  }
-
   String? _readErrorMessage(String body) {
     try {
       final decoded = jsonDecode(body);
@@ -185,6 +167,8 @@ class MarkerIconRepository {
     if (trimmed.isEmpty) {
       return trimmed;
     }
-    return trimmed.endsWith('/') ? trimmed.substring(0, trimmed.length - 1) : trimmed;
+    return trimmed.endsWith('/')
+        ? trimmed.substring(0, trimmed.length - 1)
+        : trimmed;
   }
 }

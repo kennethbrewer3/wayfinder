@@ -39,7 +39,8 @@ class WayfinderEnv {
   }
 
   /// Directory containing marker icon SVG files.
-  static String get markerIconStoragePath => resolveInitialMarkerIconStoragePath();
+  static String get markerIconStoragePath =>
+      resolveInitialMarkerIconStoragePath();
 
   static String resolveInitialMarkerIconStoragePath() {
     for (final key in ['WAYFINDER_MARKER_ICON_STORAGE']) {
@@ -48,7 +49,8 @@ class WayfinderEnv {
         return value;
       }
     }
-    return _readDotEnv('WAYFINDER_MARKER_ICON_STORAGE') ?? 'storage/marker-icons';
+    return _readDotEnv('WAYFINDER_MARKER_ICON_STORAGE') ??
+        'storage/marker-icons';
   }
 
   /// Optional shared secret for `/api` REST requests.

@@ -704,6 +704,16 @@ curl -X PATCH http://localhost:18082/api/marker-icons/horse \
 
 Send raw SVG bytes (`Content-Type: image/svg+xml`). Creates catalog metadata automatically when the key is new.
 
+Browser clients should use the CORS-enabled upload route:
+
+```bash
+curl -X POST "http://localhost:18082/marker-icons/upload?key=horse" \
+  --data-binary @horse.svg \
+  -H "Content-Type: image/svg+xml"
+```
+
+The REST route below is also available for scripts and curl:
+
 ```bash
 curl -X POST http://localhost:18082/api/marker-icons/horse/svg \
   --data-binary @horse.svg \

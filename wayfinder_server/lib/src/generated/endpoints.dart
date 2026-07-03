@@ -702,6 +702,123 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
                   .listCatalog(session),
         ),
+        'createIcon': _i1.MethodConnector(
+          name: 'createIcon',
+          params: {
+            'key': _i1.ParameterDescription(
+              name: 'key',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'label': _i1.ParameterDescription(
+              name: 'label',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'materialIcon': _i1.ParameterDescription(
+              name: 'materialIcon',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'coloredAsset': _i1.ParameterDescription(
+              name: 'coloredAsset',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'glyphScale': _i1.ParameterDescription(
+              name: 'glyphScale',
+              type: _i1.getType<double>(),
+              nullable: false,
+            ),
+            'sortOrder': _i1.ParameterDescription(
+              name: 'sortOrder',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .createIcon(
+                    session,
+                    params['key'],
+                    params['label'],
+                    materialIcon: params['materialIcon'],
+                    coloredAsset: params['coloredAsset'],
+                    glyphScale: params['glyphScale'],
+                    sortOrder: params['sortOrder'],
+                  ),
+        ),
+        'updateIcon': _i1.MethodConnector(
+          name: 'updateIcon',
+          params: {
+            'key': _i1.ParameterDescription(
+              name: 'key',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'label': _i1.ParameterDescription(
+              name: 'label',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'materialIcon': _i1.ParameterDescription(
+              name: 'materialIcon',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'coloredAsset': _i1.ParameterDescription(
+              name: 'coloredAsset',
+              type: _i1.getType<bool?>(),
+              nullable: true,
+            ),
+            'glyphScale': _i1.ParameterDescription(
+              name: 'glyphScale',
+              type: _i1.getType<double?>(),
+              nullable: true,
+            ),
+            'sortOrder': _i1.ParameterDescription(
+              name: 'sortOrder',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .updateIcon(
+                    session,
+                    params['key'],
+                    params['label'],
+                    materialIcon: params['materialIcon'],
+                    coloredAsset: params['coloredAsset'],
+                    glyphScale: params['glyphScale'],
+                    sortOrder: params['sortOrder'],
+                  ),
+        ),
+        'deleteIcon': _i1.MethodConnector(
+          name: 'deleteIcon',
+          params: {
+            'key': _i1.ParameterDescription(
+              name: 'key',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .deleteIcon(
+                    session,
+                    params['key'],
+                  ),
+        ),
       },
     );
     connectors['pmtiles'] = _i1.EndpointConnector(

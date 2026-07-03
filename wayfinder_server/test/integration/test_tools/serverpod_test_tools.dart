@@ -1291,6 +1291,123 @@ class _MarkerIconEndpoint {
       }
     });
   }
+
+  _i3.Future<_i12.MarkerIconCatalogEntry> createIcon(
+    _i1.TestSessionBuilder sessionBuilder,
+    String key,
+    String label, {
+    String? materialIcon,
+    required bool coloredAsset,
+    required double glyphScale,
+    int? sortOrder,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'markerIcon',
+            method: 'createIcon',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'markerIcon',
+          methodName: 'createIcon',
+          parameters: _i1.testObjectToJson({
+            'key': key,
+            'label': label,
+            'materialIcon': materialIcon,
+            'coloredAsset': coloredAsset,
+            'glyphScale': glyphScale,
+            'sortOrder': sortOrder,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i12.MarkerIconCatalogEntry>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i12.MarkerIconCatalogEntry> updateIcon(
+    _i1.TestSessionBuilder sessionBuilder,
+    String key,
+    String label, {
+    String? materialIcon,
+    bool? coloredAsset,
+    double? glyphScale,
+    int? sortOrder,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'markerIcon',
+            method: 'updateIcon',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'markerIcon',
+          methodName: 'updateIcon',
+          parameters: _i1.testObjectToJson({
+            'key': key,
+            'label': label,
+            'materialIcon': materialIcon,
+            'coloredAsset': coloredAsset,
+            'glyphScale': glyphScale,
+            'sortOrder': sortOrder,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i12.MarkerIconCatalogEntry>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteIcon(
+    _i1.TestSessionBuilder sessionBuilder,
+    String key,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'markerIcon',
+            method: 'deleteIcon',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'markerIcon',
+          methodName: 'deleteIcon',
+          parameters: _i1.testObjectToJson({'key': key}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _PmtilesEndpoint {

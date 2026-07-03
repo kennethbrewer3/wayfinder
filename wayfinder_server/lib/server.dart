@@ -17,6 +17,7 @@ import 'src/web/middleware/rest_auth_middleware.dart';
 import 'src/web/middleware/rest_cors_middleware.dart';
 import 'src/web/routes/app_config_route.dart';
 import 'src/web/routes/marker_icon_file_route.dart';
+import 'src/web/routes/marker_icon_upload_route.dart';
 import 'src/web/routes/pmtiles_file_route.dart';
 import 'src/web/routes/pmtiles_upload_route.dart';
 import 'src/web/routes/root.dart';
@@ -89,6 +90,10 @@ void run(List<String> args) async {
     );
 
     pod.webServer.addMiddleware(const CorsMiddleware().call, '/marker-icons');
+    pod.webServer.addRoute(
+      MarkerIconUploadRoute(),
+      '/marker-icons/upload',
+    );
     pod.webServer.addRoute(
       MarkerIconFileRoute(),
       '/marker-icons/files',

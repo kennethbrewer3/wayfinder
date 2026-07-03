@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'map_marker_change_broadcast.dart';
 
 const trackZoneType = 'track';
 const defaultFootstepDensity = 3;
@@ -294,6 +295,67 @@ abstract final class MarkerTrackingService {
       }
     } catch (_) {}
     return defaultTransportationMode;
+  }
+
+  static String? markerIconForTransportationMode(String mode) {
+    return switch (mode) {
+      'onFoot' => 'on_foot',
+      'horse' => 'horse',
+      'bike' => 'directions_bike',
+      'motorcycle' => 'motorcycle',
+      'atv' => 'atv',
+      'landVehicle' => 'directions_car',
+      'truck' => 'truck',
+      'bus' => 'bus',
+      'rv' => 'rv',
+      'train' => 'train',
+      'ambulance' => 'ambulance',
+      'fireTruck' => 'fire_truck',
+      'farmVehicle' => 'farm_vehicle',
+      'canoe' => 'canoe',
+      'watercraft' => 'boat',
+      'sailboat' => 'sailboat',
+      'aircraft' => 'airstrip',
+      'helicopter' => 'helicopter',
+      'glider' => 'glider',
+      'balloon' => 'balloon',
+      _ => null,
+    };
+  }
+
+  static Future<void> syncMarkerIconForTrackZone({
+    required Session session,
+    required MapZone zone,
+  }) async {
+    if (zone.type != trackZoneType) {
+      return;
+    }
+
+    final icon = markerIconForTransportationMode(
+      _decodeTransportationMode(zone.geometryJson),
+    );
+    if (icon == null) {
+      return;
+    }
+
+    final markers = await MapMarker.db.find(
+      session,
+      where: (t) => t.trackZoneId.equals(zone.id) & t.isTracking.equals(true),
+    );
+
+    for (final marker in markers) {
+      if (marker.icon == icon) {
+        continue;
+      }
+      final updated = await MapMarker.db.updateRow(
+        session,
+        marker.copyWith(
+          icon: icon,
+          updatedAt: DateTime.now().toUtc(),
+        ),
+      );
+      await MapMarkerChangeBroadcast.updated(session, updated);
+    }
   }
 
   static double _distanceMeters(

@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
+import '../../map/marker_tracking_service.dart';
 import 'rest_json.dart';
 
 abstract final class ZonesRestHandlers {
@@ -58,6 +59,10 @@ abstract final class ZonesRestHandlers {
       final updated = await MapZone.db.updateRow(
         session,
         _mergeZone(existing, body),
+      );
+      await MarkerTrackingService.syncMarkerIconForTrackZone(
+        session: session,
+        zone: updated,
       );
       return RestJson.ok(RestJson.encodeModel(updated));
     });

@@ -56,10 +56,30 @@ class WakeTrailPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    final leftEdge = trailTaperedOffsetPath(path.centerline, -maxHalfWidth);
-    final rightEdge = trailTaperedOffsetPath(path.centerline, maxHalfWidth);
-    trailDrawTaperedPolyline(canvas, edgePaint, leftEdge, path.color);
-    trailDrawTaperedPolyline(canvas, edgePaint, rightEdge, path.color);
+    final leftEdge = trailTaperedOffsetPath(
+      path.centerline,
+      -maxHalfWidth,
+      widenTowardStart: true,
+    );
+    final rightEdge = trailTaperedOffsetPath(
+      path.centerline,
+      maxHalfWidth,
+      widenTowardStart: true,
+    );
+    trailDrawTaperedPolyline(
+      canvas,
+      edgePaint,
+      leftEdge,
+      path.color,
+      fadeTowardStart: true,
+    );
+    trailDrawTaperedPolyline(
+      canvas,
+      edgePaint,
+      rightEdge,
+      path.color,
+      fadeTowardStart: true,
+    );
 
     final chevronPaint = Paint()
       ..color = path.color.withValues(alpha: 0.9)

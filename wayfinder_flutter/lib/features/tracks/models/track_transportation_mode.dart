@@ -142,10 +142,35 @@ enum TrackTransportationMode {
 
   /// Marker icon key when this mode uses a custom SVG glyph.
   String? get markerIconKey => switch (this) {
+        horse => 'horse',
         balloon => 'balloon',
         helicopter => 'helicopter',
         ambulance => 'ambulance',
         _ => null,
+      };
+
+  /// Marker icon registry key for the map pin when tracking.
+  String? get trackingMarkerIconKey => switch (this) {
+        onFoot => 'on_foot',
+        horse => 'horse',
+        bike => 'directions_bike',
+        motorcycle => 'motorcycle',
+        atv => 'atv',
+        landVehicle => 'directions_car',
+        truck => 'truck',
+        bus => 'bus',
+        rv => 'rv',
+        train => 'train',
+        ambulance => 'ambulance',
+        fireTruck => 'fire_truck',
+        farmVehicle => 'farm_vehicle',
+        canoe => 'canoe',
+        watercraft => 'boat',
+        sailboat => 'sailboat',
+        aircraft => 'airstrip',
+        helicopter => 'helicopter',
+        glider => 'glider',
+        balloon => 'balloon',
       };
 
   String label(AppLocalizations l10n) => switch (this) {

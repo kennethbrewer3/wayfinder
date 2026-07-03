@@ -32,6 +32,7 @@ import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/utils/effective_marker_icon.dart';
 import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
 import '../../lines/providers/zones_provider.dart';
@@ -1020,6 +1021,7 @@ class _MarkerListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected = selected?.kind == SelectedMapObjectKind.marker &&
         selected?.id == marker.id;
+    final trackZones = trackZonesById(ref.watch(zonesProvider).valueOrNull ?? const []);
 
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
@@ -1038,7 +1040,10 @@ class _MarkerListTile extends ConsumerWidget {
               children: [
                 MapMarkerIcon(
                   color: parseMarkerColor(marker.color),
-                  iconName: marker.icon,
+                  iconName: effectiveMarkerIconName(
+                    marker: marker,
+                    trackZonesById: trackZones,
+                  ),
                   width: 28,
                   height: 34,
                 ),

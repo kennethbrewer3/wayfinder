@@ -151,7 +151,12 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'livestock', icon: Icons.warehouse, label: 'Livestock'),
   MarkerIconOption(key: 'pharmacy', icon: Icons.medication, label: 'Pharmacy'),
   MarkerIconOption(key: 'on_foot', icon: Icons.directions_walk, label: 'On foot'),
-  MarkerIconOption(key: 'horse', icon: Icons.pets, label: 'Horse'),
+  MarkerIconOption(
+    key: 'horse',
+    icon: Icons.pets,
+    assetPath: 'assets/markers/horse.svg',
+    label: 'Horse',
+  ),
   MarkerIconOption(key: 'motorcycle', icon: Icons.two_wheeler, label: 'Motorcycle'),
   MarkerIconOption(key: 'atv', icon: Icons.sports_motorsports, label: 'ATV'),
   MarkerIconOption(key: 'truck', icon: Icons.local_shipping, label: 'Truck'),

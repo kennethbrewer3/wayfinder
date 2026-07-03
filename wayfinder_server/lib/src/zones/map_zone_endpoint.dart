@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
+import '../map/marker_tracking_service.dart';
 
 class MapZoneEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapZone';
@@ -54,10 +55,17 @@ class MapZoneEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'updateZone',
-      () => MapZone.db.updateRow(
-        session,
-        zone.copyWith(updatedAt: DateTime.now().toUtc()),
-      ),
+      () async {
+        final updated = await MapZone.db.updateRow(
+          session,
+          zone.copyWith(updatedAt: DateTime.now().toUtc()),
+        );
+        await MarkerTrackingService.syncMarkerIconForTrackZone(
+          session: session,
+          zone: updated,
+        );
+        return updated;
+      },
       onSuccess: (updated) => 'id=${updated.id} visible=${updated.visible}',
     );
   }

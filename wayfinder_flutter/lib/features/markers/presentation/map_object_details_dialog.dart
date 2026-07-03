@@ -35,6 +35,7 @@ import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../weather/presentation/weather_station_details_section.dart';
 import '../../../core/l10n/localized_labels.dart';
 import 'marker_tracking_details_section.dart';
+import '../utils/effective_marker_icon.dart';
 
 Future<void> showMapObjectDetailsDialog({
   required BuildContext context,
@@ -166,6 +167,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     final notes = marker.notes?.trim();
     final shareUrl = buildMarkerShareUrl(marker: marker);
+    final trackZones = trackZonesById(ref.watch(zonesProvider).valueOrNull ?? const []);
     void copyShareUrl() => copyTextWithFeedback(
           context,
           text: shareUrl,
@@ -176,7 +178,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       title: marker.name,
       leading: MapMarkerIcon(
         color: parseMarkerColor(marker.color),
-        iconName: marker.icon,
+        iconName: effectiveMarkerIconName(
+          marker: marker,
+          trackZonesById: trackZones,
+        ),
         width: 28,
         height: 34,
       ),

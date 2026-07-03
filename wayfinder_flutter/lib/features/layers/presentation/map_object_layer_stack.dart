@@ -9,6 +9,7 @@ import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/utils/effective_marker_icon.dart';
 import '../../rectangles/presentation/map_rectangle_layer.dart';
 import '../utils/map_layer_utils.dart';
 
@@ -22,6 +23,7 @@ List<Widget> buildStackedMapLayerChildren({
 }) {
   final widgets = <Widget>[];
   final knownLayerIds = layers.map((layer) => layer.id).toSet();
+  final trackZones = trackZonesById(zones);
 
   void addLayerContent(List<MapMarker> layerMarkers, List<MapZone> layerZones) {
     if (layerMarkers.isEmpty && layerZones.isEmpty) {
@@ -45,7 +47,10 @@ List<Widget> buildStackedMapLayerChildren({
                       cursor: SystemMouseCursors.click,
                       child: MapMarkerIcon(
                         color: parseMarkerColor(marker.color),
-                        iconName: marker.icon,
+                        iconName: effectiveMarkerIconName(
+                          marker: marker,
+                          trackZonesById: trackZones,
+                        ),
                       ),
                     ),
                   ),

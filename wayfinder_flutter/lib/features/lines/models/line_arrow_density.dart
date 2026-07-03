@@ -44,12 +44,18 @@ class LineArrowDensity {
   int arrowCountForPath({
     required double totalMeters,
     required double totalPixels,
+    double spacingScale = 1.0,
   }) {
+    final scaled = spacingScale.clamp(0.1, 1.0);
+    final spacingMeters = this.spacingMeters * scaled;
+    final minSpacingPixels = minArrowSpacingPixels * scaled;
+    final maxMarkers = (maxArrowsPerLine / scaled).ceil();
+
     var count = math.max(1, (totalMeters / spacingMeters).round());
     final maxByPixels =
-        math.max(1, (totalPixels / minArrowSpacingPixels).floor());
+        math.max(1, (totalPixels / minSpacingPixels).floor());
     count = math.min(count, maxByPixels);
-    return math.min(count, maxArrowsPerLine);
+    return math.min(count, maxMarkers);
   }
 }
 

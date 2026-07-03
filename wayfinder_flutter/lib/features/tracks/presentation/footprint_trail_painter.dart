@@ -44,7 +44,7 @@ class FootprintTrailPainter extends CustomPainter {
       final center = marker.center + offset;
       canvas.save();
       canvas.translate(center.dx, center.dy);
-      canvas.rotate(marker.travelAngle + math.pi / 2);
+      canvas.rotate(marker.travelAngle - math.pi / 2);
       if (path.kind == FootprintTrailKind.hoof) {
         _drawHoof(canvas, paint);
       } else {

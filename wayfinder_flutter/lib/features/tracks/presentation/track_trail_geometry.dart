@@ -37,6 +37,7 @@ List<Offset> trailTaperedOffsetPath(
   List<Offset> points,
   double maxOffset, {
   double minProgress = 0.0,
+  bool widenTowardStart = false,
 }) {
   if (points.length < 2) {
     return const [];
@@ -50,7 +51,8 @@ List<Offset> trailTaperedOffsetPath(
       continue;
     }
     final progress = index / (points.length - 1);
-    final scaled = minProgress + (1 - minProgress) * progress;
+    final along = widenTowardStart ? 1 - progress : progress;
+    final scaled = minProgress + (1 - minProgress) * along;
     final offset = maxOffset * scaled;
     final normal = Offset(-tangent.dy / length, tangent.dx / length);
     result.add(points[index] + normal * offset);
@@ -77,6 +79,7 @@ void trailDrawTaperedPolyline(
   Color color, {
   double minAlpha = 0.25,
   double maxAlpha = 0.8,
+  bool fadeTowardStart = false,
 }) {
   if (points.length < 2) {
     return;
@@ -84,8 +87,9 @@ void trailDrawTaperedPolyline(
 
   for (var index = 0; index < points.length - 1; index++) {
     final progress = (index + 1) / (points.length - 1);
+    final alphaProgress = fadeTowardStart ? 1 - progress : progress;
     paint.color = color.withValues(
-      alpha: minAlpha + (maxAlpha - minAlpha) * progress,
+      alpha: minAlpha + (maxAlpha - minAlpha) * alphaProgress,
     );
     canvas.drawLine(points[index], points[index + 1], paint);
   }

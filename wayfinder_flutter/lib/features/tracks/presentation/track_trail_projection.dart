@@ -36,6 +36,7 @@ StyledTrailProjection? projectStyledTrail({
   required List<LatLng> renderPoints,
   required LineArrowDensity density,
   bool includeMarkers = true,
+  double markerSpacingScale = 1.0,
 }) {
   if (renderPoints.length < 2) {
     return null;
@@ -65,6 +66,7 @@ StyledTrailProjection? projectStyledTrail({
   final markerCount = density.arrowCountForPath(
     totalMeters: totalMeters,
     totalPixels: totalPixels,
+    spacingScale: markerSpacingScale,
   );
   final markers = <TrailPathMarker>[];
 

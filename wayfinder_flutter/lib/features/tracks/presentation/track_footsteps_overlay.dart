@@ -80,6 +80,7 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
         continue;
       }
 
+      final trailStyle = geometry.transportationMode.trailStyle;
       batch.add(
         mode: geometry.transportationMode,
         color: parseMarkerColor(zone.color),
@@ -88,7 +89,8 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
           mapSize: mapSize,
           renderPoints: geometry.pathPoints,
           density: geometry.footstepDensity,
-          includeMarkers: _usesMarkers(geometry.transportationMode.trailStyle),
+          includeMarkers: _usesMarkers(trailStyle),
+          markerSpacingScale: _markerSpacingScale(trailStyle),
         ),
       );
     }
@@ -104,6 +106,14 @@ class _TrackFootstepsOverlayState extends State<TrackFootstepsOverlay> {
         ),
       ),
     );
+  }
+
+  double _markerSpacingScale(TrackTrailStyle style) {
+    return switch (style) {
+      TrackTrailStyle.footprints => 0.35,
+      TrackTrailStyle.railroad => 0.1,
+      _ => 1.0,
+    };
   }
 
   bool _usesMarkers(TrackTrailStyle style) {

@@ -162,6 +162,145 @@ class _WeatherContent extends StatelessWidget {
                 value:
                     '${reading.pressure!.round()} ${reading.pressureUnit}',
               ),
+            if (reading.dewPoint != null)
+              _WeatherMetricTile(
+                icon: Icons.water_drop_outlined,
+                label: l10n.weatherDewPoint,
+                value: formatTemperature(
+                  reading.dewPoint,
+                  formatTemperatureUnit(
+                    reading.dewPointUnit ?? reading.temperatureUnit,
+                  ),
+                ),
+              ),
+            if (reading.luminosity != null)
+              _WeatherMetricTile(
+                icon: Icons.wb_sunny,
+                label: l10n.weatherLuminosity,
+                value: formatWeatherValue(
+                  reading.luminosity,
+                  reading.luminosityUnit,
+                  fractionDigits: 0,
+                ),
+              ),
+            if (reading.solarRadiation != null)
+              _WeatherMetricTile(
+                icon: Icons.solar_power,
+                label: l10n.weatherSolarRadiation,
+                value: formatWeatherValue(
+                  reading.solarRadiation,
+                  reading.solarRadiationUnit,
+                  fractionDigits: 1,
+                ),
+              ),
+            if (reading.uvIndex != null)
+              _WeatherMetricTile(
+                icon: Icons.wb_sunny_outlined,
+                label: l10n.weatherUvIndex,
+                value: reading.uvIndex!.round().toString(),
+              ),
+            if (reading.snowfall != null)
+              _WeatherMetricTile(
+                icon: Icons.ac_unit,
+                label: l10n.weatherSnowfall,
+                value: formatWeatherValue(
+                  reading.snowfall,
+                  reading.snowfallUnit,
+                  fractionDigits: 1,
+                ),
+              ),
+            if (reading.waterLevel != null)
+              _WeatherMetricTile(
+                icon: Icons.water,
+                label: l10n.weatherWaterLevel,
+                value: formatWeatherValue(
+                  reading.waterLevel,
+                  reading.waterLevelUnit,
+                  fractionDigits: 2,
+                ),
+              ),
+            if (reading.soilTemperature != null)
+              _WeatherMetricTile(
+                icon: Icons.thermostat,
+                label: l10n.weatherSoilTemperature,
+                value: formatTemperature(
+                  reading.soilTemperature,
+                  formatTemperatureUnit(
+                    reading.soilTemperatureUnit ?? reading.temperatureUnit,
+                  ),
+                ),
+              ),
+            if (reading.soilMoisture != null)
+              _WeatherMetricTile(
+                icon: Icons.grass,
+                label: l10n.weatherSoilMoisture,
+                value: formatWeatherValue(
+                  reading.soilMoisture,
+                  reading.soilMoistureUnit,
+                  fractionDigits: 0,
+                ),
+              ),
+            if (reading.leafWetness != null)
+              _WeatherMetricTile(
+                icon: Icons.water_drop,
+                label: l10n.weatherLeafWetness,
+                value: formatWeatherValue(
+                  reading.leafWetness,
+                  reading.leafWetnessUnit,
+                  fractionDigits: 0,
+                ),
+              ),
+            if (reading.indoorTemperature != null)
+              _WeatherMetricTile(
+                icon: Icons.home,
+                label: l10n.weatherIndoorTemperature,
+                value: formatTemperature(
+                  reading.indoorTemperature,
+                  formatTemperatureUnit(
+                    reading.indoorTemperatureUnit ?? reading.temperatureUnit,
+                  ),
+                ),
+              ),
+            if (reading.indoorHumidityPercent != null)
+              _WeatherMetricTile(
+                icon: Icons.home_outlined,
+                label: l10n.weatherIndoorHumidity,
+                value: '${reading.indoorHumidityPercent}%',
+              ),
+            if (reading.batteryVoltage != null)
+              _WeatherMetricTile(
+                icon: Icons.battery_std,
+                label: l10n.weatherBatteryVoltage,
+                value: formatWeatherValue(
+                  reading.batteryVoltage,
+                  reading.batteryVoltageUnit,
+                  fractionDigits: 1,
+                ),
+              ),
+            if (reading.windRun != null)
+              _WeatherMetricTile(
+                icon: Icons.straighten,
+                label: l10n.weatherWindRun,
+                value: formatWeatherValue(
+                  reading.windRun,
+                  reading.windRunUnit,
+                  fractionDigits: 1,
+                ),
+              ),
+            if (reading.stationStatus != null &&
+                reading.stationStatus!.trim().isNotEmpty)
+              _WeatherMetricTile(
+                icon: Icons.info_outline,
+                label: l10n.weatherStationStatus,
+                value: reading.stationStatus!.trim(),
+              ),
+            if (reading.sensorHealth != null &&
+                reading.sensorHealth!.trim().isNotEmpty)
+              _WeatherMetricTile(
+                icon: Icons.health_and_safety,
+                label: l10n.weatherSensorHealth,
+                value: reading.sensorHealth!.trim(),
+              ),
           ],
         ),
         if (snapshot.history.length > 1) ...[

@@ -6,6 +6,7 @@ class MarkerIconOption {
     required this.icon,
     required this.label,
     this.assetPath,
+    this.emoji,
     this.glyphScale = 1.0,
   });
 
@@ -13,6 +14,7 @@ class MarkerIconOption {
   final IconData icon;
   final String label;
   final String? assetPath;
+  final String? emoji;
   final double glyphScale;
 }
 
@@ -154,7 +156,7 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'horse',
     icon: Icons.pets,
-    assetPath: 'assets/markers/horse.svg',
+    emoji: '🐎',
     label: 'Horse',
   ),
   MarkerIconOption(key: 'motorcycle', icon: Icons.two_wheeler, label: 'Motorcycle'),
@@ -166,7 +168,7 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'ambulance',
     icon: Icons.local_hospital,
-    assetPath: 'assets/markers/ambulance.svg',
+    emoji: '🚑',
     label: 'Ambulance',
   ),
   MarkerIconOption(key: 'fire_truck', icon: Icons.fire_truck, label: 'Fire truck'),
@@ -384,6 +386,15 @@ String? markerIconAsset(String iconName) {
   for (final option in markerIconOptions) {
     if (option.key == iconName) {
       return option.assetPath;
+    }
+  }
+  return null;
+}
+
+String? markerIconEmoji(String iconName) {
+  for (final option in markerIconOptions) {
+    if (option.key == iconName) {
+      return option.emoji;
     }
   }
   return null;

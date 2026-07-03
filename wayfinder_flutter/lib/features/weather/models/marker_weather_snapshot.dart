@@ -17,6 +17,32 @@ class MarkerWeatherReading {
     this.windDirectionDegrees,
     this.pressure,
     this.pressureUnit = 'hPa',
+    this.dewPoint,
+    this.dewPointUnit,
+    this.luminosity,
+    this.luminosityUnit = 'W/m²',
+    this.solarRadiation,
+    this.solarRadiationUnit = 'MJ/m²',
+    this.uvIndex,
+    this.snowfall,
+    this.snowfallUnit = 'mm',
+    this.waterLevel,
+    this.waterLevelUnit = 'm',
+    this.soilTemperature,
+    this.soilTemperatureUnit,
+    this.soilMoisture,
+    this.soilMoistureUnit = '%',
+    this.leafWetness,
+    this.leafWetnessUnit = '%',
+    this.indoorTemperature,
+    this.indoorTemperatureUnit,
+    this.indoorHumidityPercent,
+    this.batteryVoltage,
+    this.batteryVoltageUnit = 'V',
+    this.windRun,
+    this.windRunUnit = 'km',
+    this.stationStatus,
+    this.sensorHealth,
   });
 
   final DateTime observedAt;
@@ -34,6 +60,32 @@ class MarkerWeatherReading {
   final int? windDirectionDegrees;
   final double? pressure;
   final String pressureUnit;
+  final double? dewPoint;
+  final String? dewPointUnit;
+  final double? luminosity;
+  final String luminosityUnit;
+  final double? solarRadiation;
+  final String solarRadiationUnit;
+  final double? uvIndex;
+  final double? snowfall;
+  final String snowfallUnit;
+  final double? waterLevel;
+  final String waterLevelUnit;
+  final double? soilTemperature;
+  final String? soilTemperatureUnit;
+  final double? soilMoisture;
+  final String soilMoistureUnit;
+  final double? leafWetness;
+  final String leafWetnessUnit;
+  final double? indoorTemperature;
+  final String? indoorTemperatureUnit;
+  final int? indoorHumidityPercent;
+  final double? batteryVoltage;
+  final String batteryVoltageUnit;
+  final double? windRun;
+  final String windRunUnit;
+  final String? stationStatus;
+  final String? sensorHealth;
 
   bool get hasMeasurements =>
       temperature != null ||
@@ -43,19 +95,35 @@ class MarkerWeatherReading {
       windSpeed != null ||
       pressure != null ||
       weatherCode != null ||
-      (condition != null && condition!.trim().isNotEmpty);
+      dewPoint != null ||
+      luminosity != null ||
+      solarRadiation != null ||
+      uvIndex != null ||
+      snowfall != null ||
+      waterLevel != null ||
+      soilTemperature != null ||
+      soilMoisture != null ||
+      leafWetness != null ||
+      indoorTemperature != null ||
+      indoorHumidityPercent != null ||
+      batteryVoltage != null ||
+      windRun != null ||
+      _hasText(stationStatus) ||
+      _hasText(sensorHealth) ||
+      _hasText(condition);
 
   factory MarkerWeatherReading.fromJson(Map<String, dynamic> json) {
     final observedAtRaw = json['observedAt'];
     final observedAt = observedAtRaw is String
         ? DateTime.tryParse(observedAtRaw) ?? DateTime.now().toUtc()
         : DateTime.now().toUtc();
+    final temperatureUnit = json['temperatureUnit'] as String? ?? 'C';
 
     return MarkerWeatherReading(
       observedAt: observedAt,
       source: json['source'] as String?,
       temperature: _optionalDouble(json['temperature']),
-      temperatureUnit: json['temperatureUnit'] as String? ?? 'C',
+      temperatureUnit: temperatureUnit,
       apparentTemperature: _optionalDouble(json['apparentTemperature']),
       humidityPercent: _optionalInt(json['humidityPercent'] ?? json['humidity']),
       precipitation: _optionalDouble(json['precipitation']),
@@ -69,6 +137,36 @@ class MarkerWeatherReading {
       ),
       pressure: _optionalDouble(json['pressure']),
       pressureUnit: json['pressureUnit'] as String? ?? 'hPa',
+      dewPoint: _optionalDouble(json['dewPoint']),
+      dewPointUnit: json['dewPointUnit'] as String? ?? temperatureUnit,
+      luminosity: _optionalDouble(json['luminosity']),
+      luminosityUnit: json['luminosityUnit'] as String? ?? 'W/m²',
+      solarRadiation: _optionalDouble(json['solarRadiation']),
+      solarRadiationUnit: json['solarRadiationUnit'] as String? ?? 'MJ/m²',
+      uvIndex: _optionalDouble(json['uvIndex']),
+      snowfall: _optionalDouble(json['snowfall']),
+      snowfallUnit: json['snowfallUnit'] as String? ?? 'mm',
+      waterLevel: _optionalDouble(json['waterLevel']),
+      waterLevelUnit: json['waterLevelUnit'] as String? ?? 'm',
+      soilTemperature: _optionalDouble(json['soilTemperature']),
+      soilTemperatureUnit:
+          json['soilTemperatureUnit'] as String? ?? temperatureUnit,
+      soilMoisture: _optionalDouble(json['soilMoisture']),
+      soilMoistureUnit: json['soilMoistureUnit'] as String? ?? '%',
+      leafWetness: _optionalDouble(json['leafWetness']),
+      leafWetnessUnit: json['leafWetnessUnit'] as String? ?? '%',
+      indoorTemperature: _optionalDouble(json['indoorTemperature']),
+      indoorTemperatureUnit:
+          json['indoorTemperatureUnit'] as String? ?? temperatureUnit,
+      indoorHumidityPercent: _optionalInt(
+        json['indoorHumidityPercent'] ?? json['indoorHumidity'],
+      ),
+      batteryVoltage: _optionalDouble(json['batteryVoltage']),
+      batteryVoltageUnit: json['batteryVoltageUnit'] as String? ?? 'V',
+      windRun: _optionalDouble(json['windRun']),
+      windRunUnit: json['windRunUnit'] as String? ?? 'km',
+      stationStatus: json['stationStatus'] as String?,
+      sensorHealth: json['sensorHealth'] as String?,
     );
   }
 }
@@ -159,6 +257,8 @@ int? _optionalInt(Object? raw) {
   }
   return null;
 }
+
+bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 
 WeatherConditionPresentation weatherConditionPresentation({
   int? weatherCode,

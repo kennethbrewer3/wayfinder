@@ -203,6 +203,28 @@ Weather station markers (`icon: "weather_station"`) can store local weather read
   "windDirectionDegrees": 225,
   "pressure": 1015.0,
   "pressureUnit": "hPa",
+  "dewPoint": 12.3,
+  "luminosity": 850,
+  "luminosityUnit": "W/m²",
+  "solarRadiation": 18.5,
+  "solarRadiationUnit": "MJ/m²",
+  "uvIndex": 6,
+  "snowfall": 2.5,
+  "snowfallUnit": "cm",
+  "waterLevel": 1.42,
+  "waterLevelUnit": "m",
+  "soilTemperature": 14.2,
+  "soilMoisture": 38,
+  "soilMoistureUnit": "%",
+  "leafWetness": 12,
+  "indoorTemperature": 21.0,
+  "indoorHumidityPercent": 45,
+  "batteryVoltage": 13.2,
+  "batteryVoltageUnit": "V",
+  "windRun": 48.5,
+  "windRunUnit": "km",
+  "stationStatus": "OK",
+  "sensorHealth": "All sensors reporting",
   "history": [
     {
       "observedAt": "2026-06-29T14:00:00.000Z",
@@ -212,6 +234,38 @@ Weather station markers (`icon: "weather_station"`) can store local weather read
   ]
 }
 ```
+
+Supported fields (include only what your APRS source provides):
+
+| Field | Type | Default unit | Notes |
+|-------|------|--------------|-------|
+| `observedAt` | ISO-8601 UTC string | — | Recommended — packet timestamp |
+| `source` | string | — | e.g. `"aprs"` |
+| `temperature` | number | `C` or `F` | |
+| `apparentTemperature` | number | same as `temperatureUnit` | |
+| `humidityPercent` | int | `%` | Also accepts `humidity` |
+| `precipitation` | number | `mm` | Rain since midnight |
+| `windSpeed` | number | `km/h` | |
+| `windDirectionDegrees` | int | degrees | Also accepts `windDirection` |
+| `pressure` | number | `hPa` | |
+| `condition` | string | — | Human-readable condition text |
+| `weatherCode` | int | — | Optional WMO-style code |
+| `dewPoint` | number | same as `temperatureUnit` | May be derived by the bridge |
+| `luminosity` | number | `W/m²` | Solar irradiance |
+| `solarRadiation` | number | `MJ/m²` | |
+| `uvIndex` | number | index | |
+| `snowfall` | number | `mm` | |
+| `waterLevel` | number | `m` | |
+| `soilTemperature` | number | same as `temperatureUnit` | |
+| `soilMoisture` | number | `%` | |
+| `leafWetness` | number | `%` | |
+| `indoorTemperature` | number | same as `temperatureUnit` | |
+| `indoorHumidityPercent` | int | `%` | Also accepts `indoorHumidity` |
+| `batteryVoltage` | number | `V` | |
+| `windRun` | number | `km` | |
+| `stationStatus` | string | — | Free-text station status |
+| `sensorHealth` | string | — | Free-text sensor health |
+| `history` | array | — | Previous readings |
 
 Update a weather station marker via REST:
 

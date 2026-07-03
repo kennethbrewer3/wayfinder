@@ -755,6 +755,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherPressure => 'Pressure';
 
   @override
+  String get weatherDewPoint => 'Dew point';
+
+  @override
+  String get weatherLuminosity => 'Luminosity';
+
+  @override
+  String get weatherSolarRadiation => 'Solar radiation';
+
+  @override
+  String get weatherUvIndex => 'UV index';
+
+  @override
+  String get weatherSnowfall => 'Snowfall';
+
+  @override
+  String get weatherWaterLevel => 'Water level';
+
+  @override
+  String get weatherSoilTemperature => 'Soil temperature';
+
+  @override
+  String get weatherSoilMoisture => 'Soil moisture';
+
+  @override
+  String get weatherLeafWetness => 'Leaf wetness';
+
+  @override
+  String get weatherIndoorTemperature => 'Indoor temperature';
+
+  @override
+  String get weatherIndoorHumidity => 'Indoor humidity';
+
+  @override
+  String get weatherBatteryVoltage => 'Battery voltage';
+
+  @override
+  String get weatherWindRun => 'Wind run';
+
+  @override
+  String get weatherStationStatus => 'Station status';
+
+  @override
+  String get weatherSensorHealth => 'Sensor health';
+
+  @override
   String get weatherHistoryTitle => 'Recent readings';
 
   @override

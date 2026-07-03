@@ -18,6 +18,14 @@ class MarkerIconGlyph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final glyphSize = size * markerIconGlyphScale(iconName);
+    final emoji = markerIconEmoji(iconName);
+    if (emoji != null) {
+      return Text(
+        emoji,
+        style: TextStyle(fontSize: glyphSize, height: 1),
+      );
+    }
+
     final assetPath = markerIconAsset(iconName);
     if (assetPath != null) {
       return SvgPicture.asset(

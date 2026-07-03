@@ -769,6 +769,51 @@ class AppLocalizationsFr extends AppLocalizations {
   String get weatherPressure => 'Pression';
 
   @override
+  String get weatherDewPoint => 'Point de rosée';
+
+  @override
+  String get weatherLuminosity => 'Luminosité';
+
+  @override
+  String get weatherSolarRadiation => 'Rayonnement solaire';
+
+  @override
+  String get weatherUvIndex => 'Indice UV';
+
+  @override
+  String get weatherSnowfall => 'Chute de neige';
+
+  @override
+  String get weatherWaterLevel => 'Niveau d\'eau';
+
+  @override
+  String get weatherSoilTemperature => 'Température du sol';
+
+  @override
+  String get weatherSoilMoisture => 'Humidité du sol';
+
+  @override
+  String get weatherLeafWetness => 'Humidité foliaire';
+
+  @override
+  String get weatherIndoorTemperature => 'Température intérieure';
+
+  @override
+  String get weatherIndoorHumidity => 'Humidité intérieure';
+
+  @override
+  String get weatherBatteryVoltage => 'Tension batterie';
+
+  @override
+  String get weatherWindRun => 'Course du vent';
+
+  @override
+  String get weatherStationStatus => 'État de la station';
+
+  @override
+  String get weatherSensorHealth => 'État des capteurs';
+
+  @override
   String get weatherHistoryTitle => 'Lectures récentes';
 
   @override

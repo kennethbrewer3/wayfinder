@@ -23,7 +23,8 @@ class TrackTransportationIcon extends StatelessWidget {
         IconTheme.of(context).color ??
         Theme.of(context).iconTheme.color ??
         Colors.black;
-    if (iconKey != null && markerIconAsset(iconKey) != null) {
+    if (iconKey != null &&
+        (markerIconAsset(iconKey) != null || markerIconEmoji(iconKey) != null)) {
       return MarkerIconGlyph(
         iconName: iconKey,
         color: iconColor,

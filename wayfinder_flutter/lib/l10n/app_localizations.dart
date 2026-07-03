@@ -1426,6 +1426,96 @@ abstract class AppLocalizations {
   /// **'Pressure'**
   String get weatherPressure;
 
+  /// No description provided for @weatherDewPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Dew point'**
+  String get weatherDewPoint;
+
+  /// No description provided for @weatherLuminosity.
+  ///
+  /// In en, this message translates to:
+  /// **'Luminosity'**
+  String get weatherLuminosity;
+
+  /// No description provided for @weatherSolarRadiation.
+  ///
+  /// In en, this message translates to:
+  /// **'Solar radiation'**
+  String get weatherSolarRadiation;
+
+  /// No description provided for @weatherUvIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'UV index'**
+  String get weatherUvIndex;
+
+  /// No description provided for @weatherSnowfall.
+  ///
+  /// In en, this message translates to:
+  /// **'Snowfall'**
+  String get weatherSnowfall;
+
+  /// No description provided for @weatherWaterLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Water level'**
+  String get weatherWaterLevel;
+
+  /// No description provided for @weatherSoilTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil temperature'**
+  String get weatherSoilTemperature;
+
+  /// No description provided for @weatherSoilMoisture.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture'**
+  String get weatherSoilMoisture;
+
+  /// No description provided for @weatherLeafWetness.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaf wetness'**
+  String get weatherLeafWetness;
+
+  /// No description provided for @weatherIndoorTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor temperature'**
+  String get weatherIndoorTemperature;
+
+  /// No description provided for @weatherIndoorHumidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor humidity'**
+  String get weatherIndoorHumidity;
+
+  /// No description provided for @weatherBatteryVoltage.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery voltage'**
+  String get weatherBatteryVoltage;
+
+  /// No description provided for @weatherWindRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind run'**
+  String get weatherWindRun;
+
+  /// No description provided for @weatherStationStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Station status'**
+  String get weatherStationStatus;
+
+  /// No description provided for @weatherSensorHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor health'**
+  String get weatherSensorHealth;
+
   /// No description provided for @weatherHistoryTitle.
   ///
   /// In en, this message translates to:

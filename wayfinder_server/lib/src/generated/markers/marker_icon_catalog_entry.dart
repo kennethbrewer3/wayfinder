@@ -19,6 +19,7 @@ abstract class MarkerIconCatalogEntry
     required this.key,
     required this.label,
     String? category,
+    String? iconBackgroundColor,
     this.materialIcon,
     required this.coloredAsset,
     required this.glyphScale,
@@ -27,13 +28,15 @@ abstract class MarkerIconCatalogEntry
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       category = category ?? 'custom';
+       category = category ?? 'custom',
+       iconBackgroundColor = iconBackgroundColor ?? '#FFFFFF';
 
   factory MarkerIconCatalogEntry({
     _i1.UuidValue? id,
     required String key,
     required String label,
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     required bool coloredAsset,
     required double glyphScale,
@@ -53,6 +56,7 @@ abstract class MarkerIconCatalogEntry
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
       category: jsonSerialization['category'] as String?,
+      iconBackgroundColor: jsonSerialization['iconBackgroundColor'] as String?,
       materialIcon: jsonSerialization['materialIcon'] as String?,
       coloredAsset: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['coloredAsset'],
@@ -84,6 +88,8 @@ abstract class MarkerIconCatalogEntry
 
   String category;
 
+  String iconBackgroundColor;
+
   String? materialIcon;
 
   bool coloredAsset;
@@ -109,6 +115,7 @@ abstract class MarkerIconCatalogEntry
     String? key,
     String? label,
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -125,6 +132,7 @@ abstract class MarkerIconCatalogEntry
       'key': key,
       'label': label,
       'category': category,
+      'iconBackgroundColor': iconBackgroundColor,
       if (materialIcon != null) 'materialIcon': materialIcon,
       'coloredAsset': coloredAsset,
       'glyphScale': glyphScale,
@@ -143,6 +151,7 @@ abstract class MarkerIconCatalogEntry
       'key': key,
       'label': label,
       'category': category,
+      'iconBackgroundColor': iconBackgroundColor,
       if (materialIcon != null) 'materialIcon': materialIcon,
       'coloredAsset': coloredAsset,
       'glyphScale': glyphScale,
@@ -191,6 +200,7 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
     required String key,
     required String label,
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     required bool coloredAsset,
     required double glyphScale,
@@ -203,6 +213,7 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
          key: key,
          label: label,
          category: category,
+         iconBackgroundColor: iconBackgroundColor,
          materialIcon: materialIcon,
          coloredAsset: coloredAsset,
          glyphScale: glyphScale,
@@ -221,6 +232,7 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
     String? key,
     String? label,
     String? category,
+    String? iconBackgroundColor,
     Object? materialIcon = _Undefined,
     bool? coloredAsset,
     double? glyphScale,
@@ -234,6 +246,7 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
       key: key ?? this.key,
       label: label ?? this.label,
       category: category ?? this.category,
+      iconBackgroundColor: iconBackgroundColor ?? this.iconBackgroundColor,
       materialIcon: materialIcon is String? ? materialIcon : this.materialIcon,
       coloredAsset: coloredAsset ?? this.coloredAsset,
       glyphScale: glyphScale ?? this.glyphScale,
@@ -263,6 +276,12 @@ class MarkerIconCatalogEntryUpdateTable
     table.category,
     value,
   );
+
+  _i1.ColumnValue<String, String> iconBackgroundColor(String value) =>
+      _i1.ColumnValue(
+        table.iconBackgroundColor,
+        value,
+      );
 
   _i1.ColumnValue<String, String> materialIcon(String? value) =>
       _i1.ColumnValue(
@@ -320,6 +339,11 @@ class MarkerIconCatalogEntryTable extends _i1.Table<_i1.UuidValue> {
       this,
       hasDefault: true,
     );
+    iconBackgroundColor = _i1.ColumnString(
+      'iconBackgroundColor',
+      this,
+      hasDefault: true,
+    );
     materialIcon = _i1.ColumnString(
       'materialIcon',
       this,
@@ -358,6 +382,8 @@ class MarkerIconCatalogEntryTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnString category;
 
+  late final _i1.ColumnString iconBackgroundColor;
+
   late final _i1.ColumnString materialIcon;
 
   late final _i1.ColumnBool coloredAsset;
@@ -378,6 +404,7 @@ class MarkerIconCatalogEntryTable extends _i1.Table<_i1.UuidValue> {
     key,
     label,
     category,
+    iconBackgroundColor,
     materialIcon,
     coloredAsset,
     glyphScale,

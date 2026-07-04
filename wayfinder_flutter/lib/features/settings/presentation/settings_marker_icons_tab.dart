@@ -1,5 +1,4 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
@@ -7,12 +6,13 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/l10n/localized_labels.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_icon_categories.dart';
 import '../../markers/models/marker_icon_category_catalog.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/marker_icon_category_field.dart';
-import '../../markers/providers/marker_icon_background_color_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
 
 final _keyPattern = RegExp(r'^[a-z0-9_]{1,64}$');
@@ -108,6 +108,7 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           key: created.key,
           label: created.label,
           category: created.category,
+          iconBackgroundColor: formatMarkerColorHexWithAlpha(created.iconBackgroundColor),
           coloredAsset: created.coloredAsset,
           glyphScale: created.glyphScale,
         );
@@ -157,6 +158,8 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
               key: entry.key,
               label: updated.label,
               category: updated.category,
+              iconBackgroundColor:
+                  formatMarkerColorHexWithAlpha(updated.iconBackgroundColor),
               coloredAsset: updated.coloredAsset,
               glyphScale: updated.glyphScale,
             );
@@ -385,7 +388,6 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
     final categoryOrder = categoryCatalog.orderedKeys;
     final theme = Theme.of(context);
     final previewColor = theme.colorScheme.primary;
-    final iconBackgroundColor = ref.watch(markerIconBackgroundColorProvider);
 
     final bundledSvgIcons = markerIconOptions
         .where((option) => option.assetPath != null)
@@ -402,74 +404,6 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
         Text(
           l10n.markerIconsDescription,
           style: theme.textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 24),
-        Text(
-          l10n.markerIconBackgroundColorTitle,
-          style: theme.textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.markerIconBackgroundColorDescription,
-          style: theme.textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 12),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MapMarkerIcon(
-                      color: previewColor,
-                      iconName: 'horse',
-                      iconBackgroundColor: iconBackgroundColor,
-                      width: 36,
-                      height: 36,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            l10n.markerIconBackgroundColorLabel,
-                            style: theme.textTheme.labelLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          ColorPicker(
-                            color: iconBackgroundColor,
-                            onColorChanged: (color) => ref
-                                .read(markerIconBackgroundColorProvider.notifier)
-                                .setColor(color),
-                            width: 32,
-                            height: 32,
-                            borderRadius: 8,
-                            spacing: 8,
-                            runSpacing: 8,
-                            enableOpacity: true,
-                            pickersEnabled: const {
-                              ColorPickerType.wheel: true,
-                              ColorPickerType.primary: true,
-                              ColorPickerType.accent: true,
-                            },
-                            pickerTypeLabels: {
-                              ColorPickerType.wheel: l10n.themePreviewOutline,
-                              ColorPickerType.primary: l10n.themePreviewPrimary,
-                              ColorPickerType.accent: l10n.themePreviewAccent,
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
         ),
         const SizedBox(height: 24),
         Text(
@@ -783,6 +717,7 @@ class _CreateIconFormData {
     required this.key,
     required this.label,
     required this.category,
+    required this.iconBackgroundColor,
     required this.coloredAsset,
     required this.glyphScale,
     this.svgFile,
@@ -791,6 +726,7 @@ class _CreateIconFormData {
   final String key;
   final String label;
   final String category;
+  final Color iconBackgroundColor;
   final bool coloredAsset;
   final double glyphScale;
   final PlatformFile? svgFile;
@@ -812,6 +748,7 @@ class _CreateIconDialogState extends State<_CreateIconDialog> {
   var _coloredAsset = false;
   var _glyphScale = 1.0;
   var _category = MarkerIconCategories.custom;
+  var _iconBackgroundColor = const Color(0xFFFFFFFF);
   PlatformFile? _svgFile;
 
   @override
@@ -843,6 +780,7 @@ class _CreateIconDialogState extends State<_CreateIconDialog> {
         key: _keyController.text.trim().toLowerCase(),
         label: _labelController.text.trim(),
         category: _category,
+        iconBackgroundColor: _iconBackgroundColor,
         coloredAsset: _coloredAsset,
         glyphScale: _glyphScale,
         svgFile: _svgFile,
@@ -904,6 +842,12 @@ class _CreateIconDialogState extends State<_CreateIconDialog> {
                   onChanged: (value) => setState(() => _category = value),
                 ),
                 const SizedBox(height: 12),
+                MarkerIconBackgroundColorField(
+                  color: _iconBackgroundColor,
+                  onChanged: (value) =>
+                      setState(() => _iconBackgroundColor = value),
+                ),
+                const SizedBox(height: 12),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(l10n.markerIconsColoredAssetLabel),
@@ -955,12 +899,14 @@ class _EditIconFormData {
   const _EditIconFormData({
     required this.label,
     required this.category,
+    required this.iconBackgroundColor,
     required this.coloredAsset,
     required this.glyphScale,
   });
 
   final String label;
   final String category;
+  final Color iconBackgroundColor;
   final bool coloredAsset;
   final double glyphScale;
 }
@@ -986,6 +932,7 @@ class _EditIconDialogState extends State<_EditIconDialog> {
   late bool _coloredAsset;
   late double _glyphScale;
   late String _category;
+  late Color _iconBackgroundColor;
 
   @override
   void initState() {
@@ -994,6 +941,7 @@ class _EditIconDialogState extends State<_EditIconDialog> {
     _coloredAsset = widget.entry.coloredAsset;
     _glyphScale = widget.entry.glyphScale;
     _category = widget.entry.category;
+    _iconBackgroundColor = parseMarkerColor(widget.entry.iconBackgroundColor);
   }
 
   @override
@@ -1010,6 +958,7 @@ class _EditIconDialogState extends State<_EditIconDialog> {
       _EditIconFormData(
         label: _labelController.text.trim(),
         category: _category,
+        iconBackgroundColor: _iconBackgroundColor,
         coloredAsset: _coloredAsset,
         glyphScale: _glyphScale,
       ),
@@ -1019,6 +968,7 @@ class _EditIconDialogState extends State<_EditIconDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
+    final previewColor = Theme.of(context).colorScheme.primary;
 
     return AlertDialog(
       title: Text(l10n.markerIconsEditTitle),
@@ -1026,33 +976,50 @@ class _EditIconDialogState extends State<_EditIconDialog> {
         width: 420,
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                widget.entry.key,
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _labelController,
-                decoration: InputDecoration(
-                  labelText: l10n.markerIconsLabelField,
-                  border: const OutlineInputBorder(),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  widget.entry.key,
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return l10n.markerIconsLabelRequired;
-                  }
-                  return null;
-                },
-              ),
+                const SizedBox(height: 12),
+                Align(
+                  child: MapMarkerIcon(
+                    color: previewColor,
+                    iconName: widget.entry.key,
+                    iconBackgroundColor: _iconBackgroundColor,
+                    width: 36,
+                    height: 36,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _labelController,
+                  decoration: InputDecoration(
+                    labelText: l10n.markerIconsLabelField,
+                    border: const OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return l10n.markerIconsLabelRequired;
+                    }
+                    return null;
+                  },
+                ),
               const SizedBox(height: 12),
               MarkerIconCategoryField(
                 l10n: l10n,
                 value: _category,
                 onChanged: (value) => setState(() => _category = value),
+              ),
+              const SizedBox(height: 12),
+              MarkerIconBackgroundColorField(
+                color: _iconBackgroundColor,
+                onChanged: (value) =>
+                    setState(() => _iconBackgroundColor = value),
               ),
               const SizedBox(height: 12),
               SwitchListTile(
@@ -1074,6 +1041,7 @@ class _EditIconDialogState extends State<_EditIconDialog> {
             ],
           ),
         ),
+      ),
       ),
       actions: [
         TextButton(

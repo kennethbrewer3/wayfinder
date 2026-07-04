@@ -44,6 +44,7 @@ abstract final class MarkerIconsRestHandlers {
           key: body['key'] as String? ?? '',
           label: body['label'] as String? ?? '',
           category: body['category'] as String?,
+          iconBackgroundColor: body['iconBackgroundColor'] as String?,
           materialIcon: _optionalString(body['materialIcon']),
           coloredAsset: body['coloredAsset'] as bool? ?? false,
           glyphScale: _parseGlyphScale(body['glyphScale']),
@@ -68,6 +69,9 @@ abstract final class MarkerIconsRestHandlers {
           label: body.containsKey('label') ? _requiredLabel(body['label']) : '',
           category: body.containsKey('category')
               ? body['category'] as String?
+              : null,
+          iconBackgroundColor: body.containsKey('iconBackgroundColor')
+              ? body['iconBackgroundColor'] as String?
               : null,
           materialIcon: body.containsKey('materialIcon')
               ? _optionalString(body['materialIcon'])

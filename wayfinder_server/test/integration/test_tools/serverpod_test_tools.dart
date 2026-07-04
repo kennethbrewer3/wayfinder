@@ -1299,6 +1299,7 @@ class _MarkerIconEndpoint {
     String key,
     String label, {
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     required bool coloredAsset,
     required double glyphScale,
@@ -1319,6 +1320,7 @@ class _MarkerIconEndpoint {
             'key': key,
             'label': label,
             'category': category,
+            'iconBackgroundColor': iconBackgroundColor,
             'materialIcon': materialIcon,
             'coloredAsset': coloredAsset,
             'glyphScale': glyphScale,
@@ -1344,6 +1346,7 @@ class _MarkerIconEndpoint {
     String key,
     String label, {
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -1364,6 +1367,7 @@ class _MarkerIconEndpoint {
             'key': key,
             'label': label,
             'category': category,
+            'iconBackgroundColor': iconBackgroundColor,
             'materialIcon': materialIcon,
             'coloredAsset': coloredAsset,
             'glyphScale': glyphScale,

@@ -827,7 +827,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconBackgroundColorDescription =>
-      'Choose the fill color behind marker icons on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.';
+      'Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.';
 
   @override
   String get markerIconBackgroundColorLabel => 'Background color';

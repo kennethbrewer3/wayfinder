@@ -720,6 +720,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String?>(),
               nullable: true,
             ),
+            'iconBackgroundColor': _i1.ParameterDescription(
+              name: 'iconBackgroundColor',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
             'materialIcon': _i1.ParameterDescription(
               name: 'materialIcon',
               type: _i1.getType<String?>(),
@@ -751,6 +756,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['key'],
                     params['label'],
                     category: params['category'],
+                    iconBackgroundColor: params['iconBackgroundColor'],
                     materialIcon: params['materialIcon'],
                     coloredAsset: params['coloredAsset'],
                     glyphScale: params['glyphScale'],
@@ -772,6 +778,11 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'category': _i1.ParameterDescription(
               name: 'category',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'iconBackgroundColor': _i1.ParameterDescription(
+              name: 'iconBackgroundColor',
               type: _i1.getType<String?>(),
               nullable: true,
             ),
@@ -806,6 +817,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['key'],
                     params['label'],
                     category: params['category'],
+                    iconBackgroundColor: params['iconBackgroundColor'],
                     materialIcon: params['materialIcon'],
                     coloredAsset: params['coloredAsset'],
                     glyphScale: params['glyphScale'],

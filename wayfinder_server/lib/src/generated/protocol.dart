@@ -629,6 +629,13 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'custom\'::text',
         ),
         _i2.ColumnDefinition(
+          name: 'iconBackgroundColor',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'#FFFFFF\'::text',
+        ),
+        _i2.ColumnDefinition(
           name: 'materialIcon',
           columnType: _i2.ColumnType.text,
           isNullable: true,

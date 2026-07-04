@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'marker_icon_background_color.dart';
 import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
 import 'marker_icon_storage.dart';
@@ -22,6 +23,7 @@ abstract final class MarkerIconCatalogService {
     required String key,
     required String label,
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool coloredAsset = false,
     double glyphScale = 1.0,
@@ -47,6 +49,7 @@ abstract final class MarkerIconCatalogService {
       key: normalizedKey,
       label: trimmedLabel,
       category: resolvedCategory,
+      iconBackgroundColor: MarkerIconBackgroundColor.normalize(iconBackgroundColor),
       materialIcon: _optionalString(materialIcon),
       coloredAsset: coloredAsset,
       glyphScale: _parseGlyphScale(glyphScale),
@@ -64,6 +67,7 @@ abstract final class MarkerIconCatalogService {
     required String key,
     required String label,
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -81,6 +85,9 @@ abstract final class MarkerIconCatalogService {
     final updated = existing.copyWith(
       label: label.trim().isEmpty ? existing.label : label.trim(),
       category: resolvedCategory,
+      iconBackgroundColor: iconBackgroundColor != null
+          ? MarkerIconBackgroundColor.normalize(iconBackgroundColor)
+          : existing.iconBackgroundColor,
       materialIcon: materialIcon != null
           ? _optionalString(materialIcon)
           : existing.materialIcon,

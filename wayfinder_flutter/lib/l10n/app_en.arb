@@ -510,7 +510,7 @@
   "markerIconsEditTitle": "Edit marker icon",
   "markerIconsCategoryLabel": "Category",
   "markerIconBackgroundColorTitle": "Icon background",
-  "markerIconBackgroundColorDescription": "Choose the fill color behind marker icons on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.",
+  "markerIconBackgroundColorDescription": "Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.",
   "markerIconBackgroundColorLabel": "Background color",
   "markerIconCategoryGeneral": "General",
   "markerIconCategoryPlaces": "Places & buildings",

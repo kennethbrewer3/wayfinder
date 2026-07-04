@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import 'marker_icon_categories.dart';
+import 'marker_color.dart';
 import 'marker_icon_registry.dart';
 
 /// Runtime marker icon catalog merged from built-in defaults and server entries.
@@ -37,6 +38,7 @@ class MarkerIconCatalog {
         coloredAsset: entry.coloredAsset,
         glyphScale: entry.glyphScale,
         category: entry.category,
+        iconBackgroundColor: entry.iconBackgroundColor,
       );
       if (!defaultKeys.contains(entry.key)) {
         remoteOnly.add(entry);
@@ -78,6 +80,12 @@ class MarkerIconCatalog {
   double glyphScale(String iconName) => option(iconName)?.glyphScale ?? 1.0;
 
   bool coloredAsset(String iconName) => option(iconName)?.coloredAsset ?? false;
+
+  String iconBackgroundColorHex(String iconName) =>
+      option(iconName)?.iconBackgroundColor ?? '#FFFFFF';
+
+  Color iconBackgroundColor(String iconName) =>
+      parseMarkerColor(iconBackgroundColorHex(iconName));
 
   /// Icons grouped by category key in display order.
   Map<String, List<MarkerIconOption>> groupedByCategory({

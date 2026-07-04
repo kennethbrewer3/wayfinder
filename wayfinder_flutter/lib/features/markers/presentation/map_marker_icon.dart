@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/marker_icon_background_color_provider.dart';
+import '../models/marker_icon_catalog.dart';
+import '../providers/marker_icon_providers.dart';
 import 'marker_icon_glyph.dart';
 
 const mapMarkerWidth = 44.0;
@@ -49,8 +50,11 @@ class MapMarkerIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(markerIconRevisionProvider);
+    final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
+        MarkerIconCatalog.defaults();
     final Color backgroundColor =
-        iconBackgroundColor ?? ref.watch(markerIconBackgroundColorProvider);
+        iconBackgroundColor ?? catalog.iconBackgroundColor(iconName);
     final scale = width / mapMarkerWidth;
     final headCenterY = mapMarkerHeadCenterY * scale;
     final innerDiameter = mapMarkerInnerDiameter(scale);

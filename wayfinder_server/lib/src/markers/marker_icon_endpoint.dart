@@ -27,6 +27,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
     String key,
     String label, {
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool coloredAsset = false,
     double glyphScale = 1.0,
@@ -41,6 +42,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
         key: key,
         label: label,
         category: category,
+        iconBackgroundColor: iconBackgroundColor,
         materialIcon: materialIcon,
         coloredAsset: coloredAsset,
         glyphScale: glyphScale,
@@ -55,6 +57,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
     String key,
     String label, {
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -69,6 +72,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
         key: key,
         label: label,
         category: category,
+        iconBackgroundColor: iconBackgroundColor,
         materialIcon: materialIcon,
         coloredAsset: coloredAsset,
         glyphScale: glyphScale,

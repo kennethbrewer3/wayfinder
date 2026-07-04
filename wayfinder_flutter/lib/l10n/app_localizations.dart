@@ -1501,7 +1501,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconBackgroundColorDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose the fill color behind marker icons on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.'**
+  /// **'Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.'**
   String get markerIconBackgroundColorDescription;
 
   /// No description provided for @markerIconBackgroundColorLabel.

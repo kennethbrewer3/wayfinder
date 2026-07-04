@@ -51,6 +51,7 @@ import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../markers/providers/marker_icon_providers.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
@@ -1983,6 +1984,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    ref.watch(markerIconRevisionProvider);
+    ref.watch(markerIconCatalogProvider);
     final mapLayers = _visibleMapLayers;
     final enabledEntries = widget.enabledEntries;
     final activeLayer = mapLayers.isEmpty ? null : mapLayers.first;

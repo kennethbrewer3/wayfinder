@@ -7,7 +7,6 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../models/marker_icon_catalog.dart';
 import '../models/marker_icon_category_catalog.dart';
 import '../models/marker_icon_registry.dart';
-import '../providers/marker_icon_background_color_provider.dart';
 import '../providers/marker_icon_providers.dart';
 import 'map_marker_icon.dart';
 import 'marker_icon_glyph.dart';
@@ -308,20 +307,68 @@ class MarkerColorPickerField extends StatelessWidget {
   }
 }
 
+class MarkerIconBackgroundColorField extends StatelessWidget {
+  const MarkerIconBackgroundColorField({
+    super.key,
+    required this.color,
+    required this.onChanged,
+  });
+
+  final Color color;
+  final ValueChanged<Color> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.markerIconBackgroundColorLabel,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 8),
+        ColorPicker(
+          color: color,
+          onColorChanged: onChanged,
+          width: 32,
+          height: 32,
+          borderRadius: 8,
+          spacing: 8,
+          runSpacing: 8,
+          enableOpacity: true,
+          pickersEnabled: const {
+            ColorPickerType.wheel: true,
+            ColorPickerType.primary: true,
+            ColorPickerType.accent: true,
+          },
+          pickerTypeLabels: {
+            ColorPickerType.wheel: l10n.themePreviewOutline,
+            ColorPickerType.primary: l10n.themePreviewPrimary,
+            ColorPickerType.accent: l10n.themePreviewAccent,
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class MarkerPreview extends ConsumerWidget {
   const MarkerPreview({
     super.key,
     required this.color,
     required this.iconName,
+    this.iconBackgroundColor,
   });
 
   final Color color;
   final String iconName;
+  final Color? iconBackgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final iconBackgroundColor = ref.watch(markerIconBackgroundColorProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

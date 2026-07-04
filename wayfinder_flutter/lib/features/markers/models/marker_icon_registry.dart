@@ -13,6 +13,7 @@ class MarkerIconOption {
     this.coloredAsset = false,
     this.glyphScale = 1.0,
     this.category,
+    this.iconBackgroundColor = '#FFFFFF',
   });
 
   final String key;
@@ -24,6 +25,7 @@ class MarkerIconOption {
   final bool coloredAsset;
   final double glyphScale;
   final String? category;
+  final String iconBackgroundColor;
 
   String get resolvedCategory =>
       markerIconCategoryForKey(key, override: category);

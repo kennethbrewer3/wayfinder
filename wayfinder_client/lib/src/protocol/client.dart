@@ -481,6 +481,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     String key,
     String label, {
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     required bool coloredAsset,
     required double glyphScale,
@@ -492,6 +493,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
       'key': key,
       'label': label,
       'category': category,
+      'iconBackgroundColor': iconBackgroundColor,
       'materialIcon': materialIcon,
       'coloredAsset': coloredAsset,
       'glyphScale': glyphScale,
@@ -503,6 +505,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     String key,
     String label, {
     String? category,
+    String? iconBackgroundColor,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -514,6 +517,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
       'key': key,
       'label': label,
       'category': category,
+      'iconBackgroundColor': iconBackgroundColor,
       'materialIcon': materialIcon,
       'coloredAsset': coloredAsset,
       'glyphScale': glyphScale,

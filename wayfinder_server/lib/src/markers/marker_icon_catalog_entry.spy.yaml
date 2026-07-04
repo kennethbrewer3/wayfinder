@@ -5,6 +5,7 @@ fields:
   key: String
   label: String
   category: String, default="custom"
+  iconBackgroundColor: String, default="#FFFFFF"
   materialIcon: String?
   coloredAsset: bool
   glyphScale: double

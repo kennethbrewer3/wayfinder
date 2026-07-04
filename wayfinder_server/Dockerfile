@@ -28,6 +28,7 @@ ENV serverid=default
 ENV logging=normal
 ENV role=monolith
 ENV WAYFINDER_PMTILES_STORAGE=/data/pmtiles
+ENV WAYFINDER_MARKER_ICON_STORAGE=/data/marker-icons
 ENV SERVERPOD_APPLY_MIGRATIONS=true
 ENV SERVERPOD_DATABASE_HOST=postgres
 ENV SERVERPOD_DATABASE_PORT=5432
@@ -54,7 +55,7 @@ EXPOSE 18080
 EXPOSE 18081
 EXPOSE 18082
 
-VOLUME ["/data/pmtiles"]
+VOLUME ["/data/pmtiles", "/data/marker-icons"]
 
 ENTRYPOINT ["./server"]
 CMD ["--mode=development", "--server-id=default", "--logging=normal", "--role=monolith", "--apply-migrations"]

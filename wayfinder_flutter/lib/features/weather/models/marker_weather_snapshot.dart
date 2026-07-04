@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'weather_display_units.dart';
+
 class MarkerWeatherReading {
   const MarkerWeatherReading({
     required this.observedAt,
@@ -177,10 +179,12 @@ class MarkerWeatherSnapshot {
   const MarkerWeatherSnapshot({
     required this.latest,
     required this.history,
+    this.displayUnits = WeatherDisplayUnits.metric,
   });
 
   final MarkerWeatherReading latest;
   final List<MarkerWeatherReading> history;
+  final WeatherDisplayUnits displayUnits;
 
   static MarkerWeatherSnapshot? fromMarkerWeatherJson(String? raw) {
     if (raw == null || raw.trim().isEmpty) {
@@ -215,7 +219,7 @@ class MarkerWeatherSnapshot {
 
     MarkerWeatherReading? latest;
     if (json.isNotEmpty &&
-        json.keys.any((key) => key != 'history' && key != 'source')) {
+        json.keys.any((key) => !isWeatherJsonMetadataField(key))) {
       final latestCandidate = MarkerWeatherReading.fromJson(json);
       if (latestCandidate.hasMeasurements) {
         latest = latestCandidate;
@@ -242,6 +246,9 @@ class MarkerWeatherSnapshot {
     return MarkerWeatherSnapshot(
       latest: latest,
       history: dedupedHistory,
+      displayUnits: weatherDisplayUnitsFromStorage(
+        json[weatherJsonDisplayUnitsField] as String?,
+      ),
     );
   }
 }

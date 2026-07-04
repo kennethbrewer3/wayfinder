@@ -4,6 +4,7 @@ import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'map_marker_change_broadcast.dart';
 import 'marker_tracking_service.dart';
+import 'marker_weather_json.dart';
 
 class MapMarkerEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapMarker';
@@ -70,6 +71,12 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
         if (incoming.trackZoneId == null && before?.trackZoneId != null) {
           incoming = incoming.copyWith(trackZoneId: before!.trackZoneId);
         }
+        incoming = incoming.copyWith(
+          weatherJson: preserveWeatherJsonDisplayUnits(
+            before?.weatherJson,
+            incoming.weatherJson,
+          ),
+        );
         var updated = await MapMarker.db.updateRow(
           session,
           incoming.copyWith(updatedAt: DateTime.now().toUtc()),

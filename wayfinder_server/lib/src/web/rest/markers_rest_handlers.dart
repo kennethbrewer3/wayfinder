@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../../generated/protocol.dart';
 import '../../map/map_marker_change_broadcast.dart';
 import '../../map/marker_tracking_service.dart';
+import '../../map/marker_weather_json.dart';
 import 'rest_json.dart';
 
 abstract final class MarkersRestHandlers {
@@ -186,7 +187,10 @@ abstract final class MarkersRestHandlers {
             )
           : existing.trackZoneId,
       weatherJson: body.containsKey('weatherJson')
-          ? body['weatherJson'] as String?
+          ? preserveWeatherJsonDisplayUnits(
+              existing.weatherJson,
+              body['weatherJson'] as String?,
+            )
           : existing.weatherJson,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')

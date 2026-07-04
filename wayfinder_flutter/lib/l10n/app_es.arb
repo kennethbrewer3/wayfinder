@@ -466,6 +466,7 @@
   "markerTrackingHelp": "Registre el historial de movimiento como un rastro en el mapa.",
   "markerTrackingStatusActive": "Activo",
   "weatherStationCurrentConditions": "Condiciones actuales",
+  "weatherDisplayUnitsLabel": "Unidades",
   "weatherNoData": "Aún no hay lecturas meteorológicas. Los datos se almacenan en el servidor cuando llegan desde APRS u otras integraciones locales.",
   "weatherFeelsLike": "Sensación térmica",
   "weatherHumidity": "Humedad",

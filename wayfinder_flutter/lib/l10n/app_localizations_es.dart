@@ -1041,6 +1041,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get weatherStationCurrentConditions => 'Condiciones actuales';
 
   @override
+  String get weatherDisplayUnitsLabel => 'Unidades';
+
+  @override
   String get weatherNoData =>
       'Aún no hay lecturas meteorológicas. Los datos se almacenan en el servidor cuando llegan desde APRS u otras integraciones locales.';
 

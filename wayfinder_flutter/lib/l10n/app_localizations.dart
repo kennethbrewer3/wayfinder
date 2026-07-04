@@ -1845,6 +1845,12 @@ abstract class AppLocalizations {
   /// **'Current conditions'**
   String get weatherStationCurrentConditions;
 
+  /// No description provided for @weatherDisplayUnitsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Units'**
+  String get weatherDisplayUnitsLabel;
+
   /// No description provided for @weatherNoData.
   ///
   /// In en, this message translates to:

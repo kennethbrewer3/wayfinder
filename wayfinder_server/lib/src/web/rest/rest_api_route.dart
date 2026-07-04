@@ -47,7 +47,9 @@ class RestApiRoute extends Route {
       ..patch('/layers/:id', LayersRestHandlers.update)
       ..delete('/layers/:id', LayersRestHandlers.delete)
       ..get('/map-data', MapDataRestHandlers.export)
+      ..get('/map-data/backup.zip', MapDataRestHandlers.exportArchive)
       ..post('/map-data/restore', MapDataRestHandlers.restore)
+      ..post('/map-data/backup.zip', MapDataRestHandlers.restoreArchive)
       ..get('/pmtiles', PmtilesRestHandlers.list)
       ..post('/pmtiles/upload', PmtilesRestHandlers.upload)
       ..get('/pmtiles/active', PmtilesRestHandlers.getActive)
@@ -110,7 +112,9 @@ class RestApiRoute extends Route {
         'categories': '/api/categories',
         'layers': '/api/layers',
         'mapData': '/api/map-data',
+        'mapDataBackupZip': '/api/map-data/backup.zip',
         'mapDataRestore': '/api/map-data/restore',
+        'mapDataRestoreZip': '/api/map-data/backup.zip',
         'pmtiles': '/api/pmtiles',
         'pmtilesUpload': '/api/pmtiles/upload?name=<file.pmtiles>',
         'pmtilesDownload': '/pmtiles/files/<id>',

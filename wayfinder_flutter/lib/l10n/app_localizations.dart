@@ -973,13 +973,13 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore all layers, markers, zones, and custom marker icons (including embedded SVG files). You can also back up with curl: GET /api/map-data'**
+  /// **'Export or restore all layers, markers, zones, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
   ///
   /// In en, this message translates to:
-  /// **'Export map data (.json)'**
+  /// **'Export map data (.zip)'**
   String get backupExportButton;
 
   /// No description provided for @backupRestoreButton.

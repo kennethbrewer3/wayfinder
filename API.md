@@ -579,9 +579,23 @@ curl -X DELETE http://localhost:18082/api/pmtiles/17feeaff-1532-4709-8786-022597
 
 ## Map data backup
 
-Export or restore the full map structure (layers, markers, zones, and custom marker icons) in one JSON document. Custom icon SVG files are embedded as UTF-8 text in each catalog entry under `svgContent`. IDs and relationships are preserved on restore.
+Export or restore the full map structure (layers, markers, zones, and custom marker icons).
 
-### Export all map data
+**Recommended format:** a `.zip` archive from `GET /api/map-data/backup.zip` containing:
+
+- `backup.json` — map data (version `2`)
+- `marker-icons/{key}.svg` — one file per custom icon on the server
+
+Legacy plain JSON export (`GET /api/map-data`) remains available; version `2` JSON may also embed `svgContent` inline when the SVG file exists on disk.
+
+### Export zip backup (recommended)
+
+```bash
+curl -s http://localhost:18082/api/map-data/backup.zip \
+  -o "wayfinder-backup-$(date -u +%Y-%m-%d).zip"
+```
+
+### Export JSON backup (legacy)
 
 ```bash
 curl http://localhost:18082/api/map-data
@@ -612,7 +626,17 @@ Example response shape:
 
 **Warning:** This replaces all existing layers, markers, zones, and custom marker icons on the server.
 
-Required top-level fields: `version` (`1` or `2`), `layers`, `markers`, and `zones` (arrays). Version `2` backups also include `markerIconCategories` and `markerIcons` (with optional embedded `svgContent` per icon). Use the same object shapes returned by export.
+Required top-level fields in `backup.json`: `version` (`1` or `2`), `layers`, `markers`, and `zones` (arrays). Version `2` backups also include `markerIconCategories` and `markerIcons`. Custom SVGs are restored from `marker-icons/*.svg` in the zip, or from optional inline `svgContent` in JSON.
+
+Restore from zip:
+
+```bash
+curl -X POST http://localhost:18082/api/map-data/backup.zip \
+  -H "Content-Type: application/zip" \
+  --data-binary @wayfinder-backup.zip
+```
+
+Restore from JSON:
 
 ```bash
 curl -X POST http://localhost:18082/api/map-data/restore \
@@ -639,7 +663,7 @@ If the backup has no layers, a default layer is created. Markers or zones refere
 ### Cron backup example
 
 ```bash
-0 2 * * * curl -sf http://localhost:18082/api/map-data -o "/backups/wayfinder-$(date +\%Y\%m\%d).json"
+0 2 * * * curl -sf http://localhost:18082/api/map-data/backup.zip -o "/backups/wayfinder-$(date +\%Y\%m\%d).zip"
 ```
 
 ---
@@ -796,8 +820,10 @@ curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 | PUT/PATCH | `/api/layers/:id` | Update map layer |
 | POST | `/api/layers/reorder` | Reorder map layers |
 | DELETE | `/api/layers/:id` | Delete map layer |
-| GET | `/api/map-data` | Export all layers, markers, and zones |
+| GET | `/api/map-data` | Export all layers, markers, and zones (JSON) |
+| GET | `/api/map-data/backup.zip` | Export zip backup with JSON + marker icon SVGs |
 | POST | `/api/map-data/restore` | Restore map data from backup JSON |
+| POST | `/api/map-data/backup.zip` | Restore map data from backup zip |
 | GET | `/api/pmtiles` | List PMTiles catalog |
 | POST | `/api/pmtiles/upload?name=…` | Upload PMTiles bytes |
 | GET | `/api/pmtiles/active` | Get active file id |

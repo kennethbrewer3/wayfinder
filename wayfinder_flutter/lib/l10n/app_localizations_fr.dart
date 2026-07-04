@@ -489,10 +489,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporter ou restaurer toutes les couches, marqueurs, zones et icônes personnalisées (y compris les SVG intégrés). Vous pouvez aussi sauvegarder avec curl : GET /api/map-data';
+      'Exporter ou restaurer toutes les couches, marqueurs, zones et icônes personnalisées. Les sauvegardes sont des fichiers .zip contenant backup.json et marker-icons/*.svg. Les anciennes sauvegardes .json restent prises en charge.';
 
   @override
-  String get backupExportButton => 'Exporter les données (.json)';
+  String get backupExportButton => 'Exporter les données (.zip)';
 
   @override
   String get backupRestoreButton => 'Restaurer depuis une sauvegarde';

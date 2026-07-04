@@ -23,14 +23,14 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     setState(() => _isExportingMapData = true);
     try {
       final repository = ref.read(mapDataRepositoryProvider);
-      final jsonText = await repository.fetchBackupJson();
+      final archiveBytes = await repository.fetchBackupArchive();
       final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
         ':',
         '-',
       );
-      final saved = await saveTextFile(
-        fileName: 'wayfinder-backup-$timestamp.json',
-        contents: jsonText,
+      final saved = await saveBinaryFile(
+        fileName: 'wayfinder-backup-$timestamp.zip',
+        bytes: archiveBytes,
       );
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
@@ -58,8 +58,8 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
   }
 
   Future<void> _restoreMapData() async {
-    final jsonText = await pickTextFileContents();
-    if (jsonText == null || !mounted) {
+    final picked = await pickBackupFile();
+    if (picked == null || !mounted) {
       return;
     }
 
@@ -91,7 +91,9 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     setState(() => _isRestoringMapData = true);
     try {
       final repository = ref.read(mapDataRepositoryProvider);
-      final result = await repository.restoreFromJson(jsonText);
+      final result = picked.isZip
+          ? await repository.restoreFromArchive(picked.zipBytes!)
+          : await repository.restoreFromJson(picked.jsonText!);
       refreshMapData(ref);
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;

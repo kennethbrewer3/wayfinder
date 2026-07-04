@@ -111,8 +111,8 @@ abstract final class MarkerIconCatalogService {
       return false;
     }
 
-    await MarkerIconStorage().delete(normalizedKey);
     await MarkerIconCatalogEntry.db.deleteRow(session, existing);
+    await MarkerIconStorage().delete(normalizedKey);
     return true;
   }
 

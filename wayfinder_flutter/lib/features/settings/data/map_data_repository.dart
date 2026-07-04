@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -35,9 +36,31 @@ class MapDataRepository {
     return Uri.parse('$base/api/map-data');
   }
 
+  Uri get _exportArchiveUri {
+    final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
+    return Uri.parse('$base/api/map-data/backup.zip');
+  }
+
   Uri get _restoreUri {
     final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
     return Uri.parse('$base/api/map-data/restore');
+  }
+
+  Uri get _restoreArchiveUri => _exportArchiveUri;
+
+  Future<Uint8List> fetchBackupArchive() async {
+    final response = await http.get(
+      _exportArchiveUri,
+      headers: await RestApiHeaders.readOnly(),
+    );
+    if (response.statusCode != 200) {
+      final message = _readErrorMessage(response.body);
+      throw Exception(
+        message ??
+            'Export failed: ${response.statusCode} ${response.body}',
+      );
+    }
+    return Uint8List.fromList(response.bodyBytes);
   }
 
   Future<String> fetchBackupJson() async {
@@ -64,6 +87,30 @@ class MapDataRepository {
       );
     }
     return _prettyPrintJson(response.body);
+  }
+
+  Future<MapDataRestoreResult> restoreFromArchive(Uint8List archiveBytes) async {
+    if (archiveBytes.isEmpty) {
+      throw const FormatException('Backup archive is empty');
+    }
+
+    final response = await http.post(
+      _restoreArchiveUri,
+      headers: {
+        ...(await RestApiHeaders.readOnly()),
+        'Content-Type': 'application/zip',
+      },
+      body: archiveBytes,
+    );
+
+    if (response.statusCode != 200) {
+      final message = _readErrorMessage(response.body);
+      throw Exception(
+        message ?? 'Restore failed: ${response.statusCode} ${response.body}',
+      );
+    }
+
+    return _parseRestoreResponse(response.body);
   }
 
   Future<MapDataRestoreResult> restoreFromJson(String jsonText) async {
@@ -105,10 +152,14 @@ class MapDataRepository {
       );
     }
 
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return _parseRestoreResponse(response.body);
+  }
+
+  MapDataRestoreResult _parseRestoreResponse(String bodyText) {
+    final body = jsonDecode(bodyText) as Map<String, dynamic>;
     final restored = body['restored'];
     if (restored is! Map<String, dynamic>) {
-      throw FormatException('Unexpected restore response: ${response.body}');
+      throw FormatException('Unexpected restore response: $bodyText');
     }
 
     return MapDataRestoreResult(

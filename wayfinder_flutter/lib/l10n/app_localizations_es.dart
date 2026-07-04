@@ -487,10 +487,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporte o restaure todas las capas, marcadores, zonas e iconos personalizados (incluidos los SVG incrustados). También puede hacer copia de seguridad con curl: GET /api/map-data';
+      'Exporte o restaure todas las capas, marcadores, zonas e iconos personalizados. Las copias de seguridad se guardan como .zip con backup.json y marker-icons/*.svg. Todavía puede restaurar copias .json antiguas.';
 
   @override
-  String get backupExportButton => 'Exportar datos del mapa (.json)';
+  String get backupExportButton => 'Exportar datos del mapa (.zip)';
 
   @override
   String get backupRestoreButton => 'Restaurar desde copia de seguridad';

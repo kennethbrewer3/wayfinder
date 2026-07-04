@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
 import 'marker_icon_storage.dart';
 
@@ -79,10 +80,15 @@ Future<Result> handleMarkerIconSvgUpload(
       where: (t) => t.key.equals(key),
     );
 
+    final defaultCategory = await MarkerIconCategoryService.resolveCategoryKey(
+      session,
+      null,
+    );
     final entry = existing == null
         ? MarkerIconCatalogEntry(
             key: key,
             label: _labelFromKey(key),
+            category: defaultCategory,
             materialIcon: 'place',
             coloredAsset: false,
             glyphScale: 1.0,

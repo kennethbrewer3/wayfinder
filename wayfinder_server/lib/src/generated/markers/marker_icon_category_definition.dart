@@ -12,54 +12,35 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-abstract class MarkerIconCatalogEntry
+abstract class MarkerIconCategoryDefinition
     implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
-  MarkerIconCatalogEntry._({
+  MarkerIconCategoryDefinition._({
     _i1.UuidValue? id,
     required this.key,
     required this.label,
-    required this.category,
-    this.materialIcon,
-    required this.coloredAsset,
-    required this.glyphScale,
-    required this.hasCustomSvg,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
-  factory MarkerIconCatalogEntry({
+  factory MarkerIconCategoryDefinition({
     _i1.UuidValue? id,
     required String key,
     required String label,
-    required String category,
-    String? materialIcon,
-    required bool coloredAsset,
-    required double glyphScale,
-    required bool hasCustomSvg,
     required int sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
-  }) = _MarkerIconCatalogEntryImpl;
+  }) = _MarkerIconCategoryDefinitionImpl;
 
-  factory MarkerIconCatalogEntry.fromJson(
+  factory MarkerIconCategoryDefinition.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
-    return MarkerIconCatalogEntry(
+    return MarkerIconCategoryDefinition(
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
-      category: jsonSerialization['category'] as String,
-      materialIcon: jsonSerialization['materialIcon'] as String?,
-      coloredAsset: _i1.BoolJsonExtension.fromJson(
-        jsonSerialization['coloredAsset'],
-      ),
-      glyphScale: (jsonSerialization['glyphScale'] as num).toDouble(),
-      hasCustomSvg: _i1.BoolJsonExtension.fromJson(
-        jsonSerialization['hasCustomSvg'],
-      ),
       sortOrder: jsonSerialization['sortOrder'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
@@ -70,9 +51,9 @@ abstract class MarkerIconCatalogEntry
     );
   }
 
-  static final t = MarkerIconCatalogEntryTable();
+  static final t = MarkerIconCategoryDefinitionTable();
 
-  static const db = MarkerIconCatalogEntryRepository._();
+  static const db = MarkerIconCategoryDefinitionRepository._();
 
   @override
   _i1.UuidValue id;
@@ -80,16 +61,6 @@ abstract class MarkerIconCatalogEntry
   String key;
 
   String label;
-
-  String category;
-
-  String? materialIcon;
-
-  bool coloredAsset;
-
-  double glyphScale;
-
-  bool hasCustomSvg;
 
   int sortOrder;
 
@@ -100,18 +71,13 @@ abstract class MarkerIconCatalogEntry
   @override
   _i1.Table<_i1.UuidValue> get table => t;
 
-  /// Returns a shallow copy of this [MarkerIconCatalogEntry]
+  /// Returns a shallow copy of this [MarkerIconCategoryDefinition]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  MarkerIconCatalogEntry copyWith({
+  MarkerIconCategoryDefinition copyWith({
     _i1.UuidValue? id,
     String? key,
     String? label,
-    String? category,
-    String? materialIcon,
-    bool? coloredAsset,
-    double? glyphScale,
-    bool? hasCustomSvg,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -119,15 +85,10 @@ abstract class MarkerIconCatalogEntry
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'MarkerIconCatalogEntry',
+      '__className__': 'MarkerIconCategoryDefinition',
       'id': id.toJson(),
       'key': key,
       'label': label,
-      'category': category,
-      if (materialIcon != null) 'materialIcon': materialIcon,
-      'coloredAsset': coloredAsset,
-      'glyphScale': glyphScale,
-      'hasCustomSvg': hasCustomSvg,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -137,41 +98,36 @@ abstract class MarkerIconCatalogEntry
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
-      '__className__': 'MarkerIconCatalogEntry',
+      '__className__': 'MarkerIconCategoryDefinition',
       'id': id.toJson(),
       'key': key,
       'label': label,
-      'category': category,
-      if (materialIcon != null) 'materialIcon': materialIcon,
-      'coloredAsset': coloredAsset,
-      'glyphScale': glyphScale,
-      'hasCustomSvg': hasCustomSvg,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
   }
 
-  static MarkerIconCatalogEntryInclude include() {
-    return MarkerIconCatalogEntryInclude._();
+  static MarkerIconCategoryDefinitionInclude include() {
+    return MarkerIconCategoryDefinitionInclude._();
   }
 
-  static MarkerIconCatalogEntryIncludeList includeList({
-    _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable>? where,
+  static MarkerIconCategoryDefinitionIncludeList includeList({
+    _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<MarkerIconCatalogEntryTable>? orderBy,
+    _i1.OrderByBuilder<MarkerIconCategoryDefinitionTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<MarkerIconCatalogEntryTable>? orderByList,
-    MarkerIconCatalogEntryInclude? include,
+    _i1.OrderByListBuilder<MarkerIconCategoryDefinitionTable>? orderByList,
+    MarkerIconCategoryDefinitionInclude? include,
   }) {
-    return MarkerIconCatalogEntryIncludeList._(
+    return MarkerIconCategoryDefinitionIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(MarkerIconCatalogEntry.t),
+      orderBy: orderBy?.call(MarkerIconCategoryDefinition.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(MarkerIconCatalogEntry.t),
+      orderByList: orderByList?.call(MarkerIconCategoryDefinition.t),
       include: include,
     );
   }
@@ -182,18 +138,11 @@ abstract class MarkerIconCatalogEntry
   }
 }
 
-class _Undefined {}
-
-class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
-  _MarkerIconCatalogEntryImpl({
+class _MarkerIconCategoryDefinitionImpl extends MarkerIconCategoryDefinition {
+  _MarkerIconCategoryDefinitionImpl({
     _i1.UuidValue? id,
     required String key,
     required String label,
-    required String category,
-    String? materialIcon,
-    required bool coloredAsset,
-    required double glyphScale,
-    required bool hasCustomSvg,
     required int sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -201,42 +150,27 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
          id: id,
          key: key,
          label: label,
-         category: category,
-         materialIcon: materialIcon,
-         coloredAsset: coloredAsset,
-         glyphScale: glyphScale,
-         hasCustomSvg: hasCustomSvg,
          sortOrder: sortOrder,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
 
-  /// Returns a shallow copy of this [MarkerIconCatalogEntry]
+  /// Returns a shallow copy of this [MarkerIconCategoryDefinition]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  MarkerIconCatalogEntry copyWith({
+  MarkerIconCategoryDefinition copyWith({
     _i1.UuidValue? id,
     String? key,
     String? label,
-    String? category,
-    Object? materialIcon = _Undefined,
-    bool? coloredAsset,
-    double? glyphScale,
-    bool? hasCustomSvg,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return MarkerIconCatalogEntry(
+    return MarkerIconCategoryDefinition(
       id: id ?? this.id,
       key: key ?? this.key,
       label: label ?? this.label,
-      category: category ?? this.category,
-      materialIcon: materialIcon is String? ? materialIcon : this.materialIcon,
-      coloredAsset: coloredAsset ?? this.coloredAsset,
-      glyphScale: glyphScale ?? this.glyphScale,
-      hasCustomSvg: hasCustomSvg ?? this.hasCustomSvg,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -244,9 +178,9 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
   }
 }
 
-class MarkerIconCatalogEntryUpdateTable
-    extends _i1.UpdateTable<MarkerIconCatalogEntryTable> {
-  MarkerIconCatalogEntryUpdateTable(super.table);
+class MarkerIconCategoryDefinitionUpdateTable
+    extends _i1.UpdateTable<MarkerIconCategoryDefinitionTable> {
+  MarkerIconCategoryDefinitionUpdateTable(super.table);
 
   _i1.ColumnValue<String, String> key(String value) => _i1.ColumnValue(
     table.key,
@@ -255,32 +189,6 @@ class MarkerIconCatalogEntryUpdateTable
 
   _i1.ColumnValue<String, String> label(String value) => _i1.ColumnValue(
     table.label,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> category(String value) => _i1.ColumnValue(
-    table.category,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> materialIcon(String? value) =>
-      _i1.ColumnValue(
-        table.materialIcon,
-        value,
-      );
-
-  _i1.ColumnValue<bool, bool> coloredAsset(bool value) => _i1.ColumnValue(
-    table.coloredAsset,
-    value,
-  );
-
-  _i1.ColumnValue<double, double> glyphScale(double value) => _i1.ColumnValue(
-    table.glyphScale,
-    value,
-  );
-
-  _i1.ColumnValue<bool, bool> hasCustomSvg(bool value) => _i1.ColumnValue(
-    table.hasCustomSvg,
     value,
   );
 
@@ -302,36 +210,16 @@ class MarkerIconCatalogEntryUpdateTable
       );
 }
 
-class MarkerIconCatalogEntryTable extends _i1.Table<_i1.UuidValue> {
-  MarkerIconCatalogEntryTable({super.tableRelation})
-    : super(tableName: 'marker_icon_catalog') {
-    updateTable = MarkerIconCatalogEntryUpdateTable(this);
+class MarkerIconCategoryDefinitionTable extends _i1.Table<_i1.UuidValue> {
+  MarkerIconCategoryDefinitionTable({super.tableRelation})
+    : super(tableName: 'marker_icon_category') {
+    updateTable = MarkerIconCategoryDefinitionUpdateTable(this);
     key = _i1.ColumnString(
       'key',
       this,
     );
     label = _i1.ColumnString(
       'label',
-      this,
-    );
-    category = _i1.ColumnString(
-      'category',
-      this,
-    );
-    materialIcon = _i1.ColumnString(
-      'materialIcon',
-      this,
-    );
-    coloredAsset = _i1.ColumnBool(
-      'coloredAsset',
-      this,
-    );
-    glyphScale = _i1.ColumnDouble(
-      'glyphScale',
-      this,
-    );
-    hasCustomSvg = _i1.ColumnBool(
-      'hasCustomSvg',
       this,
     );
     sortOrder = _i1.ColumnInt(
@@ -348,21 +236,11 @@ class MarkerIconCatalogEntryTable extends _i1.Table<_i1.UuidValue> {
     );
   }
 
-  late final MarkerIconCatalogEntryUpdateTable updateTable;
+  late final MarkerIconCategoryDefinitionUpdateTable updateTable;
 
   late final _i1.ColumnString key;
 
   late final _i1.ColumnString label;
-
-  late final _i1.ColumnString category;
-
-  late final _i1.ColumnString materialIcon;
-
-  late final _i1.ColumnBool coloredAsset;
-
-  late final _i1.ColumnDouble glyphScale;
-
-  late final _i1.ColumnBool hasCustomSvg;
 
   late final _i1.ColumnInt sortOrder;
 
@@ -375,30 +253,25 @@ class MarkerIconCatalogEntryTable extends _i1.Table<_i1.UuidValue> {
     id,
     key,
     label,
-    category,
-    materialIcon,
-    coloredAsset,
-    glyphScale,
-    hasCustomSvg,
     sortOrder,
     createdAt,
     updatedAt,
   ];
 }
 
-class MarkerIconCatalogEntryInclude extends _i1.IncludeObject {
-  MarkerIconCatalogEntryInclude._();
+class MarkerIconCategoryDefinitionInclude extends _i1.IncludeObject {
+  MarkerIconCategoryDefinitionInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table<_i1.UuidValue> get table => MarkerIconCatalogEntry.t;
+  _i1.Table<_i1.UuidValue> get table => MarkerIconCategoryDefinition.t;
 }
 
-class MarkerIconCatalogEntryIncludeList extends _i1.IncludeList {
-  MarkerIconCatalogEntryIncludeList._({
-    _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable>? where,
+class MarkerIconCategoryDefinitionIncludeList extends _i1.IncludeList {
+  MarkerIconCategoryDefinitionIncludeList._({
+    _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -406,20 +279,20 @@ class MarkerIconCatalogEntryIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(MarkerIconCatalogEntry.t);
+    super.where = where?.call(MarkerIconCategoryDefinition.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue> get table => MarkerIconCatalogEntry.t;
+  _i1.Table<_i1.UuidValue> get table => MarkerIconCategoryDefinition.t;
 }
 
-class MarkerIconCatalogEntryRepository {
-  const MarkerIconCatalogEntryRepository._();
+class MarkerIconCategoryDefinitionRepository {
+  const MarkerIconCategoryDefinitionRepository._();
 
-  /// Returns a list of [MarkerIconCatalogEntry]s matching the given query parameters.
+  /// Returns a list of [MarkerIconCategoryDefinition]s matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -441,22 +314,22 @@ class MarkerIconCatalogEntryRepository {
   ///   limit: 100,
   /// );
   /// ```
-  Future<List<MarkerIconCatalogEntry>> find(
+  Future<List<MarkerIconCategoryDefinition>> find(
     _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable>? where,
+    _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<MarkerIconCatalogEntryTable>? orderBy,
+    _i1.OrderByBuilder<MarkerIconCategoryDefinitionTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<MarkerIconCatalogEntryTable>? orderByList,
+    _i1.OrderByListBuilder<MarkerIconCategoryDefinitionTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
-    return session.db.find<MarkerIconCatalogEntry>(
-      where: where?.call(MarkerIconCatalogEntry.t),
-      orderBy: orderBy?.call(MarkerIconCatalogEntry.t),
-      orderByList: orderByList?.call(MarkerIconCatalogEntry.t),
+    return session.db.find<MarkerIconCategoryDefinition>(
+      where: where?.call(MarkerIconCategoryDefinition.t),
+      orderBy: orderBy?.call(MarkerIconCategoryDefinition.t),
+      orderByList: orderByList?.call(MarkerIconCategoryDefinition.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -466,7 +339,7 @@ class MarkerIconCatalogEntryRepository {
     );
   }
 
-  /// Returns the first matching [MarkerIconCatalogEntry] matching the given query parameters.
+  /// Returns the first matching [MarkerIconCategoryDefinition] matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -483,21 +356,21 @@ class MarkerIconCatalogEntryRepository {
   ///   orderBy: (t) => t.age,
   /// );
   /// ```
-  Future<MarkerIconCatalogEntry?> findFirstRow(
+  Future<MarkerIconCategoryDefinition?> findFirstRow(
     _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable>? where,
+    _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>? where,
     int? offset,
-    _i1.OrderByBuilder<MarkerIconCatalogEntryTable>? orderBy,
+    _i1.OrderByBuilder<MarkerIconCategoryDefinitionTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<MarkerIconCatalogEntryTable>? orderByList,
+    _i1.OrderByListBuilder<MarkerIconCategoryDefinitionTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findFirstRow<MarkerIconCatalogEntry>(
-      where: where?.call(MarkerIconCatalogEntry.t),
-      orderBy: orderBy?.call(MarkerIconCatalogEntry.t),
-      orderByList: orderByList?.call(MarkerIconCatalogEntry.t),
+    return session.db.findFirstRow<MarkerIconCategoryDefinition>(
+      where: where?.call(MarkerIconCategoryDefinition.t),
+      orderBy: orderBy?.call(MarkerIconCategoryDefinition.t),
+      orderByList: orderByList?.call(MarkerIconCategoryDefinition.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
@@ -506,15 +379,15 @@ class MarkerIconCatalogEntryRepository {
     );
   }
 
-  /// Finds a single [MarkerIconCatalogEntry] by its [id] or null if no such row exists.
-  Future<MarkerIconCatalogEntry?> findById(
+  /// Finds a single [MarkerIconCategoryDefinition] by its [id] or null if no such row exists.
+  Future<MarkerIconCategoryDefinition?> findById(
     _i1.DatabaseSession session,
     _i1.UuidValue id, {
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<MarkerIconCatalogEntry>(
+    return session.db.findById<MarkerIconCategoryDefinition>(
       id,
       transaction: transaction,
       lockMode: lockMode,
@@ -522,9 +395,9 @@ class MarkerIconCatalogEntryRepository {
     );
   }
 
-  /// Inserts all [MarkerIconCatalogEntry]s in the list and returns the inserted rows.
+  /// Inserts all [MarkerIconCategoryDefinition]s in the list and returns the inserted rows.
   ///
-  /// The returned [MarkerIconCatalogEntry]s will have their `id` fields set.
+  /// The returned [MarkerIconCategoryDefinition]s will have their `id` fields set.
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
@@ -532,143 +405,145 @@ class MarkerIconCatalogEntryRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
-  Future<List<MarkerIconCatalogEntry>> insert(
+  Future<List<MarkerIconCategoryDefinition>> insert(
     _i1.DatabaseSession session,
-    List<MarkerIconCatalogEntry> rows, {
+    List<MarkerIconCategoryDefinition> rows, {
     _i1.Transaction? transaction,
     bool ignoreConflicts = false,
   }) async {
-    return session.db.insert<MarkerIconCatalogEntry>(
+    return session.db.insert<MarkerIconCategoryDefinition>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
     );
   }
 
-  /// Inserts a single [MarkerIconCatalogEntry] and returns the inserted row.
+  /// Inserts a single [MarkerIconCategoryDefinition] and returns the inserted row.
   ///
-  /// The returned [MarkerIconCatalogEntry] will have its `id` field set.
-  Future<MarkerIconCatalogEntry> insertRow(
+  /// The returned [MarkerIconCategoryDefinition] will have its `id` field set.
+  Future<MarkerIconCategoryDefinition> insertRow(
     _i1.DatabaseSession session,
-    MarkerIconCatalogEntry row, {
+    MarkerIconCategoryDefinition row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<MarkerIconCatalogEntry>(
+    return session.db.insertRow<MarkerIconCategoryDefinition>(
       row,
       transaction: transaction,
     );
   }
 
-  /// Updates all [MarkerIconCatalogEntry]s in the list and returns the updated rows. If
+  /// Updates all [MarkerIconCategoryDefinition]s in the list and returns the updated rows. If
   /// [columns] is provided, only those columns will be updated. Defaults to
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
-  Future<List<MarkerIconCatalogEntry>> update(
+  Future<List<MarkerIconCategoryDefinition>> update(
     _i1.DatabaseSession session,
-    List<MarkerIconCatalogEntry> rows, {
-    _i1.ColumnSelections<MarkerIconCatalogEntryTable>? columns,
+    List<MarkerIconCategoryDefinition> rows, {
+    _i1.ColumnSelections<MarkerIconCategoryDefinitionTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<MarkerIconCatalogEntry>(
+    return session.db.update<MarkerIconCategoryDefinition>(
       rows,
-      columns: columns?.call(MarkerIconCatalogEntry.t),
+      columns: columns?.call(MarkerIconCategoryDefinition.t),
       transaction: transaction,
     );
   }
 
-  /// Updates a single [MarkerIconCatalogEntry]. The row needs to have its id set.
+  /// Updates a single [MarkerIconCategoryDefinition]. The row needs to have its id set.
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
-  Future<MarkerIconCatalogEntry> updateRow(
+  Future<MarkerIconCategoryDefinition> updateRow(
     _i1.DatabaseSession session,
-    MarkerIconCatalogEntry row, {
-    _i1.ColumnSelections<MarkerIconCatalogEntryTable>? columns,
+    MarkerIconCategoryDefinition row, {
+    _i1.ColumnSelections<MarkerIconCategoryDefinitionTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<MarkerIconCatalogEntry>(
+    return session.db.updateRow<MarkerIconCategoryDefinition>(
       row,
-      columns: columns?.call(MarkerIconCatalogEntry.t),
+      columns: columns?.call(MarkerIconCategoryDefinition.t),
       transaction: transaction,
     );
   }
 
-  /// Updates a single [MarkerIconCatalogEntry] by its [id] with the specified [columnValues].
+  /// Updates a single [MarkerIconCategoryDefinition] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
-  Future<MarkerIconCatalogEntry?> updateById(
+  Future<MarkerIconCategoryDefinition?> updateById(
     _i1.DatabaseSession session,
     _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<MarkerIconCatalogEntryUpdateTable>
+    required _i1.ColumnValueListBuilder<MarkerIconCategoryDefinitionUpdateTable>
     columnValues,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateById<MarkerIconCatalogEntry>(
+    return session.db.updateById<MarkerIconCategoryDefinition>(
       id,
-      columnValues: columnValues(MarkerIconCatalogEntry.t.updateTable),
+      columnValues: columnValues(MarkerIconCategoryDefinition.t.updateTable),
       transaction: transaction,
     );
   }
 
-  /// Updates all [MarkerIconCatalogEntry]s matching the [where] expression with the specified [columnValues].
+  /// Updates all [MarkerIconCategoryDefinition]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
-  Future<List<MarkerIconCatalogEntry>> updateWhere(
+  Future<List<MarkerIconCategoryDefinition>> updateWhere(
     _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<MarkerIconCatalogEntryUpdateTable>
+    required _i1.ColumnValueListBuilder<MarkerIconCategoryDefinitionUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable> where,
+    required _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>
+    where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<MarkerIconCatalogEntryTable>? orderBy,
-    _i1.OrderByListBuilder<MarkerIconCatalogEntryTable>? orderByList,
+    _i1.OrderByBuilder<MarkerIconCategoryDefinitionTable>? orderBy,
+    _i1.OrderByListBuilder<MarkerIconCategoryDefinitionTable>? orderByList,
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateWhere<MarkerIconCatalogEntry>(
-      columnValues: columnValues(MarkerIconCatalogEntry.t.updateTable),
-      where: where(MarkerIconCatalogEntry.t),
+    return session.db.updateWhere<MarkerIconCategoryDefinition>(
+      columnValues: columnValues(MarkerIconCategoryDefinition.t.updateTable),
+      where: where(MarkerIconCategoryDefinition.t),
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(MarkerIconCatalogEntry.t),
-      orderByList: orderByList?.call(MarkerIconCatalogEntry.t),
+      orderBy: orderBy?.call(MarkerIconCategoryDefinition.t),
+      orderByList: orderByList?.call(MarkerIconCategoryDefinition.t),
       orderDescending: orderDescending,
       transaction: transaction,
     );
   }
 
-  /// Deletes all [MarkerIconCatalogEntry]s in the list and returns the deleted rows.
+  /// Deletes all [MarkerIconCategoryDefinition]s in the list and returns the deleted rows.
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
-  Future<List<MarkerIconCatalogEntry>> delete(
+  Future<List<MarkerIconCategoryDefinition>> delete(
     _i1.DatabaseSession session,
-    List<MarkerIconCatalogEntry> rows, {
+    List<MarkerIconCategoryDefinition> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<MarkerIconCatalogEntry>(
+    return session.db.delete<MarkerIconCategoryDefinition>(
       rows,
       transaction: transaction,
     );
   }
 
-  /// Deletes a single [MarkerIconCatalogEntry].
-  Future<MarkerIconCatalogEntry> deleteRow(
+  /// Deletes a single [MarkerIconCategoryDefinition].
+  Future<MarkerIconCategoryDefinition> deleteRow(
     _i1.DatabaseSession session,
-    MarkerIconCatalogEntry row, {
+    MarkerIconCategoryDefinition row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<MarkerIconCatalogEntry>(
+    return session.db.deleteRow<MarkerIconCategoryDefinition>(
       row,
       transaction: transaction,
     );
   }
 
   /// Deletes all rows matching the [where] expression.
-  Future<List<MarkerIconCatalogEntry>> deleteWhere(
+  Future<List<MarkerIconCategoryDefinition>> deleteWhere(
     _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable> where,
+    required _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>
+    where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<MarkerIconCatalogEntry>(
-      where: where(MarkerIconCatalogEntry.t),
+    return session.db.deleteWhere<MarkerIconCategoryDefinition>(
+      where: where(MarkerIconCategoryDefinition.t),
       transaction: transaction,
     );
   }
@@ -677,27 +552,28 @@ class MarkerIconCatalogEntryRepository {
   /// will return the count of all rows in the table.
   Future<int> count(
     _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable>? where,
+    _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<MarkerIconCatalogEntry>(
-      where: where?.call(MarkerIconCatalogEntry.t),
+    return session.db.count<MarkerIconCategoryDefinition>(
+      where: where?.call(MarkerIconCategoryDefinition.t),
       limit: limit,
       transaction: transaction,
     );
   }
 
-  /// Acquires row-level locks on [MarkerIconCatalogEntry] rows matching the [where] expression.
+  /// Acquires row-level locks on [MarkerIconCategoryDefinition] rows matching the [where] expression.
   Future<void> lockRows(
     _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<MarkerIconCatalogEntryTable> where,
+    required _i1.WhereExpressionBuilder<MarkerIconCategoryDefinitionTable>
+    where,
     required _i1.LockMode lockMode,
     required _i1.Transaction transaction,
     _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
   }) async {
-    return session.db.lockRows<MarkerIconCatalogEntry>(
-      where: where(MarkerIconCatalogEntry.t),
+    return session.db.lockRows<MarkerIconCategoryDefinition>(
+      where: where(MarkerIconCategoryDefinition.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
       transaction: transaction,

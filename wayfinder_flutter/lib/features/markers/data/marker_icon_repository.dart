@@ -24,6 +24,49 @@ class MarkerIconRepository {
     return _client.markerIcon.listCatalog();
   }
 
+  Future<List<MarkerIconCategoryDefinition>> listCategories() async {
+    return _client.markerIcon.listCategories();
+  }
+
+  Future<MarkerIconCategoryDefinition> createCategory({
+    required String key,
+    required String label,
+    int? sortOrder,
+  }) async {
+    _log.debug('📍 Creating marker icon category', data: 'key=$key');
+    final entry = await _client.markerIcon.createCategory(
+      key,
+      label,
+      sortOrder: sortOrder,
+    );
+    _log.success('📍 Marker icon category created', data: 'key=$key');
+    return entry;
+  }
+
+  Future<MarkerIconCategoryDefinition> updateCategory({
+    required String key,
+    required String label,
+    int? sortOrder,
+  }) async {
+    _log.debug('📍 Updating marker icon category', data: 'key=$key');
+    final entry = await _client.markerIcon.updateCategory(
+      key,
+      label,
+      sortOrder: sortOrder,
+    );
+    _log.success('📍 Marker icon category updated', data: 'key=$key');
+    return entry;
+  }
+
+  Future<void> deleteCategory(String key) async {
+    _log.debug('📍 Deleting marker icon category', data: 'key=$key');
+    final deleted = await _client.markerIcon.deleteCategory(key);
+    if (!deleted) {
+      throw StateError('Marker icon category not found: $key');
+    }
+    _log.success('📍 Marker icon category deleted', data: 'key=$key');
+  }
+
   Future<MarkerIconCatalog> loadCatalog() async {
     _log.debug('📍 Loading marker icon catalog from server');
     try {
@@ -85,6 +128,7 @@ class MarkerIconRepository {
   Future<MarkerIconCatalogEntry> createIcon({
     required String key,
     required String label,
+    String? category,
     String? materialIcon,
     bool coloredAsset = false,
     double glyphScale = 1.0,
@@ -94,6 +138,7 @@ class MarkerIconRepository {
     final entry = await _client.markerIcon.createIcon(
       key,
       label,
+      category: category,
       materialIcon: materialIcon,
       coloredAsset: coloredAsset,
       glyphScale: glyphScale,
@@ -106,6 +151,7 @@ class MarkerIconRepository {
   Future<MarkerIconCatalogEntry> updateIcon({
     required String key,
     required String label,
+    String? category,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -115,6 +161,7 @@ class MarkerIconRepository {
     final entry = await _client.markerIcon.updateIcon(
       key,
       label,
+      category: category,
       materialIcon: materialIcon,
       coloredAsset: coloredAsset,
       glyphScale: glyphScale,

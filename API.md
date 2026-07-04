@@ -660,6 +660,7 @@ Example response:
     "id": "…",
     "key": "horse",
     "label": "Horse",
+    "category": "transportation",
     "materialIcon": "pets",
     "coloredAsset": true,
     "glyphScale": 0.94,
@@ -674,7 +675,7 @@ Example response:
 
 ### Register a new icon (metadata only)
 
-Keys must match `[a-z0-9_]{1,64}`.
+Keys must match `[a-z0-9_]{1,64}`. Category must be a key from the marker icon category catalog (see below). Defaults to `custom` when omitted.
 
 ```bash
 curl -X POST http://localhost:18082/api/marker-icons \
@@ -682,6 +683,7 @@ curl -X POST http://localhost:18082/api/marker-icons \
   -d '{
     "key": "custom_drone",
     "label": "Drone",
+    "category": "custom",
     "materialIcon": "flight",
     "coloredAsset": false,
     "glyphScale": 1.0
@@ -695,6 +697,7 @@ curl -X PATCH http://localhost:18082/api/marker-icons/horse \
   -H "Content-Type: application/json" \
   -d '{
     "label": "Horse",
+    "category": "transportation",
     "coloredAsset": true,
     "glyphScale": 0.94
   }'
@@ -734,6 +737,30 @@ Removes metadata and the SVG file from disk.
 
 ```bash
 curl -X DELETE http://localhost:18082/api/marker-icons/custom_drone
+```
+
+### Marker icon categories
+
+Categories are stored in the `marker_icon_category` table and seeded with defaults on first server start. Users can add, rename, and delete categories (except `custom`, which is protected). Deleting a category reassigns its icons to `custom`.
+
+```bash
+curl http://localhost:18082/api/marker-icon-categories
+```
+
+```bash
+curl -X POST http://localhost:18082/api/marker-icon-categories \
+  -H "Content-Type: application/json" \
+  -d '{"key": "aviation", "label": "Aviation"}'
+```
+
+```bash
+curl -X PATCH http://localhost:18082/api/marker-icon-categories/aviation \
+  -H "Content-Type: application/json" \
+  -d '{"label": "Aviation & flight"}'
+```
+
+```bash
+curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 ```
 
 ---
@@ -780,6 +807,11 @@ curl -X DELETE http://localhost:18082/api/marker-icons/custom_drone
 | PUT/PATCH | `/api/marker-icons/:key` | Update marker icon metadata |
 | POST | `/api/marker-icons/:key/svg` | Upload or replace SVG bytes |
 | DELETE | `/api/marker-icons/:key` | Delete marker icon and SVG |
+| GET | `/api/marker-icon-categories` | List marker icon categories |
+| POST | `/api/marker-icon-categories` | Create marker icon category |
+| GET | `/api/marker-icon-categories/:key` | Get marker icon category |
+| PUT/PATCH | `/api/marker-icon-categories/:key` | Update marker icon category |
+| DELETE | `/api/marker-icon-categories/:key` | Delete marker icon category |
 | GET | `/marker-icons/files/:key.svg` | Download marker SVG |
 
 ---

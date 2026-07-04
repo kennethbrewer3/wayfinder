@@ -11,6 +11,7 @@ import 'src/core/wayfinder_env.dart';
 import 'src/settings/app_settings_store.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
+import 'src/markers/marker_icon_category_service.dart';
 import 'src/markers/marker_icon_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
 import 'src/web/middleware/rest_auth_middleware.dart';
@@ -171,6 +172,8 @@ void run(List<String> args) async {
             '(mount the drive or update WAYFINDER_PMTILES_HOST_PATH in .env)',
       );
     }
+
+    await MarkerIconCategoryService.seedDefaultsIfEmpty(syncSession);
 
     final markerIconReady = await MarkerIconStorage().ensureReady();
     if (markerIconReady) {

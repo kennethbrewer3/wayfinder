@@ -1,0 +1,13 @@
+class: MarkerIconCategoryDefinition
+table: marker_icon_category
+fields:
+  id: UuidValue, defaultModel=random
+  key: String
+  label: String
+  sortOrder: int
+  createdAt: DateTime
+  updatedAt: DateTime
+indexes:
+  marker_icon_category_key_idx:
+    fields: key
+    unique: true

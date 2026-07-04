@@ -40,6 +40,10 @@ markerIcon:
   - createIcon:
   - updateIcon:
   - deleteIcon:
+  - listCategories:
+  - createCategory:
+  - updateCategory:
+  - deleteCategory:
 pmtiles:
   - listFiles:
   - listGroups:

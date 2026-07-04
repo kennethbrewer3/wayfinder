@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/marker_icon_background_color_provider.dart';
 import 'marker_icon_glyph.dart';
 
 const mapMarkerWidth = 44.0;
@@ -25,11 +27,12 @@ double mapMarkerInnerDiameter(double scale) =>
 double mapMarkerIconSizeForScale(double scale) =>
     mapMarkerInnerDiameter(scale) * (1 - 2 * mapMarkerIconPaddingRatio);
 
-class MapMarkerIcon extends StatelessWidget {
+class MapMarkerIcon extends ConsumerWidget {
   const MapMarkerIcon({
     super.key,
     required this.color,
     this.iconName = 'place',
+    this.iconBackgroundColor,
     this.badgeIcon,
     this.badgeColor,
     this.width = mapMarkerWidth,
@@ -38,13 +41,16 @@ class MapMarkerIcon extends StatelessWidget {
 
   final Color color;
   final String iconName;
+  final Color? iconBackgroundColor;
   final IconData? badgeIcon;
   final Color? badgeColor;
   final double width;
   final double height;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Color backgroundColor =
+        iconBackgroundColor ?? ref.watch(markerIconBackgroundColorProvider);
     final scale = width / mapMarkerWidth;
     final headCenterY = mapMarkerHeadCenterY * scale;
     final innerDiameter = mapMarkerInnerDiameter(scale);
@@ -61,20 +67,24 @@ class MapMarkerIcon extends StatelessWidget {
             size: Size(width, height),
             painter: _MarkerPinPainter(
               color: color,
+              iconBackgroundColor: backgroundColor,
               scale: scale,
             ),
           ),
           Positioned(
             top: headCenterY - innerDiameter / 2,
             child: ClipOval(
-              child: SizedBox(
-                width: innerDiameter,
-                height: innerDiameter,
-                child: Center(
-                  child: MarkerIconGlyph(
-                    iconName: iconName,
-                    size: iconSize,
-                    color: color,
+              child: ColoredBox(
+                color: backgroundColor,
+                child: SizedBox(
+                  width: innerDiameter,
+                  height: innerDiameter,
+                  child: Center(
+                    child: MarkerIconGlyph(
+                      iconName: iconName,
+                      size: iconSize,
+                      color: color,
+                    ),
                   ),
                 ),
               ),
@@ -109,10 +119,12 @@ class MapMarkerIcon extends StatelessWidget {
 class _MarkerPinPainter extends CustomPainter {
   const _MarkerPinPainter({
     required this.color,
+    required this.iconBackgroundColor,
     required this.scale,
   });
 
   final Color color;
+  final Color iconBackgroundColor;
   final double scale;
 
   @override
@@ -154,7 +166,7 @@ class _MarkerPinPainter extends CustomPainter {
     canvas.drawCircle(
       headCenter,
       innerRadius,
-      Paint()..color = Colors.white,
+      Paint()..color = iconBackgroundColor,
     );
 
     final outlinePaint = Paint()
@@ -166,6 +178,8 @@ class _MarkerPinPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _MarkerPinPainter oldDelegate) {
-    return oldDelegate.color != color || oldDelegate.scale != scale;
+    return oldDelegate.color != color ||
+        oldDelegate.iconBackgroundColor != iconBackgroundColor ||
+        oldDelegate.scale != scale;
   }
 }

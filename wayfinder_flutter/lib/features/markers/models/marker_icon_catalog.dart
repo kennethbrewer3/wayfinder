@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import 'marker_icon_categories.dart';
 import 'marker_icon_registry.dart';
 
 /// Runtime marker icon catalog merged from built-in defaults and server entries.
@@ -35,6 +36,7 @@ class MarkerIconCatalog {
         emoji: existing?.emoji,
         coloredAsset: entry.coloredAsset,
         glyphScale: entry.glyphScale,
+        category: entry.category,
       );
       if (!defaultKeys.contains(entry.key)) {
         remoteOnly.add(entry);
@@ -76,6 +78,29 @@ class MarkerIconCatalog {
   double glyphScale(String iconName) => option(iconName)?.glyphScale ?? 1.0;
 
   bool coloredAsset(String iconName) => option(iconName)?.coloredAsset ?? false;
+
+  /// Icons grouped by category key in display order.
+  Map<String, List<MarkerIconOption>> groupedByCategory({
+    List<String>? categoryOrder,
+  }) {
+    final grouped = <String, List<MarkerIconOption>>{};
+    for (final option in options) {
+      grouped.putIfAbsent(option.resolvedCategory, () => []).add(option);
+    }
+
+    final order = categoryOrder ?? MarkerIconCategories.orderedKeys;
+    final ordered = <String, List<MarkerIconOption>>{};
+    for (final category in order) {
+      final items = grouped.remove(category);
+      if (items != null && items.isNotEmpty) {
+        ordered[category] = items;
+      }
+    }
+    for (final entry in grouped.entries) {
+      ordered[entry.key] = entry.value;
+    }
+    return ordered;
+  }
 
   static String _svgUrl(String webBaseUrl, String key, DateTime updatedAt) {
     final base = webBaseUrl.endsWith('/')

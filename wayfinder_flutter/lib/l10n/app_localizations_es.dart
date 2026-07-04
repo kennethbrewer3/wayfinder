@@ -827,6 +827,129 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconsEditTitle => 'Editar icono de marcador';
 
   @override
+  String get markerIconsCategoryLabel => 'Categoría';
+
+  @override
+  String get markerIconBackgroundColorTitle => 'Fondo del icono';
+
+  @override
+  String get markerIconBackgroundColorDescription =>
+      'Elige el color de relleno detrás de los iconos de marcador en el mapa. Los SVG transparentes se muestran sobre este fondo — ajústalo para mejorar el contraste con tus capas del mapa.';
+
+  @override
+  String get markerIconBackgroundColorLabel => 'Color de fondo';
+
+  @override
+  String get markerIconCategoryGeneral => 'General';
+
+  @override
+  String get markerIconCategoryPlaces => 'Lugares y edificios';
+
+  @override
+  String get markerIconCategoryTransportation => 'Transporte';
+
+  @override
+  String get markerIconCategoryPeopleAnimals => 'Personas y animales';
+
+  @override
+  String get markerIconCategoryInfrastructure => 'Infraestructura';
+
+  @override
+  String get markerIconCategoryMilitary => 'Militar y defensa';
+
+  @override
+  String get markerIconCategoryEmergency => 'Emergencia y médico';
+
+  @override
+  String get markerIconCategoryShelterPreparedness => 'Refugio y preparación';
+
+  @override
+  String get markerIconCategoryRecreation => 'Recreación y aire libre';
+
+  @override
+  String get markerIconCategoryAgriculture => 'Agricultura';
+
+  @override
+  String get markerIconCategoryCustom => 'Personnalizado';
+
+  @override
+  String get markerIconCategoriesTitle => 'Categorías de iconos';
+
+  @override
+  String get markerIconCategoriesDescription =>
+      'Organiza los iconos de marcadores en categorías. Las categorías aparecen en el selector de iconos y en los listados de configuración. Al eliminar una categoría, sus iconos pasan a Personalizado.';
+
+  @override
+  String get markerIconCategoriesAddButton => 'Añadir categoría';
+
+  @override
+  String get markerIconCategoriesCreateTitle => 'Añadir categoría';
+
+  @override
+  String get markerIconCategoriesEditTitle => 'Editar categoría';
+
+  @override
+  String get markerIconCategoriesKeyLabel => 'Clave de categoría';
+
+  @override
+  String get markerIconCategoriesKeyHint => 'mi_categoria';
+
+  @override
+  String get markerIconCategoriesKeyRequired =>
+      'La clave de categoría es obligatoria.';
+
+  @override
+  String get markerIconCategoriesKeyInvalid =>
+      'Use letras minúsculas, dígitos y guiones bajos (máx. 64).';
+
+  @override
+  String get markerIconCategoriesLabelField => 'Etiqueta visible';
+
+  @override
+  String get markerIconCategoriesLabelRequired =>
+      'La etiqueta visible es obligatoria.';
+
+  @override
+  String markerIconCategoriesCreateSuccess(String label) {
+    return 'Categoría añadida: $label';
+  }
+
+  @override
+  String markerIconCategoriesUpdateSuccess(String label) {
+    return 'Categoría actualizada: $label';
+  }
+
+  @override
+  String get markerIconCategoriesDeleteTitle => '¿Eliminar categoría?';
+
+  @override
+  String markerIconCategoriesDeleteMessage(String label, String key) {
+    return '¿Eliminar \"$label\" ($key)? Los iconos de esta categoría pasarán a Personalizado.';
+  }
+
+  @override
+  String get markerIconCategoriesDeleteSuccess => 'Categoría eliminada.';
+
+  @override
+  String markerIconCategoriesCreateFailed(String error) {
+    return 'No se pudo añadir la categoría: $error';
+  }
+
+  @override
+  String markerIconCategoriesUpdateFailed(String error) {
+    return 'No se pudo actualizar la categoría: $error';
+  }
+
+  @override
+  String markerIconCategoriesDeleteFailed(String error) {
+    return 'No se pudo eliminar la categoría: $error';
+  }
+
+  @override
+  String get markerIconCategoriesProtectedHint =>
+      'Categoría de respaldo integrada (no se puede eliminar)';
+
+  @override
   String get layerLabel => 'Capa';
 
   @override

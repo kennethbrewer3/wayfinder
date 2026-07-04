@@ -6,6 +6,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../data/marker_icon_repository.dart';
 import '../models/marker_icon_catalog.dart';
+import '../models/marker_icon_category_catalog.dart';
 
 final markerIconRepositoryProvider = Provider<MarkerIconRepository>(
   (ref) => MarkerIconRepository(
@@ -38,3 +39,15 @@ void refreshMarkerIcons(WidgetRef ref) {
   AppLogger.logMarkers.info('🔄 refreshMarkerIcons', data: 'revision=$revision');
   ref.read(markerIconRevisionProvider.notifier).state = revision;
 }
+
+final markerIconCategoryCatalogProvider =
+    FutureProvider<MarkerIconCategoryCatalog>((ref) async {
+  ref.watch(markerIconRevisionProvider);
+  try {
+    final repository = ref.watch(markerIconRepositoryProvider);
+    final categories = await repository.listCategories();
+    return MarkerIconCategoryCatalog(categories);
+  } catch (_) {
+    return MarkerIconCategoryCatalog.fallback();
+  }
+});

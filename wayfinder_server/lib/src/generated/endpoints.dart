@@ -715,6 +715,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'category': _i1.ParameterDescription(
+              name: 'category',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
             'materialIcon': _i1.ParameterDescription(
               name: 'materialIcon',
               type: _i1.getType<String?>(),
@@ -745,6 +750,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['key'],
                     params['label'],
+                    category: params['category'],
                     materialIcon: params['materialIcon'],
                     coloredAsset: params['coloredAsset'],
                     glyphScale: params['glyphScale'],
@@ -763,6 +769,11 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'label',
               type: _i1.getType<String>(),
               nullable: false,
+            ),
+            'category': _i1.ParameterDescription(
+              name: 'category',
+              type: _i1.getType<String?>(),
+              nullable: true,
             ),
             'materialIcon': _i1.ParameterDescription(
               name: 'materialIcon',
@@ -794,6 +805,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['key'],
                     params['label'],
+                    category: params['category'],
                     materialIcon: params['materialIcon'],
                     coloredAsset: params['coloredAsset'],
                     glyphScale: params['glyphScale'],
@@ -815,6 +827,97 @@ class Endpoints extends _i1.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
                   .deleteIcon(
+                    session,
+                    params['key'],
+                  ),
+        ),
+        'listCategories': _i1.MethodConnector(
+          name: 'listCategories',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .listCategories(session),
+        ),
+        'createCategory': _i1.MethodConnector(
+          name: 'createCategory',
+          params: {
+            'key': _i1.ParameterDescription(
+              name: 'key',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'label': _i1.ParameterDescription(
+              name: 'label',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'sortOrder': _i1.ParameterDescription(
+              name: 'sortOrder',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .createCategory(
+                    session,
+                    params['key'],
+                    params['label'],
+                    sortOrder: params['sortOrder'],
+                  ),
+        ),
+        'updateCategory': _i1.MethodConnector(
+          name: 'updateCategory',
+          params: {
+            'key': _i1.ParameterDescription(
+              name: 'key',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'label': _i1.ParameterDescription(
+              name: 'label',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'sortOrder': _i1.ParameterDescription(
+              name: 'sortOrder',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .updateCategory(
+                    session,
+                    params['key'],
+                    params['label'],
+                    sortOrder: params['sortOrder'],
+                  ),
+        ),
+        'deleteCategory': _i1.MethodConnector(
+          name: 'deleteCategory',
+          params: {
+            'key': _i1.ParameterDescription(
+              name: 'key',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['markerIcon'] as _i9.MarkerIconEndpoint)
+                  .deleteCategory(
                     session,
                     params['key'],
                   ),

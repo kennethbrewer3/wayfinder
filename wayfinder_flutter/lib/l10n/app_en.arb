@@ -508,6 +508,86 @@
     }
   },
   "markerIconsEditTitle": "Edit marker icon",
+  "markerIconsCategoryLabel": "Category",
+  "markerIconBackgroundColorTitle": "Icon background",
+  "markerIconBackgroundColorDescription": "Choose the fill color behind marker icons on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.",
+  "markerIconBackgroundColorLabel": "Background color",
+  "markerIconCategoryGeneral": "General",
+  "markerIconCategoryPlaces": "Places & buildings",
+  "markerIconCategoryTransportation": "Transportation",
+  "markerIconCategoryPeopleAnimals": "People & animals",
+  "markerIconCategoryInfrastructure": "Infrastructure",
+  "markerIconCategoryMilitary": "Military & defense",
+  "markerIconCategoryEmergency": "Emergency & medical",
+  "markerIconCategoryShelterPreparedness": "Shelter & preparedness",
+  "markerIconCategoryRecreation": "Recreation & outdoors",
+  "markerIconCategoryAgriculture": "Agriculture",
+  "markerIconCategoryCustom": "Custom",
+  "markerIconCategoriesTitle": "Icon categories",
+  "markerIconCategoriesDescription": "Organize marker icons into categories. Categories appear in the icon picker and settings lists. Deleting a category moves its icons to Custom.",
+  "markerIconCategoriesAddButton": "Add category",
+  "markerIconCategoriesCreateTitle": "Add category",
+  "markerIconCategoriesEditTitle": "Edit category",
+  "markerIconCategoriesKeyLabel": "Category key",
+  "markerIconCategoriesKeyHint": "my_category",
+  "markerIconCategoriesKeyRequired": "Category key is required.",
+  "markerIconCategoriesKeyInvalid": "Use lowercase letters, digits, and underscores (max 64).",
+  "markerIconCategoriesLabelField": "Display label",
+  "markerIconCategoriesLabelRequired": "Display label is required.",
+  "markerIconCategoriesCreateSuccess": "Category added: {label}",
+  "@markerIconCategoriesCreateSuccess": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconCategoriesUpdateSuccess": "Category updated: {label}",
+  "@markerIconCategoriesUpdateSuccess": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconCategoriesDeleteTitle": "Delete category?",
+  "markerIconCategoriesDeleteMessage": "Remove \"{label}\" ({key})? Icons in this category will move to Custom.",
+  "@markerIconCategoriesDeleteMessage": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconCategoriesDeleteSuccess": "Category deleted.",
+  "markerIconCategoriesCreateFailed": "Could not add category: {error}",
+  "@markerIconCategoriesCreateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconCategoriesUpdateFailed": "Could not update category: {error}",
+  "@markerIconCategoriesUpdateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconCategoriesDeleteFailed": "Could not delete category: {error}",
+  "@markerIconCategoriesDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerIconCategoriesProtectedHint": "Built-in fallback category (cannot delete)",
   "layerLabel": "Layer",
   "layerUnassigned": "Unassigned",
   "layerUnknown": "Unknown layer",

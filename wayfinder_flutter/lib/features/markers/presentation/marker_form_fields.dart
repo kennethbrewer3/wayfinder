@@ -5,7 +5,9 @@ import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/marker_icon_catalog.dart';
+import '../models/marker_icon_category_catalog.dart';
 import '../models/marker_icon_registry.dart';
+import '../providers/marker_icon_background_color_provider.dart';
 import '../providers/marker_icon_providers.dart';
 import 'map_marker_icon.dart';
 import 'marker_icon_glyph.dart';
@@ -52,9 +54,16 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
     final theme = Theme.of(context);
     final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
         MarkerIconCatalog.defaults();
-    final options = catalog.options;
+    final categoryCatalog =
+        ref.watch(markerIconCategoryCatalogProvider).valueOrNull ??
+            MarkerIconCategoryCatalog.fallback();
+    final grouped = catalog.groupedByCategory(
+      categoryOrder: categoryCatalog.orderedKeys,
+    );
     final selectedOption =
-        catalog.option(widget.selectedIcon) ?? options.first;
+        catalog.option(widget.selectedIcon) ??
+            catalog.options.firstOrNull ??
+            markerIconOptions.first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -131,82 +140,116 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: MarkerIconPicker._columns,
-                    mainAxisSpacing: MarkerIconPicker._gridSpacing,
-                    crossAxisSpacing: MarkerIconPicker._gridSpacing,
-                    childAspectRatio: MarkerIconPicker._gridAspectRatio,
+                for (final categoryEntry in grouped.entries) ...[
+                  Text(
+                    markerIconCategoryDisplayLabel(
+                      l10n,
+                      categoryEntry.key,
+                      catalog: categoryCatalog,
+                    ),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  itemCount: options.length,
-                  itemBuilder: (context, index) {
-                    final option = options[index];
-                    final selected = widget.selectedIcon == option.key;
-
-                    return Material(
-                      color: selected
-                          ? theme.colorScheme.primaryContainer
-                              .withValues(alpha: 0.45)
-                          : theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(6),
-                      child: InkWell(
-                        onTap: () => widget.onChanged(option.key),
-                        borderRadius: BorderRadius.circular(6),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: selected
-                                  ? theme.colorScheme.primary
-                                  : theme.dividerColor,
-                              width: selected ? 1.5 : 1,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 2,
-                              vertical: 4,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                MarkerIconGlyph(
-                                  iconName: option.key,
-                                  color: selected
-                                      ? widget.color
-                                      : theme.iconTheme.color ??
-                                          theme.colorScheme.onSurface,
-                                  size: MarkerIconPicker._gridIconSize,
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  _markerIconPickerLabel(
-                                    l10n,
-                                    option,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    fontSize: 10,
-                                    height: 1.1,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                  const SizedBox(height: 8),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: MarkerIconPicker._columns,
+                      mainAxisSpacing: MarkerIconPicker._gridSpacing,
+                      crossAxisSpacing: MarkerIconPicker._gridSpacing,
+                      childAspectRatio: MarkerIconPicker._gridAspectRatio,
+                    ),
+                    itemCount: categoryEntry.value.length,
+                    itemBuilder: (context, index) {
+                      final option = categoryEntry.value[index];
+                      return _MarkerIconPickerTile(
+                        option: option,
+                        l10n: l10n,
+                        theme: theme,
+                        selected: widget.selectedIcon == option.key,
+                        color: widget.color,
+                        onSelected: () => widget.onChanged(option.key),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MarkerIconPickerTile extends StatelessWidget {
+  const _MarkerIconPickerTile({
+    required this.option,
+    required this.l10n,
+    required this.theme,
+    required this.selected,
+    required this.color,
+    required this.onSelected,
+  });
+
+  final MarkerIconOption option;
+  final AppLocalizations l10n;
+  final ThemeData theme;
+  final bool selected;
+  final Color color;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected
+          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.45)
+          : theme.colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(6),
+      child: InkWell(
+        onTap: onSelected,
+        borderRadius: BorderRadius.circular(6),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: selected ? theme.colorScheme.primary : theme.dividerColor,
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MarkerIconGlyph(
+                  iconName: option.key,
+                  color: selected
+                      ? color
+                      : theme.iconTheme.color ?? theme.colorScheme.onSurface,
+                  size: MarkerIconPicker._gridIconSize,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  _markerIconPickerLabel(l10n, option),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontSize: 10,
+                    height: 1.1,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -265,7 +308,7 @@ class MarkerColorPickerField extends StatelessWidget {
   }
 }
 
-class MarkerPreview extends StatelessWidget {
+class MarkerPreview extends ConsumerWidget {
   const MarkerPreview({
     super.key,
     required this.color,
@@ -276,8 +319,9 @@ class MarkerPreview extends StatelessWidget {
   final String iconName;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final iconBackgroundColor = ref.watch(markerIconBackgroundColorProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -291,6 +335,7 @@ class MarkerPreview extends StatelessWidget {
           child: MapMarkerIcon(
             color: color,
             iconName: iconName,
+            iconBackgroundColor: iconBackgroundColor,
           ),
         ),
       ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'marker_icon_categories.dart';
+
 class MarkerIconOption {
   const MarkerIconOption({
     required this.key,
@@ -10,6 +12,7 @@ class MarkerIconOption {
     this.emoji,
     this.coloredAsset = false,
     this.glyphScale = 1.0,
+    this.category,
   });
 
   final String key;
@@ -20,6 +23,10 @@ class MarkerIconOption {
   final String? emoji;
   final bool coloredAsset;
   final double glyphScale;
+  final String? category;
+
+  String get resolvedCategory =>
+      markerIconCategoryForKey(key, override: category);
 }
 
 const markerIconOptions = <MarkerIconOption>[

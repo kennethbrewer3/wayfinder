@@ -12,53 +12,34 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
-  MarkerIconCatalogEntry._({
+abstract class MarkerIconCategoryDefinition implements _i1.SerializableModel {
+  MarkerIconCategoryDefinition._({
     _i1.UuidValue? id,
     required this.key,
     required this.label,
-    required this.category,
-    this.materialIcon,
-    required this.coloredAsset,
-    required this.glyphScale,
-    required this.hasCustomSvg,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
-  factory MarkerIconCatalogEntry({
+  factory MarkerIconCategoryDefinition({
     _i1.UuidValue? id,
     required String key,
     required String label,
-    required String category,
-    String? materialIcon,
-    required bool coloredAsset,
-    required double glyphScale,
-    required bool hasCustomSvg,
     required int sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
-  }) = _MarkerIconCatalogEntryImpl;
+  }) = _MarkerIconCategoryDefinitionImpl;
 
-  factory MarkerIconCatalogEntry.fromJson(
+  factory MarkerIconCategoryDefinition.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
-    return MarkerIconCatalogEntry(
+    return MarkerIconCategoryDefinition(
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
-      category: jsonSerialization['category'] as String,
-      materialIcon: jsonSerialization['materialIcon'] as String?,
-      coloredAsset: _i1.BoolJsonExtension.fromJson(
-        jsonSerialization['coloredAsset'],
-      ),
-      glyphScale: (jsonSerialization['glyphScale'] as num).toDouble(),
-      hasCustomSvg: _i1.BoolJsonExtension.fromJson(
-        jsonSerialization['hasCustomSvg'],
-      ),
       sortOrder: jsonSerialization['sortOrder'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
@@ -76,34 +57,19 @@ abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
 
   String label;
 
-  String category;
-
-  String? materialIcon;
-
-  bool coloredAsset;
-
-  double glyphScale;
-
-  bool hasCustomSvg;
-
   int sortOrder;
 
   DateTime createdAt;
 
   DateTime updatedAt;
 
-  /// Returns a shallow copy of this [MarkerIconCatalogEntry]
+  /// Returns a shallow copy of this [MarkerIconCategoryDefinition]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  MarkerIconCatalogEntry copyWith({
+  MarkerIconCategoryDefinition copyWith({
     _i1.UuidValue? id,
     String? key,
     String? label,
-    String? category,
-    String? materialIcon,
-    bool? coloredAsset,
-    double? glyphScale,
-    bool? hasCustomSvg,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -111,15 +77,10 @@ abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'MarkerIconCatalogEntry',
+      '__className__': 'MarkerIconCategoryDefinition',
       'id': id.toJson(),
       'key': key,
       'label': label,
-      'category': category,
-      if (materialIcon != null) 'materialIcon': materialIcon,
-      'coloredAsset': coloredAsset,
-      'glyphScale': glyphScale,
-      'hasCustomSvg': hasCustomSvg,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -132,18 +93,11 @@ abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
   }
 }
 
-class _Undefined {}
-
-class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
-  _MarkerIconCatalogEntryImpl({
+class _MarkerIconCategoryDefinitionImpl extends MarkerIconCategoryDefinition {
+  _MarkerIconCategoryDefinitionImpl({
     _i1.UuidValue? id,
     required String key,
     required String label,
-    required String category,
-    String? materialIcon,
-    required bool coloredAsset,
-    required double glyphScale,
-    required bool hasCustomSvg,
     required int sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -151,42 +105,27 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
          id: id,
          key: key,
          label: label,
-         category: category,
-         materialIcon: materialIcon,
-         coloredAsset: coloredAsset,
-         glyphScale: glyphScale,
-         hasCustomSvg: hasCustomSvg,
          sortOrder: sortOrder,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
 
-  /// Returns a shallow copy of this [MarkerIconCatalogEntry]
+  /// Returns a shallow copy of this [MarkerIconCategoryDefinition]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  MarkerIconCatalogEntry copyWith({
+  MarkerIconCategoryDefinition copyWith({
     _i1.UuidValue? id,
     String? key,
     String? label,
-    String? category,
-    Object? materialIcon = _Undefined,
-    bool? coloredAsset,
-    double? glyphScale,
-    bool? hasCustomSvg,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return MarkerIconCatalogEntry(
+    return MarkerIconCategoryDefinition(
       id: id ?? this.id,
       key: key ?? this.key,
       label: label ?? this.label,
-      category: category ?? this.category,
-      materialIcon: materialIcon is String? ? materialIcon : this.materialIcon,
-      coloredAsset: coloredAsset ?? this.coloredAsset,
-      glyphScale: glyphScale ?? this.glyphScale,
-      hasCustomSvg: hasCustomSvg ?? this.hasCustomSvg,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

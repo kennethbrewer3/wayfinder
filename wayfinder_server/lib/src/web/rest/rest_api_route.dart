@@ -6,6 +6,7 @@ import 'health_rest_handlers.dart';
 import 'layers_rest_handlers.dart';
 import 'map_data_rest_handlers.dart';
 import 'markers_rest_handlers.dart';
+import 'marker_icon_categories_rest_handlers.dart';
 import 'marker_icons_rest_handlers.dart';
 import 'pmtiles_rest_handlers.dart';
 import 'rest_json.dart';
@@ -60,6 +61,24 @@ class RestApiRoute extends Route {
       ..patch('/marker-icons/:key', MarkerIconsRestHandlers.update)
       ..delete('/marker-icons/:key', MarkerIconsRestHandlers.delete)
       ..post('/marker-icons/:key/svg', MarkerIconsRestHandlers.uploadSvg)
+      ..get('/marker-icon-categories', MarkerIconCategoriesRestHandlers.list)
+      ..post('/marker-icon-categories', MarkerIconCategoriesRestHandlers.create)
+      ..get(
+        '/marker-icon-categories/:key',
+        MarkerIconCategoriesRestHandlers.get,
+      )
+      ..put(
+        '/marker-icon-categories/:key',
+        MarkerIconCategoriesRestHandlers.update,
+      )
+      ..patch(
+        '/marker-icon-categories/:key',
+        MarkerIconCategoriesRestHandlers.update,
+      )
+      ..delete(
+        '/marker-icon-categories/:key',
+        MarkerIconCategoriesRestHandlers.delete,
+      )
       ..get('/settings/home', AppSettingsRestHandlers.getHomeLocation)
       ..put('/settings/home', AppSettingsRestHandlers.updateHomeLocation)
       ..delete('/settings/home', AppSettingsRestHandlers.resetHomeLocation)

@@ -25,4 +25,6 @@ class AppConstants {
       'wayfinder.settings.mapViewportDebugBorder';
   static const mapTileBorderDebugStorageKey =
       'wayfinder.settings.mapTileBorderDebug';
+  static const markerIconBackgroundColorStorageKey =
+      'wayfinder.settings.markerIconBackgroundColor';
 }

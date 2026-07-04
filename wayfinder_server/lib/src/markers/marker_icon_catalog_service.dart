@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
 import 'marker_icon_storage.dart';
 
@@ -20,6 +21,7 @@ abstract final class MarkerIconCatalogService {
     Session session, {
     required String key,
     required String label,
+    String? category,
     String? materialIcon,
     bool coloredAsset = false,
     double glyphScale = 1.0,
@@ -37,9 +39,14 @@ abstract final class MarkerIconCatalogService {
     }
 
     final now = DateTime.now().toUtc();
+    final resolvedCategory = await MarkerIconCategoryService.resolveCategoryKey(
+      session,
+      category,
+    );
     final entry = MarkerIconCatalogEntry(
       key: normalizedKey,
       label: trimmedLabel,
+      category: resolvedCategory,
       materialIcon: _optionalString(materialIcon),
       coloredAsset: coloredAsset,
       glyphScale: _parseGlyphScale(glyphScale),
@@ -56,6 +63,7 @@ abstract final class MarkerIconCatalogService {
     Session session, {
     required String key,
     required String label,
+    String? category,
     String? materialIcon,
     bool? coloredAsset,
     double? glyphScale,
@@ -67,8 +75,12 @@ abstract final class MarkerIconCatalogService {
       throw MarkerIconNotFoundException(normalizedKey);
     }
 
+    final resolvedCategory = category != null
+        ? await MarkerIconCategoryService.resolveCategoryKey(session, category)
+        : existing.category;
     final updated = existing.copyWith(
       label: label.trim().isEmpty ? existing.label : label.trim(),
+      category: resolvedCategory,
       materialIcon: materialIcon != null
           ? _optionalString(materialIcon)
           : existing.materialIcon,

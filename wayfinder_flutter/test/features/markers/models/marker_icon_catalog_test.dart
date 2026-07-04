@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/features/markers/models/marker_icon_catalog.dart';
+import 'package:wayfinder_flutter/features/markers/models/marker_icon_categories.dart';
 import 'package:wayfinder_flutter/features/markers/models/marker_icon_registry.dart';
 
 void main() {
@@ -17,6 +18,7 @@ void main() {
         MarkerIconCatalogEntry(
           key: 'horse',
           label: 'Horse',
+          category: MarkerIconCategories.transportation,
           materialIcon: 'pets',
           coloredAsset: true,
           glyphScale: 0.94,
@@ -35,6 +37,8 @@ void main() {
       'http://localhost:18082/marker-icons/files/horse.svg?v=${now.millisecondsSinceEpoch}',
     );
     expect(catalog.coloredAsset('horse'), isTrue);
+    expect(catalog.option('horse')?.resolvedCategory,
+        MarkerIconCategories.transportation);
   });
 
   test('merge appends custom server-only icons', () {
@@ -47,6 +51,7 @@ void main() {
         MarkerIconCatalogEntry(
           key: 'custom_drone',
           label: 'Drone',
+          category: MarkerIconCategories.custom,
           materialIcon: 'flight',
           coloredAsset: false,
           glyphScale: 1.0,
@@ -64,5 +69,40 @@ void main() {
       'custom_drone',
     ]);
     expect(catalog.label('custom_drone'), 'Drone');
+  });
+
+  test('groupedByCategory uses built-in defaults and server overrides', () {
+    final now = DateTime.utc(2026, 7, 3, 12);
+    final catalog = MarkerIconCatalog.merge(
+      defaults: markerIconOptions
+          .where(
+            (option) => option.key == 'place' || option.key == 'ambulance',
+          )
+          .toList(growable: false),
+      remote: [
+        MarkerIconCatalogEntry(
+          key: 'ambulance',
+          label: 'Ambulance',
+          category: MarkerIconCategories.custom,
+          materialIcon: 'local_hospital',
+          coloredAsset: false,
+          glyphScale: 1.0,
+          hasCustomSvg: true,
+          sortOrder: 0,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      ],
+      webBaseUrl: 'http://localhost:18082',
+    );
+
+    final grouped = catalog.groupedByCategory(
+      categoryOrder: MarkerIconCategories.orderedKeys,
+    );
+    expect(grouped[MarkerIconCategories.general]?.map((o) => o.key), ['place']);
+    expect(
+      grouped[MarkerIconCategories.custom]?.map((o) => o.key),
+      ['ambulance'],
+    );
   });
 }

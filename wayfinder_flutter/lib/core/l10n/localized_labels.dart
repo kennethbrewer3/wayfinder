@@ -2,6 +2,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../app/app_locale_choice.dart';
 import '../../app/app_theme_choice.dart';
+import '../../features/markers/models/marker_icon_category_catalog.dart';
 import '../../features/circles/models/circle_geometry.dart';
 import '../../features/circles/models/circle_size_display.dart';
 import '../../features/lines/models/angle_display_format.dart';
@@ -270,6 +271,34 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'cemetery' => l10n.markerIconCemetery,
     _ => l10n.markerIconPlace,
   };
+}
+
+String localizedMarkerIconCategoryLabel(AppLocalizations l10n, String category) {
+  return switch (category) {
+    'general' => l10n.markerIconCategoryGeneral,
+    'places' => l10n.markerIconCategoryPlaces,
+    'transportation' => l10n.markerIconCategoryTransportation,
+    'people_animals' => l10n.markerIconCategoryPeopleAnimals,
+    'infrastructure' => l10n.markerIconCategoryInfrastructure,
+    'military' => l10n.markerIconCategoryMilitary,
+    'emergency' => l10n.markerIconCategoryEmergency,
+    'shelter_preparedness' => l10n.markerIconCategoryShelterPreparedness,
+    'recreation' => l10n.markerIconCategoryRecreation,
+    'agriculture' => l10n.markerIconCategoryAgriculture,
+    'custom' => l10n.markerIconCategoryCustom,
+    _ => category,
+  };
+}
+
+String markerIconCategoryDisplayLabel(
+  AppLocalizations l10n,
+  String category, {
+  MarkerIconCategoryCatalog? catalog,
+}) {
+  if (catalog != null && catalog.contains(category)) {
+    return catalog.labelFor(category);
+  }
+  return localizedMarkerIconCategoryLabel(l10n, category);
 }
 
 String localizedZoneTypeLabel(AppLocalizations l10n, String type) {

@@ -1486,6 +1486,216 @@ abstract class AppLocalizations {
   /// **'Edit marker icon'**
   String get markerIconsEditTitle;
 
+  /// No description provided for @markerIconsCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get markerIconsCategoryLabel;
+
+  /// No description provided for @markerIconBackgroundColorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon background'**
+  String get markerIconBackgroundColorTitle;
+
+  /// No description provided for @markerIconBackgroundColorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the fill color behind marker icons on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.'**
+  String get markerIconBackgroundColorDescription;
+
+  /// No description provided for @markerIconBackgroundColorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Background color'**
+  String get markerIconBackgroundColorLabel;
+
+  /// No description provided for @markerIconCategoryGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get markerIconCategoryGeneral;
+
+  /// No description provided for @markerIconCategoryPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Places & buildings'**
+  String get markerIconCategoryPlaces;
+
+  /// No description provided for @markerIconCategoryTransportation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get markerIconCategoryTransportation;
+
+  /// No description provided for @markerIconCategoryPeopleAnimals.
+  ///
+  /// In en, this message translates to:
+  /// **'People & animals'**
+  String get markerIconCategoryPeopleAnimals;
+
+  /// No description provided for @markerIconCategoryInfrastructure.
+  ///
+  /// In en, this message translates to:
+  /// **'Infrastructure'**
+  String get markerIconCategoryInfrastructure;
+
+  /// No description provided for @markerIconCategoryMilitary.
+  ///
+  /// In en, this message translates to:
+  /// **'Military & defense'**
+  String get markerIconCategoryMilitary;
+
+  /// No description provided for @markerIconCategoryEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency & medical'**
+  String get markerIconCategoryEmergency;
+
+  /// No description provided for @markerIconCategoryShelterPreparedness.
+  ///
+  /// In en, this message translates to:
+  /// **'Shelter & preparedness'**
+  String get markerIconCategoryShelterPreparedness;
+
+  /// No description provided for @markerIconCategoryRecreation.
+  ///
+  /// In en, this message translates to:
+  /// **'Recreation & outdoors'**
+  String get markerIconCategoryRecreation;
+
+  /// No description provided for @markerIconCategoryAgriculture.
+  ///
+  /// In en, this message translates to:
+  /// **'Agriculture'**
+  String get markerIconCategoryAgriculture;
+
+  /// No description provided for @markerIconCategoryCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get markerIconCategoryCustom;
+
+  /// No description provided for @markerIconCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon categories'**
+  String get markerIconCategoriesTitle;
+
+  /// No description provided for @markerIconCategoriesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize marker icons into categories. Categories appear in the icon picker and settings lists. Deleting a category moves its icons to Custom.'**
+  String get markerIconCategoriesDescription;
+
+  /// No description provided for @markerIconCategoriesAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get markerIconCategoriesAddButton;
+
+  /// No description provided for @markerIconCategoriesCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get markerIconCategoriesCreateTitle;
+
+  /// No description provided for @markerIconCategoriesEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit category'**
+  String get markerIconCategoriesEditTitle;
+
+  /// No description provided for @markerIconCategoriesKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category key'**
+  String get markerIconCategoriesKeyLabel;
+
+  /// No description provided for @markerIconCategoriesKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'my_category'**
+  String get markerIconCategoriesKeyHint;
+
+  /// No description provided for @markerIconCategoriesKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Category key is required.'**
+  String get markerIconCategoriesKeyRequired;
+
+  /// No description provided for @markerIconCategoriesKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Use lowercase letters, digits, and underscores (max 64).'**
+  String get markerIconCategoriesKeyInvalid;
+
+  /// No description provided for @markerIconCategoriesLabelField.
+  ///
+  /// In en, this message translates to:
+  /// **'Display label'**
+  String get markerIconCategoriesLabelField;
+
+  /// No description provided for @markerIconCategoriesLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Display label is required.'**
+  String get markerIconCategoriesLabelRequired;
+
+  /// No description provided for @markerIconCategoriesCreateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Category added: {label}'**
+  String markerIconCategoriesCreateSuccess(String label);
+
+  /// No description provided for @markerIconCategoriesUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Category updated: {label}'**
+  String markerIconCategoriesUpdateSuccess(String label);
+
+  /// No description provided for @markerIconCategoriesDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete category?'**
+  String get markerIconCategoriesDeleteTitle;
+
+  /// No description provided for @markerIconCategoriesDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{label}\" ({key})? Icons in this category will move to Custom.'**
+  String markerIconCategoriesDeleteMessage(String label, String key);
+
+  /// No description provided for @markerIconCategoriesDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Category deleted.'**
+  String get markerIconCategoriesDeleteSuccess;
+
+  /// No description provided for @markerIconCategoriesCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add category: {error}'**
+  String markerIconCategoriesCreateFailed(String error);
+
+  /// No description provided for @markerIconCategoriesUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update category: {error}'**
+  String markerIconCategoriesUpdateFailed(String error);
+
+  /// No description provided for @markerIconCategoriesDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete category: {error}'**
+  String markerIconCategoriesDeleteFailed(String error);
+
+  /// No description provided for @markerIconCategoriesProtectedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in fallback category (cannot delete)'**
+  String get markerIconCategoriesProtectedHint;
+
   /// No description provided for @layerLabel.
   ///
   /// In en, this message translates to:

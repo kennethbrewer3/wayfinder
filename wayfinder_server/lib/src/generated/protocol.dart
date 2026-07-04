@@ -24,27 +24,30 @@ import 'map/map_data_restore_summary.dart' as _i9;
 import 'map/map_marker.dart' as _i10;
 import 'map/map_marker_change.dart' as _i11;
 import 'markers/marker_icon_catalog_entry.dart' as _i12;
-import 'pmtiles/pmtiles_file.dart' as _i13;
-import 'pmtiles/pmtiles_file_group_link.dart' as _i14;
-import 'pmtiles/pmtiles_group.dart' as _i15;
-import 'settings/app_settings.dart' as _i16;
-import 'settings/rest_api_key.dart' as _i17;
-import 'settings/rest_api_key_created.dart' as _i18;
-import 'settings/rest_api_key_info.dart' as _i19;
-import 'zones/map_zone.dart' as _i20;
+import 'markers/marker_icon_category_definition.dart' as _i13;
+import 'pmtiles/pmtiles_file.dart' as _i14;
+import 'pmtiles/pmtiles_file_group_link.dart' as _i15;
+import 'pmtiles/pmtiles_group.dart' as _i16;
+import 'settings/app_settings.dart' as _i17;
+import 'settings/rest_api_key.dart' as _i18;
+import 'settings/rest_api_key_created.dart' as _i19;
+import 'settings/rest_api_key_info.dart' as _i20;
+import 'zones/map_zone.dart' as _i21;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
-    as _i21;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i22;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i23;
+    as _i22;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i23;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i24;
 import 'package:wayfinder_server/src/generated/markers/marker_icon_catalog_entry.dart'
-    as _i24;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i25;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_server/src/generated/markers/marker_icon_category_definition.dart'
     as _i26;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i27;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i28;
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
+    as _i28;
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+    as _i29;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i30;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
@@ -53,6 +56,7 @@ export 'map/map_data_restore_summary.dart';
 export 'map/map_marker.dart';
 export 'map/map_marker_change.dart';
 export 'markers/marker_icon_catalog_entry.dart';
+export 'markers/marker_icon_category_definition.dart';
 export 'pmtiles/pmtiles_file.dart';
 export 'pmtiles/pmtiles_file_group_link.dart';
 export 'pmtiles/pmtiles_group.dart';
@@ -618,6 +622,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
+          name: 'category',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
           name: 'materialIcon',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -677,6 +687,81 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.IndexDefinition(
           indexName: 'marker_icon_catalog_key_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'key',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'marker_icon_category',
+      dartName: 'MarkerIconCategoryDefinition',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'gen_random_uuid()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'key',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'label',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sortOrder',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'marker_icon_category_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'marker_icon_category_key_idx',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
@@ -1078,29 +1163,32 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i12.MarkerIconCatalogEntry) {
       return _i12.MarkerIconCatalogEntry.fromJson(data) as T;
     }
-    if (t == _i13.PmtilesFile) {
-      return _i13.PmtilesFile.fromJson(data) as T;
+    if (t == _i13.MarkerIconCategoryDefinition) {
+      return _i13.MarkerIconCategoryDefinition.fromJson(data) as T;
     }
-    if (t == _i14.PmtilesFileGroupLink) {
-      return _i14.PmtilesFileGroupLink.fromJson(data) as T;
+    if (t == _i14.PmtilesFile) {
+      return _i14.PmtilesFile.fromJson(data) as T;
     }
-    if (t == _i15.PmtilesGroup) {
-      return _i15.PmtilesGroup.fromJson(data) as T;
+    if (t == _i15.PmtilesFileGroupLink) {
+      return _i15.PmtilesFileGroupLink.fromJson(data) as T;
     }
-    if (t == _i16.AppSettings) {
-      return _i16.AppSettings.fromJson(data) as T;
+    if (t == _i16.PmtilesGroup) {
+      return _i16.PmtilesGroup.fromJson(data) as T;
     }
-    if (t == _i17.RestApiKey) {
-      return _i17.RestApiKey.fromJson(data) as T;
+    if (t == _i17.AppSettings) {
+      return _i17.AppSettings.fromJson(data) as T;
     }
-    if (t == _i18.RestApiKeyCreated) {
-      return _i18.RestApiKeyCreated.fromJson(data) as T;
+    if (t == _i18.RestApiKey) {
+      return _i18.RestApiKey.fromJson(data) as T;
     }
-    if (t == _i19.RestApiKeyInfo) {
-      return _i19.RestApiKeyInfo.fromJson(data) as T;
+    if (t == _i19.RestApiKeyCreated) {
+      return _i19.RestApiKeyCreated.fromJson(data) as T;
     }
-    if (t == _i20.MapZone) {
-      return _i20.MapZone.fromJson(data) as T;
+    if (t == _i20.RestApiKeyInfo) {
+      return _i20.RestApiKeyInfo.fromJson(data) as T;
+    }
+    if (t == _i21.MapZone) {
+      return _i21.MapZone.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Category?>()) {
       return (data != null ? _i5.Category.fromJson(data) : null) as T;
@@ -1128,30 +1216,36 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data != null ? _i12.MarkerIconCatalogEntry.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i13.PmtilesFile?>()) {
-      return (data != null ? _i13.PmtilesFile.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i14.PmtilesFileGroupLink?>()) {
-      return (data != null ? _i14.PmtilesFileGroupLink.fromJson(data) : null)
+    if (t == _i1.getType<_i13.MarkerIconCategoryDefinition?>()) {
+      return (data != null
+              ? _i13.MarkerIconCategoryDefinition.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i15.PmtilesGroup?>()) {
-      return (data != null ? _i15.PmtilesGroup.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.PmtilesFile?>()) {
+      return (data != null ? _i14.PmtilesFile.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.AppSettings?>()) {
-      return (data != null ? _i16.AppSettings.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.PmtilesFileGroupLink?>()) {
+      return (data != null ? _i15.PmtilesFileGroupLink.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<_i17.RestApiKey?>()) {
-      return (data != null ? _i17.RestApiKey.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.PmtilesGroup?>()) {
+      return (data != null ? _i16.PmtilesGroup.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.RestApiKeyCreated?>()) {
-      return (data != null ? _i18.RestApiKeyCreated.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.AppSettings?>()) {
+      return (data != null ? _i17.AppSettings.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.RestApiKeyInfo?>()) {
-      return (data != null ? _i19.RestApiKeyInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.RestApiKey?>()) {
+      return (data != null ? _i18.RestApiKey.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.MapZone?>()) {
-      return (data != null ? _i20.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.RestApiKeyCreated?>()) {
+      return (data != null ? _i19.RestApiKeyCreated.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i20.RestApiKeyInfo?>()) {
+      return (data != null ? _i20.RestApiKeyInfo.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i21.MapZone?>()) {
+      return (data != null ? _i21.MapZone.fromJson(data) : null) as T;
     }
     if (t == List<_i1.UuidValue>) {
       return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
@@ -1165,42 +1259,48 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i21.Category>) {
-      return (data as List).map((e) => deserialize<_i21.Category>(e)).toList()
+    if (t == List<_i22.Category>) {
+      return (data as List).map((e) => deserialize<_i22.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i22.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i22.MapLayer>(e)).toList()
+    if (t == List<_i23.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i23.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i23.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i23.MapMarker>(e)).toList()
+    if (t == List<_i24.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i24.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i24.MarkerIconCatalogEntry>) {
+    if (t == List<_i25.MarkerIconCatalogEntry>) {
       return (data as List)
-              .map((e) => deserialize<_i24.MarkerIconCatalogEntry>(e))
+              .map((e) => deserialize<_i25.MarkerIconCatalogEntry>(e))
               .toList()
           as T;
     }
-    if (t == List<_i25.PmtilesFile>) {
+    if (t == List<_i26.MarkerIconCategoryDefinition>) {
       return (data as List)
-              .map((e) => deserialize<_i25.PmtilesFile>(e))
+              .map((e) => deserialize<_i26.MarkerIconCategoryDefinition>(e))
               .toList()
           as T;
     }
-    if (t == List<_i26.PmtilesGroup>) {
+    if (t == List<_i27.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i26.PmtilesGroup>(e))
+              .map((e) => deserialize<_i27.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i27.RestApiKey>) {
-      return (data as List).map((e) => deserialize<_i27.RestApiKey>(e)).toList()
+    if (t == List<_i28.PmtilesGroup>) {
+      return (data as List)
+              .map((e) => deserialize<_i28.PmtilesGroup>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i28.MapZone>) {
-      return (data as List).map((e) => deserialize<_i28.MapZone>(e)).toList()
+    if (t == List<_i29.RestApiKey>) {
+      return (data as List).map((e) => deserialize<_i29.RestApiKey>(e)).toList()
+          as T;
+    }
+    if (t == List<_i30.MapZone>) {
+      return (data as List).map((e) => deserialize<_i30.MapZone>(e)).toList()
           as T;
     }
     try {
@@ -1225,14 +1325,15 @@ class Protocol extends _i1.SerializationManagerServer {
       _i10.MapMarker => 'MapMarker',
       _i11.MapMarkerChange => 'MapMarkerChange',
       _i12.MarkerIconCatalogEntry => 'MarkerIconCatalogEntry',
-      _i13.PmtilesFile => 'PmtilesFile',
-      _i14.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
-      _i15.PmtilesGroup => 'PmtilesGroup',
-      _i16.AppSettings => 'AppSettings',
-      _i17.RestApiKey => 'RestApiKey',
-      _i18.RestApiKeyCreated => 'RestApiKeyCreated',
-      _i19.RestApiKeyInfo => 'RestApiKeyInfo',
-      _i20.MapZone => 'MapZone',
+      _i13.MarkerIconCategoryDefinition => 'MarkerIconCategoryDefinition',
+      _i14.PmtilesFile => 'PmtilesFile',
+      _i15.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
+      _i16.PmtilesGroup => 'PmtilesGroup',
+      _i17.AppSettings => 'AppSettings',
+      _i18.RestApiKey => 'RestApiKey',
+      _i19.RestApiKeyCreated => 'RestApiKeyCreated',
+      _i20.RestApiKeyInfo => 'RestApiKeyInfo',
+      _i21.MapZone => 'MapZone',
       _ => null,
     };
   }
@@ -1263,21 +1364,23 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'MapMarkerChange';
       case _i12.MarkerIconCatalogEntry():
         return 'MarkerIconCatalogEntry';
-      case _i13.PmtilesFile():
+      case _i13.MarkerIconCategoryDefinition():
+        return 'MarkerIconCategoryDefinition';
+      case _i14.PmtilesFile():
         return 'PmtilesFile';
-      case _i14.PmtilesFileGroupLink():
+      case _i15.PmtilesFileGroupLink():
         return 'PmtilesFileGroupLink';
-      case _i15.PmtilesGroup():
+      case _i16.PmtilesGroup():
         return 'PmtilesGroup';
-      case _i16.AppSettings():
+      case _i17.AppSettings():
         return 'AppSettings';
-      case _i17.RestApiKey():
+      case _i18.RestApiKey():
         return 'RestApiKey';
-      case _i18.RestApiKeyCreated():
+      case _i19.RestApiKeyCreated():
         return 'RestApiKeyCreated';
-      case _i19.RestApiKeyInfo():
+      case _i20.RestApiKeyInfo():
         return 'RestApiKeyInfo';
-      case _i20.MapZone():
+      case _i21.MapZone():
         return 'MapZone';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1325,29 +1428,32 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'MarkerIconCatalogEntry') {
       return deserialize<_i12.MarkerIconCatalogEntry>(data['data']);
     }
+    if (dataClassName == 'MarkerIconCategoryDefinition') {
+      return deserialize<_i13.MarkerIconCategoryDefinition>(data['data']);
+    }
     if (dataClassName == 'PmtilesFile') {
-      return deserialize<_i13.PmtilesFile>(data['data']);
+      return deserialize<_i14.PmtilesFile>(data['data']);
     }
     if (dataClassName == 'PmtilesFileGroupLink') {
-      return deserialize<_i14.PmtilesFileGroupLink>(data['data']);
+      return deserialize<_i15.PmtilesFileGroupLink>(data['data']);
     }
     if (dataClassName == 'PmtilesGroup') {
-      return deserialize<_i15.PmtilesGroup>(data['data']);
+      return deserialize<_i16.PmtilesGroup>(data['data']);
     }
     if (dataClassName == 'AppSettings') {
-      return deserialize<_i16.AppSettings>(data['data']);
+      return deserialize<_i17.AppSettings>(data['data']);
     }
     if (dataClassName == 'RestApiKey') {
-      return deserialize<_i17.RestApiKey>(data['data']);
+      return deserialize<_i18.RestApiKey>(data['data']);
     }
     if (dataClassName == 'RestApiKeyCreated') {
-      return deserialize<_i18.RestApiKeyCreated>(data['data']);
+      return deserialize<_i19.RestApiKeyCreated>(data['data']);
     }
     if (dataClassName == 'RestApiKeyInfo') {
-      return deserialize<_i19.RestApiKeyInfo>(data['data']);
+      return deserialize<_i20.RestApiKeyInfo>(data['data']);
     }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i20.MapZone>(data['data']);
+      return deserialize<_i21.MapZone>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1393,18 +1499,20 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i10.MapMarker.t;
       case _i12.MarkerIconCatalogEntry:
         return _i12.MarkerIconCatalogEntry.t;
-      case _i13.PmtilesFile:
-        return _i13.PmtilesFile.t;
-      case _i14.PmtilesFileGroupLink:
-        return _i14.PmtilesFileGroupLink.t;
-      case _i15.PmtilesGroup:
-        return _i15.PmtilesGroup.t;
-      case _i16.AppSettings:
-        return _i16.AppSettings.t;
-      case _i17.RestApiKey:
-        return _i17.RestApiKey.t;
-      case _i20.MapZone:
-        return _i20.MapZone.t;
+      case _i13.MarkerIconCategoryDefinition:
+        return _i13.MarkerIconCategoryDefinition.t;
+      case _i14.PmtilesFile:
+        return _i14.PmtilesFile.t;
+      case _i15.PmtilesFileGroupLink:
+        return _i15.PmtilesFileGroupLink.t;
+      case _i16.PmtilesGroup:
+        return _i16.PmtilesGroup.t;
+      case _i17.AppSettings:
+        return _i17.AppSettings.t;
+      case _i18.RestApiKey:
+        return _i18.RestApiKey.t;
+      case _i21.MapZone:
+        return _i21.MapZone.t;
     }
     return null;
   }

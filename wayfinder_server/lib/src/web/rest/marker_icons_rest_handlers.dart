@@ -43,6 +43,7 @@ abstract final class MarkerIconsRestHandlers {
           session,
           key: body['key'] as String? ?? '',
           label: body['label'] as String? ?? '',
+          category: body['category'] as String?,
           materialIcon: _optionalString(body['materialIcon']),
           coloredAsset: body['coloredAsset'] as bool? ?? false,
           glyphScale: _parseGlyphScale(body['glyphScale']),
@@ -65,6 +66,9 @@ abstract final class MarkerIconsRestHandlers {
           session,
           key: key,
           label: body.containsKey('label') ? _requiredLabel(body['label']) : '',
+          category: body.containsKey('category')
+              ? body['category'] as String?
+              : null,
           materialIcon: body.containsKey('materialIcon')
               ? _optionalString(body['materialIcon'])
               : null,

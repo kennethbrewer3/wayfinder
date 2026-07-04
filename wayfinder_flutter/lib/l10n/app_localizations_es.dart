@@ -333,6 +333,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ayudas visuales guardadas solo en este navegador.';
 
   @override
+  String get settingsMapMarkerSizeTitle => 'Tamaño de marcadores';
+
+  @override
+  String get settingsMapMarkerSizeDescription =>
+      'Ajuste el tamaño de los marcadores en el mapa. Se guarda solo en este dispositivo.';
+
+  @override
+  String settingsMapMarkerSizeValue(int percent) {
+    return '$percent %';
+  }
+
+  @override
+  String get settingsMapMarkerSizeMinLabel => 'Más pequeño';
+
+  @override
+  String get settingsMapMarkerSizeMaxLabel => 'Más grande';
+
+  @override
   String get settingsMapViewportDebugBorderTitle =>
       'Mostrar borde del viewport del mapa';
 

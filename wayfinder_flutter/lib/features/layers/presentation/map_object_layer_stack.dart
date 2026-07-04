@@ -8,6 +8,7 @@ import '../../tracks/presentation/map_track_layer.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../markers/models/marker_color.dart';
+import '../../markers/models/map_marker_size.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/utils/effective_marker_icon.dart';
 import '../../rectangles/presentation/map_rectangle_layer.dart';
@@ -18,6 +19,7 @@ List<Widget> buildStackedMapLayerChildren({
   required List<MapMarker> markers,
   required List<MapZone> zones,
   required void Function(MapMarker marker) onMarkerTap,
+  required double mapMarkerSizeScale,
   UuidValue? selectedLineId,
   Map<UuidValue, LineGeometry>? geometryOverrides,
 }) {
@@ -31,14 +33,16 @@ List<Widget> buildStackedMapLayerChildren({
     }
 
     if (layerMarkers.isNotEmpty) {
+      final markerWidth = mapMarkerRenderWidth(mapMarkerSizeScale);
+      final markerHeight = mapMarkerRenderHeight(mapMarkerSizeScale);
       widgets.add(
         MarkerLayer(
           markers: layerMarkers
               .map(
                 (marker) => Marker(
                   point: LatLng(marker.latitude, marker.longitude),
-                  width: mapMarkerWidth,
-                  height: mapMarkerHeight,
+                  width: markerWidth,
+                  height: markerHeight,
                   alignment: mapMarkerAnchorAlignment,
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
@@ -51,6 +55,8 @@ List<Widget> buildStackedMapLayerChildren({
                           marker: marker,
                           trackZonesById: trackZones,
                         ),
+                        width: markerWidth,
+                        height: markerHeight,
                       ),
                     ),
                   ),

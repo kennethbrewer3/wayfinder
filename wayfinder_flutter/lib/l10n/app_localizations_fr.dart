@@ -334,6 +334,24 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aides visuelles enregistrées uniquement dans ce navigateur.';
 
   @override
+  String get settingsMapMarkerSizeTitle => 'Taille des marqueurs';
+
+  @override
+  String get settingsMapMarkerSizeDescription =>
+      'Ajustez la taille des marqueurs sur la carte. Enregistré sur cet appareil uniquement.';
+
+  @override
+  String settingsMapMarkerSizeValue(int percent) {
+    return '$percent %';
+  }
+
+  @override
+  String get settingsMapMarkerSizeMinLabel => 'Plus petit';
+
+  @override
+  String get settingsMapMarkerSizeMaxLabel => 'Plus grand';
+
+  @override
   String get settingsMapViewportDebugBorderTitle =>
       'Afficher la bordure du viewport de la carte';
 

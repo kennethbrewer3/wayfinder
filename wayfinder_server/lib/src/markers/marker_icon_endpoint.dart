@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
+import 'marker_icon_catalog_sanitizer.dart';
 import 'marker_icon_catalog_service.dart';
 import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
@@ -14,10 +15,13 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'listCatalog',
-      () => MarkerIconCatalogEntry.db.find(
-        session,
-        orderBy: (t) => t.sortOrder,
-      ),
+      () async {
+        final entries = await MarkerIconCatalogEntry.db.find(
+          session,
+          orderBy: (t) => t.sortOrder,
+        );
+        return MarkerIconCatalogSanitizer.effectiveEntries(entries);
+      },
       onSuccess: (entries) => 'count=${entries.length}',
     );
   }

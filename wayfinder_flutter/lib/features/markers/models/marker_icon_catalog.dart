@@ -32,7 +32,7 @@ class MarkerIconCatalog {
         key: entry.key,
         icon: existing?.icon ?? materialIconFromServerKey(entry.materialIcon),
         label: entry.label,
-        assetPath: svgUrl == null ? existing?.assetPath : null,
+        assetPath: existing?.assetPath,
         svgUrl: svgUrl,
         emoji: existing?.emoji,
         coloredAsset: entry.coloredAsset,

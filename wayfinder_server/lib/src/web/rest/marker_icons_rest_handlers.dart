@@ -1,8 +1,10 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
+import '../../markers/marker_icon_catalog_sanitizer.dart';
 import '../../markers/marker_icon_catalog_service.dart';
 import '../../markers/marker_icon_key.dart';
+import '../../markers/marker_icon_storage.dart';
 import '../../markers/marker_icon_upload_handler.dart';
 import 'rest_json.dart';
 
@@ -12,9 +14,11 @@ abstract final class MarkerIconsRestHandlers {
   static Future<Result> list(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
-      final entries = await MarkerIconCatalogEntry.db.find(
-        session,
-        orderBy: (t) => t.sortOrder,
+      final entries = MarkerIconCatalogSanitizer.effectiveEntries(
+        await MarkerIconCatalogEntry.db.find(
+          session,
+          orderBy: (t) => t.sortOrder,
+        ),
       );
       return RestJson.ok(
         entries.map(_encodeEntry).toList(),
@@ -30,7 +34,14 @@ abstract final class MarkerIconsRestHandlers {
       if (entry == null) {
         return RestJson.error(404, 'Marker icon not found');
       }
-      return RestJson.ok(_encodeEntry(entry));
+      return RestJson.ok(
+        _encodeEntry(
+          MarkerIconCatalogSanitizer.effectiveEntry(
+            entry,
+            storage: MarkerIconStorage(),
+          ),
+        ),
+      );
     });
   }
 

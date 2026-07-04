@@ -31,7 +31,7 @@ void main() {
       webBaseUrl: 'http://localhost:18082',
     );
 
-    expect(catalog.asset('horse'), isNull);
+    expect(catalog.asset('horse'), 'assets/markers/horse.svg');
     expect(
       catalog.svgUrl('horse'),
       'http://localhost:18082/marker-icons/files/horse.svg?v=${now.millisecondsSinceEpoch}',

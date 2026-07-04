@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/marker_icon_catalog.dart';
 import '../providers/marker_icon_providers.dart';
+import 'marker_icon_svg_glyph.dart';
 
 class MarkerIconGlyph extends ConsumerWidget {
   const MarkerIconGlyph({
@@ -34,13 +35,13 @@ class MarkerIconGlyph extends ConsumerWidget {
     final svgUrl = catalog.svgUrl(iconName);
     if (svgUrl != null) {
       final preserveColors = catalog.coloredAsset(iconName);
-      return SvgPicture.network(
-        svgUrl,
-        width: glyphSize,
-        height: glyphSize,
-        colorFilter: preserveColors
-            ? null
-            : ColorFilter.mode(color, BlendMode.srcIn),
+      return MarkerIconSvgGlyph(
+        svgUrl: svgUrl,
+        assetPath: catalog.asset(iconName),
+        fallbackIcon: catalog.data(iconName),
+        size: glyphSize,
+        color: color,
+        preserveColors: preserveColors,
       );
     }
 

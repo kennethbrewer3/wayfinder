@@ -146,7 +146,7 @@
   "settingsMapDebugTitle": "Map debugging",
   "settingsMapDebugDescription": "Visual aids stored in this browser only.",
   "settingsMapMarkerSizeTitle": "Map marker size",
-  "settingsMapMarkerSizeDescription": "Adjust how large markers appear on the map. Stored on this device only.",
+  "settingsMapMarkerSizeDescription": "Adjust how large markers appear on the map. Included in server backups.",
   "settingsMapMarkerSizeValue": "{percent}%",
   "@settingsMapMarkerSizeValue": {
     "placeholders": {

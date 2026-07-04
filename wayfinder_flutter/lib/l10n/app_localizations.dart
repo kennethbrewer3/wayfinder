@@ -709,7 +709,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapMarkerSizeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Adjust how large markers appear on the map. Stored on this device only.'**
+  /// **'Adjust how large markers appear on the map. Included in server backups.'**
   String get settingsMapMarkerSizeDescription;
 
   /// No description provided for @settingsMapMarkerSizeValue.

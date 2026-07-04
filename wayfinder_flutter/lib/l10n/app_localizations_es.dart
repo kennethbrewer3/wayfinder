@@ -337,7 +337,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapMarkerSizeDescription =>
-      'Ajuste el tamaño de los marcadores en el mapa. Se guarda solo en este dispositivo.';
+      'Ajuste el tamaño de los marcadores en el mapa. Se incluye en las copias de seguridad del servidor.';
 
   @override
   String settingsMapMarkerSizeValue(int percent) {

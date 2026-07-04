@@ -10,6 +10,7 @@ abstract final class AppSettingsConstants {
   static const defaultCircleSizeDisplay = 'radius';
   static const defaultAppTheme = 'light';
   static const defaultAppLocale = 'system';
+  static const defaultMapMarkerSizeScale = 1.0;
 
   static const allowedMeasurementUnits = {'metric', 'imperial', 'nautical'};
   static const allowedAngleDisplayFormats = {'decimal', 'dms'};

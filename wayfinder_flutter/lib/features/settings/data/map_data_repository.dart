@@ -7,7 +7,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../../core/app_globals.dart';
 import '../../../core/rest_api_headers.dart';
 
-const mapDataBackupVersion = 2;
+const mapDataBackupVersion = 3;
 
 class MapDataRestoreResult {
   const MapDataRestoreResult({

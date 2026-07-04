@@ -1,47 +1,94 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/map_viewport_debug_storage.dart';
+import '../../../core/logging/app_logger.dart';
+import '../../settings/data/app_settings_repository.dart';
 
 final mapViewportDebugBorderProvider =
     StateNotifierProvider<MapViewportDebugBorderNotifier, bool>(
-      (ref) => MapViewportDebugBorderNotifier(MapViewportDebugStorage()),
+      (ref) => MapViewportDebugBorderNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+      ),
     );
 
 final mapTileBorderDebugProvider =
     StateNotifierProvider<MapTileBorderDebugNotifier, bool>(
-      (ref) => MapTileBorderDebugNotifier(MapViewportDebugStorage()),
+      (ref) => MapTileBorderDebugNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+      ),
     );
 
 class MapViewportDebugBorderNotifier extends StateNotifier<bool> {
-  MapViewportDebugBorderNotifier(this._storage) : super(false) {
+  MapViewportDebugBorderNotifier(this._repository) : super(false) {
     _load();
   }
 
-  final MapViewportDebugStorage _storage;
+  final AppSettingsRepository _repository;
+  static final _log = AppLogger.logSettings;
+
+  Future<void> reload() => _load();
 
   Future<void> _load() async {
-    state = await _storage.loadOverlay();
+    try {
+      final preferences = await _repository.getClientPreferences();
+      state = preferences.mapViewportDebugBorder;
+    } catch (error, _) {
+      _log.warn(
+        '🗺️ Failed to load map viewport debug from server',
+        error: error,
+      );
+      state = false;
+    }
   }
 
   Future<void> setEnabled(bool enabled) async {
     state = enabled;
-    await _storage.saveOverlay(enabled);
+    try {
+      await _repository.patchClientPreferences(
+        (current) => current.copyWith(mapViewportDebugBorder: enabled),
+      );
+    } catch (error, _) {
+      _log.warn(
+        '🗺️ Failed to save map viewport debug to server',
+        error: error,
+      );
+    }
   }
 }
 
 class MapTileBorderDebugNotifier extends StateNotifier<bool> {
-  MapTileBorderDebugNotifier(this._storage) : super(false) {
+  MapTileBorderDebugNotifier(this._repository) : super(false) {
     _load();
   }
 
-  final MapViewportDebugStorage _storage;
+  final AppSettingsRepository _repository;
+  static final _log = AppLogger.logSettings;
+
+  Future<void> reload() => _load();
 
   Future<void> _load() async {
-    state = await _storage.loadTileBorders();
+    try {
+      final preferences = await _repository.getClientPreferences();
+      state = preferences.mapTileBorderDebug;
+    } catch (error, _) {
+      _log.warn(
+        '🗺️ Failed to load map tile border debug from server',
+        error: error,
+      );
+      state = false;
+    }
   }
 
   Future<void> setEnabled(bool enabled) async {
     state = enabled;
-    await _storage.saveTileBorders(enabled);
+    try {
+      await _repository.patchClientPreferences(
+        (current) => current.copyWith(mapTileBorderDebug: enabled),
+      );
+    } catch (error, _) {
+      _log.warn(
+        '🗺️ Failed to save map tile border debug to server',
+        error: error,
+      );
+    }
   }
 }

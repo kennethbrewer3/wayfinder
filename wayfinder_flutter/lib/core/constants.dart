@@ -14,20 +14,6 @@ class AppConstants {
   static const maxMapZoom = 18.0;
 
   static const viewportStorageKey = 'wayfinder.map.viewport';
-  static const measurementUnitsStorageKey =
-      'wayfinder.settings.measurementUnits';
-  static const angleDisplayFormatStorageKey =
-      'wayfinder.settings.angleDisplayFormat';
-  static const circleSizeDisplayStorageKey =
-      'wayfinder.settings.circleSizeDisplay';
   static const serverApiUrlStorageKey = 'wayfinder.settings.serverApiUrl';
   static const geocodingWebUrlStorageKey = 'wayfinder.settings.geocodingWebUrl';
-  static const appThemeStorageKey = 'wayfinder.settings.appTheme';
-  static const appLocaleStorageKey = 'wayfinder.settings.appLocale';
-  static const mapViewportDebugBorderStorageKey =
-      'wayfinder.settings.mapViewportDebugBorder';
-  static const mapTileBorderDebugStorageKey =
-      'wayfinder.settings.mapTileBorderDebug';
-  static const mapMarkerSizeScaleStorageKey =
-      'wayfinder.settings.mapMarkerSizeScale';
 }

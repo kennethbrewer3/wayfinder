@@ -1354,6 +1354,21 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'mapMarkerSizeScale': _i1.ParameterDescription(
+              name: 'mapMarkerSizeScale',
+              type: _i1.getType<double>(),
+              nullable: false,
+            ),
+            'mapViewportDebugBorder': _i1.ParameterDescription(
+              name: 'mapViewportDebugBorder',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'mapTileBorderDebug': _i1.ParameterDescription(
+              name: 'mapTileBorderDebug',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -1367,6 +1382,9 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['circleSizeDisplay'],
                     params['appTheme'],
                     params['appLocale'],
+                    params['mapMarkerSizeScale'],
+                    params['mapViewportDebugBorder'],
+                    params['mapTileBorderDebug'],
                   ),
         ),
         'getRestApiKeyStatus': _i1.MethodConnector(

@@ -147,6 +147,27 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'system\'::text',
         ),
         _i2.ColumnDefinition(
+          name: 'mapMarkerSizeScale',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '1.0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'mapViewportDebugBorder',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'mapTileBorderDebug',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
           name: 'restApiKeyHash',
           columnType: _i2.ColumnType.text,
           isNullable: true,

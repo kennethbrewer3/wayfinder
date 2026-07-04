@@ -11,5 +11,8 @@ fields:
   circleSizeDisplay: String, default="radius"
   appTheme: String, default="light"
   appLocale: String, default="system"
+  mapMarkerSizeScale: double, default=1.0
+  mapViewportDebugBorder: bool, default=false
+  mapTileBorderDebug: bool, default=false
   restApiKeyHash: String?
   updatedAt: DateTime

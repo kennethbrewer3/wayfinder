@@ -781,6 +781,9 @@ class EndpointAppSettings extends _i2.EndpointRef {
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
+    double mapMarkerSizeScale,
+    bool mapViewportDebugBorder,
+    bool mapTileBorderDebug,
   ) => caller.callServerEndpoint<_i17.AppSettings>(
     'appSettings',
     'updateClientPreferences',
@@ -790,6 +793,9 @@ class EndpointAppSettings extends _i2.EndpointRef {
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
+      'mapMarkerSizeScale': mapMarkerSizeScale,
+      'mapViewportDebugBorder': mapViewportDebugBorder,
+      'mapTileBorderDebug': mapTileBorderDebug,
     },
   );
 

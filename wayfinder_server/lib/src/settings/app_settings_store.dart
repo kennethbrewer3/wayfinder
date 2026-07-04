@@ -4,6 +4,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/wayfinder_env.dart';
 import '../generated/protocol.dart';
+import 'app_settings_backup.dart';
 import 'app_settings_constants.dart';
 
 abstract final class AppSettingsStore {
@@ -128,11 +129,15 @@ abstract final class AppSettingsStore {
     required String circleSizeDisplay,
     required String appTheme,
     required String appLocale,
+    required double mapMarkerSizeScale,
+    required bool mapViewportDebugBorder,
+    required bool mapTileBorderDebug,
   }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);
     validateCircleSizeDisplay(circleSizeDisplay);
     validateAppTheme(appTheme);
     validateAppLocale(appLocale);
+    validateMapMarkerSizeScale(mapMarkerSizeScale);
   }
 }

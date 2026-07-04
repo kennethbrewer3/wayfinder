@@ -123,7 +123,7 @@
   "settingsMapDebugTitle": "Débogage de la carte",
   "settingsMapDebugDescription": "Aides visuelles enregistrées uniquement dans ce navigateur.",
   "settingsMapMarkerSizeTitle": "Taille des marqueurs",
-  "settingsMapMarkerSizeDescription": "Ajustez la taille des marqueurs sur la carte. Enregistré sur cet appareil uniquement.",
+  "settingsMapMarkerSizeDescription": "Ajustez la taille des marqueurs sur la carte. Inclus dans les sauvegardes du serveur.",
   "settingsMapMarkerSizeValue": "{percent} %",
   "settingsMapMarkerSizeMinLabel": "Plus petit",
   "settingsMapMarkerSizeMaxLabel": "Plus grand",

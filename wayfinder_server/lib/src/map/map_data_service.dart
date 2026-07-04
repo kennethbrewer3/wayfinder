@@ -3,11 +3,15 @@ import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../layers/map_layer_bootstrap.dart';
 import '../markers/marker_icon_backup.dart';
+import '../settings/app_settings_backup.dart';
+import '../settings/app_settings_store.dart';
+import '../pmtiles/pmtiles_catalog_sync.dart';
+import '../pmtiles/pmtiles_storage.dart';
 import '../web/rest/rest_json.dart';
 
-const mapDataBackupVersion = 2;
+const mapDataBackupVersion = 3;
 
-const supportedMapDataBackupVersions = {1, 2};
+const supportedMapDataBackupVersions = {1, 2, 3};
 
 /// Full map structure export (layers, markers, zones).
 Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
@@ -22,10 +26,12 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   );
 
   final markerIcons = await exportMarkerIconBackup(session);
+  final settings = await AppSettingsStore.getOrCreate(session);
 
   return {
     'version': mapDataBackupVersion,
     'exportedAt': DateTime.now().toUtc().toIso8601String(),
+    'appSettings': exportAppSettingsBackup(settings),
     'layers': RestJson.encodeModels(layers),
     'markers': RestJson.encodeModels(markers),
     'zones': RestJson.encodeModels(zones),
@@ -121,6 +127,19 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
               body.containsKey('markerIcons'))
       ? await restoreMarkerIconBackup(session, body)
       : const MarkerIconRestoreCounts(categories: 0, icons: 0);
+
+  if (version >= 3 && body['appSettings'] is Map<String, dynamic>) {
+    await restoreAppSettingsBackup(
+      session,
+      body['appSettings'] as Map<String, dynamic>,
+    );
+    final settings = await AppSettingsStore.getOrCreate(session);
+    PmtilesStorage.configure(
+      AppSettingsStore.effectivePmtilesStoragePath(settings),
+    );
+    await PmtilesStorage().ensureReady();
+    await PmtilesCatalogSync.sync(session);
+  }
 
   final mapCounts = await session.db.transaction((transaction) async {
     final existingMarkers = await MapMarker.db.find(

@@ -113,14 +113,22 @@ abstract final class AppSettingsRestHandlers {
       final circleSizeDisplay = _readString(body['circleSizeDisplay']);
       final appTheme = _readString(body['appTheme']);
       final appLocale = _readString(body['appLocale']);
+      final mapMarkerSizeScale = _readDouble(body['mapMarkerSizeScale']);
+      final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
+      final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
       if (measurementUnits == null ||
           angleDisplayFormat == null ||
           circleSizeDisplay == null ||
           appTheme == null ||
-          appLocale == null) {
+          appLocale == null ||
+          mapMarkerSizeScale == null ||
+          mapViewportDebugBorder == null ||
+          mapTileBorderDebug == null) {
         throw const FormatException(
           'Fields "measurementUnits", "angleDisplayFormat", '
-          '"circleSizeDisplay", "appTheme", and "appLocale" are required.',
+          '"circleSizeDisplay", "appTheme", "appLocale", '
+          '"mapMarkerSizeScale", "mapViewportDebugBorder", and '
+          '"mapTileBorderDebug" are required.',
         );
       }
 
@@ -130,6 +138,9 @@ abstract final class AppSettingsRestHandlers {
         circleSizeDisplay: circleSizeDisplay,
         appTheme: appTheme,
         appLocale: appLocale,
+        mapMarkerSizeScale: mapMarkerSizeScale,
+        mapViewportDebugBorder: mapViewportDebugBorder,
+        mapTileBorderDebug: mapTileBorderDebug,
       );
 
       final settings = await AppSettingsStore.getOrCreate(session);
@@ -141,6 +152,9 @@ abstract final class AppSettingsRestHandlers {
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
           appLocale: appLocale,
+          mapMarkerSizeScale: mapMarkerSizeScale,
+          mapViewportDebugBorder: mapViewportDebugBorder,
+          mapTileBorderDebug: mapTileBorderDebug,
         ),
       );
       return RestJson.ok(_encodeClientPreferences(updated));
@@ -154,6 +168,9 @@ abstract final class AppSettingsRestHandlers {
       'circleSizeDisplay': settings.circleSizeDisplay,
       'appTheme': settings.appTheme,
       'appLocale': settings.appLocale,
+      'mapMarkerSizeScale': settings.mapMarkerSizeScale,
+      'mapViewportDebugBorder': settings.mapViewportDebugBorder,
+      'mapTileBorderDebug': settings.mapTileBorderDebug,
       'updatedAt': settings.updatedAt.toIso8601String(),
     };
   }
@@ -193,5 +210,12 @@ abstract final class AppSettingsRestHandlers {
     }
     final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
+  }
+
+  static bool? _readBool(Object? value) {
+    if (value is bool) {
+      return value;
+    }
+    return null;
   }
 }

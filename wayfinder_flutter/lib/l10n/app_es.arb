@@ -123,7 +123,7 @@
   "settingsMapDebugTitle": "Depuración del mapa",
   "settingsMapDebugDescription": "Ayudas visuales guardadas solo en este navegador.",
   "settingsMapMarkerSizeTitle": "Tamaño de marcadores",
-  "settingsMapMarkerSizeDescription": "Ajuste el tamaño de los marcadores en el mapa. Se guarda solo en este dispositivo.",
+  "settingsMapMarkerSizeDescription": "Ajuste el tamaño de los marcadores en el mapa. Se incluye en las copias de seguridad del servidor.",
   "settingsMapMarkerSizeValue": "{percent} %",
   "settingsMapMarkerSizeMinLabel": "Más pequeño",
   "settingsMapMarkerSizeMaxLabel": "Más grande",

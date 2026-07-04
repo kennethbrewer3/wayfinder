@@ -338,7 +338,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapMarkerSizeDescription =>
-      'Ajustez la taille des marqueurs sur la carte. Enregistré sur cet appareil uniquement.';
+      'Ajustez la taille des marqueurs sur la carte. Inclus dans les sauvegardes du serveur.';
 
   @override
   String settingsMapMarkerSizeValue(int percent) {

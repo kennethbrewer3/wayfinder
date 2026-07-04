@@ -2281,6 +2281,9 @@ class _AppSettingsEndpoint {
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
+    double mapMarkerSizeScale,
+    bool mapViewportDebugBorder,
+    bool mapTileBorderDebug,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2299,6 +2302,9 @@ class _AppSettingsEndpoint {
             'circleSizeDisplay': circleSizeDisplay,
             'appTheme': appTheme,
             'appLocale': appLocale,
+            'mapMarkerSizeScale': mapMarkerSizeScale,
+            'mapViewportDebugBorder': mapViewportDebugBorder,
+            'mapTileBorderDebug': mapTileBorderDebug,
           }),
           serializationManager: _serializationManager,
         );

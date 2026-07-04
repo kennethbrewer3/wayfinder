@@ -107,6 +107,9 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
+    double mapMarkerSizeScale,
+    bool mapViewportDebugBorder,
+    bool mapTileBorderDebug,
   ) {
     return loggedCall(
       session,
@@ -119,6 +122,9 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
           appLocale: appLocale,
+          mapMarkerSizeScale: mapMarkerSizeScale,
+          mapViewportDebugBorder: mapViewportDebugBorder,
+          mapTileBorderDebug: mapTileBorderDebug,
         );
 
         final settings = await AppSettingsStore.getOrCreate(session);
@@ -130,6 +136,9 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
             circleSizeDisplay: circleSizeDisplay,
             appTheme: appTheme,
             appLocale: appLocale,
+            mapMarkerSizeScale: mapMarkerSizeScale,
+            mapViewportDebugBorder: mapViewportDebugBorder,
+            mapTileBorderDebug: mapTileBorderDebug,
           ),
         );
       },
@@ -138,7 +147,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           'angles=${settings.angleDisplayFormat} '
           'circles=${settings.circleSizeDisplay} '
           'theme=${settings.appTheme} '
-          'locale=${settings.appLocale}',
+          'locale=${settings.appLocale} '
+          'markerScale=${settings.mapMarkerSizeScale}',
     );
   }
 

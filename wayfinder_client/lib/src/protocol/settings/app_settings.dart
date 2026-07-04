@@ -24,13 +24,19 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    double? mapMarkerSizeScale,
+    bool? mapViewportDebugBorder,
+    bool? mapTileBorderDebug,
     this.restApiKeyHash,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
        appTheme = appTheme ?? 'light',
-       appLocale = appLocale ?? 'system';
+       appLocale = appLocale ?? 'system',
+       mapMarkerSizeScale = mapMarkerSizeScale ?? 1.0,
+       mapViewportDebugBorder = mapViewportDebugBorder ?? false,
+       mapTileBorderDebug = mapTileBorderDebug ?? false;
 
   factory AppSettings({
     int? id,
@@ -43,6 +49,9 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    double? mapMarkerSizeScale,
+    bool? mapViewportDebugBorder,
+    bool? mapTileBorderDebug,
     String? restApiKeyHash,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
@@ -59,6 +68,19 @@ abstract class AppSettings implements _i1.SerializableModel {
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
       appLocale: jsonSerialization['appLocale'] as String?,
+      mapMarkerSizeScale: (jsonSerialization['mapMarkerSizeScale'] as num?)
+          ?.toDouble(),
+      mapViewportDebugBorder:
+          jsonSerialization['mapViewportDebugBorder'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['mapViewportDebugBorder'],
+            ),
+      mapTileBorderDebug: jsonSerialization['mapTileBorderDebug'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['mapTileBorderDebug'],
+            ),
       restApiKeyHash: jsonSerialization['restApiKeyHash'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
@@ -89,6 +111,12 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   String appLocale;
 
+  double mapMarkerSizeScale;
+
+  bool mapViewportDebugBorder;
+
+  bool mapTileBorderDebug;
+
   String? restApiKeyHash;
 
   DateTime updatedAt;
@@ -107,6 +135,9 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    double? mapMarkerSizeScale,
+    bool? mapViewportDebugBorder,
+    bool? mapTileBorderDebug,
     String? restApiKeyHash,
     DateTime? updatedAt,
   });
@@ -124,6 +155,9 @@ abstract class AppSettings implements _i1.SerializableModel {
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
+      'mapMarkerSizeScale': mapMarkerSizeScale,
+      'mapViewportDebugBorder': mapViewportDebugBorder,
+      'mapTileBorderDebug': mapTileBorderDebug,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
       'updatedAt': updatedAt.toJson(),
     };
@@ -149,6 +183,9 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    double? mapMarkerSizeScale,
+    bool? mapViewportDebugBorder,
+    bool? mapTileBorderDebug,
     String? restApiKeyHash,
     required DateTime updatedAt,
   }) : super._(
@@ -162,6 +199,9 @@ class _AppSettingsImpl extends AppSettings {
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
          appLocale: appLocale,
+         mapMarkerSizeScale: mapMarkerSizeScale,
+         mapViewportDebugBorder: mapViewportDebugBorder,
+         mapTileBorderDebug: mapTileBorderDebug,
          restApiKeyHash: restApiKeyHash,
          updatedAt: updatedAt,
        );
@@ -181,6 +221,9 @@ class _AppSettingsImpl extends AppSettings {
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
+    double? mapMarkerSizeScale,
+    bool? mapViewportDebugBorder,
+    bool? mapTileBorderDebug,
     Object? restApiKeyHash = _Undefined,
     DateTime? updatedAt,
   }) {
@@ -195,6 +238,10 @@ class _AppSettingsImpl extends AppSettings {
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
+      mapMarkerSizeScale: mapMarkerSizeScale ?? this.mapMarkerSizeScale,
+      mapViewportDebugBorder:
+          mapViewportDebugBorder ?? this.mapViewportDebugBorder,
+      mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
       restApiKeyHash: restApiKeyHash is String?
           ? restApiKeyHash
           : this.restApiKeyHash,

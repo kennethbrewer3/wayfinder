@@ -214,7 +214,7 @@
   "circleSizeToggleDiameter": "Showing diameter on map · tap for none",
   "circleSizeToggleNone": "Size hidden on map · tap for radius",
   "backupTitle": "Map data backup",
-  "backupDescription": "Export or restore all layers, markers, and zones. You can also back up with curl: GET /api/map-data",
+  "backupDescription": "Export or restore all layers, markers, zones, and custom marker icons (including embedded SVG files). You can also back up with curl: GET /api/map-data",
   "backupExportButton": "Export map data (.json)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -227,8 +227,25 @@
     }
   },
   "backupRestoreConfirmTitle": "Restore map data?",
-  "backupRestoreConfirmMessage": "This replaces all layers, markers, and zones on the server with the selected backup file. This cannot be undone.",
+  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, and custom marker icons on the server with the selected backup file. This cannot be undone.",
   "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), and {zones} zone(s).",
+  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {icons} custom icon(s).",
+  "@backupRestoreSuccessWithIcons": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      },
+      "icons": {
+        "type": "int"
+      }
+    }
+  },
   "@backupRestoreSuccess": {
     "placeholders": {
       "layers": {

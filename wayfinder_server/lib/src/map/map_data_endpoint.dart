@@ -44,10 +44,13 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           layers: counts.layers,
           markers: counts.markers,
           zones: counts.zones,
+          markerIconCategories: counts.markerIconCategories,
+          markerIcons: counts.markerIcons,
         );
       },
       onSuccess: (summary) =>
-          'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones}',
+          'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
+          'markerIconCategories=${summary.markerIconCategories} markerIcons=${summary.markerIcons}',
     );
   }
 }

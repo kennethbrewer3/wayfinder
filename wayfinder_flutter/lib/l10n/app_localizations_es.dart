@@ -487,7 +487,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporte o restaure todas las capas, marcadores y zonas. También puede hacer copia de seguridad con curl: GET /api/map-data';
+      'Exporte o restaure todas las capas, marcadores, zonas e iconos personalizados (incluidos los SVG incrustados). También puede hacer copia de seguridad con curl: GET /api/map-data';
 
   @override
   String get backupExportButton => 'Exportar datos del mapa (.json)';
@@ -509,11 +509,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'Esto reemplaza todas las capas, marcadores y zonas en el servidor con el archivo seleccionado. Esta acción no se puede deshacer.';
+      'Esto reemplaza todas las capas, marcadores, zonas e iconos personalizados en el servidor con el archivo seleccionado. Esta acción no se puede deshacer.';
 
   @override
   String backupRestoreSuccess(int layers, int markers, int zones) {
     return 'Restauradas $layers capa(s), $markers marcador(es) y $zones zona(s).';
+  }
+
+  @override
+  String backupRestoreSuccessWithIcons(
+    int layers,
+    int markers,
+    int zones,
+    int icons,
+  ) {
+    return 'Restauradas $layers capa(s), $markers marcador(es), $zones zona(s) y $icons icono(s) personalizado(s).';
   }
 
   @override

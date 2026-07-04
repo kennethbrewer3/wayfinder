@@ -7,18 +7,22 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../../core/app_globals.dart';
 import '../../../core/rest_api_headers.dart';
 
-const mapDataBackupVersion = 1;
+const mapDataBackupVersion = 2;
 
 class MapDataRestoreResult {
   const MapDataRestoreResult({
     required this.layers,
     required this.markers,
     required this.zones,
+    this.markerIconCategories = 0,
+    this.markerIcons = 0,
   });
 
   final int layers;
   final int markers;
   final int zones;
+  final int markerIconCategories;
+  final int markerIcons;
 }
 
 class MapDataRepository {
@@ -26,26 +30,40 @@ class MapDataRepository {
 
   final Client _client;
 
+  Uri get _exportUri {
+    final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
+    return Uri.parse('$base/api/map-data');
+  }
+
   Uri get _restoreUri {
     final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
     return Uri.parse('$base/api/map-data/restore');
   }
 
-  /// Builds backup JSON from existing list endpoints (works without mapData RPC).
   Future<String> fetchBackupJson() async {
-    final layers = await _client.mapLayer.listLayers();
-    final markers = await _client.mapMarker.listMarkers();
-    final zones = await _client.mapZone.listZones();
+    try {
+      final jsonText = await _client.mapData.exportMapData();
+      return _prettyPrintJson(jsonText);
+    } on Object catch (rpcError) {
+      if (!kIsWeb && _isMapDataEndpointUnavailable(rpcError)) {
+        return _fetchBackupJsonViaRest();
+      }
+      throw Exception(_exportUnavailableMessage(rpcError));
+    }
+  }
 
-    final payload = {
-      'version': mapDataBackupVersion,
-      'exportedAt': DateTime.now().toUtc().toIso8601String(),
-      'layers': layers.map(_encodeModel).toList(),
-      'markers': markers.map(_encodeModel).toList(),
-      'zones': zones.map(_encodeModel).toList(),
-    };
-
-    return const JsonEncoder.withIndent('  ').convert(payload);
+  Future<String> _fetchBackupJsonViaRest() async {
+    final response = await http.get(
+      _exportUri,
+      headers: await RestApiHeaders.readOnly(),
+    );
+    if (response.statusCode != 200) {
+      final message = _readErrorMessage(response.body);
+      throw Exception(
+        message ?? 'Export failed: ${response.statusCode} ${response.body}',
+      );
+    }
+    return _prettyPrintJson(response.body);
   }
 
   Future<MapDataRestoreResult> restoreFromJson(String jsonText) async {
@@ -60,6 +78,8 @@ class MapDataRepository {
         layers: summary.layers,
         markers: summary.markers,
         zones: summary.zones,
+        markerIconCategories: summary.markerIconCategories,
+        markerIcons: summary.markerIcons,
       );
     } on Object catch (rpcError) {
       if (!kIsWeb && _isMapDataEndpointUnavailable(rpcError)) {
@@ -95,6 +115,8 @@ class MapDataRepository {
       layers: restored['layers'] as int? ?? 0,
       markers: restored['markers'] as int? ?? 0,
       zones: restored['zones'] as int? ?? 0,
+      markerIconCategories: restored['markerIconCategories'] as int? ?? 0,
+      markerIcons: restored['markerIcons'] as int? ?? 0,
     );
   }
 
@@ -107,6 +129,14 @@ class MapDataRepository {
         text.contains('get /api/map-data returned 404');
   }
 
+  String _exportUnavailableMessage(Object error) {
+    if (_isMapDataEndpointUnavailable(error)) {
+      return 'Export requires an updated Wayfinder server. '
+          'Restart the server from the latest code, then try again.';
+    }
+    return error.toString();
+  }
+
   String _restoreUnavailableMessage(Object error) {
     if (_isMapDataEndpointUnavailable(error)) {
       return 'Restore requires an updated Wayfinder server. '
@@ -115,10 +145,9 @@ class MapDataRepository {
     return error.toString();
   }
 
-  Map<String, dynamic> _encodeModel(dynamic model) {
-    final json = Map<String, dynamic>.from(model.toJson() as Map);
-    json.remove('__className__');
-    return json;
+  String _prettyPrintJson(String jsonText) {
+    final decoded = jsonDecode(jsonText);
+    return const JsonEncoder.withIndent('  ').convert(decoded);
   }
 
   String? _readErrorMessage(String body) {

@@ -2,9 +2,12 @@ import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
 import '../layers/map_layer_bootstrap.dart';
+import '../markers/marker_icon_backup.dart';
 import '../web/rest/rest_json.dart';
 
-const mapDataBackupVersion = 1;
+const mapDataBackupVersion = 2;
+
+const supportedMapDataBackupVersions = {1, 2};
 
 /// Full map structure export (layers, markers, zones).
 Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
@@ -18,12 +21,15 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     orderByList: (t) => [Order(column: t.name), Order(column: t.id)],
   );
 
+  final markerIcons = await exportMarkerIconBackup(session);
+
   return {
     'version': mapDataBackupVersion,
     'exportedAt': DateTime.now().toUtc().toIso8601String(),
     'layers': RestJson.encodeModels(layers),
     'markers': RestJson.encodeModels(markers),
     'zones': RestJson.encodeModels(zones),
+    ...markerIcons,
   };
 }
 
@@ -32,16 +38,22 @@ class MapDataRestoreCounts {
     required this.layers,
     required this.markers,
     required this.zones,
+    this.markerIconCategories = 0,
+    this.markerIcons = 0,
   });
 
   final int layers;
   final int markers;
   final int zones;
+  final int markerIconCategories;
+  final int markerIcons;
 
   Map<String, dynamic> toJson() => {
     'layers': layers,
     'markers': markers,
     'zones': zones,
+    'markerIconCategories': markerIconCategories,
+    'markerIcons': markerIcons,
   };
 }
 
@@ -51,9 +63,9 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
   Map<String, dynamic> body,
 ) async {
   final version = body['version'];
-  if (version is! int || version != mapDataBackupVersion) {
+  if (version is! int || !supportedMapDataBackupVersions.contains(version)) {
     throw FormatException(
-      'Unsupported backup version: $version (expected $mapDataBackupVersion)',
+      'Unsupported backup version: $version (expected one of $supportedMapDataBackupVersions)',
     );
   }
 
@@ -103,7 +115,13 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
           : zone,
   ];
 
-  return session.db.transaction((transaction) async {
+  final iconCounts = version >= 2 &&
+          (body.containsKey('markerIconCategories') ||
+              body.containsKey('markerIcons'))
+      ? await restoreMarkerIconBackup(session, body)
+      : const MarkerIconRestoreCounts(categories: 0, icons: 0);
+
+  final mapCounts = await session.db.transaction((transaction) async {
     final existingMarkers = await MapMarker.db.find(
       session,
       transaction: transaction,
@@ -156,6 +174,14 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
       zones: normalizedZones.length,
     );
   });
+
+  return MapDataRestoreCounts(
+    layers: mapCounts.layers,
+    markers: mapCounts.markers,
+    zones: mapCounts.zones,
+    markerIconCategories: iconCounts.categories,
+    markerIcons: iconCounts.icons,
+  );
 }
 
 List<T> _parseModelList<T>(

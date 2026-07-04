@@ -18,12 +18,16 @@ abstract class MapDataRestoreSummary
     required this.layers,
     required this.markers,
     required this.zones,
+    required this.markerIconCategories,
+    required this.markerIcons,
   });
 
   factory MapDataRestoreSummary({
     required int layers,
     required int markers,
     required int zones,
+    required int markerIconCategories,
+    required int markerIcons,
   }) = _MapDataRestoreSummaryImpl;
 
   factory MapDataRestoreSummary.fromJson(
@@ -33,6 +37,8 @@ abstract class MapDataRestoreSummary
       layers: jsonSerialization['layers'] as int,
       markers: jsonSerialization['markers'] as int,
       zones: jsonSerialization['zones'] as int,
+      markerIconCategories: jsonSerialization['markerIconCategories'] as int,
+      markerIcons: jsonSerialization['markerIcons'] as int,
     );
   }
 
@@ -42,6 +48,10 @@ abstract class MapDataRestoreSummary
 
   int zones;
 
+  int markerIconCategories;
+
+  int markerIcons;
+
   /// Returns a shallow copy of this [MapDataRestoreSummary]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -49,6 +59,8 @@ abstract class MapDataRestoreSummary
     int? layers,
     int? markers,
     int? zones,
+    int? markerIconCategories,
+    int? markerIcons,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -57,6 +69,8 @@ abstract class MapDataRestoreSummary
       'layers': layers,
       'markers': markers,
       'zones': zones,
+      'markerIconCategories': markerIconCategories,
+      'markerIcons': markerIcons,
     };
   }
 
@@ -67,6 +81,8 @@ abstract class MapDataRestoreSummary
       'layers': layers,
       'markers': markers,
       'zones': zones,
+      'markerIconCategories': markerIconCategories,
+      'markerIcons': markerIcons,
     };
   }
 
@@ -81,10 +97,14 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     required int layers,
     required int markers,
     required int zones,
+    required int markerIconCategories,
+    required int markerIcons,
   }) : super._(
          layers: layers,
          markers: markers,
          zones: zones,
+         markerIconCategories: markerIconCategories,
+         markerIcons: markerIcons,
        );
 
   /// Returns a shallow copy of this [MapDataRestoreSummary]
@@ -95,11 +115,15 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     int? layers,
     int? markers,
     int? zones,
+    int? markerIconCategories,
+    int? markerIcons,
   }) {
     return MapDataRestoreSummary(
       layers: layers ?? this.layers,
       markers: markers ?? this.markers,
       zones: zones ?? this.zones,
+      markerIconCategories: markerIconCategories ?? this.markerIconCategories,
+      markerIcons: markerIcons ?? this.markerIcons,
     );
   }
 }

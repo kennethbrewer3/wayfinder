@@ -489,7 +489,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporter ou restaurer toutes les couches, marqueurs et zones. Vous pouvez aussi sauvegarder avec curl : GET /api/map-data';
+      'Exporter ou restaurer toutes les couches, marqueurs, zones et icônes personnalisées (y compris les SVG intégrés). Vous pouvez aussi sauvegarder avec curl : GET /api/map-data';
 
   @override
   String get backupExportButton => 'Exporter les données (.json)';
@@ -512,11 +512,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'Cela remplace toutes les couches, marqueurs et zones sur le serveur par le fichier de sauvegarde sélectionné. Cette action est irréversible.';
+      'Cela remplace toutes les couches, marqueurs, zones et icônes personnalisées sur le serveur par le fichier de sauvegarde sélectionné. Cette action est irréversible.';
 
   @override
   String backupRestoreSuccess(int layers, int markers, int zones) {
     return '$layers couche(s), $markers marqueur(s) et $zones zone(s) restauré(s).';
+  }
+
+  @override
+  String backupRestoreSuccessWithIcons(
+    int layers,
+    int markers,
+    int zones,
+    int icons,
+  ) {
+    return '$layers couche(s), $markers marqueur(s), $zones zone(s) et $icons icône(s) personnalisée(s) restauré(s).';
   }
 
   @override

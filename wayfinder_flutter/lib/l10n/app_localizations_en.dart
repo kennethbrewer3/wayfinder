@@ -482,7 +482,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore all layers, markers, and zones. You can also back up with curl: GET /api/map-data';
+      'Export or restore all layers, markers, zones, and custom marker icons (including embedded SVG files). You can also back up with curl: GET /api/map-data';
 
   @override
   String get backupExportButton => 'Export map data (.json)';
@@ -503,11 +503,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'This replaces all layers, markers, and zones on the server with the selected backup file. This cannot be undone.';
+      'This replaces all layers, markers, zones, and custom marker icons on the server with the selected backup file. This cannot be undone.';
 
   @override
   String backupRestoreSuccess(int layers, int markers, int zones) {
     return 'Restored $layers layer(s), $markers marker(s), and $zones zone(s).';
+  }
+
+  @override
+  String backupRestoreSuccessWithIcons(
+    int layers,
+    int markers,
+    int zones,
+    int icons,
+  ) {
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), and $icons custom icon(s).';
   }
 
   @override

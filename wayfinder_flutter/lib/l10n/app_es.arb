@@ -191,7 +191,7 @@
   "circleSizeToggleDiameter": "Diámetro visible en el mapa · toque para ocultar",
   "circleSizeToggleNone": "Tamaño oculto en el mapa · toque para radio",
   "backupTitle": "Copia de seguridad de datos del mapa",
-  "backupDescription": "Exporte o restaure todas las capas, marcadores y zonas. También puede hacer copia de seguridad con curl: GET /api/map-data",
+  "backupDescription": "Exporte o restaure todas las capas, marcadores, zonas e iconos personalizados (incluidos los SVG incrustados). También puede hacer copia de seguridad con curl: GET /api/map-data",
   "backupExportButton": "Exportar datos del mapa (.json)",
   "backupRestoreButton": "Restaurar desde copia de seguridad",
   "backupExportSuccess": "Copia de seguridad de datos del mapa guardada.",
@@ -204,8 +204,25 @@
     }
   },
   "backupRestoreConfirmTitle": "¿Restaurar datos del mapa?",
-  "backupRestoreConfirmMessage": "Esto reemplaza todas las capas, marcadores y zonas en el servidor con el archivo seleccionado. Esta acción no se puede deshacer.",
+  "backupRestoreConfirmMessage": "Esto reemplaza todas las capas, marcadores, zonas e iconos personalizados en el servidor con el archivo seleccionado. Esta acción no se puede deshacer.",
   "backupRestoreSuccess": "Restauradas {layers} capa(s), {markers} marcador(es) y {zones} zona(s).",
+  "backupRestoreSuccessWithIcons": "Restauradas {layers} capa(s), {markers} marcador(es), {zones} zona(s) y {icons} icono(s) personalizado(s).",
+  "@backupRestoreSuccessWithIcons": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      },
+      "icons": {
+        "type": "int"
+      }
+    }
+  },
   "@backupRestoreSuccess": {
     "placeholders": {
       "layers": {

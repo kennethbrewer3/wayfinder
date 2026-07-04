@@ -973,7 +973,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore all layers, markers, and zones. You can also back up with curl: GET /api/map-data'**
+  /// **'Export or restore all layers, markers, zones, and custom marker icons (including embedded SVG files). You can also back up with curl: GET /api/map-data'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -1009,7 +1009,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestoreConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'This replaces all layers, markers, and zones on the server with the selected backup file. This cannot be undone.'**
+  /// **'This replaces all layers, markers, zones, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
   String get backupRestoreConfirmMessage;
 
   /// No description provided for @backupRestoreSuccess.
@@ -1017,6 +1017,17 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restored {layers} layer(s), {markers} marker(s), and {zones} zone(s).'**
   String backupRestoreSuccess(int layers, int markers, int zones);
+
+  /// No description provided for @backupRestoreSuccessWithIcons.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {icons} custom icon(s).'**
+  String backupRestoreSuccessWithIcons(
+    int layers,
+    int markers,
+    int zones,
+    int icons,
+  );
 
   /// No description provided for @backupRestoreFailed.
   ///

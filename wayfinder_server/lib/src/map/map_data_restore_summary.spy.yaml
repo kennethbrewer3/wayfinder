@@ -3,3 +3,5 @@ fields:
   layers: int
   markers: int
   zones: int
+  markerIconCategories: int
+  markerIcons: int

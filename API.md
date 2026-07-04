@@ -579,7 +579,7 @@ curl -X DELETE http://localhost:18082/api/pmtiles/17feeaff-1532-4709-8786-022597
 
 ## Map data backup
 
-Export or restore the full map structure (layers, markers, and zones) in one JSON document. IDs and relationships are preserved on restore.
+Export or restore the full map structure (layers, markers, zones, and custom marker icons) in one JSON document. Custom icon SVG files are embedded as UTF-8 text in each catalog entry under `svgContent`. IDs and relationships are preserved on restore.
 
 ### Export all map data
 
@@ -598,19 +598,21 @@ Example response shape:
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "exportedAt": "2026-06-15T12:34:56.789Z",
   "layers": [ { "id": "…", "name": "Default", "sortOrder": 0, "visible": true, "createdAt": "…", "updatedAt": "…" } ],
   "markers": [ { "id": "…", "name": "Trailhead", "latitude": 38.9, "longitude": -77.2, "elevation": 0, "color": "#1B4965", "icon": "place", "visible": true, "layerId": "…", "createdAt": "…", "updatedAt": "…" } ],
-  "zones": [ { "id": "…", "name": "Route", "type": "line", "color": "#1B4965", "borderColor": "#1B4965", "borderPattern": "solid", "fillColor": "#1B4965", "visible": true, "geometryJson": "{…}", "layerId": "…", "createdAt": "…", "updatedAt": "…" } ]
+  "zones": [ { "id": "…", "name": "Route", "type": "line", "color": "#1B4965", "borderColor": "#1B4965", "borderPattern": "solid", "fillColor": "#1B4965", "visible": true, "geometryJson": "{…}", "layerId": "…", "createdAt": "…", "updatedAt": "…" } ],
+  "markerIconCategories": [ { "id": "…", "key": "custom", "label": "Custom", "sortOrder": 10, "createdAt": "…", "updatedAt": "…" } ],
+  "markerIcons": [ { "id": "…", "key": "my_icon", "label": "My icon", "category": "custom", "iconBackgroundColor": "#FFFFFF", "materialIcon": "place", "coloredAsset": false, "glyphScale": 1.0, "hasCustomSvg": true, "sortOrder": 0, "createdAt": "…", "updatedAt": "…", "svgContent": "<svg …></svg>" } ]
 }
 ```
 
 ### Restore map data
 
-**Warning:** This replaces all existing layers, markers, and zones on the server.
+**Warning:** This replaces all existing layers, markers, zones, and custom marker icons on the server.
 
-Required top-level fields: `version` (must be `1`), `layers`, `markers`, and `zones` (arrays). Use the same object shapes returned by export.
+Required top-level fields: `version` (`1` or `2`), `layers`, `markers`, and `zones` (arrays). Version `2` backups also include `markerIconCategories` and `markerIcons` (with optional embedded `svgContent` per icon). Use the same object shapes returned by export.
 
 ```bash
 curl -X POST http://localhost:18082/api/map-data/restore \
@@ -625,7 +627,9 @@ Example response:
   "restored": {
     "layers": 2,
     "markers": 15,
-    "zones": 8
+    "zones": 8,
+    "markerIconCategories": 11,
+    "markerIcons": 3
   }
 }
 ```

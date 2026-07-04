@@ -96,11 +96,18 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.backupRestoreSuccess(
-              result.layers,
-              result.markers,
-              result.zones,
-            ),
+            result.markerIcons > 0
+                ? l10n.backupRestoreSuccessWithIcons(
+                    result.layers,
+                    result.markers,
+                    result.zones,
+                    result.markerIcons,
+                  )
+                : l10n.backupRestoreSuccess(
+                    result.layers,
+                    result.markers,
+                    result.zones,
+                  ),
           ),
         ),
       );

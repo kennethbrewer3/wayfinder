@@ -191,7 +191,7 @@
   "circleSizeToggleDiameter": "Diamètre affiché sur la carte · appuyez pour masquer",
   "circleSizeToggleNone": "Taille masquée sur la carte · appuyez pour le rayon",
   "backupTitle": "Sauvegarde des données cartographiques",
-  "backupDescription": "Exporter ou restaurer toutes les couches, marqueurs et zones. Vous pouvez aussi sauvegarder avec curl : GET /api/map-data",
+  "backupDescription": "Exporter ou restaurer toutes les couches, marqueurs, zones et icônes personnalisées (y compris les SVG intégrés). Vous pouvez aussi sauvegarder avec curl : GET /api/map-data",
   "backupExportButton": "Exporter les données (.json)",
   "backupRestoreButton": "Restaurer depuis une sauvegarde",
   "backupExportSuccess": "Sauvegarde des données cartographiques enregistrée.",
@@ -204,8 +204,25 @@
     }
   },
   "backupRestoreConfirmTitle": "Restaurer les données cartographiques ?",
-  "backupRestoreConfirmMessage": "Cela remplace toutes les couches, marqueurs et zones sur le serveur par le fichier de sauvegarde sélectionné. Cette action est irréversible.",
+  "backupRestoreConfirmMessage": "Cela remplace toutes les couches, marqueurs, zones et icônes personnalisées sur le serveur par le fichier de sauvegarde sélectionné. Cette action est irréversible.",
   "backupRestoreSuccess": "{layers} couche(s), {markers} marqueur(s) et {zones} zone(s) restauré(s).",
+  "backupRestoreSuccessWithIcons": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s) et {icons} icône(s) personnalisée(s) restauré(s).",
+  "@backupRestoreSuccessWithIcons": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      },
+      "icons": {
+        "type": "int"
+      }
+    }
+  },
   "@backupRestoreSuccess": {
     "placeholders": {
       "layers": {

@@ -26,6 +26,8 @@ UuidValue? hitTestMarkerAtPoint({
   required LatLng point,
   required List<MapMarker> markers,
   required MapCamera camera,
+  double width = mapMarkerWidth,
+  double height = mapMarkerHeight,
 }) {
   final tapScreen = camera.latLngToScreenOffset(point);
   UuidValue? hitId;
@@ -41,6 +43,8 @@ UuidValue? hitTestMarkerAtPoint({
     if (!markerBoundsContainsScreenPoint(
       tapScreen: tapScreen,
       anchorScreen: anchorScreen,
+      width: width,
+      height: height,
     )) {
       continue;
     }

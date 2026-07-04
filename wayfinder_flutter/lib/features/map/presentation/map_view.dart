@@ -47,8 +47,10 @@ import '../../lines/presentation/line_direction_arrows_overlay.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_snap.dart';
+import '../../markers/models/map_marker_size.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/providers/map_marker_size_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
@@ -1116,6 +1118,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         point: point,
         markers: filterMarkersForMap(markers, layersById),
         camera: _mapController.camera,
+        width: mapMarkerRenderWidth(ref.read(mapMarkerSizeScaleProvider)),
+        height: mapMarkerRenderHeight(ref.read(mapMarkerSizeScaleProvider)),
       );
       if (markerId != null) {
         return SelectedMapObject(
@@ -2115,12 +2119,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         mapLayers.isNotEmpty;
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
+    final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
             layers: layers,
             markers: allMarkers,
             zones: zones,
+            mapMarkerSizeScale: mapMarkerSizeScale,
             selectedLineId: selectedLineId,
             geometryOverrides: lineGeometryOverrides,
             onMarkerTap: (marker) => _selectMapObject(
@@ -2285,8 +2291,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           markers: [
                             Marker(
                               point: marker.location,
-                              width: mapMarkerWidth,
-                              height: mapMarkerHeight,
+                              width: mapMarkerRenderWidth(mapMarkerSizeScale),
+                              height: mapMarkerRenderHeight(mapMarkerSizeScale),
                               alignment: mapMarkerAnchorAlignment,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
@@ -2300,6 +2306,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                     child: MapMarkerIcon(
                                       color: const Color(0xFFE07A24),
                                       iconName: marker.iconName,
+                                      width: mapMarkerRenderWidth(
+                                        mapMarkerSizeScale,
+                                      ),
+                                      height: mapMarkerRenderHeight(
+                                        mapMarkerSizeScale,
+                                      ),
                                     ),
                                   ),
                                 ),

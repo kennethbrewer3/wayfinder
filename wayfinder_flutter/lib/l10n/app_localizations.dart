@@ -700,6 +700,36 @@ abstract class AppLocalizations {
   /// **'Visual aids stored in this browser only.'**
   String get settingsMapDebugDescription;
 
+  /// No description provided for @settingsMapMarkerSizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map marker size'**
+  String get settingsMapMarkerSizeTitle;
+
+  /// No description provided for @settingsMapMarkerSizeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust how large markers appear on the map. Stored on this device only.'**
+  String get settingsMapMarkerSizeDescription;
+
+  /// No description provided for @settingsMapMarkerSizeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String settingsMapMarkerSizeValue(int percent);
+
+  /// No description provided for @settingsMapMarkerSizeMinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller'**
+  String get settingsMapMarkerSizeMinLabel;
+
+  /// No description provided for @settingsMapMarkerSizeMaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Larger'**
+  String get settingsMapMarkerSizeMaxLabel;
+
   /// No description provided for @settingsMapViewportDebugBorderTitle.
   ///
   /// In en, this message translates to:

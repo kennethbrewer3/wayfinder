@@ -333,6 +333,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Visual aids stored in this browser only.';
 
   @override
+  String get settingsMapMarkerSizeTitle => 'Map marker size';
+
+  @override
+  String get settingsMapMarkerSizeDescription =>
+      'Adjust how large markers appear on the map. Stored on this device only.';
+
+  @override
+  String settingsMapMarkerSizeValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get settingsMapMarkerSizeMinLabel => 'Smaller';
+
+  @override
+  String get settingsMapMarkerSizeMaxLabel => 'Larger';
+
+  @override
   String get settingsMapViewportDebugBorderTitle => 'Show map viewport border';
 
   @override

@@ -22,6 +22,9 @@ import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
+import '../../markers/models/map_marker_size.dart';
+import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/providers/map_marker_size_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
@@ -242,6 +245,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       mapViewportDebugBorderProvider,
     );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
+    final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
     ref.listen<HomeLocation>(homeLocationProvider, (previous, next) {
@@ -537,6 +541,59 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 .read(circleSizeDisplayProvider.notifier)
                 .setDisplay(selection.first);
           },
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsMapMarkerSizeTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsMapMarkerSizeDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.center,
+          child: MapMarkerIcon(
+            color: Theme.of(context).colorScheme.primary,
+            iconName: 'place',
+            width: mapMarkerRenderWidth(mapMarkerSizeScale),
+            height: mapMarkerRenderHeight(mapMarkerSizeScale),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Slider(
+          value: mapMarkerSizeScale,
+          min: mapMarkerSizeScaleMin,
+          max: mapMarkerSizeScaleMax,
+          divisions: ((mapMarkerSizeScaleMax - mapMarkerSizeScaleMin) / 0.05)
+              .round(),
+          label: l10n.settingsMapMarkerSizeValue(
+            mapMarkerSizeScalePercent(mapMarkerSizeScale),
+          ),
+          onChanged: (value) {
+            ref.read(mapMarkerSizeScaleProvider.notifier).setScale(value);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              l10n.settingsMapMarkerSizeMinLabel,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            Text(
+              l10n.settingsMapMarkerSizeValue(
+                mapMarkerSizeScalePercent(mapMarkerSizeScale),
+              ),
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            Text(
+              l10n.settingsMapMarkerSizeMaxLabel,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ),
         const SizedBox(height: 32),
         Text(

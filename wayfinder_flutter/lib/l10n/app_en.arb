@@ -525,6 +525,14 @@
   "markerIconCategoryCustom": "Custom",
   "markerIconCategoriesTitle": "Icon categories",
   "markerIconCategoriesDescription": "Organize marker icons into categories. Categories appear in the icon picker and settings lists. Deleting a category moves its icons to Custom.",
+  "markerIconCategoriesExpandSubtitle": "{count, plural, =1{1 category} other{{count} categories}}",
+  "@markerIconCategoriesExpandSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "markerIconCategoriesAddButton": "Add category",
   "markerIconCategoriesCreateTitle": "Add category",
   "markerIconCategoriesEditTitle": "Edit category",

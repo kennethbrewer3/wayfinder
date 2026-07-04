@@ -873,6 +873,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Organize marker icons into categories. Categories appear in the icon picker and settings lists. Deleting a category moves its icons to Custom.';
 
   @override
+  String markerIconCategoriesExpandSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count categories',
+      one: '1 category',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get markerIconCategoriesAddButton => 'Add category';
 
   @override

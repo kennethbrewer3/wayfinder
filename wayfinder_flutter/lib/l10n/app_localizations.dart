@@ -1588,6 +1588,12 @@ abstract class AppLocalizations {
   /// **'Organize marker icons into categories. Categories appear in the icon picker and settings lists. Deleting a category moves its icons to Custom.'**
   String get markerIconCategoriesDescription;
 
+  /// No description provided for @markerIconCategoriesExpandSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 category} other{{count} categories}}'**
+  String markerIconCategoriesExpandSubtitle(int count);
+
   /// No description provided for @markerIconCategoriesAddButton.
   ///
   /// In en, this message translates to:

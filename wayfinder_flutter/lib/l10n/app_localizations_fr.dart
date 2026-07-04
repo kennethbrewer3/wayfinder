@@ -886,6 +886,17 @@ class AppLocalizationsFr extends AppLocalizations {
       'Organisez les icônes de marqueurs en catégories. Les catégories apparaissent dans le sélecteur d\'icônes et les listes des paramètres. La suppression d\'une catégorie déplace ses icônes vers Personnalisé.';
 
   @override
+  String markerIconCategoriesExpandSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count catégories',
+      one: '1 catégorie',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get markerIconCategoriesAddButton => 'Ajouter une catégorie';
 
   @override

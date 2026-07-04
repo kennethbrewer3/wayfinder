@@ -433,20 +433,29 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
             return Text(l10n.markerIconsLoadFailed(error.toString()));
           },
           data: (_) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (final category in categoryCatalog.categories) ...[
-                  Card(
-                    child: ListTile(
+            final categories = categoryCatalog.categories;
+            if (categories.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            return Card(
+              clipBehavior: Clip.antiAlias,
+              child: ExpansionTile(
+                title: Text(l10n.markerIconCategoriesTitle),
+                subtitle: Text(
+                  l10n.markerIconCategoriesExpandSubtitle(categories.length),
+                ),
+                children: [
+                  for (var i = 0; i < categories.length; i++) ...[
+                    if (i > 0) const Divider(height: 1),
+                    ListTile(
                       title: Text(
                         markerIconCategoryDisplayLabel(
                           l10n,
-                          category.key,
+                          categories[i].key,
                           catalog: categoryCatalog,
                         ),
                       ),
-                      subtitle: Text(category.key),
+                      subtitle: Text(categories[i].key),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -455,23 +464,22 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
                             icon: const Icon(Icons.edit_outlined),
                             onPressed: _isBusy
                                 ? null
-                                : () => _editCategory(category),
+                                : () => _editCategory(categories[i]),
                           ),
-                          if (category.key != MarkerIconCategories.custom)
+                          if (categories[i].key != MarkerIconCategories.custom)
                             IconButton(
                               tooltip: l10n.actionDelete,
                               icon: const Icon(Icons.delete_outline),
                               onPressed: _isBusy
                                   ? null
-                                  : () => _deleteCategory(category),
+                                  : () => _deleteCategory(categories[i]),
                             ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
+                  ],
                 ],
-              ],
+              ),
             );
           },
         ),
@@ -526,32 +534,39 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 for (final categoryEntry in grouped.entries) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: Text(
-                      markerIconCategoryDisplayLabel(
-                        l10n,
-                        categoryEntry.key,
-                        catalog: categoryCatalog,
+                  Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: ExpansionTile(
+                      title: Text(
+                        markerIconCategoryDisplayLabel(
+                          l10n,
+                          categoryEntry.key,
+                          catalog: categoryCatalog,
+                        ),
                       ),
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
+                      subtitle: Text(
+                        l10n.markerIconsBuiltInExpandSubtitle(
+                          categoryEntry.value.length,
+                        ),
                       ),
+                      children: [
+                        for (var i = 0; i < categoryEntry.value.length; i++) ...[
+                          if (i > 0) const Divider(height: 1),
+                          _MarkerIconEntryTile(
+                            entry: categoryEntry.value[i],
+                            label: _displayLabel(l10n, categoryEntry.value[i]),
+                            previewColor: previewColor,
+                            categoryCatalog: categoryCatalog,
+                            onUploadSvg: () =>
+                                _pickAndUploadSvg(categoryEntry.value[i].key),
+                            onEdit: () => _editIcon(categoryEntry.value[i]),
+                            onDelete: () => _deleteIcon(categoryEntry.value[i]),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                  for (final entry in categoryEntry.value) ...[
-                    _MarkerIconEntryTile(
-                      entry: entry,
-                      label: _displayLabel(l10n, entry),
-                      previewColor: previewColor,
-                      categoryCatalog: categoryCatalog,
-                      onUploadSvg: () => _pickAndUploadSvg(entry.key),
-                      onEdit: () => _editIcon(entry),
-                      onDelete: () => _deleteIcon(entry),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
+                  const SizedBox(height: 8),
                 ],
               ],
             );
@@ -578,46 +593,50 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
                 items: bundledSvgIcons,
                 categoryFor: (option) => option.resolvedCategory,
                 categoryOrder: categoryOrder,
-              ).entries) ...[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: Text(
+              ).entries)
+                ExpansionTile(
+                  title: Text(
                     markerIconCategoryDisplayLabel(
                       l10n,
                       categoryEntry.key,
                       catalog: categoryCatalog,
                     ),
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.primary,
+                  ),
+                  subtitle: Text(
+                    l10n.markerIconsBuiltInExpandSubtitle(
+                      categoryEntry.value.length,
                     ),
                   ),
-                ),
-                for (var i = 0; i < categoryEntry.value.length; i++) ...[
-                  if (i > 0) const Divider(height: 1),
-                  ListTile(
-                    leading: MapMarkerIcon(
-                      color: previewColor,
-                      iconName: categoryEntry.value[i].key,
-                      width: 32,
-                      height: 32,
-                    ),
-                    title: Text(
-                      localizedMarkerIconLabel(
-                        l10n,
-                        categoryEntry.value[i].key,
+                  children: [
+                    for (var i = 0; i < categoryEntry.value.length; i++) ...[
+                      if (i > 0) const Divider(height: 1),
+                      ListTile(
+                        leading: MapMarkerIcon(
+                          color: previewColor,
+                          iconName: categoryEntry.value[i].key,
+                          width: 32,
+                          height: 32,
+                        ),
+                        title: Text(
+                          localizedMarkerIconLabel(
+                            l10n,
+                            categoryEntry.value[i].key,
+                          ),
+                        ),
+                        subtitle: Text(categoryEntry.value[i].key),
+                        trailing: IconButton(
+                          tooltip: l10n.markerIconsUploadSvgAction,
+                          icon: const Icon(Icons.upload_file),
+                          onPressed: _isBusy
+                              ? null
+                              : () => _pickAndUploadSvg(
+                                    categoryEntry.value[i].key,
+                                  ),
+                        ),
                       ),
-                    ),
-                    subtitle: Text(categoryEntry.value[i].key),
-                    trailing: IconButton(
-                      tooltip: l10n.markerIconsUploadSvgAction,
-                      icon: const Icon(Icons.upload_file),
-                      onPressed: _isBusy
-                          ? null
-                          : () => _pickAndUploadSvg(categoryEntry.value[i].key),
-                    ),
-                  ),
-                ],
-              ],
+                    ],
+                  ],
+                ),
             ],
           ),
         ),

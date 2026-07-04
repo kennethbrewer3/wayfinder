@@ -401,6 +401,14 @@
   "markerIconCategoryCustom": "Personnalisé",
   "markerIconCategoriesTitle": "Catégories d'icônes",
   "markerIconCategoriesDescription": "Organisez les icônes de marqueurs en catégories. Les catégories apparaissent dans le sélecteur d'icônes et les listes des paramètres. La suppression d'une catégorie déplace ses icônes vers Personnalisé.",
+  "markerIconCategoriesExpandSubtitle": "{count, plural, =1{1 catégorie} other{{count} catégories}}",
+  "@markerIconCategoriesExpandSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "markerIconCategoriesAddButton": "Ajouter une catégorie",
   "markerIconCategoriesCreateTitle": "Ajouter une catégorie",
   "markerIconCategoriesEditTitle": "Modifier la catégorie",

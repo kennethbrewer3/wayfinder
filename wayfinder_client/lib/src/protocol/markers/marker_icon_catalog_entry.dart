@@ -17,7 +17,7 @@ abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
     _i1.UuidValue? id,
     required this.key,
     required this.label,
-    required this.category,
+    String? category,
     this.materialIcon,
     required this.coloredAsset,
     required this.glyphScale,
@@ -25,13 +25,14 @@ abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
-  }) : id = id ?? const _i1.Uuid().v4obj();
+  }) : id = id ?? const _i1.Uuid().v4obj(),
+       category = category ?? 'custom';
 
   factory MarkerIconCatalogEntry({
     _i1.UuidValue? id,
     required String key,
     required String label,
-    required String category,
+    String? category,
     String? materialIcon,
     required bool coloredAsset,
     required double glyphScale,
@@ -50,7 +51,7 @@ abstract class MarkerIconCatalogEntry implements _i1.SerializableModel {
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
-      category: jsonSerialization['category'] as String,
+      category: jsonSerialization['category'] as String?,
       materialIcon: jsonSerialization['materialIcon'] as String?,
       coloredAsset: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['coloredAsset'],
@@ -139,7 +140,7 @@ class _MarkerIconCatalogEntryImpl extends MarkerIconCatalogEntry {
     _i1.UuidValue? id,
     required String key,
     required String label,
-    required String category,
+    String? category,
     String? materialIcon,
     required bool coloredAsset,
     required double glyphScale,

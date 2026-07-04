@@ -1,21 +1,22 @@
 BEGIN;
 
 --
--- ACTION ALTER TABLE
+-- Align marker_icon_catalog.category default with Serverpod schema expectations.
 --
 ALTER TABLE "marker_icon_catalog"
-  ADD COLUMN IF NOT EXISTS "category" text NOT NULL DEFAULT 'custom'::text;
-
-ALTER TABLE "marker_icon_catalog"
   ALTER COLUMN "category" SET DEFAULT 'custom'::text;
+
+UPDATE "marker_icon_catalog"
+SET "category" = 'custom'
+WHERE "category" IS NULL OR btrim("category") = '';
 
 --
 -- MIGRATION VERSION FOR wayfinder
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('wayfinder', '20260704030024049', now())
+    VALUES ('wayfinder', '20260704140000000', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20260704030024049', "timestamp" = now();
+    DO UPDATE SET "version" = '20260704140000000', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

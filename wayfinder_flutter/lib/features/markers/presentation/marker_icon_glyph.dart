@@ -12,11 +12,14 @@ class MarkerIconGlyph extends ConsumerWidget {
     required this.iconName,
     required this.color,
     required this.size,
+    this.forceTint = false,
   });
 
   final String iconName;
   final Color color;
   final double size;
+  /// When true, applies [color] even for full-color SVG assets.
+  final bool forceTint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +37,7 @@ class MarkerIconGlyph extends ConsumerWidget {
 
     final svgUrl = catalog.svgUrl(iconName);
     if (svgUrl != null) {
-      final preserveColors = catalog.coloredAsset(iconName);
+      final preserveColors = !forceTint && catalog.coloredAsset(iconName);
       return MarkerIconSvgGlyph(
         svgUrl: svgUrl,
         assetPath: catalog.asset(iconName),
@@ -47,7 +50,7 @@ class MarkerIconGlyph extends ConsumerWidget {
 
     final assetPath = catalog.asset(iconName);
     if (assetPath != null) {
-      final preserveColors = catalog.coloredAsset(iconName);
+      final preserveColors = !forceTint && catalog.coloredAsset(iconName);
       return SvgPicture.asset(
         assetPath,
         width: glyphSize,

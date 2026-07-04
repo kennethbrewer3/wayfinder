@@ -11,6 +11,22 @@ import '../providers/marker_icon_providers.dart';
 import 'map_marker_icon.dart';
 import 'marker_icon_glyph.dart';
 
+Color markerIconPickerGlyphColor(
+  ThemeData theme, {
+  required bool selected,
+  required Color markerColor,
+}) {
+  if (theme.brightness == Brightness.dark) {
+    return Colors.white;
+  }
+  return selected
+      ? markerColor
+      : theme.iconTheme.color ?? theme.colorScheme.onSurface;
+}
+
+bool markerIconPickerForceTint(ThemeData theme) =>
+    theme.brightness == Brightness.dark;
+
 class MarkerIconPicker extends ConsumerStatefulWidget {
   const MarkerIconPicker({
     super.key,
@@ -64,6 +80,12 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
         catalog.option(widget.selectedIcon) ??
         catalog.options.firstOrNull ??
         markerIconOptions.first;
+    final forceTint = markerIconPickerForceTint(theme);
+    final headerGlyphColor = markerIconPickerGlyphColor(
+      theme,
+      selected: true,
+      markerColor: widget.color,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,8 +110,9 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
                       padding: const EdgeInsets.all(8),
                       child: MarkerIconGlyph(
                         iconName: selectedOption.key,
-                        color: widget.color,
+                        color: headerGlyphColor,
                         size: 22,
+                        forceTint: forceTint,
                       ),
                     ),
                   ),
@@ -173,6 +196,7 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
                         theme: theme,
                         selected: widget.selectedIcon == option.key,
                         color: widget.color,
+                        forceTint: forceTint,
                         onSelected: () => widget.onChanged(option.key),
                       );
                     },
@@ -195,6 +219,7 @@ class _MarkerIconPickerTile extends StatelessWidget {
     required this.theme,
     required this.selected,
     required this.color,
+    required this.forceTint,
     required this.onSelected,
   });
 
@@ -203,6 +228,7 @@ class _MarkerIconPickerTile extends StatelessWidget {
   final ThemeData theme;
   final bool selected;
   final Color color;
+  final bool forceTint;
   final VoidCallback onSelected;
 
   @override
@@ -230,10 +256,13 @@ class _MarkerIconPickerTile extends StatelessWidget {
               children: [
                 MarkerIconGlyph(
                   iconName: option.key,
-                  color: selected
-                      ? color
-                      : theme.iconTheme.color ?? theme.colorScheme.onSurface,
+                  color: markerIconPickerGlyphColor(
+                    theme,
+                    selected: selected,
+                    markerColor: color,
+                  ),
                   size: MarkerIconPicker._gridIconSize,
+                  forceTint: forceTint,
                 ),
                 const SizedBox(height: 2),
                 Text(

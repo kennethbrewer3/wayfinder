@@ -115,7 +115,8 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
           : zone,
   ];
 
-  final iconCounts = version >= 2 &&
+  final iconCounts =
+      version >= 2 &&
           (body.containsKey('markerIconCategories') ||
               body.containsKey('markerIcons'))
       ? await restoreMarkerIconBackup(session, body)

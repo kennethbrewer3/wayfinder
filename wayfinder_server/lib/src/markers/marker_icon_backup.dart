@@ -132,8 +132,9 @@ Future<MarkerIconRestoreCounts> restoreMarkerIconBackup(
             transaction: transaction,
           )
         : categories;
-    final categoryKeys =
-        effectiveCategories.map((category) => category.key).toSet();
+    final categoryKeys = effectiveCategories
+        .map((category) => category.key)
+        .toSet();
     final fallbackCategory = effectiveCategories.isEmpty
         ? MarkerIconCategorySeed.defaultCategoryKey
         : effectiveCategories.first.key;
@@ -185,9 +186,12 @@ List<_MarkerIconBackupPayload> _parseIconPayloads(Object? raw) {
 
   return [
     for (final entry in raw)
-      if (entry is Map<String, dynamic>) _parseIconPayload(entry)
+      if (entry is Map<String, dynamic>)
+        _parseIconPayload(entry)
       else
-        throw FormatException('Each entry in "markerIcons" must be a JSON object'),
+        throw FormatException(
+          'Each entry in "markerIcons" must be a JSON object',
+        ),
   ];
 }
 
@@ -208,7 +212,8 @@ _MarkerIconBackupPayload _parseIconPayload(Map<String, dynamic> json) {
     }
   }
 
-  final modelJson = Map<String, dynamic>.from(json)..remove(markerIconBackupSvgField);
+  final modelJson = Map<String, dynamic>.from(json)
+    ..remove(markerIconBackupSvgField);
   final entry = MarkerIconCatalogEntry.fromJson(modelJson);
   MarkerIconKey.normalize(entry.key);
 

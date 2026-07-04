@@ -49,7 +49,9 @@ abstract final class MarkerIconCatalogService {
       key: normalizedKey,
       label: trimmedLabel,
       category: resolvedCategory,
-      iconBackgroundColor: MarkerIconBackgroundColor.normalize(iconBackgroundColor),
+      iconBackgroundColor: MarkerIconBackgroundColor.normalize(
+        iconBackgroundColor,
+      ),
       materialIcon: _optionalString(materialIcon),
       coloredAsset: coloredAsset,
       glyphScale: _parseGlyphScale(glyphScale),

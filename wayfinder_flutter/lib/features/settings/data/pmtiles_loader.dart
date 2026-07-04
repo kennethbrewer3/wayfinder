@@ -10,10 +10,11 @@ import '../models/pmtiles_archive_entry.dart';
 import '../models/pmtiles_geo_bounds.dart';
 import '../models/pmtiles_map_layer.dart';
 import '../models/pmtiles_source.dart';
+import 'pmtiles_archive_pool.dart';
 
 const _metadataBatchSize = 8;
 
-Future<PmTilesArchive> openPmtilesArchive(PmtilesSource source) async {
+Future<PmTilesArchive> _openPmtilesArchiveRaw(PmtilesSource source) async {
   final log = AppLogger.logPmtiles;
   log.info('🗺️ Opening PMTiles archive', data: source.runtimeType);
 
@@ -53,6 +54,17 @@ Future<PmTilesArchive> openPmtilesArchive(PmtilesSource source) async {
   }
 }
 
+Future<PmTilesArchive> openPmtilesArchive(PmtilesSource source) {
+  return PmtilesArchivePool.instance.acquire(
+    source,
+    () => _openPmtilesArchiveRaw(source),
+  );
+}
+
+Future<void> releasePmtilesArchive(PmtilesSource source) {
+  return PmtilesArchivePool.instance.release(source);
+}
+
 Future<PmTilesTileProvider> openPmtilesTileProvider(
   PmtilesSource source, {
   required String catalogId,
@@ -86,7 +98,7 @@ Future<PmtilesArchiveEntry> readPmtilesArchiveEntry({
       maxZoom: archive.maxZoom,
     );
   } finally {
-    await archive.close();
+    await releasePmtilesArchive(source);
   }
 }
 
@@ -115,8 +127,25 @@ Future<PmtilesMapLayerConfig> buildPmtilesMapLayer(
   PmtilesSource source, {
   required String catalogId,
 }) async {
-  final log = AppLogger.logPmtiles;
   final archive = await openPmtilesArchive(source);
+  try {
+    return await _buildPmtilesMapLayerFromArchive(
+      source: source,
+      catalogId: catalogId,
+      archive: archive,
+    );
+  } catch (error, stackTrace) {
+    await releasePmtilesArchive(source);
+    Error.throwWithStackTrace(error, stackTrace);
+  }
+}
+
+Future<PmtilesMapLayerConfig> _buildPmtilesMapLayerFromArchive({
+  required PmtilesSource source,
+  required String catalogId,
+  required PmTilesArchive archive,
+}) async {
+  final log = AppLogger.logPmtiles;
 
   switch (archive.tileType) {
     case TileType.mvt:

@@ -55,6 +55,7 @@ import '../../markers/providers/marker_icon_providers.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
+import '../../settings/models/pmtiles_source.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../settings/data/pmtiles_loader.dart';
 import '../models/map_viewport.dart';
@@ -199,6 +200,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   late final MapController _mapController;
   final GlobalKey _mapHostKey = GlobalKey();
   final Map<String, PmtilesMapLayerConfig> _layerCache = {};
+  final Map<String, PmtilesSource> _layerSources = {};
   final Map<String, String> _layerLoadErrors = {};
   List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
   String? _activeLayerCatalogId;
@@ -243,6 +245,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void dispose() {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
+    _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
     super.dispose();
   }
@@ -291,7 +294,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     bool immediate = false,
   }) {
     _viewportLayerUpdateTimer?.cancel();
-    void run() => unawaited(_syncMapLayers(preload: preload));
+    void run() => unawaited(_runVisibleLayerSync(preload: preload));
     if (immediate) {
       run();
       return;
@@ -300,6 +303,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       const Duration(milliseconds: 250),
       run,
     );
+  }
+
+  Future<void> _runVisibleLayerSync({required bool preload}) async {
+    try {
+      await _syncMapLayers(preload: preload);
+    } catch (error, stackTrace) {
+      AppLogger.logPmtiles.error(
+        '🗺️ Uncaught map layer sync failure',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   LatLngBounds _currentViewportBounds() {
@@ -454,14 +469,42 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _evictRemovedLayers(Set<String> removedIds) {
     for (final id in removedIds) {
+      _releaseLayerArchive(id);
       _layerCache.remove(id);
       _layerLoadErrors.remove(id);
     }
   }
 
   void _evictAllLayers() {
+    _releaseAllLayerArchives();
     _layerCache.clear();
     _layerLoadErrors.clear();
+  }
+
+  void _releaseLayerArchive(String catalogId) {
+    final source = _layerSources.remove(catalogId);
+    if (source == null) {
+      return;
+    }
+    unawaited(
+      releasePmtilesArchive(source).catchError(
+        (Object error, StackTrace stackTrace) {
+          AppLogger.logPmtiles.error(
+            '🗺️ Failed to release PMTiles archive',
+            error: error,
+            stackTrace: stackTrace,
+            data: catalogId,
+          );
+        },
+      ),
+    );
+  }
+
+  void _releaseAllLayerArchives() {
+    final catalogIds = _layerSources.keys.toList(growable: false);
+    for (final catalogId in catalogIds) {
+      _releaseLayerArchive(catalogId);
+    }
   }
 
   Future<void> _loadLayerEntry(
@@ -475,7 +518,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       );
       if (mounted && generation == _layerLoadGeneration) {
         _layerCache[entry.id] = layer;
+        _layerSources[entry.id] = entry.source;
         _layerLoadErrors.remove(entry.id);
+      } else {
+        await releasePmtilesArchive(entry.source);
       }
     } catch (error, stackTrace) {
       if (mounted && generation == _layerLoadGeneration) {
@@ -565,7 +611,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             .toList();
         if (backgroundEntries.isNotEmpty) {
           generation = ++_layerLoadGeneration;
-          unawaited(_loadBackgroundLayers(generation, backgroundEntries));
+          unawaited(
+            _loadBackgroundLayers(generation, backgroundEntries).catchError(
+              (Object error, StackTrace stackTrace) {
+                AppLogger.logPmtiles.error(
+                  '🗺️ Uncaught background PMTiles preload failure',
+                  error: error,
+                  stackTrace: stackTrace,
+                );
+              },
+            ),
+          );
         }
       }
 

@@ -125,7 +125,7 @@ Future<ArchiveCenterTileScore> scoreArchiveAtCenter({
       }
       return best ?? ArchiveCenterTileScore.none(entry);
     } finally {
-      await archive.close();
+      await releasePmtilesArchive(entry.source);
     }
   } catch (error, _) {
     AppLogger.logPmtiles.warn(
@@ -245,15 +245,24 @@ Future<ArchiveSelectionResult> resolveActiveArchiveForViewport({
     );
   }
 
-  final scores = await Future.wait(
-    candidates.map(
-      (entry) => scoreArchiveAtCenter(
+  if (candidates.length == 1) {
+    return ArchiveSelectionResult(
+      entry: candidates.first,
+      scores: const [],
+      reason: 'single enabled archive',
+    );
+  }
+
+  final scores = <ArchiveCenterTileScore>[];
+  for (final entry in candidates) {
+    scores.add(
+      await scoreArchiveAtCenter(
         entry: entry,
         center: viewportCenter,
         viewportZoom: viewportZoom,
       ),
-    ),
-  );
+    );
+  }
 
   final best = _pickBestScoredArchive(scores);
   if (best != null) {

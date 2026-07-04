@@ -32,7 +32,7 @@ class MarkerIconCatalog {
         key: entry.key,
         icon: existing?.icon ?? materialIconFromServerKey(entry.materialIcon),
         label: entry.label,
-        assetPath: existing?.assetPath,
+        assetPath: existing?.resolvedAssetPath,
         svgUrl: svgUrl,
         emoji: existing?.emoji,
         coloredAsset: entry.coloredAsset,
@@ -72,7 +72,7 @@ class MarkerIconCatalog {
   String normalize(String iconName) =>
       option(iconName) == null ? 'place' : iconName;
 
-  String? asset(String iconName) => option(iconName)?.assetPath;
+  String? asset(String iconName) => option(iconName)?.resolvedAssetPath;
 
   String? svgUrl(String iconName) => option(iconName)?.svgUrl;
 
@@ -80,7 +80,7 @@ class MarkerIconCatalog {
 
   double glyphScale(String iconName) => option(iconName)?.glyphScale ?? 1.0;
 
-  bool coloredAsset(String iconName) => option(iconName)?.coloredAsset ?? false;
+  bool coloredAsset(String iconName) => option(iconName)?.coloredAsset ?? true;
 
   String iconBackgroundColorHex(String iconName) =>
       option(iconName)?.iconBackgroundColor ?? '#FFFFFF';

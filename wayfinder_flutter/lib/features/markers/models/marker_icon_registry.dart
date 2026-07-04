@@ -10,7 +10,7 @@ class MarkerIconOption {
     this.assetPath,
     this.svgUrl,
     this.emoji,
-    this.coloredAsset = false,
+    this.coloredAsset = true,
     this.glyphScale = 1.0,
     this.category,
     this.iconBackgroundColor = '#FFFFFF',
@@ -29,6 +29,9 @@ class MarkerIconOption {
 
   String get resolvedCategory =>
       markerIconCategoryForKey(key, override: category);
+
+  /// Bundled SVG path; every built-in icon has `assets/markers/{key}.svg`.
+  String get resolvedAssetPath => assetPath ?? 'assets/markers/$key.svg';
 }
 
 const markerIconOptions = <MarkerIconOption>[
@@ -150,7 +153,6 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'nuclear_weapons_facility',
     icon: Icons.warning,
-    assetPath: 'assets/markers/nuclear.svg',
     label: 'Nuclear weapons facility',
   ),
   MarkerIconOption(key: 'garden', icon: Icons.agriculture, label: 'Garden'),
@@ -481,7 +483,7 @@ MarkerIconOption? markerIconOption(String iconName) {
 String? markerIconAsset(String iconName) {
   for (final option in markerIconOptions) {
     if (option.key == iconName) {
-      return option.assetPath;
+      return option.resolvedAssetPath;
     }
   }
   return null;
@@ -511,7 +513,7 @@ bool markerIconColoredAsset(String iconName) {
       return option.coloredAsset;
     }
   }
-  return false;
+  return true;
 }
 
 String? suggestMarkerIconForName(String name) {

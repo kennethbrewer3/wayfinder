@@ -90,7 +90,7 @@ Future<Result> handleMarkerIconSvgUpload(
             label: _labelFromKey(key),
             category: defaultCategory,
             materialIcon: 'place',
-            coloredAsset: false,
+            coloredAsset: true,
             glyphScale: 1.0,
             hasCustomSvg: true,
             sortOrder: await _nextSortOrder(session),

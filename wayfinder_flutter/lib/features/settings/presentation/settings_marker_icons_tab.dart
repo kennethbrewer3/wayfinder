@@ -420,9 +420,7 @@ class _SettingsMarkerIconsTabState
     final theme = Theme.of(context);
     final previewColor = theme.colorScheme.primary;
 
-    final bundledSvgIcons = markerIconOptions
-        .where((option) => option.assetPath != null)
-        .toList(growable: false);
+    final bundledSvgIcons = markerIconOptions.toList(growable: false);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -796,7 +794,7 @@ class _CreateIconDialogState extends State<_CreateIconDialog> {
   final _formKey = GlobalKey<FormState>();
   final _keyController = TextEditingController();
   final _labelController = TextEditingController();
-  var _coloredAsset = false;
+  var _coloredAsset = true;
   var _glyphScale = 1.0;
   var _category = MarkerIconCategories.custom;
   var _iconBackgroundColor = const Color(0xFFFFFFFF);

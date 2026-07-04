@@ -33,7 +33,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
     String? category,
     String? iconBackgroundColor,
     String? materialIcon,
-    bool coloredAsset = false,
+    bool coloredAsset = true,
     double glyphScale = 1.0,
     int? sortOrder,
   }) {

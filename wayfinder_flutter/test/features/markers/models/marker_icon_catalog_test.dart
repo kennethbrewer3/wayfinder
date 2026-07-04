@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
@@ -6,6 +8,17 @@ import 'package:wayfinder_flutter/features/markers/models/marker_icon_categories
 import 'package:wayfinder_flutter/features/markers/models/marker_icon_registry.dart';
 
 void main() {
+  test('every built-in icon has a bundled SVG file', () {
+    for (final option in markerIconOptions) {
+      expect(
+        File('assets/markers/${option.key}.svg').existsSync(),
+        isTrue,
+        reason: option.key,
+      );
+      expect(option.resolvedAssetPath, 'assets/markers/${option.key}.svg');
+    }
+  });
+
   test('merge replaces bundled SVG with server SVG url', () {
     final defaults = markerIconOptions
         .where((option) => option.key == 'horse')

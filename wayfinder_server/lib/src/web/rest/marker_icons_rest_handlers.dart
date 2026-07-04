@@ -57,7 +57,7 @@ abstract final class MarkerIconsRestHandlers {
           category: body['category'] as String?,
           iconBackgroundColor: body['iconBackgroundColor'] as String?,
           materialIcon: _optionalString(body['materialIcon']),
-          coloredAsset: body['coloredAsset'] as bool? ?? false,
+          coloredAsset: body['coloredAsset'] as bool? ?? true,
           glyphScale: _parseGlyphScale(body['glyphScale']),
           sortOrder: body['sortOrder'] as int?,
         );

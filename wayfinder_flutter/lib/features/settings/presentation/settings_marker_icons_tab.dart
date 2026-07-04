@@ -25,7 +25,8 @@ class SettingsMarkerIconsTab extends ConsumerStatefulWidget {
       _SettingsMarkerIconsTabState();
 }
 
-class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab> {
+class _SettingsMarkerIconsTabState
+    extends ConsumerState<SettingsMarkerIconsTab> {
   static final _log = AppLogger.logSettings;
 
   bool _isBusy = false;
@@ -85,7 +86,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.markerIconsUploadFailed(error.toString()))),
+          SnackBar(
+            content: Text(l10n.markerIconsUploadFailed(error.toString())),
+          ),
         );
       }
     });
@@ -108,7 +111,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           key: created.key,
           label: created.label,
           category: created.category,
-          iconBackgroundColor: formatMarkerColorHexWithAlpha(created.iconBackgroundColor),
+          iconBackgroundColor: formatMarkerColorHexWithAlpha(
+            created.iconBackgroundColor,
+          ),
           coloredAsset: created.coloredAsset,
           glyphScale: created.glyphScale,
         );
@@ -132,7 +137,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.markerIconsCreateFailed(error.toString()))),
+          SnackBar(
+            content: Text(l10n.markerIconsCreateFailed(error.toString())),
+          ),
         );
       }
     });
@@ -154,12 +161,15 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
 
     await _runBusy(() async {
       try {
-        await ref.read(markerIconRepositoryProvider).updateIcon(
+        await ref
+            .read(markerIconRepositoryProvider)
+            .updateIcon(
               key: entry.key,
               label: updated.label,
               category: updated.category,
-              iconBackgroundColor:
-                  formatMarkerColorHexWithAlpha(updated.iconBackgroundColor),
+              iconBackgroundColor: formatMarkerColorHexWithAlpha(
+                updated.iconBackgroundColor,
+              ),
               coloredAsset: updated.coloredAsset,
               glyphScale: updated.glyphScale,
             );
@@ -180,7 +190,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.markerIconsUpdateFailed(error.toString()))),
+          SnackBar(
+            content: Text(l10n.markerIconsUpdateFailed(error.toString())),
+          ),
         );
       }
     });
@@ -230,7 +242,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.markerIconsDeleteFailed(error.toString()))),
+          SnackBar(
+            content: Text(l10n.markerIconsDeleteFailed(error.toString())),
+          ),
         );
       }
     });
@@ -248,7 +262,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
 
     await _runBusy(() async {
       try {
-        await ref.read(markerIconRepositoryProvider).createCategory(
+        await ref
+            .read(markerIconRepositoryProvider)
+            .createCategory(
               key: created.key,
               label: created.label,
             );
@@ -258,7 +274,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.markerIconCategoriesCreateSuccess(created.label)),
+            content: Text(
+              l10n.markerIconCategoriesCreateSuccess(created.label),
+            ),
           ),
         );
       } catch (error, stackTrace) {
@@ -272,7 +290,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.markerIconCategoriesCreateFailed(error.toString())),
+            content: Text(
+              l10n.markerIconCategoriesCreateFailed(error.toString()),
+            ),
           ),
         );
       }
@@ -294,7 +314,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
 
     await _runBusy(() async {
       try {
-        await ref.read(markerIconRepositoryProvider).updateCategory(
+        await ref
+            .read(markerIconRepositoryProvider)
+            .updateCategory(
               key: category.key,
               label: updated.label,
             );
@@ -304,7 +326,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.markerIconCategoriesUpdateSuccess(updated.label)),
+            content: Text(
+              l10n.markerIconCategoriesUpdateSuccess(updated.label),
+            ),
           ),
         );
       } catch (error, stackTrace) {
@@ -318,7 +342,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.markerIconCategoriesUpdateFailed(error.toString())),
+            content: Text(
+              l10n.markerIconCategoriesUpdateFailed(error.toString()),
+            ),
           ),
         );
       }
@@ -352,7 +378,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
 
     await _runBusy(() async {
       try {
-        await ref.read(markerIconRepositoryProvider).deleteCategory(category.key);
+        await ref
+            .read(markerIconRepositoryProvider)
+            .deleteCategory(category.key);
         refreshMarkerIcons(ref);
         if (!mounted) {
           return;
@@ -371,7 +399,9 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.markerIconCategoriesDeleteFailed(error.toString())),
+            content: Text(
+              l10n.markerIconCategoriesDeleteFailed(error.toString()),
+            ),
           ),
         );
       }
@@ -383,7 +413,8 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
     final l10n = AppLocalizations.of(context)!;
     final entriesAsync = ref.watch(markerIconRemoteEntriesProvider);
     final categoryCatalogAsync = ref.watch(markerIconCategoryCatalogProvider);
-    final categoryCatalog = categoryCatalogAsync.valueOrNull ??
+    final categoryCatalog =
+        categoryCatalogAsync.valueOrNull ??
         MarkerIconCategoryCatalog.fallback();
     final categoryOrder = categoryCatalog.orderedKeys;
     final theme = Theme.of(context);
@@ -550,7 +581,11 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
                         ),
                       ),
                       children: [
-                        for (var i = 0; i < categoryEntry.value.length; i++) ...[
+                        for (
+                          var i = 0;
+                          i < categoryEntry.value.length;
+                          i++
+                        ) ...[
                           if (i > 0) const Divider(height: 1),
                           _MarkerIconEntryTile(
                             entry: categoryEntry.value[i],
@@ -583,63 +618,60 @@ class _SettingsMarkerIconsTabState extends ConsumerState<SettingsMarkerIconsTab>
           style: theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: ExpansionTile(
-            title: Text(l10n.markerIconsBuiltInExpandTitle),
-            subtitle: Text(l10n.markerIconsBuiltInExpandSubtitle(bundledSvgIcons.length)),
-            children: [
-              for (final categoryEntry in groupMarkerIconsByCategory<MarkerIconOption>(
-                items: bundledSvgIcons,
-                categoryFor: (option) => option.resolvedCategory,
-                categoryOrder: categoryOrder,
-              ).entries)
-                ExpansionTile(
-                  title: Text(
-                    markerIconCategoryDisplayLabel(
-                      l10n,
-                      categoryEntry.key,
-                      catalog: categoryCatalog,
-                    ),
-                  ),
-                  subtitle: Text(
-                    l10n.markerIconsBuiltInExpandSubtitle(
-                      categoryEntry.value.length,
-                    ),
-                  ),
-                  children: [
-                    for (var i = 0; i < categoryEntry.value.length; i++) ...[
-                      if (i > 0) const Divider(height: 1),
-                      ListTile(
-                        leading: MapMarkerIcon(
-                          color: previewColor,
-                          iconName: categoryEntry.value[i].key,
-                          width: 32,
-                          height: 32,
-                        ),
-                        title: Text(
-                          localizedMarkerIconLabel(
-                            l10n,
-                            categoryEntry.value[i].key,
-                          ),
-                        ),
-                        subtitle: Text(categoryEntry.value[i].key),
-                        trailing: IconButton(
-                          tooltip: l10n.markerIconsUploadSvgAction,
-                          icon: const Icon(Icons.upload_file),
-                          onPressed: _isBusy
-                              ? null
-                              : () => _pickAndUploadSvg(
-                                    categoryEntry.value[i].key,
-                                  ),
-                        ),
-                      ),
-                    ],
-                  ],
+        for (final categoryEntry
+            in groupMarkerIconsByCategory<MarkerIconOption>(
+              items: bundledSvgIcons,
+              categoryFor: (option) => option.resolvedCategory,
+              categoryOrder: categoryOrder,
+            ).entries) ...[
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: ExpansionTile(
+              title: Text(
+                markerIconCategoryDisplayLabel(
+                  l10n,
+                  categoryEntry.key,
+                  catalog: categoryCatalog,
                 ),
-            ],
+              ),
+              subtitle: Text(
+                l10n.markerIconsBuiltInExpandSubtitle(
+                  categoryEntry.value.length,
+                ),
+              ),
+              children: [
+                for (var i = 0; i < categoryEntry.value.length; i++) ...[
+                  if (i > 0) const Divider(height: 1),
+                  ListTile(
+                    leading: MapMarkerIcon(
+                      color: previewColor,
+                      iconName: categoryEntry.value[i].key,
+                      width: 32,
+                      height: 32,
+                    ),
+                    title: Text(
+                      localizedMarkerIconLabel(
+                        l10n,
+                        categoryEntry.value[i].key,
+                      ),
+                    ),
+                    subtitle: Text(categoryEntry.value[i].key),
+                    trailing: IconButton(
+                      tooltip: l10n.markerIconsUploadSvgAction,
+                      icon: const Icon(Icons.upload_file),
+                      onPressed: _isBusy
+                          ? null
+                          : () => _pickAndUploadSvg(
+                              categoryEntry.value[i].key,
+                            ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
-        ),
+          const SizedBox(height: 8),
+        ],
       ],
     );
   }
@@ -874,7 +906,11 @@ class _CreateIconDialogState extends State<_CreateIconDialog> {
                   value: _coloredAsset,
                   onChanged: (value) => setState(() => _coloredAsset = value),
                 ),
-                Text(l10n.markerIconsGlyphScaleLabel(_glyphScale.toStringAsFixed(2))),
+                Text(
+                  l10n.markerIconsGlyphScaleLabel(
+                    _glyphScale.toStringAsFixed(2),
+                  ),
+                ),
                 Slider(
                   value: _glyphScale,
                   min: 0.5,
@@ -1028,39 +1064,43 @@ class _EditIconDialogState extends State<_EditIconDialog> {
                     return null;
                   },
                 ),
-              const SizedBox(height: 12),
-              MarkerIconCategoryField(
-                l10n: l10n,
-                value: _category,
-                onChanged: (value) => setState(() => _category = value),
-              ),
-              const SizedBox(height: 12),
-              MarkerIconBackgroundColorField(
-                color: _iconBackgroundColor,
-                onChanged: (value) =>
-                    setState(() => _iconBackgroundColor = value),
-              ),
-              const SizedBox(height: 12),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.markerIconsColoredAssetLabel),
-                subtitle: Text(l10n.markerIconsColoredAssetHelp),
-                value: _coloredAsset,
-                onChanged: (value) => setState(() => _coloredAsset = value),
-              ),
-              Text(l10n.markerIconsGlyphScaleLabel(_glyphScale.toStringAsFixed(2))),
-              Slider(
-                value: _glyphScale,
-                min: 0.5,
-                max: 1.5,
-                divisions: 20,
-                label: _glyphScale.toStringAsFixed(2),
-                onChanged: (value) => setState(() => _glyphScale = value),
-              ),
-            ],
+                const SizedBox(height: 12),
+                MarkerIconCategoryField(
+                  l10n: l10n,
+                  value: _category,
+                  onChanged: (value) => setState(() => _category = value),
+                ),
+                const SizedBox(height: 12),
+                MarkerIconBackgroundColorField(
+                  color: _iconBackgroundColor,
+                  onChanged: (value) =>
+                      setState(() => _iconBackgroundColor = value),
+                ),
+                const SizedBox(height: 12),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.markerIconsColoredAssetLabel),
+                  subtitle: Text(l10n.markerIconsColoredAssetHelp),
+                  value: _coloredAsset,
+                  onChanged: (value) => setState(() => _coloredAsset = value),
+                ),
+                Text(
+                  l10n.markerIconsGlyphScaleLabel(
+                    _glyphScale.toStringAsFixed(2),
+                  ),
+                ),
+                Slider(
+                  value: _glyphScale,
+                  min: 0.5,
+                  max: 1.5,
+                  divisions: 20,
+                  label: _glyphScale.toStringAsFixed(2),
+                  onChanged: (value) => setState(() => _glyphScale = value),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
       ),
       actions: [
         TextButton(

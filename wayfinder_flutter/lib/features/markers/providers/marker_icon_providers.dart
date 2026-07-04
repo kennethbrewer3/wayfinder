@@ -17,7 +17,9 @@ final markerIconRepositoryProvider = Provider<MarkerIconRepository>(
 
 final markerIconRevisionProvider = StateProvider<int>((ref) => 0);
 
-final markerIconCatalogProvider = FutureProvider<MarkerIconCatalog>((ref) async {
+final markerIconCatalogProvider = FutureProvider<MarkerIconCatalog>((
+  ref,
+) async {
   ref.watch(markerIconRevisionProvider);
   try {
     final repository = ref.watch(markerIconRepositoryProvider);
@@ -29,25 +31,32 @@ final markerIconCatalogProvider = FutureProvider<MarkerIconCatalog>((ref) async 
 
 final markerIconRemoteEntriesProvider =
     FutureProvider<List<MarkerIconCatalogEntry>>((ref) async {
-  ref.watch(markerIconRevisionProvider);
-  final repository = ref.watch(markerIconRepositoryProvider);
-  return repository.listRemoteEntries();
-});
+      ref.watch(markerIconRevisionProvider);
+      try {
+        final repository = ref.watch(markerIconRepositoryProvider);
+        return await repository.listRemoteEntries();
+      } catch (_) {
+        return const [];
+      }
+    });
 
 void refreshMarkerIcons(WidgetRef ref) {
   final revision = ref.read(markerIconRevisionProvider) + 1;
-  AppLogger.logMarkers.info('🔄 refreshMarkerIcons', data: 'revision=$revision');
+  AppLogger.logMarkers.info(
+    '🔄 refreshMarkerIcons',
+    data: 'revision=$revision',
+  );
   ref.read(markerIconRevisionProvider.notifier).state = revision;
 }
 
 final markerIconCategoryCatalogProvider =
     FutureProvider<MarkerIconCategoryCatalog>((ref) async {
-  ref.watch(markerIconRevisionProvider);
-  try {
-    final repository = ref.watch(markerIconRepositoryProvider);
-    final categories = await repository.listCategories();
-    return MarkerIconCategoryCatalog(categories);
-  } catch (_) {
-    return MarkerIconCategoryCatalog.fallback();
-  }
-});
+      ref.watch(markerIconRevisionProvider);
+      try {
+        final repository = ref.watch(markerIconRepositoryProvider);
+        final categories = await repository.listCategories();
+        return MarkerIconCategoryCatalog(categories);
+      } catch (_) {
+        return MarkerIconCategoryCatalog.fallback();
+      }
+    });

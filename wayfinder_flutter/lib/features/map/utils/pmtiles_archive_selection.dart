@@ -87,43 +87,53 @@ Future<ArchiveCenterTileScore> scoreArchiveAtCenter({
   required LatLng center,
   required double viewportZoom,
 }) async {
-  final displayZoom = tileZoomForViewport(viewportZoom)
-      .clamp(entry.minZoom, entry.maxZoom);
-  final zoomsToTry = <int>[
-    displayZoom,
-    if (displayZoom > entry.minZoom) displayZoom - 1,
-  ];
-
-  final archive = await openPmtilesArchive(entry.source);
   try {
-    ArchiveCenterTileScore? best;
-    for (final zoom in zoomsToTry) {
-      final coords = latLngToTile(center, zoom);
-      final tileId = ZXY(coords.z, coords.x, coords.y).toTileId();
-      final tile = await archive.tile(tileId);
-      try {
-        final bytes = tile.bytes();
-        final score = scoreVectorTileBytes(
-          entry: entry,
-          tileZoom: zoom,
-          bytes: bytes,
-        );
-        if (best == null ||
-            score.mapFeatureCount > best.mapFeatureCount ||
-            (score.mapFeatureCount == best.mapFeatureCount &&
-                score.featureCount > best.featureCount)) {
-          best = score;
+    final displayZoom = tileZoomForViewport(
+      viewportZoom,
+    ).clamp(entry.minZoom, entry.maxZoom);
+    final zoomsToTry = <int>[
+      displayZoom,
+      if (displayZoom > entry.minZoom) displayZoom - 1,
+    ];
+
+    final archive = await openPmtilesArchive(entry.source);
+    try {
+      ArchiveCenterTileScore? best;
+      for (final zoom in zoomsToTry) {
+        final coords = latLngToTile(center, zoom);
+        final tileId = ZXY(coords.z, coords.x, coords.y).toTileId();
+        final tile = await archive.tile(tileId);
+        try {
+          final bytes = tile.bytes();
+          final score = scoreVectorTileBytes(
+            entry: entry,
+            tileZoom: zoom,
+            bytes: bytes,
+          );
+          if (best == null ||
+              score.mapFeatureCount > best.mapFeatureCount ||
+              (score.mapFeatureCount == best.mapFeatureCount &&
+                  score.featureCount > best.featureCount)) {
+            best = score;
+          }
+          if (score.hasMapContent) {
+            return score;
+          }
+        } catch (_) {
+          continue;
         }
-        if (score.hasMapContent) {
-          return score;
-        }
-      } catch (_) {
-        continue;
       }
+      return best ?? ArchiveCenterTileScore.none(entry);
+    } finally {
+      await archive.close();
     }
-    return best ?? ArchiveCenterTileScore.none(entry);
-  } finally {
-    await archive.close();
+  } catch (error, _) {
+    AppLogger.logPmtiles.warn(
+      '🗺️ Skipped center tile score for archive',
+      data: 'id=${entry.id} name="${entry.name}"',
+      error: error,
+    );
+    return ArchiveCenterTileScore.none(entry);
   }
 }
 

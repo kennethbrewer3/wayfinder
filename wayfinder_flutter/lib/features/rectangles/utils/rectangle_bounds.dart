@@ -28,9 +28,9 @@ class RectangleBounds {
   }
 
   LatLng get center => LatLng(
-        (north + south) / 2,
-        (east + west) / 2,
-      );
+    (north + south) / 2,
+    (east + west) / 2,
+  );
 
   Map<String, dynamic> toJson() {
     return {
@@ -49,10 +49,7 @@ class RectangleBounds {
     final south = value['south'];
     final east = value['east'];
     final west = value['west'];
-    if (north is! num ||
-        south is! num ||
-        east is! num ||
-        west is! num) {
+    if (north is! num || south is! num || east is! num || west is! num) {
       return null;
     }
     return RectangleBounds(

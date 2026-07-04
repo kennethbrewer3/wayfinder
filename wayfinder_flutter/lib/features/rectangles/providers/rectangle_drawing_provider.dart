@@ -30,16 +30,17 @@ class RectangleDrawingState {
       active: active ?? this.active,
       mode: mode ?? this.mode,
       anchor: clearAnchor ? null : anchor ?? this.anchor,
-      previewPoint:
-          clearPreviewPoint ? null : previewPoint ?? this.previewPoint,
+      previewPoint: clearPreviewPoint
+          ? null
+          : previewPoint ?? this.previewPoint,
     );
   }
 }
 
 final rectangleDrawingProvider =
     StateNotifierProvider<RectangleDrawingNotifier, RectangleDrawingState>(
-  (ref) => RectangleDrawingNotifier(),
-);
+      (ref) => RectangleDrawingNotifier(),
+    );
 
 class RectangleDrawingNotifier extends StateNotifier<RectangleDrawingState> {
   RectangleDrawingNotifier() : super(const RectangleDrawingState());

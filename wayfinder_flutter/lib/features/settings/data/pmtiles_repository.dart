@@ -17,8 +17,8 @@ class PmtilesRepository {
   PmtilesRepository({
     required Client client,
     required String webServerUrl,
-  })  : _client = client,
-        _webServerUrl = _normalizeBaseUrl(webServerUrl);
+  }) : _client = client,
+       _webServerUrl = _normalizeBaseUrl(webServerUrl);
 
   final Client _client;
   final String _webServerUrl;
@@ -72,8 +72,7 @@ class PmtilesRepository {
       }
       final groupIds = file.groupIds ?? const [];
       return groupIds.any((groupId) => groupsOnMap[groupId.uuid] == true);
-    }).toList()
-      ..sort((a, b) => _compareNames(a.name, b.name));
+    }).toList()..sort((a, b) => _compareNames(a.name, b.name));
     if (enabled.isEmpty) {
       _log.warn('🧭 No enabled PMTiles files on server');
       return const [];
@@ -102,10 +101,7 @@ class PmtilesRepository {
     final maxLat = file.maxLatitude;
     final minLon = file.minLongitude;
     final maxLon = file.maxLongitude;
-    if (minLat == null ||
-        maxLat == null ||
-        minLon == null ||
-        maxLon == null) {
+    if (minLat == null || maxLat == null || minLon == null || maxLon == null) {
       return (
         bounds: const PmtilesGeoBounds(
           south: -90,
@@ -196,8 +192,9 @@ class PmtilesRepository {
     }
 
     await request.sink.close();
-    final streamedResponse =
-        await responseFuture.timeout(const Duration(hours: 2));
+    final streamedResponse = await responseFuture.timeout(
+      const Duration(hours: 2),
+    );
     return http.Response.fromStream(streamedResponse);
   }
 
@@ -232,7 +229,10 @@ class PmtilesRepository {
   }
 
   Future<void> setFileEnabled(String id, {required bool enabled}) async {
-    _log.info('🎯 Setting PMTiles enabled state', data: 'id=$id enabled=$enabled');
+    _log.info(
+      '🎯 Setting PMTiles enabled state',
+      data: 'id=$id enabled=$enabled',
+    );
     await _client.pmtiles.setFileEnabled(
       UuidValue.fromString(id),
       enabled: enabled,

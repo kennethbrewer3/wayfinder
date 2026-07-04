@@ -17,13 +17,17 @@ class WeatherStationDetailsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final snapshot = MarkerWeatherSnapshot.fromMarkerWeatherJson(marker.weatherJson);
+    final snapshot = MarkerWeatherSnapshot.fromMarkerWeatherJson(
+      marker.weatherJson,
+    );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.55),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.55,
+          ),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: theme.dividerColor),
         ),
@@ -60,8 +64,9 @@ class _WeatherContent extends StatelessWidget {
     );
     final conditionLabel =
         condition.displayLabel ?? _conditionLabel(l10n, condition.labelKey);
-    final updatedAt =
-        DateFormat.yMMMd().add_jm().format(reading.observedAt.toLocal());
+    final updatedAt = DateFormat.yMMMd().add_jm().format(
+      reading.observedAt.toLocal(),
+    );
     final tempUnit = formatTemperatureUnit(reading.temperatureUnit);
 
     return Column(
@@ -98,7 +103,8 @@ class _WeatherContent extends StatelessWidget {
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  if (reading.source != null && reading.source!.trim().isNotEmpty)
+                  if (reading.source != null &&
+                      reading.source!.trim().isNotEmpty)
                     Text(
                       l10n.weatherSource(reading.source!.trim()),
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -159,8 +165,7 @@ class _WeatherContent extends StatelessWidget {
               _WeatherMetricTile(
                 icon: Icons.speed,
                 label: l10n.weatherPressure,
-                value:
-                    '${reading.pressure!.round()} ${reading.pressureUnit}',
+                value: '${reading.pressure!.round()} ${reading.pressureUnit}',
               ),
             if (reading.dewPoint != null)
               _WeatherMetricTile(
@@ -338,8 +343,9 @@ class _HistoryRow extends StatelessWidget {
     );
     final label =
         condition.displayLabel ?? _conditionLabel(l10n, condition.labelKey);
-    final timestamp =
-        DateFormat.MMMd().add_jm().format(reading.observedAt.toLocal());
+    final timestamp = DateFormat.MMMd().add_jm().format(
+      reading.observedAt.toLocal(),
+    );
     final tempUnit = formatTemperatureUnit(reading.temperatureUnit);
 
     return Padding(

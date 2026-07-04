@@ -59,7 +59,8 @@ class TreadTrailPainter extends CustomPainter {
 
       for (var track = 0; track < trackCount; track++) {
         final lateralOffset = -halfWidth + track * spacing;
-        final base = marker.center +
+        final base =
+            marker.center +
             Offset(
               math.cos(perpendicular) * lateralOffset,
               math.sin(perpendicular) * lateralOffset,
@@ -69,21 +70,25 @@ class TreadTrailPainter extends CustomPainter {
           TreadTrailKind.atv => 9.0,
           _ => 7.0,
         };
-        final start = base -
+        final start =
+            base -
             Offset(
               math.cos(forward) * treadLength / 2,
               math.sin(forward) * treadLength / 2,
             );
-        final end = base +
+        final end =
+            base +
             Offset(
               math.cos(forward) * treadLength / 2,
               math.sin(forward) * treadLength / 2,
             );
         canvas.drawLine(start, end, paint);
 
-        if (path.kind == TreadTrailKind.tractor || path.kind == TreadTrailKind.atv) {
+        if (path.kind == TreadTrailKind.tractor ||
+            path.kind == TreadTrailKind.atv) {
           for (var notch = -1; notch <= 1; notch++) {
-            final notchCenter = base +
+            final notchCenter =
+                base +
                 Offset(
                   math.cos(forward) * notch * 2.5,
                   math.sin(forward) * notch * 2.5,

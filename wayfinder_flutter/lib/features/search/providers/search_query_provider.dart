@@ -7,8 +7,8 @@ const mapSearchMinGeocodingLength = 3;
 /// Updated only when the user submits search (search button or Enter).
 final submittedMapSearchQueryProvider =
     StateNotifierProvider<SubmittedMapSearchQueryNotifier, String>((ref) {
-  return SubmittedMapSearchQueryNotifier();
-});
+      return SubmittedMapSearchQueryNotifier();
+    });
 
 /// Backwards-compatible alias for older call sites.
 final debouncedMapSearchQueryProvider = submittedMapSearchQueryProvider;

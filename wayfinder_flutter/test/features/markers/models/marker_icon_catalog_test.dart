@@ -37,8 +37,10 @@ void main() {
       'http://localhost:18082/marker-icons/files/horse.svg?v=${now.millisecondsSinceEpoch}',
     );
     expect(catalog.coloredAsset('horse'), isTrue);
-    expect(catalog.option('horse')?.resolvedCategory,
-        MarkerIconCategories.transportation);
+    expect(
+      catalog.option('horse')?.resolvedCategory,
+      MarkerIconCategories.transportation,
+    );
   });
 
   test('merge appends custom server-only icons', () {

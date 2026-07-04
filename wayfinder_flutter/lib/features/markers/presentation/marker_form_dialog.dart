@@ -53,7 +53,8 @@ Future<MarkerFormData?> showMarkerFormDialog({
   bool allowCoordinateEdit = false,
   bool allowTrackingToggle = false,
   bool initialIsTracking = false,
-  TrackTransportationMode initialTransportationMode = TrackTransportationMode.onFoot,
+  TrackTransportationMode initialTransportationMode =
+      TrackTransportationMode.onFoot,
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -82,7 +83,8 @@ Future<MarkerFormData?> showMarkerFormDialog({
 Future<MarkerFormData?> showEditMarkerDialog({
   required BuildContext context,
   required MapMarker marker,
-  TrackTransportationMode initialTransportationMode = TrackTransportationMode.onFoot,
+  TrackTransportationMode initialTransportationMode =
+      TrackTransportationMode.onFoot,
 }) {
   final l10n = AppLocalizations.of(context)!;
   return showMarkerFormDialog(
@@ -233,7 +235,8 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
       return;
     }
 
-    final coordinates = _latitudeController != null && _longitudeController != null
+    final coordinates =
+        _latitudeController != null && _longitudeController != null
         ? parseLatLngFields(
             _latitudeController.text,
             _longitudeController.text,
@@ -286,7 +289,8 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                 autofocus: true,
                 textInputAction: TextInputAction.next,
               ),
-              if (_latitudeController != null && _longitudeController != null) ...[
+              if (_latitudeController != null &&
+                  _longitudeController != null) ...[
                 const SizedBox(height: 16),
                 CoordinateFormFields(
                   title: l10n.coordinatesTitle,
@@ -302,8 +306,10 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                   labelText: l10n.markerElevationLabel,
                   hintText: '0',
                 ),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true, signed: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 16),

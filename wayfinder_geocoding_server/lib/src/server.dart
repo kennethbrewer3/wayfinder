@@ -11,15 +11,19 @@ import 'web/middleware/rest_cors_middleware.dart';
 import 'web/rest/geocoding_rest_api_route.dart';
 
 void run(List<String> args) async {
-  WfLog.info(null, 'server', '🚀 Wayfinder geocoding server starting | args=$args');
+  WfLog.info(
+    null,
+    'server',
+    '🚀 Wayfinder geocoding server starting | args=$args',
+  );
 
   final pod = Serverpod(args, Protocol(), Endpoints());
   WfLog.info(
     null,
     'server',
     '⚙️ Serverpod initialized | apiPort=${pod.config.apiServer.port} '
-    'webPort=${pod.config.webServer?.port} '
-    'db=${pod.config.database?.name}@${pod.config.database?.host}:${pod.config.database?.port}',
+        'webPort=${pod.config.webServer?.port} '
+        'db=${pod.config.database?.name}@${pod.config.database?.host}:${pod.config.database?.port}',
   );
 
   final webConfig = pod.config.webServer;
@@ -28,7 +32,11 @@ void run(List<String> args) async {
   } else {
     pod.webServer.addMiddleware(const RestCorsMiddleware().call, '/');
     pod.webServer.addRoute(GeocodingRestApiRoute(), '/api');
-    WfLog.info(null, 'server', '🌐 Geocoding REST API available at /api/geocoding/*');
+    WfLog.info(
+      null,
+      'server',
+      '🌐 Geocoding REST API available at /api/geocoding/*',
+    );
   }
 
   final root = Directory(Uri(path: 'web/static').toFilePath());

@@ -49,8 +49,8 @@ abstract final class GeocodingRestHandlers {
       }
 
       final countryCodes = _parseCountryCodes(body['countryCodes']);
-      final crowdsourceSourceUrl =
-          (body['crowdsourceSourceUrl'] as String?)?.trim();
+      final crowdsourceSourceUrl = (body['crowdsourceSourceUrl'] as String?)
+          ?.trim();
 
       final settings = await GeocodingSettingsStore.getOrCreate(session);
       final updated = await GeocodingSettingsStore.update(
@@ -107,7 +107,9 @@ abstract final class GeocodingRestHandlers {
   static Future<Result> cancelHousenumbersImport(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
-      final settings = await GeocodingHousenumbersImporter.cancelImport(session);
+      final settings = await GeocodingHousenumbersImporter.cancelImport(
+        session,
+      );
       return RestJson.ok(await _encodeSettings(session, settings));
     });
   }
@@ -231,9 +233,14 @@ abstract final class GeocodingRestHandlers {
       final session = await request.session;
       final body = await RestJson.readObject(request);
       final name = (body['name'] as String?)?.trim() ?? '';
-      final latitude = _parseRequiredDouble(body['latitude'], field: 'latitude');
-      final longitude =
-          _parseRequiredDouble(body['longitude'], field: 'longitude');
+      final latitude = _parseRequiredDouble(
+        body['latitude'],
+        field: 'latitude',
+      );
+      final longitude = _parseRequiredDouble(
+        body['longitude'],
+        field: 'longitude',
+      );
       final row = await GeocodingContributionService.create(
         session,
         name: name,
@@ -254,9 +261,14 @@ abstract final class GeocodingRestHandlers {
       final id = _parsePathId(request);
       final body = await RestJson.readObject(request);
       final name = (body['name'] as String?)?.trim() ?? '';
-      final latitude = _parseRequiredDouble(body['latitude'], field: 'latitude');
-      final longitude =
-          _parseRequiredDouble(body['longitude'], field: 'longitude');
+      final latitude = _parseRequiredDouble(
+        body['latitude'],
+        field: 'latitude',
+      );
+      final longitude = _parseRequiredDouble(
+        body['longitude'],
+        field: 'longitude',
+      );
       final row = await GeocodingContributionService.update(
         session,
         id: id,
@@ -391,7 +403,8 @@ abstract final class GeocodingRestHandlers {
       'housenumbersImportedRowCount': settings.housenumbersImportedRowCount,
       'housenumbersImportProgress': settings.housenumbersImportProgress,
       'housenumbersImportError': settings.housenumbersImportError,
-      'housenumbersImportedAt': settings.housenumbersImportedAt?.toIso8601String(),
+      'housenumbersImportedAt': settings.housenumbersImportedAt
+          ?.toIso8601String(),
       'isReady':
           GeocodingImportStatus.isSearchable(
             settings.importStatus,
@@ -410,7 +423,8 @@ abstract final class GeocodingRestHandlers {
         settings.housenumbersImportStatus,
         settings.housenumbersImportedRowCount,
       ),
-      'isRunning': GeocodingImporter.isRunning ||
+      'isRunning':
+          GeocodingImporter.isRunning ||
           GeocodingHousenumbersImporter.isRunning ||
           settings.importStatus == GeocodingConstants.statusDownloading ||
           settings.importStatus == GeocodingConstants.statusImporting ||
@@ -418,10 +432,12 @@ abstract final class GeocodingRestHandlers {
               GeocodingConstants.statusDownloading ||
           settings.housenumbersImportStatus ==
               GeocodingConstants.statusImporting,
-      'isPlacesRunning': GeocodingImporter.isRunning ||
+      'isPlacesRunning':
+          GeocodingImporter.isRunning ||
           settings.importStatus == GeocodingConstants.statusDownloading ||
           settings.importStatus == GeocodingConstants.statusImporting,
-      'isHousenumbersRunning': GeocodingHousenumbersImporter.isRunning ||
+      'isHousenumbersRunning':
+          GeocodingHousenumbersImporter.isRunning ||
           settings.housenumbersImportStatus ==
               GeocodingConstants.statusDownloading ||
           settings.housenumbersImportStatus ==
@@ -450,11 +466,12 @@ abstract final class GeocodingRestHandlers {
     if (countryCodes == null || countryCodes.isEmpty) {
       return null;
     }
-    final normalized = countryCodes
-        .map((code) => code.trim().toUpperCase())
-        .where((code) => code.length == 2)
-        .toList()
-      ..sort();
+    final normalized =
+        countryCodes
+            .map((code) => code.trim().toUpperCase())
+            .where((code) => code.length == 2)
+            .toList()
+          ..sort();
     return normalized.isEmpty ? null : normalized.join(',');
   }
 }

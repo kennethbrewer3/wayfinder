@@ -38,10 +38,10 @@ class GeocodingDatasetOption {
     final countryCodesRaw = json['countryCodes'];
     final countryCodes = countryCodesRaw is List
         ? countryCodesRaw
-            .whereType<String>()
-            .map((code) => code.trim().toUpperCase())
-            .where((code) => code.length == 2)
-            .toList()
+              .whereType<String>()
+              .map((code) => code.trim().toUpperCase())
+              .where((code) => code.length == 2)
+              .toList()
         : const <String>[];
     return GeocodingDatasetOption(
       id: json['id'] as String,
@@ -72,8 +72,7 @@ class GeocodingDatasetOption {
         continue;
       }
       if (option.sourceUrl == sourceUrl &&
-          _normalizeCountryCodes(option.countryCodesValue) ==
-              normalizedCodes) {
+          _normalizeCountryCodes(option.countryCodesValue) == normalizedCodes) {
         return option;
       }
     }
@@ -85,12 +84,13 @@ String _normalizeCountryCodes(String? raw) {
   if (raw == null || raw.trim().isEmpty) {
     return '';
   }
-  final codes = raw
-      .split(',')
-      .map((code) => code.trim().toUpperCase())
-      .where((code) => code.length == 2)
-      .toList()
-    ..sort();
+  final codes =
+      raw
+          .split(',')
+          .map((code) => code.trim().toUpperCase())
+          .where((code) => code.length == 2)
+          .toList()
+        ..sort();
   return codes.join(',');
 }
 

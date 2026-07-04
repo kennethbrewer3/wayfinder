@@ -74,8 +74,7 @@ Future<CircleFormData?> showCircleFormDialog({
         initialCenterMarkerColor:
             initialCenterMarkerColor ?? parseMarkerColor('#1B4965'),
         initialBorderColor: initialBorderColor ?? parseMarkerColor('#1B4965'),
-        initialFillColor:
-            initialFillColor ?? parseMarkerColor('#1B496540'),
+        initialFillColor: initialFillColor ?? parseMarkerColor('#1B496540'),
         initialShowNameLabel: initialShowNameLabel,
         initialLayerId: initialLayerId,
       );
@@ -180,7 +179,8 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
   }
 
   void _onSizeInputModeChanged(bool isDiameter) {
-    final radiusMeters = parseCircleSizeFieldValue(
+    final radiusMeters =
+        parseCircleSizeFieldValue(
           _sizeController.text,
           unit: _sizeInputUnit,
           asDiameter: _sizeInputIsDiameter,
@@ -201,7 +201,8 @@ class _CircleFormDialogState extends State<CircleFormDialog> {
       return;
     }
 
-    final radiusMeters = parseCircleSizeFieldValue(
+    final radiusMeters =
+        parseCircleSizeFieldValue(
           _sizeController.text,
           unit: _sizeInputUnit,
           asDiameter: _sizeInputIsDiameter,
@@ -467,8 +468,8 @@ class _FillColorPickerField extends StatelessWidget {
         Text(
           l10n.formFillOpacityHelp,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 8),
         ColorPicker(

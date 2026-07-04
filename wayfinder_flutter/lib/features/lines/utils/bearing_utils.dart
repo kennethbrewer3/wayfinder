@@ -59,8 +59,7 @@ String formatRelativeAngle(
   final absolute = signedDegrees.abs();
 
   return switch (format) {
-    AngleDisplayFormat.decimal =>
-      '${absolute.toStringAsFixed(1)}° $direction',
+    AngleDisplayFormat.decimal => '${absolute.toStringAsFixed(1)}° $direction',
     AngleDisplayFormat.degreesMinutesSeconds =>
       '${_formatDegreesMinutesSeconds(absolute)} $direction',
   };
@@ -85,7 +84,11 @@ LatLng pointAtTrueBearing({
   return lineGeodesicCalculator.offset(anchor, distanceMeters, bearingDegrees);
 }
 
-bool arePointsNear(LatLng a, LatLng b, {double toleranceMeters = _pointMatchToleranceMeters}) {
+bool arePointsNear(
+  LatLng a,
+  LatLng b, {
+  double toleranceMeters = _pointMatchToleranceMeters,
+}) {
   return lineLengthMeters(a, b) <= toleranceMeters;
 }
 
@@ -107,7 +110,8 @@ double? referenceLineBearingAtAnchor({
         lineGeodesicCalculator.bearing(start, end);
   }
   if (arePointsNear(anchor, end)) {
-    final forward = linePathBearingAtPoint(geometry, end) ??
+    final forward =
+        linePathBearingAtPoint(geometry, end) ??
         lineGeodesicCalculator.bearing(start, end);
     return normalizeBearing(forward + 180);
   }

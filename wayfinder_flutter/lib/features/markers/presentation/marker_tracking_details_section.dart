@@ -31,10 +31,10 @@ class MarkerTrackingDetailsSection extends ConsumerWidget {
     final trackZone = marker.trackZoneId == null
         ? null
         : ref.watch(zonesProvider.notifier).zoneById(marker.trackZoneId!);
-    final geometry =
-        trackZone == null ? null : TrackGeometry.fromZone(trackZone);
-    final mode =
-        geometry?.transportationMode ?? TrackTransportationMode.onFoot;
+    final geometry = trackZone == null
+        ? null
+        : TrackGeometry.fromZone(trackZone);
+    final mode = geometry?.transportationMode ?? TrackTransportationMode.onFoot;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -79,8 +79,9 @@ class MarkerTrackingDetailsSection extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                     radius: 18,
-                    backgroundColor:
-                        theme.colorScheme.surface.withValues(alpha: 0.9),
+                    backgroundColor: theme.colorScheme.surface.withValues(
+                      alpha: 0.9,
+                    ),
                     child: TrackTransportationIcon(
                       mode,
                       size: 18,
@@ -159,9 +160,9 @@ class _StatusChip extends StatelessWidget {
         child: Text(
           label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w700,
-              ),
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );
@@ -200,4 +201,5 @@ class _TrackingStat extends StatelessWidget {
   }
 }
 
-bool isWeatherStationMarker(MapMarker marker) => marker.icon == 'weather_station';
+bool isWeatherStationMarker(MapMarker marker) =>
+    marker.icon == 'weather_station';

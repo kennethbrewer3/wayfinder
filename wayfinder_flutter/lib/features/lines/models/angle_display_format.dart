@@ -5,19 +5,20 @@ enum AngleDisplayFormat {
 
 extension AngleDisplayFormatLabel on AngleDisplayFormat {
   String get label => switch (this) {
-        AngleDisplayFormat.decimal => 'Decimal degrees',
-        AngleDisplayFormat.degreesMinutesSeconds => 'Degrees, minutes, seconds',
-      };
+    AngleDisplayFormat.decimal => 'Decimal degrees',
+    AngleDisplayFormat.degreesMinutesSeconds => 'Degrees, minutes, seconds',
+  };
 
   String get shortLabel => switch (this) {
-        AngleDisplayFormat.decimal => 'DD',
-        AngleDisplayFormat.degreesMinutesSeconds => 'DMS',
-      };
+    AngleDisplayFormat.decimal => 'DD',
+    AngleDisplayFormat.degreesMinutesSeconds => 'DMS',
+  };
 }
 
 AngleDisplayFormat angleDisplayFormatFromStorage(String? value) {
   return switch (value) {
-    'dms' || 'degreesMinutesSeconds' => AngleDisplayFormat.degreesMinutesSeconds,
+    'dms' ||
+    'degreesMinutesSeconds' => AngleDisplayFormat.degreesMinutesSeconds,
     _ => AngleDisplayFormat.decimal,
   };
 }

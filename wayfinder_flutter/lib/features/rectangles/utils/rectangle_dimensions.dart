@@ -44,8 +44,7 @@ String? formatRectangleSizeForMapLabel(
 ) {
   return switch (display) {
     RectangleSizeDisplay.none => null,
-    RectangleSizeDisplay.dimensions =>
-      formatRectangleDimensions(bounds, units),
+    RectangleSizeDisplay.dimensions => formatRectangleDimensions(bounds, units),
     RectangleSizeDisplay.area => formatRectangleArea(bounds, units),
   };
 }

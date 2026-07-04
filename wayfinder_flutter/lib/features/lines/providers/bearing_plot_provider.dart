@@ -66,8 +66,8 @@ class BearingPlotState {
 
 final bearingPlotProvider =
     StateNotifierProvider<BearingPlotNotifier, BearingPlotState>(
-  (ref) => BearingPlotNotifier(),
-);
+      (ref) => BearingPlotNotifier(),
+    );
 
 class BearingPlotNotifier extends StateNotifier<BearingPlotState> {
   BearingPlotNotifier() : super(const BearingPlotState());

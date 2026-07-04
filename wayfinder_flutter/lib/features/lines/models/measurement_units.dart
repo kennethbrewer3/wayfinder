@@ -6,16 +6,16 @@ enum MeasurementUnits {
 
 extension MeasurementUnitsLabel on MeasurementUnits {
   String get label => switch (this) {
-        MeasurementUnits.metric => 'Metric',
-        MeasurementUnits.imperial => 'Imperial',
-        MeasurementUnits.nautical => 'Nautical',
-      };
+    MeasurementUnits.metric => 'Metric',
+    MeasurementUnits.imperial => 'Imperial',
+    MeasurementUnits.nautical => 'Nautical',
+  };
 
   String get shortLabel => switch (this) {
-        MeasurementUnits.metric => 'm/km',
-        MeasurementUnits.imperial => 'ft/mi',
-        MeasurementUnits.nautical => 'nm',
-      };
+    MeasurementUnits.metric => 'm/km',
+    MeasurementUnits.imperial => 'ft/mi',
+    MeasurementUnits.nautical => 'nm',
+  };
 }
 
 MeasurementUnits measurementUnitsFromStorage(String? value) {

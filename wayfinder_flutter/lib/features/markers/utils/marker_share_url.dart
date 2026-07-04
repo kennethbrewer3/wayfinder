@@ -52,15 +52,20 @@ String formatMapShareUrl(Uri routeUri) {
 }
 
 UuidValue? parseMarkerIdFromUri(Uri uri) {
-  final direct = _parseMarkerIdFromRaw(uri.queryParameters[markerUrlQueryParam]);
+  final direct = _parseMarkerIdFromRaw(
+    uri.queryParameters[markerUrlQueryParam],
+  );
   if (direct != null) {
     return direct;
   }
 
   if (uri.fragment.isNotEmpty) {
-    final fragment =
-        uri.fragment.startsWith('/') ? uri.fragment : '/${uri.fragment}';
-    final fromFragment = parseMarkerIdFromUri(Uri.parse('http://local$fragment'));
+    final fragment = uri.fragment.startsWith('/')
+        ? uri.fragment
+        : '/${uri.fragment}';
+    final fromFragment = parseMarkerIdFromUri(
+      Uri.parse('http://local$fragment'),
+    );
     if (fromFragment != null) {
       return fromFragment;
     }
@@ -68,7 +73,9 @@ UuidValue? parseMarkerIdFromUri(Uri uri) {
 
   final decodedPath = Uri.decodeComponent(uri.path);
   if (decodedPath.contains('?')) {
-    final fromPath = parseMarkerIdFromUri(Uri.parse('http://local$decodedPath'));
+    final fromPath = parseMarkerIdFromUri(
+      Uri.parse('http://local$decodedPath'),
+    );
     if (fromPath != null) {
       return fromPath;
     }

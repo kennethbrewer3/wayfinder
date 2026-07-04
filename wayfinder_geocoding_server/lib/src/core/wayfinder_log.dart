@@ -48,7 +48,9 @@ class WfLog {
       success(
         session,
         tag,
-        detail == null ? '⏹️ $operation completed' : '⏹️ $operation completed | $detail',
+        detail == null
+            ? '⏹️ $operation completed'
+            : '⏹️ $operation completed | $detail',
       );
       return result;
     } catch (e, stackTrace) {

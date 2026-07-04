@@ -129,18 +129,18 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     return switch (selection.kind) {
       SelectedMapObjectKind.marker => _buildMarkerDialog(
-          context,
-          ref,
-          theme,
-          l10n,
-        ),
+        context,
+        ref,
+        theme,
+        l10n,
+      ),
       SelectedMapObjectKind.zone => _buildZoneDialog(
-          context,
-          ref,
-          theme,
-          l10n,
-          measurementUnits,
-        ),
+        context,
+        ref,
+        theme,
+        l10n,
+        measurementUnits,
+      ),
     };
   }
 
@@ -167,12 +167,14 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     final notes = marker.notes?.trim();
     final shareUrl = buildMarkerShareUrl(marker: marker);
-    final trackZones = trackZonesById(ref.watch(zonesProvider).valueOrNull ?? const []);
+    final trackZones = trackZonesById(
+      ref.watch(zonesProvider).valueOrNull ?? const [],
+    );
     void copyShareUrl() => copyTextWithFeedback(
-          context,
-          text: shareUrl,
-          copiedMessage: l10n.mapMarkerUrlCopied,
-        );
+      context,
+      text: shareUrl,
+      copiedMessage: l10n.mapMarkerUrlCopied,
+    );
 
     return _DetailsDialogShell(
       title: marker.name,
@@ -273,29 +275,29 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     return switch (zone.type) {
       lineZoneType => _lineDetails(
-          ref: ref,
-          zone: zone,
-          l10n: l10n,
-          measurementUnits: measurementUnits,
-        ),
+        ref: ref,
+        zone: zone,
+        l10n: l10n,
+        measurementUnits: measurementUnits,
+      ),
       circleZoneType => _circleDetails(
-          ref: ref,
-          zone: zone,
-          l10n: l10n,
-          measurementUnits: measurementUnits,
-        ),
+        ref: ref,
+        zone: zone,
+        l10n: l10n,
+        measurementUnits: measurementUnits,
+      ),
       rectangleZoneType => _rectangleDetails(
-          ref: ref,
-          zone: zone,
-          l10n: l10n,
-          measurementUnits: measurementUnits,
-        ),
+        ref: ref,
+        zone: zone,
+        l10n: l10n,
+        measurementUnits: measurementUnits,
+      ),
       trackZoneType => _trackDetails(
-          ref: ref,
-          zone: zone,
-          l10n: l10n,
-          measurementUnits: measurementUnits,
-        ),
+        ref: ref,
+        zone: zone,
+        l10n: l10n,
+        measurementUnits: measurementUnits,
+      ),
       _ => _genericZoneDetails(ref: ref, zone: zone, l10n: l10n),
     };
   }
@@ -337,7 +339,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       children: [
-        _DetailRow(label: l10n.mapObjectDetailType, value: l10n.mapObjectTypeLine),
+        _DetailRow(
+          label: l10n.mapObjectDetailType,
+          value: l10n.mapObjectTypeLine,
+        ),
         _DetailRow(label: l10n.mapObjectDetailLength, value: distance),
         _DetailRow(
           label: l10n.mapObjectDetailStart,
@@ -448,7 +453,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       children: [
-        _DetailRow(label: l10n.mapObjectDetailType, value: l10n.mapObjectTypeCircle),
+        _DetailRow(
+          label: l10n.mapObjectDetailType,
+          value: l10n.mapObjectTypeCircle,
+        ),
         _DetailRow(label: l10n.mapObjectDetailRadius, value: radius),
         _DetailRow(label: l10n.mapObjectDetailDiameter, value: diameter),
         _DetailRow(
@@ -570,9 +578,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     return AlertDialog(
       title: Text(l10n.mapObjectDetailsTitle),
       content: Text(
-        loading
-            ? l10n.mapObjectDetailsLoading
-            : l10n.mapObjectDetailsNotFound,
+        loading ? l10n.mapObjectDetailsLoading : l10n.mapObjectDetailsNotFound,
       ),
       actions: [
         TextButton(

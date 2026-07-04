@@ -17,9 +17,9 @@ LinePathMode linePathModeFromJson(String? value) {
 }
 
 String linePathModeToJson(LinePathMode mode) => switch (mode) {
-      LinePathMode.straight => 'straight',
-      LinePathMode.smooth => 'smooth',
-    };
+  LinePathMode.straight => 'straight',
+  LinePathMode.smooth => 'smooth',
+};
 
 class LineGeometry {
   const LineGeometry({

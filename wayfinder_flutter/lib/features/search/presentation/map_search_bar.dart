@@ -206,7 +206,8 @@ class MapSearchResults extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final results = watchCombinedSearchResults(ref, l10n);
     final query = ref.watch(debouncedMapSearchQueryProvider).trim();
-    final geocodingLoading = query.length >= mapSearchMinGeocodingLength &&
+    final geocodingLoading =
+        query.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(query)).isLoading;
 
     if (results.isEmpty && !geocodingLoading) {
@@ -222,8 +223,7 @@ class MapSearchResults extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (geocodingLoading)
-                const LinearProgressIndicator(minHeight: 2),
+              if (geocodingLoading) const LinearProgressIndicator(minHeight: 2),
               if (results.isNotEmpty)
                 Flexible(
                   child: ListView.separated(
@@ -263,7 +263,8 @@ class MapSearchBar extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final results = watchCombinedSearchResults(ref, l10n);
     final query = ref.watch(debouncedMapSearchQueryProvider).trim();
-    final geocodingLoading = query.length >= mapSearchMinGeocodingLength &&
+    final geocodingLoading =
+        query.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(query)).isLoading;
 
     return Material(
@@ -302,5 +303,4 @@ String _coordinateExample() {
 List<SearchResult> watchMapSearchResults(
   WidgetRef ref,
   AppLocalizations l10n,
-) =>
-    watchCombinedSearchResults(ref, l10n);
+) => watchCombinedSearchResults(ref, l10n);

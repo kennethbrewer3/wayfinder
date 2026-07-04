@@ -91,12 +91,14 @@ class WakeTrailPainter extends CustomPainter {
       final backward = chevron.travelAngle + math.pi;
       final leftLeg = backward - _chevronSpreadRadians;
       final rightLeg = backward + _chevronSpreadRadians;
-      final leftEnd = chevron.center +
+      final leftEnd =
+          chevron.center +
           Offset(
             math.cos(leftLeg) * chevronLength,
             math.sin(leftLeg) * chevronLength,
           );
-      final rightEnd = chevron.center +
+      final rightEnd =
+          chevron.center +
           Offset(
             math.cos(rightLeg) * chevronLength,
             math.sin(rightLeg) * chevronLength,

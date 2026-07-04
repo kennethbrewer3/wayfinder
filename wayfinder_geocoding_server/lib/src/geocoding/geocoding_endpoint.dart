@@ -79,8 +79,7 @@ class GeocodingEndpoint extends Endpoint with EndpointLogging {
         session,
         sourceUrl: sourceUrl,
       ),
-      onSuccess: (settings) =>
-          'status=${settings.housenumbersImportStatus}',
+      onSuccess: (settings) => 'status=${settings.housenumbersImportStatus}',
     );
   }
 
@@ -100,8 +99,7 @@ class GeocodingEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'cancelHousenumbersImport',
       () => GeocodingHousenumbersImporter.cancelImport(session),
-      onSuccess: (settings) =>
-          'status=${settings.housenumbersImportStatus}',
+      onSuccess: (settings) => 'status=${settings.housenumbersImportStatus}',
     );
   }
 
@@ -200,10 +198,11 @@ String? _joinCountryCodes(List<String>? countryCodes) {
   if (countryCodes == null || countryCodes.isEmpty) {
     return null;
   }
-  final normalized = countryCodes
-      .map((code) => code.trim().toUpperCase())
-      .where((code) => code.length == 2)
-      .toList()
-    ..sort();
+  final normalized =
+      countryCodes
+          .map((code) => code.trim().toUpperCase())
+          .where((code) => code.length == 2)
+          .toList()
+        ..sort();
   return normalized.isEmpty ? null : normalized.join(',');
 }

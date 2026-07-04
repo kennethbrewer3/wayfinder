@@ -36,9 +36,9 @@ Future<void> createMapLayer(WidgetRef ref, String name) async {
   final nextSortOrder = existing.isEmpty
       ? 0
       : existing
-              .map((layer) => layer.sortOrder)
-              .reduce((a, b) => a > b ? a : b) +
-          1;
+                .map((layer) => layer.sortOrder)
+                .reduce((a, b) => a > b ? a : b) +
+            1;
 
   await client.mapLayer.createLayer(
     MapLayer(

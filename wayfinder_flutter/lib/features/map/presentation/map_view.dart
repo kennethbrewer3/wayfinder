@@ -183,7 +183,7 @@ class _MapCanvas extends ConsumerStatefulWidget {
   final SearchCoordinateMarker? searchCoordinateMarker;
   final Future<void> Function(LatLng point) onCreateMarker;
   final Future<void> Function(SearchCoordinateMarker marker)
-      onSaveSearchCoordinateMarker;
+  onSaveSearchCoordinateMarker;
   final VoidCallback onOpenSettings;
 
   @override
@@ -329,7 +329,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     final entries = widget.enabledEntries;
     if (widget.metadataLoading) {
-      ref.read(pmtilesLoadStatusProvider.notifier).update(
+      ref
+          .read(pmtilesLoadStatusProvider.notifier)
+          .update(
             PmtilesLoadStatus(
               isReady: false,
               isLoading: true,
@@ -340,14 +342,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (entries.isEmpty) {
-      ref.read(pmtilesLoadStatusProvider.notifier).update(
+      ref
+          .read(pmtilesLoadStatusProvider.notifier)
+          .update(
             PmtilesLoadStatus.noLayers,
           );
       return;
     }
 
-    final loadedCount =
-        entries.where((entry) => _layerCache.containsKey(entry.id)).length;
+    final loadedCount = entries
+        .where((entry) => _layerCache.containsKey(entry.id))
+        .length;
     final selectedEntries = _resolvedActiveEntry == null
         ? selectArchivesForViewport(
             entries: entries,
@@ -356,14 +361,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             viewportZoom: _currentViewportZoom(),
           )
         : [_resolvedActiveEntry!];
-    final activeEntry =
-        selectedEntries.isEmpty ? null : selectedEntries.first;
-    final activeLayer =
-        activeEntry == null ? null : _layerCache[activeEntry.id];
+    final activeEntry = selectedEntries.isEmpty ? null : selectedEntries.first;
+    final activeLayer = activeEntry == null
+        ? null
+        : _layerCache[activeEntry.id];
     final activeReady = activeLayer != null && _visibleMapLayers.isNotEmpty;
 
     if (activeReady && activeEntry != null) {
-      ref.read(pmtilesLoadStatusProvider.notifier).update(
+      ref
+          .read(pmtilesLoadStatusProvider.notifier)
+          .update(
             PmtilesLoadStatus(
               isReady: true,
               isLoading: false,
@@ -379,7 +386,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (activeEntry != null) {
       final loadError = _layerLoadErrors[activeEntry.id];
       if (loadError != null) {
-        ref.read(pmtilesLoadStatusProvider.notifier).update(
+        ref
+            .read(pmtilesLoadStatusProvider.notifier)
+            .update(
               PmtilesLoadStatus(
                 isReady: false,
                 isLoading: false,
@@ -393,15 +402,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         return;
       }
 
-      ref.read(pmtilesLoadStatusProvider.notifier).update(
+      ref
+          .read(pmtilesLoadStatusProvider.notifier)
+          .update(
             PmtilesLoadStatus(
               isReady: false,
               isLoading: true,
               enabledCount: entries.length,
               loadedCount: loadedCount,
               loadingLayerName: activeEntry.name,
-              statusMessage:
-                  l10n.mapTilesOpeningProgress(activeEntry.name),
+              statusMessage: l10n.mapTilesOpeningProgress(activeEntry.name),
             ),
           );
       return;
@@ -412,7 +422,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         (entry) => !_layerCache.containsKey(entry.id),
         orElse: () => entries.first,
       );
-      ref.read(pmtilesLoadStatusProvider.notifier).update(
+      ref
+          .read(pmtilesLoadStatusProvider.notifier)
+          .update(
             PmtilesLoadStatus(
               isReady: false,
               isLoading: true,
@@ -425,7 +437,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    ref.read(pmtilesLoadStatusProvider.notifier).update(
+    ref
+        .read(pmtilesLoadStatusProvider.notifier)
+        .update(
           PmtilesLoadStatus(
             isReady: false,
             isLoading: false,
@@ -563,7 +577,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         error: error,
         stackTrace: stackTrace,
       );
-      ref.read(pmtilesLoadStatusProvider.notifier).update(
+      ref
+          .read(pmtilesLoadStatusProvider.notifier)
+          .update(
             PmtilesLoadStatus(
               isReady: false,
               isLoading: false,
@@ -587,24 +603,24 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       viewportCenter: _currentViewportCenter(),
       viewportZoom: _currentViewportZoom(),
     );
-    final activeEntry = _resolvedActiveEntry ??
-        (fallback.isEmpty ? null : fallback.first);
-    final activeLayer =
-        activeEntry == null ? null : _layerCache[activeEntry.id];
+    final activeEntry =
+        _resolvedActiveEntry ?? (fallback.isEmpty ? null : fallback.first);
+    final activeLayer = activeEntry == null
+        ? null
+        : _layerCache[activeEntry.id];
     final nextCatalogId = activeLayer?.catalogId;
 
     if (nextCatalogId == _activeLayerCatalogId &&
         (activeLayer == null
             ? _visibleMapLayers.isEmpty
             : _visibleMapLayers.length == 1 &&
-                _visibleMapLayers.first.catalogId == nextCatalogId)) {
+                  _visibleMapLayers.first.catalogId == nextCatalogId)) {
       return;
     }
 
     setState(() {
       _activeLayerCatalogId = nextCatalogId;
-      _visibleMapLayers =
-          activeLayer == null ? const [] : [activeLayer];
+      _visibleMapLayers = activeLayer == null ? const [] : [activeLayer];
     });
 
     if (activeLayer != null) {
@@ -683,7 +699,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return false;
     }
 
-    final shouldApply = !_longPressTriggered &&
+    final shouldApply =
+        !_longPressTriggered &&
         !ref.read(bearingPlotProvider).active &&
         !ref.read(lineDrawingProvider).active &&
         !ref.read(circleDrawingProvider).active &&
@@ -766,8 +783,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final tapScreen = _mapController.camera.latLngToScreenOffset(point);
     for (final candidate in [geometry.start!, geometry.end!]) {
-      final candidateScreen =
-          _mapController.camera.latLngToScreenOffset(candidate);
+      final candidateScreen = _mapController.camera.latLngToScreenOffset(
+        candidate,
+      );
       if ((tapScreen - candidateScreen).distance <= lineSnapRadiusPx) {
         return candidate;
       }
@@ -830,7 +848,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    await ref.read(zonesProvider.notifier).updateLineGeometry(
+    await ref
+        .read(zonesProvider.notifier)
+        .updateLineGeometry(
           zoneId: zone.id,
           geometry: geometry,
         );
@@ -938,8 +958,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   Map<UuidValue, MapLayer> get _layersById => mapLayersById(
-        widget.layersAsync.valueOrNull ?? const <MapLayer>[],
-      );
+    widget.layersAsync.valueOrNull ?? const <MapLayer>[],
+  );
 
   List<MapZone> get _zonesOnMap {
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
@@ -1087,17 +1107,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _revealSelectedObjectInSidebar(SelectedMapObject selection) {
     final layerId = switch (selection.kind) {
-      SelectedMapObjectKind.marker => widget.markersAsync.valueOrNull
-          ?.where((marker) => marker.id == selection.id)
-          .map((marker) => marker.layerId)
-          .firstOrNull,
-      SelectedMapObjectKind.zone => widget.zonesAsync.valueOrNull
-          ?.where((zone) => zone.id == selection.id)
-          .map((zone) => zone.layerId)
-          .firstOrNull,
+      SelectedMapObjectKind.marker =>
+        widget.markersAsync.valueOrNull
+            ?.where((marker) => marker.id == selection.id)
+            .map((marker) => marker.layerId)
+            .firstOrNull,
+      SelectedMapObjectKind.zone =>
+        widget.zonesAsync.valueOrNull
+            ?.where((zone) => zone.id == selection.id)
+            .map((zone) => zone.layerId)
+            .firstOrNull,
     };
 
-    ref.read(sidebarProvider.notifier).revealMapObject(
+    ref
+        .read(sidebarProvider.notifier)
+        .revealMapObject(
           kind: selection.kind,
           layerId: layerId,
         );
@@ -1117,7 +1141,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     _cancelPendingLongPress();
-    final local = tapPosition.relative ??
+    final local =
+        tapPosition.relative ??
         _mapRenderBox?.globalToLocal(tapPosition.global);
     if (local == null) {
       return;
@@ -1242,7 +1267,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    if ((event.localPosition - pendingLocal).distance > _longPressMoveTolerance) {
+    if ((event.localPosition - pendingLocal).distance >
+        _longPressMoveTolerance) {
       _cancelPendingLongPress();
     }
   }
@@ -1426,7 +1452,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     ref.read(lineDrawingProvider.notifier).reset();
-    ref.read(bearingPlotProvider.notifier).begin(
+    ref
+        .read(bearingPlotProvider.notifier)
+        .begin(
           anchor: anchor,
           referenceBearing: referenceBearing,
           referenceLineId: selectedLine.id,
@@ -1446,7 +1474,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final previewEnd = _snapLinePoint(point);
     final plotBearing = lineGeodesicCalculator.bearing(anchor, previewEnd);
-    ref.read(bearingPlotProvider.notifier).updatePlot(
+    ref
+        .read(bearingPlotProvider.notifier)
+        .updatePlot(
           plotBearing: plotBearing,
           previewEnd: previewEnd,
         );
@@ -1582,8 +1612,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _rectangleDrawingPressActive = false;
 
     final bounds = switch (mode) {
-      RectangleCreationMode.centerExtent =>
-        boundsFromCenterExtent(anchor, point),
+      RectangleCreationMode.centerExtent => boundsFromCenterExtent(
+        anchor,
+        point,
+      ),
       RectangleCreationMode.corners => boundsFromCorners(anchor, point),
     };
     if (!bounds.isValid) {
@@ -1801,12 +1833,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     isDense: true,
                     labelText: l10n.mapRelativeAngleLabel,
                     labelStyle: TextStyle(
-                      color: theme.colorScheme.onInverseSurface
-                          .withValues(alpha: 0.8),
+                      color: theme.colorScheme.onInverseSurface.withValues(
+                        alpha: 0.8,
+                      ),
                       fontSize: 11,
                     ),
                     filled: true,
-                    fillColor: theme.colorScheme.surface.withValues(alpha: 0.15),
+                    fillColor: theme.colorScheme.surface.withValues(
+                      alpha: 0.15,
+                    ),
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -1817,8 +1852,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     color: theme.colorScheme.onInverseSurface,
                     fontSize: 13,
                   ),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(signed: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                  ),
                   textInputAction: TextInputAction.done,
                   onSubmitted: (value) {
                     final angle = double.tryParse(value.trim());
@@ -1989,13 +2025,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final mapLayers = _visibleMapLayers;
     final enabledEntries = widget.enabledEntries;
     final activeLayer = mapLayers.isEmpty ? null : mapLayers.first;
-    final minZoom = activeLayer?.minZoom.toDouble() ??
+    final minZoom =
+        activeLayer?.minZoom.toDouble() ??
         (enabledEntries.isEmpty
             ? 2.0
             : enabledEntries
-                .map((entry) => entry.minZoom)
-                .reduce((a, b) => a < b ? a : b)
-                .toDouble());
+                  .map((entry) => entry.minZoom)
+                  .reduce((a, b) => a < b ? a : b)
+                  .toDouble());
     final maxZoom = AppConstants.maxMapZoom;
     final lineDrawing = ref.watch(lineDrawingProvider);
     final circleDrawing = ref.watch(circleDrawingProvider);
@@ -2012,10 +2049,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
     final layers = widget.layersAsync.valueOrNull ?? const <MapLayer>[];
     final layersById = mapLayersById(layers);
-    final selectedLine =
-        selectedLineId == null ? null : findZoneById(zones, selectedLineId);
+    final selectedLine = selectedLineId == null
+        ? null
+        : findZoneById(zones, selectedLineId);
     final lineGeometryOverrides = _lineGeometryOverrides();
-    final mapTilesDisplayed = !widget.metadataLoading &&
+    final mapTilesDisplayed =
+        !widget.metadataLoading &&
         widget.enabledEntries.isNotEmpty &&
         mapLayers.isNotEmpty;
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
@@ -2035,12 +2074,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
             ),
           );
-    final selectedLinePreviewGeometry = _lineEditPreviewGeometry ??
+    final selectedLinePreviewGeometry =
+        _lineEditPreviewGeometry ??
         (selectedLine == null ? null : LineGeometry.fromZone(selectedLine));
-    final bearingAnchor =
-        bearingPlot.active ? bearingPlot.anchor : null;
+    final bearingAnchor = bearingPlot.active ? bearingPlot.anchor : null;
     final bearingReference = bearingPlot.referenceBearing;
-    final activeRectanglePreviewBounds = rectangleDrawing.mode == null ||
+    final activeRectanglePreviewBounds =
+        rectangleDrawing.mode == null ||
             rectangleDrawing.anchor == null ||
             rectangleDrawing.previewPoint == null
         ? null
@@ -2079,13 +2119,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             Listener(
               behavior: HitTestBehavior.translucent,
               onPointerDown: (event) {
-                final point = _mapController.camera
-                    .screenOffsetToLatLng(event.localPosition);
+                final point = _mapController.camera.screenOffsetToLatLng(
+                  event.localPosition,
+                );
                 _beginSelectionPointer(event, point);
               },
               onPointerUp: (event) {
-                final point = _mapController.camera
-                    .screenOffsetToLatLng(event.localPosition);
+                final point = _mapController.camera.screenOffsetToLatLng(
+                  event.localPosition,
+                );
                 if (_finishSelectionPointer(event, point)) {
                   _primaryPointerGestureHandled = true;
                 }
@@ -2097,46 +2139,48 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     _updateCursorFromGlobalPosition(event.position),
                 onExit: (_) => _clearCursor(),
                 child: FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: widget.viewport.center,
-                  initialZoom: widget.viewport.zoom,
-                  minZoom: minZoom,
-                  maxZoom: maxZoom,
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  interactionOptions: InteractionOptions(
-                    flags: lineDrawing.active ||
-                            bearingPlot.active ||
-                            circleDrawing.active ||
-                            rectangleDrawing.active ||
-                            _draggingLineControlIndex != null
-                        ? InteractiveFlag.all & ~InteractiveFlag.drag
-                        : InteractiveFlag.all,
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: widget.viewport.center,
+                    initialZoom: widget.viewport.zoom,
+                    minZoom: minZoom,
+                    maxZoom: maxZoom,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    interactionOptions: InteractionOptions(
+                      flags:
+                          lineDrawing.active ||
+                              bearingPlot.active ||
+                              circleDrawing.active ||
+                              rectangleDrawing.active ||
+                              _draggingLineControlIndex != null
+                          ? InteractiveFlag.all & ~InteractiveFlag.drag
+                          : InteractiveFlag.all,
+                    ),
+                    onPositionChanged: (position, hasGesture) {
+                      _scheduleVisibleLayerUpdate();
+                      if (!hasGesture) return;
+                      widget.onViewportChanged(
+                        MapViewport(
+                          center: position.center,
+                          zoom: position.zoom,
+                        ),
+                      );
+                    },
+                    onSecondaryTap: _handleSecondaryMapTap,
+                    onTap: _handleMapTap,
+                    onPointerDown: _handlePointerDown,
+                    onPointerMove: _handlePointerMove,
+                    onPointerUp: _handlePointerUp,
+                    onPointerCancel: (_, _) => _handlePointerCancel(),
                   ),
-                  onPositionChanged: (position, hasGesture) {
-                    _scheduleVisibleLayerUpdate();
-                    if (!hasGesture) return;
-                    widget.onViewportChanged(
-                      MapViewport(
-                        center: position.center,
-                        zoom: position.zoom,
-                      ),
-                    );
-                  },
-                  onSecondaryTap: _handleSecondaryMapTap,
-                  onTap: _handleMapTap,
-                  onPointerDown: _handlePointerDown,
-                  onPointerMove: _handlePointerMove,
-                  onPointerUp: _handlePointerUp,
-                  onPointerCancel: (_, _) => _handlePointerCancel(),
-                ),
-                children: [
-                  if (enabledEntries.isEmpty && !widget.metadataLoading)
-                    _PlaceholderLayer(
-                      onOpenSettings: widget.onOpenSettings,
-                    )
-                  else
-                    ...mapLayers.expand((mapLayer) => switch (mapLayer) {
+                  children: [
+                    if (enabledEntries.isEmpty && !widget.metadataLoading)
+                      _PlaceholderLayer(
+                        onOpenSettings: widget.onOpenSettings,
+                      )
+                    else
+                      ...mapLayers.expand(
+                        (mapLayer) => switch (mapLayer) {
                           PmtilesVectorMapLayerConfig(
                             :final catalogId,
                             :final tileProvider,
@@ -2156,7 +2200,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 memoryTileDataCacheMaxSize: 99,
                                 memoryTileCacheMaxSize: 32 * 1024 * 1024,
                                 showTileDebugInfo:
-                                    showViewportDebugBorder && showTileBorderDebug,
+                                    showViewportDebugBorder &&
+                                    showTileBorderDebug,
                                 tileProviders: TileProviders({
                                   'protomaps': tileProvider,
                                 }),
@@ -2166,7 +2211,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             :final catalogId,
                             :final tileProvider,
                             :final maxZoom,
-                          ) => [
+                          ) =>
+                            [
                               TileLayer(
                                 key: ValueKey('pmtiles-$catalogId'),
                                 maxNativeZoom: maxZoom,
@@ -2174,214 +2220,229 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 tileProvider: tileProvider,
                               ),
                             ],
-                        }),
-                  ...mapObjectLayerChildren,
-                  if (mapTilesDisplayed)
-                    if (widget.searchCoordinateMarker case final marker?)
-                      MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: marker.location,
-                          width: mapMarkerWidth,
-                          height: mapMarkerHeight,
-                          alignment: mapMarkerAnchorAlignment,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () =>
-                                widget.onSaveSearchCoordinateMarker(marker),
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Tooltip(
-                                message: l10n.markerSaveSearchedCoordinatesConfirm,
-                                child: MapMarkerIcon(
-                                  color: const Color(0xFFE07A24),
-                                  iconName: marker.iconName,
+                        },
+                      ),
+                    ...mapObjectLayerChildren,
+                    if (mapTilesDisplayed)
+                      if (widget.searchCoordinateMarker case final marker?)
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: marker.location,
+                              width: mapMarkerWidth,
+                              height: mapMarkerHeight,
+                              alignment: mapMarkerAnchorAlignment,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: () =>
+                                    widget.onSaveSearchCoordinateMarker(marker),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: Tooltip(
+                                    message: l10n
+                                        .markerSaveSearchedCoordinatesConfirm,
+                                    child: MapMarkerIcon(
+                                      color: const Color(0xFFE07A24),
+                                      iconName: marker.iconName,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                    if (mapTilesDisplayed)
+                      if (selectedLine case final line?
+                          when !lineDrawing.active && !bearingPlot.active)
+                        MarkerLayer(
+                          markers: buildLineSnapPointMarkers(
+                            zone: line,
+                            geometryOverride: selectedLinePreviewGeometry,
                           ),
                         ),
-                      ],
-                    ),
-                  if (mapTilesDisplayed)
-                    if (selectedLine case final line?
-                        when !lineDrawing.active && !bearingPlot.active)
-                      MarkerLayer(
-                      markers: buildLineSnapPointMarkers(
-                        zone: line,
-                        geometryOverride: selectedLinePreviewGeometry,
-                      ),
-                    ),
-                  if (bearingAnchor case final anchor?)
-                    PolylineLayer(
-                      polylines: [
-                        if (bearingReference case final reference?)
-                          ?buildReferenceCoursePolyline(
-                            anchor: anchor,
-                            referenceBearing: reference,
+                    if (bearingAnchor case final anchor?)
+                      PolylineLayer(
+                        polylines: [
+                          if (bearingReference case final reference?)
+                            ?buildReferenceCoursePolyline(
+                              anchor: anchor,
+                              referenceBearing: reference,
+                              previewEnd: bearingPlot.previewEnd,
+                              color: referenceColor,
+                            ),
+                          ?buildPreviewLinePolyline(
+                            start: anchor,
                             previewEnd: bearingPlot.previewEnd,
-                            color: referenceColor,
+                            color: previewColor,
                           ),
-                        ?buildPreviewLinePolyline(
-                          start: anchor,
-                          previewEnd: bearingPlot.previewEnd,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (bearingAnchor case final anchor?)
-                    MarkerLayer(
-                      markers: [
-                        ...buildLineEndpointMarkers(
-                          start: anchor,
-                          end: bearingPlot.previewEnd,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (circleDrawing.center case final center?)
-                    PolygonLayer(
-                      polygons: [
-                        ?buildPreviewCirclePolygon(
-                          center: center,
-                          radiusMeters: circleDrawing.previewRadiusMeters,
-                          borderColor: previewColor,
-                          fillColor: previewFillColor,
-                        ),
-                      ],
-                    ),
-                  if (circleDrawing.center case final center?)
-                    PolylineLayer(
-                      polylines: [
-                        ?buildPreviewCircleRadiusLine(
-                          center: center,
-                          radiusMeters: circleDrawing.previewRadiusMeters,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (circleDrawing.center case final center?)
-                    MarkerLayer(
-                      markers: [
-                        buildPreviewCircleCenterMarker(
-                          center: center,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (activeRectanglePreviewBounds case final bounds?)
-                    PolygonLayer(
-                      polygons: [
-                        ?buildPreviewRectanglePolygon(
-                          bounds: bounds,
-                          borderColor: previewColor,
-                          fillColor: previewFillColor,
-                        ),
-                      ],
-                    ),
-                  if (rectangleDrawing.mode ==
-                          RectangleCreationMode.centerExtent &&
-                      rectangleDrawing.anchor != null)
-                    MarkerLayer(
-                      markers: [
-                        ?buildPreviewRectangleCenterMarker(
-                          center: rectangleDrawing.anchor,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (rectangleDrawing.mode == RectangleCreationMode.corners &&
-                      rectangleDrawing.anchor != null)
-                    MarkerLayer(
-                      markers: [
-                        ...buildLineEndpointMarkers(
-                          start: rectangleDrawing.anchor!,
-                          end: rectangleDrawing.previewPoint,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (lineDrawing.start case final start?)
-                    PolylineLayer(
-                      polylines: [
-                        ?buildPreviewLinePolyline(
-                          start: start,
-                          previewEnd: lineDrawing.previewEnd,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                  if (lineDrawing.start case final start?)
-                    MarkerLayer(
-                      markers: [
-                        ...buildLineEndpointMarkers(
-                          start: start,
-                          end: lineDrawing.previewEnd,
-                          color: previewColor,
-                        ),
-                      ],
-                    ),
-                ],
+                        ],
+                      ),
+                    if (bearingAnchor case final anchor?)
+                      MarkerLayer(
+                        markers: [
+                          ...buildLineEndpointMarkers(
+                            start: anchor,
+                            end: bearingPlot.previewEnd,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (circleDrawing.center case final center?)
+                      PolygonLayer(
+                        polygons: [
+                          ?buildPreviewCirclePolygon(
+                            center: center,
+                            radiusMeters: circleDrawing.previewRadiusMeters,
+                            borderColor: previewColor,
+                            fillColor: previewFillColor,
+                          ),
+                        ],
+                      ),
+                    if (circleDrawing.center case final center?)
+                      PolylineLayer(
+                        polylines: [
+                          ?buildPreviewCircleRadiusLine(
+                            center: center,
+                            radiusMeters: circleDrawing.previewRadiusMeters,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (circleDrawing.center case final center?)
+                      MarkerLayer(
+                        markers: [
+                          buildPreviewCircleCenterMarker(
+                            center: center,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (activeRectanglePreviewBounds case final bounds?)
+                      PolygonLayer(
+                        polygons: [
+                          ?buildPreviewRectanglePolygon(
+                            bounds: bounds,
+                            borderColor: previewColor,
+                            fillColor: previewFillColor,
+                          ),
+                        ],
+                      ),
+                    if (rectangleDrawing.mode ==
+                            RectangleCreationMode.centerExtent &&
+                        rectangleDrawing.anchor != null)
+                      MarkerLayer(
+                        markers: [
+                          ?buildPreviewRectangleCenterMarker(
+                            center: rectangleDrawing.anchor,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (rectangleDrawing.mode ==
+                            RectangleCreationMode.corners &&
+                        rectangleDrawing.anchor != null)
+                      MarkerLayer(
+                        markers: [
+                          ...buildLineEndpointMarkers(
+                            start: rectangleDrawing.anchor!,
+                            end: rectangleDrawing.previewPoint,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (lineDrawing.start case final start?)
+                      PolylineLayer(
+                        polylines: [
+                          ?buildPreviewLinePolyline(
+                            start: start,
+                            previewEnd: lineDrawing.previewEnd,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (lineDrawing.start case final start?)
+                      MarkerLayer(
+                        markers: [
+                          ...buildLineEndpointMarkers(
+                            start: start,
+                            end: lineDrawing.previewEnd,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
-            ),
             ),
             if (mapTilesDisplayed)
               if (widget.zonesAsync.valueOrNull case final value?)
                 Positioned.fill(
-                child: IgnorePointer(
-                  child: Stack(
-                    children: [
-                      LineDirectionArrowsOverlay(
-                        zones: filterZonesForMap(value, layersById),
-                        mapController: _mapController,
-                        geometryOverrides: lineGeometryOverrides,
-                        previewStart: lineDrawing.start,
-                        previewEnd: lineDrawing.previewEnd,
-                        previewColor:
-                            lineDrawing.active ? previewColor : null,
-                        bearingPreviewStart:
-                            bearingPlot.active ? bearingPlot.anchor : null,
-                        bearingPreviewEnd: bearingPlot.previewEnd,
-                        bearingPreviewColor:
-                            bearingPlot.active ? previewColor : null,
-                      ),
-                      TrackFootstepsOverlay(
-                        zones: filterZonesForMap(value, layersById),
-                        mapController: _mapController,
-                      ),
-                      LineMapLabelsOverlay(
-                    zones: filterZonesForMap(value, layersById),
-                    units: measurementUnits,
-                    mapController: _mapController,
-                    previewStart: lineDrawing.start,
-                    previewEnd: lineDrawing.previewEnd,
-                    previewColor: lineDrawing.active ? previewColor : null,
-                    bearingPreviewStart:
-                        bearingPlot.active ? bearingPlot.anchor : null,
-                    bearingPreviewEnd: bearingPlot.previewEnd,
-                    bearingPreviewColor:
-                        bearingPlot.active ? previewColor : null,
-                    bearingPreviewAngle: bearingPlot.relativeBearing == null
-                        ? null
-                        : formatRelativeAngle(
-                            bearingPlot.relativeBearing!,
-                            angleDisplayFormat,
-                          ),
-                    previewCircleCenter:
-                        circleDrawing.active ? circleDrawing.center : null,
-                    previewCircleRadiusMeters: circleDrawing.previewRadiusMeters,
-                    previewCircleColor:
-                        circleDrawing.active ? previewColor : null,
-                    previewRectangleBounds: rectangleDrawing.active
-                        ? activeRectanglePreviewBounds
-                        : null,
-                    previewRectangleColor:
-                        rectangleDrawing.active ? previewColor : null,
-                      ),
-                    ],
+                  child: IgnorePointer(
+                    child: Stack(
+                      children: [
+                        LineDirectionArrowsOverlay(
+                          zones: filterZonesForMap(value, layersById),
+                          mapController: _mapController,
+                          geometryOverrides: lineGeometryOverrides,
+                          previewStart: lineDrawing.start,
+                          previewEnd: lineDrawing.previewEnd,
+                          previewColor: lineDrawing.active
+                              ? previewColor
+                              : null,
+                          bearingPreviewStart: bearingPlot.active
+                              ? bearingPlot.anchor
+                              : null,
+                          bearingPreviewEnd: bearingPlot.previewEnd,
+                          bearingPreviewColor: bearingPlot.active
+                              ? previewColor
+                              : null,
+                        ),
+                        TrackFootstepsOverlay(
+                          zones: filterZonesForMap(value, layersById),
+                          mapController: _mapController,
+                        ),
+                        LineMapLabelsOverlay(
+                          zones: filterZonesForMap(value, layersById),
+                          units: measurementUnits,
+                          mapController: _mapController,
+                          previewStart: lineDrawing.start,
+                          previewEnd: lineDrawing.previewEnd,
+                          previewColor: lineDrawing.active
+                              ? previewColor
+                              : null,
+                          bearingPreviewStart: bearingPlot.active
+                              ? bearingPlot.anchor
+                              : null,
+                          bearingPreviewEnd: bearingPlot.previewEnd,
+                          bearingPreviewColor: bearingPlot.active
+                              ? previewColor
+                              : null,
+                          bearingPreviewAngle:
+                              bearingPlot.relativeBearing == null
+                              ? null
+                              : formatRelativeAngle(
+                                  bearingPlot.relativeBearing!,
+                                  angleDisplayFormat,
+                                ),
+                          previewCircleCenter: circleDrawing.active
+                              ? circleDrawing.center
+                              : null,
+                          previewCircleRadiusMeters:
+                              circleDrawing.previewRadiusMeters,
+                          previewCircleColor: circleDrawing.active
+                              ? previewColor
+                              : null,
+                          previewRectangleBounds: rectangleDrawing.active
+                              ? activeRectanglePreviewBounds
+                              : null,
+                          previewRectangleColor: rectangleDrawing.active
+                              ? previewColor
+                              : null,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
             if (bearingAnchor case final anchor? when bearingReference != null)
               BearingPlotOverlay(
                 anchor: anchor,
@@ -2397,7 +2458,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   child: MapCursorCoordinates(location: location),
                 ),
               ),
-            if (_radialMenuCenter case final center? when _radialMenuPoint != null)
+            if (_radialMenuCenter case final center?
+                when _radialMenuPoint != null)
               MapRadialMenu(
                 center: center,
                 actions: [
@@ -2551,4 +2613,3 @@ class _PlaceholderLayer extends StatelessWidget {
     );
   }
 }
-

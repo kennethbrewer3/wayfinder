@@ -103,8 +103,9 @@ class _SettingsGeocodingContributionsSectionState
         _selectedCountryCode != null) {
       return;
     }
-    final defaultCode = GeocodingCountryCatalog.fallback()
-        .defaultCountryCode(widget.settings.countryCodes);
+    final defaultCode = GeocodingCountryCatalog.fallback().defaultCountryCode(
+      widget.settings.countryCodes,
+    );
     if (defaultCode == null) {
       return;
     }
@@ -171,8 +172,9 @@ class _SettingsGeocodingContributionsSectionState
           latitude: latitude,
           longitude: longitude,
           notes: notes,
-          countryCode:
-              countryCode != null && countryCode.isNotEmpty ? countryCode : null,
+          countryCode: countryCode != null && countryCode.isNotEmpty
+              ? countryCode
+              : null,
         );
       } else {
         await repository.updateContribution(
@@ -181,8 +183,9 @@ class _SettingsGeocodingContributionsSectionState
           latitude: latitude,
           longitude: longitude,
           notes: notes,
-          countryCode:
-              countryCode != null && countryCode.isNotEmpty ? countryCode : null,
+          countryCode: countryCode != null && countryCode.isNotEmpty
+              ? countryCode
+              : null,
         );
       }
       refreshGeocoding(ref);
@@ -307,8 +310,10 @@ class _SettingsGeocodingContributionsSectionState
     try {
       final repository = ref.read(geocodingRepositoryProvider);
       final jsonText = await repository.exportContributionsArchive();
-      final timestamp =
-          DateTime.now().toUtc().toIso8601String().replaceAll(':', '-');
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
       final saved = await saveTextFile(
         fileName: 'wayfinder-geocode-contributions-$timestamp.json',
         contents: jsonText,
@@ -508,8 +513,10 @@ class _SettingsGeocodingContributionsSectionState
 
       if (result.bundleJson != null && !result.uploadedToGit) {
         if (!mounted) return;
-        final timestamp =
-            DateTime.now().toUtc().toIso8601String().replaceAll(':', '-');
+        final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+          ':',
+          '-',
+        );
         await saveTextFile(
           fileName: 'wayfinder-geocode-crowdsource-$timestamp.json',
           contents: result.bundleJson!,
@@ -520,7 +527,7 @@ class _SettingsGeocodingContributionsSectionState
       final message = result.uploadedToGit
           ? l10n.geocodingCrowdsourceSubmitted(result.submittedCount)
           : (result.message ??
-              l10n.geocodingCrowdsourceBundleSaved(result.submittedCount));
+                l10n.geocodingCrowdsourceBundleSaved(result.submittedCount));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
@@ -578,7 +585,8 @@ class _SettingsGeocodingContributionsSectionState
     final catalogAsync = widget.serverConfigured
         ? ref.watch(geocodingCountryCatalogProvider)
         : null;
-    final catalog = catalogAsync?.valueOrNull ?? GeocodingCountryCatalog.fallback();
+    final catalog =
+        catalogAsync?.valueOrNull ?? GeocodingCountryCatalog.fallback();
     ref.listen(geocodingCountryCatalogProvider, (previous, next) {
       next.whenData((loadedCatalog) {
         if (_countryPrefilledFromSettings ||
@@ -586,8 +594,9 @@ class _SettingsGeocodingContributionsSectionState
             _selectedCountryCode != null) {
           return;
         }
-        final defaultCode =
-            loadedCatalog.defaultCountryCode(widget.settings.countryCodes);
+        final defaultCode = loadedCatalog.defaultCountryCode(
+          widget.settings.countryCodes,
+        );
         if (defaultCode == null) {
           return;
         }
@@ -598,8 +607,12 @@ class _SettingsGeocodingContributionsSectionState
       });
     });
     final controlsEnabled =
-        widget.serverConfigured && widget.enabled && !_archiveBusy && !_crowdsourceBusy;
-    final archiveEnabled = widget.serverConfigured && widget.enabled && !_archiveBusy;
+        widget.serverConfigured &&
+        widget.enabled &&
+        !_archiveBusy &&
+        !_crowdsourceBusy;
+    final archiveEnabled =
+        widget.serverConfigured && widget.enabled && !_archiveBusy;
     final filtered = _filteredContributions;
 
     return Column(
@@ -737,7 +750,8 @@ class _SettingsGeocodingContributionsSectionState
                   runSpacing: 8,
                   children: [
                     FilledButton.icon(
-                      onPressed: widget.serverConfigured &&
+                      onPressed:
+                          widget.serverConfigured &&
                               !_savingContribution &&
                               widget.enabled
                           ? _saveFromForm
@@ -816,8 +830,8 @@ class _SettingsGeocodingContributionsSectionState
               ref.read(geocodingRepositoryProvider).baseUrl,
             ),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.error,
-                ),
+              color: Theme.of(context).colorScheme.error,
+            ),
           )
         else if (!widget.serverConfigured)
           Text(

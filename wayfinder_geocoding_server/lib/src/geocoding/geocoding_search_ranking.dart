@@ -9,15 +9,20 @@ void sortAddressResultsByProximity(
   required double longitude,
 }) {
   final addressResults = results
-      .where((result) => result.resultType == GeocodingConstants.resultTypeAddress)
+      .where(
+        (result) => result.resultType == GeocodingConstants.resultTypeAddress,
+      )
       .toList();
   if (addressResults.length <= 1) {
     return;
   }
 
   addressResults.sort(
-    (a, b) => _distanceSquared(a, latitude, longitude)
-        .compareTo(_distanceSquared(b, latitude, longitude)),
+    (a, b) => _distanceSquared(
+      a,
+      latitude,
+      longitude,
+    ).compareTo(_distanceSquared(b, latitude, longitude)),
   );
 
   var addressIndex = 0;
@@ -51,12 +56,15 @@ double distanceKm(
   final dLon = _toRadians(toLongitude - fromLongitude);
   final fromLat = _toRadians(fromLatitude);
   final toLat = _toRadians(toLatitude);
-  final haversine = math.sin(dLat / 2) * math.sin(dLat / 2) +
+  final haversine =
+      math.sin(dLat / 2) * math.sin(dLat / 2) +
       math.cos(fromLat) *
           math.cos(toLat) *
           math.sin(dLon / 2) *
           math.sin(dLon / 2);
-  return earthRadiusKm * 2 * math.atan2(math.sqrt(haversine), math.sqrt(1 - haversine));
+  return earthRadiusKm *
+      2 *
+      math.atan2(math.sqrt(haversine), math.sqrt(1 - haversine));
 }
 
 double _toRadians(double degrees) => degrees * math.pi / 180;

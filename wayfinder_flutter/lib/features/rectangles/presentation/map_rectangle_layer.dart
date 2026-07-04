@@ -117,10 +117,14 @@ RectangleBounds? previewRectangleBounds(RectangleDrawingPreview preview) {
     return null;
   }
   return switch (preview.mode) {
-    RectangleCreationMode.centerExtent =>
-      boundsFromCenterExtent(preview.anchor!, preview.previewPoint!),
-    RectangleCreationMode.corners =>
-      boundsFromCorners(preview.anchor!, preview.previewPoint!),
+    RectangleCreationMode.centerExtent => boundsFromCenterExtent(
+      preview.anchor!,
+      preview.previewPoint!,
+    ),
+    RectangleCreationMode.corners => boundsFromCorners(
+      preview.anchor!,
+      preview.previewPoint!,
+    ),
   };
 }
 

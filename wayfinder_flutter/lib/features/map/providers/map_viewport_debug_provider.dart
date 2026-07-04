@@ -4,13 +4,13 @@ import '../data/map_viewport_debug_storage.dart';
 
 final mapViewportDebugBorderProvider =
     StateNotifierProvider<MapViewportDebugBorderNotifier, bool>(
-  (ref) => MapViewportDebugBorderNotifier(MapViewportDebugStorage()),
-);
+      (ref) => MapViewportDebugBorderNotifier(MapViewportDebugStorage()),
+    );
 
 final mapTileBorderDebugProvider =
     StateNotifierProvider<MapTileBorderDebugNotifier, bool>(
-  (ref) => MapTileBorderDebugNotifier(MapViewportDebugStorage()),
-);
+      (ref) => MapTileBorderDebugNotifier(MapViewportDebugStorage()),
+    );
 
 class MapViewportDebugBorderNotifier extends StateNotifier<bool> {
   MapViewportDebugBorderNotifier(this._storage) : super(false) {

@@ -22,7 +22,9 @@ void main() {
     expect(snapshot!.latest.temperature, 22.4);
     expect(snapshot.latest.source, 'aprs');
     expect(
-      weatherConditionPresentationForCode(snapshot.latest.weatherCode!).labelKey,
+      weatherConditionPresentationForCode(
+        snapshot.latest.weatherCode!,
+      ).labelKey,
       WeatherConditionLabel.overcast,
     );
     expect(formatCompassDirection(snapshot.latest.windDirectionDegrees), 'SW');

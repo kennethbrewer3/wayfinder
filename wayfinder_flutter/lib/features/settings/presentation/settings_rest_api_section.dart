@@ -26,7 +26,8 @@ class SettingsRestApiSection extends ConsumerStatefulWidget {
       _SettingsRestApiSectionState();
 }
 
-class _SettingsRestApiSectionState extends ConsumerState<SettingsRestApiSection> {
+class _SettingsRestApiSectionState
+    extends ConsumerState<SettingsRestApiSection> {
   final _localKeyController = TextEditingController();
   var _busy = false;
 
@@ -61,7 +62,9 @@ class _SettingsRestApiSectionState extends ConsumerState<SettingsRestApiSection>
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.settingsRestApiKeySaved)),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.settingsRestApiKeySaved),
+      ),
     );
   }
 
@@ -107,8 +110,9 @@ class _SettingsRestApiSectionState extends ConsumerState<SettingsRestApiSection>
 
     setState(() => _busy = true);
     try {
-      final created =
-          await ref.read(appSettingsRepositoryProvider).createRestApiKey(name);
+      final created = await ref
+          .read(appSettingsRepositoryProvider)
+          .createRestApiKey(name);
       _refreshKeyProviders();
       await RestApiKeyStorage.write(created.apiKey);
       _localKeyController.text = created.apiKey;
@@ -270,7 +274,8 @@ class _SettingsRestApiSectionState extends ConsumerState<SettingsRestApiSection>
 
     return statusAsync.when(
       loading: () => const LinearProgressIndicator(),
-      error: (error, _) => Text(l10n.settingsRestApiLoadFailed(error.toString())),
+      error: (error, _) =>
+          Text(l10n.settingsRestApiLoadFailed(error.toString())),
       data: (status) {
         return keysAsync.when(
           loading: () => const LinearProgressIndicator(),
@@ -303,8 +308,8 @@ class _SettingsRestApiSectionState extends ConsumerState<SettingsRestApiSection>
                   Text(
                     l10n.settingsRestApiEnvKeyNote,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                   ),
                 ],
                 const SizedBox(height: 16),

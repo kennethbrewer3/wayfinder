@@ -13,8 +13,8 @@ class MarkerIconRepository {
   MarkerIconRepository({
     required Client client,
     required String webServerUrl,
-  })  : _client = client,
-        _webServerUrl = _normalizeBaseUrl(webServerUrl);
+  }) : _client = client,
+       _webServerUrl = _normalizeBaseUrl(webServerUrl);
 
   final Client _client;
   final String _webServerUrl;

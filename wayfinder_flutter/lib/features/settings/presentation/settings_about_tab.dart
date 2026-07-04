@@ -133,7 +133,8 @@ class SettingsAboutTab extends ConsumerWidget {
                   ),
                   _InfoRow(
                     label: l10n.settingsAboutGeocodingServer,
-                    value: appServerConfig.geocodingWebUrl ??
+                    value:
+                        appServerConfig.geocodingWebUrl ??
                         l10n.settingsAboutGeocodingServerNotConfigured,
                     monospace: appServerConfig.geocodingWebUrl != null,
                   ),
@@ -216,8 +217,8 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final valueStyle = monospace
         ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontFamily: 'monospace',
-            )
+            fontFamily: 'monospace',
+          )
         : Theme.of(context).textTheme.bodyMedium;
 
     return ListTile(

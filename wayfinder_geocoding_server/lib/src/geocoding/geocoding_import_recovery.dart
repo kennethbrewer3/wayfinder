@@ -26,9 +26,9 @@ abstract final class GeocodingImportRecovery {
         session,
         'geocoding',
         '🌍 Recovering stale place-name import '
-        'status=${settings.importStatus} '
-        'progress=${(settings.importProgress * 100).toStringAsFixed(1)}% '
-        'rows=${settings.importedRowCount}',
+            'status=${settings.importStatus} '
+            'progress=${(settings.importProgress * 100).toStringAsFixed(1)}% '
+            'rows=${settings.importedRowCount}',
       );
       await GeocodingStagingStore.discardPlacesStaging(session);
       updated = updated.copyWith(
@@ -45,9 +45,9 @@ abstract final class GeocodingImportRecovery {
         session,
         'geocoding',
         '🏠 Recovering stale housenumbers import '
-        'status=${settings.housenumbersImportStatus} '
-        'progress=${(settings.housenumbersImportProgress * 100).toStringAsFixed(1)}% '
-        'rows=${settings.housenumbersImportedRowCount}',
+            'status=${settings.housenumbersImportStatus} '
+            'progress=${(settings.housenumbersImportProgress * 100).toStringAsFixed(1)}% '
+            'rows=${settings.housenumbersImportedRowCount}',
       );
       await GeocodingStagingStore.discardHousenumbersStaging(session);
       updated = updated.copyWith(

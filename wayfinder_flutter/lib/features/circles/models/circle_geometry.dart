@@ -96,8 +96,9 @@ class CircleGeometry {
     return CircleGeometry(
       center: center,
       radiusMeters: radius.toDouble(),
-      radiusLineBearing:
-          bearing is num ? bearing.toDouble() : defaultCircleRadiusLineBearing,
+      radiusLineBearing: bearing is num
+          ? bearing.toDouble()
+          : defaultCircleRadiusLineBearing,
       notes: json['notes'] as String?,
       sizeDisplay: _parseSizeDisplay(json),
       showNameLabel: json['showNameLabel'] == true,

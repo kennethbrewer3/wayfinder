@@ -9,7 +9,10 @@ final markersProvider = FutureProvider<List<MapMarker>>((ref) async {
   try {
     final client = ref.watch(serverClientProvider);
     final markers = await client.mapMarker.listMarkers();
-    AppLogger.logMarkers.success('📡 Markers loaded', data: 'count=${markers.length}');
+    AppLogger.logMarkers.success(
+      '📡 Markers loaded',
+      data: 'count=${markers.length}',
+    );
     return markers;
   } catch (error, stackTrace) {
     AppLogger.logMarkers.error(

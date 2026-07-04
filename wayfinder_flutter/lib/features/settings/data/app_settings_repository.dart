@@ -14,8 +14,8 @@ class AppSettingsRepository {
   AppSettingsRepository({
     required wf.Client client,
     required String webServerUrl,
-  })  : _client = client,
-        _webServerUrl = _normalizeBaseUrl(webServerUrl);
+  }) : _client = client,
+       _webServerUrl = _normalizeBaseUrl(webServerUrl);
 
   final wf.Client _client;
   final String _webServerUrl;
@@ -170,8 +170,7 @@ class AppSettingsRepository {
   }
 
   Future<HomeLocation> _getHomeLocationRest() async {
-    final response =
-        await http.get(
+    final response = await http.get(
       Uri.parse('$_webServerUrl/api/settings/home'),
       headers: await RestApiHeaders.readOnly(),
     );
@@ -180,7 +179,9 @@ class AppSettingsRepository {
         'GET /api/settings/home returned ${response.statusCode}',
       );
     }
-    return _mapHomeLocationJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return _mapHomeLocationJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<HomeLocation> _updateHomeLocationRest(HomeLocation location) async {
@@ -198,7 +199,9 @@ class AppSettingsRepository {
         'PUT /api/settings/home returned ${response.statusCode}',
       );
     }
-    return _mapHomeLocationJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return _mapHomeLocationJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<HomeLocation> _resetHomeLocationRest() async {
@@ -211,7 +214,9 @@ class AppSettingsRepository {
         'DELETE /api/settings/home returned ${response.statusCode}',
       );
     }
-    return _mapHomeLocationJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return _mapHomeLocationJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<PmtilesStorageSettings> _getPmtilesStoragePathRest() async {
@@ -224,7 +229,9 @@ class AppSettingsRepository {
         'GET /api/settings/pmtiles-storage returned ${response.statusCode}',
       );
     }
-    return _mapPmtilesStorageJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return _mapPmtilesStorageJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<PmtilesStorageSettings> _updatePmtilesStoragePathRest(
@@ -240,7 +247,9 @@ class AppSettingsRepository {
         'PUT /api/settings/pmtiles-storage returned ${response.statusCode}',
       );
     }
-    return _mapPmtilesStorageJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return _mapPmtilesStorageJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<wf.RestApiKeyInfo> getRestApiKeyStatus() {

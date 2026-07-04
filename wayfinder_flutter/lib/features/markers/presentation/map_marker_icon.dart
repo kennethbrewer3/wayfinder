@@ -51,7 +51,8 @@ class MapMarkerIcon extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(markerIconRevisionProvider);
-    final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
+    final catalog =
+        ref.watch(markerIconCatalogProvider).valueOrNull ??
         MarkerIconCatalog.defaults();
     final Color backgroundColor =
         iconBackgroundColor ?? catalog.iconBackgroundColor(iconName);

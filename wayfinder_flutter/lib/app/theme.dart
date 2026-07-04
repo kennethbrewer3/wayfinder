@@ -111,13 +111,14 @@ class AppTheme {
   }
 
   static ThemeData _buildTheme(ColorScheme colorScheme) {
-    final textTheme = ThemeData(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-    ).textTheme.apply(
-      bodyColor: colorScheme.onSurface,
-      displayColor: colorScheme.onSurface,
-    );
+    final textTheme =
+        ThemeData(
+          colorScheme: colorScheme,
+          useMaterial3: true,
+        ).textTheme.apply(
+          bodyColor: colorScheme.onSurface,
+          displayColor: colorScheme.onSurface,
+        );
 
     return ThemeData(
       colorScheme: colorScheme,

@@ -9,7 +9,8 @@ MarkdownStyleSheet mapObjectMarkdownStyleSheet(
   TextStyle? baseStyle,
 }) {
   final textColor = color ?? theme.colorScheme.onSurfaceVariant;
-  final style = baseStyle ??
+  final style =
+      baseStyle ??
       theme.textTheme.bodyMedium?.copyWith(
         color: textColor,
         height: 1.4,

@@ -211,7 +211,8 @@ LatLng projectPointOnSegment(LatLng start, LatLng end, LatLng tap) {
     return start;
   }
 
-  final t = (((tap.latitude - startLat) * deltaLat) +
+  final t =
+      (((tap.latitude - startLat) * deltaLat) +
           ((tap.longitude - startLng) * deltaLng)) /
       denominator;
   final clamped = t.clamp(0.0, 1.0);
@@ -229,8 +230,9 @@ double distanceToSegmentPx(Offset point, Offset start, Offset end) {
     return toPoint.distance;
   }
 
-  final t = ((toPoint.dx * segment.dx + toPoint.dy * segment.dy) / lengthSquared)
-      .clamp(0.0, 1.0);
+  final t =
+      ((toPoint.dx * segment.dx + toPoint.dy * segment.dy) / lengthSquared)
+          .clamp(0.0, 1.0);
   final projection = Offset(
     start.dx + segment.dx * t,
     start.dy + segment.dy * t,
@@ -258,7 +260,8 @@ LineGeometry? insertLineControlPoint({
     tap,
   );
   final insertIndex = segment.controlSegmentIndex + 1;
-  final updatedPoints = [...geometry.points]..insert(insertIndex, insertionPoint);
+  final updatedPoints = [...geometry.points]
+    ..insert(insertIndex, insertionPoint);
 
   return geometry.copyWith(
     points: updatedPoints,
@@ -278,8 +281,9 @@ LineGeometry? removeLineControlPoint({
   final updatedPoints = [...geometry.points]..removeAt(controlPointIndex);
   return geometry.copyWith(
     points: updatedPoints,
-    pathMode:
-        updatedPoints.length > 2 ? geometry.pathMode : LinePathMode.straight,
+    pathMode: updatedPoints.length > 2
+        ? geometry.pathMode
+        : LinePathMode.straight,
   );
 }
 

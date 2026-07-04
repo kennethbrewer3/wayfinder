@@ -2,8 +2,9 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 /// Default layer seeded by the layers migration.
-final defaultMapLayerId =
-    UuidValue.fromString('00000000-0000-4000-8000-000000000001');
+final defaultMapLayerId = UuidValue.fromString(
+  '00000000-0000-4000-8000-000000000001',
+);
 
 List<MapLayer> sortedMapLayers(List<MapLayer> layers) {
   return [...layers]..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -95,14 +96,18 @@ List<MapMarker> markersForLayer(
   List<MapMarker> markers,
   UuidValue? layerId,
 ) {
-  return markers.where((marker) => objectBelongsToLayer(marker.layerId, layerId)).toList();
+  return markers
+      .where((marker) => objectBelongsToLayer(marker.layerId, layerId))
+      .toList();
 }
 
 List<MapZone> zonesForLayer(
   List<MapZone> zones,
   UuidValue? layerId,
 ) {
-  return zones.where((zone) => objectBelongsToLayer(zone.layerId, layerId)).toList();
+  return zones
+      .where((zone) => objectBelongsToLayer(zone.layerId, layerId))
+      .toList();
 }
 
 bool objectBelongsToLayer(UuidValue? objectLayerId, UuidValue? layerId) {

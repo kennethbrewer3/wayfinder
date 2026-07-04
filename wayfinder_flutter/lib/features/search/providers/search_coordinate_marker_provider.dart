@@ -13,7 +13,8 @@ class SearchCoordinateMarker {
   final String iconName;
 }
 
-class SearchCoordinateMarkerNotifier extends StateNotifier<SearchCoordinateMarker?> {
+class SearchCoordinateMarkerNotifier
+    extends StateNotifier<SearchCoordinateMarker?> {
   SearchCoordinateMarkerNotifier() : super(null);
 
   void set(
@@ -34,6 +35,9 @@ class SearchCoordinateMarkerNotifier extends StateNotifier<SearchCoordinateMarke
 }
 
 final searchCoordinateMarkerProvider =
-    StateNotifierProvider<SearchCoordinateMarkerNotifier, SearchCoordinateMarker?>(
-  (ref) => SearchCoordinateMarkerNotifier(),
-);
+    StateNotifierProvider<
+      SearchCoordinateMarkerNotifier,
+      SearchCoordinateMarker?
+    >(
+      (ref) => SearchCoordinateMarkerNotifier(),
+    );

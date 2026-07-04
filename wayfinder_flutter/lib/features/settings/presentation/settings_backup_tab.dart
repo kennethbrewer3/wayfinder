@@ -24,8 +24,10 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     try {
       final repository = ref.read(mapDataRepositoryProvider);
       final jsonText = await repository.fetchBackupJson();
-      final timestamp =
-          DateTime.now().toUtc().toIso8601String().replaceAll(':', '-');
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
       final saved = await saveTextFile(
         fileName: 'wayfinder-backup-$timestamp.json',
         contents: jsonText,
@@ -156,7 +158,9 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                 )
               : const Icon(Icons.download),
           label: Text(
-            _isExportingMapData ? l10n.actionExporting : l10n.backupExportButton,
+            _isExportingMapData
+                ? l10n.actionExporting
+                : l10n.backupExportButton,
           ),
         ),
         const SizedBox(height: 12),
@@ -170,7 +174,9 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                 )
               : const Icon(Icons.upload_file),
           label: Text(
-            _isRestoringMapData ? l10n.actionRestoring : l10n.backupRestoreButton,
+            _isRestoringMapData
+                ? l10n.actionRestoring
+                : l10n.backupRestoreButton,
           ),
         ),
       ],

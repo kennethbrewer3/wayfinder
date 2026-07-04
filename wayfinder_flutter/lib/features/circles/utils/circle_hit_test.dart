@@ -21,8 +21,7 @@ UuidValue? hitTestCircleAtPoint({
     }
 
     final distance = lineLengthMeters(geometry.center, point);
-    if (distance <= geometry.radiusMeters &&
-        distance < closestDistance) {
+    if (distance <= geometry.radiusMeters && distance < closestDistance) {
       closestDistance = distance;
       closestId = zone.id;
     }

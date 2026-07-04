@@ -11,7 +11,8 @@ abstract final class GeocodingRemoteFetch {
 
   static Future<T> withDownload<T>(
     String url,
-    Future<T> Function(Stream<List<int>> byteStream, int contentLength) process, {
+    Future<T> Function(Stream<List<int>> byteStream, int contentLength)
+    process, {
     void Function(HttpClient client)? onClientCreated,
     void Function(int bytesReceived, int? totalBytes)? onDownloadProgress,
     String logLabel = 'dataset',
@@ -28,7 +29,7 @@ abstract final class GeocodingRemoteFetch {
         null,
         'geocoding',
         '⬇️ $logLabel download complete '
-        'size=${GeocodingDownloadProgress.formatBytes(contentLength)} — parsing',
+            'size=${GeocodingDownloadProgress.formatBytes(contentLength)} — parsing',
       );
       return await process(tempFile.openRead(), contentLength);
     } finally {
@@ -62,8 +63,8 @@ abstract final class GeocodingRemoteFetch {
           null,
           'geocoding',
           '⬇️ Connecting to $logLabel download host=${uri.host} '
-          'attempt=$attempt/$_maxAttempts '
-          'resumeFrom=${GeocodingDownloadProgress.formatBytes(resumeFrom)}',
+              'attempt=$attempt/$_maxAttempts '
+              'resumeFrom=${GeocodingDownloadProgress.formatBytes(resumeFrom)}',
         );
 
         final request = await client.getUrl(uri);
@@ -96,12 +97,15 @@ abstract final class GeocodingRemoteFetch {
           await file.writeAsBytes([]);
         }
 
-        final totalBytes = _totalBytes(response, resumeFrom: append ? resumeFrom : 0);
+        final totalBytes = _totalBytes(
+          response,
+          resumeFrom: append ? resumeFrom : 0,
+        );
         WfLog.info(
           null,
           'geocoding',
           '⬇️ $logLabel HTTP ${response.statusCode} '
-          'totalBytes=${totalBytes == null ? 'unknown' : GeocodingDownloadProgress.formatBytes(totalBytes)}',
+              'totalBytes=${totalBytes == null ? 'unknown' : GeocodingDownloadProgress.formatBytes(totalBytes)}',
         );
 
         sink = file.openWrite(mode: append ? FileMode.append : FileMode.write);
@@ -143,7 +147,7 @@ abstract final class GeocodingRemoteFetch {
           null,
           'geocoding',
           '⬇️ $logLabel download interrupted on attempt $attempt/$_maxAttempts; '
-          'retrying in ${attempt * 5}s ($error)',
+              'retrying in ${attempt * 5}s ($error)',
         );
         await Future<void>.delayed(Duration(seconds: attempt * 5));
       } finally {
@@ -151,7 +155,9 @@ abstract final class GeocodingRemoteFetch {
       }
     }
 
-    throw StateError('Failed to download $logLabel after $_maxAttempts attempts.');
+    throw StateError(
+      'Failed to download $logLabel after $_maxAttempts attempts.',
+    );
   }
 
   static HttpClient _createClient() {

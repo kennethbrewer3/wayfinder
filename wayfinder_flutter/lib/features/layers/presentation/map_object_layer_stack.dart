@@ -102,9 +102,10 @@ List<Widget> buildStackedMapLayerChildren({
 
   for (final layer in visibleMapLayersForRendering(layers)) {
     addLayerContent(
-      markersForLayer(markers, layer.id)
-          .where((marker) => marker.visible)
-          .toList(),
+      markersForLayer(
+        markers,
+        layer.id,
+      ).where((marker) => marker.visible).toList(),
       zonesForLayer(zones, layer.id).where((zone) => zone.visible).toList(),
     );
   }

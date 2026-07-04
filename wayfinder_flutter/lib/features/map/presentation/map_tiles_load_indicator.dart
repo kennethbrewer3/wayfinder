@@ -21,8 +21,8 @@ class MapTilesLoadIndicator extends ConsumerWidget {
       tooltip: effectiveStatus.isReady
           ? l10n.mapTilesReadyTooltip
           : effectiveStatus.isLoading
-              ? l10n.mapTilesLoadingTooltip
-              : l10n.mapTilesNotReadyTooltip,
+          ? l10n.mapTilesLoadingTooltip
+          : l10n.mapTilesNotReadyTooltip,
       icon: Icons.layers_outlined,
       onPressed: () => _showStatusDialog(context, ref),
     );
@@ -65,8 +65,8 @@ class MapTilesLoadIndicator extends ConsumerWidget {
                 status.isReady
                     ? l10n.mapTilesReadyTooltip
                     : status.isLoading
-                        ? l10n.mapTilesLoadingTitle
-                        : l10n.mapTilesNotReadyTooltip,
+                    ? l10n.mapTilesLoadingTitle
+                    : l10n.mapTilesNotReadyTooltip,
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,

@@ -27,7 +27,8 @@ class MarkerIconCategoryCatalog {
       for (var i = 0; i < MarkerIconCategories.orderedKeys.length; i++)
         MarkerIconCategoryDefinition(
           key: MarkerIconCategories.orderedKeys[i],
-          label: _fallbackLabels[MarkerIconCategories.orderedKeys[i]] ??
+          label:
+              _fallbackLabels[MarkerIconCategories.orderedKeys[i]] ??
               MarkerIconCategories.orderedKeys[i],
           sortOrder: i,
           createdAt: DateTime.utc(2026),
@@ -48,7 +49,8 @@ class MarkerIconCategoryCatalog {
     return _fallbackLabels[key] ?? key;
   }
 
-  bool contains(String key) => categories.any((category) => category.key == key);
+  bool contains(String key) =>
+      categories.any((category) => category.key == key);
 
   String get defaultCategoryKey =>
       categories

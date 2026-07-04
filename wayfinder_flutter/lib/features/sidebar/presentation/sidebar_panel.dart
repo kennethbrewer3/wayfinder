@@ -56,30 +56,30 @@ class SidebarPanel extends ConsumerWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.basic,
       child: Material(
-      color: Theme.of(context).colorScheme.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _SidebarHeader(
-            expanded: sidebar.expanded,
-            onToggle: () {
-              ref.read(sidebarProvider.notifier).toggleExpanded();
-            },
-          ),
-          if (sidebar.expanded) ...[
-            const SizedBox(height: 8),
-            Expanded(
-              child: _LayerOrganizedPanel(
-                markersAsync: markersAsync,
-                zonesAsync: zonesAsync,
-                sidebar: sidebar,
-                onZoomTo: onZoomTo,
-              ),
+        color: Theme.of(context).colorScheme.surface,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _SidebarHeader(
+              expanded: sidebar.expanded,
+              onToggle: () {
+                ref.read(sidebarProvider.notifier).toggleExpanded();
+              },
             ),
+            if (sidebar.expanded) ...[
+              const SizedBox(height: 8),
+              Expanded(
+                child: _LayerOrganizedPanel(
+                  markersAsync: markersAsync,
+                  zonesAsync: zonesAsync,
+                  sidebar: sidebar,
+                  onZoomTo: onZoomTo,
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
-    ),
     );
   }
 }
@@ -112,7 +112,9 @@ class _SidebarHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            tooltip: expanded ? l10n.sidebarCollapsePanel : l10n.sidebarExpandPanel,
+            tooltip: expanded
+                ? l10n.sidebarCollapsePanel
+                : l10n.sidebarExpandPanel,
             icon: Icon(
               expanded
                   ? (isWide ? Icons.chevron_right : Icons.expand_more)
@@ -211,12 +213,14 @@ class _LayerOrganizedPanel extends ConsumerWidget {
             itemBuilder: (context, index) {
               final layer = orderedLayers[index];
               final layerSettings = sidebar.settingsForLayer(layer.id);
-              final filteredLayerMarkers = markersForLayer(markers, layer.id)
-                  .where((marker) => matchesSearch(marker.name))
-                  .toList();
-              final filteredLayerZones = zonesForLayer(zones, layer.id)
-                  .where((zone) => matchesSearch(zone.name))
-                  .toList();
+              final filteredLayerMarkers = markersForLayer(
+                markers,
+                layer.id,
+              ).where((marker) => matchesSearch(marker.name)).toList();
+              final filteredLayerZones = zonesForLayer(
+                zones,
+                layer.id,
+              ).where((zone) => matchesSearch(zone.name)).toList();
               final layerMarkers = sortMarkers(
                 filteredLayerMarkers,
                 layerSettings.markerSort,
@@ -235,14 +239,11 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Material(
                   color: isSelected
-                      ? Theme.of(context)
-                          .colorScheme
-                          .primaryContainer
-                          .withValues(alpha: 0.35)
-                      : Theme.of(context)
-                          .colorScheme
-                          .surfaceContainerHighest
-                          .withValues(alpha: 0.35),
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer.withValues(alpha: 0.35)
+                      : Theme.of(context).colorScheme.surfaceContainerHighest
+                            .withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -260,7 +261,9 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                               .setSelectedLayerId(layer.id);
                         },
                         onToggleExpanded: () {
-                          ref.read(sidebarProvider.notifier).toggleLayerExpanded(
+                          ref
+                              .read(sidebarProvider.notifier)
+                              .toggleLayerExpanded(
                                 layer.id,
                                 expanded: !isExpanded,
                                 allLayerIds: orderedLayers.map((l) => l.id),
@@ -285,7 +288,8 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                           );
                         },
                         onRename: () => _renameLayer(context, ref, layer),
-                        onDelete: () => _deleteLayer(context, ref, layer, layers),
+                        onDelete: () =>
+                            _deleteLayer(context, ref, layer, layers),
                       ),
                       if (isExpanded)
                         _LayerObjectPanel(
@@ -347,7 +351,10 @@ class _LayerOrganizedPanel extends ConsumerWidget {
       confirmLabel: l10n.actionSave,
       initialName: layer.name,
     );
-    if (name == null || name.isEmpty || name == layer.name || !context.mounted) {
+    if (name == null ||
+        name.isEmpty ||
+        name == layer.name ||
+        !context.mounted) {
       return;
     }
 
@@ -396,7 +403,9 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     await deleteMapLayer(ref, layer);
     final remaining =
         ref.read(layersProvider).valueOrNull ?? const <MapLayer>[];
-    ref.read(sidebarProvider.notifier).setSelectedLayerId(
+    ref
+        .read(sidebarProvider.notifier)
+        .setSelectedLayerId(
           resolveSelectedLayerId(
             selectedLayerId: null,
             layers: remaining,
@@ -496,14 +505,18 @@ class _LayerHeader extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              tooltip: isExpanded ? l10n.sidebarCollapseLayer : l10n.sidebarExpandLayer,
+              tooltip: isExpanded
+                  ? l10n.sidebarCollapseLayer
+                  : l10n.sidebarExpandLayer,
               onPressed: onToggleExpanded,
               icon: Icon(
                 isExpanded ? Icons.expand_less : Icons.expand_more,
               ),
             ),
             IconButton(
-              tooltip: layer.visible ? l10n.sidebarHideLayer : l10n.sidebarShowLayer,
+              tooltip: layer.visible
+                  ? l10n.sidebarHideLayer
+                  : l10n.sidebarShowLayer,
               onPressed: onToggleVisible,
               icon: Icon(
                 layer.visible ? Icons.visibility : Icons.visibility_off,
@@ -521,10 +534,10 @@ class _LayerHeader extends StatelessWidget {
                     l10n.sidebarObjectCount(objectCount) +
                         (isSelected ? l10n.sidebarSelectedForNewObjects : ''),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isSelected
-                              ? colorScheme.primary
-                              : colorScheme.onSurfaceVariant,
-                        ),
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -864,7 +877,10 @@ class _SortFieldSelector<T> extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 4,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -1019,101 +1035,107 @@ class _MarkerListTile extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final notesPreview = marker.notes?.trim();
     final selected = ref.watch(selectedMapObjectProvider);
-    final isSelected = selected?.kind == SelectedMapObjectKind.marker &&
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.marker &&
         selected?.id == marker.id;
-    final trackZones = trackZonesById(ref.watch(zonesProvider).valueOrNull ?? const []);
+    final trackZones = trackZonesById(
+      ref.watch(zonesProvider).valueOrNull ?? const [],
+    );
 
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        InkWell(
-          onTap: () {
-            ref.read(selectedMapObjectProvider.notifier).clear();
-            onZoomTo(LatLng(marker.latitude, marker.longitude));
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MapMarkerIcon(
-                  color: parseMarkerColor(marker.color),
-                  iconName: effectiveMarkerIconName(
-                    marker: marker,
-                    trackZonesById: trackZones,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              onZoomTo(LatLng(marker.latitude, marker.longitude));
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MapMarkerIcon(
+                    color: parseMarkerColor(marker.color),
+                    iconName: effectiveMarkerIconName(
+                      marker: marker,
+                      trackZonesById: trackZones,
+                    ),
+                    width: 28,
+                    height: 34,
                   ),
-                  width: 28,
-                  height: 34,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        marker.name,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          marker.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${marker.latitude.toStringAsFixed(4)}, '
-                        '${marker.longitude.toStringAsFixed(4)}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      if (notesPreview != null && notesPreview.isNotEmpty) ...[
                         const SizedBox(height: 4),
-                        MapObjectNotesPreview(markdown: notesPreview),
+                        Text(
+                          '${marker.latitude.toStringAsFixed(4)}, '
+                          '${marker.longitude.toStringAsFixed(4)}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        if (notesPreview != null &&
+                            notesPreview.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          MapObjectNotesPreview(markdown: notesPreview),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        _MapObjectActionBar(
-          actions: [
-            _MapObjectIconAction(
-              tooltip: marker.visible ? l10n.sidebarHideMarker : l10n.sidebarShowMarker,
-              icon: marker.visible ? Icons.visibility : Icons.visibility_off,
-              toggled: marker.visible,
-              isToggle: true,
-              onPressed: () async {
-                final client = ref.read(serverClientProvider);
-                await client.mapMarker.updateMarker(
-                  marker.copyWith(visible: !marker.visible),
-                );
-                ref.invalidate(markersProvider);
-              },
-            ),
-            _MapObjectIconAction(
-              tooltip: l10n.sidebarEditMarker,
-              icon: Icons.edit_outlined,
-              onPressed: () => updateMarkerFromForm(
-                context: context,
-                ref: ref,
-                marker: marker,
+                ],
               ),
             ),
-            _MapObjectIconAction(
-              tooltip: l10n.sidebarDeleteMarker,
-              icon: Icons.delete_outline,
-              onPressed: () async {
-                final client = ref.read(serverClientProvider);
-                await client.mapMarker.deleteMarker(marker.id);
-                ref.invalidate(markersProvider);
-              },
-            ),
-          ],
-        ),
-      ],
-    ),
+          ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: marker.visible
+                    ? l10n.sidebarHideMarker
+                    : l10n.sidebarShowMarker,
+                icon: marker.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: marker.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapMarker.updateMarker(
+                    marker.copyWith(visible: !marker.visible),
+                  );
+                  ref.invalidate(markersProvider);
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarEditMarker,
+                icon: Icons.edit_outlined,
+                onPressed: () => updateMarkerFromForm(
+                  context: context,
+                  ref: ref,
+                  marker: marker,
+                ),
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarDeleteMarker,
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapMarker.deleteMarker(marker.id);
+                  ref.invalidate(markersProvider);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1188,8 +1210,8 @@ class _LineZoneListTile extends ConsumerWidget {
     final geometry = LineGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final selected = ref.watch(selectedMapObjectProvider);
-    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
-        selected?.id == zone.id;
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
     final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
@@ -1248,7 +1270,8 @@ class _LineZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null && notesPreview.isNotEmpty) ...[
+                        if (notesPreview != null &&
+                            notesPreview.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           MapObjectNotesPreview(
                             markdown: notesPreview,
@@ -1286,7 +1309,9 @@ class _LineZoneListTile extends ConsumerWidget {
                     toggleLineDistanceLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
-                tooltip: zone.visible ? l10n.sidebarHideLine : l10n.sidebarShowLine,
+                tooltip: zone.visible
+                    ? l10n.sidebarHideLine
+                    : l10n.sidebarShowLine,
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
@@ -1342,8 +1367,8 @@ class _TrackZoneListTile extends ConsumerWidget {
     final geometry = TrackGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final selected = ref.watch(selectedMapObjectProvider);
-    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
-        selected?.id == zone.id;
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -1414,7 +1439,9 @@ class _TrackZoneListTile extends ConsumerWidget {
           _MapObjectActionBar(
             actions: [
               _MapObjectIconAction(
-                tooltip: zone.visible ? l10n.sidebarHideTrack : l10n.sidebarShowTrack,
+                tooltip: zone.visible
+                    ? l10n.sidebarHideTrack
+                    : l10n.sidebarShowTrack,
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
@@ -1470,8 +1497,8 @@ class _CircleZoneListTile extends ConsumerWidget {
     final geometry = CircleGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final selected = ref.watch(selectedMapObjectProvider);
-    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
-        selected?.id == zone.id;
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
     final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
@@ -1492,116 +1519,121 @@ class _CircleZoneListTile extends ConsumerWidget {
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        InkWell(
-          onTap: () {
-            ref.read(selectedMapObjectProvider.notifier).clear();
-            onZoomTo(geometry.center);
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  backgroundColor: _parseColor(zone.borderColor),
-                  radius: 18,
-                  child: const Icon(
-                    Icons.radio_button_unchecked,
-                    color: Colors.white,
-                    size: 18,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              onZoomTo(geometry.center);
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _parseColor(zone.borderColor),
+                    radius: 18,
+                    child: const Icon(
+                      Icons.radio_button_unchecked,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        zone.name,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          zone.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        mapSizeLabel == null
-                            ? 'R $radiusLabel · no map label'
-                            : '${geometry.sizeDisplay.localizedShortLabel(l10n)} $mapSizeLabel',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
+                        const SizedBox(height: 4),
+                        Text(
+                          mapSizeLabel == null
+                              ? 'R $radiusLabel · no map label'
+                              : '${geometry.sizeDisplay.localizedShortLabel(l10n)} $mapSizeLabel',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      if (notesPreview != null && notesPreview.isNotEmpty) ...[
-                        const SizedBox(height: 6),
-                        MapObjectNotesPreview(
-                          markdown: notesPreview,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
+                        if (notesPreview != null &&
+                            notesPreview.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          MapObjectNotesPreview(
+                            markdown: notesPreview,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        _MapObjectActionBar(
-          actions: [
-            _MapObjectIconAction(
-              tooltip: geometry.showNameLabel
-                  ? l10n.sidebarHideNameOnMap
-                  : l10n.sidebarShowNameOnMap,
-              icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
-              toggled: geometry.showNameLabel,
-              isToggle: true,
-              onPressed: () => toggleCircleNameLabel(ref: ref, zoneId: zoneId),
-            ),
-            _MapObjectIconAction(
-              tooltip: geometry.sizeDisplay.localizedToggleTooltip(l10n),
-              icon: geometry.sizeDisplay == CircleSizeDisplay.none
-                  ? Icons.straighten_outlined
-                  : Icons.straighten,
-              toggled: geometry.sizeDisplay != CircleSizeDisplay.none,
-              isToggle: true,
-              onPressed: () => toggleCircleSizeLabel(ref: ref, zoneId: zoneId),
-            ),
-            _MapObjectIconAction(
-              tooltip: zone.visible ? l10n.sidebarHideCircle : l10n.sidebarShowCircle,
-              icon: zone.visible ? Icons.visibility : Icons.visibility_off,
-              toggled: zone.visible,
-              isToggle: true,
-              onPressed: () async {
-                final client = ref.read(serverClientProvider);
-                await client.mapZone.updateZone(
-                  zone.copyWith(visible: !zone.visible),
-                );
-                ref.read(zonesProvider.notifier).reload();
-              },
-            ),
-            _MapObjectIconAction(
-              tooltip: l10n.sidebarEditCircle,
-              icon: Icons.edit_outlined,
-              onPressed: () => updateCircleFromForm(
-                context: context,
-                ref: ref,
-                zone: zone,
+                ],
               ),
             ),
-            _MapObjectIconAction(
-              tooltip: l10n.sidebarDeleteCircle,
-              icon: Icons.delete_outline,
-              onPressed: () async {
-                final client = ref.read(serverClientProvider);
-                await client.mapZone.deleteZone(zoneId);
-                ref.read(zonesProvider.notifier).reload();
-              },
-            ),
-          ],
-        ),
-      ],
-    ),
+          ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: geometry.showNameLabel
+                    ? l10n.sidebarHideNameOnMap
+                    : l10n.sidebarShowNameOnMap,
+                icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
+                toggled: geometry.showNameLabel,
+                isToggle: true,
+                onPressed: () =>
+                    toggleCircleNameLabel(ref: ref, zoneId: zoneId),
+              ),
+              _MapObjectIconAction(
+                tooltip: geometry.sizeDisplay.localizedToggleTooltip(l10n),
+                icon: geometry.sizeDisplay == CircleSizeDisplay.none
+                    ? Icons.straighten_outlined
+                    : Icons.straighten,
+                toggled: geometry.sizeDisplay != CircleSizeDisplay.none,
+                isToggle: true,
+                onPressed: () =>
+                    toggleCircleSizeLabel(ref: ref, zoneId: zoneId),
+              ),
+              _MapObjectIconAction(
+                tooltip: zone.visible
+                    ? l10n.sidebarHideCircle
+                    : l10n.sidebarShowCircle,
+                icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: zone.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.updateZone(
+                    zone.copyWith(visible: !zone.visible),
+                  );
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarEditCircle,
+                icon: Icons.edit_outlined,
+                onPressed: () => updateCircleFromForm(
+                  context: context,
+                  ref: ref,
+                  zone: zone,
+                ),
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarDeleteCircle,
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.deleteZone(zoneId);
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1624,8 +1656,8 @@ class _RectangleZoneListTile extends ConsumerWidget {
     final geometry = RectangleGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final selected = ref.watch(selectedMapObjectProvider);
-    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
-        selected?.id == zone.id;
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
     final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
@@ -1686,7 +1718,8 @@ class _RectangleZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null && notesPreview.isNotEmpty) ...[
+                        if (notesPreview != null &&
+                            notesPreview.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           MapObjectNotesPreview(
                             markdown: notesPreview,
@@ -1713,8 +1746,9 @@ class _RectangleZoneListTile extends ConsumerWidget {
                     toggleRectangleNameLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
-                tooltip:
-                    rectangleSizeDisplayToggleTooltip(geometry.sizeDisplay),
+                tooltip: rectangleSizeDisplayToggleTooltip(
+                  geometry.sizeDisplay,
+                ),
                 icon: geometry.sizeDisplay == RectangleSizeDisplay.none
                     ? Icons.straighten_outlined
                     : Icons.straighten,
@@ -1779,91 +1813,94 @@ class _GenericZoneListTile extends ConsumerWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final selected = ref.watch(selectedMapObjectProvider);
-    final isSelected = selected?.kind == SelectedMapObjectKind.zone &&
-        selected?.id == zone.id;
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
 
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        InkWell(
-          onTap: () {
-            ref.read(selectedMapObjectProvider.notifier).clear();
-            final center = rectangleZoneCenter(zone) ??
-                circleZoneCenter(zone) ??
-                lineZoneCenter(zone);
-            if (center != null) {
-              onZoomTo(center);
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  backgroundColor: _parseColor(zone.color),
-                  radius: 18,
-                  child: const Icon(
-                    Icons.layers,
-                    color: Colors.white,
-                    size: 18,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              final center =
+                  rectangleZoneCenter(zone) ??
+                  circleZoneCenter(zone) ??
+                  lineZoneCenter(zone);
+              if (center != null) {
+                onZoomTo(center);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _parseColor(zone.color),
+                    radius: 18,
+                    child: const Icon(
+                      Icons.layers,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        zone.name,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          zone.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        zone.type,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 4),
+                        Text(
+                          zone.type,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        _MapObjectActionBar(
-          actions: [
-            _MapObjectIconAction(
-              tooltip: zone.visible ? l10n.sidebarHideZone : l10n.sidebarShowZone,
-              icon: zone.visible ? Icons.visibility : Icons.visibility_off,
-              toggled: zone.visible,
-              isToggle: true,
-              onPressed: () async {
-                final client = ref.read(serverClientProvider);
-                await client.mapZone.updateZone(
-                  zone.copyWith(visible: !zone.visible),
-                );
-                ref.read(zonesProvider.notifier).reload();
-              },
-            ),
-            _MapObjectIconAction(
-              tooltip: l10n.sidebarDeleteZone,
-              icon: Icons.delete_outline,
-              onPressed: () async {
-                final client = ref.read(serverClientProvider);
-                await client.mapZone.deleteZone(zone.id);
-                ref.read(zonesProvider.notifier).reload();
-              },
-            ),
-          ],
-        ),
-      ],
-    ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: zone.visible
+                    ? l10n.sidebarHideZone
+                    : l10n.sidebarShowZone,
+                icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: zone.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.updateZone(
+                    zone.copyWith(visible: !zone.visible),
+                  );
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarDeleteZone,
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.deleteZone(zone.id);
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1918,14 +1955,14 @@ class _MapObjectIconAction extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
       style: isToggle
           ? (toggled
-              ? IconButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primaryContainer,
-                  foregroundColor: theme.colorScheme.onPrimaryContainer,
-                )
-              : IconButton.styleFrom(
-                  foregroundColor: theme.colorScheme.onSurfaceVariant
-                      .withValues(alpha: 0.55),
-                ))
+                ? IconButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    foregroundColor: theme.colorScheme.onPrimaryContainer,
+                  )
+                : IconButton.styleFrom(
+                    foregroundColor: theme.colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.55),
+                  ))
           : IconButton.styleFrom(
               foregroundColor: theme.colorScheme.onSurfaceVariant,
             ),

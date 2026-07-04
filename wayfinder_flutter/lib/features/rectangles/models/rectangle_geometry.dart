@@ -15,14 +15,14 @@ enum RectangleCreationMode {
 
 extension RectangleCreationModeLabel on RectangleCreationMode {
   String get storageValue => switch (this) {
-        RectangleCreationMode.centerExtent => 'center_extent',
-        RectangleCreationMode.corners => 'corners',
-      };
+    RectangleCreationMode.centerExtent => 'center_extent',
+    RectangleCreationMode.corners => 'corners',
+  };
 
   String get label => switch (this) {
-        RectangleCreationMode.centerExtent => 'Center rectangle',
-        RectangleCreationMode.corners => 'Corner rectangle',
-      };
+    RectangleCreationMode.centerExtent => 'Center rectangle',
+    RectangleCreationMode.corners => 'Corner rectangle',
+  };
 }
 
 RectangleCreationMode rectangleCreationModeFromJson(String? value) {
@@ -129,7 +129,9 @@ class RectangleGeometry {
     }
 
     return RectangleGeometry(
-      creationMode: rectangleCreationModeFromJson(json['creationMode'] as String?),
+      creationMode: rectangleCreationModeFromJson(
+        json['creationMode'] as String?,
+      ),
       bounds: bounds,
       center: parseLatLng(json['center']),
       extentPoint: parseLatLng(json['extentPoint']),

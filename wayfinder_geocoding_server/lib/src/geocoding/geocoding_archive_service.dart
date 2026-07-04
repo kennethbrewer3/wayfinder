@@ -168,8 +168,9 @@ abstract final class GeocodingArchiveService {
     );
 
     final rows = _parseHousenumberRows(body['rows']);
-    await session.db
-        .unsafeExecute('TRUNCATE "geocode_housenumber" RESTART IDENTITY');
+    await session.db.unsafeExecute(
+      'TRUNCATE "geocode_housenumber" RESTART IDENTITY',
+    );
 
     var imported = 0;
     for (var index = 0; index < rows.length; index += _importBatchSize) {
@@ -199,8 +200,9 @@ abstract final class GeocodingArchiveService {
     _ensureArchiveAllowed();
 
     final count = await GeocodeHousenumber.db.count(session);
-    await session.db
-        .unsafeExecute('TRUNCATE "geocode_housenumber" RESTART IDENTITY');
+    await session.db.unsafeExecute(
+      'TRUNCATE "geocode_housenumber" RESTART IDENTITY',
+    );
     await _updateHousenumbersSettingsAfterArchiveChange(
       session,
       importedRowCount: 0,
@@ -334,8 +336,9 @@ abstract final class GeocodingArchiveService {
         housenumbersImportedRowCount: importedRowCount,
         housenumbersImportProgress: importedRowCount > 0 ? 1 : 0,
         housenumbersImportError: null,
-        housenumbersImportedAt:
-            importedRowCount > 0 ? DateTime.now().toUtc() : null,
+        housenumbersImportedAt: importedRowCount > 0
+            ? DateTime.now().toUtc()
+            : null,
       ),
     );
   }

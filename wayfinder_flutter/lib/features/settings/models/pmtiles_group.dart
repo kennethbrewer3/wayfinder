@@ -14,12 +14,12 @@ class PmtilesGroup {
   final bool showOnMap;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'sortOrder': sortOrder,
-        'createdAt': createdAt.toIso8601String(),
-        'showOnMap': showOnMap,
-      };
+    'id': id,
+    'name': name,
+    'sortOrder': sortOrder,
+    'createdAt': createdAt.toIso8601String(),
+    'showOnMap': showOnMap,
+  };
 
   factory PmtilesGroup.fromJson(Map<String, dynamic> json) {
     return PmtilesGroup(

@@ -19,8 +19,7 @@ List<Polyline<UuidValue>> buildSavedLinePolylines(
     if (!zone.visible || zone.type != lineZoneType) {
       continue;
     }
-    final geometry =
-        geometryOverrides?[zone.id] ?? LineGeometry.fromZone(zone);
+    final geometry = geometryOverrides?[zone.id] ?? LineGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
       continue;
     }

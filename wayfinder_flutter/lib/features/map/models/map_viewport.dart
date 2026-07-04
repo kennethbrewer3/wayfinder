@@ -20,10 +20,10 @@ class MapViewport {
   }
 
   Map<String, dynamic> toJson() => {
-        'lat': center.latitude,
-        'lng': center.longitude,
-        'zoom': zoom,
-      };
+    'lat': center.latitude,
+    'lng': center.longitude,
+    'zoom': zoom,
+  };
 
   factory MapViewport.fromJson(Map<String, dynamic> json) {
     return MapViewport(

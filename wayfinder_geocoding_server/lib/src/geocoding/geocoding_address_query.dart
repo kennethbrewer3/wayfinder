@@ -48,7 +48,11 @@ AddressSearchQuery? parseAddressSearchQuery(String input) {
     '"housenumber" ILIKE @housenumber ESCAPE \'\\\'',
   ];
 
-  for (var tokenIndex = 0; tokenIndex < query.streetTokens.length; tokenIndex++) {
+  for (
+    var tokenIndex = 0;
+    tokenIndex < query.streetTokens.length;
+    tokenIndex++
+  ) {
     final patterns = _streetTokenLikePatterns(query.streetTokens[tokenIndex]);
     if (patterns.length == 1) {
       final key = 'streetToken$tokenIndex';
@@ -66,7 +70,8 @@ AddressSearchQuery? parseAddressSearchQuery(String input) {
     conditions.add('(${orParts.join(' OR ')})');
   }
 
-  final sql = '''
+  final sql =
+      '''
 SELECT
   "id",
   "housenumber",

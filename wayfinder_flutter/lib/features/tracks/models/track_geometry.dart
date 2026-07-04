@@ -24,7 +24,9 @@ class TrackGeometry {
     required this.markerId,
     required this.points,
     this.showFootsteps = true,
-    this.footstepDensity = const LineArrowDensity(LineArrowDensity.defaultLevel),
+    this.footstepDensity = const LineArrowDensity(
+      LineArrowDensity.defaultLevel,
+    ),
     this.transportationMode = TrackTransportationMode.onFoot,
   });
 

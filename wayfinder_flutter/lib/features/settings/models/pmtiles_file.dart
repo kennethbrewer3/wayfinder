@@ -18,13 +18,13 @@ class PmtilesFile {
   bool isInGroup(String groupId) => groupIds.contains(groupId);
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'sizeBytes': sizeBytes,
-        'addedAt': addedAt.toIso8601String(),
-        'enabledOnMap': enabledOnMap,
-        'groupIds': groupIds,
-      };
+    'id': id,
+    'name': name,
+    'sizeBytes': sizeBytes,
+    'addedAt': addedAt.toIso8601String(),
+    'enabledOnMap': enabledOnMap,
+    'groupIds': groupIds,
+  };
 
   factory PmtilesFile.fromJson(Map<String, dynamic> json) {
     final rawGroupIds = json['groupIds'];

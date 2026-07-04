@@ -20,7 +20,8 @@ double sphericalLawOfCosinesDistanceMeters(LatLng start, LatLng end) {
   final lat2 = end.latitudeInRad;
   final deltaLon = end.longitudeInRad - start.longitudeInRad;
 
-  final centralAngle = math.sin(lat1) * math.sin(lat2) +
+  final centralAngle =
+      math.sin(lat1) * math.sin(lat2) +
       math.cos(lat1) * math.cos(lat2) * math.cos(deltaLon);
 
   return earthRadiusMeters * math.acos(centralAngle.clamp(-1.0, 1.0));

@@ -4,8 +4,8 @@ import '../models/pmtiles_load_status.dart';
 
 final pmtilesLoadStatusProvider =
     NotifierProvider<PmtilesLoadStatusNotifier, PmtilesLoadStatus>(
-  PmtilesLoadStatusNotifier.new,
-);
+      PmtilesLoadStatusNotifier.new,
+    );
 
 class PmtilesLoadStatusNotifier extends Notifier<PmtilesLoadStatus> {
   @override

@@ -6,16 +6,16 @@ enum RectangleSizeDisplay {
 
 extension RectangleSizeDisplayLabel on RectangleSizeDisplay {
   String get label => switch (this) {
-        RectangleSizeDisplay.dimensions => 'Dimensions',
-        RectangleSizeDisplay.area => 'Area',
-        RectangleSizeDisplay.none => 'None',
-      };
+    RectangleSizeDisplay.dimensions => 'Dimensions',
+    RectangleSizeDisplay.area => 'Area',
+    RectangleSizeDisplay.none => 'None',
+  };
 
   String get shortLabel => switch (this) {
-        RectangleSizeDisplay.dimensions => 'W×H',
-        RectangleSizeDisplay.area => 'Area',
-        RectangleSizeDisplay.none => 'None',
-      };
+    RectangleSizeDisplay.dimensions => 'W×H',
+    RectangleSizeDisplay.area => 'Area',
+    RectangleSizeDisplay.none => 'None',
+  };
 }
 
 RectangleSizeDisplay rectangleSizeDisplayFromJson(String? value) {

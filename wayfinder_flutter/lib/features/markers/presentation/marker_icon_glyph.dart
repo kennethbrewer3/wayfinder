@@ -19,7 +19,8 @@ class MarkerIconGlyph extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
+    final catalog =
+        ref.watch(markerIconCatalogProvider).valueOrNull ??
         MarkerIconCatalog.defaults();
     final glyphSize = size * catalog.glyphScale(iconName);
     final emoji = catalog.emoji(iconName);

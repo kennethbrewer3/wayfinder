@@ -26,7 +26,8 @@ class GeocodingDownloadProgress {
     required String importStatus,
     required int importedRowCount,
     required double importProgress,
-  }) updateStatus;
+  })
+  updateStatus;
 
   /// Compressed bytes read from the HTTP response (matches [totalBytes]).
   int processedBytes = 0;
@@ -55,7 +56,8 @@ class GeocodingDownloadProgress {
   }) async {
     final now = DateTime.now();
     final bytesSinceLog = processedBytes - _lastLoggedBytes;
-    final shouldLog = bytesSinceLog >= _logByteInterval ||
+    final shouldLog =
+        bytesSinceLog >= _logByteInterval ||
         now.difference(_lastLoggedAt) >= _logTimeInterval;
     final shouldUpdateProgress =
         shouldLog || now.difference(_lastProgressAt) >= _logTimeInterval;
@@ -70,11 +72,11 @@ class GeocodingDownloadProgress {
         null,
         'geocoding',
         '⬇️ $logLabel $phase '
-        'processed=${formatBytes(processedBytes)}/'
-        '${totalBytes > 0 ? formatBytes(totalBytes) : 'unknown size'} '
-        'lines=$processedLines '
-        'progress=${(progress * 100).toStringAsFixed(1)}% '
-        'importedRows=$importedRows',
+            'processed=${formatBytes(processedBytes)}/'
+            '${totalBytes > 0 ? formatBytes(totalBytes) : 'unknown size'} '
+            'lines=$processedLines '
+            'progress=${(progress * 100).toStringAsFixed(1)}% '
+            'importedRows=$importedRows',
       );
       _lastLoggedBytes = processedBytes;
       _lastLoggedAt = now;

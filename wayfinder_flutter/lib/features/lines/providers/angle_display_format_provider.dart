@@ -7,15 +7,15 @@ import '../models/angle_display_format.dart';
 
 final angleDisplayFormatProvider =
     StateNotifierProvider<AngleDisplayFormatNotifier, AngleDisplayFormat>(
-  (ref) => AngleDisplayFormatNotifier(
-    ref.watch(appSettingsRepositoryProvider),
-    AngleDisplayFormatStorage(),
-  ),
-);
+      (ref) => AngleDisplayFormatNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+        AngleDisplayFormatStorage(),
+      ),
+    );
 
 class AngleDisplayFormatNotifier extends StateNotifier<AngleDisplayFormat> {
   AngleDisplayFormatNotifier(this._repository, this._storage)
-      : super(AngleDisplayFormat.decimal) {
+    : super(AngleDisplayFormat.decimal) {
     _load();
   }
 

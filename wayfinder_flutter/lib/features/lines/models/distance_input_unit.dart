@@ -11,29 +11,29 @@ enum DistanceInputUnit {
 
 extension DistanceInputUnitLabels on DistanceInputUnit {
   String get shortLabel => switch (this) {
-        DistanceInputUnit.meters => 'm',
-        DistanceInputUnit.kilometers => 'km',
-        DistanceInputUnit.feet => 'ft',
-        DistanceInputUnit.miles => 'mi',
-        DistanceInputUnit.yards => 'yd',
-        DistanceInputUnit.nauticalMiles => 'nm',
-      };
+    DistanceInputUnit.meters => 'm',
+    DistanceInputUnit.kilometers => 'km',
+    DistanceInputUnit.feet => 'ft',
+    DistanceInputUnit.miles => 'mi',
+    DistanceInputUnit.yards => 'yd',
+    DistanceInputUnit.nauticalMiles => 'nm',
+  };
 }
 
 List<DistanceInputUnit> distanceInputUnitsFor(MeasurementUnits units) {
   return switch (units) {
     MeasurementUnits.metric => [
-        DistanceInputUnit.meters,
-        DistanceInputUnit.kilometers,
-      ],
+      DistanceInputUnit.meters,
+      DistanceInputUnit.kilometers,
+    ],
     MeasurementUnits.imperial => [
-        DistanceInputUnit.feet,
-        DistanceInputUnit.miles,
-      ],
+      DistanceInputUnit.feet,
+      DistanceInputUnit.miles,
+    ],
     MeasurementUnits.nautical => [
-        DistanceInputUnit.yards,
-        DistanceInputUnit.nauticalMiles,
-      ],
+      DistanceInputUnit.yards,
+      DistanceInputUnit.nauticalMiles,
+    ],
   };
 }
 
@@ -45,20 +45,20 @@ DistanceInputUnit defaultDistanceInputUnit(
     MeasurementUnits.metric =>
       meters >= 1000 ? DistanceInputUnit.kilometers : DistanceInputUnit.meters,
     MeasurementUnits.imperial => () {
-        const metersPerFoot = 0.3048;
-        const feetPerMile = 5280.0;
-        final feet = meters / metersPerFoot;
-        return feet >= feetPerMile
-            ? DistanceInputUnit.miles
-            : DistanceInputUnit.feet;
-      }(),
+      const metersPerFoot = 0.3048;
+      const feetPerMile = 5280.0;
+      final feet = meters / metersPerFoot;
+      return feet >= feetPerMile
+          ? DistanceInputUnit.miles
+          : DistanceInputUnit.feet;
+    }(),
     MeasurementUnits.nautical => () {
-        const metersPerNauticalMile = 1852.0;
-        if (meters >= metersPerNauticalMile * 0.1) {
-          return DistanceInputUnit.nauticalMiles;
-        }
-        return DistanceInputUnit.yards;
-      }(),
+      const metersPerNauticalMile = 1852.0;
+      if (meters >= metersPerNauticalMile * 0.1) {
+        return DistanceInputUnit.nauticalMiles;
+      }
+      return DistanceInputUnit.yards;
+    }(),
   };
 }
 

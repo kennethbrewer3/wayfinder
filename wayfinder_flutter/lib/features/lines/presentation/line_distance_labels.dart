@@ -40,7 +40,8 @@ class LineMapLabelContent {
   final String? angle;
 
   Size get size {
-    final rowCount = (name != null ? 1 : 0) +
+    final rowCount =
+        (name != null ? 1 : 0) +
         (distance != null ? 1 : 0) +
         (angle != null ? 1 : 0);
     final height = rowCount * _singleRowHeight + (rowCount - 1) * _rowSpacing;
@@ -358,7 +359,8 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
       ),
     ];
 
-    if (widget.previewStart case final start? when widget.previewColor != null) {
+    if (widget.previewStart case final start?
+        when widget.previewColor != null) {
       final preview = previewLineMapLabelContent(
         start: start,
         previewEnd: widget.previewEnd,

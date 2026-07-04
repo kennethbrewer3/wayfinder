@@ -93,10 +93,13 @@ int zoneTypeSortOrder(String type) {
 
 int compareMarkers(MapMarker a, MapMarker b, MarkerSortField sort) {
   final primary = switch (sort) {
-    MarkerSortField.name =>
-      a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-    MarkerSortField.hue =>
-      compareColorHue(parseMarkerColor(a.color), parseMarkerColor(b.color)),
+    MarkerSortField.name => a.name.toLowerCase().compareTo(
+      b.name.toLowerCase(),
+    ),
+    MarkerSortField.hue => compareColorHue(
+      parseMarkerColor(a.color),
+      parseMarkerColor(b.color),
+    ),
     MarkerSortField.icon => a.icon.compareTo(b.icon),
     MarkerSortField.visibility => compareVisibility(a.visible, b.visible),
   };
@@ -106,8 +109,7 @@ int compareMarkers(MapMarker a, MapMarker b, MarkerSortField sort) {
   if (sort == MarkerSortField.name) {
     return a.id.uuid.compareTo(b.id.uuid);
   }
-  final nameCompare =
-      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+  final nameCompare = a.name.toLowerCase().compareTo(b.name.toLowerCase());
   if (nameCompare != 0) {
     return nameCompare;
   }
@@ -117,10 +119,10 @@ int compareMarkers(MapMarker a, MapMarker b, MarkerSortField sort) {
 int compareZones(MapZone a, MapZone b, ZoneSortField sort) {
   final primary = switch (sort) {
     ZoneSortField.name => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-    ZoneSortField.hue =>
-      compareColorHue(zoneSortColor(a), zoneSortColor(b)),
-    ZoneSortField.type =>
-      zoneTypeSortOrder(a.type).compareTo(zoneTypeSortOrder(b.type)),
+    ZoneSortField.hue => compareColorHue(zoneSortColor(a), zoneSortColor(b)),
+    ZoneSortField.type => zoneTypeSortOrder(
+      a.type,
+    ).compareTo(zoneTypeSortOrder(b.type)),
     ZoneSortField.visibility => compareVisibility(a.visible, b.visible),
   };
   if (primary != 0) {
@@ -129,8 +131,7 @@ int compareZones(MapZone a, MapZone b, ZoneSortField sort) {
   if (sort == ZoneSortField.name) {
     return a.id.uuid.compareTo(b.id.uuid);
   }
-  final nameCompare =
-      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+  final nameCompare = a.name.toLowerCase().compareTo(b.name.toLowerCase());
   if (nameCompare != 0) {
     return nameCompare;
   }
@@ -163,14 +164,14 @@ int compareMarkerGroups(
   return switch (sort) {
     MarkerSortField.name => compareNameGroupKeys(a.key, b.key),
     MarkerSortField.hue => compareColorHue(
-        parseMarkerColor(a.key),
-        parseMarkerColor(b.key),
-      ),
+      parseMarkerColor(a.key),
+      parseMarkerColor(b.key),
+    ),
     MarkerSortField.icon => a.key.compareTo(b.key),
     MarkerSortField.visibility => compareVisibility(
-        a.key == 'visible',
-        b.key == 'visible',
-      ),
+      a.key == 'visible',
+      b.key == 'visible',
+    ),
   };
 }
 
@@ -182,15 +183,16 @@ int compareZoneGroups(
   return switch (sort) {
     ZoneSortField.name => compareNameGroupKeys(a.key, b.key),
     ZoneSortField.hue => compareColorHue(
-        parseMarkerColor(a.key),
-        parseMarkerColor(b.key),
-      ),
-    ZoneSortField.type =>
-      zoneTypeSortOrder(a.key).compareTo(zoneTypeSortOrder(b.key)),
+      parseMarkerColor(a.key),
+      parseMarkerColor(b.key),
+    ),
+    ZoneSortField.type => zoneTypeSortOrder(
+      a.key,
+    ).compareTo(zoneTypeSortOrder(b.key)),
     ZoneSortField.visibility => compareVisibility(
-        a.key == 'visible',
-        b.key == 'visible',
-      ),
+      a.key == 'visible',
+      b.key == 'visible',
+    ),
   };
 }
 
@@ -219,7 +221,9 @@ List<MapObjectTreeGroup<MapMarker>> groupMarkers(
   for (final marker in markers) {
     final key = switch (sort) {
       MarkerSortField.name => markerNameGroupKey(marker.name),
-      MarkerSortField.hue => formatMarkerColorHex(parseMarkerColor(marker.color)),
+      MarkerSortField.hue => formatMarkerColorHex(
+        parseMarkerColor(marker.color),
+      ),
       MarkerSortField.icon => marker.icon,
       MarkerSortField.visibility => marker.visible ? 'visible' : 'hidden',
     };
@@ -235,8 +239,7 @@ List<MapObjectTreeGroup<MapMarker>> groupMarkers(
       leading: markerGroupLeading(entry.key, sort),
       items: items,
     );
-  }).toList()
-    ..sort((a, b) => compareMarkerGroups(a, b, sort));
+  }).toList()..sort((a, b) => compareMarkerGroups(a, b, sort));
 
   return groups;
 }
@@ -266,8 +269,7 @@ List<MapObjectTreeGroup<MapZone>> groupZones(
       leading: zoneGroupLeading(entry.key, sort),
       items: items,
     );
-  }).toList()
-    ..sort((a, b) => compareZoneGroups(a, b, sort));
+  }).toList()..sort((a, b) => compareZoneGroups(a, b, sort));
 
   return groups;
 }
@@ -302,10 +304,10 @@ Widget? markerGroupLeading(String key, MarkerSortField sort) {
   return switch (sort) {
     MarkerSortField.hue => _colorSwatch(parseMarkerColor(key)),
     MarkerSortField.icon => Icon(
-        markerIconData(key),
-        size: 18,
-        color: parseMarkerColor('#1B4965'),
-      ),
+      markerIconData(key),
+      size: 18,
+      color: parseMarkerColor('#1B4965'),
+    ),
     _ => null,
   };
 }
@@ -314,10 +316,10 @@ Widget? zoneGroupLeading(String key, ZoneSortField sort) {
   return switch (sort) {
     ZoneSortField.hue => _colorSwatch(parseMarkerColor(key)),
     ZoneSortField.type => Icon(
-        zoneTypeIcon(key),
-        size: 18,
-        color: parseMarkerColor('#1B4965'),
-      ),
+      zoneTypeIcon(key),
+      size: 18,
+      color: parseMarkerColor('#1B4965'),
+    ),
     _ => null,
   };
 }

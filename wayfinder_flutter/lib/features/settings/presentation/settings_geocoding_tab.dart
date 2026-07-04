@@ -191,7 +191,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       return;
     }
 
-    final countryCodes = _selectedDataset.isCustom ||
+    final countryCodes =
+        _selectedDataset.isCustom ||
             _selectedDataset.isFullPlanet ||
             _selectedDataset.isSample
         ? null
@@ -375,8 +376,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     try {
       final repository = ref.read(geocodingRepositoryProvider);
       final jsonText = await repository.exportPlacesArchive();
-      final timestamp =
-          DateTime.now().toUtc().toIso8601String().replaceAll(':', '-');
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
       final saved = await saveTextFile(
         fileName: 'wayfinder-geocode-places-$timestamp.json',
         contents: jsonText,
@@ -502,8 +505,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     try {
       final repository = ref.read(geocodingRepositoryProvider);
       final jsonText = await repository.exportHousenumbersArchive();
-      final timestamp =
-          DateTime.now().toUtc().toIso8601String().replaceAll(':', '-');
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
       final saved = await saveTextFile(
         fileName: 'wayfinder-geocode-housenumbers-$timestamp.json',
         contents: jsonText,
@@ -687,8 +692,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       geocodingStatusIdle => l10n.geocodingStatusNotImported,
       geocodingStatusDownloading => l10n.geocodingStatusDownloading,
       geocodingStatusImporting => l10n.geocodingStatusImporting,
-      geocodingStatusCompleted =>
-        l10n.geocodingStatusReady(formattedCount, readyLabel),
+      geocodingStatusCompleted => l10n.geocodingStatusReady(
+        formattedCount,
+        readyLabel,
+      ),
       geocodingStatusFailed => l10n.geocodingStatusFailed,
       geocodingStatusCancelled => l10n.geocodingStatusCancelled,
       _ => status,
@@ -766,7 +773,9 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         Align(
           alignment: Alignment.centerLeft,
           child: FilledButton(
-            onPressed: _isSavingGeocodingServerUrl ? null : _saveGeocodingServerUrl,
+            onPressed: _isSavingGeocodingServerUrl
+                ? null
+                : _saveGeocodingServerUrl,
             child: Text(
               _isSavingGeocodingServerUrl
                   ? l10n.actionSaving
@@ -779,8 +788,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
           Text(
             l10n.geocodingServerNotConfiguredMessage,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+              color: Theme.of(context).colorScheme.secondary,
+            ),
           ),
         ],
         const SizedBox(height: 24),
@@ -798,12 +807,13 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     final catalogAsync = configured
         ? ref.watch(geocodingCountryCatalogProvider)
         : null;
-    final datasetOptions = catalogAsync?.valueOrNull?.importPresets.isNotEmpty ==
-            true
+    final datasetOptions =
+        catalogAsync?.valueOrNull?.importPresets.isNotEmpty == true
         ? catalogAsync!.value!.importPresets
         : geocodingDatasetOptions;
-    final settingsAsync =
-        configured ? ref.watch(geocodingSettingsProvider) : null;
+    final settingsAsync = configured
+        ? ref.watch(geocodingSettingsProvider)
+        : null;
     final description = _selectedDescription(l10n);
     final contributionSettings =
         settingsAsync?.valueOrNull ?? defaultGeocodingImportState();
@@ -849,8 +859,8 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
           Text(
             l10n.geocodingServerNotConfiguredMessage,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+              color: Theme.of(context).colorScheme.secondary,
+            ),
           )
         else ...[
           if (settingsLoading)
@@ -876,10 +886,11 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
                       Expanded(
                         child: Text(
                           l10n.geocodingServerUnreachable(repository.baseUrl),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onErrorContainer,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onErrorContainer,
                               ),
                         ),
                       ),
@@ -905,296 +916,294 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
     String? description, {
     required List<GeocodingDatasetOption> datasetOptions,
   }) {
-            final placesControlsEnabled = !settings.isPlacesRunning &&
-                !_isStartingPlacesImport &&
-                !_isPlacesArchiveBusy &&
-                !settings.isHousenumbersRunning;
-            final housenumbersControlsEnabled =
-                !settings.isHousenumbersRunning &&
-                    !_isStartingHousenumbersImport &&
-                    !_isHousenumbersArchiveBusy &&
-                    !settings.isPlacesRunning;
-            final placesArchiveEnabled =
-                !settings.isRunning && !_isPlacesArchiveBusy;
-            final housenumbersArchiveEnabled =
-                !settings.isRunning && !_isHousenumbersArchiveBusy;
+    final placesControlsEnabled =
+        !settings.isPlacesRunning &&
+        !_isStartingPlacesImport &&
+        !_isPlacesArchiveBusy &&
+        !settings.isHousenumbersRunning;
+    final housenumbersControlsEnabled =
+        !settings.isHousenumbersRunning &&
+        !_isStartingHousenumbersImport &&
+        !_isHousenumbersArchiveBusy &&
+        !settings.isPlacesRunning;
+    final placesArchiveEnabled = !settings.isRunning && !_isPlacesArchiveBusy;
+    final housenumbersArchiveEnabled =
+        !settings.isRunning && !_isHousenumbersArchiveBusy;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  l10n.geocodingDownloadedDatasetsSectionTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.geocodingDownloadedDatasetsSectionDescription,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  l10n.geocodingPlacesSectionTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.geocodingPlanetImportWarning,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                DropdownButtonFormField<GeocodingDatasetOption>(
-                  key: ValueKey(_selectedDataset.id),
-                  initialValue: _selectedDataset,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingPlaceDatasetLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  items: [
-                    for (final option in datasetOptions)
-                      DropdownMenuItem(
-                        value: option,
-                        child: Text(_datasetLabel(l10n, option)),
-                      ),
-                  ],
-                  onChanged: placesControlsEnabled
-                      ? (value) {
-                          if (value == null) return;
-                          setState(() {
-                            _selectedDataset = value;
-                            if (!value.isCustom) {
-                              _customUrlController.text = value.sourceUrl;
-                            }
-                          });
-                        }
-                      : null,
-                ),
-                if (description != null && description.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    description,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-                if (_selectedDataset.isCustom) ...[
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _customUrlController,
-                    decoration: InputDecoration(
-                      labelText: l10n.geocodingCustomPlaceUrlLabel,
-                      hintText: geocodingPlanetSourceUrl,
-                      border: const OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.url,
-                    autocorrect: false,
-                    autofillHints: const [AutofillHints.url],
-                    enabled: placesControlsEnabled,
-                  ),
-                ],
-                const SizedBox(height: 12),
-                Text(
-                  l10n.geocodingStatusLabel(
-                    _importStatusLabel(
-                      l10n: l10n,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.geocodingDownloadedDatasetsSectionTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.geocodingDownloadedDatasetsSectionDescription,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 24),
+        Text(
+          l10n.geocodingPlacesSectionTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.geocodingPlanetImportWarning,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        DropdownButtonFormField<GeocodingDatasetOption>(
+          key: ValueKey(_selectedDataset.id),
+          initialValue: _selectedDataset,
+          decoration: InputDecoration(
+            labelText: l10n.geocodingPlaceDatasetLabel,
+            border: const OutlineInputBorder(),
+          ),
+          items: [
+            for (final option in datasetOptions)
+              DropdownMenuItem(
+                value: option,
+                child: Text(_datasetLabel(l10n, option)),
+              ),
+          ],
+          onChanged: placesControlsEnabled
+              ? (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _selectedDataset = value;
+                    if (!value.isCustom) {
+                      _customUrlController.text = value.sourceUrl;
+                    }
+                  });
+                }
+              : null,
+        ),
+        if (description != null && description.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            description,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+        if (_selectedDataset.isCustom) ...[
+          const SizedBox(height: 12),
+          TextField(
+            controller: _customUrlController,
+            decoration: InputDecoration(
+              labelText: l10n.geocodingCustomPlaceUrlLabel,
+              hintText: geocodingPlanetSourceUrl,
+              border: const OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            autofillHints: const [AutofillHints.url],
+            enabled: placesControlsEnabled,
+          ),
+        ],
+        const SizedBox(height: 12),
+        Text(
+          l10n.geocodingStatusLabel(
+            _importStatusLabel(
+              l10n: l10n,
+              status: settings.importStatus,
+              rowCount: settings.importedRowCount,
+              readyLabel: l10n.geocodingRowLabelPlaces,
+              activePhase: settings.isPlacesRunning
+                  ? resolveGeocodingImportPhase(
+                      isRunning: settings.isPlacesRunning,
                       status: settings.importStatus,
-                      rowCount: settings.importedRowCount,
-                      readyLabel: l10n.geocodingRowLabelPlaces,
-                      activePhase: settings.isPlacesRunning
-                          ? resolveGeocodingImportPhase(
-                              isRunning: settings.isPlacesRunning,
-                              status: settings.importStatus,
-                              progress: settings.importProgress,
-                            )
-                          : null,
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                if (settings.importStatus != geocodingStatusIdle) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.geocodingLastSelection(
-                      _activeDatasetLabel(
-                        l10n,
-                        settings,
-                        datasetOptions: datasetOptions,
-                      ),
-                    ),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-                _buildImportProgress(
-                  isRunning: settings.isPlacesRunning,
-                  importStatus: settings.importStatus,
-                  progress: settings.importProgress,
-                  importedRowCount: settings.importedRowCount,
-                  rowLabel: l10n.geocodingRowLabelRows,
-                  isAddresses: false,
-                  isCancelling: _isCancellingPlacesImport,
-                  onAbort: settings.isPlacesRunning ? _cancelPlacesImport : null,
-                ),
-                if (!settings.isPlacesRunning && settings.importedAt != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.geocodingLastImport(
-                      settings.importedAt!.toLocal().toString(),
-                    ),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-                if (settings.importError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    settings.importError!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                  ),
-                ],
-                const SizedBox(height: 12),
-                Text(
-                  l10n.geocodingPlacesArchiveDescription,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 12),
-                _buildArchiveActions(
-                  l10n: l10n,
-                  enabled: placesArchiveEnabled,
-                  busy: _isPlacesArchiveBusy,
-                  onExport: _exportPlacesArchive,
-                  onImport: _importPlacesArchive,
-                  onRemoveAll: _clearPlaces,
-                ),
-                const SizedBox(height: 16),
-                FilledButton.icon(
-                  onPressed:
-                      placesControlsEnabled ? _downloadAndImportPlaces : null,
-                  icon: _isStartingPlacesImport || settings.isPlacesRunning
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.cloud_download_outlined),
-                  label: Text(
-                    settings.isPlacesRunning
-                        ? l10n.geocodingPlaceImportInProgress
-                        : l10n.geocodingDownloadImportPlaces,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const Divider(),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.geocodingAddressesSectionTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.geocodingHousenumbersImportWarning,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _housenumbersUrlController,
-                  decoration: InputDecoration(
-                    labelText: l10n.geocodingHousenumbersUrlLabel,
-                    hintText: geocodingHousenumbersSourceUrl,
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.url,
-                  autocorrect: false,
-                  autofillHints: const [AutofillHints.url],
-                  enabled: housenumbersControlsEnabled,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  l10n.geocodingStatusLabel(
-                    _importStatusLabel(
-                      l10n: l10n,
+                      progress: settings.importProgress,
+                    )
+                  : null,
+            ),
+          ),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        if (settings.importStatus != geocodingStatusIdle) ...[
+          const SizedBox(height: 4),
+          Text(
+            l10n.geocodingLastSelection(
+              _activeDatasetLabel(
+                l10n,
+                settings,
+                datasetOptions: datasetOptions,
+              ),
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+        _buildImportProgress(
+          isRunning: settings.isPlacesRunning,
+          importStatus: settings.importStatus,
+          progress: settings.importProgress,
+          importedRowCount: settings.importedRowCount,
+          rowLabel: l10n.geocodingRowLabelRows,
+          isAddresses: false,
+          isCancelling: _isCancellingPlacesImport,
+          onAbort: settings.isPlacesRunning ? _cancelPlacesImport : null,
+        ),
+        if (!settings.isPlacesRunning && settings.importedAt != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            l10n.geocodingLastImport(
+              settings.importedAt!.toLocal().toString(),
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+        if (settings.importError != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            settings.importError!,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ],
+        const SizedBox(height: 12),
+        Text(
+          l10n.geocodingPlacesArchiveDescription,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 12),
+        _buildArchiveActions(
+          l10n: l10n,
+          enabled: placesArchiveEnabled,
+          busy: _isPlacesArchiveBusy,
+          onExport: _exportPlacesArchive,
+          onImport: _importPlacesArchive,
+          onRemoveAll: _clearPlaces,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.icon(
+          onPressed: placesControlsEnabled ? _downloadAndImportPlaces : null,
+          icon: _isStartingPlacesImport || settings.isPlacesRunning
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.cloud_download_outlined),
+          label: Text(
+            settings.isPlacesRunning
+                ? l10n.geocodingPlaceImportInProgress
+                : l10n.geocodingDownloadImportPlaces,
+          ),
+        ),
+        const SizedBox(height: 32),
+        const Divider(),
+        const SizedBox(height: 16),
+        Text(
+          l10n.geocodingAddressesSectionTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.geocodingHousenumbersImportWarning,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _housenumbersUrlController,
+          decoration: InputDecoration(
+            labelText: l10n.geocodingHousenumbersUrlLabel,
+            hintText: geocodingHousenumbersSourceUrl,
+            border: const OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.url,
+          autocorrect: false,
+          autofillHints: const [AutofillHints.url],
+          enabled: housenumbersControlsEnabled,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          l10n.geocodingStatusLabel(
+            _importStatusLabel(
+              l10n: l10n,
+              status: settings.housenumbersImportStatus,
+              rowCount: settings.housenumbersImportedRowCount,
+              readyLabel: l10n.geocodingRowLabelAddresses,
+              activePhase: settings.isHousenumbersRunning
+                  ? resolveGeocodingImportPhase(
+                      isRunning: settings.isHousenumbersRunning,
                       status: settings.housenumbersImportStatus,
-                      rowCount: settings.housenumbersImportedRowCount,
-                      readyLabel: l10n.geocodingRowLabelAddresses,
-                      activePhase: settings.isHousenumbersRunning
-                          ? resolveGeocodingImportPhase(
-                              isRunning: settings.isHousenumbersRunning,
-                              status: settings.housenumbersImportStatus,
-                              progress: settings.housenumbersImportProgress,
-                            )
-                          : null,
-                      isAddresses: true,
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                _buildImportProgress(
-                  isRunning: settings.isHousenumbersRunning,
-                  importStatus: settings.housenumbersImportStatus,
-                  progress: settings.housenumbersImportProgress,
-                  importedRowCount: settings.housenumbersImportedRowCount,
-                  rowLabel: l10n.geocodingRowLabelAddresses,
-                  isAddresses: true,
-                  isCancelling: _isCancellingHousenumbersImport,
-                  onAbort: settings.isHousenumbersRunning
-                      ? _cancelHousenumbersImport
-                      : null,
-                ),
-                if (!settings.isHousenumbersRunning &&
-                    settings.housenumbersImportedAt != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.geocodingLastImport(
-                      settings.housenumbersImportedAt!.toLocal().toString(),
-                    ),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-                if (settings.housenumbersImportError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    settings.housenumbersImportError!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                  ),
-                ],
-                const SizedBox(height: 12),
-                Text(
-                  l10n.geocodingAddressesArchiveDescription,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 12),
-                _buildArchiveActions(
-                  l10n: l10n,
-                  enabled: housenumbersArchiveEnabled,
-                  busy: _isHousenumbersArchiveBusy,
-                  onExport: _exportHousenumbersArchive,
-                  onImport: _importHousenumbersArchive,
-                  onRemoveAll: _clearHousenumbers,
-                ),
-                const SizedBox(height: 16),
-                FilledButton.icon(
-                  onPressed: housenumbersControlsEnabled
-                      ? _downloadAndImportHousenumbers
-                      : null,
-                  icon: _isStartingHousenumbersImport ||
-                          settings.isHousenumbersRunning
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.home_work_outlined),
-                  label: Text(
-                    settings.isHousenumbersRunning
-                        ? l10n.geocodingAddressImportInProgress
-                        : l10n.geocodingDownloadImportHousenumbers,
-                  ),
-                ),
-              ],
-            );
+                      progress: settings.housenumbersImportProgress,
+                    )
+                  : null,
+              isAddresses: true,
+            ),
+          ),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        _buildImportProgress(
+          isRunning: settings.isHousenumbersRunning,
+          importStatus: settings.housenumbersImportStatus,
+          progress: settings.housenumbersImportProgress,
+          importedRowCount: settings.housenumbersImportedRowCount,
+          rowLabel: l10n.geocodingRowLabelAddresses,
+          isAddresses: true,
+          isCancelling: _isCancellingHousenumbersImport,
+          onAbort: settings.isHousenumbersRunning
+              ? _cancelHousenumbersImport
+              : null,
+        ),
+        if (!settings.isHousenumbersRunning &&
+            settings.housenumbersImportedAt != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            l10n.geocodingLastImport(
+              settings.housenumbersImportedAt!.toLocal().toString(),
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+        if (settings.housenumbersImportError != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            settings.housenumbersImportError!,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ],
+        const SizedBox(height: 12),
+        Text(
+          l10n.geocodingAddressesArchiveDescription,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 12),
+        _buildArchiveActions(
+          l10n: l10n,
+          enabled: housenumbersArchiveEnabled,
+          busy: _isHousenumbersArchiveBusy,
+          onExport: _exportHousenumbersArchive,
+          onImport: _importHousenumbersArchive,
+          onRemoveAll: _clearHousenumbers,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.icon(
+          onPressed: housenumbersControlsEnabled
+              ? _downloadAndImportHousenumbers
+              : null,
+          icon: _isStartingHousenumbersImport || settings.isHousenumbersRunning
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.home_work_outlined),
+          label: Text(
+            settings.isHousenumbersRunning
+                ? l10n.geocodingAddressImportInProgress
+                : l10n.geocodingDownloadImportHousenumbers,
+          ),
+        ),
+      ],
+    );
   }
 }

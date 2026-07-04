@@ -69,7 +69,8 @@ class MarkerIconCatalog {
 
   String label(String iconName) => option(iconName)?.label ?? 'Place';
 
-  String normalize(String iconName) => option(iconName) == null ? 'place' : iconName;
+  String normalize(String iconName) =>
+      option(iconName) == null ? 'place' : iconName;
 
   String? asset(String iconName) => option(iconName)?.assetPath;
 

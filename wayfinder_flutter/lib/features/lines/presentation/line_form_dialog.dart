@@ -21,20 +21,18 @@ enum LineBorderPattern {
 
 extension LineBorderPatternLabel on LineBorderPattern {
   String get storageValue => switch (this) {
-        LineBorderPattern.solid => 'solid',
-        LineBorderPattern.dashed => 'dashed',
-      };
+    LineBorderPattern.solid => 'solid',
+    LineBorderPattern.dashed => 'dashed',
+  };
 
   String get label => switch (this) {
-        LineBorderPattern.solid => 'Solid',
-        LineBorderPattern.dashed => 'Dashed',
-      };
+    LineBorderPattern.solid => 'Solid',
+    LineBorderPattern.dashed => 'Dashed',
+  };
 }
 
 LineBorderPattern lineBorderPatternFromStorage(String value) {
-  return value == 'dashed'
-      ? LineBorderPattern.dashed
-      : LineBorderPattern.solid;
+  return value == 'dashed' ? LineBorderPattern.dashed : LineBorderPattern.solid;
 }
 
 class LineFormData {
@@ -74,8 +72,9 @@ Future<LineFormData?> showLineFormDialog({
   Color? initialColor,
   LineBorderPattern initialBorderPattern = LineBorderPattern.solid,
   bool initialShowArrows = true,
-  LineArrowDensity initialArrowDensity =
-      const LineArrowDensity(LineArrowDensity.defaultLevel),
+  LineArrowDensity initialArrowDensity = const LineArrowDensity(
+    LineArrowDensity.defaultLevel,
+  ),
   UuidValue? initialLayerId,
 }) {
   return showDialog<LineFormData>(
@@ -115,8 +114,9 @@ class LineFormDialog extends StatefulWidget {
     required this.initialColor,
     required this.initialBorderPattern,
     required this.initialShowArrows,
-    this.initialArrowDensity =
-        const LineArrowDensity(LineArrowDensity.defaultLevel),
+    this.initialArrowDensity = const LineArrowDensity(
+      LineArrowDensity.defaultLevel,
+    ),
     this.initialLayerId,
   });
 
@@ -284,8 +284,8 @@ class _LineFormDialogState extends State<LineFormDialog> {
                 trailing: Text(
                   distanceLabel,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               CoordinateFormFields(
@@ -349,7 +349,8 @@ class _LineFormDialogState extends State<LineFormDialog> {
                         min: LineArrowDensity.minLevel.toDouble(),
                         max: LineArrowDensity.maxLevel.toDouble(),
                         divisions:
-                            LineArrowDensity.maxLevel - LineArrowDensity.minLevel,
+                            LineArrowDensity.maxLevel -
+                            LineArrowDensity.minLevel,
                         label: _arrowDensity.localizedLabel(l10n),
                         onChanged: (value) {
                           setState(() {

@@ -38,10 +38,7 @@ class EndpointGeocoding extends _i1.EndpointRef {
   }) => caller.callServerEndpoint<_i3.GeocodingSettings>(
     'geocoding',
     'updateSourceUrl',
-    {
-      'sourceUrl': sourceUrl,
-      'countryCodes': countryCodes,
-    },
+    {'sourceUrl': sourceUrl, 'countryCodes': countryCodes},
   );
 
   _i2.Future<_i3.GeocodingSettings> startImport({
@@ -50,10 +47,7 @@ class EndpointGeocoding extends _i1.EndpointRef {
   }) => caller.callServerEndpoint<_i3.GeocodingSettings>(
     'geocoding',
     'startImport',
-    {
-      'sourceUrl': sourceUrl,
-      'countryCodes': countryCodes,
-    },
+    {'sourceUrl': sourceUrl, 'countryCodes': countryCodes},
   );
 
   _i2.Future<_i3.GeocodingSettings> startHousenumbersImport({
@@ -85,50 +79,30 @@ class EndpointGeocoding extends _i1.EndpointRef {
         {'query': query},
       );
 
-  _i2.Future<bool> isSearchReady() => caller.callServerEndpoint<bool>(
-    'geocoding',
-    'isSearchReady',
-    {},
-  );
+  _i2.Future<bool> isSearchReady() =>
+      caller.callServerEndpoint<bool>('geocoding', 'isSearchReady', {});
 
-  _i2.Future<String> exportPlacesArchive() => caller.callServerEndpoint<String>(
-    'geocoding',
-    'exportPlacesArchive',
-    {},
-  );
+  _i2.Future<String> exportPlacesArchive() =>
+      caller.callServerEndpoint<String>('geocoding', 'exportPlacesArchive', {});
 
-  _i2.Future<String> exportHousenumbersArchive() =>
-      caller.callServerEndpoint<String>(
-        'geocoding',
-        'exportHousenumbersArchive',
-        {},
-      );
+  _i2.Future<String> exportHousenumbersArchive() => caller
+      .callServerEndpoint<String>('geocoding', 'exportHousenumbersArchive', {});
 
   _i2.Future<int> importPlacesArchive(String archiveJson) =>
-      caller.callServerEndpoint<int>(
-        'geocoding',
-        'importPlacesArchive',
-        {'archiveJson': archiveJson},
-      );
+      caller.callServerEndpoint<int>('geocoding', 'importPlacesArchive', {
+        'archiveJson': archiveJson,
+      });
 
   _i2.Future<int> importHousenumbersArchive(String archiveJson) =>
-      caller.callServerEndpoint<int>(
-        'geocoding',
-        'importHousenumbersArchive',
-        {'archiveJson': archiveJson},
-      );
+      caller.callServerEndpoint<int>('geocoding', 'importHousenumbersArchive', {
+        'archiveJson': archiveJson,
+      });
 
-  _i2.Future<int> clearPlaces() => caller.callServerEndpoint<int>(
-    'geocoding',
-    'clearPlaces',
-    {},
-  );
+  _i2.Future<int> clearPlaces() =>
+      caller.callServerEndpoint<int>('geocoding', 'clearPlaces', {});
 
-  _i2.Future<int> clearHousenumbers() => caller.callServerEndpoint<int>(
-    'geocoding',
-    'clearHousenumbers',
-    {},
-  );
+  _i2.Future<int> clearHousenumbers() =>
+      caller.callServerEndpoint<int>('geocoding', 'clearHousenumbers', {});
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -141,12 +115,7 @@ class Client extends _i1.ServerpodClientShared {
     super.authenticationKeyManager,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
-    Function(
-      _i1.MethodCallContext,
-      Object,
-      StackTrace,
-    )?
-    onFailedCall,
+    Function(_i1.MethodCallContext, Object, StackTrace)? onFailedCall,
     Function(_i1.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(

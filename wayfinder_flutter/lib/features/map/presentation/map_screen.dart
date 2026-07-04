@@ -105,7 +105,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       if (!mounted) {
         return;
       }
-      ref.read(mapViewportProvider.notifier).setDeepLinkViewport(targetViewport);
+      ref
+          .read(mapViewportProvider.notifier)
+          .setDeepLinkViewport(targetViewport);
     });
   }
 
@@ -137,21 +139,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _handleSearchResult(SearchResult result) async {
-    final defaultZoom = ref.read(mapViewportProvider).valueOrNull?.zoom ??
+    final defaultZoom =
+        ref.read(mapViewportProvider).valueOrNull?.zoom ??
         AppConstants.defaultZoom;
     final zoom = switch (result.type) {
       SearchResultType.coordinate ||
       SearchResultType.place ||
-      SearchResultType.address =>
-        result.zoom,
+      SearchResultType.address => result.zoom,
       _ => defaultZoom,
     };
-    await ref.read(mapViewportProvider.notifier).moveTo(
+    await ref
+        .read(mapViewportProvider.notifier)
+        .moveTo(
           center: result.location,
           zoom: zoom,
         );
-    final searchCoordinateMarker =
-        ref.read(searchCoordinateMarkerProvider.notifier);
+    final searchCoordinateMarker = ref.read(
+      searchCoordinateMarkerProvider.notifier,
+    );
     if (result.type == SearchResultType.coordinate ||
         result.type == SearchResultType.place ||
         result.type == SearchResultType.address) {
@@ -164,7 +169,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _zoomTo(LatLng location) {
-    return ref.read(mapViewportProvider.notifier).moveTo(
+    return ref
+        .read(mapViewportProvider.notifier)
+        .moveTo(
           center: location,
           zoom: 14,
         );
@@ -214,7 +221,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     final searchResults = watchCombinedSearchResults(ref, l10n);
     final debouncedQuery = ref.watch(debouncedMapSearchQueryProvider).trim();
-    final geocodingLoading = debouncedQuery.length >= mapSearchMinGeocodingLength &&
+    final geocodingLoading =
+        debouncedQuery.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(debouncedQuery)).isLoading;
     final showSearchResults = searchResults.isNotEmpty || geocodingLoading;
 
@@ -240,7 +248,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             tooltip: l10n.mapManualTooltip,
             icon: const Icon(Icons.menu_book_outlined),
             onPressed: () {
-              AppLogger.logNav.info('🧭 Navigating to user manual from app bar');
+              AppLogger.logNav.info(
+                '🧭 Navigating to user manual from app bar',
+              );
               context.push('/manual');
             },
           ),
@@ -256,79 +266,81 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ),
       body: MapObjectSelectionListener(
         child: viewportAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) =>
-            Center(child: Text(l10n.mapLoadFailed(error.toString()))),
-        data: (viewport) {
-          final isWide = MediaQuery.sizeOf(context).width >= 960;
-          final sidebarExpanded = ref.watch(
-            sidebarProvider.select((state) => state.expanded),
-          );
-          const sidebarWidth = 320.0;
-          const sidebarHeightExpanded = 280.0;
-          const sidebarHeightCollapsed = 56.0;
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) =>
+              Center(child: Text(l10n.mapLoadFailed(error.toString()))),
+          data: (viewport) {
+            final isWide = MediaQuery.sizeOf(context).width >= 960;
+            final sidebarExpanded = ref.watch(
+              sidebarProvider.select((state) => state.expanded),
+            );
+            const sidebarWidth = 320.0;
+            const sidebarHeightExpanded = 280.0;
+            const sidebarHeightCollapsed = 56.0;
 
-          final mapSection = Stack(
-            children: [
-              Positioned.fill(
-                child: MapView(
-                  viewport: viewport,
-                  onViewportChanged: _handleViewportChanged,
-                ),
-              ),
-              if (isWide && !sidebarExpanded)
-                Positioned(
-                  top: 16,
-                  right: 8,
-                  child: Material(
-                    elevation: 2,
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: IconButton(
-                      tooltip: l10n.mapShowObjectsTooltip,
-                      icon: const Icon(Icons.chevron_left),
-                      onPressed: () {
-                        ref.read(sidebarProvider.notifier).setExpanded(true);
-                      },
-                    ),
+            final mapSection = Stack(
+              children: [
+                Positioned.fill(
+                  child: MapView(
+                    viewport: viewport,
+                    onViewportChanged: _handleViewportChanged,
                   ),
                 ),
-            ],
-          );
+                if (isWide && !sidebarExpanded)
+                  Positioned(
+                    top: 16,
+                    right: 8,
+                    child: Material(
+                      elevation: 2,
+                      borderRadius: BorderRadius.circular(8),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
+                      child: IconButton(
+                        tooltip: l10n.mapShowObjectsTooltip,
+                        icon: const Icon(Icons.chevron_left),
+                        onPressed: () {
+                          ref.read(sidebarProvider.notifier).setExpanded(true);
+                        },
+                      ),
+                    ),
+                  ),
+              ],
+            );
 
-          final sidebar = SidebarPanel(onZoomTo: _zoomTo);
+            final sidebar = SidebarPanel(onZoomTo: _zoomTo);
 
-          if (isWide) {
-            return Row(
+            if (isWide) {
+              return Row(
+                children: [
+                  Expanded(child: mapSection),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
+                    width: sidebarExpanded ? sidebarWidth : 0,
+                    child: sidebarExpanded
+                        ? SizedBox(width: sidebarWidth, child: sidebar)
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              );
+            }
+
+            return Column(
               children: [
                 Expanded(child: mapSection),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
-                  width: sidebarExpanded ? sidebarWidth : 0,
-                  child: sidebarExpanded
-                      ? SizedBox(width: sidebarWidth, child: sidebar)
-                      : const SizedBox.shrink(),
+                  height: sidebarExpanded
+                      ? sidebarHeightExpanded
+                      : sidebarHeightCollapsed,
+                  child: sidebar,
                 ),
               ],
             );
-          }
-
-          return Column(
-            children: [
-              Expanded(child: mapSection),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                height: sidebarExpanded
-                    ? sidebarHeightExpanded
-                    : sidebarHeightCollapsed,
-                child: sidebar,
-              ),
-            ],
-          );
-        },
-      ),
+          },
+        ),
       ),
     );
   }

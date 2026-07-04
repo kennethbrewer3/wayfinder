@@ -78,7 +78,7 @@ abstract final class GeocodingImporter {
       session,
       'geocoding',
       '🌍 Starting place-name import url=$url '
-      'countries=${codesValue ?? 'all'}',
+          'countries=${codesValue ?? 'all'}',
     );
     unawaited(_runImport(serverpod, url, countryFilter: normalizedCodes));
     return updated;
@@ -142,7 +142,7 @@ abstract final class GeocodingImporter {
       null,
       'geocoding',
       '🌍 Place-name import worker started '
-      'url=$url countries=${countryFilter?.join(',') ?? 'all'}',
+          'url=$url countries=${countryFilter?.join(',') ?? 'all'}',
     );
     try {
       final session = await serverpod.createSession();
@@ -165,17 +165,17 @@ abstract final class GeocodingImporter {
         serverpod: serverpod,
         logLabel: 'places',
         totalBytes: -1,
-        updateStatus: ({
-          required String importStatus,
-          required int importedRowCount,
-          required double importProgress,
-        }) =>
-            _updateProgress(
-          serverpod,
-          importStatus: importStatus,
-          importedRowCount: importedRowCount,
-          importProgress: importProgress,
-        ),
+        updateStatus:
+            ({
+              required String importStatus,
+              required int importedRowCount,
+              required double importProgress,
+            }) => _updateProgress(
+              serverpod,
+              importStatus: importStatus,
+              importedRowCount: importedRowCount,
+              importProgress: importProgress,
+            ),
       );
       await GeocodingRemoteFetch.withDownload(
         url,
@@ -214,7 +214,7 @@ abstract final class GeocodingImporter {
                 null,
                 'geocoding',
                 '🌍 Place-name import started parsing rows '
-                'totalBytes=${contentLength >= 0 ? GeocodingDownloadProgress.formatBytes(contentLength) : 'unknown'}',
+                    'totalBytes=${contentLength >= 0 ? GeocodingDownloadProgress.formatBytes(contentLength) : 'unknown'}',
               );
               continue;
             }
@@ -251,7 +251,7 @@ abstract final class GeocodingImporter {
             null,
             'geocoding',
             '🌍 Place-name import finished parsing rows=$importedRows — '
-            'flushing staging to live table next',
+                'flushing staging to live table next',
           );
 
           await _updateProgress(
@@ -293,7 +293,7 @@ abstract final class GeocodingImporter {
         null,
         'geocoding',
         '🌍 Place-name import committing rows=$importedRows '
-        '(copying staging → live table; this can take a long time)',
+            '(copying staging → live table; this can take a long time)',
       );
 
       final commitSession = await serverpod.createSession();

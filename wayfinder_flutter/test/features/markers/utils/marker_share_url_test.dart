@@ -31,7 +31,10 @@ void main() {
       markerId: UuidValue.fromString('22222222-2222-4222-8222-222222222222'),
     );
 
-    expect(mapShareLocation(uri), '/maps?marker=22222222-2222-4222-8222-222222222222');
+    expect(
+      mapShareLocation(uri),
+      '/maps?marker=22222222-2222-4222-8222-222222222222',
+    );
   });
 
   test('absoluteWebShareUri keeps query in query string without fragment', () {

@@ -33,8 +33,8 @@ class LineDrawingState {
 
 final lineDrawingProvider =
     StateNotifierProvider<LineDrawingNotifier, LineDrawingState>(
-  (ref) => LineDrawingNotifier(),
-);
+      (ref) => LineDrawingNotifier(),
+    );
 
 class LineDrawingNotifier extends StateNotifier<LineDrawingState> {
   LineDrawingNotifier() : super(const LineDrawingState());

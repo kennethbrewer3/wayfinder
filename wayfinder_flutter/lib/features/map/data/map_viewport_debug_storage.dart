@@ -5,7 +5,8 @@ import '../../../core/constants.dart';
 class MapViewportDebugStorage {
   Future<bool> loadOverlay() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(AppConstants.mapViewportDebugBorderStorageKey) ?? false;
+    return prefs.getBool(AppConstants.mapViewportDebugBorderStorageKey) ??
+        false;
   }
 
   Future<bool> loadTileBorders() async {

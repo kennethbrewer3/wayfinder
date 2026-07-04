@@ -3,10 +3,7 @@ import '../../lines/models/distance_input_unit.dart';
 import '../../lines/models/measurement_units.dart';
 
 export '../../lines/models/distance_input_unit.dart'
-    show
-        DistanceInputUnit,
-        defaultDistanceInputUnit,
-        distanceInputUnitsFor;
+    show DistanceInputUnit, defaultDistanceInputUnit, distanceInputUnitsFor;
 
 String formatCircleSize(
   double radiusMeters,

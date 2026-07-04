@@ -20,20 +20,20 @@ Future<PmTilesArchive> openPmtilesArchive(PmtilesSource source) async {
   try {
     final archive = await switch (source) {
       PmtilesSourcePath(:final path) => () async {
-          log.debug('🗺️ Opening from path', data: path);
-          return PmTilesArchive.from(path);
-        }(),
+        log.debug('🗺️ Opening from path', data: path);
+        return PmTilesArchive.from(path);
+      }(),
       PmtilesSourceUrl(:final url) => () async {
-          log.debug('🗺️ Opening from URL', data: url);
-          return PmTilesArchive.from(url);
-        }(),
+        log.debug('🗺️ Opening from URL', data: url);
+        return PmTilesArchive.from(url);
+      }(),
       PmtilesSourceBytes(:final bytes) => () async {
-          log.debug(
-            '🗺️ Opening from memory',
-            data: 'size=${formatBytes(bytes.length)}',
-          );
-          return PmTilesArchive.fromBytes(bytes);
-        }(),
+        log.debug(
+          '🗺️ Opening from memory',
+          data: 'size=${formatBytes(bytes.length)}',
+        );
+        return PmTilesArchive.fromBytes(bytes);
+      }(),
     };
 
     log.success(
@@ -145,7 +145,10 @@ Future<PmtilesMapLayerConfig> buildPmtilesMapLayer(
         tileProvider: PmTilesTileProvider.fromArchive(archive),
       );
     case TileType.unknown:
-      log.error('🗺️ Unsupported PMTiles tile type', data: archive.tileType.name);
+      log.error(
+        '🗺️ Unsupported PMTiles tile type',
+        data: archive.tileType.name,
+      );
       throw UnsupportedError(
         'Unsupported PMTiles tile type. Use Protomaps vector (.pmtiles with MVT tiles) '
         'or raster tiles (PNG/JPEG/WebP).',

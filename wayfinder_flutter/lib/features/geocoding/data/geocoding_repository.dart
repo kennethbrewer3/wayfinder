@@ -11,7 +11,7 @@ import '../models/geocoding_models.dart';
 
 class GeocodingRepository {
   GeocodingRepository({String? geocodingWebServerUrl})
-      : _webServerUrl = _normalizeOptionalBaseUrl(geocodingWebServerUrl);
+    : _webServerUrl = _normalizeOptionalBaseUrl(geocodingWebServerUrl);
 
   final String? _webServerUrl;
   static final _log = AppLogger.logSettings;
@@ -93,19 +93,16 @@ class GeocodingRepository {
   Future<GeocodingImportState> updateImportConfig({
     required String sourceUrl,
     List<String>? countryCodes,
-  }) =>
-      _updateSettingsRest(sourceUrl.trim(), countryCodes: countryCodes);
+  }) => _updateSettingsRest(sourceUrl.trim(), countryCodes: countryCodes);
 
   Future<GeocodingImportState> startImport({
     String? sourceUrl,
     List<String>? countryCodes,
-  }) =>
-      _startImportRest(sourceUrl?.trim(), countryCodes: countryCodes);
+  }) => _startImportRest(sourceUrl?.trim(), countryCodes: countryCodes);
 
   Future<GeocodingImportState> startHousenumbersImport({
     String? sourceUrl,
-  }) =>
-      _startHousenumbersImportRest(sourceUrl?.trim());
+  }) => _startHousenumbersImportRest(sourceUrl?.trim());
 
   Future<GeocodingImportState> cancelImport() => _cancelImportRest();
 
@@ -136,14 +133,13 @@ class GeocodingRepository {
     required double longitude,
     String? notes,
     String? countryCode,
-  }) =>
-      _createContributionRest(
-        name: name,
-        latitude: latitude,
-        longitude: longitude,
-        notes: notes,
-        countryCode: countryCode,
-      );
+  }) => _createContributionRest(
+    name: name,
+    latitude: latitude,
+    longitude: longitude,
+    notes: notes,
+    countryCode: countryCode,
+  );
 
   Future<GeocodingContribution> updateContribution({
     required int id,
@@ -152,15 +148,14 @@ class GeocodingRepository {
     required double longitude,
     String? notes,
     String? countryCode,
-  }) =>
-      _updateContributionRest(
-        id: id,
-        name: name,
-        latitude: latitude,
-        longitude: longitude,
-        notes: notes,
-        countryCode: countryCode,
-      );
+  }) => _updateContributionRest(
+    id: id,
+    name: name,
+    latitude: latitude,
+    longitude: longitude,
+    notes: notes,
+    countryCode: countryCode,
+  );
 
   Future<void> deleteContribution(int id) => _deleteContributionRest(id);
 
@@ -179,8 +174,7 @@ class GeocodingRepository {
 
   Future<GeocodingImportState> updateCrowdsourceConfig({
     required String crowdsourceSourceUrl,
-  }) =>
-      _updateCrowdsourceConfigRest(crowdsourceSourceUrl);
+  }) => _updateCrowdsourceConfigRest(crowdsourceSourceUrl);
 
   Future<List<GeocodingPlaceResult>> searchPlaces(
     String query, {
@@ -205,8 +199,9 @@ class GeocodingRepository {
   }
 
   Future<GeocodingImportState> _getSettingsRest() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/api/geocoding/settings'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/geocoding/settings'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'GET /api/geocoding/settings returned ${response.statusCode}',
@@ -276,8 +271,9 @@ class GeocodingRepository {
   }
 
   Future<GeocodingImportState> _cancelImportRest() async {
-    final response =
-        await http.post(Uri.parse('$baseUrl/api/geocoding/import/cancel'));
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/geocoding/import/cancel'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'POST /api/geocoding/import/cancel returned ${response.statusCode}',
@@ -299,8 +295,9 @@ class GeocodingRepository {
   }
 
   Future<String> _exportPlacesArchiveRest() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/api/geocoding/export/places'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/geocoding/export/places'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'GET /api/geocoding/export/places returned ${response.statusCode}',
@@ -358,8 +355,9 @@ class GeocodingRepository {
   }
 
   Future<int> _clearPlacesRest() async {
-    final response =
-        await http.delete(Uri.parse('$baseUrl/api/geocoding/places'));
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/geocoding/places'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'DELETE /api/geocoding/places returned ${response.statusCode}',
@@ -373,8 +371,9 @@ class GeocodingRepository {
   }
 
   Future<int> _clearHousenumbersRest() async {
-    final response =
-        await http.delete(Uri.parse('$baseUrl/api/geocoding/housenumbers'));
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/geocoding/housenumbers'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'DELETE /api/geocoding/housenumbers returned ${response.statusCode}',
@@ -390,8 +389,9 @@ class GeocodingRepository {
   }
 
   Future<List<GeocodingContribution>> _listContributionsRest() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/api/geocoding/contributions'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/geocoding/contributions'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'GET /api/geocoding/contributions returned ${response.statusCode}',
@@ -403,8 +403,7 @@ class GeocodingRepository {
     }
     return [
       for (final item in decoded)
-        if (item is Map<String, dynamic>)
-          GeocodingContribution.fromJson(item),
+        if (item is Map<String, dynamic>) GeocodingContribution.fromJson(item),
     ];
   }
 
@@ -468,8 +467,9 @@ class GeocodingRepository {
   }
 
   Future<void> _deleteContributionRest(int id) async {
-    final response =
-        await http.delete(Uri.parse('$baseUrl/api/geocoding/contributions/$id'));
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/geocoding/contributions/$id'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'DELETE /api/geocoding/contributions/$id returned ${response.statusCode}',
@@ -508,8 +508,9 @@ class GeocodingRepository {
   }
 
   Future<int> _clearContributionsRest() async {
-    final response =
-        await http.delete(Uri.parse('$baseUrl/api/geocoding/contributions'));
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/geocoding/contributions'),
+    );
     if (response.statusCode != 200) {
       throw Exception(
         'DELETE /api/geocoding/contributions returned ${response.statusCode}',
@@ -593,7 +594,9 @@ class GeocodingRepository {
     );
     final response = await http.get(uri);
     if (response.statusCode != 200) {
-      throw Exception('GET /api/geocoding/search returned ${response.statusCode}');
+      throw Exception(
+        'GET /api/geocoding/search returned ${response.statusCode}',
+      );
     }
 
     final decoded = jsonDecode(response.body);
@@ -616,7 +619,8 @@ class GeocodingRepository {
       importProgress: (json['importProgress'] as num?)?.toDouble() ?? 0,
       importError: json['importError'] as String?,
       importedAt: _parseDate(json['importedAt']),
-      housenumbersSourceUrl: json['housenumbersSourceUrl'] as String? ??
+      housenumbersSourceUrl:
+          json['housenumbersSourceUrl'] as String? ??
           defaultHousenumbersSourceUrl,
       housenumbersImportStatus:
           json['housenumbersImportStatus'] as String? ?? geocodingStatusIdle,
@@ -630,7 +634,8 @@ class GeocodingRepository {
       isRunning: json['isRunning'] as bool? ?? false,
       isPlacesRunning: json['isPlacesRunning'] as bool? ?? false,
       isHousenumbersRunning: json['isHousenumbersRunning'] as bool? ?? false,
-      crowdsourceSourceUrl: json['crowdsourceSourceUrl'] as String? ??
+      crowdsourceSourceUrl:
+          json['crowdsourceSourceUrl'] as String? ??
           defaultCrowdsourceSourceUrl,
       contributionCount: (json['contributionCount'] as num?)?.toInt() ?? 0,
       isContributionsReady: json['isContributionsReady'] as bool? ?? false,
@@ -646,8 +651,7 @@ class GeocodingRepository {
       longitude: (json['longitude'] as num).toDouble(),
       countryCode: json['countryCode'] as String?,
       importance: (json['importance'] as num?)?.toDouble() ?? 0,
-      resultType:
-          json['resultType'] as String? ?? geocodingResultTypePlace,
+      resultType: json['resultType'] as String? ?? geocodingResultTypePlace,
     );
   }
 

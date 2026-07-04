@@ -22,7 +22,8 @@ class AnimatedStatusDotIconButton extends StatefulWidget {
       _AnimatedStatusDotIconButtonState();
 }
 
-class _AnimatedStatusDotIconButtonState extends State<AnimatedStatusDotIconButton>
+class _AnimatedStatusDotIconButtonState
+    extends State<AnimatedStatusDotIconButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;

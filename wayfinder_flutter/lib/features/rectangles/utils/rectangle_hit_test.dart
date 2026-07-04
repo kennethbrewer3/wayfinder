@@ -43,16 +43,16 @@ UuidValue? hitTestRectangleAtPoint({
       continue;
     }
 
-    final polygon = rectanglePolygonPoints(geometry.bounds)
-        .map(camera.latLngToScreenOffset)
-        .toList();
+    final polygon = rectanglePolygonPoints(
+      geometry.bounds,
+    ).map(camera.latLngToScreenOffset).toList();
     if (!_pointInPolygon(tapScreen, polygon)) {
       continue;
     }
 
     final bounds = geometry.bounds;
-    final area = (bounds.north - bounds.south).abs() *
-        (bounds.east - bounds.west).abs();
+    final area =
+        (bounds.north - bounds.south).abs() * (bounds.east - bounds.west).abs();
     if (area < smallestArea) {
       smallestArea = area;
       hitId = zone.id;

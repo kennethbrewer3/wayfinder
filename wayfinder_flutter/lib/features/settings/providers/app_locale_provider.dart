@@ -7,15 +7,15 @@ import '../data/app_settings_repository.dart';
 
 final appLocaleProvider =
     StateNotifierProvider<AppLocaleNotifier, AppLocaleChoice>(
-  (ref) => AppLocaleNotifier(
-    ref.watch(appSettingsRepositoryProvider),
-    AppLocaleStorage(),
-  ),
-);
+      (ref) => AppLocaleNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+        AppLocaleStorage(),
+      ),
+    );
 
 class AppLocaleNotifier extends StateNotifier<AppLocaleChoice> {
   AppLocaleNotifier(this._repository, this._storage)
-      : super(AppLocaleChoice.system) {
+    : super(AppLocaleChoice.system) {
     _load();
   }
 

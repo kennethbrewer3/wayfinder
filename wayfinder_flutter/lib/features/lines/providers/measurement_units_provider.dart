@@ -7,15 +7,15 @@ import '../models/measurement_units.dart';
 
 final measurementUnitsProvider =
     StateNotifierProvider<MeasurementUnitsNotifier, MeasurementUnits>(
-  (ref) => MeasurementUnitsNotifier(
-    ref.watch(appSettingsRepositoryProvider),
-    MeasurementUnitsStorage(),
-  ),
-);
+      (ref) => MeasurementUnitsNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+        MeasurementUnitsStorage(),
+      ),
+    );
 
 class MeasurementUnitsNotifier extends StateNotifier<MeasurementUnits> {
   MeasurementUnitsNotifier(this._repository, this._storage)
-      : super(MeasurementUnits.metric) {
+    : super(MeasurementUnits.metric) {
     _load();
   }
 

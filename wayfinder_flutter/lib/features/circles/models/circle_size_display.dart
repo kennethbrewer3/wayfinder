@@ -6,16 +6,16 @@ enum CircleSizeDisplay {
 
 extension CircleSizeDisplayLabel on CircleSizeDisplay {
   String get label => switch (this) {
-        CircleSizeDisplay.radius => 'Radius',
-        CircleSizeDisplay.diameter => 'Diameter',
-        CircleSizeDisplay.none => 'None',
-      };
+    CircleSizeDisplay.radius => 'Radius',
+    CircleSizeDisplay.diameter => 'Diameter',
+    CircleSizeDisplay.none => 'None',
+  };
 
   String get shortLabel => switch (this) {
-        CircleSizeDisplay.radius => 'Radius',
-        CircleSizeDisplay.diameter => 'Diameter',
-        CircleSizeDisplay.none => 'None',
-      };
+    CircleSizeDisplay.radius => 'Radius',
+    CircleSizeDisplay.diameter => 'Diameter',
+    CircleSizeDisplay.none => 'None',
+  };
 }
 
 CircleSizeDisplay circleSizeDisplayFromStorage(String? value) {

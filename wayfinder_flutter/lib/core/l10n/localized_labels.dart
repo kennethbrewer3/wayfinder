@@ -17,134 +17,133 @@ import '../../features/tracks/models/track_geometry.dart';
 
 extension AppLocaleChoiceL10n on AppLocaleChoice {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        AppLocaleChoice.system => l10n.languageSystem,
-        AppLocaleChoice.en => l10n.languageEnglish,
-        AppLocaleChoice.es => l10n.languageSpanish,
-        AppLocaleChoice.fr => l10n.languageFrench,
-      };
+    AppLocaleChoice.system => l10n.languageSystem,
+    AppLocaleChoice.en => l10n.languageEnglish,
+    AppLocaleChoice.es => l10n.languageSpanish,
+    AppLocaleChoice.fr => l10n.languageFrench,
+  };
 }
 
 extension AppThemeFamilyL10n on AppThemeFamily {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        AppThemeFamily.standard => l10n.themeFamilyStandard,
-        AppThemeFamily.military => l10n.themeFamilyMilitary,
-      };
+    AppThemeFamily.standard => l10n.themeFamilyStandard,
+    AppThemeFamily.military => l10n.themeFamilyMilitary,
+  };
 }
 
 extension AppThemeBrightnessL10n on AppThemeBrightness {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        AppThemeBrightness.light => l10n.themeBrightnessLight,
-        AppThemeBrightness.dark => l10n.themeBrightnessDark,
-      };
+    AppThemeBrightness.light => l10n.themeBrightnessLight,
+    AppThemeBrightness.dark => l10n.themeBrightnessDark,
+  };
 }
 
 extension AppThemeChoiceL10n on AppThemeChoice {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        AppThemeChoice.light => l10n.themeBrightnessLight,
-        AppThemeChoice.dark => l10n.themeBrightnessDark,
-        AppThemeChoice.militaryLight => l10n.themeChoiceMilitaryLight,
-        AppThemeChoice.militaryDark => l10n.themeChoiceMilitaryDark,
-      };
+    AppThemeChoice.light => l10n.themeBrightnessLight,
+    AppThemeChoice.dark => l10n.themeBrightnessDark,
+    AppThemeChoice.militaryLight => l10n.themeChoiceMilitaryLight,
+    AppThemeChoice.militaryDark => l10n.themeChoiceMilitaryDark,
+  };
 }
 
 extension MeasurementUnitsL10n on MeasurementUnits {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        MeasurementUnits.metric => l10n.measurementMetric,
-        MeasurementUnits.imperial => l10n.measurementImperial,
-        MeasurementUnits.nautical => l10n.measurementNautical,
-      };
+    MeasurementUnits.metric => l10n.measurementMetric,
+    MeasurementUnits.imperial => l10n.measurementImperial,
+    MeasurementUnits.nautical => l10n.measurementNautical,
+  };
 
   String localizedShortLabel(AppLocalizations l10n) => switch (this) {
-        MeasurementUnits.metric => l10n.measurementMetricShort,
-        MeasurementUnits.imperial => l10n.measurementImperialShort,
-        MeasurementUnits.nautical => l10n.measurementNauticalShort,
-      };
+    MeasurementUnits.metric => l10n.measurementMetricShort,
+    MeasurementUnits.imperial => l10n.measurementImperialShort,
+    MeasurementUnits.nautical => l10n.measurementNauticalShort,
+  };
 }
 
 extension AngleDisplayFormatL10n on AngleDisplayFormat {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        AngleDisplayFormat.decimal => l10n.angleFormatDecimal,
-        AngleDisplayFormat.degreesMinutesSeconds => l10n.angleFormatDms,
-      };
+    AngleDisplayFormat.decimal => l10n.angleFormatDecimal,
+    AngleDisplayFormat.degreesMinutesSeconds => l10n.angleFormatDms,
+  };
 
   String localizedShortLabel(AppLocalizations l10n) => switch (this) {
-        AngleDisplayFormat.decimal => l10n.angleFormatDecimalShort,
-        AngleDisplayFormat.degreesMinutesSeconds => l10n.angleFormatDmsShort,
-      };
+    AngleDisplayFormat.decimal => l10n.angleFormatDecimalShort,
+    AngleDisplayFormat.degreesMinutesSeconds => l10n.angleFormatDmsShort,
+  };
 }
 
 extension LineArrowDensityL10n on LineArrowDensity {
   String localizedLabel(AppLocalizations l10n) => switch (level) {
-        1 => l10n.lineArrowDensitySparse,
-        2 => l10n.lineArrowDensityLight,
-        3 => l10n.lineArrowDensityBalanced,
-        4 => l10n.lineArrowDensityFrequent,
-        5 => l10n.lineArrowDensityDense,
-        _ => l10n.lineArrowDensityBalanced,
-      };
+    1 => l10n.lineArrowDensitySparse,
+    2 => l10n.lineArrowDensityLight,
+    3 => l10n.lineArrowDensityBalanced,
+    4 => l10n.lineArrowDensityFrequent,
+    5 => l10n.lineArrowDensityDense,
+    _ => l10n.lineArrowDensityBalanced,
+  };
 }
 
 extension LineBorderPatternL10n on LineBorderPattern {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        LineBorderPattern.solid => l10n.lineBorderSolid,
-        LineBorderPattern.dashed => l10n.lineBorderDashed,
-      };
+    LineBorderPattern.solid => l10n.lineBorderSolid,
+    LineBorderPattern.dashed => l10n.lineBorderDashed,
+  };
 }
 
 extension RectangleSizeDisplayL10n on RectangleSizeDisplay {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        RectangleSizeDisplay.dimensions => l10n.rectangleSizeDimensions,
-        RectangleSizeDisplay.area => l10n.rectangleSizeArea,
-        RectangleSizeDisplay.none => l10n.rectangleSizeNone,
-      };
+    RectangleSizeDisplay.dimensions => l10n.rectangleSizeDimensions,
+    RectangleSizeDisplay.area => l10n.rectangleSizeArea,
+    RectangleSizeDisplay.none => l10n.rectangleSizeNone,
+  };
 
   String localizedShortLabel(AppLocalizations l10n) => switch (this) {
-        RectangleSizeDisplay.dimensions => l10n.rectangleSizeDimensionsShort,
-        RectangleSizeDisplay.area => l10n.rectangleSizeArea,
-        RectangleSizeDisplay.none => l10n.rectangleSizeNone,
-      };
+    RectangleSizeDisplay.dimensions => l10n.rectangleSizeDimensionsShort,
+    RectangleSizeDisplay.area => l10n.rectangleSizeArea,
+    RectangleSizeDisplay.none => l10n.rectangleSizeNone,
+  };
 }
 
 extension RectangleCreationModeL10n on RectangleCreationMode {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        RectangleCreationMode.centerExtent => l10n.rectangleModeCenter,
-        RectangleCreationMode.corners => l10n.rectangleModeCorners,
-      };
+    RectangleCreationMode.centerExtent => l10n.rectangleModeCenter,
+    RectangleCreationMode.corners => l10n.rectangleModeCorners,
+  };
 }
 
 extension CircleSizeDisplayL10n on CircleSizeDisplay {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        CircleSizeDisplay.radius => l10n.circleSizeRadius,
-        CircleSizeDisplay.diameter => l10n.circleSizeDiameter,
-        CircleSizeDisplay.none => l10n.circleSizeNone,
-      };
+    CircleSizeDisplay.radius => l10n.circleSizeRadius,
+    CircleSizeDisplay.diameter => l10n.circleSizeDiameter,
+    CircleSizeDisplay.none => l10n.circleSizeNone,
+  };
 
-  String localizedShortLabel(AppLocalizations l10n) =>
-      localizedLabel(l10n);
+  String localizedShortLabel(AppLocalizations l10n) => localizedLabel(l10n);
 
   String localizedToggleTooltip(AppLocalizations l10n) => switch (this) {
-        CircleSizeDisplay.radius => l10n.circleSizeToggleRadius,
-        CircleSizeDisplay.diameter => l10n.circleSizeToggleDiameter,
-        CircleSizeDisplay.none => l10n.circleSizeToggleNone,
-      };
+    CircleSizeDisplay.radius => l10n.circleSizeToggleRadius,
+    CircleSizeDisplay.diameter => l10n.circleSizeToggleDiameter,
+    CircleSizeDisplay.none => l10n.circleSizeToggleNone,
+  };
 }
 
 extension MarkerSortFieldL10n on MarkerSortField {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        MarkerSortField.name => l10n.sortName,
-        MarkerSortField.hue => l10n.sortHue,
-        MarkerSortField.icon => l10n.sortIcon,
-        MarkerSortField.visibility => l10n.sortVisibility,
-      };
+    MarkerSortField.name => l10n.sortName,
+    MarkerSortField.hue => l10n.sortHue,
+    MarkerSortField.icon => l10n.sortIcon,
+    MarkerSortField.visibility => l10n.sortVisibility,
+  };
 }
 
 extension ZoneSortFieldL10n on ZoneSortField {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
-        ZoneSortField.name => l10n.sortName,
-        ZoneSortField.hue => l10n.sortHue,
-        ZoneSortField.type => l10n.sortType,
-        ZoneSortField.visibility => l10n.sortVisibility,
-      };
+    ZoneSortField.name => l10n.sortName,
+    ZoneSortField.hue => l10n.sortHue,
+    ZoneSortField.type => l10n.sortType,
+    ZoneSortField.visibility => l10n.sortVisibility,
+  };
 }
 
 String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
@@ -273,7 +272,10 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
   };
 }
 
-String localizedMarkerIconCategoryLabel(AppLocalizations l10n, String category) {
+String localizedMarkerIconCategoryLabel(
+  AppLocalizations l10n,
+  String category,
+) {
   return switch (category) {
     'general' => l10n.markerIconCategoryGeneral,
     'places' => l10n.markerIconCategoryPlaces,

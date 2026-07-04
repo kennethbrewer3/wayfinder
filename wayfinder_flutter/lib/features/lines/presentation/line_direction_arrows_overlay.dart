@@ -57,7 +57,8 @@ class LineDirectionArrowsOverlay extends StatefulWidget {
       _LineDirectionArrowsOverlayState();
 }
 
-class _LineDirectionArrowsOverlayState extends State<LineDirectionArrowsOverlay> {
+class _LineDirectionArrowsOverlayState
+    extends State<LineDirectionArrowsOverlay> {
   StreamSubscription<MapEvent>? _mapEvents;
 
   @override

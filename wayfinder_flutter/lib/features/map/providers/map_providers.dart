@@ -16,9 +16,9 @@ final mapViewportStorageProvider = Provider<MapViewportStorage>(
 
 class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
   MapViewportNotifier(this._storage, this._appSettingsRepository)
-      : super(
-          const AsyncValue.loading(),
-        ) {
+    : super(
+        const AsyncValue.loading(),
+      ) {
     _load();
   }
 
@@ -76,11 +76,11 @@ class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
 
 final mapViewportProvider =
     StateNotifierProvider<MapViewportNotifier, AsyncValue<MapViewport>>(
-  (ref) => MapViewportNotifier(
-    ref.watch(mapViewportStorageProvider),
-    ref.watch(appSettingsRepositoryProvider),
-  ),
-);
+      (ref) => MapViewportNotifier(
+        ref.watch(mapViewportStorageProvider),
+        ref.watch(appSettingsRepositoryProvider),
+      ),
+    );
 
 enum SidebarViewMode { list, tree }
 
@@ -92,20 +92,20 @@ enum ZoneSortField { name, hue, type, visibility }
 
 extension MarkerSortFieldLabel on MarkerSortField {
   String get label => switch (this) {
-        MarkerSortField.name => 'Name',
-        MarkerSortField.hue => 'Hue',
-        MarkerSortField.icon => 'Icon',
-        MarkerSortField.visibility => 'Visibility',
-      };
+    MarkerSortField.name => 'Name',
+    MarkerSortField.hue => 'Hue',
+    MarkerSortField.icon => 'Icon',
+    MarkerSortField.visibility => 'Visibility',
+  };
 }
 
 extension ZoneSortFieldLabel on ZoneSortField {
   String get label => switch (this) {
-        ZoneSortField.name => 'Name',
-        ZoneSortField.hue => 'Hue',
-        ZoneSortField.type => 'Type',
-        ZoneSortField.visibility => 'Visibility',
-      };
+    ZoneSortField.name => 'Name',
+    ZoneSortField.hue => 'Hue',
+    ZoneSortField.type => 'Type',
+    ZoneSortField.visibility => 'Visibility',
+  };
 }
 
 class LayerSidebarSettings {
@@ -148,6 +148,7 @@ class SidebarState {
   final String searchQuery;
   final bool expanded;
   final UuidValue? selectedLayerId;
+
   /// `null` = all layers expanded (initial default).
   /// Non-null set tracks explicit expand/collapse; empty set = all collapsed.
   final Set<UuidValue>? expandedLayerIds;
@@ -191,11 +192,17 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
   }
 
   void setLayerActiveTab(UuidValue layerId, SidebarPanelTab tab) {
-    _updateLayerSettings(layerId, (current) => current.copyWith(activeTab: tab));
+    _updateLayerSettings(
+      layerId,
+      (current) => current.copyWith(activeTab: tab),
+    );
   }
 
   void setLayerViewMode(UuidValue layerId, SidebarViewMode mode) {
-    _updateLayerSettings(layerId, (current) => current.copyWith(viewMode: mode));
+    _updateLayerSettings(
+      layerId,
+      (current) => current.copyWith(viewMode: mode),
+    );
   }
 
   void setLayerMarkerSort(UuidValue layerId, MarkerSortField sort) {
@@ -206,7 +213,10 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
   }
 
   void setLayerZoneSort(UuidValue layerId, ZoneSortField sort) {
-    _updateLayerSettings(layerId, (current) => current.copyWith(zoneSort: sort));
+    _updateLayerSettings(
+      layerId,
+      (current) => current.copyWith(zoneSort: sort),
+    );
   }
 
   void setSearchQuery(String query) {
@@ -250,11 +260,13 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
       }
       layerSettings = {
         ...state.layerSettings,
-        layerId: state.settingsForLayer(layerId).copyWith(
-          activeTab: kind == SelectedMapObjectKind.marker
-              ? SidebarPanelTab.markers
-              : SidebarPanelTab.zones,
-        ),
+        layerId: state
+            .settingsForLayer(layerId)
+            .copyWith(
+              activeTab: kind == SelectedMapObjectKind.marker
+                  ? SidebarPanelTab.markers
+                  : SidebarPanelTab.zones,
+            ),
       };
     }
 
@@ -271,7 +283,6 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
   }
 }
 
-final sidebarProvider =
-    StateNotifierProvider<SidebarNotifier, SidebarState>(
+final sidebarProvider = StateNotifierProvider<SidebarNotifier, SidebarState>(
   (ref) => SidebarNotifier(),
 );

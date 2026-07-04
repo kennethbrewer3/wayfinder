@@ -94,8 +94,8 @@ SearchResult geocodingPlaceToSearchResult(GeocodingPlaceResult place) {
   final type = place.isAddress
       ? SearchResultType.address
       : place.isContribution
-          ? SearchResultType.place
-          : SearchResultType.place;
+      ? SearchResultType.place
+      : SearchResultType.place;
   return SearchResult(
     id: place.isContribution
         ? 'contribution-${place.id}'
@@ -147,8 +147,12 @@ LatLng? _zoneCenter(MapZone zone) {
   try {
     final geometry = zone.geometryJson;
     if (geometry.contains('"center"')) {
-      final latMatch = RegExp(r'"lat"\s*:\s*(-?\d+\.?\d*)').firstMatch(geometry);
-      final lngMatch = RegExp(r'"lng"\s*:\s*(-?\d+\.?\d*)').firstMatch(geometry);
+      final latMatch = RegExp(
+        r'"lat"\s*:\s*(-?\d+\.?\d*)',
+      ).firstMatch(geometry);
+      final lngMatch = RegExp(
+        r'"lng"\s*:\s*(-?\d+\.?\d*)',
+      ).firstMatch(geometry);
       if (latMatch != null && lngMatch != null) {
         return LatLng(
           double.parse(latMatch.group(1)!),

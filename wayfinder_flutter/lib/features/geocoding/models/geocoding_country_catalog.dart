@@ -31,23 +31,23 @@ class GeocodingCountryCatalog {
     return GeocodingCountryCatalog(
       countries: countryItems is List
           ? countryItems
-              .whereType<Map>()
-              .map(
-                (item) => GeocodingCountryOption.fromJson(
-                  Map<String, dynamic>.from(item),
-                ),
-              )
-              .toList()
+                .whereType<Map>()
+                .map(
+                  (item) => GeocodingCountryOption.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ),
+                )
+                .toList()
           : const [],
       importPresets: presetItems is List
           ? presetItems
-              .whereType<Map>()
-              .map(
-                (item) => GeocodingDatasetOption.fromServerJson(
-                  Map<String, dynamic>.from(item),
-                ),
-              )
-              .toList()
+                .whereType<Map>()
+                .map(
+                  (item) => GeocodingDatasetOption.fromServerJson(
+                    Map<String, dynamic>.from(item),
+                  ),
+                )
+                .toList()
           : const [],
     );
   }

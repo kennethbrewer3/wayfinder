@@ -51,18 +51,19 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
+    final catalog =
+        ref.watch(markerIconCatalogProvider).valueOrNull ??
         MarkerIconCatalog.defaults();
     final categoryCatalog =
         ref.watch(markerIconCategoryCatalogProvider).valueOrNull ??
-            MarkerIconCategoryCatalog.fallback();
+        MarkerIconCategoryCatalog.fallback();
     final grouped = catalog.groupedByCategory(
       categoryOrder: categoryCatalog.orderedKeys,
     );
     final selectedOption =
         catalog.option(widget.selectedIcon) ??
-            catalog.options.firstOrNull ??
-            markerIconOptions.first;
+        catalog.options.firstOrNull ??
+        markerIconOptions.first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -123,8 +124,9 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
         AnimatedCrossFade(
           firstCurve: Curves.easeOut,
           secondCurve: Curves.easeIn,
-          crossFadeState:
-              _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: _expanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 200),
           firstChild: const SizedBox.shrink(),
           secondChild: Padding(
@@ -157,11 +159,11 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: MarkerIconPicker._columns,
-                      mainAxisSpacing: MarkerIconPicker._gridSpacing,
-                      crossAxisSpacing: MarkerIconPicker._gridSpacing,
-                      childAspectRatio: MarkerIconPicker._gridAspectRatio,
-                    ),
+                          crossAxisCount: MarkerIconPicker._columns,
+                          mainAxisSpacing: MarkerIconPicker._gridSpacing,
+                          crossAxisSpacing: MarkerIconPicker._gridSpacing,
+                          childAspectRatio: MarkerIconPicker._gridAspectRatio,
+                        ),
                     itemCount: categoryEntry.value.length,
                     itemBuilder: (context, index) {
                       final option = categoryEntry.value[index];

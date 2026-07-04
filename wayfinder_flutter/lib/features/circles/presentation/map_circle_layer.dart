@@ -44,24 +44,22 @@ List<LatLng> circleSizeLinePoints(CircleGeometry geometry) {
   return switch (geometry.sizeDisplay) {
     CircleSizeDisplay.none => const [],
     CircleSizeDisplay.radius => [
-        geometry.center,
-        circleRadiusLineEdge(geometry),
-      ],
+      geometry.center,
+      circleRadiusLineEdge(geometry),
+    ],
     CircleSizeDisplay.diameter => [
-        circleRadiusLineEdge(geometry),
-        circleDiameterLineOppositeEdge(geometry),
-      ],
+      circleRadiusLineEdge(geometry),
+      circleDiameterLineOppositeEdge(geometry),
+    ],
   };
 }
 
 LatLng circleSizeLineMidpoint(CircleGeometry geometry) {
   final edge = circleRadiusLineEdge(geometry);
   return switch (geometry.sizeDisplay) {
-    CircleSizeDisplay.diameter =>
-      lineSegmentMidpoint(geometry.center, edge),
+    CircleSizeDisplay.diameter => lineSegmentMidpoint(geometry.center, edge),
     CircleSizeDisplay.none ||
-    CircleSizeDisplay.radius =>
-      lineSegmentMidpoint(geometry.center, edge),
+    CircleSizeDisplay.radius => lineSegmentMidpoint(geometry.center, edge),
   };
 }
 
@@ -201,8 +199,7 @@ Marker _centerMarker({
   required LatLng center,
   Color? color,
 }) {
-  final markerColor =
-      color ?? parseMarkerColor(zone?.color ?? '#1B4965');
+  final markerColor = color ?? parseMarkerColor(zone?.color ?? '#1B4965');
   return Marker(
     point: center,
     width: 18,

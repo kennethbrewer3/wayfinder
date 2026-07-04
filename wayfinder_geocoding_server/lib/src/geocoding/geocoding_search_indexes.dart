@@ -74,7 +74,7 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
         session,
         'geocoding',
         '🔎 Recreating geocoding search indexes with incompatible metadata: '
-        '${invalid.join(', ')}',
+            '${invalid.join(', ')}',
       );
       for (final indexName in invalid) {
         await session.db.unsafeExecute('DROP INDEX IF EXISTS "$indexName"');
@@ -82,9 +82,15 @@ CREATE INDEX IF NOT EXISTS "geocode_housenumber_label_trgm_idx"
       }
     }
 
-    final missing = indexNames.where((name) => !existing.contains(name)).toList();
+    final missing = indexNames
+        .where((name) => !existing.contains(name))
+        .toList();
     if (missing.isEmpty) {
-      WfLog.info(null, 'geocoding', '🔎 Geocoding search indexes already present');
+      WfLog.info(
+        null,
+        'geocoding',
+        '🔎 Geocoding search indexes already present',
+      );
       return;
     }
 
@@ -128,7 +134,8 @@ WHERE schemaname = 'public'
     }
 
     if (indexName == 'geocode_housenumber_label_trgm_idx') {
-      return definition.contains('housenumber') && definition.contains('street');
+      return definition.contains('housenumber') &&
+          definition.contains('street');
     }
 
     return true;

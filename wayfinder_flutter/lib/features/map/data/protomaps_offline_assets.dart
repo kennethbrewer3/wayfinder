@@ -41,9 +41,11 @@ class ProtomapsOfflineAssets {
     _log.info('📦 Loading bundled Protomaps offline assets');
 
     final spriteBytes = await rootBundle.load(_spritePngAsset);
-    final spriteJson = jsonDecode(
-      await rootBundle.loadString(_spriteJsonAsset),
-    ) as Map<String, dynamic>;
+    final spriteJson =
+        jsonDecode(
+              await rootBundle.loadString(_spriteJsonAsset),
+            )
+            as Map<String, dynamic>;
 
     final sprites = SpriteStyle(
       atlasProvider: () async => spriteBytes.buffer.asUint8List(

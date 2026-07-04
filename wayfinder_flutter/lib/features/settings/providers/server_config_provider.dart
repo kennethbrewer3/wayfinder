@@ -28,6 +28,8 @@ class ServerUrlSettingsController {
   Future<void> resetToDefault() => _storage.clearApiUrl();
 }
 
-final serverUrlSettingsControllerProvider = Provider<ServerUrlSettingsController>(
-  (ref) => ServerUrlSettingsController(ref.watch(serverConfigStorageProvider)),
-);
+final serverUrlSettingsControllerProvider =
+    Provider<ServerUrlSettingsController>(
+      (ref) =>
+          ServerUrlSettingsController(ref.watch(serverConfigStorageProvider)),
+    );

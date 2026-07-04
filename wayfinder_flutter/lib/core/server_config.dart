@@ -47,8 +47,8 @@ Future<AppServerConfig> loadAppServerConfig() async {
     return AppServerConfig(
       apiUrl: apiUrl,
       webUrl: defaultWebUrlForApi(apiUrl) ?? defaultWebUrl,
-      geocodingWebUrl: savedGeocodingWebUrl != null &&
-              savedGeocodingWebUrl.isNotEmpty
+      geocodingWebUrl:
+          savedGeocodingWebUrl != null && savedGeocodingWebUrl.isNotEmpty
           ? normalizeWebUrl(savedGeocodingWebUrl)
           : null,
     );
@@ -75,9 +75,7 @@ AppServerConfig _configFromJsonMap(Map<String, dynamic> config) {
     config['apiUrl'] as String? ?? defaultApiUrl,
   );
   final webUrl = normalizeWebUrl(
-    config['webUrl'] as String? ??
-        defaultWebUrlForApi(apiUrl) ??
-        defaultWebUrl,
+    config['webUrl'] as String? ?? defaultWebUrlForApi(apiUrl) ?? defaultWebUrl,
   );
   final geocodingRaw = config['geocodingWebUrl'] as String?;
   final geocodingWebUrl = geocodingRaw == null || geocodingRaw.trim().isEmpty
@@ -103,7 +101,9 @@ Future<AppServerConfig?> _loadDeployedWebConfig() async {
       return null;
     }
 
-    return _configFromJsonMap(jsonDecode(response.body) as Map<String, dynamic>);
+    return _configFromJsonMap(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   } catch (_) {
     return null;
   }

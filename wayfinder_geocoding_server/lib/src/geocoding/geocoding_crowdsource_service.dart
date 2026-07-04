@@ -112,7 +112,8 @@ abstract final class GeocodingCrowdsourceService {
     return GeocodingCrowdsourceSubmitResult(
       submittedCount: rows.length,
       uploadedToGit: true,
-      message: 'Contributions uploaded anonymously to the crowdsource repository.',
+      message:
+          'Contributions uploaded anonymously to the crowdsource repository.',
     );
   }
 
@@ -164,12 +165,12 @@ abstract final class GeocodingCrowdsourceService {
     String bundleJson, {
     required String token,
   }) async {
-    final repo = Platform.environment['GEOCODING_CROWDSOURCE_GITHUB_REPO']
-            ?.trim() ??
+    final repo =
+        Platform.environment['GEOCODING_CROWDSOURCE_GITHUB_REPO']?.trim() ??
         'kennethbrewer3/wayfinder';
     final filePath =
         Platform.environment['GEOCODING_CROWDSOURCE_GITHUB_FILE']?.trim() ??
-            'geocoding-crowdsource/contributions.json';
+        'geocoding-crowdsource/contributions.json';
 
     final parts = repo.split('/');
     if (parts.length != 2 || parts[0].isEmpty || parts[1].isEmpty) {
@@ -259,7 +260,9 @@ abstract final class GeocodingCrowdsourceService {
 
   static List<_AnonymousEntry> _parseAnonymousEntries(Object? raw) {
     if (raw is! List) {
-      throw const FormatException('Crowdsource field "entries" must be an array.');
+      throw const FormatException(
+        'Crowdsource field "entries" must be an array.',
+      );
     }
 
     return [
@@ -304,8 +307,9 @@ abstract final class GeocodingCrowdsourceService {
       latitude: latitude,
       longitude: longitude,
       notes: notes == null || notes.isEmpty ? null : notes,
-      countryCode:
-          countryCode != null && countryCode.length == 2 ? countryCode : null,
+      countryCode: countryCode != null && countryCode.length == 2
+          ? countryCode
+          : null,
     );
   }
 
@@ -324,7 +328,10 @@ abstract final class GeocodingCrowdsourceService {
       );
       final request = await client.getUrl(uri);
       request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
-      request.headers.set(HttpHeaders.acceptHeader, 'application/vnd.github+json');
+      request.headers.set(
+        HttpHeaders.acceptHeader,
+        'application/vnd.github+json',
+      );
       request.headers.set(HttpHeaders.userAgentHeader, _userAgent);
       final response = await request.close();
       if (response.statusCode == HttpStatus.notFound) {
@@ -345,7 +352,9 @@ abstract final class GeocodingCrowdsourceService {
       final encoded = body['content'] as String?;
       final sha = body['sha'] as String?;
       if (encoded == null || sha == null) {
-        throw const FormatException('GitHub file response missing content or sha.');
+        throw const FormatException(
+          'GitHub file response missing content or sha.',
+        );
       }
 
       final normalized = encoded.replaceAll('\n', '');
@@ -374,7 +383,10 @@ abstract final class GeocodingCrowdsourceService {
       );
       final request = await client.putUrl(uri);
       request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
-      request.headers.set(HttpHeaders.acceptHeader, 'application/vnd.github+json');
+      request.headers.set(
+        HttpHeaders.acceptHeader,
+        'application/vnd.github+json',
+      );
       request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
       request.headers.set(HttpHeaders.userAgentHeader, _userAgent);
       request.write(

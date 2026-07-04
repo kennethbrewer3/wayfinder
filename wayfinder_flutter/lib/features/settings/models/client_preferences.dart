@@ -32,10 +32,12 @@ class ClientPreferences {
   factory ClientPreferences.fromAppSettings(wf.AppSettings settings) {
     return ClientPreferences(
       measurementUnits: measurementUnitsFromStorage(settings.measurementUnits),
-      angleDisplayFormat:
-          angleDisplayFormatFromStorage(settings.angleDisplayFormat),
-      circleSizeDisplay:
-          circleSizeDisplayFromStorage(settings.circleSizeDisplay),
+      angleDisplayFormat: angleDisplayFormatFromStorage(
+        settings.angleDisplayFormat,
+      ),
+      circleSizeDisplay: circleSizeDisplayFromStorage(
+        settings.circleSizeDisplay,
+      ),
       appTheme: appThemeChoiceFromStorage(settings.appTheme),
       appLocale: appLocaleChoiceFromStorage(settings.appLocale),
     );

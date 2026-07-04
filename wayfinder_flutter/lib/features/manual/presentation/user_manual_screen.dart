@@ -223,7 +223,9 @@ class _ManualBody extends StatelessWidget {
           return KeyedSubtree(
             key: key,
             child: Padding(
-              padding: EdgeInsets.only(bottom: index == sections.length - 1 ? 0 : 28),
+              padding: EdgeInsets.only(
+                bottom: index == sections.length - 1 ? 0 : 28,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

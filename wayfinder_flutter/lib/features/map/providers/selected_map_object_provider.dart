@@ -14,9 +14,7 @@ class SelectedMapObject {
 
   @override
   bool operator ==(Object other) {
-    return other is SelectedMapObject &&
-        other.kind == kind &&
-        other.id == id;
+    return other is SelectedMapObject && other.kind == kind && other.id == id;
   }
 
   @override
@@ -43,8 +41,8 @@ extension SelectedMapObjectSelection on SelectedMapObject? {
 
 final selectedMapObjectProvider =
     StateNotifierProvider<SelectedMapObjectNotifier, SelectedMapObject?>(
-  (ref) => SelectedMapObjectNotifier(),
-);
+      (ref) => SelectedMapObjectNotifier(),
+    );
 
 class SelectedMapObjectNotifier extends StateNotifier<SelectedMapObject?> {
   SelectedMapObjectNotifier() : super(null);

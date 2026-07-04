@@ -62,8 +62,9 @@ class GeocodingSearchIndexStatus {
   static void markIndexCompleted(String indexName) {
     final startedAt = _currentIndexStartedAt;
     if (startedAt != null) {
-      _completedIndexDurationsMs[indexName] =
-          DateTime.now().difference(startedAt).inMilliseconds;
+      _completedIndexDurationsMs[indexName] = DateTime.now()
+          .difference(startedAt)
+          .inMilliseconds;
     }
     _currentIndexStartedAt = DateTime.now();
   }
@@ -85,16 +86,17 @@ class GeocodingSearchIndexStatus {
     final readyAddressIndexes = _addressIndexNames
         .where(existingIndexes.contains)
         .length;
-    final readyPlaceIndexes =
-        _placeIndexNames.where(existingIndexes.contains).length;
+    final readyPlaceIndexes = _placeIndexNames
+        .where(existingIndexes.contains)
+        .length;
     final readyIndexCount = readyAddressIndexes + readyPlaceIndexes;
     final totalIndexCount = GeocodingSearchIndexes.indexNames.length;
 
     final progress = await _loadBuildProgress(session);
     final indexesBuilding = progress != null;
 
-    final isPlacesSearchReady = placesDataReady &&
-        readyPlaceIndexes == _placeIndexNames.length;
+    final isPlacesSearchReady =
+        placesDataReady && readyPlaceIndexes == _placeIndexNames.length;
     final isAddressSearchReady =
         addressDataReady && readyAddressIndexes == _addressIndexNames.length;
     final isFullSearchReady = isPlacesSearchReady && isAddressSearchReady;
@@ -279,9 +281,14 @@ LIMIT 1
     if (_completedIndexDurationsMs.isEmpty) {
       return 600;
     }
-    final totalMs =
-        _completedIndexDurationsMs.values.fold<int>(0, (sum, value) => sum + value);
-    return (totalMs / _completedIndexDurationsMs.length / 1000).round().clamp(30, 3600);
+    final totalMs = _completedIndexDurationsMs.values.fold<int>(
+      0,
+      (sum, value) => sum + value,
+    );
+    return (totalMs / _completedIndexDurationsMs.length / 1000).round().clamp(
+      30,
+      3600,
+    );
   }
 
   Map<String, Object?> toJson() {

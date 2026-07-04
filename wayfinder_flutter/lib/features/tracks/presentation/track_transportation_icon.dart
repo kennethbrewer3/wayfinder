@@ -21,12 +21,14 @@ class TrackTransportationIcon extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final iconKey = mode.markerIconKey;
-    final iconColor = color ??
+    final iconColor =
+        color ??
         IconTheme.of(context).color ??
         Theme.of(context).iconTheme.color ??
         Colors.black;
     if (iconKey != null) {
-      final catalog = ref.watch(markerIconCatalogProvider).valueOrNull ??
+      final catalog =
+          ref.watch(markerIconCatalogProvider).valueOrNull ??
           MarkerIconCatalog.defaults();
       if (catalog.svgUrl(iconKey) != null ||
           catalog.asset(iconKey) != null ||

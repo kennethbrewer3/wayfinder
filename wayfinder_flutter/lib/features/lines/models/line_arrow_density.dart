@@ -15,31 +15,31 @@ class LineArrowDensity {
   }
 
   double get spacingMeters => switch (level) {
-        1 => 150.0,
-        2 => 112.0,
-        3 => 75.0,
-        4 => 50.0,
-        5 => 38.0,
-        _ => 75.0,
-      };
+    1 => 150.0,
+    2 => 112.0,
+    3 => 75.0,
+    4 => 50.0,
+    5 => 38.0,
+    _ => 75.0,
+  };
 
   int get maxArrowsPerLine => switch (level) {
-        1 => 8,
-        2 => 12,
-        3 => 16,
-        4 => 20,
-        5 => 24,
-        _ => 16,
-      };
+    1 => 8,
+    2 => 12,
+    3 => 16,
+    4 => 20,
+    5 => 24,
+    _ => 16,
+  };
 
   double get minArrowSpacingPixels => switch (level) {
-        1 => 64.0,
-        2 => 56.0,
-        3 => 48.0,
-        4 => 40.0,
-        5 => 32.0,
-        _ => 48.0,
-      };
+    1 => 64.0,
+    2 => 56.0,
+    3 => 48.0,
+    4 => 40.0,
+    5 => 32.0,
+    _ => 48.0,
+  };
 
   int arrowCountForPath({
     required double totalMeters,
@@ -52,8 +52,7 @@ class LineArrowDensity {
     final maxMarkers = (maxArrowsPerLine / scaled).ceil();
 
     var count = math.max(1, (totalMeters / spacingMeters).round());
-    final maxByPixels =
-        math.max(1, (totalPixels / minSpacingPixels).floor());
+    final maxByPixels = math.max(1, (totalPixels / minSpacingPixels).floor());
     count = math.min(count, maxByPixels);
     return math.min(count, maxMarkers);
   }

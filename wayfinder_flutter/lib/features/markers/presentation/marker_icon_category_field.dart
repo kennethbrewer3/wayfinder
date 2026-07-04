@@ -21,10 +21,12 @@ class MarkerIconCategoryField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(markerIconCategoryCatalogProvider).valueOrNull ??
+    final categories =
+        ref.watch(markerIconCategoryCatalogProvider).valueOrNull ??
         MarkerIconCategoryCatalog.fallback();
-    final selectedValue =
-        categories.contains(value) ? value : categories.defaultCategoryKey;
+    final selectedValue = categories.contains(value)
+        ? value
+        : categories.defaultCategoryKey;
 
     return DropdownButtonFormField<String>(
       value: selectedValue,

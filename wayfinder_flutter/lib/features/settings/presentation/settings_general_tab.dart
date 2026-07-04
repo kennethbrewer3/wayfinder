@@ -30,8 +30,7 @@ class SettingsGeneralTab extends ConsumerStatefulWidget {
   const SettingsGeneralTab({super.key});
 
   @override
-  ConsumerState<SettingsGeneralTab> createState() =>
-      _SettingsGeneralTabState();
+  ConsumerState<SettingsGeneralTab> createState() => _SettingsGeneralTabState();
 }
 
 class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
@@ -239,7 +238,9 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
-    final showMapViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
+    final showMapViewportDebugBorder = ref.watch(
+      mapViewportDebugBorderProvider,
+    );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
@@ -323,9 +324,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .toList(),
           selected: {themeChoice.brightness},
           onSelectionChanged: (selection) {
-            ref
-                .read(appThemeProvider.notifier)
-                .setBrightness(selection.first);
+            ref.read(appThemeProvider.notifier).setBrightness(selection.first);
           },
         ),
         const SizedBox(height: 12),
@@ -395,7 +394,9 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             FilledButton(
               onPressed: _isSavingHomeLocation ? null : _saveHomeLocation,
               child: Text(
-                _isSavingHomeLocation ? l10n.actionSaving : l10n.settingsSaveHome,
+                _isSavingHomeLocation
+                    ? l10n.actionSaving
+                    : l10n.settingsSaveHome,
               ),
             ),
             OutlinedButton(
@@ -441,7 +442,9 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             FilledButton(
               onPressed: _isSavingServerUrl ? null : _saveServerUrl,
               child: Text(
-                _isSavingServerUrl ? l10n.actionSaving : l10n.settingsSaveServerUrl,
+                _isSavingServerUrl
+                    ? l10n.actionSaving
+                    : l10n.settingsSaveServerUrl,
               ),
             ),
             const SizedBox(width: 12),
@@ -474,7 +477,9 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               .toList(),
           selected: {measurementUnits},
           onSelectionChanged: (selection) {
-            ref.read(measurementUnitsProvider.notifier).setUnits(selection.first);
+            ref
+                .read(measurementUnitsProvider.notifier)
+                .setUnits(selection.first);
           },
         ),
         const SizedBox(height: 32),
@@ -606,10 +611,22 @@ class _ThemePreview extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _Swatch(label: l10n.themePreviewPrimary, color: colors.primary),
-                  _Swatch(label: l10n.themePreviewSecondary, color: colors.secondary),
-                  _Swatch(label: l10n.themePreviewSurface, color: colors.surface),
-                  _Swatch(label: l10n.themePreviewAccent, color: colors.tertiary),
+                  _Swatch(
+                    label: l10n.themePreviewPrimary,
+                    color: colors.primary,
+                  ),
+                  _Swatch(
+                    label: l10n.themePreviewSecondary,
+                    color: colors.secondary,
+                  ),
+                  _Swatch(
+                    label: l10n.themePreviewSurface,
+                    color: colors.surface,
+                  ),
+                  _Swatch(
+                    label: l10n.themePreviewAccent,
+                    color: colors.tertiary,
+                  ),
                 ],
               ),
               const SizedBox(height: 12),

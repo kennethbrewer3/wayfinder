@@ -12,13 +12,12 @@ String geocodingImportPhaseTitle(
   return switch (phase) {
     GeocodingImportPhase.downloading =>
       l10n.geocodingImportPhaseDownloadingTitle,
-    GeocodingImportPhase.importing => isAddresses
-        ? l10n.geocodingImportPhaseImportingAddressesTitle
-        : l10n.geocodingImportPhaseImportingTitle,
-    GeocodingImportPhase.finalizing =>
-      l10n.geocodingImportPhaseFinalizingTitle,
-    GeocodingImportPhase.committing =>
-      l10n.geocodingImportPhaseCommittingTitle,
+    GeocodingImportPhase.importing =>
+      isAddresses
+          ? l10n.geocodingImportPhaseImportingAddressesTitle
+          : l10n.geocodingImportPhaseImportingTitle,
+    GeocodingImportPhase.finalizing => l10n.geocodingImportPhaseFinalizingTitle,
+    GeocodingImportPhase.committing => l10n.geocodingImportPhaseCommittingTitle,
     GeocodingImportPhase.idle => '',
   };
 }
@@ -33,9 +32,10 @@ String geocodingImportPhaseDetail(
   return switch (phase) {
     GeocodingImportPhase.downloading =>
       l10n.geocodingImportPhaseDownloadingDetail,
-    GeocodingImportPhase.importing => isAddresses
-        ? l10n.geocodingImportPhaseImportingAddressesDetail
-        : l10n.geocodingImportPhaseImportingDetail,
+    GeocodingImportPhase.importing =>
+      isAddresses
+          ? l10n.geocodingImportPhaseImportingAddressesDetail
+          : l10n.geocodingImportPhaseImportingDetail,
     GeocodingImportPhase.finalizing =>
       l10n.geocodingImportPhaseFinalizingDetail,
     GeocodingImportPhase.committing =>
@@ -70,16 +70,16 @@ class GeocodingImportDoNotRestartWarning extends StatelessWidget {
                 Text(
                   l10n.geocodingImportDoNotRestartTitle,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: colorScheme.onErrorContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   l10n.geocodingImportDoNotRestartMessage,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onErrorContainer,
-                      ),
+                    color: colorScheme.onErrorContainer,
+                  ),
                 ),
               ],
             ),
@@ -124,8 +124,8 @@ class GeocodingImportPhaseSteps extends StatelessWidget {
                 index < currentIndex
                     ? Icons.check_circle_outline
                     : index == currentIndex
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked,
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked,
                 size: 18,
                 color: index <= currentIndex
                     ? colorScheme.primary
@@ -140,13 +140,13 @@ class GeocodingImportPhaseSteps extends StatelessWidget {
                     isAddresses: isAddresses,
                   ),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: index == currentIndex
-                            ? colorScheme.onSurface
-                            : colorScheme.onSurfaceVariant,
-                        fontWeight: index == currentIndex
-                            ? FontWeight.w600
-                            : FontWeight.normal,
-                      ),
+                    color: index == currentIndex
+                        ? colorScheme.onSurface
+                        : colorScheme.onSurfaceVariant,
+                    fontWeight: index == currentIndex
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
                 ),
               ),
             ],
@@ -188,13 +188,14 @@ class GeocodingImportProgressPanel extends StatelessWidget {
       progress: progress,
     );
     final isCommitPhase = phase == GeocodingImportPhase.committing;
-    final showDoNotRestart = phase == GeocodingImportPhase.committing ||
+    final showDoNotRestart =
+        phase == GeocodingImportPhase.committing ||
         phase == GeocodingImportPhase.finalizing;
-    final canAbort = onAbort != null &&
+    final canAbort =
+        onAbort != null &&
         phase != GeocodingImportPhase.committing &&
         phase != GeocodingImportPhase.finalizing;
-    final progressPercent =
-        (progress * 100).clamp(0, 100).toStringAsFixed(1);
+    final progressPercent = (progress * 100).clamp(0, 100).toStringAsFixed(1);
     final formattedCount = formatLocaleCount(
       importedRowCount,
       Localizations.localeOf(context).toString(),
@@ -212,8 +213,8 @@ class GeocodingImportProgressPanel extends StatelessWidget {
         Text(
           geocodingImportPhaseTitle(l10n, phase, isAddresses: isAddresses),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 4),
         Text(

@@ -201,9 +201,9 @@ class _AddressSearchReadinessIndicatorState
         icon: Icons.travel_explore,
         onPressed: importRunning
             ? () => _showReadinessDialog(
-                  context,
-                  importSettings: importSettings,
-                )
+                context,
+                importSettings: importSettings,
+              )
             : null,
       ),
       error: (error, stackTrace) => AnimatedStatusDotIconButton(
@@ -276,20 +276,23 @@ class _AddressSearchReadinessIndicatorState
               data: (value) => value,
               orElse: () => initialReadiness ?? emptyGeocodingSearchReadiness,
             );
-            final showIndexProgress = readiness.indexesBuilding ||
+            final showIndexProgress =
+                readiness.indexesBuilding ||
                 (!readiness.indexesReady && readiness.totalIndexCount > 0);
             final progressPercent = readiness.buildProgress == null
                 ? null
                 : (readiness.buildProgress! * 100).round();
             final etaLabel = readiness.etaLabel;
-            final summaryMessage =
-                searchReadinessSummaryMessage(l10n, readiness);
+            final summaryMessage = searchReadinessSummaryMessage(
+              l10n,
+              readiness,
+            );
 
             final dialogTitle = settings != null && settings.isPlacesRunning
                 ? l10n.searchReadinessImportPlacesDialogTitle
                 : settings != null && settings.isHousenumbersRunning
-                    ? l10n.searchReadinessImportAddressesDialogTitle
-                    : searchReadinessDialogTitle(l10n, readiness);
+                ? l10n.searchReadinessImportAddressesDialogTitle
+                : searchReadinessDialogTitle(l10n, readiness);
 
             return AlertDialog(
               title: Text(dialogTitle),
@@ -326,8 +329,8 @@ class _AddressSearchReadinessIndicatorState
                                   readiness.totalIndexCount,
                                 )
                               : readinessAsync.isLoading
-                                  ? l10n.searchReadinessCheckingStatus
-                                  : l10n.searchReadinessBuildingTooltip,
+                              ? l10n.searchReadinessCheckingStatus
+                              : l10n.searchReadinessBuildingTooltip,
                         ),
                         const SizedBox(height: 12),
                       ],
@@ -463,10 +466,10 @@ class _SearchReadinessRequirementRow extends StatelessWidget {
               Text(
                 isReady ? readyLabel : missingLabel,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isReady
-                          ? colorScheme.primary
-                          : colorScheme.onSurfaceVariant,
-                    ),
+                  color: isReady
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),

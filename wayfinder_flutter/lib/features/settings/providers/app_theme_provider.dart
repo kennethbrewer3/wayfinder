@@ -7,14 +7,15 @@ import '../data/app_settings_repository.dart';
 
 final appThemeProvider =
     StateNotifierProvider<AppThemeNotifier, AppThemeChoice>(
-  (ref) => AppThemeNotifier(
-    ref.watch(appSettingsRepositoryProvider),
-    AppThemeStorage(),
-  ),
-);
+      (ref) => AppThemeNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+        AppThemeStorage(),
+      ),
+    );
 
 class AppThemeNotifier extends StateNotifier<AppThemeChoice> {
-  AppThemeNotifier(this._repository, this._storage) : super(AppThemeChoice.light) {
+  AppThemeNotifier(this._repository, this._storage)
+    : super(AppThemeChoice.light) {
     _load();
   }
 

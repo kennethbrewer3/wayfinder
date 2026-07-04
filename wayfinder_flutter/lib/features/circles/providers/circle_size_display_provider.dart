@@ -7,15 +7,15 @@ import '../models/circle_size_display.dart';
 
 final circleSizeDisplayProvider =
     StateNotifierProvider<CircleSizeDisplayNotifier, CircleSizeDisplay>(
-  (ref) => CircleSizeDisplayNotifier(
-    ref.watch(appSettingsRepositoryProvider),
-    CircleSizeDisplayStorage(),
-  ),
-);
+      (ref) => CircleSizeDisplayNotifier(
+        ref.watch(appSettingsRepositoryProvider),
+        CircleSizeDisplayStorage(),
+      ),
+    );
 
 class CircleSizeDisplayNotifier extends StateNotifier<CircleSizeDisplay> {
   CircleSizeDisplayNotifier(this._repository, this._storage)
-      : super(CircleSizeDisplay.radius) {
+    : super(CircleSizeDisplay.radius) {
     _load();
   }
 

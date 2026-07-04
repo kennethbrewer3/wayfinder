@@ -66,9 +66,9 @@ class GeocodingImportState {
       isSearchableGeocodingImport(importStatus, importedRowCount);
 
   bool get isHousenumbersReady => isSearchableGeocodingImport(
-        housenumbersImportStatus,
-        housenumbersImportedRowCount,
-      );
+    housenumbersImportStatus,
+    housenumbersImportedRowCount,
+  );
 }
 
 GeocodingImportState defaultGeocodingImportState() {

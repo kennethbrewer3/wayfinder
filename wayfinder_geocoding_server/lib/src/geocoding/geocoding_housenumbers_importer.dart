@@ -141,17 +141,17 @@ abstract final class GeocodingHousenumbersImporter {
         serverpod: serverpod,
         logLabel: 'housenumbers',
         totalBytes: -1,
-        updateStatus: ({
-          required String importStatus,
-          required int importedRowCount,
-          required double importProgress,
-        }) =>
-            _updateProgress(
-          serverpod,
-          importStatus: importStatus,
-          importedRowCount: importedRowCount,
-          importProgress: importProgress,
-        ),
+        updateStatus:
+            ({
+              required String importStatus,
+              required int importedRowCount,
+              required double importProgress,
+            }) => _updateProgress(
+              serverpod,
+              importStatus: importStatus,
+              importedRowCount: importedRowCount,
+              importProgress: importProgress,
+            ),
       );
       await GeocodingRemoteFetch.withDownload(
         url,
@@ -190,7 +190,7 @@ abstract final class GeocodingHousenumbersImporter {
                 null,
                 'geocoding',
                 '🏠 Housenumbers import started parsing rows '
-                'totalBytes=${contentLength >= 0 ? GeocodingDownloadProgress.formatBytes(contentLength) : 'unknown'}',
+                    'totalBytes=${contentLength >= 0 ? GeocodingDownloadProgress.formatBytes(contentLength) : 'unknown'}',
               );
               continue;
             }
@@ -227,7 +227,7 @@ abstract final class GeocodingHousenumbersImporter {
             null,
             'geocoding',
             '🏠 Housenumbers import finished parsing rows=$importedRows — '
-            'flushing staging to live table next',
+                'flushing staging to live table next',
           );
 
           await _updateProgress(
@@ -269,7 +269,7 @@ abstract final class GeocodingHousenumbersImporter {
         null,
         'geocoding',
         '🏠 Housenumbers import committing rows=$importedRows '
-        '(copying staging → live table; this can take a long time)',
+            '(copying staging → live table; this can take a long time)',
       );
 
       final commitSession = await serverpod.createSession();

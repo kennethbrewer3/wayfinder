@@ -37,10 +37,10 @@ class HomeLocation {
   }
 
   Map<String, dynamic> toJson() => {
-        'lat': latitude,
-        'lng': longitude,
-        'zoom': zoom,
-      };
+    'lat': latitude,
+    'lng': longitude,
+    'zoom': zoom,
+  };
 
   factory HomeLocation.fromJson(Map<String, dynamic> json) {
     return HomeLocation(

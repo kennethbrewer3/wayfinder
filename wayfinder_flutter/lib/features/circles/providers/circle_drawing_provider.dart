@@ -26,16 +26,17 @@ class CircleDrawingState {
     return CircleDrawingState(
       active: active ?? this.active,
       center: clearCenter ? null : center ?? this.center,
-      previewRadiusMeters:
-          clearPreviewRadius ? null : previewRadiusMeters ?? this.previewRadiusMeters,
+      previewRadiusMeters: clearPreviewRadius
+          ? null
+          : previewRadiusMeters ?? this.previewRadiusMeters,
     );
   }
 }
 
 final circleDrawingProvider =
     StateNotifierProvider<CircleDrawingNotifier, CircleDrawingState>(
-  (ref) => CircleDrawingNotifier(),
-);
+      (ref) => CircleDrawingNotifier(),
+    );
 
 class CircleDrawingNotifier extends StateNotifier<CircleDrawingState> {
   CircleDrawingNotifier() : super(const CircleDrawingState());

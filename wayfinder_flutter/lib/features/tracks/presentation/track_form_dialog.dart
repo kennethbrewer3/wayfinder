@@ -143,8 +143,7 @@ class _TrackFormDialogState extends State<TrackFormDialog> {
               const SizedBox(height: 16),
               TrackTransportationModeField(
                 value: _transportationMode,
-                onChanged: (mode) =>
-                    setState(() => _transportationMode = mode),
+                onChanged: (mode) => setState(() => _transportationMode = mode),
               ),
               const SizedBox(height: 12),
               SwitchListTile(

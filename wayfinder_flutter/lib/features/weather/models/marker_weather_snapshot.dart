@@ -125,7 +125,9 @@ class MarkerWeatherReading {
       temperature: _optionalDouble(json['temperature']),
       temperatureUnit: temperatureUnit,
       apparentTemperature: _optionalDouble(json['apparentTemperature']),
-      humidityPercent: _optionalInt(json['humidityPercent'] ?? json['humidity']),
+      humidityPercent: _optionalInt(
+        json['humidityPercent'] ?? json['humidity'],
+      ),
       precipitation: _optionalDouble(json['precipitation']),
       precipitationUnit: json['precipitationUnit'] as String? ?? 'mm',
       weatherCode: _optionalInt(json['weatherCode']),
@@ -363,7 +365,11 @@ String formatCompassDirection(int? degrees) {
   return directions[index];
 }
 
-String formatWeatherValue(double? value, String unit, {int fractionDigits = 0}) {
+String formatWeatherValue(
+  double? value,
+  String unit, {
+  int fractionDigits = 0,
+}) {
   if (value == null) {
     return '—';
   }

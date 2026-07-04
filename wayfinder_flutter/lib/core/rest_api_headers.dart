@@ -16,7 +16,9 @@ abstract final class RestApiHeaders {
     return headers;
   }
 
-  static Future<Map<String, String>> readOnly({Map<String, String>? extra}) async {
+  static Future<Map<String, String>> readOnly({
+    Map<String, String>? extra,
+  }) async {
     final headers = <String, String>{...?extra};
     final apiKey = await RestApiKeyStorage.read();
     if (apiKey != null && apiKey.isNotEmpty) {

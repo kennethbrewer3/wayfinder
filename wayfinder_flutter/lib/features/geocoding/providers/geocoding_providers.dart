@@ -21,9 +21,12 @@ const emptyGeocodingSearchReadiness = GeocodingSearchReadiness(
 );
 
 final geocodingSearchReadinessProvider =
-    AsyncNotifierProvider<GeocodingSearchReadinessNotifier, GeocodingSearchReadiness>(
-  GeocodingSearchReadinessNotifier.new,
-);
+    AsyncNotifierProvider<
+      GeocodingSearchReadinessNotifier,
+      GeocodingSearchReadiness
+    >(
+      GeocodingSearchReadinessNotifier.new,
+    );
 
 class GeocodingSearchReadinessNotifier
     extends AsyncNotifier<GeocodingSearchReadiness> {
@@ -69,8 +72,9 @@ class GeocodingSearchReadinessNotifier
   }
 }
 
-final geocodingSettingsProvider =
-    FutureProvider<GeocodingImportState>((ref) async {
+final geocodingSettingsProvider = FutureProvider<GeocodingImportState>((
+  ref,
+) async {
   final repository = ref.watch(geocodingRepositoryProvider);
   if (!repository.isConfigured) {
     throw StateError('Geocoding server URL is not configured.');
@@ -78,42 +82,45 @@ final geocodingSettingsProvider =
   return repository.getSettings();
 });
 
-final geocodingCountryCatalogProvider =
-    FutureProvider<GeocodingCountryCatalog>((ref) async {
-  final repository = ref.watch(geocodingRepositoryProvider);
-  if (!repository.isConfigured) {
-    return GeocodingCountryCatalog.fallback();
-  }
-  return repository.getCountryCatalog();
-});
-
-final geocodingSearchProvider =
-    FutureProvider.autoDispose.family<List<GeocodingPlaceResult>, String>(
-  (ref, query) async {
-    final repository = ref.read(geocodingRepositoryProvider);
+final geocodingCountryCatalogProvider = FutureProvider<GeocodingCountryCatalog>(
+  (ref) async {
+    final repository = ref.watch(geocodingRepositoryProvider);
     if (!repository.isConfigured) {
-      return const [];
+      return GeocodingCountryCatalog.fallback();
     }
-    final reachable = await ref.watch(geocodingServerReachableProvider.future);
-    if (!reachable) {
-      return const [];
-    }
-
-    final trimmed = query.trim();
-    if (trimmed.length < mapSearchMinGeocodingLength) {
-      return const [];
-    }
-
-    // Read the map center once per submitted query. Watching the viewport
-    // refetches on every pan and rebuilds the app bar search dropdown.
-    final viewport = ref.read(mapViewportProvider).valueOrNull;
-    return repository.searchPlaces(
-      trimmed,
-      nearLatitude: viewport?.center.latitude,
-      nearLongitude: viewport?.center.longitude,
-    );
+    return repository.getCountryCatalog();
   },
 );
+
+final geocodingSearchProvider = FutureProvider.autoDispose
+    .family<List<GeocodingPlaceResult>, String>(
+      (ref, query) async {
+        final repository = ref.read(geocodingRepositoryProvider);
+        if (!repository.isConfigured) {
+          return const [];
+        }
+        final reachable = await ref.watch(
+          geocodingServerReachableProvider.future,
+        );
+        if (!reachable) {
+          return const [];
+        }
+
+        final trimmed = query.trim();
+        if (trimmed.length < mapSearchMinGeocodingLength) {
+          return const [];
+        }
+
+        // Read the map center once per submitted query. Watching the viewport
+        // refetches on every pan and rebuilds the app bar search dropdown.
+        final viewport = ref.read(mapViewportProvider).valueOrNull;
+        return repository.searchPlaces(
+          trimmed,
+          nearLatitude: viewport?.center.latitude,
+          nearLongitude: viewport?.center.longitude,
+        );
+      },
+    );
 
 void refreshGeocoding(WidgetRef ref) {
   ref.invalidate(geocodingSettingsProvider);

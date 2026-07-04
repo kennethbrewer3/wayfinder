@@ -233,7 +233,8 @@ abstract final class GeocodingSearch {
       );
       final resolvedLocality = localityCache[cacheKey];
       results[index] = result.copyWith(
-        displayName: resolvedLocality ??
+        displayName:
+            resolvedLocality ??
             GeocodingAddressLocality.formatCoordinates(
               result.latitude,
               result.longitude,

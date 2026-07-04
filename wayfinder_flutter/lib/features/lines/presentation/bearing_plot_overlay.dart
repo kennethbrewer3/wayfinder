@@ -95,8 +95,12 @@ class CompassRosePainter extends CustomPainter {
     canvas.drawCircle(center, _roseRadius, ringPaint);
 
     for (var bearing = 0; bearing < 360; bearing += 30) {
-      final outer = center + _directionFromTrueBearing(bearing.toDouble(), _roseRadius + 6);
-      final inner = center + _directionFromTrueBearing(bearing.toDouble(), _roseRadius - 8);
+      final outer =
+          center +
+          _directionFromTrueBearing(bearing.toDouble(), _roseRadius + 6);
+      final inner =
+          center +
+          _directionFromTrueBearing(bearing.toDouble(), _roseRadius - 8);
       canvas.drawLine(inner, outer, tickPaint);
     }
 
@@ -135,7 +139,8 @@ class CompassRosePainter extends CustomPainter {
     double bearing,
     Color color,
   ) {
-    final labelPoint = center + _directionFromTrueBearing(bearing, _roseRadius + 18);
+    final labelPoint =
+        center + _directionFromTrueBearing(bearing, _roseRadius + 18);
     final textPainter = TextPainter(
       text: TextSpan(
         text: label,

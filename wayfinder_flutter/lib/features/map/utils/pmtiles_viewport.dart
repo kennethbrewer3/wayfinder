@@ -60,13 +60,13 @@ TileCoordinates latLngToTile(LatLng point, int zoom) {
       .floor()
       .clamp(0, scale - 1)
       .toInt();
-  final y = ((1 -
-              math.log(math.tan(latRad) + 1 / math.cos(latRad)) / math.pi) /
-          2 *
-          scale)
-      .floor()
-      .clamp(0, scale - 1)
-      .toInt();
+  final y =
+      ((1 - math.log(math.tan(latRad) + 1 / math.cos(latRad)) / math.pi) /
+              2 *
+              scale)
+          .floor()
+          .clamp(0, scale - 1)
+          .toInt();
   return TileCoordinates(x, y, zoom);
 }
 
@@ -110,8 +110,7 @@ List<PmtilesArchiveEntry> _matchingArchivesForViewport({
   required LatLngBounds paddedViewport,
   required double viewportZoom,
 }) {
-  final withKnownBounds =
-      entries.where((entry) => entry.boundsKnown).toList();
+  final withKnownBounds = entries.where((entry) => entry.boundsKnown).toList();
   final candidates = withKnownBounds.isEmpty ? entries : withKnownBounds;
 
   final matching = candidates
@@ -160,13 +159,17 @@ List<PmtilesArchiveEntry> rankArchivesContainingCenter({
   }
 
   containingCenter.sort((a, b) {
-    final intersection = _intersectionArea(b.bounds, paddedViewport)
-        .compareTo(_intersectionArea(a.bounds, paddedViewport));
+    final intersection = _intersectionArea(
+      b.bounds,
+      paddedViewport,
+    ).compareTo(_intersectionArea(a.bounds, paddedViewport));
     if (intersection != 0) {
       return intersection;
     }
-    return _centerDistanceSquared(a.bounds, viewportCenter)
-        .compareTo(_centerDistanceSquared(b.bounds, viewportCenter));
+    return _centerDistanceSquared(
+      a.bounds,
+      viewportCenter,
+    ).compareTo(_centerDistanceSquared(b.bounds, viewportCenter));
   });
   return containingCenter;
 }
@@ -213,8 +216,10 @@ List<PmtilesArchiveEntry> selectArchivesForViewport({
   }
 
   matching.sort(
-    (a, b) => _intersectionArea(b.bounds, paddedViewport)
-        .compareTo(_intersectionArea(a.bounds, paddedViewport)),
+    (a, b) => _intersectionArea(
+      b.bounds,
+      paddedViewport,
+    ).compareTo(_intersectionArea(a.bounds, paddedViewport)),
   );
   return matching.take(maxLayers).toList();
 }
@@ -253,19 +258,22 @@ List<PmtilesArchiveEntry> rankArchivesForViewport({
   );
   if (containingCenter.isNotEmpty) {
     final containingIds = containingCenter.map((entry) => entry.id).toSet();
-    final remainder = matching
-        .where((entry) => !containingIds.contains(entry.id))
-        .toList()
-      ..sort(
-        (a, b) => _intersectionArea(b.bounds, paddedViewport)
-            .compareTo(_intersectionArea(a.bounds, paddedViewport)),
-      );
+    final remainder =
+        matching.where((entry) => !containingIds.contains(entry.id)).toList()
+          ..sort(
+            (a, b) => _intersectionArea(
+              b.bounds,
+              paddedViewport,
+            ).compareTo(_intersectionArea(a.bounds, paddedViewport)),
+          );
     return [...containingCenter, ...remainder];
   }
 
   matching.sort(
-    (a, b) => _intersectionArea(b.bounds, paddedViewport)
-        .compareTo(_intersectionArea(a.bounds, paddedViewport)),
+    (a, b) => _intersectionArea(
+      b.bounds,
+      paddedViewport,
+    ).compareTo(_intersectionArea(a.bounds, paddedViewport)),
   );
   return matching;
 }

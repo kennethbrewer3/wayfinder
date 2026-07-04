@@ -25,7 +25,9 @@ QuillController createMarkerNotesController({String? markdown}) {
 }
 
 String markerNotesToMarkdown(QuillController controller) {
-  final markdown = _deltaToMarkdown.convert(controller.document.toDelta()).trim();
+  final markdown = _deltaToMarkdown
+      .convert(controller.document.toDelta())
+      .trim();
   return markdown;
 }
 

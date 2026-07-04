@@ -14,7 +14,8 @@ class SettingsMapTilesTab extends ConsumerStatefulWidget {
   const SettingsMapTilesTab({super.key});
 
   @override
-  ConsumerState<SettingsMapTilesTab> createState() => _SettingsMapTilesTabState();
+  ConsumerState<SettingsMapTilesTab> createState() =>
+      _SettingsMapTilesTabState();
 }
 
 class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
@@ -40,8 +41,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
 
   Future<void> _loadStoragePath() async {
     try {
-      final settings =
-          await ref.read(appSettingsRepositoryProvider).getPmtilesStoragePath();
+      final settings = await ref
+          .read(appSettingsRepositoryProvider)
+          .getPmtilesStoragePath();
       if (!mounted) {
         return;
       }
@@ -162,7 +164,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
 
   Future<void> _setFileEnabled(String id, bool enabled) async {
     _log.info('🎯 Toggle map visibility', data: 'id=$id enabled=$enabled');
-    await ref.read(pmtilesRepositoryProvider).setFileEnabled(
+    await ref
+        .read(pmtilesRepositoryProvider)
+        .setFileEnabled(
           id,
           enabled: enabled,
         );
@@ -232,13 +236,17 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.mapTilesGroupCreateFailed(error.toString()))),
+        SnackBar(
+          content: Text(l10n.mapTilesGroupCreateFailed(error.toString())),
+        ),
       );
     }
   }
 
   Future<void> _setGroupEnabled(String groupId, bool enabled) async {
-    await ref.read(pmtilesRepositoryProvider).setGroupEnabled(
+    await ref
+        .read(pmtilesRepositoryProvider)
+        .setGroupEnabled(
           groupId,
           enabled: enabled,
         );
@@ -246,7 +254,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
   }
 
   Future<void> _setUngroupedEnabled(bool enabled) async {
-    await ref.read(pmtilesRepositoryProvider).setUngroupedEnabled(
+    await ref
+        .read(pmtilesRepositoryProvider)
+        .setUngroupedEnabled(
           enabled: enabled,
         );
     refreshPmtiles(ref);
@@ -377,7 +387,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
         FilledButton(
           onPressed: _isSavingStoragePath ? null : _saveStoragePath,
           child: Text(
-            _isSavingStoragePath ? l10n.actionSaving : l10n.mapTilesSaveAndRescan,
+            _isSavingStoragePath
+                ? l10n.actionSaving
+                : l10n.mapTilesSaveAndRescan,
           ),
         ),
         const SizedBox(height: 32),
@@ -458,7 +470,9 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
                   );
                 }
 
-                final groupsById = {for (final group in groups) group.id: group};
+                final groupsById = {
+                  for (final group in groups) group.id: group,
+                };
                 final enabledCount = files
                     .where((file) => _fileVisibleOnMap(file, groupsById))
                     .length;
@@ -475,7 +489,8 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
                   }
                 }
                 ungroupedFiles.sort(
-                  (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+                  (a, b) =>
+                      a.name.toLowerCase().compareTo(b.name.toLowerCase()),
                 );
                 for (final groupFiles in filesByGroupId.values) {
                   groupFiles.sort(
@@ -557,7 +572,8 @@ class _PmtilesGroupSection extends StatelessWidget {
     String fileId,
     String groupId, {
     required bool include,
-  }) onToggleGroupMembership;
+  })
+  onToggleGroupMembership;
   final Future<void> Function(String id, String name) onDeleteFile;
 
   bool get _groupEnabled => isUngrouped
@@ -569,9 +585,7 @@ class _PmtilesGroupSection extends StatelessWidget {
       return files.where((file) => file.enabledOnMap).length;
     }
     final showOnMap = group?.showOnMap ?? false;
-    return files
-        .where((file) => file.enabledOnMap || showOnMap)
-        .length;
+    return files.where((file) => file.enabledOnMap || showOnMap).length;
   }
 
   @override
@@ -639,10 +653,10 @@ class _PmtilesGroupSection extends StatelessWidget {
                 onToggleEnabled: (enabled) => onToggleFile(files[i], enabled),
                 onToggleGroupMembership: (groupId, include) =>
                     onToggleGroupMembership(
-                  files[i].id,
-                  groupId,
-                  include: include,
-                ),
+                      files[i].id,
+                      groupId,
+                      include: include,
+                    ),
                 onDelete: () => onDeleteFile(files[i].id, files[i].name),
               ),
             ],
@@ -667,14 +681,15 @@ class _PmtilesFileTile extends StatelessWidget {
   final bool visibleOnMap;
   final ValueChanged<bool> onToggleEnabled;
   final Future<void> Function(String groupId, bool include)
-      onToggleGroupMembership;
+  onToggleGroupMembership;
   final VoidCallback onDelete;
 
-  List<PmtilesGroup> get _sortedGroups => [
+  List<PmtilesGroup> get _sortedGroups =>
+      [
         ...groups,
       ]..sort(
-          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
 
   @override
   Widget build(BuildContext context) {

@@ -16,7 +16,10 @@ class PmtilesGeoBounds {
   final double north;
   final double east;
 
-  factory PmtilesGeoBounds.fromPositions(LatLng minPosition, LatLng maxPosition) {
+  factory PmtilesGeoBounds.fromPositions(
+    LatLng minPosition,
+    LatLng maxPosition,
+  ) {
     return PmtilesGeoBounds(
       south: math.min(minPosition.latitude, maxPosition.latitude),
       west: math.min(minPosition.longitude, maxPosition.longitude),
@@ -26,9 +29,9 @@ class PmtilesGeoBounds {
   }
 
   LatLng get center => LatLng(
-        (south + north) / 2,
-        (west + east) / 2,
-      );
+    (south + north) / 2,
+    (west + east) / 2,
+  );
 
   double get latitudeSpan => (north - south).abs();
 

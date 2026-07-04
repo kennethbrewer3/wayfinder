@@ -34,24 +34,24 @@ final pmtilesGroupsProvider = FutureProvider<List<PmtilesGroup>>((ref) async {
 /// Enabled PMTiles archives with bounds supplied by the server catalog.
 final pmtilesEnabledMetadataProvider =
     FutureProvider<List<PmtilesArchiveEntry>>((ref) async {
-  ref.watch(pmtilesRevisionProvider);
-  final log = AppLogger.logPmtiles;
-  log.debug('🔄 Provider refresh: pmtilesEnabledMetadataProvider');
+      ref.watch(pmtilesRevisionProvider);
+      final log = AppLogger.logPmtiles;
+      log.debug('🔄 Provider refresh: pmtilesEnabledMetadataProvider');
 
-  final repository = ref.watch(pmtilesRepositoryProvider);
-  final entries = await repository.resolveEnabledEntries();
-  if (entries.isEmpty) {
-    log.warn('🗺️ No enabled PMTiles archives');
-    return const [];
-  }
+      final repository = ref.watch(pmtilesRepositoryProvider);
+      final entries = await repository.resolveEnabledEntries();
+      if (entries.isEmpty) {
+        log.warn('🗺️ No enabled PMTiles archives');
+        return const [];
+      }
 
-  final withBounds = entries.where((entry) => entry.boundsKnown).length;
-  log.success(
-    '🗺️ PMTiles catalog entries ready',
-    data: 'count=${entries.length} withBounds=$withBounds',
-  );
-  return entries;
-});
+      final withBounds = entries.where((entry) => entry.boundsKnown).length;
+      log.success(
+        '🗺️ PMTiles catalog entries ready',
+        data: 'count=${entries.length} withBounds=$withBounds',
+      );
+      return entries;
+    });
 
 void refreshPmtiles(WidgetRef ref) {
   final revision = ref.read(pmtilesRevisionProvider) + 1;

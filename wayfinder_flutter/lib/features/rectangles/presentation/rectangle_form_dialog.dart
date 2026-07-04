@@ -80,8 +80,7 @@ Future<RectangleFormData?> showRectangleFormDialog({
         initialCenterMarkerColor:
             initialCenterMarkerColor ?? parseMarkerColor('#1B4965'),
         initialBorderColor: initialBorderColor ?? parseMarkerColor('#1B4965'),
-        initialFillColor:
-            initialFillColor ?? parseMarkerColor('#1B496540'),
+        initialFillColor: initialFillColor ?? parseMarkerColor('#1B496540'),
         initialShowNameLabel: initialShowNameLabel,
         initialLayerId: initialLayerId,
         initialCenter: initialCenter,
@@ -167,9 +166,11 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
       _cornerBLatitudeController = null;
       _cornerBLongitudeController = null;
     } else {
-      final cornerA = widget.initialCornerA ??
+      final cornerA =
+          widget.initialCornerA ??
           LatLng(widget.bounds.north, widget.bounds.west);
-      final cornerB = widget.initialCornerB ??
+      final cornerB =
+          widget.initialCornerB ??
           LatLng(widget.bounds.south, widget.bounds.east);
       _centerLatitudeController = null;
       _centerLongitudeController = null;
@@ -219,7 +220,8 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
     LatLng? center;
     LatLng? cornerA;
     LatLng? cornerB;
-    if (_centerLatitudeController != null && _centerLongitudeController != null) {
+    if (_centerLatitudeController != null &&
+        _centerLongitudeController != null) {
       center = parseLatLngFields(
         _centerLatitudeController.text,
         _centerLongitudeController.text,
@@ -308,14 +310,14 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                     Text(
                       dimensionsLabel,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       areaLabel,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -373,7 +375,8 @@ class _RectangleFormDialogState extends State<RectangleFormDialog> {
                 value: _showNameLabel,
                 onChanged: (value) => setState(() => _showNameLabel = value),
               ),
-              if (widget.creationMode == RectangleCreationMode.centerExtent) ...[
+              if (widget.creationMode ==
+                  RectangleCreationMode.centerExtent) ...[
                 const SizedBox(height: 16),
                 Text(
                   l10n.circleCenterMarkerLabel,
@@ -445,8 +448,8 @@ class _FillColorPickerField extends StatelessWidget {
         Text(
           l10n.formFillOpacityHelp,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 8),
         ColorPicker(

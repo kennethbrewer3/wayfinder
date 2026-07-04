@@ -5,8 +5,8 @@ import '../models/home_location.dart';
 
 final homeLocationProvider =
     StateNotifierProvider<HomeLocationNotifier, HomeLocation>(
-  (ref) => HomeLocationNotifier(ref.watch(appSettingsRepositoryProvider)),
-);
+      (ref) => HomeLocationNotifier(ref.watch(appSettingsRepositoryProvider)),
+    );
 
 class HomeLocationNotifier extends StateNotifier<HomeLocation> {
   HomeLocationNotifier(this._repository) : super(HomeLocation.defaults) {

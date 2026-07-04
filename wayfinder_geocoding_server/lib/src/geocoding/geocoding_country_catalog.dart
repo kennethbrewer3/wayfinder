@@ -178,8 +178,7 @@ abstract final class GeocodingCountryCatalog {
       codes.addAll(preset.countryCodes);
     }
     return [
-      for (final code in codes)
-        GeocodingCountryEntry(code: code, name: code),
+      for (final code in codes) GeocodingCountryEntry(code: code, name: code),
     ]..sort((a, b) => a.code.compareTo(b.code));
   }
 

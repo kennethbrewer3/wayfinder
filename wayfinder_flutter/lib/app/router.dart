@@ -70,7 +70,8 @@ class _WayfinderNavObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     AppLogger.logNav.trace(
       '🧭 didPush',
-      data: '${previousRoute?.settings.name ?? '(none)'} -> ${route.settings.name ?? route.settings}',
+      data:
+          '${previousRoute?.settings.name ?? '(none)'} -> ${route.settings.name ?? route.settings}',
     );
   }
 
@@ -78,7 +79,8 @@ class _WayfinderNavObserver extends NavigatorObserver {
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     AppLogger.logNav.trace(
       '🧭 didPop',
-      data: '${route.settings.name ?? route.settings} -> ${previousRoute?.settings.name ?? '(none)'}',
+      data:
+          '${route.settings.name ?? route.settings} -> ${previousRoute?.settings.name ?? '(none)'}',
     );
   }
 }

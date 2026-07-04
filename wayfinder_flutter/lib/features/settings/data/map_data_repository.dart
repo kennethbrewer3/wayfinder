@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -49,6 +48,21 @@ class MapDataRepository {
   Uri get _restoreArchiveUri => _exportArchiveUri;
 
   Future<Uint8List> fetchBackupArchive() async {
+    try {
+      final archive = await _client.mapData.exportMapDataArchive();
+      return archive.buffer.asUint8List(
+        archive.offsetInBytes,
+        archive.lengthInBytes,
+      );
+    } on Object catch (rpcError) {
+      if (!kIsWeb && _isMapDataEndpointUnavailable(rpcError)) {
+        return _fetchBackupArchiveViaRest();
+      }
+      throw Exception(_exportUnavailableMessage(rpcError));
+    }
+  }
+
+  Future<Uint8List> _fetchBackupArchiveViaRest() async {
     final response = await http.get(
       _exportArchiveUri,
       headers: await RestApiHeaders.readOnly(),
@@ -94,6 +108,28 @@ class MapDataRepository {
       throw const FormatException('Backup archive is empty');
     }
 
+    try {
+      final summary = await _client.mapData.restoreMapDataArchive(
+        ByteData.sublistView(archiveBytes),
+      );
+      return MapDataRestoreResult(
+        layers: summary.layers,
+        markers: summary.markers,
+        zones: summary.zones,
+        markerIconCategories: summary.markerIconCategories,
+        markerIcons: summary.markerIcons,
+      );
+    } on Object catch (rpcError) {
+      if (!kIsWeb && _isMapDataEndpointUnavailable(rpcError)) {
+        return _restoreFromArchiveViaRest(archiveBytes);
+      }
+      throw Exception(_restoreUnavailableMessage(rpcError));
+    }
+  }
+
+  Future<MapDataRestoreResult> _restoreFromArchiveViaRest(
+    Uint8List archiveBytes,
+  ) async {
     final response = await http.post(
       _restoreArchiveUri,
       headers: {

@@ -25,12 +25,13 @@ import '../zones/map_zone_endpoint.dart' as _i12;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
     as _i13;
 import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i14;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i15;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i16;
+import 'dart:typed_data' as _i15;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i16;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i17;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i17;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i18;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i19;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -581,6 +582,35 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['backupJson'],
                   ),
         ),
+        'exportMapDataArchive': _i1.MethodConnector(
+          name: 'exportMapDataArchive',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapData'] as _i7.MapDataEndpoint)
+                  .exportMapDataArchive(session),
+        ),
+        'restoreMapDataArchive': _i1.MethodConnector(
+          name: 'restoreMapDataArchive',
+          params: {
+            'archiveBytes': _i1.ParameterDescription(
+              name: 'archiveBytes',
+              type: _i1.getType<_i15.ByteData>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapData'] as _i7.MapDataEndpoint)
+                  .restoreMapDataArchive(
+                    session,
+                    params['archiveBytes'],
+                  ),
+        ),
       },
     );
     connectors['mapMarker'] = _i1.EndpointConnector(
@@ -621,7 +651,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i15.MapMarker>(),
+              type: _i1.getType<_i16.MapMarker>(),
               nullable: false,
             ),
           },
@@ -640,7 +670,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i15.MapMarker>(),
+              type: _i1.getType<_i16.MapMarker>(),
               nullable: false,
             ),
           },
@@ -1446,7 +1476,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i16.MapZone>(),
+              type: _i1.getType<_i17.MapZone>(),
               nullable: false,
             ),
           },
@@ -1465,7 +1495,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i16.MapZone>(),
+              type: _i1.getType<_i17.MapZone>(),
               nullable: false,
             ),
           },
@@ -1500,9 +1530,9 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i17.Endpoints()
+    modules['serverpod_auth_idp'] = _i18.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i18.Endpoints()
+    modules['serverpod_auth_core'] = _i19.Endpoints()
       ..initializeEndpoints(server);
   }
 }

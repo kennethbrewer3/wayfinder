@@ -29,7 +29,8 @@ class MarkerIconCategoryField extends ConsumerWidget {
         : categories.defaultCategoryKey;
 
     return DropdownButtonFormField<String>(
-      value: selectedValue,
+      key: ValueKey(selectedValue),
+      initialValue: selectedValue,
       decoration: InputDecoration(
         labelText: l10n.markerIconsCategoryLabel,
         border: const OutlineInputBorder(),

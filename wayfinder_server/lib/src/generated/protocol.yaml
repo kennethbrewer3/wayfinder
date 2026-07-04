@@ -28,6 +28,8 @@ mapLayer:
 mapData:
   - exportMapData:
   - restoreMapData:
+  - exportMapDataArchive:
+  - restoreMapDataArchive:
 mapMarker:
   - listMarkers:
   - getMarker:

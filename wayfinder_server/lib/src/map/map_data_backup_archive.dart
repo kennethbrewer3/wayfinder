@@ -18,30 +18,34 @@ const mapDataBackupMarkerIconsDirectory = 'marker-icons';
 /// Builds a zip containing [mapDataBackupArchiveJsonName] and custom SVG files.
 Future<Uint8List> buildMapDataBackupArchive(Session session) async {
   final bundle = await exportMapDataBundle(session);
+  final inlineSvgByKey = _extractInlineSvgContentByKey(bundle['markerIcons']);
   final jsonBundle = _stripEmbeddedSvgContent(bundle);
 
   final storage = MarkerIconStorage();
-  await storage.ensureReady();
+  if (!await storage.ensureReady()) {
+    throw const FormatException('Marker icon storage is unavailable');
+  }
 
   final archive = Archive();
+  final svgFiles = await resolveMarkerIconSvgFilesForArchive(
+    icons: _readIconMaps(jsonBundle['markerIcons']),
+    storage: storage,
+    inlineSvgContentByKey: inlineSvgByKey,
+  );
+
+  _syncHasCustomSvgFlags(jsonBundle, svgFiles.keys);
+
   final jsonText = const JsonEncoder.withIndent('  ').convert(jsonBundle);
   final jsonBytes = utf8.encode(jsonText);
   archive.addFile(
     ArchiveFile(mapDataBackupArchiveJsonName, jsonBytes.length, jsonBytes),
   );
 
-  final addedSvgPaths = <String>{};
-  await _addSvgFilesFromCatalog(
-    archive: archive,
-    storage: storage,
-    icons: jsonBundle['markerIcons'],
-    addedPaths: addedSvgPaths,
-  );
-  await _addOrphanSvgFiles(
-    archive: archive,
-    storage: storage,
-    addedPaths: addedSvgPaths,
-  );
+  for (final entry in svgFiles.entries) {
+    final archivePath = '$mapDataBackupMarkerIconsDirectory/${entry.key}.svg';
+    final bytes = entry.value;
+    archive.addFile(ArchiveFile(archivePath, bytes.length, bytes));
+  }
 
   return Uint8List.fromList(ZipEncoder().encode(archive));
 }
@@ -80,6 +84,44 @@ void mergeArchiveSvgFilesIntoBundle(
   _mergeArchiveSvgFiles(archive, bundle);
 }
 
+/// Resolves SVG bytes to store under [mapDataBackupMarkerIconsDirectory].
+Future<Map<String, Uint8List>> resolveMarkerIconSvgFilesForArchive({
+  required Iterable<Map<String, dynamic>> icons,
+  required MarkerIconStorage storage,
+  Map<String, String>? inlineSvgContentByKey,
+}) async {
+  final inline = inlineSvgContentByKey ?? const {};
+  final resolved = <String, Uint8List>{};
+
+  for (final icon in icons) {
+    final key = icon['key'];
+    if (key is! String || !MarkerIconStorage.isValidKey(key)) {
+      continue;
+    }
+
+    final hasCustomSvg = icon['hasCustomSvg'] == true;
+    if (!hasCustomSvg && !storage.exists(key) && !inline.containsKey(key)) {
+      continue;
+    }
+
+    final bytes = await _readSvgBytesForKey(
+      key: key,
+      storage: storage,
+      inlineSvg: inline[key],
+    );
+    if (bytes != null && bytes.isNotEmpty) {
+      resolved[key] = bytes;
+    }
+  }
+
+  await _addOrphanSvgFiles(
+    storage: storage,
+    resolved: resolved,
+  );
+
+  return resolved;
+}
+
 Map<String, dynamic> _stripEmbeddedSvgContent(Map<String, dynamic> bundle) {
   final copy = Map<String, dynamic>.from(bundle);
   final icons = copy['markerIcons'];
@@ -97,37 +139,91 @@ Map<String, dynamic> _stripEmbeddedSvgContent(Map<String, dynamic> bundle) {
   return copy;
 }
 
-Future<void> _addSvgFilesFromCatalog({
-  required Archive archive,
-  required MarkerIconStorage storage,
-  required Object? icons,
-  required Set<String> addedPaths,
-}) async {
+Map<String, String> _extractInlineSvgContentByKey(Object? icons) {
   if (icons is! List) {
-    return;
+    return const {};
   }
 
+  final inline = <String, String>{};
   for (final raw in icons) {
     if (raw is! Map<String, dynamic>) {
       continue;
     }
     final key = raw['key'];
-    if (key is! String || !storage.exists(key)) {
-      continue;
+    final svgRaw = raw[markerIconBackupSvgField];
+    if (key is String &&
+        svgRaw is String &&
+        svgRaw.trim().isNotEmpty &&
+        MarkerIconStorage.isValidKey(key)) {
+      inline[key] = svgRaw;
     }
-    await _addSvgFile(
-      archive: archive,
-      storage: storage,
-      key: key,
-      addedPaths: addedPaths,
-    );
   }
+  return inline;
+}
+
+List<Map<String, dynamic>> _readIconMaps(Object? icons) {
+  if (icons is! List) {
+    return const [];
+  }
+
+  return [
+    for (final raw in icons)
+      if (raw is Map<String, dynamic>) raw,
+  ];
+}
+
+void _syncHasCustomSvgFlags(
+  Map<String, dynamic> bundle,
+  Iterable<String> svgKeys,
+) {
+  final icons = bundle['markerIcons'];
+  if (icons is! List) {
+    return;
+  }
+
+  final keysWithSvg = svgKeys.toSet();
+  bundle['markerIcons'] = [
+    for (final raw in icons)
+      if (raw is Map<String, dynamic>)
+        _syncIconHasCustomSvg(raw, keysWithSvg)
+      else
+        raw,
+  ];
+}
+
+Map<String, dynamic> _syncIconHasCustomSvg(
+  Map<String, dynamic> icon,
+  Set<String> keysWithSvg,
+) {
+  final key = icon['key'];
+  if (key is! String) {
+    return icon;
+  }
+
+  final copy = Map<String, dynamic>.from(icon);
+  copy['hasCustomSvg'] = keysWithSvg.contains(key);
+  return copy;
+}
+
+Future<Uint8List?> _readSvgBytesForKey({
+  required String key,
+  required MarkerIconStorage storage,
+  String? inlineSvg,
+}) async {
+  if (storage.exists(key)) {
+    return storage.fileFor(key).readAsBytes();
+  }
+
+  if (inlineSvg != null && inlineSvg.trim().isNotEmpty) {
+    return Uint8List.fromList(utf8.encode(inlineSvg));
+  }
+
+  return null;
 }
 
 Future<void> _addOrphanSvgFiles({
-  required Archive archive,
   required MarkerIconStorage storage,
-  required Set<String> addedPaths,
+  required Map<String, Uint8List> resolved,
 }) async {
   final root = storage.root;
   if (!root.existsSync()) {
@@ -143,31 +239,15 @@ Future<void> _addOrphanSvgFiles({
       continue;
     }
     final key = fileName.substring(0, fileName.length - 4);
-    if (!MarkerIconStorage.isValidKey(key)) {
+    if (!MarkerIconStorage.isValidKey(key) || resolved.containsKey(key)) {
       continue;
     }
-    await _addSvgFile(
-      archive: archive,
-      storage: storage,
-      key: key,
-      addedPaths: addedPaths,
-    );
-  }
-}
 
-Future<void> _addSvgFile({
-  required Archive archive,
-  required MarkerIconStorage storage,
-  required String key,
-  required Set<String> addedPaths,
-}) async {
-  final archivePath = '$mapDataBackupMarkerIconsDirectory/$key.svg';
-  if (!addedPaths.add(archivePath)) {
-    return;
+    final bytes = await entity.readAsBytes();
+    if (bytes.isNotEmpty) {
+      resolved[key] = bytes;
+    }
   }
-
-  final bytes = await storage.fileFor(key).readAsBytes();
-  archive.addFile(ArchiveFile(archivePath, bytes.length, bytes));
 }
 
 ArchiveFile? _findBackupJsonFile(Archive archive) {

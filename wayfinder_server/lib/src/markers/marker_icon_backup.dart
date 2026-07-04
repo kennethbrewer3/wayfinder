@@ -5,6 +5,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
 import '../web/rest/rest_json.dart';
+import 'marker_icon_catalog_sanitizer.dart';
 import 'marker_icon_category_seed.dart';
 import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
@@ -41,9 +42,13 @@ Future<Map<String, dynamic>> exportMarkerIconBackup(Session session) async {
 
   final icons = <Map<String, dynamic>>[];
   for (final entry in entries) {
-    final json = RestJson.encodeModel(entry);
-    if (entry.hasCustomSvg && storage.exists(entry.key)) {
-      final bytes = await storage.fileFor(entry.key).readAsBytes();
+    final effective = MarkerIconCatalogSanitizer.effectiveEntry(
+      entry,
+      storage: storage,
+    );
+    final json = RestJson.encodeModel(effective);
+    if (effective.hasCustomSvg && storage.exists(effective.key)) {
+      final bytes = await storage.fileFor(effective.key).readAsBytes();
       json[markerIconBackupSvgField] = utf8.decode(bytes, allowMalformed: true);
     }
     icons.add(json);

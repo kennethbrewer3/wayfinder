@@ -4,6 +4,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'marker_icon_categories.dart';
 import 'marker_color.dart';
 import 'marker_icon_registry.dart';
+import 'marker_icon_sort.dart';
 
 /// Runtime marker icon catalog merged from built-in defaults and server entries.
 class MarkerIconCatalog {
@@ -91,6 +92,7 @@ class MarkerIconCatalog {
   /// Icons grouped by category key in display order.
   Map<String, List<MarkerIconOption>> groupedByCategory({
     List<String>? categoryOrder,
+    String Function(MarkerIconOption option)? labelFor,
   }) {
     final grouped = <String, List<MarkerIconOption>>{};
     for (final option in options) {
@@ -102,13 +104,27 @@ class MarkerIconCatalog {
     for (final category in order) {
       final items = grouped.remove(category);
       if (items != null && items.isNotEmpty) {
+        _sortMarkerIconOptions(items, labelFor: labelFor);
         ordered[category] = items;
       }
     }
     for (final entry in grouped.entries) {
+      _sortMarkerIconOptions(entry.value, labelFor: labelFor);
       ordered[entry.key] = entry.value;
     }
     return ordered;
+  }
+
+  static void _sortMarkerIconOptions(
+    List<MarkerIconOption> items, {
+    String Function(MarkerIconOption option)? labelFor,
+  }) {
+    items.sort(
+      (a, b) => compareMarkerIconDisplayLabels(
+        labelFor?.call(a) ?? a.label,
+        labelFor?.call(b) ?? b.label,
+      ),
+    );
   }
 
   static String _svgUrl(String webBaseUrl, String key, DateTime updatedAt) {

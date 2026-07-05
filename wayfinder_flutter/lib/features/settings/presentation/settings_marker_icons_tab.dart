@@ -557,6 +557,7 @@ class _SettingsMarkerIconsTabState
               items: entries,
               categoryFor: (entry) => entry.category,
               categoryOrder: categoryOrder,
+              labelFor: (entry) => _displayLabel(l10n, entry),
             );
 
             return Column(
@@ -621,6 +622,8 @@ class _SettingsMarkerIconsTabState
               items: bundledSvgIcons,
               categoryFor: (option) => option.resolvedCategory,
               categoryOrder: categoryOrder,
+              labelFor: (option) =>
+                  localizedMarkerIconLabel(l10n, option.key),
             ).entries) ...[
           Card(
             clipBehavior: Clip.antiAlias,

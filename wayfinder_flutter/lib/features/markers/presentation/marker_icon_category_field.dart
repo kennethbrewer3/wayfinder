@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/l10n/localized_labels.dart';
 import '../models/marker_icon_categories.dart';
 import '../models/marker_icon_category_catalog.dart';
+import '../models/marker_icon_sort.dart';
 import '../providers/marker_icon_providers.dart';
 
 class MarkerIconCategoryField extends ConsumerWidget {
@@ -62,6 +63,7 @@ Map<String, List<T>> groupMarkerIconsByCategory<T>({
   required Iterable<T> items,
   required String Function(T item) categoryFor,
   List<String>? categoryOrder,
+  String Function(T item)? labelFor,
 }) {
   final grouped = <String, List<T>>{};
   for (final item in items) {
@@ -73,11 +75,22 @@ Map<String, List<T>> groupMarkerIconsByCategory<T>({
   for (final category in order) {
     final categoryItems = grouped.remove(category);
     if (categoryItems != null && categoryItems.isNotEmpty) {
+      if (labelFor != null) {
+        categoryItems.sort(
+          (a, b) => compareMarkerIconDisplayLabels(labelFor(a), labelFor(b)),
+        );
+      }
       ordered[category] = categoryItems;
     }
   }
   for (final entry in grouped.entries) {
-    ordered[entry.key] = entry.value;
+    final categoryItems = entry.value;
+    if (labelFor != null) {
+      categoryItems.sort(
+        (a, b) => compareMarkerIconDisplayLabels(labelFor(a), labelFor(b)),
+      );
+    }
+    ordered[entry.key] = categoryItems;
   }
   return ordered;
 }

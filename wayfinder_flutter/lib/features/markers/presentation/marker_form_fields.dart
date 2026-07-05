@@ -76,6 +76,7 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
         MarkerIconCategoryCatalog.fallback();
     final grouped = catalog.groupedByCategory(
       categoryOrder: categoryCatalog.orderedKeys,
+      labelFor: (option) => _markerIconPickerLabel(l10n, option),
     );
     final selectedOption =
         catalog.option(widget.selectedIcon) ??
@@ -131,7 +132,7 @@ class _MarkerIconPickerState extends ConsumerState<MarkerIconPicker> {
                           style: theme.textTheme.labelLarge,
                         ),
                         Text(
-                          selectedOption.label,
+                          _markerIconPickerLabel(l10n, selectedOption),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w600,

@@ -120,4 +120,18 @@ void main() {
       ['ambulance'],
     );
   });
+
+  test('groupedByCategory sorts icons alphabetically within each category', () {
+    final catalog = MarkerIconCatalog(const [
+      MarkerIconOption(key: 'zebra', icon: Icons.place, label: 'Zebra'),
+      MarkerIconOption(key: 'alpha', icon: Icons.place, label: 'Alpha'),
+      MarkerIconOption(key: 'middle', icon: Icons.place, label: 'Middle'),
+    ]);
+
+    final grouped = catalog.groupedByCategory();
+    expect(
+      grouped[MarkerIconCategories.custom]?.map((option) => option.label),
+      ['Alpha', 'Middle', 'Zebra'],
+    );
+  });
 }

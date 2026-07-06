@@ -2477,6 +2477,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialCopyCoordinates => 'Copier les coordonnées';
 
   @override
+  String get mapRadialAddToGeocoding => 'Ajouter à la recherche';
+
+  @override
+  String get mapAddToGeocodingSearch => 'Ajouter à la recherche géographique';
+
+  @override
   String get mapCoordinatesCopied =>
       'Coordonnées copiées dans le presse-papiers.';
 

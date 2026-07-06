@@ -2437,6 +2437,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialCopyCoordinates => 'Copy coordinates';
 
   @override
+  String get mapRadialAddToGeocoding => 'Add to search';
+
+  @override
+  String get mapAddToGeocodingSearch => 'Add to geocoding search';
+
+  @override
   String get mapCoordinatesCopied => 'Coordinates copied to clipboard.';
 
   @override

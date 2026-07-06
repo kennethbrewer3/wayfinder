@@ -4317,6 +4317,18 @@ abstract class AppLocalizations {
   /// **'Copy coordinates'**
   String get mapRadialCopyCoordinates;
 
+  /// No description provided for @mapRadialAddToGeocoding.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to search'**
+  String get mapRadialAddToGeocoding;
+
+  /// No description provided for @mapAddToGeocodingSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to geocoding search'**
+  String get mapAddToGeocodingSearch;
+
   /// No description provided for @mapCoordinatesCopied.
   ///
   /// In en, this message translates to:

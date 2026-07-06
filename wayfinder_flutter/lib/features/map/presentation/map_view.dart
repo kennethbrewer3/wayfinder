@@ -54,6 +54,8 @@ import '../../markers/providers/map_marker_size_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
+import '../../geocoding/presentation/submit_geocoding_contribution.dart';
+import '../../geocoding/providers/geocoding_server_provider.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
@@ -216,6 +218,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Offset? _cursorScreenPosition;
   Offset? _radialMenuCenter;
   LatLng? _radialMenuPoint;
+  Offset? _searchCoordinateRadialCenter;
+  SearchCoordinateMarker? _searchCoordinateRadialMarker;
 
   Timer? _longPressTimer;
   Offset? _pendingLongPressLocal;
@@ -1221,7 +1225,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    if (_radialMenuCenter != null && event.buttons == kPrimaryMouseButton) {
+    if ((_radialMenuCenter != null || _searchCoordinateRadialCenter != null) &&
+        event.buttons == kPrimaryMouseButton) {
       _closeRadialMenu();
     }
 
@@ -1280,7 +1285,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void _handlePointerMove(PointerMoveEvent event, LatLng point) {
     _updateCursor(event.position, point);
 
-    if (_radialMenuCenter != null && _tapDownLocal != null) {
+    if ((_radialMenuCenter != null || _searchCoordinateRadialCenter != null) &&
+        _tapDownLocal != null) {
       if ((event.localPosition - _tapDownLocal!).distance >
           _longPressMoveTolerance) {
         _closeRadialMenu();
@@ -1429,7 +1435,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (_primaryPointerGestureHandled) {
       return;
     }
-    if (_longPressTriggered || _radialMenuCenter != null) {
+    if (_longPressTriggered ||
+        _radialMenuCenter != null ||
+        _searchCoordinateRadialCenter != null) {
       return;
     }
     if (ref.read(bearingPlotProvider).active ||
@@ -1802,19 +1810,70 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _openRadialMenuAt(Offset center, LatLng point) {
     setState(() {
+      _searchCoordinateRadialCenter = null;
+      _searchCoordinateRadialMarker = null;
       _radialMenuCenter = center;
       _radialMenuPoint = point;
     });
   }
 
+  void _openSearchCoordinateRadialMenu(
+    Offset center,
+    SearchCoordinateMarker marker,
+  ) {
+    setState(() {
+      _radialMenuCenter = null;
+      _radialMenuPoint = null;
+      _searchCoordinateRadialCenter = center;
+      _searchCoordinateRadialMarker = marker;
+    });
+  }
+
   void _closeRadialMenu() {
-    if (_radialMenuCenter == null && _radialMenuPoint == null) {
+    if (_radialMenuCenter == null &&
+        _radialMenuPoint == null &&
+        _searchCoordinateRadialCenter == null &&
+        _searchCoordinateRadialMarker == null) {
       return;
     }
     setState(() {
       _radialMenuCenter = null;
       _radialMenuPoint = null;
+      _searchCoordinateRadialCenter = null;
+      _searchCoordinateRadialMarker = null;
     });
+  }
+
+  void _openSearchCoordinateMarkerRadialMenu(SearchCoordinateMarker marker) {
+    final center = _mapController.camera.latLngToScreenOffset(marker.location);
+    _openSearchCoordinateRadialMenu(center, marker);
+  }
+
+  Future<void> _saveSearchCoordinateMarkerFromRadialMenu() async {
+    final marker = _searchCoordinateRadialMarker;
+    if (marker == null) {
+      return;
+    }
+    _closeRadialMenu();
+    await widget.onSaveSearchCoordinateMarker(marker);
+  }
+
+  Future<void> _addSearchCoordinateMarkerToGeocoding() async {
+    final marker = _searchCoordinateRadialMarker;
+    if (marker == null) {
+      return;
+    }
+    _closeRadialMenu();
+    final saved = await submitGeocodingContribution(
+      context: context,
+      ref: ref,
+      name: marker.label,
+      latitude: marker.location.latitude,
+      longitude: marker.location.longitude,
+    );
+    if (saved && mounted) {
+      ref.read(searchCoordinateMarkerProvider.notifier).clear();
+    }
   }
 
   Future<void> _createMarkerFromRadialMenu() async {
@@ -2120,6 +2179,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
+    final geocodingReachable =
+        ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
     final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
@@ -2296,13 +2357,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               alignment: mapMarkerAnchorAlignment,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTap: () =>
-                                    widget.onSaveSearchCoordinateMarker(marker),
+                                onTap: () => _openSearchCoordinateMarkerRadialMenu(
+                                  marker,
+                                ),
                                 child: MouseRegion(
                                   cursor: SystemMouseCursors.click,
                                   child: Tooltip(
-                                    message: l10n
-                                        .markerSaveSearchedCoordinatesConfirm,
+                                    message: l10n.markerSaveSearchedCoordinatesTitle,
                                     child: MapMarkerIcon(
                                       color: const Color(0xFFE07A24),
                                       iconName: marker.iconName,
@@ -2561,6 +2622,24 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     label: l10n.mapRadialCopyCoordinates,
                     onSelected: _copyRadialMenuCoordinates,
                   ),
+                ],
+              ),
+            if (_searchCoordinateRadialCenter case final center?
+                when _searchCoordinateRadialMarker != null)
+              MapRadialMenu(
+                center: center,
+                actions: [
+                  MapRadialMenuAction(
+                    icon: Icons.add_location_alt,
+                    label: l10n.markerSaveSearchedCoordinatesConfirm,
+                    onSelected: _saveSearchCoordinateMarkerFromRadialMenu,
+                  ),
+                  if (geocodingReachable)
+                    MapRadialMenuAction(
+                      icon: Icons.public,
+                      label: l10n.mapRadialAddToGeocoding,
+                      onSelected: _addSearchCoordinateMarkerToGeocoding,
+                    ),
                 ],
               ),
             if (bearingPlot.active)

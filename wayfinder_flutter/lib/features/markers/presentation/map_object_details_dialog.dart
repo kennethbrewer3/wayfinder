@@ -20,6 +20,8 @@ import '../../lines/providers/zones_provider.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../map/providers/selected_map_object_provider.dart';
+import '../../geocoding/presentation/submit_geocoding_contribution.dart';
+import '../../geocoding/providers/geocoding_server_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/marker_form_fields.dart';
@@ -175,6 +177,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       text: shareUrl,
       copiedMessage: l10n.mapMarkerUrlCopied,
     );
+    final geocodingReachable =
+        ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
 
     return _DetailsDialogShell(
       title: marker.name,
@@ -190,6 +194,24 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       shareUrl: shareUrl,
       onCopyShareUrl: copyShareUrl,
       contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
+      additionalActions: geocodingReachable
+          ? [
+              TextButton.icon(
+                onPressed: () async {
+                  await submitGeocodingContribution(
+                    context: context,
+                    ref: ref,
+                    name: marker.name,
+                    latitude: marker.latitude,
+                    longitude: marker.longitude,
+                    notes: marker.notes,
+                  );
+                },
+                icon: const Icon(Icons.public),
+                label: Text(l10n.mapAddToGeocodingSearch),
+              ),
+            ]
+          : const [],
       children: [
         if (isWeatherStationMarker(marker))
           WeatherStationDetailsSection(marker: marker),
@@ -603,6 +625,7 @@ class _DetailsDialogShell extends StatelessWidget {
     this.shareUrl,
     this.onCopyShareUrl,
     this.contentWidth = 520,
+    this.additionalActions = const [],
   });
 
   final String title;
@@ -613,6 +636,7 @@ class _DetailsDialogShell extends StatelessWidget {
   final String? shareUrl;
   final VoidCallback? onCopyShareUrl;
   final double contentWidth;
+  final List<Widget> additionalActions;
 
   @override
   Widget build(BuildContext context) {
@@ -637,6 +661,7 @@ class _DetailsDialogShell extends StatelessWidget {
         ),
       ),
       actions: [
+        ...additionalActions,
         if (shareUrl != null && onCopyShareUrl != null)
           TextButton.icon(
             onPressed: onCopyShareUrl,

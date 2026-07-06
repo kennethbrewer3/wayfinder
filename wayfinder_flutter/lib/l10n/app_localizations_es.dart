@@ -2473,6 +2473,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialCopyCoordinates => 'Copiar coordenadas';
 
   @override
+  String get mapRadialAddToGeocoding => 'Añadir a búsqueda';
+
+  @override
+  String get mapAddToGeocodingSearch => 'Añadir a búsqueda geográfica';
+
+  @override
   String get mapCoordinatesCopied => 'Coordenadas copiadas al portapapeles.';
 
   @override

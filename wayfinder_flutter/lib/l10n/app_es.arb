@@ -1052,6 +1052,8 @@
   "mapRadialRectCenter": "Rect. centro",
   "mapRadialRectCorners": "Rect. esquinas",
   "mapRadialCopyCoordinates": "Copiar coordenadas",
+  "mapRadialAddToGeocoding": "Añadir a búsqueda",
+  "mapAddToGeocodingSearch": "Añadir a búsqueda geográfica",
   "mapCoordinatesCopied": "Coordenadas copiadas al portapapeles.",
   "mapMarkerShareUrlLabel": "Enlace",
   "mapMarkerCopyUrlTooltip": "Copiar enlace del marcador",

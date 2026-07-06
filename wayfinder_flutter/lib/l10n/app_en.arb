@@ -1345,6 +1345,8 @@
   "mapRadialRectCenter": "Rect center",
   "mapRadialRectCorners": "Rect corners",
   "mapRadialCopyCoordinates": "Copy coordinates",
+  "mapRadialAddToGeocoding": "Add to search",
+  "mapAddToGeocodingSearch": "Add to geocoding search",
   "mapCoordinatesCopied": "Coordinates copied to clipboard.",
   "mapMarkerShareUrlLabel": "Link",
   "mapMarkerCopyUrlTooltip": "Copy marker link",

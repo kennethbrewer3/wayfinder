@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M12,7.5c0.97,0,1.75-0.78,1.75-1.75S12.97,4,12,4s-1.75,0.78-1.75,1.75S11.03,7.5,12,7.5z M14,16v4h-4v-4H8l2.38-6.38 C10.63,8.95,11.28,8.5,12,8.5s1.37,0.45,1.62,1.12L16,16H14z"/></g></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g>
+        <rect x="0" y="0" width="24" height="24" style="fill:none;"/>
+    </g>
+    <g>
+        <g>
+            <path d="M12,7.5C12.97,7.5 13.75,6.72 13.75,5.75C13.75,4.78 12.97,4 12,4C11.03,4 10.25,4.78 10.25,5.75C10.25,6.72 11.03,7.5 12,7.5ZM14,16L14,20L10,20L10,16L8,16L10.38,9.62C10.63,8.95 11.28,8.5 12,8.5C12.72,8.5 13.37,8.95 13.62,9.62L16,16L14,16Z" style="fill:rgb(255,0,171);fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>

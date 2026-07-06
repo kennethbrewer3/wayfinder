@@ -404,19 +404,22 @@ class MarkerIconBackgroundColorField extends StatelessWidget {
 
 const markerPreviewIconSize = 128.0;
 
-class MarkerPreview extends ConsumerWidget {
-  const MarkerPreview({
+class MarkerIconLargeView extends ConsumerWidget {
+  const MarkerIconLargeView({
     super.key,
-    required this.color,
     required this.iconName,
+    required this.color,
+    this.size = markerPreviewIconSize,
+    this.showBorder = true,
   });
 
-  final Color color;
   final String iconName;
+  final Color color;
+  final double size;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final catalog =
         ref.watch(markerIconCatalogProvider).valueOrNull ??
@@ -433,6 +436,49 @@ class MarkerPreview extends ConsumerWidget {
       coloredAsset: coloredAsset,
     );
 
+    final glyph = SizedBox(
+      width: size,
+      height: size,
+      child: Center(
+        child: MarkerIconGlyph(
+          iconName: iconName,
+          color: glyphColor,
+          size: size,
+          forceTint: forceTint,
+        ),
+      ),
+    );
+
+    if (!showBorder) {
+      return glyph;
+    }
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.dividerColor),
+      ),
+      child: glyph,
+    );
+  }
+}
+
+class MarkerPreview extends ConsumerWidget {
+  const MarkerPreview({
+    super.key,
+    required this.color,
+    required this.iconName,
+  });
+
+  final Color color;
+  final String iconName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -442,24 +488,9 @@ class MarkerPreview extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Align(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: theme.dividerColor),
-            ),
-            child: SizedBox(
-              width: markerPreviewIconSize,
-              height: markerPreviewIconSize,
-              child: Center(
-                child: MarkerIconGlyph(
-                  iconName: iconName,
-                  color: glyphColor,
-                  size: markerPreviewIconSize,
-                  forceTint: forceTint,
-                ),
-              ),
-            ),
+          child: MarkerIconLargeView(
+            iconName: iconName,
+            color: color,
           ),
         ),
       ],

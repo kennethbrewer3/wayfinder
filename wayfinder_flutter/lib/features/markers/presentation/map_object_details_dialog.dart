@@ -22,7 +22,7 @@ import '../../lines/utils/line_distance.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
-import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
@@ -178,14 +178,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     return _DetailsDialogShell(
       title: marker.name,
-      leading: MapMarkerIcon(
-        color: parseMarkerColor(marker.color),
+      leading: MarkerIconLargeView(
         iconName: effectiveMarkerIconName(
           marker: marker,
           trackZonesById: trackZones,
         ),
-        width: 28,
-        height: 34,
+        color: parseMarkerColor(marker.color),
       ),
       onEdit: onEdit,
       l10n: l10n,
@@ -620,6 +618,7 @@ class _DetailsDialogShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           leading,
           const SizedBox(width: 12),

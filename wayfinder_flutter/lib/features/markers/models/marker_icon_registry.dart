@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'marker_icon_categories.dart';
 
+const markerIconGlyphScaleMin = 0.5;
+const markerIconGlyphScaleMax = 5.0;
+const markerIconGlyphScaleDivisions = 45;
+
+double clampMarkerIconGlyphScale(double scale) =>
+    scale.clamp(markerIconGlyphScaleMin, markerIconGlyphScaleMax);
+
 class MarkerIconOption {
   const MarkerIconOption({
     required this.key,
@@ -222,6 +229,7 @@ const markerIconOptions = <MarkerIconOption>[
   ),
   MarkerIconOption(key: 'hunting', icon: Icons.track_changes, label: 'Hunting'),
   MarkerIconOption(key: 'fishing', icon: Icons.set_meal, label: 'Fishing'),
+  MarkerIconOption(key: 'foraging', icon: Icons.eco, label: 'Foraging'),
   MarkerIconOption(key: 'cave', icon: Icons.terrain, label: 'Cave'),
   MarkerIconOption(key: 'dead_zone', icon: Icons.wifi_off, label: 'Dead zone'),
   MarkerIconOption(
@@ -714,6 +722,10 @@ String? suggestMarkerIconForName(String name) {
     'hunting': 'hunting',
     'trap': 'hunting',
     'fishing': 'fishing',
+    'foraging': 'foraging',
+    'forage': 'foraging',
+    'berries': 'foraging',
+    'berry': 'foraging',
     'cave': 'cave',
     'dead zone': 'dead_zone',
     'no signal': 'dead_zone',

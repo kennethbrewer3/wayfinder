@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
+import '../../markers/marker_icon_glyph_scale.dart';
 import '../../markers/marker_icon_catalog_sanitizer.dart';
 import '../../markers/marker_icon_catalog_service.dart';
 import '../../markers/marker_icon_key.dart';
@@ -170,13 +171,7 @@ abstract final class MarkerIconsRestHandlers {
       return 1.0;
     }
     if (raw is num) {
-      final value = raw.toDouble();
-      if (value <= 0 || value > 2) {
-        throw const FormatException(
-          'Field "glyphScale" must be between 0 and 2',
-        );
-      }
-      return value;
+      return parseMarkerIconGlyphScale(raw.toDouble());
     }
     throw const FormatException('Field "glyphScale" must be a number');
   }

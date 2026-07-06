@@ -220,6 +220,7 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'coast_guard_base' => l10n.markerIconCoastGuardBase,
     'hunting' => l10n.markerIconHunting,
     'fishing' => l10n.markerIconFishing,
+    'foraging' => l10n.markerIconForaging,
     'cave' => l10n.markerIconCave,
     'dead_zone' => l10n.markerIconDeadZone,
     'evac_route' => l10n.markerIconEvacRoute,
@@ -297,10 +298,14 @@ String markerIconCategoryDisplayLabel(
   String category, {
   MarkerIconCategoryCatalog? catalog,
 }) {
+  final localized = localizedMarkerIconCategoryLabel(l10n, category);
+  if (localized != category) {
+    return localized;
+  }
   if (catalog != null && catalog.contains(category)) {
     return catalog.labelFor(category);
   }
-  return localizedMarkerIconCategoryLabel(l10n, category);
+  return category;
 }
 
 String localizedZoneTypeLabel(AppLocalizations l10n, String type) {

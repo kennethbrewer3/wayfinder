@@ -17,7 +17,7 @@ class MarkerIconCategoryCatalog {
     MarkerIconCategories.emergency: 'Emergency & medical',
     MarkerIconCategories.military: 'Military & defense',
     MarkerIconCategories.shelterPreparedness: 'Shelter & preparedness',
-    MarkerIconCategories.recreation: 'Recreation & outdoors',
+    MarkerIconCategories.recreation: 'Hunting and foraging',
     MarkerIconCategories.agriculture: 'Agriculture',
     MarkerIconCategories.custom: 'Custom',
   };

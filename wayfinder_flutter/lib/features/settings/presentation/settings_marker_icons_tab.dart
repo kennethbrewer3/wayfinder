@@ -914,9 +914,9 @@ class _CreateIconDialogState extends State<_CreateIconDialog> {
                 ),
                 Slider(
                   value: _glyphScale,
-                  min: 0.5,
-                  max: 1.5,
-                  divisions: 20,
+                  min: markerIconGlyphScaleMin,
+                  max: markerIconGlyphScaleMax,
+                  divisions: markerIconGlyphScaleDivisions,
                   label: _glyphScale.toStringAsFixed(2),
                   onChanged: (value) => setState(() => _glyphScale = value),
                 ),
@@ -995,7 +995,7 @@ class _EditIconDialogState extends State<_EditIconDialog> {
     super.initState();
     _labelController = TextEditingController(text: widget.initialLabel);
     _coloredAsset = widget.entry.coloredAsset;
-    _glyphScale = widget.entry.glyphScale;
+    _glyphScale = clampMarkerIconGlyphScale(widget.entry.glyphScale);
     _category = widget.entry.category;
     _iconBackgroundColor = parseMarkerColor(widget.entry.iconBackgroundColor);
   }
@@ -1092,9 +1092,9 @@ class _EditIconDialogState extends State<_EditIconDialog> {
                 ),
                 Slider(
                   value: _glyphScale,
-                  min: 0.5,
-                  max: 1.5,
-                  divisions: 20,
+                  min: markerIconGlyphScaleMin,
+                  max: markerIconGlyphScaleMax,
+                  divisions: markerIconGlyphScaleDivisions,
                   label: _glyphScale.toStringAsFixed(2),
                   onChanged: (value) => setState(() => _glyphScale = value),
                 ),

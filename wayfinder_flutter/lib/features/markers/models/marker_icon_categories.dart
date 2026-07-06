@@ -148,7 +148,8 @@ const markerIconCategoryByKey = <String, String>{
   'grain_silo': MarkerIconCategories.shelterPreparedness,
   'hunting': MarkerIconCategories.recreation,
   'fishing': MarkerIconCategories.recreation,
-  'cave': MarkerIconCategories.recreation,
+  'foraging': MarkerIconCategories.recreation,
+  'cave': MarkerIconCategories.shelterPreparedness,
   'garden': MarkerIconCategories.agriculture,
   'greenhouse': MarkerIconCategories.agriculture,
 };

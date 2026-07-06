@@ -355,6 +355,13 @@ class MarkerIconBackgroundColorField extends StatelessWidget {
   final Color color;
   final ValueChanged<Color> onChanged;
 
+  static const _pickersEnabled = {
+    ColorPickerType.wheel: true,
+    ColorPickerType.primary: true,
+    ColorPickerType.accent: true,
+    ColorPickerType.bw: true,
+  };
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -376,15 +383,19 @@ class MarkerIconBackgroundColorField extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           enableOpacity: true,
-          pickersEnabled: const {
-            ColorPickerType.wheel: true,
-            ColorPickerType.primary: true,
-            ColorPickerType.accent: true,
-          },
+          showColorCode: true,
+          colorCodeReadOnly: false,
+          copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+            copyButton: true,
+            pasteButton: true,
+            copyFormat: ColorPickerCopyFormat.numHexAARRGGBB,
+          ),
+          pickersEnabled: _pickersEnabled,
           pickerTypeLabels: {
             ColorPickerType.wheel: l10n.themePreviewOutline,
             ColorPickerType.primary: l10n.themePreviewPrimary,
             ColorPickerType.accent: l10n.themePreviewAccent,
+            ColorPickerType.bw: 'Black & White',
           },
         ),
       ],

@@ -15,7 +15,7 @@ abstract final class MarkerIconCategorySeed {
       label: 'Shelter & preparedness',
       sortOrder: 7,
     ),
-    (key: 'recreation', label: 'Recreation & outdoors', sortOrder: 8),
+    (key: 'recreation', label: 'Hunting and foraging', sortOrder: 8),
     (key: 'agriculture', label: 'Agriculture', sortOrder: 9),
     (key: defaultCategoryKey, label: 'Custom', sortOrder: 10),
   ];

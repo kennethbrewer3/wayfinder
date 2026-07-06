@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'marker_icon_glyph_scale.dart';
 import 'marker_icon_background_color.dart';
 import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
@@ -137,12 +138,7 @@ abstract final class MarkerIconCatalogService {
     return value.isEmpty ? null : value;
   }
 
-  static double _parseGlyphScale(double raw) {
-    if (raw <= 0 || raw > 2) {
-      throw FormatException('Field "glyphScale" must be between 0 and 2');
-    }
-    return raw;
-  }
+  static double _parseGlyphScale(double raw) => parseMarkerIconGlyphScale(raw);
 }
 
 final class MarkerIconAlreadyExistsException implements Exception {

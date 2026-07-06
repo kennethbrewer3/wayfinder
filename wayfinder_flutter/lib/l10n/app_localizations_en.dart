@@ -885,7 +885,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconCategoryShelterPreparedness => 'Shelter & preparedness';
 
   @override
-  String get markerIconCategoryRecreation => 'Recreation & outdoors';
+  String get markerIconCategoryRecreation => 'Hunting and foraging';
 
   @override
   String get markerIconCategoryAgriculture => 'Agriculture';
@@ -2742,6 +2742,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconFishing => 'Fishing';
+
+  @override
+  String get markerIconForaging => 'Foraging';
 
   @override
   String get markerIconCave => 'Cave';

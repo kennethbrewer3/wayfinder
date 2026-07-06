@@ -1602,7 +1602,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconCategoryRecreation.
   ///
   /// In en, this message translates to:
-  /// **'Recreation & outdoors'**
+  /// **'Hunting and foraging'**
   String get markerIconCategoryRecreation;
 
   /// No description provided for @markerIconCategoryAgriculture.
@@ -4922,6 +4922,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fishing'**
   String get markerIconFishing;
+
+  /// No description provided for @markerIconForaging.
+  ///
+  /// In en, this message translates to:
+  /// **'Foraging'**
+  String get markerIconForaging;
 
   /// No description provided for @markerIconCave.
   ///

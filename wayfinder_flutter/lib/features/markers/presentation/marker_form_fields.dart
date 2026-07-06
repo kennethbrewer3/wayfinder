@@ -8,7 +8,6 @@ import '../models/marker_icon_catalog.dart';
 import '../models/marker_icon_category_catalog.dart';
 import '../models/marker_icon_registry.dart';
 import '../providers/marker_icon_providers.dart';
-import 'map_marker_icon.dart';
 import 'marker_icon_glyph.dart';
 
 Color markerIconPickerGlyphColor(
@@ -403,35 +402,64 @@ class MarkerIconBackgroundColorField extends StatelessWidget {
   }
 }
 
+const markerPreviewIconSize = 128.0;
+
 class MarkerPreview extends ConsumerWidget {
   const MarkerPreview({
     super.key,
     required this.color,
     required this.iconName,
-    this.iconBackgroundColor,
   });
 
   final Color color;
   final String iconName;
-  final Color? iconBackgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final catalog =
+        ref.watch(markerIconCatalogProvider).valueOrNull ??
+        MarkerIconCatalog.defaults();
+    final coloredAsset = catalog.coloredAsset(iconName);
+    final forceTint = markerIconPickerForceTint(
+      theme,
+      coloredAsset: coloredAsset,
+    );
+    final glyphColor = markerIconPickerGlyphColor(
+      theme,
+      selected: true,
+      markerColor: color,
+      coloredAsset: coloredAsset,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           l10n.formPreviewLabel,
-          style: Theme.of(context).textTheme.labelLarge,
+          style: theme.textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
         Align(
-          child: MapMarkerIcon(
-            color: color,
-            iconName: iconName,
-            iconBackgroundColor: iconBackgroundColor,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: theme.dividerColor),
+            ),
+            child: SizedBox(
+              width: markerPreviewIconSize,
+              height: markerPreviewIconSize,
+              child: Center(
+                child: MarkerIconGlyph(
+                  iconName: iconName,
+                  color: glyphColor,
+                  size: markerPreviewIconSize,
+                  forceTint: forceTint,
+                ),
+              ),
+            ),
           ),
         ),
       ],

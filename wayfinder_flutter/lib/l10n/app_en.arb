@@ -1426,6 +1426,8 @@
   "markerIconCat": "Cat",
   "markerIconDog": "Dog",
   "markerIconRadioTower": "Radio tower",
+  "markerIconCellTower": "Cell tower",
+  "markerIconRadioStation": "Radio station",
   "markerIconRadioRepeater": "Radio repeater",
   "markerIconWater": "Water",
   "markerIconSupplyCache": "Supply cache",

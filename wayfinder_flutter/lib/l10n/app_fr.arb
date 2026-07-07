@@ -1133,6 +1133,8 @@
   "markerIconCat": "Chat",
   "markerIconDog": "Chien",
   "markerIconRadioTower": "Tour radio",
+  "markerIconCellTower": "Tour cellulaire",
+  "markerIconRadioStation": "Station radio",
   "markerIconRadioRepeater": "Répéteur radio",
   "markerIconWater": "Eau",
   "markerIconSupplyCache": "Cache de ravitaillement",

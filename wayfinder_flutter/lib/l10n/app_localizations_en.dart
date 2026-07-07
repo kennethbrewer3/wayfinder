@@ -2642,6 +2642,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconRadioTower => 'Radio tower';
 
   @override
+  String get markerIconCellTower => 'Cell tower';
+
+  @override
+  String get markerIconRadioStation => 'Radio station';
+
+  @override
   String get markerIconRadioRepeater => 'Radio repeater';
 
   @override

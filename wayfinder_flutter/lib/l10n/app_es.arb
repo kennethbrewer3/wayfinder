@@ -1133,6 +1133,8 @@
   "markerIconCat": "Gato",
   "markerIconDog": "Perro",
   "markerIconRadioTower": "Torre de radio",
+  "markerIconCellTower": "Torre celular",
+  "markerIconRadioStation": "Estación de radio",
   "markerIconRadioRepeater": "Repetidor de radio",
   "markerIconWater": "Agua",
   "markerIconSupplyCache": "Alijo de suministros",

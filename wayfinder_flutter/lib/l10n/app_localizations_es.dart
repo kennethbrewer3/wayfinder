@@ -2679,6 +2679,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconRadioTower => 'Torre de radio';
 
   @override
+  String get markerIconCellTower => 'Torre celular';
+
+  @override
+  String get markerIconRadioStation => 'Estación de radio';
+
+  @override
   String get markerIconRadioRepeater => 'Repetidor de radio';
 
   @override

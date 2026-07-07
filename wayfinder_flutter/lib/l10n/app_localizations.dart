@@ -4719,6 +4719,18 @@ abstract class AppLocalizations {
   /// **'Radio tower'**
   String get markerIconRadioTower;
 
+  /// No description provided for @markerIconCellTower.
+  ///
+  /// In en, this message translates to:
+  /// **'Cell tower'**
+  String get markerIconCellTower;
+
+  /// No description provided for @markerIconRadioStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio station'**
+  String get markerIconRadioStation;
+
   /// No description provided for @markerIconRadioRepeater.
   ///
   /// In en, this message translates to:

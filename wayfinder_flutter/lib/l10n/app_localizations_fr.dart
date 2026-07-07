@@ -2685,6 +2685,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconRadioTower => 'Tour radio';
 
   @override
+  String get markerIconCellTower => 'Tour cellulaire';
+
+  @override
+  String get markerIconRadioStation => 'Station radio';
+
+  @override
   String get markerIconRadioRepeater => 'Répéteur radio';
 
   @override

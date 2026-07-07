@@ -4590,7 +4590,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconMedical.
   ///
   /// In en, this message translates to:
-  /// **'Medical'**
+  /// **'Hospital'**
   String get markerIconMedical;
 
   /// No description provided for @markerIconVehicle.
@@ -4970,6 +4970,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pharmacy'**
   String get markerIconPharmacy;
+
+  /// No description provided for @markerIconClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic'**
+  String get markerIconClinic;
+
+  /// No description provided for @markerIconDentist.
+  ///
+  /// In en, this message translates to:
+  /// **'Dentist'**
+  String get markerIconDentist;
+
+  /// No description provided for @markerIconDoctorsOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor\'s office'**
+  String get markerIconDoctorsOffice;
+
+  /// No description provided for @markerIconEyeDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Eye doctor'**
+  String get markerIconEyeDoctor;
 
   /// No description provided for @markerIconOnFoot.
   ///

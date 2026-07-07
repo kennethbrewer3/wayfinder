@@ -2576,7 +2576,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconCommunity => 'Community';
 
   @override
-  String get markerIconMedical => 'Medical';
+  String get markerIconMedical => 'Hospital';
 
   @override
   String get markerIconVehicle => 'Vehicle';
@@ -2766,6 +2766,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconPharmacy => 'Pharmacy';
+
+  @override
+  String get markerIconClinic => 'Clinic';
+
+  @override
+  String get markerIconDentist => 'Dentist';
+
+  @override
+  String get markerIconDoctorsOffice => 'Doctor\'s office';
+
+  @override
+  String get markerIconEyeDoctor => 'Eye doctor';
 
   @override
   String get markerIconOnFoot => 'On foot';

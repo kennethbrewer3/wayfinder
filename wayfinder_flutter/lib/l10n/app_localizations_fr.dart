@@ -2619,7 +2619,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconCommunity => 'Communauté';
 
   @override
-  String get markerIconMedical => 'Médical';
+  String get markerIconMedical => 'Hôpital';
 
   @override
   String get markerIconVehicle => 'Véhicule';
@@ -2810,6 +2810,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get markerIconPharmacy => 'Pharmacie';
+
+  @override
+  String get markerIconClinic => 'Clinique';
+
+  @override
+  String get markerIconDentist => 'Dentiste';
+
+  @override
+  String get markerIconDoctorsOffice => 'Cabinet médical';
+
+  @override
+  String get markerIconEyeDoctor => 'Ophtalmologue';
 
   @override
   String get markerIconOnFoot => 'À pied';

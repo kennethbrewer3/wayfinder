@@ -89,7 +89,7 @@ Future<Result> handleMarkerIconSvgUpload(
             key: key,
             label: _labelFromKey(key),
             category: defaultCategory,
-            materialIcon: 'place',
+            materialIcon: 'my_location',
             coloredAsset: true,
             glyphScale: 1.0,
             hasCustomSvg: true,

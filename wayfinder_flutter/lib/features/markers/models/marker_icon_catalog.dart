@@ -66,12 +66,26 @@ class MarkerIconCatalog {
     return null;
   }
 
-  IconData data(String iconName) => option(iconName)?.icon ?? Icons.place;
+  IconData data(String iconName) {
+    if (iconName == 'place') {
+      return option(defaultMarkerIconKey)?.icon ?? Icons.my_location;
+    }
+    return option(iconName)?.icon ?? Icons.my_location;
+  }
 
-  String label(String iconName) => option(iconName)?.label ?? 'Place';
+  String label(String iconName) {
+    if (iconName == 'place') {
+      return option(defaultMarkerIconKey)?.label ?? 'Location';
+    }
+    return option(iconName)?.label ?? 'Location';
+  }
 
-  String normalize(String iconName) =>
-      option(iconName) == null ? 'place' : iconName;
+  String normalize(String iconName) {
+    if (iconName == 'place') {
+      return defaultMarkerIconKey;
+    }
+    return option(iconName) == null ? defaultMarkerIconKey : iconName;
+  }
 
   String? asset(String iconName) => option(iconName)?.resolvedAssetPath;
 
@@ -138,12 +152,13 @@ class MarkerIconCatalog {
 
 IconData materialIconFromServerKey(String? materialIcon) {
   if (materialIcon == null || materialIcon.isEmpty) {
-    return Icons.place;
+    return Icons.my_location;
   }
+  final key = materialIcon == 'place' ? defaultMarkerIconKey : materialIcon;
   for (final option in markerIconOptions) {
-    if (option.key == materialIcon) {
+    if (option.key == key) {
       return option.icon;
     }
   }
-  return Icons.place;
+  return Icons.my_location;
 }

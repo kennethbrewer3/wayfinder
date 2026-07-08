@@ -60,7 +60,11 @@ void main() {
     final now = DateTime.utc(2026, 7, 3, 12);
     final catalog = MarkerIconCatalog.merge(
       defaults: const [
-        MarkerIconOption(key: 'place', icon: Icons.place, label: 'Place'),
+        MarkerIconOption(
+          key: 'my_location',
+          icon: Icons.my_location,
+          label: 'Location',
+        ),
       ],
       remote: [
         MarkerIconCatalogEntry(
@@ -80,7 +84,7 @@ void main() {
     );
 
     expect(catalog.options.map((option) => option.key), [
-      'place',
+      'my_location',
       'custom_drone',
     ]);
     expect(catalog.label('custom_drone'), 'Drone');
@@ -91,7 +95,7 @@ void main() {
     final catalog = MarkerIconCatalog.merge(
       defaults: markerIconOptions
           .where(
-            (option) => option.key == 'place' || option.key == 'ambulance',
+            (option) => option.key == 'my_location' || option.key == 'ambulance',
           )
           .toList(growable: false),
       remote: [
@@ -114,7 +118,9 @@ void main() {
     final grouped = catalog.groupedByCategory(
       categoryOrder: MarkerIconCategories.orderedKeys,
     );
-    expect(grouped[MarkerIconCategories.general]?.map((o) => o.key), ['place']);
+    expect(grouped[MarkerIconCategories.general]?.map((o) => o.key), [
+      'my_location',
+    ]);
     expect(
       grouped[MarkerIconCategories.custom]?.map((o) => o.key),
       ['ambulance'],

@@ -5,6 +5,7 @@ import 'marker_icon_categories.dart';
 const markerIconGlyphScaleMin = 0.5;
 const markerIconGlyphScaleMax = 5.0;
 const markerIconGlyphScaleDivisions = 45;
+const defaultMarkerIconKey = 'my_location';
 
 double clampMarkerIconGlyphScale(double scale) =>
     scale.clamp(markerIconGlyphScaleMin, markerIconGlyphScaleMax);
@@ -42,7 +43,12 @@ class MarkerIconOption {
 }
 
 const markerIconOptions = <MarkerIconOption>[
-  MarkerIconOption(key: 'place', icon: Icons.place, label: 'Place'),
+  MarkerIconOption(
+    key: 'my_location',
+    icon: Icons.my_location,
+    assetPath: 'assets/markers/my_location.svg',
+    label: 'Location',
+  ),
   MarkerIconOption(key: 'home', icon: Icons.home, label: 'Home'),
   MarkerIconOption(key: 'house', icon: Icons.house, label: 'House'),
   MarkerIconOption(key: 'apartment', icon: Icons.apartment, label: 'Apartment'),
@@ -92,11 +98,6 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'favorite', icon: Icons.favorite, label: 'Favorite'),
   MarkerIconOption(key: 'warning', icon: Icons.warning, label: 'Warning'),
   MarkerIconOption(key: 'info', icon: Icons.info, label: 'Info'),
-  MarkerIconOption(
-    key: 'my_location',
-    icon: Icons.my_location,
-    label: 'Location',
-  ),
   MarkerIconOption(key: 'camera', icon: Icons.camera_alt, label: 'Photo'),
   MarkerIconOption(key: 'pets', icon: Icons.pets, label: 'Pets'),
   MarkerIconOption(key: 'man', icon: Icons.man, label: 'Man'),
@@ -495,7 +496,7 @@ IconData markerIconData(String iconName) {
       return option.icon;
     }
   }
-  return Icons.place;
+  return Icons.my_location;
 }
 
 String markerIconLabel(String iconName) {
@@ -504,16 +505,17 @@ String markerIconLabel(String iconName) {
       return option.label;
     }
   }
-  return 'Place';
+  return 'Location';
 }
 
 String normalizeMarkerIcon(String iconName) {
+  final normalized = iconName == 'place' ? defaultMarkerIconKey : iconName;
   for (final option in markerIconOptions) {
-    if (option.key == iconName) {
+    if (option.key == normalized) {
       return option.key;
     }
   }
-  return 'place';
+  return defaultMarkerIconKey;
 }
 
 MarkerIconOption? markerIconOption(String iconName) {

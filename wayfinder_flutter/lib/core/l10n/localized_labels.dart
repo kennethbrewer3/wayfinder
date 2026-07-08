@@ -148,7 +148,6 @@ extension ZoneSortFieldL10n on ZoneSortField {
 
 String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
   return switch (iconKey) {
-    'place' => l10n.markerIconPlace,
     'home' => l10n.markerIconHome,
     'house' => l10n.markerIconHouse,
     'apartment' => l10n.markerIconApartment,
@@ -274,7 +273,7 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'library' => l10n.markerIconLibrary,
     'bank' => l10n.markerIconBank,
     'cemetery' => l10n.markerIconCemetery,
-    _ => l10n.markerIconPlace,
+    _ => l10n.markerIconLocation,
   };
 }
 

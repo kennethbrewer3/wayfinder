@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import 'marker_svg_picture.dart';
 
 class MarkerIconSvgGlyph extends StatelessWidget {
   const MarkerIconSvgGlyph({
@@ -21,8 +22,8 @@ class MarkerIconSvgGlyph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.network(
-      svgUrl,
+    return markerSvgNetworkPicture(
+      url: svgUrl,
       width: size,
       height: size,
       colorFilter: preserveColors
@@ -31,8 +32,8 @@ class MarkerIconSvgGlyph extends StatelessWidget {
       placeholderBuilder: (_) => _loadingPlaceholder(),
       errorBuilder: (_, _, _) {
         if (assetPath != null) {
-          return SvgPicture.asset(
-            assetPath!,
+          return markerSvgAssetPicture(
+            assetPath: assetPath!,
             width: size,
             height: size,
             colorFilter: preserveColors

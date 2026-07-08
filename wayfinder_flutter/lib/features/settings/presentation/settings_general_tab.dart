@@ -23,6 +23,7 @@ import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/models/map_marker_size.dart';
+import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../providers/app_locale_provider.dart';
@@ -557,7 +558,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           alignment: Alignment.center,
           child: MapMarkerIcon(
             color: Theme.of(context).colorScheme.primary,
-            iconName: 'place',
+            iconName: defaultMarkerIconKey,
             width: mapMarkerRenderWidth(mapMarkerSizeScale),
             height: mapMarkerRenderHeight(mapMarkerSizeScale),
           ),

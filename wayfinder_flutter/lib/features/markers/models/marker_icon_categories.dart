@@ -31,11 +31,12 @@ abstract final class MarkerIconCategories {
 
 /// Default category assignments for built-in marker icon keys.
 const markerIconCategoryByKey = <String, String>{
-  'place': MarkerIconCategories.general,
   'flag': MarkerIconCategories.general,
   'star': MarkerIconCategories.general,
   'favorite': MarkerIconCategories.general,
   'warning': MarkerIconCategories.general,
+  'hazard': MarkerIconCategories.general,
+  'restricted': MarkerIconCategories.general,
   'info': MarkerIconCategories.general,
   'geocache': MarkerIconCategories.general,
   'my_location': MarkerIconCategories.general,
@@ -121,8 +122,6 @@ const markerIconCategoryByKey = <String, String>{
   'water_well': MarkerIconCategories.infrastructure,
   'cistern': MarkerIconCategories.infrastructure,
   'dead_zone': MarkerIconCategories.infrastructure,
-  'hazard': MarkerIconCategories.infrastructure,
-  'restricted': MarkerIconCategories.infrastructure,
   'defense': MarkerIconCategories.military,
   'army_base': MarkerIconCategories.military,
   'navy_base': MarkerIconCategories.military,

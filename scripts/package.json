@@ -1,0 +1,8 @@
+{
+  "name": "wayfinder-marker-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pngjs": "^7.0.0"
+  }
+}

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/marker_icon_catalog.dart';
+import '../models/marker_icon_registry.dart';
 import '../providers/marker_icon_providers.dart';
 import 'map_marker_layout.dart';
 import 'map_marker_pin_color_mapper.dart';
 import 'map_marker_pin_layout.dart';
 import 'map_marker_pin_layout_loader.dart';
 import 'marker_icon_glyph.dart';
+import 'marker_svg_picture.dart';
 
 export 'map_marker_layout.dart';
 export 'map_marker_pin_layout.dart';
@@ -17,7 +18,7 @@ class MapMarkerIcon extends ConsumerWidget {
   const MapMarkerIcon({
     super.key,
     required this.color,
-    this.iconName = 'place',
+    this.iconName = defaultMarkerIconKey,
     this.iconBackgroundColor,
     this.badgeIcon,
     this.badgeColor,
@@ -54,8 +55,8 @@ class MapMarkerIcon extends ConsumerWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          SvgPicture.asset(
-            mapMarkerPinAssetPath,
+          markerSvgAssetPicture(
+            assetPath: mapMarkerPinAssetPath,
             width: width,
             height: height,
             fit: BoxFit.contain,

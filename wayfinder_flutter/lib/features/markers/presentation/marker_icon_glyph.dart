@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/marker_icon_catalog.dart';
 import '../providers/marker_icon_providers.dart';
 import 'marker_icon_svg_glyph.dart';
+import 'marker_svg_picture.dart';
 
 class MarkerIconGlyph extends ConsumerWidget {
   const MarkerIconGlyph({
@@ -51,13 +51,23 @@ class MarkerIconGlyph extends ConsumerWidget {
     final assetPath = catalog.asset(iconName);
     if (assetPath != null) {
       final preserveColors = !forceTint && catalog.coloredAsset(iconName);
-      return SvgPicture.asset(
-        assetPath,
+      return markerSvgAssetPicture(
+        assetPath: assetPath,
         width: glyphSize,
         height: glyphSize,
         colorFilter: preserveColors
             ? null
             : ColorFilter.mode(color, BlendMode.srcIn),
+        placeholderBuilder: (_) => Icon(
+          catalog.data(iconName),
+          size: glyphSize * 0.85,
+          color: color.withValues(alpha: 0.45),
+        ),
+        errorBuilder: (_, _, _) => Icon(
+          catalog.data(iconName),
+          size: glyphSize,
+          color: color,
+        ),
       );
     }
 

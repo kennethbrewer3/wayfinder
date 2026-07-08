@@ -66,7 +66,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
         defaultName: defaultName ?? l10n.markerDefaultName,
         initialNotes: initialNotes,
         initialColor: initialColor ?? parseMarkerColor('#1B4965'),
-        initialIcon: normalizeMarkerIcon(initialIcon ?? 'place'),
+        initialIcon: normalizeMarkerIcon(initialIcon ?? defaultMarkerIconKey),
         initialElevation: initialElevation,
         initialLayerId: initialLayerId,
         initialLatitude: initialLatitude,
@@ -192,7 +192,8 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     if (suggested == null || suggested == _selectedIcon) {
       return;
     }
-    if (_selectedIcon != widget.initialIcon && _selectedIcon != 'place') {
+    if (_selectedIcon != widget.initialIcon &&
+        _selectedIcon != defaultMarkerIconKey) {
       return;
     }
     setState(() => _selectedIcon = suggested);

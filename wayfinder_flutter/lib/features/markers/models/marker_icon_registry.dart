@@ -98,7 +98,7 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'favorite', icon: Icons.favorite, label: 'Favorite'),
   MarkerIconOption(key: 'warning', icon: Icons.warning, label: 'Warning'),
   MarkerIconOption(key: 'info', icon: Icons.info, label: 'Info'),
-  MarkerIconOption(key: 'camera', icon: Icons.camera_alt, label: 'Photo'),
+  MarkerIconOption(key: 'camera', icon: Icons.camera_alt, label: 'Camera'),
   MarkerIconOption(key: 'pets', icon: Icons.pets, label: 'Pets'),
   MarkerIconOption(key: 'man', icon: Icons.man, label: 'Man'),
   MarkerIconOption(key: 'woman', icon: Icons.woman, label: 'Woman'),

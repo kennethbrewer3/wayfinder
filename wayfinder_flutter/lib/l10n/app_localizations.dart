@@ -4668,7 +4668,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconPhoto.
   ///
   /// In en, this message translates to:
-  /// **'Photo'**
+  /// **'Camera'**
   String get markerIconPhoto;
 
   /// No description provided for @markerIconPets.

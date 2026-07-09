@@ -2658,7 +2658,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconLocation => 'Position';
 
   @override
-  String get markerIconPhoto => 'Photo';
+  String get markerIconPhoto => 'Caméra';
 
   @override
   String get markerIconPets => 'Animaux';

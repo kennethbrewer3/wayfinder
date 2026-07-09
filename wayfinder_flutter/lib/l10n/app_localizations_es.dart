@@ -2652,7 +2652,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconLocation => 'Ubicación';
 
   @override
-  String get markerIconPhoto => 'Foto';
+  String get markerIconPhoto => 'Cámara';
 
   @override
   String get markerIconPets => 'Mascotas';

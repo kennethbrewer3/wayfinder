@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/marker_icon_catalog.dart';
+import '../models/marker_icon_asset_fit_scale.dart';
 import '../providers/marker_icon_providers.dart';
 import 'marker_icon_svg_glyph.dart';
 import 'marker_svg_picture.dart';
@@ -26,7 +27,11 @@ class MarkerIconGlyph extends ConsumerWidget {
     final catalog =
         ref.watch(markerIconCatalogProvider).valueOrNull ??
         MarkerIconCatalog.defaults();
-    final glyphSize = size * catalog.glyphScale(iconName);
+    final glyphSize = size *
+        markerIconDisplayScale(
+          iconName: iconName,
+          glyphScale: catalog.glyphScale(iconName),
+        );
     final emoji = catalog.emoji(iconName);
     if (emoji != null) {
       return Text(

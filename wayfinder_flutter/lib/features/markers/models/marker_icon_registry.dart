@@ -287,7 +287,6 @@ const markerIconOptions = <MarkerIconOption>[
     icon: Icons.pets,
     assetPath: 'assets/markers/horse.svg',
     coloredAsset: true,
-    glyphScale: 0.94,
     label: 'Horse',
   ),
   MarkerIconOption(

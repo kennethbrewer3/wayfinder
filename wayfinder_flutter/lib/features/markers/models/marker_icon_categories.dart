@@ -118,6 +118,7 @@ const markerIconCategoryByKey = <String, String>{
   'lookout': MarkerIconCategories.infrastructure,
   'solar_power_plant': MarkerIconCategories.infrastructure,
   'power_plant': MarkerIconCategories.infrastructure,
+  'nuclear': MarkerIconCategories.infrastructure,
   'nuclear_power_plant': MarkerIconCategories.infrastructure,
   'wind_turbine': MarkerIconCategories.infrastructure,
   'fuel_depot': MarkerIconCategories.infrastructure,

@@ -169,7 +169,14 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'power_plant',
     icon: Icons.factory,
+    assetPath: 'assets/markers/power_plant.svg',
     label: 'Power plant',
+  ),
+  MarkerIconOption(
+    key: 'nuclear',
+    icon: Icons.dangerous,
+    assetPath: 'assets/markers/nuclear.svg',
+    label: 'Nuclear',
   ),
   MarkerIconOption(
     key: 'nuclear_power_plant',
@@ -717,6 +724,9 @@ String? suggestMarkerIconForName(String name) {
     'power plant': 'power_plant',
     'generating station': 'power_plant',
     'coal plant': 'power_plant',
+    'nuclear': 'nuclear',
+    'radiation': 'nuclear',
+    'radioactive': 'nuclear',
     'nuclear power': 'nuclear_power_plant',
     'nuclear plant': 'nuclear_power_plant',
     'nuclear reactor': 'nuclear_power_plant',

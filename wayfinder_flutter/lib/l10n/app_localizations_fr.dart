@@ -2727,6 +2727,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconPowerPlant => 'Centrale électrique';
 
   @override
+  String get markerIconNuclear => 'Nucléaire';
+
+  @override
   String get markerIconNuclearPowerPlant => 'Centrale nucléaire';
 
   @override

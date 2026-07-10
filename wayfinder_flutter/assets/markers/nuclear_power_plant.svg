@@ -1,82 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 48 48"
-     width="48"
-     height="48"
-     role="img"
-     aria-label="Nuclear power plant icon">
-
-  <!-- Cooling towers -->
-  <path d="M6 39
-           C9 31 10 20 9 10
-           H19
-           C18 20 19 31 22 39Z"
-        fill="#B0BEC5"
-        stroke="#202020"
-        stroke-width="2"
-        stroke-linejoin="round"/>
-
-  <path d="M26 39
-           C29 31 30 20 29 10
-           H39
-           C38 20 39 31 42 39Z"
-        fill="#CFD8DC"
-        stroke="#202020"
-        stroke-width="2"
-        stroke-linejoin="round"/>
-
-  <!-- Tower bands -->
-  <path d="M9 18h10M29 18h10"
-        stroke="#78909C"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-  <!-- Reactor building -->
-  <rect x="14" y="25" width="20" height="16" rx="2"
-        fill="#607D8B"
-        stroke="#202020"
-        stroke-width="2"/>
-
-  <!-- Radiation sign background -->
-  <circle cx="24" cy="33" r="7"
-          fill="#FFD43B"
-          stroke="#202020"
-          stroke-width="1.5"/>
-
-  <!-- Radiation symbol -->
-  <circle cx="24" cy="33" r="1.7"
-          fill="#202020"/>
-
-  <path d="M24 31
-           L21.2 26.2
-           A6.3 6.3 0 0 1 26.8 26.2
-           Z"
-        fill="#202020"/>
-
-  <path d="M26 34
-           L31.6 34
-           A6.3 6.3 0 0 1 28.8 38.8
-           Z"
-        fill="#202020"/>
-
-  <path d="M22 34
-           L19.2 38.8
-           A6.3 6.3 0 0 1 16.4 34
-           Z"
-        fill="#202020"/>
-
-  <!-- Steam -->
-  <path d="M12 8c-3-3-1-6 1-7
-           M17 8c-3-3-1-6 1-7
-           M31 8c-3-3-1-6 1-7
-           M36 8c-3-3-1-6 1-7"
-        fill="none"
-        stroke="#90A4AE"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-  <!-- Ground -->
-  <path d="M5 42h38"
-        stroke="#4CAF50"
-        stroke-width="3"
-        stroke-linecap="round"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;">
+    <path d="M6,39C9,31 10,20 9,10L19,10C18,20 19,31 22,39L6,39Z" style="fill:rgb(176,190,197);fill-rule:nonzero;stroke:rgb(32,32,32);stroke-width:2px;"/>
+    <path d="M26,39C29,31 30,20 29,10L39,10C38,20 39,31 42,39L26,39Z" style="fill:rgb(207,216,220);fill-rule:nonzero;stroke:rgb(32,32,32);stroke-width:2px;"/>
+    <path d="M9,18L19,18M29,18L39,18" style="fill-rule:nonzero;stroke:rgb(120,144,156);stroke-width:2px;stroke-linecap:round;stroke-linejoin:miter;"/>
+    <path d="M34,27L34,39C34,40.104 33.104,41 32,41L16,41C14.896,41 14,40.104 14,39L14,27C14,25.896 14.896,25 16,25L32,25C33.104,25 34,25.896 34,27Z" style="fill:rgb(96,125,139);stroke:rgb(32,32,32);stroke-width:2px;stroke-linejoin:miter;"/>
+    <circle cx="24" cy="33" r="7" style="fill:rgb(255,212,59);stroke:rgb(32,32,32);stroke-width:1.5px;stroke-linejoin:miter;"/>
+    <circle cx="24" cy="33" r="1.7" style="fill:rgb(32,32,32);"/>
+    <path d="M24,31L21.2,26.2C22.963,25.325 25.037,25.325 26.8,26.2L24,31Z" style="fill:rgb(32,32,32);fill-rule:nonzero;"/>
+    <path d="M26,34L31.6,34C31.461,35.946 30.426,37.721 28.8,38.8L26,34Z" style="fill:rgb(32,32,32);fill-rule:nonzero;"/>
+    <path d="M22,34L19.2,38.8C17.574,37.721 16.539,35.946 16.4,34L22,34Z" style="fill:rgb(32,32,32);fill-rule:nonzero;"/>
+    <path d="M12,8C9,5 11,2 13,1M17,8C14,5 16,2 18,1M31,8C28,5 30,2 32,1M36,8C33,5 35,2 37,1" style="fill:none;fill-rule:nonzero;stroke:rgb(144,164,174);stroke-width:2px;stroke-linecap:round;stroke-linejoin:miter;"/>
+    <g transform="matrix(0.709533,0,0,0.749062,15.2106,23.9049)">
+        <ellipse cx="12.4" cy="12.1" rx="11" ry="10.4" style="fill:rgb(255,188,0);"/>
+    </g>
+    <g transform="matrix(0.652318,0,0,0.650166,16.1636,25.7429)">
+        <path d="M14,11C13.867,12.2 13.2,12.867 12,13C10.2,13.2 10,12.1 10,11C10,9.9 10.9,9 12,9C13.1,9 14,9.9 14,11M16,11L22,11C22,7.3 20,4.1 17,2.3L14,7.5C15.267,8.233 15.933,9.4 16,11M12,15C11.333,15 10.667,14.8 10,14.4L7,19.6C8.533,20.467 10.2,20.9 12,20.9C14.7,20.9 15.5,20.4 17,19.6L14,14.4C13.333,14.8 12.667,15 12,15M10,7.6L7,2.3C4,4 2,7.3 2,11L8,11C8.067,9.4 8.733,8.267 10,7.6" style="fill-rule:nonzero;"/>
+    </g>
+    <path d="M5,42L43,42" style="fill:none;fill-rule:nonzero;stroke:rgb(76,175,80);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;"/>
 </svg>

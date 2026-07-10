@@ -1,78 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 48 48"
-     width="48"
-     height="48"
-     role="img"
-     aria-label="Nuclear weapons facility icon">
-
-  <!-- Secure facility building -->
-  <rect x="7" y="18" width="34" height="24" rx="2"
-        fill="#6B7280"
-        stroke="#202020"
-        stroke-width="2"/>
-
-  <!-- Reinforced roof -->
-  <path d="M5 18L24 8l19 10Z"
-        fill="#374151"
-        stroke="#202020"
-        stroke-width="2"
-        stroke-linejoin="round"/>
-
-  <!-- Secure blast door -->
-  <rect x="18" y="28" width="12" height="14" rx="1"
-        fill="#455A64"
-        stroke="#202020"
-        stroke-width="2"/>
-
-  <circle cx="24" cy="35" r="4"
-          fill="#90A4AE"
-          stroke="#202020"
-          stroke-width="1.5"/>
-
-  <path d="M24 31v8M20 35h8"
-        stroke="#202020"
-        stroke-width="1.5"
-        stroke-linecap="round"/>
-
-  <!-- Radiation warning sign -->
-  <circle cx="24" cy="18" r="8"
-          fill="#FFD43B"
-          stroke="#202020"
-          stroke-width="2"/>
-
-  <circle cx="24" cy="18" r="1.6"
-          fill="#202020"/>
-
-  <path d="M24 16
-           L21 11
-           A6 6 0 0 1 27 11
-           Z"
-        fill="#202020"/>
-
-  <path d="M26 19
-           H32
-           A6 6 0 0 1 29 24
-           Z"
-        fill="#202020"/>
-
-  <path d="M22 19
-           L19 24
-           A6 6 0 0 1 16 19
-           Z"
-        fill="#202020"/>
-
-  <!-- Security fence -->
-  <path d="M4 38h12M32 38h12
-           M6 34v10M11 34v10
-           M37 34v10M42 34v10"
-        fill="none"
-        stroke="#202020"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-  <!-- Ground -->
-  <path d="M4 44h40"
-        stroke="#4CAF50"
-        stroke-width="3"
-        stroke-linecap="round"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;">
+    <path d="M41,20L41,40C41,41.104 40.104,42 39,42L9,42C7.896,42 7,41.104 7,40L7,20C7,18.896 7.896,18 9,18L39,18C40.104,18 41,18.896 41,20Z" style="fill:rgb(107,114,128);stroke:rgb(32,32,32);stroke-width:2px;"/>
+    <path d="M5,18L24,8L43,18L5,18Z" style="fill:rgb(55,65,81);fill-rule:nonzero;stroke:rgb(32,32,32);stroke-width:2px;stroke-linejoin:round;"/>
+    <path d="M30,29L30,41C30,41.552 29.552,42 29,42L19,42C18.448,42 18,41.552 18,41L18,29C18,28.448 18.448,28 19,28L29,28C29.552,28 30,28.448 30,29Z" style="fill:rgb(69,90,100);stroke:rgb(32,32,32);stroke-width:2px;"/>
+    <circle cx="24" cy="35" r="4" style="fill:rgb(144,164,174);stroke:rgb(32,32,32);stroke-width:1.5px;"/>
+    <path d="M24,31L24,39M20,35L28,35" style="fill-rule:nonzero;stroke:rgb(32,32,32);stroke-width:1.5px;stroke-linecap:round;"/>
+    <circle cx="24" cy="18" r="8" style="fill:rgb(255,212,59);stroke:rgb(32,32,32);stroke-width:2px;"/>
+    <circle cx="24" cy="18" r="1.6" style="fill:rgb(32,32,32);"/>
+    <path d="M24,16L21,11C22.854,9.93 25.146,9.93 27,11L24,16Z" style="fill:rgb(32,32,32);fill-rule:nonzero;"/>
+    <path d="M26,19L32,19C31.932,21.071 30.795,22.965 29,24L26,19Z" style="fill:rgb(32,32,32);fill-rule:nonzero;"/>
+    <path d="M22,19L19,24C17.205,22.965 16.068,21.071 16,19L22,19Z" style="fill:rgb(32,32,32);fill-rule:nonzero;"/>
+    <path d="M4,38L16,38M32,38L44,38M6,34L6,44M11,34L11,44M37,34L37,44M42,34L42,44" style="fill:none;fill-rule:nonzero;stroke:rgb(32,32,32);stroke-width:2px;stroke-linecap:round;"/>
+    <path d="M4,44L44,44" style="fill:none;fill-rule:nonzero;stroke:rgb(76,175,80);stroke-width:3px;stroke-linecap:round;"/>
+    <g transform="matrix(0.827924,0,0,0.857843,13.7517,7.59539)">
+        <ellipse cx="12.4" cy="12.1" rx="11" ry="10.4" style="fill:rgb(255,188,0);"/>
+    </g>
+    <g transform="matrix(0.761162,0,0,0.744584,14.8637,9.70034)">
+        <path d="M14,11C13.867,12.2 13.2,12.867 12,13C10.2,13.2 10,12.1 10,11C10,9.9 10.9,9 12,9C13.1,9 14,9.9 14,11M16,11L22,11C22,7.3 20,4.1 17,2.3L14,7.5C15.267,8.233 15.933,9.4 16,11M12,15C11.333,15 10.667,14.8 10,14.4L7,19.6C8.533,20.467 10.2,20.9 12,20.9C14.7,20.9 15.5,20.4 17,19.6L14,14.4C13.333,14.8 12.667,15 12,15M10,7.6L7,2.3C4,4 2,7.3 2,11L8,11C8.067,9.4 8.733,8.267 10,7.6" style="fill-rule:nonzero;"/>
+    </g>
 </svg>

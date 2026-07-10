@@ -2755,7 +2755,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconPort => 'Port';
 
   @override
-  String get markerIconDock => 'Quai lacustre';
+  String get markerIconDock => 'Quai';
 
   @override
   String get markerIconFerry => 'Ferry';
@@ -2867,6 +2867,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get markerIconHelicopter => 'Hélicoptère';
+
+  @override
+  String get markerIconAirplane => 'Avion';
 
   @override
   String get markerIconGlider => 'Planeur';

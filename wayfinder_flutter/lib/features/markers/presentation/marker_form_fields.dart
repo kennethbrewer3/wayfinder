@@ -43,8 +43,11 @@ class MarkerIconPicker extends ConsumerStatefulWidget {
 
   static const _columns = 6;
   static const _gridSpacing = 4.0;
-  static const _gridAspectRatio = 1.45;
+  static const _gridAspectRatio = 1.0;
   static const _gridIconSize = 18.0;
+  /// Fits the largest bundled asset fit scale in the picker (~2.35×).
+  static const _gridIconSlotHeight = 42.0;
+  static const _gridLabelHeight = 12.0;
 
   @override
   ConsumerState<MarkerIconPicker> createState() => _MarkerIconPickerState();
@@ -254,32 +257,42 @@ class _MarkerIconPickerTile extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                MarkerIconGlyph(
-                  iconName: option.key,
-                  color: markerIconPickerGlyphColor(
-                    theme,
-                    selected: selected,
-                    markerColor: color,
-                    coloredAsset: option.coloredAsset,
-                  ),
-                  size: MarkerIconPicker._gridIconSize,
-                  forceTint: markerIconPickerForceTint(
-                    theme,
-                    coloredAsset: option.coloredAsset,
+                SizedBox(
+                  height: MarkerIconPicker._gridIconSlotHeight,
+                  child: ClipRect(
+                    child: Center(
+                      child: MarkerIconGlyph(
+                        iconName: option.key,
+                        color: markerIconPickerGlyphColor(
+                          theme,
+                          selected: selected,
+                          markerColor: color,
+                          coloredAsset: option.coloredAsset,
+                        ),
+                        size: MarkerIconPicker._gridIconSize,
+                        forceTint: markerIconPickerForceTint(
+                          theme,
+                          coloredAsset: option.coloredAsset,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  _markerIconPickerLabel(l10n, option),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontSize: 10,
-                    height: 1.1,
+                SizedBox(
+                  height: MarkerIconPicker._gridLabelHeight,
+                  child: Text(
+                    _markerIconPickerLabel(l10n, option),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      fontSize: 10,
+                      height: 1.1,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),

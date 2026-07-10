@@ -93,6 +93,7 @@ const markerIconCategoryByKey = <String, String>{
   'river_boat': MarkerIconCategories.transportation,
   'canoe': MarkerIconCategories.transportation,
   'helicopter': MarkerIconCategories.transportation,
+  'airplane': MarkerIconCategories.transportation,
   'glider': MarkerIconCategories.transportation,
   'balloon': MarkerIconCategories.transportation,
   'farm_vehicle': MarkerIconCategories.transportation,

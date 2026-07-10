@@ -4860,7 +4860,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconDock.
   ///
   /// In en, this message translates to:
-  /// **'Lake dock'**
+  /// **'Dock'**
   String get markerIconDock;
 
   /// No description provided for @markerIconFerry.
@@ -5084,6 +5084,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Helicopter'**
   String get markerIconHelicopter;
+
+  /// No description provided for @markerIconAirplane.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane'**
+  String get markerIconAirplane;
 
   /// No description provided for @markerIconGlider.
   ///

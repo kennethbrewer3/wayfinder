@@ -6,6 +6,7 @@
 /// Combined with [MarkerIconOption.glyphScale] when drawing [MarkerIconGlyph].
 const Map<String, double> markerIconAssetFitScales = {
   'air_force_base': 0.916,
+  'airplane': 1.006,
   'airstrip': 0.912,
   'ambulance': 1.024,
   'ammo_cache': 0.939,

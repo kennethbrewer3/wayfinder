@@ -197,7 +197,7 @@ const markerIconOptions = <MarkerIconOption>[
     key: 'dock',
     icon: Icons.deck,
     assetPath: 'assets/markers/dock.svg',
-    label: 'Lake dock',
+    label: 'Dock',
   ),
   MarkerIconOption(key: 'ferry', icon: Icons.directions_ferry, label: 'Ferry'),
   MarkerIconOption(
@@ -321,6 +321,12 @@ const markerIconOptions = <MarkerIconOption>[
     icon: Icons.air,
     assetPath: 'assets/markers/helicopter.svg',
     label: 'Helicopter',
+  ),
+  MarkerIconOption(
+    key: 'airplane',
+    icon: Icons.airplanemode_active,
+    assetPath: 'assets/markers/airplane.svg',
+    label: 'Airplane',
   ),
   MarkerIconOption(key: 'glider', icon: Icons.paragliding, label: 'Glider'),
   MarkerIconOption(
@@ -814,6 +820,10 @@ String? suggestMarkerIconForName(String name) {
     'helicopter': 'helicopter',
     'helo': 'helicopter',
     'chopper': 'helicopter',
+    'airplane': 'airplane',
+    'plane': 'airplane',
+    'aircraft': 'airplane',
+    'jet': 'airplane',
     'glider': 'glider',
     'balloon': 'balloon',
     'hot air balloon': 'balloon',

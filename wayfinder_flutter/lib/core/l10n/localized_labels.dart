@@ -243,6 +243,7 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'farm_vehicle' => l10n.markerIconFarmVehicle,
     'canoe' => l10n.markerIconCanoe,
     'helicopter' => l10n.markerIconHelicopter,
+    'airplane' => l10n.markerIconAirplane,
     'glider' => l10n.markerIconGlider,
     'balloon' => l10n.markerIconBalloon,
     'fallout_shelter' => l10n.markerIconFalloutShelter,

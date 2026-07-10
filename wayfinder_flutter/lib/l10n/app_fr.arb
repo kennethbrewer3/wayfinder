@@ -1136,6 +1136,7 @@
   "markerIconCellTower": "Tour cellulaire",
   "markerIconRadioStation": "Station radio",
   "markerIconRadioRepeater": "Répéteur radio",
+  "markerIconMeshNetworkNode": "Nœud maillé",
   "markerIconWater": "Eau",
   "markerIconSupplyCache": "Cache de ravitaillement",
   "markerIconRetreat": "Retraite",

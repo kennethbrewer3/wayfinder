@@ -110,6 +110,7 @@ const markerIconCategoryByKey = <String, String>{
   'radio_station': MarkerIconCategories.infrastructure,
   'weather_station': MarkerIconCategories.infrastructure,
   'radio_repeater': MarkerIconCategories.infrastructure,
+  'mesh_network_node': MarkerIconCategories.infrastructure,
   'water': MarkerIconCategories.infrastructure,
   'fuel': MarkerIconCategories.infrastructure,
   'gate': MarkerIconCategories.infrastructure,

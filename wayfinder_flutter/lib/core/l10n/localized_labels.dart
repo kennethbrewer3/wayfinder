@@ -185,6 +185,7 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'radio_station' => l10n.markerIconRadioStation,
     'weather_station' => l10n.markerIconWeatherStation,
     'radio_repeater' => l10n.markerIconRadioRepeater,
+    'mesh_network_node' => l10n.markerIconMeshNetworkNode,
     'water' => l10n.markerIconWater,
     'supply_cache' => l10n.markerIconSupplyCache,
     'retreat' => l10n.markerIconRetreat,

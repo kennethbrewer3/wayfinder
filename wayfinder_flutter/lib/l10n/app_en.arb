@@ -1429,6 +1429,7 @@
   "markerIconCellTower": "Cell tower",
   "markerIconRadioStation": "Radio station",
   "markerIconRadioRepeater": "Radio repeater",
+  "markerIconMeshNetworkNode": "Mesh node",
   "markerIconWater": "Water",
   "markerIconSupplyCache": "Supply cache",
   "markerIconRetreat": "Retreat",

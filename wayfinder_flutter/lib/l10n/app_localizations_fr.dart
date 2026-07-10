@@ -2694,6 +2694,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerIconRadioRepeater => 'Répéteur radio';
 
   @override
+  String get markerIconMeshNetworkNode => 'Nœud maillé';
+
+  @override
   String get markerIconWater => 'Eau';
 
   @override

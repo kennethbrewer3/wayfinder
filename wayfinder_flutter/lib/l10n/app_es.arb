@@ -1136,6 +1136,7 @@
   "markerIconCellTower": "Torre celular",
   "markerIconRadioStation": "Estación de radio",
   "markerIconRadioRepeater": "Repetidor de radio",
+  "markerIconMeshNetworkNode": "Nodo de malla",
   "markerIconWater": "Agua",
   "markerIconSupplyCache": "Alijo de suministros",
   "markerIconRetreat": "Refugio",

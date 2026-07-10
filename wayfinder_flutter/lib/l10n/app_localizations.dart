@@ -4737,6 +4737,12 @@ abstract class AppLocalizations {
   /// **'Radio repeater'**
   String get markerIconRadioRepeater;
 
+  /// No description provided for @markerIconMeshNetworkNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh node'**
+  String get markerIconMeshNetworkNode;
+
   /// No description provided for @markerIconWater.
   ///
   /// In en, this message translates to:

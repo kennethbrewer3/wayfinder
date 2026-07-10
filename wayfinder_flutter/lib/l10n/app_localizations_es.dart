@@ -2688,6 +2688,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconRadioRepeater => 'Repetidor de radio';
 
   @override
+  String get markerIconMeshNetworkNode => 'Nodo de malla';
+
+  @override
   String get markerIconWater => 'Agua';
 
   @override

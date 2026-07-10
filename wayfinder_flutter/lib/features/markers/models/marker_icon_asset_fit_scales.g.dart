@@ -84,6 +84,7 @@ const Map<String, double> markerIconAssetFitScales = {
   'man': 1.155,
   'marine_corps_base': 0.908,
   'medical_cache': 0.997,
+  'mesh_network_node': 1.053,
   'monument': 1.048,
   'mosque': 1.333,
   'motorcycle': 1.238,

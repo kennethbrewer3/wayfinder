@@ -138,6 +138,12 @@ const markerIconOptions = <MarkerIconOption>[
     icon: Icons.settings_input_antenna,
     label: 'Radio repeater',
   ),
+  MarkerIconOption(
+    key: 'mesh_network_node',
+    icon: Icons.hub,
+    assetPath: 'assets/markers/mesh_network_node.svg',
+    label: 'Mesh node',
+  ),
   MarkerIconOption(key: 'water', icon: Icons.water_drop, label: 'Water'),
   MarkerIconOption(
     key: 'supply_cache',
@@ -847,6 +853,10 @@ String? suggestMarkerIconForName(String name) {
     'puppy': 'dog',
     'repeater': 'radio_repeater',
     'radio repeater': 'radio_repeater',
+    'mesh network node': 'mesh_network_node',
+    'mesh node': 'mesh_network_node',
+    'mesh network': 'mesh_network_node',
+    'mesh': 'mesh_network_node',
     'tower': 'cell_tower',
     'cell tower': 'cell_tower',
     'radio tower': 'radio_station',

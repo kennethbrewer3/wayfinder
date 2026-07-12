@@ -15,6 +15,7 @@ class MarkerIconCategoryCatalog {
     MarkerIconCategories.peopleAnimals: 'People & animals',
     MarkerIconCategories.infrastructure: 'Infrastructure',
     MarkerIconCategories.emergency: 'Emergency & medical',
+    MarkerIconCategories.sanitation: 'Sanitation & hygiene',
     MarkerIconCategories.naturalDisasters: 'Weather and natural disasters',
     MarkerIconCategories.military: 'Military & defense',
     MarkerIconCategories.shelterPreparedness: 'Shelter & preparedness',

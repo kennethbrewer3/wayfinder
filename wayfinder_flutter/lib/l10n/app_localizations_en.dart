@@ -926,6 +926,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconCategoryEmergency => 'Emergency & medical';
 
   @override
+  String get markerIconCategorySanitation => 'Sanitation & hygiene';
+
+  @override
   String get markerIconCategoryNaturalDisasters =>
       'Weather and natural disasters';
 
@@ -2912,6 +2915,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerIconFuelDepot => 'Fuel depot';
 
   @override
+  String get markerIconTruckStop => 'Truck stop';
+
+  @override
+  String get markerIconRestStop => 'Rest stop';
+
+  @override
+  String get markerIconEvChargingStation => 'EV charging station';
+
+  @override
   String get markerIconWindTurbine => 'Wind turbine';
 
   @override
@@ -2934,6 +2946,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconDeconStation => 'Decon station';
+
+  @override
+  String get markerIconPublicRestroom => 'Public restroom';
+
+  @override
+  String get markerIconOuthouse => 'Outhouse';
+
+  @override
+  String get markerIconLatrine => 'Latrine';
+
+  @override
+  String get markerIconCompostingToilet => 'Composting toilet';
+
+  @override
+  String get markerIconHandWashStation => 'Hand wash station';
+
+  @override
+  String get markerIconSepticTank => 'Septic tank';
+
+  @override
+  String get markerIconPortableToilet => 'Portable toilet';
 
   @override
   String get markerIconAmmoCache => 'Ammo cache';

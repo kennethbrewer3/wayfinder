@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Hand wash station icon">
+
+  <!-- Stand -->
+  <path d="M16 38h16v4H16z"
+        fill="#607D8B"
+        stroke="#202020"
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+
+  <path d="M22 30v8M26 30v8"
+        stroke="#455A64"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- Basin -->
+  <path d="M12 24h24l-2 8H14z"
+        fill="#E3F2FD"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Faucet -->
+  <path d="M24 12v8"
+        stroke="#78909C"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <path d="M20 12h8"
+        stroke="#607D8B"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- Water drops -->
+  <path d="M22 22v4M24 20v6M26 22v4"
+        stroke="#1E88E5"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <!-- Hands -->
+  <path d="M17 28
+           C17 26 18 25 19 25
+           C20 25 21 26 21 27
+           V31
+           C21 33 19 34 17 33
+           V28Z"
+        fill="#F2B38A"
+        stroke="#202020"
+        stroke-width="1.2"
+        stroke-linejoin="round"/>
+
+  <path d="M27 28
+           C27 26 28 25 29 25
+           C30 25 31 26 31 27
+           V31
+           C31 33 29 34 27 33
+           V28Z"
+        fill="#F2B38A"
+        stroke="#202020"
+        stroke-width="1.2"
+        stroke-linejoin="round"/>
+
+  <!-- Soap dispenser -->
+  <rect x="32" y="14" width="6" height="10" rx="1"
+        fill="#90CAF9"
+        stroke="#202020"
+        stroke-width="1.2"/>
+
+  <circle cx="35" cy="17" r="1.5" fill="#1565C0"/>
+</svg>

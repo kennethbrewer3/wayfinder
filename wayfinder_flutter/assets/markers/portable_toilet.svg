@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Portable toilet icon">
+
+  <!-- Unit body -->
+  <path d="M14 14h20v28H14z"
+        fill="#42A5F5"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Roof slope -->
+  <path d="M12 14h24l-2 6H14z"
+        fill="#1E88E5"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Door -->
+  <rect x="18" y="22" width="12" height="16" rx="1"
+        fill="#1565C0"
+        stroke="#202020"
+        stroke-width="1.5"/>
+
+  <!-- Vent -->
+  <path d="M22 10v6M26 10v6"
+        stroke="#607D8B"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+
+  <!-- WC sign -->
+  <circle cx="24" cy="18" r="3"
+          fill="#FFFFFF"
+          stroke="#202020"
+          stroke-width="1.2"/>
+
+  <path d="M24 16v4M22 18h4"
+        stroke="#1565C0"
+        stroke-width="1.2"
+        stroke-linecap="round"/>
+
+  <!-- Wheels -->
+  <circle cx="17" cy="40" r="2.5"
+          fill="#37474F"
+          stroke="#202020"
+          stroke-width="1.2"/>
+
+  <circle cx="31" cy="40" r="2.5"
+          fill="#37474F"
+          stroke="#202020"
+          stroke-width="1.2"/>
+
+  <!-- Ground -->
+  <path d="M8 42h32"
+        stroke="#4CAF50"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+</svg>

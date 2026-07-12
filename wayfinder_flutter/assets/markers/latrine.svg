@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Latrine icon">
+
+  <!-- Trench -->
+  <path d="M8 30h32v8H8z"
+        fill="#6D4C41"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Trench interior -->
+  <path d="M12 32h24v4H12z"
+        fill="#4E342E"/>
+
+  <!-- Seat boards -->
+  <path d="M14 24h20"
+        stroke="#8D5A2B"
+        stroke-width="4"
+        stroke-linecap="round"/>
+
+  <!-- Support posts -->
+  <path d="M14 24v8M34 24v8"
+        stroke="#5C3618"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- Privacy screen -->
+  <path d="M10 14v16M38 14v16"
+        stroke="#78909C"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+
+  <path d="M10 14h28"
+        stroke="#607D8B"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <!-- Tarp -->
+  <path d="M10 14L24 6l14 8"
+        fill="#90A4AE"
+        stroke="#202020"
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+
+  <!-- Shovel -->
+  <path d="M32 10l4 4M33 11l-6 10"
+        stroke="#607D8B"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <path d="M26 22l-2 4h4z"
+        fill="#B0BEC5"
+        stroke="#202020"
+        stroke-width="1.2"
+        stroke-linejoin="round"/>
+
+  <!-- Ground -->
+  <path d="M6 40h36"
+        stroke="#4CAF50"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+</svg>

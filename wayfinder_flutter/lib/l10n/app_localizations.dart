@@ -1665,6 +1665,12 @@ abstract class AppLocalizations {
   /// **'Emergency & medical'**
   String get markerIconCategoryEmergency;
 
+  /// No description provided for @markerIconCategorySanitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sanitation & hygiene'**
+  String get markerIconCategorySanitation;
+
   /// No description provided for @markerIconCategoryNaturalDisasters.
   ///
   /// In en, this message translates to:
@@ -5241,6 +5247,24 @@ abstract class AppLocalizations {
   /// **'Fuel depot'**
   String get markerIconFuelDepot;
 
+  /// No description provided for @markerIconTruckStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck stop'**
+  String get markerIconTruckStop;
+
+  /// No description provided for @markerIconRestStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest stop'**
+  String get markerIconRestStop;
+
+  /// No description provided for @markerIconEvChargingStation.
+  ///
+  /// In en, this message translates to:
+  /// **'EV charging station'**
+  String get markerIconEvChargingStation;
+
   /// No description provided for @markerIconWindTurbine.
   ///
   /// In en, this message translates to:
@@ -5288,6 +5312,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Decon station'**
   String get markerIconDeconStation;
+
+  /// No description provided for @markerIconPublicRestroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Public restroom'**
+  String get markerIconPublicRestroom;
+
+  /// No description provided for @markerIconOuthouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Outhouse'**
+  String get markerIconOuthouse;
+
+  /// No description provided for @markerIconLatrine.
+  ///
+  /// In en, this message translates to:
+  /// **'Latrine'**
+  String get markerIconLatrine;
+
+  /// No description provided for @markerIconCompostingToilet.
+  ///
+  /// In en, this message translates to:
+  /// **'Composting toilet'**
+  String get markerIconCompostingToilet;
+
+  /// No description provided for @markerIconHandWashStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand wash station'**
+  String get markerIconHandWashStation;
+
+  /// No description provided for @markerIconSepticTank.
+  ///
+  /// In en, this message translates to:
+  /// **'Septic tank'**
+  String get markerIconSepticTank;
+
+  /// No description provided for @markerIconPortableToilet.
+  ///
+  /// In en, this message translates to:
+  /// **'Portable toilet'**
+  String get markerIconPortableToilet;
 
   /// No description provided for @markerIconAmmoCache.
   ///

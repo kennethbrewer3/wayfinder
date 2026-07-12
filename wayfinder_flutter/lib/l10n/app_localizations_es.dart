@@ -933,6 +933,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconCategoryEmergency => 'Emergencia y médico';
 
   @override
+  String get markerIconCategorySanitation => 'Saneamiento e higiene';
+
+  @override
   String get markerIconCategoryNaturalDisasters =>
       'Clima y desastres naturales';
 
@@ -2949,6 +2952,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markerIconFuelDepot => 'Depósito de combustible';
 
   @override
+  String get markerIconTruckStop => 'Parada de camiones';
+
+  @override
+  String get markerIconRestStop => 'Área de descanso';
+
+  @override
+  String get markerIconEvChargingStation => 'Estación de carga EV';
+
+  @override
   String get markerIconWindTurbine => 'Turbina eólica';
 
   @override
@@ -2971,6 +2983,27 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerIconDeconStation => 'Estación de descontaminación';
+
+  @override
+  String get markerIconPublicRestroom => 'Baño público';
+
+  @override
+  String get markerIconOuthouse => 'Letrina exterior';
+
+  @override
+  String get markerIconLatrine => 'Letrina';
+
+  @override
+  String get markerIconCompostingToilet => 'Baño compostero';
+
+  @override
+  String get markerIconHandWashStation => 'Estación de lavado de manos';
+
+  @override
+  String get markerIconSepticTank => 'Fosa séptica';
+
+  @override
+  String get markerIconPortableToilet => 'Baño portátil';
 
   @override
   String get markerIconAmmoCache => 'Alijo de munición';

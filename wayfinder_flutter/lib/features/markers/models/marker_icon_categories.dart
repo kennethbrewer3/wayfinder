@@ -7,6 +7,7 @@ abstract final class MarkerIconCategories {
   static const infrastructure = 'infrastructure';
   static const military = 'military';
   static const emergency = 'emergency';
+  static const sanitation = 'sanitation';
   static const naturalDisasters = 'natural_disasters';
   static const shelterPreparedness = 'shelter_preparedness';
   static const recreation = 'recreation';
@@ -22,6 +23,7 @@ abstract final class MarkerIconCategories {
     peopleAnimals,
     infrastructure,
     emergency,
+    sanitation,
     naturalDisasters,
     military,
     shelterPreparedness,
@@ -124,6 +126,9 @@ const markerIconCategoryByKey = <String, String>{
   'nuclear_power_plant': MarkerIconCategories.infrastructure,
   'wind_turbine': MarkerIconCategories.infrastructure,
   'fuel_depot': MarkerIconCategories.infrastructure,
+  'truck_stop': MarkerIconCategories.infrastructure,
+  'rest_stop': MarkerIconCategories.infrastructure,
+  'ev_charging_station': MarkerIconCategories.infrastructure,
   'water_well': MarkerIconCategories.infrastructure,
   'cistern': MarkerIconCategories.infrastructure,
   'dead_zone': MarkerIconCategories.infrastructure,
@@ -146,7 +151,14 @@ const markerIconCategoryByKey = <String, String>{
   'fire_truck': MarkerIconCategories.emergency,
   'medical_cache': MarkerIconCategories.emergency,
   'pharmacy': MarkerIconCategories.emergency,
-  'decon_station': MarkerIconCategories.emergency,
+  'decon_station': MarkerIconCategories.sanitation,
+  'public_restroom': MarkerIconCategories.sanitation,
+  'outhouse': MarkerIconCategories.sanitation,
+  'latrine': MarkerIconCategories.sanitation,
+  'composting_toilet': MarkerIconCategories.sanitation,
+  'hand_wash_station': MarkerIconCategories.sanitation,
+  'septic_tank': MarkerIconCategories.sanitation,
+  'portable_toilet': MarkerIconCategories.sanitation,
   'supply_cache': MarkerIconCategories.shelterPreparedness,
   'camp': MarkerIconCategories.shelterPreparedness,
   'fallout_shelter': MarkerIconCategories.shelterPreparedness,

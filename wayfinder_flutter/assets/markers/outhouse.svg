@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Outhouse icon">
+
+  <!-- Shed body -->
+  <path d="M10 22h28v18H10z"
+        fill="#D7A86E"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Wood planks -->
+  <path d="M10 28h28M10 34h28M18 22v18M30 22v18"
+        fill="none"
+        stroke="#8D5A2B"
+        stroke-width="1.2"/>
+
+  <!-- Roof -->
+  <path d="M6 22L24 8l18 14z"
+        fill="#B71C1C"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Door -->
+  <rect x="18" y="26" width="12" height="14" rx="1"
+        fill="#A66A2C"
+        stroke="#202020"
+        stroke-width="1.5"/>
+
+  <!-- Crescent moon -->
+  <path d="M24 12
+           C22 12 20.5 13.5 20.5 15.5
+           C20.5 17.5 22 19 24 19
+           C25.5 19 26.8 18.2 27.5 17
+           C26.2 17.8 24.8 17.5 24 16.2
+           C23 14.5 23.2 12.8 24 12Z"
+        fill="#FFD43B"
+        stroke="#202020"
+        stroke-width="1.2"/>
+
+  <!-- Ground -->
+  <path d="M6 42h36"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Truck stop icon">
+
+  <!-- Canopy -->
+  <path d="M6 18h36v6H6z"
+        fill="#ECEFF1"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <path d="M8 12h32l-2 6H10z"
+        fill="#B0BEC5"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Fuel pumps -->
+  <rect x="10" y="24" width="7" height="14" rx="1"
+        fill="#D62828"
+        stroke="#202020"
+        stroke-width="1.5"/>
+  <rect x="20" y="24" width="7" height="14" rx="1"
+        fill="#D62828"
+        stroke="#202020"
+        stroke-width="1.5"/>
+  <rect x="30" y="24" width="7" height="14" rx="1"
+        fill="#D62828"
+        stroke="#202020"
+        stroke-width="1.5"/>
+
+  <!-- Semi truck -->
+  <rect x="4" y="30" width="16" height="8" rx="1"
+        fill="#CFD8DC"
+        stroke="#202020"
+        stroke-width="1.5"/>
+  <path d="M20 32h7l4 4v2h-11z"
+        fill="#1565C0"
+        stroke="#202020"
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+
+  <!-- Wheels -->
+  <circle cx="9" cy="40" r="2.5" fill="#37474F" stroke="#202020" stroke-width="1.2"/>
+  <circle cx="16" cy="40" r="2.5" fill="#37474F" stroke="#202020" stroke-width="1.2"/>
+  <circle cx="24" cy="40" r="2.5" fill="#37474F" stroke="#202020" stroke-width="1.2"/>
+
+  <!-- Sign -->
+  <rect x="34" y="8" width="10" height="6" rx="1"
+        fill="#FFD43B"
+        stroke="#202020"
+        stroke-width="1.2"/>
+  <path d="M36 11h6"
+        stroke="#202020"
+        stroke-width="1.2"
+        stroke-linecap="round"/>
+
+  <!-- Ground -->
+  <path d="M4 42h40"
+        stroke="#4CAF50"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+</svg>

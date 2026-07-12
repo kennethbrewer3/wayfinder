@@ -28,6 +28,7 @@ abstract class AppSettings
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
+    bool? mapCompassRoseEnabled,
     this.restApiKeyHash,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
@@ -37,7 +38,8 @@ abstract class AppSettings
        appLocale = appLocale ?? 'system',
        mapMarkerSizeScale = mapMarkerSizeScale ?? 1.0,
        mapViewportDebugBorder = mapViewportDebugBorder ?? false,
-       mapTileBorderDebug = mapTileBorderDebug ?? false;
+       mapTileBorderDebug = mapTileBorderDebug ?? false,
+       mapCompassRoseEnabled = mapCompassRoseEnabled ?? true;
 
   factory AppSettings({
     int? id,
@@ -53,6 +55,7 @@ abstract class AppSettings
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
+    bool? mapCompassRoseEnabled,
     String? restApiKeyHash,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
@@ -81,6 +84,11 @@ abstract class AppSettings
           ? null
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapTileBorderDebug'],
+            ),
+      mapCompassRoseEnabled: jsonSerialization['mapCompassRoseEnabled'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['mapCompassRoseEnabled'],
             ),
       restApiKeyHash: jsonSerialization['restApiKeyHash'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
@@ -120,6 +128,8 @@ abstract class AppSettings
 
   bool mapTileBorderDebug;
 
+  bool mapCompassRoseEnabled;
+
   String? restApiKeyHash;
 
   DateTime updatedAt;
@@ -144,6 +154,7 @@ abstract class AppSettings
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
+    bool? mapCompassRoseEnabled,
     String? restApiKeyHash,
     DateTime? updatedAt,
   });
@@ -164,6 +175,7 @@ abstract class AppSettings
       'mapMarkerSizeScale': mapMarkerSizeScale,
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
+      'mapCompassRoseEnabled': mapCompassRoseEnabled,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
       'updatedAt': updatedAt.toJson(),
     };
@@ -186,6 +198,7 @@ abstract class AppSettings
       'mapMarkerSizeScale': mapMarkerSizeScale,
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
+      'mapCompassRoseEnabled': mapCompassRoseEnabled,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
       'updatedAt': updatedAt.toJson(),
     };
@@ -238,6 +251,7 @@ class _AppSettingsImpl extends AppSettings {
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
+    bool? mapCompassRoseEnabled,
     String? restApiKeyHash,
     required DateTime updatedAt,
   }) : super._(
@@ -254,6 +268,7 @@ class _AppSettingsImpl extends AppSettings {
          mapMarkerSizeScale: mapMarkerSizeScale,
          mapViewportDebugBorder: mapViewportDebugBorder,
          mapTileBorderDebug: mapTileBorderDebug,
+         mapCompassRoseEnabled: mapCompassRoseEnabled,
          restApiKeyHash: restApiKeyHash,
          updatedAt: updatedAt,
        );
@@ -276,6 +291,7 @@ class _AppSettingsImpl extends AppSettings {
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
+    bool? mapCompassRoseEnabled,
     Object? restApiKeyHash = _Undefined,
     DateTime? updatedAt,
   }) {
@@ -294,6 +310,8 @@ class _AppSettingsImpl extends AppSettings {
       mapViewportDebugBorder:
           mapViewportDebugBorder ?? this.mapViewportDebugBorder,
       mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
+      mapCompassRoseEnabled:
+          mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       restApiKeyHash: restApiKeyHash is String?
           ? restApiKeyHash
           : this.restApiKeyHash,
@@ -372,6 +390,12 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
     value,
   );
 
+  _i1.ColumnValue<bool, bool> mapCompassRoseEnabled(bool value) =>
+      _i1.ColumnValue(
+        table.mapCompassRoseEnabled,
+        value,
+      );
+
   _i1.ColumnValue<String, String> restApiKeyHash(String? value) =>
       _i1.ColumnValue(
         table.restApiKeyHash,
@@ -444,6 +468,11 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    mapCompassRoseEnabled = _i1.ColumnBool(
+      'mapCompassRoseEnabled',
+      this,
+      hasDefault: true,
+    );
     restApiKeyHash = _i1.ColumnString(
       'restApiKeyHash',
       this,
@@ -480,6 +509,8 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool mapTileBorderDebug;
 
+  late final _i1.ColumnBool mapCompassRoseEnabled;
+
   late final _i1.ColumnString restApiKeyHash;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -499,6 +530,7 @@ class AppSettingsTable extends _i1.Table<int?> {
     mapMarkerSizeScale,
     mapViewportDebugBorder,
     mapTileBorderDebug,
+    mapCompassRoseEnabled,
     restApiKeyHash,
     updatedAt,
   ];

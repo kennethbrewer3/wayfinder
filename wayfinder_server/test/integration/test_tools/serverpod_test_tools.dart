@@ -2284,6 +2284,7 @@ class _AppSettingsEndpoint {
     double mapMarkerSizeScale,
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
+    bool mapCompassRoseEnabled,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2305,6 +2306,7 @@ class _AppSettingsEndpoint {
             'mapMarkerSizeScale': mapMarkerSizeScale,
             'mapViewportDebugBorder': mapViewportDebugBorder,
             'mapTileBorderDebug': mapTileBorderDebug,
+            'mapCompassRoseEnabled': mapCompassRoseEnabled,
           }),
           serializationManager: _serializationManager,
         );

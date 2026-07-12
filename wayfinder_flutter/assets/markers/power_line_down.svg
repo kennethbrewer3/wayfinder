@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Power line down icon">
+
+  <!-- Utility pole -->
+  <path d="M14 42 V14"
+        stroke="#795548"
+        stroke-width="4"
+        stroke-linecap="round"/>
+
+  <!-- Crossarm -->
+  <path d="M8 18 H20"
+        stroke="#5D4037"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- Standing wire -->
+  <path d="M8 18 C4 24 6 30 10 34"
+        fill="none"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <!-- Fallen pole -->
+  <path d="M28 38 L42 24"
+        stroke="#795548"
+        stroke-width="4"
+        stroke-linecap="round"/>
+
+  <!-- Downed wires -->
+  <path d="M20 20 C24 26 22 32 18 36 M30 26 C34 30 32 36 28 40"
+        fill="none"
+        stroke="#FFD43B"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+
+  <!-- Spark -->
+  <path d="M24 34 L26 30 L28 34 L30 30"
+        fill="none"
+        stroke="#FF6D00"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

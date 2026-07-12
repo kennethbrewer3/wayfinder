@@ -21,6 +21,7 @@ Map<String, dynamic> exportAppSettingsBackup(AppSettings settings) {
     'mapMarkerSizeScale': settings.mapMarkerSizeScale,
     'mapViewportDebugBorder': settings.mapViewportDebugBorder,
     'mapTileBorderDebug': settings.mapTileBorderDebug,
+    'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
   };
 }
 
@@ -40,6 +41,7 @@ Future<void> restoreAppSettingsBackup(
   final mapMarkerSizeScale = _readDouble(body['mapMarkerSizeScale']);
   final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
   final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
+  final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
 
   if (homeLatitude == null ||
       homeLongitude == null ||
@@ -52,7 +54,8 @@ Future<void> restoreAppSettingsBackup(
       appLocale == null ||
       mapMarkerSizeScale == null ||
       mapViewportDebugBorder == null ||
-      mapTileBorderDebug == null) {
+      mapTileBorderDebug == null ||
+      mapCompassRoseEnabled == null) {
     throw const FormatException('Backup appSettings object is incomplete');
   }
 
@@ -71,6 +74,7 @@ Future<void> restoreAppSettingsBackup(
     mapMarkerSizeScale: mapMarkerSizeScale,
     mapViewportDebugBorder: mapViewportDebugBorder,
     mapTileBorderDebug: mapTileBorderDebug,
+    mapCompassRoseEnabled: mapCompassRoseEnabled,
   );
 
   final settings = await AppSettingsStore.getOrCreate(session);
@@ -89,6 +93,7 @@ Future<void> restoreAppSettingsBackup(
       mapMarkerSizeScale: mapMarkerSizeScale,
       mapViewportDebugBorder: mapViewportDebugBorder,
       mapTileBorderDebug: mapTileBorderDebug,
+      mapCompassRoseEnabled: mapCompassRoseEnabled,
     ),
   );
 }

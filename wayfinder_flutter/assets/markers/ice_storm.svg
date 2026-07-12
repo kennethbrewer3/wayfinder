@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Ice storm icon">
+
+  <!-- Cloud -->
+  <path d="M8 14 C8 8 14 5 20 7 C22 3 30 3 34 8 C40 8 44 12 42 18 C46 20 44 26 38 26 H10 C6 26 4 20 8 18 C6 16 6 14 8 14 Z"
+        fill="#90A4AE"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Icicles -->
+  <path d="M14 26 V34 M18 26 V36 M22 26 V32 M26 26 V35 M30 26 V33 M34 26 V36"
+        stroke="#81D4FA"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- Ice-coated tree -->
+  <path d="M24 38 V28 M24 28 L20 34 M24 28 L28 34"
+        fill="none"
+        stroke="#4FC3F7"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="5"
+          fill="#E1F5FE"
+          stroke="#202020"
+          stroke-width="2"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

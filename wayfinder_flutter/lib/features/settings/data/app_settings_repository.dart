@@ -121,6 +121,7 @@ class AppSettingsRepository {
         payload['mapMarkerSizeScale'] as double,
         payload['mapViewportDebugBorder'] as bool,
         payload['mapTileBorderDebug'] as bool,
+        payload['mapCompassRoseEnabled'] as bool,
       );
       return ClientPreferences.fromAppSettings(settings);
     } catch (error, _) {

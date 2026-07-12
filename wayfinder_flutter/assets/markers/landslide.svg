@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Landslide icon">
+
+  <!-- Hillside -->
+  <path d="M4 42 L4 20 C12 16 18 22 24 14 C30 8 38 12 44 8 V42 Z"
+        fill="#8D6E63"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Vegetation -->
+  <path d="M10 24 L10 18 M10 18 L7 21 M10 18 L13 21"
+        fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+  <path d="M20 16 L20 10 M20 10 L17 13 M20 10 L23 13"
+        fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Falling rocks -->
+  <path d="M30 18 L36 24 L32 28 L26 22 Z"
+        fill="#78909C"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+  <circle cx="38" cy="30" r="3" fill="#90A4AE" stroke="#202020" stroke-width="1.5"/>
+  <path d="M34 34 L40 38 L36 42 L30 38 Z"
+        fill="#78909C"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Slide path -->
+  <path d="M28 20 C32 26 34 32 36 38"
+        fill="none" stroke="#5D4037" stroke-width="2" stroke-dasharray="3 2" stroke-linecap="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

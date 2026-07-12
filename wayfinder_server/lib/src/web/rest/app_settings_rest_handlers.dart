@@ -116,6 +116,7 @@ abstract final class AppSettingsRestHandlers {
       final mapMarkerSizeScale = _readDouble(body['mapMarkerSizeScale']);
       final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
       final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
+      final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
       if (measurementUnits == null ||
           angleDisplayFormat == null ||
           circleSizeDisplay == null ||
@@ -123,12 +124,13 @@ abstract final class AppSettingsRestHandlers {
           appLocale == null ||
           mapMarkerSizeScale == null ||
           mapViewportDebugBorder == null ||
-          mapTileBorderDebug == null) {
+          mapTileBorderDebug == null ||
+          mapCompassRoseEnabled == null) {
         throw const FormatException(
           'Fields "measurementUnits", "angleDisplayFormat", '
           '"circleSizeDisplay", "appTheme", "appLocale", '
-          '"mapMarkerSizeScale", "mapViewportDebugBorder", and '
-          '"mapTileBorderDebug" are required.',
+          '"mapMarkerSizeScale", "mapViewportDebugBorder", '
+          '"mapTileBorderDebug", and "mapCompassRoseEnabled" are required.',
         );
       }
 
@@ -141,6 +143,7 @@ abstract final class AppSettingsRestHandlers {
         mapMarkerSizeScale: mapMarkerSizeScale,
         mapViewportDebugBorder: mapViewportDebugBorder,
         mapTileBorderDebug: mapTileBorderDebug,
+        mapCompassRoseEnabled: mapCompassRoseEnabled,
       );
 
       final settings = await AppSettingsStore.getOrCreate(session);
@@ -155,6 +158,7 @@ abstract final class AppSettingsRestHandlers {
           mapMarkerSizeScale: mapMarkerSizeScale,
           mapViewportDebugBorder: mapViewportDebugBorder,
           mapTileBorderDebug: mapTileBorderDebug,
+          mapCompassRoseEnabled: mapCompassRoseEnabled,
         ),
       );
       return RestJson.ok(_encodeClientPreferences(updated));
@@ -171,6 +175,7 @@ abstract final class AppSettingsRestHandlers {
       'mapMarkerSizeScale': settings.mapMarkerSizeScale,
       'mapViewportDebugBorder': settings.mapViewportDebugBorder,
       'mapTileBorderDebug': settings.mapTileBorderDebug,
+      'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
       'updatedAt': settings.updatedAt.toIso8601String(),
     };
   }

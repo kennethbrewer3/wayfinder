@@ -65,7 +65,9 @@ import '../../settings/data/pmtiles_loader.dart';
 import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
+import '../providers/map_compass_rose_provider.dart';
 import '../providers/map_viewport_debug_provider.dart';
+import 'map_compass_rose_overlay.dart';
 import '../utils/pmtiles_archive_selection.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
@@ -2178,6 +2180,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         mapLayers.isNotEmpty;
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
+    final showCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
@@ -2681,6 +2684,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 top: 0,
                 child: _rectangleDrawingBanner(rectangleDrawing),
               ),
+            if (showCompassRose)
+              MapCompassRoseOverlay(mapController: _mapController),
             if (showViewportDebugBorder)
               Positioned(
                 left: 0,

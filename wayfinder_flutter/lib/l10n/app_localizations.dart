@@ -688,6 +688,30 @@ abstract class AppLocalizations {
   /// **'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.'**
   String get settingsCirclesDescription;
 
+  /// No description provided for @settingsMapDisplayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map display'**
+  String get settingsMapDisplayTitle;
+
+  /// No description provided for @settingsMapDisplayDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Map overlays stored on the server.'**
+  String get settingsMapDisplayDescription;
+
+  /// No description provided for @settingsMapCompassRoseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show compass rose'**
+  String get settingsMapCompassRoseTitle;
+
+  /// No description provided for @settingsMapCompassRoseDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Displays a north-oriented compass in the upper-left corner of the map.'**
+  String get settingsMapCompassRoseDescription;
+
   /// No description provided for @settingsMapDebugTitle.
   ///
   /// In en, this message translates to:
@@ -1592,6 +1616,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Emergency & medical'**
   String get markerIconCategoryEmergency;
+
+  /// No description provided for @markerIconCategoryNaturalDisasters.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather and natural disasters'**
+  String get markerIconCategoryNaturalDisasters;
 
   /// No description provided for @markerIconCategoryShelterPreparedness.
   ///
@@ -5282,6 +5312,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cemetery'**
   String get markerIconCemetery;
+
+  /// No description provided for @markerIconWildfire.
+  ///
+  /// In en, this message translates to:
+  /// **'Wildfire'**
+  String get markerIconWildfire;
+
+  /// No description provided for @markerIconTornado.
+  ///
+  /// In en, this message translates to:
+  /// **'Tornado'**
+  String get markerIconTornado;
+
+  /// No description provided for @markerIconHurricane.
+  ///
+  /// In en, this message translates to:
+  /// **'Hurricane'**
+  String get markerIconHurricane;
+
+  /// No description provided for @markerIconFlood.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood'**
+  String get markerIconFlood;
+
+  /// No description provided for @markerIconStorm.
+  ///
+  /// In en, this message translates to:
+  /// **'Storm'**
+  String get markerIconStorm;
+
+  /// No description provided for @markerIconEarthquake.
+  ///
+  /// In en, this message translates to:
+  /// **'Earthquake'**
+  String get markerIconEarthquake;
+
+  /// No description provided for @markerIconVolcano.
+  ///
+  /// In en, this message translates to:
+  /// **'Volcano'**
+  String get markerIconVolcano;
+
+  /// No description provided for @markerIconTsunami.
+  ///
+  /// In en, this message translates to:
+  /// **'Tsunami'**
+  String get markerIconTsunami;
+
+  /// No description provided for @markerIconLandslide.
+  ///
+  /// In en, this message translates to:
+  /// **'Landslide'**
+  String get markerIconLandslide;
+
+  /// No description provided for @markerIconDrought.
+  ///
+  /// In en, this message translates to:
+  /// **'Drought'**
+  String get markerIconDrought;
+
+  /// No description provided for @markerIconBlizzard.
+  ///
+  /// In en, this message translates to:
+  /// **'Blizzard'**
+  String get markerIconBlizzard;
+
+  /// No description provided for @markerIconHail.
+  ///
+  /// In en, this message translates to:
+  /// **'Hail'**
+  String get markerIconHail;
+
+  /// No description provided for @markerIconSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow'**
+  String get markerIconSnow;
+
+  /// No description provided for @markerIconIcyRoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Icy road'**
+  String get markerIconIcyRoad;
+
+  /// No description provided for @markerIconTreeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Tree down'**
+  String get markerIconTreeDown;
+
+  /// No description provided for @markerIconPowerLineDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Power line down'**
+  String get markerIconPowerLineDown;
+
+  /// No description provided for @markerIconHighWind.
+  ///
+  /// In en, this message translates to:
+  /// **'High wind'**
+  String get markerIconHighWind;
+
+  /// No description provided for @markerIconIceStorm.
+  ///
+  /// In en, this message translates to:
+  /// **'Ice storm'**
+  String get markerIconIceStorm;
+
+  /// No description provided for @markerIconRoadBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Road blocked'**
+  String get markerIconRoadBlocked;
+
+  /// No description provided for @markerIconPowerOutage.
+  ///
+  /// In en, this message translates to:
+  /// **'Power outage'**
+  String get markerIconPowerOutage;
 
   /// No description provided for @markerIconWeatherStation.
   ///

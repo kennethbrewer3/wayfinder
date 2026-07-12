@@ -326,6 +326,20 @@ class AppLocalizationsEs extends AppLocalizations {
       'Elija la etiqueta de tamaño predeterminada mostrada en las nuevas zonas circulares.';
 
   @override
+  String get settingsMapDisplayTitle => 'Visualización del mapa';
+
+  @override
+  String get settingsMapDisplayDescription =>
+      'Superposiciones del mapa guardadas en el servidor.';
+
+  @override
+  String get settingsMapCompassRoseTitle => 'Mostrar rosa de los vientos';
+
+  @override
+  String get settingsMapCompassRoseDescription =>
+      'Muestra una brújula orientada al norte en la esquina superior izquierda del mapa.';
+
+  @override
   String get settingsMapDebugTitle => 'Depuración del mapa';
 
   @override
@@ -887,6 +901,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerIconCategoryEmergency => 'Emergencia y médico';
+
+  @override
+  String get markerIconCategoryNaturalDisasters =>
+      'Clima y desastres naturales';
 
   @override
   String get markerIconCategoryShelterPreparedness => 'Refugio y preparación';
@@ -2959,6 +2977,66 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerIconCemetery => 'Cementerio';
+
+  @override
+  String get markerIconWildfire => 'Incendio forestal';
+
+  @override
+  String get markerIconTornado => 'Tornado';
+
+  @override
+  String get markerIconHurricane => 'Huracán';
+
+  @override
+  String get markerIconFlood => 'Inundación';
+
+  @override
+  String get markerIconStorm => 'Tormenta';
+
+  @override
+  String get markerIconEarthquake => 'Terremoto';
+
+  @override
+  String get markerIconVolcano => 'Volcán';
+
+  @override
+  String get markerIconTsunami => 'Tsunami';
+
+  @override
+  String get markerIconLandslide => 'Deslizamiento';
+
+  @override
+  String get markerIconDrought => 'Sequía';
+
+  @override
+  String get markerIconBlizzard => 'Ventisca';
+
+  @override
+  String get markerIconHail => 'Granizo';
+
+  @override
+  String get markerIconSnow => 'Nieve';
+
+  @override
+  String get markerIconIcyRoad => 'Carretera helada';
+
+  @override
+  String get markerIconTreeDown => 'Árbol caído';
+
+  @override
+  String get markerIconPowerLineDown => 'Línea eléctrica caída';
+
+  @override
+  String get markerIconHighWind => 'Viento fuerte';
+
+  @override
+  String get markerIconIceStorm => 'Tormenta de hielo';
+
+  @override
+  String get markerIconRoadBlocked => 'Carretera bloqueada';
+
+  @override
+  String get markerIconPowerOutage => 'Corte de energía';
 
   @override
   String get markerIconWeatherStation => 'Estación meteorológica';

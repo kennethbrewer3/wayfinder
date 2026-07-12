@@ -17,6 +17,7 @@ class ClientPreferences {
     required this.mapMarkerSizeScale,
     required this.mapViewportDebugBorder,
     required this.mapTileBorderDebug,
+    required this.mapCompassRoseEnabled,
   });
 
   final MeasurementUnits measurementUnits;
@@ -27,6 +28,7 @@ class ClientPreferences {
   final double mapMarkerSizeScale;
   final bool mapViewportDebugBorder;
   final bool mapTileBorderDebug;
+  final bool mapCompassRoseEnabled;
 
   static const defaults = ClientPreferences(
     measurementUnits: MeasurementUnits.metric,
@@ -37,6 +39,7 @@ class ClientPreferences {
     mapMarkerSizeScale: mapMarkerSizeScaleDefault,
     mapViewportDebugBorder: false,
     mapTileBorderDebug: false,
+    mapCompassRoseEnabled: true,
   );
 
   factory ClientPreferences.fromAppSettings(wf.AppSettings settings) {
@@ -53,6 +56,7 @@ class ClientPreferences {
       mapMarkerSizeScale: clampMapMarkerSizeScale(settings.mapMarkerSizeScale),
       mapViewportDebugBorder: settings.mapViewportDebugBorder,
       mapTileBorderDebug: settings.mapTileBorderDebug,
+      mapCompassRoseEnabled: settings.mapCompassRoseEnabled,
     );
   }
 
@@ -76,6 +80,7 @@ class ClientPreferences {
       mapViewportDebugBorder:
           json['mapViewportDebugBorder'] as bool? ?? false,
       mapTileBorderDebug: json['mapTileBorderDebug'] as bool? ?? false,
+      mapCompassRoseEnabled: json['mapCompassRoseEnabled'] as bool? ?? true,
     );
   }
 
@@ -88,6 +93,7 @@ class ClientPreferences {
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
+    bool? mapCompassRoseEnabled,
   }) {
     return ClientPreferences(
       measurementUnits: measurementUnits ?? this.measurementUnits,
@@ -99,6 +105,8 @@ class ClientPreferences {
       mapViewportDebugBorder:
           mapViewportDebugBorder ?? this.mapViewportDebugBorder,
       mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
+      mapCompassRoseEnabled:
+          mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
     );
   }
 
@@ -112,6 +120,7 @@ class ClientPreferences {
       'mapMarkerSizeScale': clampMapMarkerSizeScale(mapMarkerSizeScale),
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
+      'mapCompassRoseEnabled': mapCompassRoseEnabled,
     };
   }
 }

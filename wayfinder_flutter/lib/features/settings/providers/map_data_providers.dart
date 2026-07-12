@@ -7,6 +7,7 @@ import '../../lines/providers/angle_display_format_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/home_location_provider.dart';
+import '../../map/providers/map_compass_rose_provider.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -38,5 +39,6 @@ void refreshUserSettings(WidgetRef ref) {
   ref.read(mapMarkerSizeScaleProvider.notifier).reload();
   ref.read(mapViewportDebugBorderProvider.notifier).reload();
   ref.read(mapTileBorderDebugProvider.notifier).reload();
+  ref.read(mapCompassRoseEnabledProvider.notifier).reload();
   refreshPmtiles(ref);
 }

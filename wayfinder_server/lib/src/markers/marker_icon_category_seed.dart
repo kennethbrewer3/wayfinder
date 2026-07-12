@@ -9,14 +9,15 @@ abstract final class MarkerIconCategorySeed {
     (key: 'people_animals', label: 'People & animals', sortOrder: 3),
     (key: 'infrastructure', label: 'Infrastructure', sortOrder: 4),
     (key: 'emergency', label: 'Emergency & medical', sortOrder: 5),
-    (key: 'military', label: 'Military & defense', sortOrder: 6),
+    (key: 'natural_disasters', label: 'Weather and natural disasters', sortOrder: 6),
+    (key: 'military', label: 'Military & defense', sortOrder: 7),
     (
       key: 'shelter_preparedness',
       label: 'Shelter & preparedness',
-      sortOrder: 7,
+      sortOrder: 8,
     ),
-    (key: 'recreation', label: 'Hunting and foraging', sortOrder: 8),
-    (key: 'agriculture', label: 'Agriculture', sortOrder: 9),
-    (key: defaultCategoryKey, label: 'Custom', sortOrder: 10),
+    (key: 'recreation', label: 'Hunting and foraging', sortOrder: 9),
+    (key: 'agriculture', label: 'Agriculture', sortOrder: 10),
+    (key: defaultCategoryKey, label: 'Custom', sortOrder: 11),
   ];
 }

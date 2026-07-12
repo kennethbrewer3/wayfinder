@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Icy road icon">
+
+  <!-- Road -->
+  <path d="M8 42 L18 20 L30 20 L40 42 Z"
+        fill="#616161"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Center line -->
+  <path d="M22 24 L26 38"
+        stroke="#FFD43B"
+        stroke-width="2"
+        stroke-dasharray="4 3"
+        stroke-linecap="round"/>
+
+  <!-- Ice patches -->
+  <path d="M12 34 C14 32 16 34 14 36 C12 38 10 36 12 34 Z"
+        fill="#B3E5FC"
+        stroke="#202020"
+        stroke-width="1.5"/>
+  <path d="M30 30 C32 28 34 30 32 32 C30 34 28 32 30 30 Z"
+        fill="#B3E5FC"
+        stroke="#202020"
+        stroke-width="1.5"/>
+  <path d="M20 38 C22 36 24 38 22 40 C20 42 18 40 20 38 Z"
+        fill="#E1F5FE"
+        stroke="#202020"
+        stroke-width="1.5"/>
+
+  <!-- Warning -->
+  <circle cx="36" cy="12" r="7"
+          fill="#FFD43B"
+          stroke="#202020"
+          stroke-width="2"/>
+  <path d="M36 8 V14 M36 16 V17"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

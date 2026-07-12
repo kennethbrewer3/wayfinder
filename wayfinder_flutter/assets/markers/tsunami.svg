@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Tsunami icon">
+
+  <!-- Coastline -->
+  <path d="M3 30 L16 28 L24 32 L34 26 L45 30 V42 H3 Z"
+        fill="#C8E6C9"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Big wave -->
+  <path d="M3 34 C10 28 16 32 22 26 C28 20 34 24 40 18 C42 16 44 18 45 20 V42 H3 Z"
+        fill="#1E88E5"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Wave crest -->
+  <path d="M34 18 C36 14 40 14 42 18 C40 20 36 20 34 18 Z"
+        fill="#E3F2FD"
+        stroke="#202020"
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+
+  <!-- Foam -->
+  <path d="M8 36 C12 34 16 36 20 34 M26 32 C30 30 34 32 38 30"
+        fill="none" stroke="#E3F2FD" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Warning buoy -->
+  <circle cx="10" cy="24" r="3" fill="#FFD43B" stroke="#202020" stroke-width="1.5"/>
+  <path d="M10 27 V32"
+        stroke="#795548" stroke-width="2" stroke-linecap="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

@@ -7,6 +7,7 @@ abstract final class MarkerIconCategories {
   static const infrastructure = 'infrastructure';
   static const military = 'military';
   static const emergency = 'emergency';
+  static const naturalDisasters = 'natural_disasters';
   static const shelterPreparedness = 'shelter_preparedness';
   static const recreation = 'recreation';
   static const agriculture = 'agriculture';
@@ -21,6 +22,7 @@ abstract final class MarkerIconCategories {
     peopleAnimals,
     infrastructure,
     emergency,
+    naturalDisasters,
     military,
     shelterPreparedness,
     recreation,
@@ -159,6 +161,26 @@ const markerIconCategoryByKey = <String, String>{
   'cave': MarkerIconCategories.shelterPreparedness,
   'garden': MarkerIconCategories.agriculture,
   'greenhouse': MarkerIconCategories.agriculture,
+  'wildfire': MarkerIconCategories.naturalDisasters,
+  'tornado': MarkerIconCategories.naturalDisasters,
+  'hurricane': MarkerIconCategories.naturalDisasters,
+  'flood': MarkerIconCategories.naturalDisasters,
+  'storm': MarkerIconCategories.naturalDisasters,
+  'earthquake': MarkerIconCategories.naturalDisasters,
+  'volcano': MarkerIconCategories.naturalDisasters,
+  'tsunami': MarkerIconCategories.naturalDisasters,
+  'landslide': MarkerIconCategories.naturalDisasters,
+  'drought': MarkerIconCategories.naturalDisasters,
+  'blizzard': MarkerIconCategories.naturalDisasters,
+  'hail': MarkerIconCategories.naturalDisasters,
+  'snow': MarkerIconCategories.naturalDisasters,
+  'icy_road': MarkerIconCategories.naturalDisasters,
+  'tree_down': MarkerIconCategories.naturalDisasters,
+  'power_line_down': MarkerIconCategories.naturalDisasters,
+  'high_wind': MarkerIconCategories.naturalDisasters,
+  'ice_storm': MarkerIconCategories.naturalDisasters,
+  'road_blocked': MarkerIconCategories.naturalDisasters,
+  'power_outage': MarkerIconCategories.naturalDisasters,
 };
 
 String markerIconCategoryForKey(String key, {String? override}) {

@@ -20,6 +20,7 @@ void main() {
           mapMarkerSizeScale: 1.25,
           mapViewportDebugBorder: true,
           mapTileBorderDebug: false,
+          mapCompassRoseEnabled: true,
           restApiKeyHash: 'secret-hash',
           updatedAt: DateTime.utc(2026, 7, 5),
         ),
@@ -38,6 +39,7 @@ void main() {
         'mapMarkerSizeScale': 1.25,
         'mapViewportDebugBorder': true,
         'mapTileBorderDebug': false,
+        'mapCompassRoseEnabled': true,
       });
       expect(payload.containsKey('restApiKeyHash'), isFalse);
     });

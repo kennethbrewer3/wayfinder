@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Road blocked icon">
+
+  <!-- Road -->
+  <rect x="6" y="18" width="36" height="20" rx="2"
+        fill="#616161"
+        stroke="#202020"
+        stroke-width="2"/>
+
+  <!-- Center dashes -->
+  <path d="M12 28 H18 M22 28 H28 M32 28 H38"
+        stroke="#FFD43B"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <!-- Barrier -->
+  <path d="M16 14 V34 M32 14 V34"
+        stroke="#FF6D00"
+        stroke-width="3"
+        stroke-linecap="round"/>
+  <path d="M14 18 H34"
+        stroke="#FF6D00"
+        stroke-width="4"
+        stroke-linecap="round"/>
+  <path d="M14 30 H34"
+        stroke="#FF6D00"
+        stroke-width="4"
+        stroke-linecap="round"/>
+
+  <!-- X mark -->
+  <path d="M20 22 L28 30 M28 22 L20 30"
+        stroke="#202020"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

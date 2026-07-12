@@ -326,6 +326,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.';
 
   @override
+  String get settingsMapDisplayTitle => 'Map display';
+
+  @override
+  String get settingsMapDisplayDescription =>
+      'Map overlays stored on the server.';
+
+  @override
+  String get settingsMapCompassRoseTitle => 'Show compass rose';
+
+  @override
+  String get settingsMapCompassRoseDescription =>
+      'Displays a north-oriented compass in the upper-left corner of the map.';
+
+  @override
   String get settingsMapDebugTitle => 'Map debugging';
 
   @override
@@ -880,6 +894,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconCategoryEmergency => 'Emergency & medical';
+
+  @override
+  String get markerIconCategoryNaturalDisasters =>
+      'Weather and natural disasters';
 
   @override
   String get markerIconCategoryShelterPreparedness => 'Shelter & preparedness';
@@ -2922,6 +2940,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconCemetery => 'Cemetery';
+
+  @override
+  String get markerIconWildfire => 'Wildfire';
+
+  @override
+  String get markerIconTornado => 'Tornado';
+
+  @override
+  String get markerIconHurricane => 'Hurricane';
+
+  @override
+  String get markerIconFlood => 'Flood';
+
+  @override
+  String get markerIconStorm => 'Storm';
+
+  @override
+  String get markerIconEarthquake => 'Earthquake';
+
+  @override
+  String get markerIconVolcano => 'Volcano';
+
+  @override
+  String get markerIconTsunami => 'Tsunami';
+
+  @override
+  String get markerIconLandslide => 'Landslide';
+
+  @override
+  String get markerIconDrought => 'Drought';
+
+  @override
+  String get markerIconBlizzard => 'Blizzard';
+
+  @override
+  String get markerIconHail => 'Hail';
+
+  @override
+  String get markerIconSnow => 'Snow';
+
+  @override
+  String get markerIconIcyRoad => 'Icy road';
+
+  @override
+  String get markerIconTreeDown => 'Tree down';
+
+  @override
+  String get markerIconPowerLineDown => 'Power line down';
+
+  @override
+  String get markerIconHighWind => 'High wind';
+
+  @override
+  String get markerIconIceStorm => 'Ice storm';
+
+  @override
+  String get markerIconRoadBlocked => 'Road blocked';
+
+  @override
+  String get markerIconPowerOutage => 'Power outage';
 
   @override
   String get markerIconWeatherStation => 'Weather station';

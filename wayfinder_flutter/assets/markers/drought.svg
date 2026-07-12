@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Drought icon">
+
+  <!-- Sun -->
+  <circle cx="34" cy="14" r="8"
+          fill="#FFD43B"
+          stroke="#202020"
+          stroke-width="2"/>
+
+  <path d="M34 2 V6 M34 22 V26 M46 14 H42 M26 14 H22 M42 6 L39 9 M29 19 L26 22 M42 22 L39 19 M29 9 L26 6"
+        stroke="#FF6D00" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Cracked dry earth -->
+  <path d="M6 38 H42"
+        stroke="#5D4037"
+        stroke-width="3"
+        stroke-linecap="round"/>
+
+  <path d="M8 34 C14 36 18 32 24 34 C30 36 34 32 40 34"
+        fill="none" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+
+  <path d="M12 30 L14 34 L10 36 M28 28 L30 32 L26 34 M36 30 L38 34 L34 36"
+        fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Dead plant -->
+  <path d="M18 38 V28 M18 30 C16 28 14 30 16 32 M18 32 C20 30 22 32 20 34"
+        fill="none" stroke="#A1887F" stroke-width="2" stroke-linecap="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

@@ -12,11 +12,33 @@ abstract final class MarkerIconCategoryService {
       limit: 1,
     );
     if (existing.isNotEmpty) {
+      await ensureBuiltInCategories(session);
       return;
     }
 
     final now = DateTime.now().toUtc();
     for (final seed in MarkerIconCategorySeed.defaults) {
+      await MarkerIconCategoryDefinition.db.insertRow(
+        session,
+        MarkerIconCategoryDefinition(
+          key: seed.key,
+          label: seed.label,
+          sortOrder: seed.sortOrder,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+    }
+  }
+
+  /// Inserts any built-in categories missing from an already-seeded database.
+  static Future<void> ensureBuiltInCategories(Session session) async {
+    final now = DateTime.now().toUtc();
+    for (final seed in MarkerIconCategorySeed.defaults) {
+      final existing = await findByKey(session, seed.key);
+      if (existing != null) {
+        continue;
+      }
       await MarkerIconCategoryDefinition.db.insertRow(
         session,
         MarkerIconCategoryDefinition(

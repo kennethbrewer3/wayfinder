@@ -132,6 +132,7 @@ abstract final class AppSettingsStore {
     required double mapMarkerSizeScale,
     required bool mapViewportDebugBorder,
     required bool mapTileBorderDebug,
+    required bool mapCompassRoseEnabled,
   }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);

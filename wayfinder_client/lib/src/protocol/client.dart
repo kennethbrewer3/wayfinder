@@ -784,6 +784,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     double mapMarkerSizeScale,
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
+    bool mapCompassRoseEnabled,
   ) => caller.callServerEndpoint<_i17.AppSettings>(
     'appSettings',
     'updateClientPreferences',
@@ -796,6 +797,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
       'mapMarkerSizeScale': mapMarkerSizeScale,
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
+      'mapCompassRoseEnabled': mapCompassRoseEnabled,
     },
   );
 

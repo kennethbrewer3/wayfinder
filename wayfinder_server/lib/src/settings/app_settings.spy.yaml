@@ -14,5 +14,6 @@ fields:
   mapMarkerSizeScale: double, default=1.0
   mapViewportDebugBorder: bool, default=false
   mapTileBorderDebug: bool, default=false
+  mapCompassRoseEnabled: bool, default=true
   restApiKeyHash: String?
   updatedAt: DateTime

@@ -1369,6 +1369,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<bool>(),
               nullable: false,
             ),
+            'mapCompassRoseEnabled': _i1.ParameterDescription(
+              name: 'mapCompassRoseEnabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -1385,6 +1390,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['mapMarkerSizeScale'],
                     params['mapViewportDebugBorder'],
                     params['mapTileBorderDebug'],
+                    params['mapCompassRoseEnabled'],
                   ),
         ),
         'getRestApiKeyStatus': _i1.MethodConnector(

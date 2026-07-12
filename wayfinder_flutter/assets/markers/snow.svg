@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Snow icon">
+
+  <!-- Snowflakes -->
+  <path d="M14 10 L14 18 M11 14 L17 14 M12 12 L16 16 M16 12 L12 16"
+        stroke="#64B5F6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 8 L34 16 M31 12 L37 12 M32 10 L36 14 M36 10 L32 14"
+        stroke="#64B5F6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M24 16 L24 28 M20 22 L28 22 M21 19 L27 25 M27 19 L21 25"
+        stroke="#42A5F5" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Snow accumulation -->
+  <path d="M4 34 C10 30 16 32 24 30 C32 28 38 32 44 30 V42 H4 Z"
+        fill="#FFFFFF"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

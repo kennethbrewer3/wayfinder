@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 48 48"
+     width="48"
+     height="48"
+     role="img"
+     aria-label="Tornado icon">
+
+  <!-- Storm cloud -->
+  <path d="M8 14 C8 8 14 5 20 7 C22 3 30 3 34 8 C40 8 44 12 42 18 C46 20 44 26 38 26 H10 C6 26 4 20 8 18 C6 16 6 14 8 14 Z"
+        fill="#78909C"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <!-- Tornado funnel -->
+  <path d="M26 26 C30 30 28 34 24 36 C20 38 14 40 12 42 C18 40 22 36 22 32 C22 28 20 26 18 24 C22 25 24 26 26 26 Z"
+        fill="#B0BEC5"
+        stroke="#202020"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+  <path d="M24 26 C22 30 20 34 16 38 C20 36 22 32 22 28 C22 26 23 26 24 26 Z"
+        fill="#CFD8DC"
+        stroke="#202020"
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+
+  <!-- Debris -->
+  <rect x="32" y="34" width="4" height="2" rx="0.5" fill="#795548" stroke="#202020" stroke-width="1" transform="rotate(25 34 35)"/>
+  <circle cx="36" cy="30" r="1.5" fill="#FFD43B" stroke="#202020" stroke-width="1"/>
+
+  <!-- Wind lines -->
+  <path d="M4 32 H12 M36 20 H44"
+        fill="none" stroke="#64B5F6" stroke-width="2" stroke-linecap="round"/>
+
+  <path d="M4 42 H44"
+        stroke="#4CAF50"
+        stroke-width="3"
+        stroke-linecap="round"/>
+</svg>

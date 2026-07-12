@@ -21,6 +21,7 @@ import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
+import '../../map/providers/map_compass_rose_provider.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../markers/models/marker_icon_registry.dart';
@@ -246,6 +247,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       mapViewportDebugBorderProvider,
     );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
+    final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
@@ -595,6 +597,28 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsMapDisplayTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsMapDisplayDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsMapCompassRoseTitle),
+          subtitle: Text(l10n.settingsMapCompassRoseDescription),
+          value: showMapCompassRose,
+          onChanged: (enabled) {
+            ref
+                .read(mapCompassRoseEnabledProvider.notifier)
+                .setEnabled(enabled);
+          },
         ),
         const SizedBox(height: 32),
         Text(

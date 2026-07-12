@@ -45,6 +45,7 @@ class MarkerIconPicker extends ConsumerStatefulWidget {
   static const _gridSpacing = 4.0;
   static const _gridAspectRatio = 1.0;
   static const _gridIconSize = 18.0;
+
   /// Fits the largest bundled asset fit scale in the picker (~2.35×).
   static const _gridIconSlotHeight = 42.0;
   static const _gridLabelHeight = 12.0;

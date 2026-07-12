@@ -19,6 +19,7 @@ class MarkerIconGlyph extends ConsumerWidget {
   final String iconName;
   final Color color;
   final double size;
+
   /// When true, applies [color] even for full-color SVG assets.
   final bool forceTint;
 
@@ -27,7 +28,8 @@ class MarkerIconGlyph extends ConsumerWidget {
     final catalog =
         ref.watch(markerIconCatalogProvider).valueOrNull ??
         MarkerIconCatalog.defaults();
-    final glyphSize = size *
+    final glyphSize =
+        size *
         markerIconDisplayScale(
           iconName: iconName,
           glyphScale: catalog.glyphScale(iconName),

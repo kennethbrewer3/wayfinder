@@ -6,6 +6,7 @@ import '../../circles/models/circle_size_display.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/map_marker_size.dart';
+import '../../map/models/map_zoom_limits.dart';
 
 class ClientPreferences {
   const ClientPreferences({
@@ -18,6 +19,8 @@ class ClientPreferences {
     required this.mapViewportDebugBorder,
     required this.mapTileBorderDebug,
     required this.mapCompassRoseEnabled,
+    required this.mapMinZoom,
+    required this.mapMaxZoom,
   });
 
   final MeasurementUnits measurementUnits;
@@ -29,8 +32,10 @@ class ClientPreferences {
   final bool mapViewportDebugBorder;
   final bool mapTileBorderDebug;
   final bool mapCompassRoseEnabled;
+  final double mapMinZoom;
+  final double mapMaxZoom;
 
-  static const defaults = ClientPreferences(
+  static final defaults = ClientPreferences(
     measurementUnits: MeasurementUnits.metric,
     angleDisplayFormat: AngleDisplayFormat.decimal,
     circleSizeDisplay: CircleSizeDisplay.radius,
@@ -40,9 +45,15 @@ class ClientPreferences {
     mapViewportDebugBorder: false,
     mapTileBorderDebug: false,
     mapCompassRoseEnabled: true,
+    mapMinZoom: MapZoomRange.defaults.min,
+    mapMaxZoom: MapZoomRange.defaults.max,
   );
 
   factory ClientPreferences.fromAppSettings(wf.AppSettings settings) {
+    final zoomRange = normalizeMapZoomRange(
+      min: settings.mapMinZoom,
+      max: settings.mapMaxZoom,
+    );
     return ClientPreferences(
       measurementUnits: measurementUnitsFromStorage(settings.measurementUnits),
       angleDisplayFormat: angleDisplayFormatFromStorage(
@@ -57,10 +68,16 @@ class ClientPreferences {
       mapViewportDebugBorder: settings.mapViewportDebugBorder,
       mapTileBorderDebug: settings.mapTileBorderDebug,
       mapCompassRoseEnabled: settings.mapCompassRoseEnabled,
+      mapMinZoom: zoomRange.min,
+      mapMaxZoom: zoomRange.max,
     );
   }
 
   factory ClientPreferences.fromJson(Map<String, dynamic> json) {
+    final zoomRange = normalizeMapZoomRange(
+      min: (json['mapMinZoom'] as num?)?.toDouble(),
+      max: (json['mapMaxZoom'] as num?)?.toDouble(),
+    );
     return ClientPreferences(
       measurementUnits: measurementUnitsFromStorage(
         json['measurementUnits'] as String?,
@@ -77,10 +94,11 @@ class ClientPreferences {
         (json['mapMarkerSizeScale'] as num?)?.toDouble() ??
             mapMarkerSizeScaleDefault,
       ),
-      mapViewportDebugBorder:
-          json['mapViewportDebugBorder'] as bool? ?? false,
+      mapViewportDebugBorder: json['mapViewportDebugBorder'] as bool? ?? false,
       mapTileBorderDebug: json['mapTileBorderDebug'] as bool? ?? false,
       mapCompassRoseEnabled: json['mapCompassRoseEnabled'] as bool? ?? true,
+      mapMinZoom: zoomRange.min,
+      mapMaxZoom: zoomRange.max,
     );
   }
 
@@ -94,6 +112,8 @@ class ClientPreferences {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    double? mapMinZoom,
+    double? mapMaxZoom,
   }) {
     return ClientPreferences(
       measurementUnits: measurementUnits ?? this.measurementUnits,
@@ -107,6 +127,8 @@ class ClientPreferences {
       mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
+      mapMinZoom: mapMinZoom ?? this.mapMinZoom,
+      mapMaxZoom: mapMaxZoom ?? this.mapMaxZoom,
     );
   }
 
@@ -121,6 +143,8 @@ class ClientPreferences {
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
+      'mapMinZoom': mapMinZoom,
+      'mapMaxZoom': mapMaxZoom,
     };
   }
 }

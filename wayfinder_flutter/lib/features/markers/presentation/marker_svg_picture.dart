@@ -159,8 +159,7 @@ class _MarkerSvgAssetPicture extends StatefulWidget {
   final bool excludeFromSemantics;
 
   @override
-  State<_MarkerSvgAssetPicture> createState() =>
-      _MarkerSvgAssetPictureState();
+  State<_MarkerSvgAssetPicture> createState() => _MarkerSvgAssetPictureState();
 }
 
 class _MarkerSvgAssetPictureState extends State<_MarkerSvgAssetPicture> {

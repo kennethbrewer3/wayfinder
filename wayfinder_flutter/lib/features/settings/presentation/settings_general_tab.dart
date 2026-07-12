@@ -21,6 +21,8 @@ import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
+import '../../map/models/map_zoom_limits.dart';
+import '../../map/providers/map_zoom_range_provider.dart';
 import '../../map/providers/map_compass_rose_provider.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/models/map_marker_size.dart';
@@ -43,10 +45,13 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
 
   bool _isSavingServerUrl = false;
   bool _isSavingHomeLocation = false;
+  bool _isSavingMapZoomRange = false;
   final _serverUrlController = TextEditingController();
   final _homeLatController = TextEditingController();
   final _homeLngController = TextEditingController();
   final _homeZoomController = TextEditingController();
+  final _mapMinZoomController = TextEditingController();
+  final _mapMaxZoomController = TextEditingController();
 
   @override
   void dispose() {
@@ -54,7 +59,14 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     _homeLatController.dispose();
     _homeLngController.dispose();
     _homeZoomController.dispose();
+    _mapMinZoomController.dispose();
+    _mapMaxZoomController.dispose();
     super.dispose();
+  }
+
+  void _syncMapZoomFields(MapZoomRange range) {
+    _mapMinZoomController.text = range.min.toStringAsFixed(1);
+    _mapMaxZoomController.text = range.max.toStringAsFixed(1);
   }
 
   void _syncHomeFields(HomeLocation home) {
@@ -72,7 +84,57 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         return;
       }
       _syncHomeFields(ref.read(homeLocationProvider));
+      _syncMapZoomFields(ref.read(mapZoomRangeProvider));
     });
+  }
+
+  Future<void> _saveMapZoomRange() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isSavingMapZoomRange = true);
+    try {
+      final min = double.tryParse(_mapMinZoomController.text.trim());
+      final max = double.tryParse(_mapMaxZoomController.text.trim());
+      if (min == null || max == null) {
+        throw FormatException(l10n.settingsMapZoomRangeInvalid);
+      }
+      final range = validateMapZoomRange(MapZoomRange(min: min, max: max));
+      await ref.read(mapZoomRangeProvider.notifier).setRange(range);
+      if (!mounted) {
+        return;
+      }
+      _syncMapZoomFields(range);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.settingsMapZoomRangeSaved)),
+      );
+    } on FormatException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.message)),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🗺️ Map zoom range save failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) {
+        return;
+      }
+      final errorL10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            errorL10n.settingsMapZoomRangeSaveFailed(error.toString()),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSavingMapZoomRange = false);
+      }
+    }
   }
 
   Future<void> _saveHomeLocation() async {
@@ -83,6 +145,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         latitudeText: _homeLatController.text,
         longitudeText: _homeLngController.text,
         zoomText: _homeZoomController.text,
+        maxZoom: ref.read(mapZoomRangeProvider).max,
       );
       if (home == null) {
         throw FormatException(l10n.settingsHomeLocationInvalid);
@@ -248,6 +311,12 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
+    final mapZoomRange = ref.watch(mapZoomRangeProvider);
+    ref.listen<MapZoomRange>(mapZoomRangeProvider, (previous, next) {
+      if (previous != next) {
+        _syncMapZoomFields(next);
+      }
+    });
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
@@ -387,7 +456,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             labelText: l10n.settingsZoom,
             hintText: '12',
             helperText: l10n.settingsZoomHelper(
-              AppConstants.maxMapZoom.toStringAsFixed(0),
+              mapZoomRange.max.toStringAsFixed(0),
             ),
             border: const OutlineInputBorder(),
           ),
@@ -619,6 +688,71 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 .read(mapCompassRoseEnabledProvider.notifier)
                 .setEnabled(enabled);
           },
+        ),
+        const SizedBox(height: 16),
+        Card(
+          color: Theme.of(context).colorScheme.errorContainer.withValues(
+            alpha: 0.45,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              l10n.settingsMapZoomRangeWarning,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onErrorContainer,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _mapMinZoomController,
+                decoration: InputDecoration(
+                  labelText: l10n.settingsMapMinZoom,
+                  helperText: l10n.settingsMapZoomLimitHelper(
+                    AppConstants.absoluteMapMinZoom.toStringAsFixed(0),
+                    (AppConstants.absoluteMapMaxZoom - 1).toStringAsFixed(0),
+                  ),
+                  border: const OutlineInputBorder(),
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextField(
+                controller: _mapMaxZoomController,
+                decoration: InputDecoration(
+                  labelText: l10n.settingsMapMaxZoom,
+                  helperText: l10n.settingsMapZoomLimitHelper(
+                    (AppConstants.absoluteMapMinZoom + 1).toStringAsFixed(0),
+                    AppConstants.absoluteMapMaxZoom.toStringAsFixed(0),
+                  ),
+                  border: const OutlineInputBorder(),
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FilledButton(
+            onPressed: _isSavingMapZoomRange ? null : _saveMapZoomRange,
+            child: Text(
+              _isSavingMapZoomRange
+                  ? l10n.actionSaving
+                  : l10n.settingsMapZoomRangeSave,
+            ),
+          ),
         ),
         const SizedBox(height: 32),
         Text(

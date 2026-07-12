@@ -30,25 +30,28 @@ void main() {
     expect(layout.iconGlyphSize(44, 44), closeTo(21.312, 0.01));
   });
 
-  test('parseMapMarkerPinLayout derives glyph radius from slot when placeholder missing', () {
-    const svg = '''
+  test(
+    'parseMapMarkerPinLayout derives glyph radius from slot when placeholder missing',
+    () {
+      const svg = '''
 <svg viewBox="0 0 44 44">
   <circle id="icon-background" cx="24" cy="18" r="13" fill="#FFFFFF"/>
 </svg>
 ''';
 
-    final layout = parseMapMarkerPinLayout(svg);
+      final layout = parseMapMarkerPinLayout(svg);
 
-    expect(layout.iconCenterX, 24);
-    expect(layout.iconCenterY, 18);
-    expect(layout.iconSlotRadius, 13);
-    expect(layout.iconGlyphRadius, closeTo(13 * 0.9, 0.001));
+      expect(layout.iconCenterX, 24);
+      expect(layout.iconCenterY, 18);
+      expect(layout.iconSlotRadius, 13);
+      expect(layout.iconGlyphRadius, closeTo(13 * 0.9, 0.001));
 
-    final slot = layout.iconSlotRect(44, 44);
-    expect(slot.left, closeTo(11, 0.01));
-    expect(slot.top, closeTo(5, 0.01));
-    expect(slot.width, closeTo(26, 0.01));
-  });
+      final slot = layout.iconSlotRect(44, 44);
+      expect(slot.left, closeTo(11, 0.01));
+      expect(slot.top, closeTo(5, 0.01));
+      expect(slot.width, closeTo(26, 0.01));
+    },
+  );
 
   test('parseMapMarkerPinLayout reads bundled marker_pin.svg asset', () async {
     final svg = await rootBundle.loadString('assets/markers/marker_pin.svg');

@@ -95,7 +95,8 @@ void main() {
     final catalog = MarkerIconCatalog.merge(
       defaults: markerIconOptions
           .where(
-            (option) => option.key == 'my_location' || option.key == 'ambulance',
+            (option) =>
+                option.key == 'my_location' || option.key == 'ambulance',
           )
           .toList(growable: false),
       remote: [

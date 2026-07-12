@@ -111,6 +111,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
+    double mapMinZoom,
+    double mapMaxZoom,
   ) {
     return loggedCall(
       session,
@@ -127,6 +129,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           mapViewportDebugBorder: mapViewportDebugBorder,
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
+          mapMinZoom: mapMinZoom,
+          mapMaxZoom: mapMaxZoom,
         );
 
         final settings = await AppSettingsStore.getOrCreate(session);
@@ -142,6 +146,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
             mapViewportDebugBorder: mapViewportDebugBorder,
             mapTileBorderDebug: mapTileBorderDebug,
             mapCompassRoseEnabled: mapCompassRoseEnabled,
+            mapMinZoom: mapMinZoom,
+            mapMaxZoom: mapMaxZoom,
           ),
         );
       },

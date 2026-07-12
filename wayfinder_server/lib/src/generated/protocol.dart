@@ -175,6 +175,20 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
+          name: 'mapMinZoom',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '2.0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'mapMaxZoom',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '18.0',
+        ),
+        _i2.ColumnDefinition(
           name: 'restApiKeyHash',
           columnType: _i2.ColumnType.text,
           isNullable: true,

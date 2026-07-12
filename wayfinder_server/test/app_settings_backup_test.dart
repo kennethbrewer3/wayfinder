@@ -21,6 +21,8 @@ void main() {
           mapViewportDebugBorder: true,
           mapTileBorderDebug: false,
           mapCompassRoseEnabled: true,
+          mapMinZoom: 2,
+          mapMaxZoom: 18,
           restApiKeyHash: 'secret-hash',
           updatedAt: DateTime.utc(2026, 7, 5),
         ),
@@ -40,6 +42,8 @@ void main() {
         'mapViewportDebugBorder': true,
         'mapTileBorderDebug': false,
         'mapCompassRoseEnabled': true,
+        'mapMinZoom': 2.0,
+        'mapMaxZoom': 18.0,
       });
       expect(payload.containsKey('restApiKeyHash'), isFalse);
     });

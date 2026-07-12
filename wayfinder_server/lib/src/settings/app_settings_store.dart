@@ -74,9 +74,36 @@ abstract final class AppSettingsStore {
     if (longitude < -180 || longitude > 180) {
       throw FormatException('Longitude must be between -180 and 180.');
     }
-    if (zoom < 0 || zoom > AppSettingsConstants.maxHomeZoom) {
+    if (zoom < 0 || zoom > AppSettingsConstants.absoluteHomeZoomMax) {
       throw FormatException(
-        'Zoom must be between 0 and ${AppSettingsConstants.maxHomeZoom}.',
+        'Zoom must be between 0 and ${AppSettingsConstants.absoluteHomeZoomMax}.',
+      );
+    }
+  }
+
+  static void validateMapZoomRange({
+    required double mapMinZoom,
+    required double mapMaxZoom,
+  }) {
+    if (mapMinZoom < AppSettingsConstants.absoluteMapMinZoom ||
+        mapMinZoom > AppSettingsConstants.absoluteMapMaxZoom) {
+      throw FormatException(
+        'mapMinZoom must be between '
+        '${AppSettingsConstants.absoluteMapMinZoom} and '
+        '${AppSettingsConstants.absoluteMapMaxZoom}.',
+      );
+    }
+    if (mapMaxZoom < AppSettingsConstants.absoluteMapMinZoom ||
+        mapMaxZoom > AppSettingsConstants.absoluteMapMaxZoom) {
+      throw FormatException(
+        'mapMaxZoom must be between '
+        '${AppSettingsConstants.absoluteMapMinZoom} and '
+        '${AppSettingsConstants.absoluteMapMaxZoom}.',
+      );
+    }
+    if (mapMinZoom >= mapMaxZoom) {
+      throw const FormatException(
+        'mapMinZoom must be less than mapMaxZoom.',
       );
     }
   }
@@ -133,6 +160,8 @@ abstract final class AppSettingsStore {
     required bool mapViewportDebugBorder,
     required bool mapTileBorderDebug,
     required bool mapCompassRoseEnabled,
+    required double mapMinZoom,
+    required double mapMaxZoom,
   }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);
@@ -140,5 +169,6 @@ abstract final class AppSettingsStore {
     validateAppTheme(appTheme);
     validateAppLocale(appLocale);
     validateMapMarkerSizeScale(mapMarkerSizeScale);
+    validateMapZoomRange(mapMinZoom: mapMinZoom, mapMaxZoom: mapMaxZoom);
   }
 }

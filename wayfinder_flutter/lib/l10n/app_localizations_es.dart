@@ -340,6 +340,36 @@ class AppLocalizationsEs extends AppLocalizations {
       'Muestra una brújula orientada al norte en la esquina superior izquierda del mapa.';
 
   @override
+  String get settingsMapZoomRangeWarning =>
+      'Cambiar el rango de zoom puede ralentizar el mapa, aumentar el uso de memoria o mostrar teselas estiradas cuando sus datos sin conexión no incluyen detalle en esos niveles. Solo suba el máximo si sus archivos de mapa lo admiten.';
+
+  @override
+  String get settingsMapMinZoom => 'Zoom mínimo';
+
+  @override
+  String get settingsMapMaxZoom => 'Zoom máximo';
+
+  @override
+  String settingsMapZoomLimitHelper(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get settingsMapZoomRangeSave => 'Guardar rango de zoom';
+
+  @override
+  String get settingsMapZoomRangeSaved => 'Rango de zoom del mapa guardado.';
+
+  @override
+  String get settingsMapZoomRangeInvalid =>
+      'Introduzca valores de zoom mínimo y máximo válidos.';
+
+  @override
+  String settingsMapZoomRangeSaveFailed(String error) {
+    return 'No se pudo guardar el rango de zoom del mapa: $error';
+  }
+
+  @override
   String get settingsMapDebugTitle => 'Depuración del mapa';
 
   @override

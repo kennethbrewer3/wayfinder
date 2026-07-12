@@ -117,6 +117,8 @@ abstract final class AppSettingsRestHandlers {
       final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
       final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
       final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
+      final mapMinZoom = _readDouble(body['mapMinZoom']);
+      final mapMaxZoom = _readDouble(body['mapMaxZoom']);
       if (measurementUnits == null ||
           angleDisplayFormat == null ||
           circleSizeDisplay == null ||
@@ -125,12 +127,15 @@ abstract final class AppSettingsRestHandlers {
           mapMarkerSizeScale == null ||
           mapViewportDebugBorder == null ||
           mapTileBorderDebug == null ||
-          mapCompassRoseEnabled == null) {
+          mapCompassRoseEnabled == null ||
+          mapMinZoom == null ||
+          mapMaxZoom == null) {
         throw const FormatException(
           'Fields "measurementUnits", "angleDisplayFormat", '
           '"circleSizeDisplay", "appTheme", "appLocale", '
           '"mapMarkerSizeScale", "mapViewportDebugBorder", '
-          '"mapTileBorderDebug", and "mapCompassRoseEnabled" are required.',
+          '"mapTileBorderDebug", "mapCompassRoseEnabled", '
+          '"mapMinZoom", and "mapMaxZoom" are required.',
         );
       }
 
@@ -144,6 +149,8 @@ abstract final class AppSettingsRestHandlers {
         mapViewportDebugBorder: mapViewportDebugBorder,
         mapTileBorderDebug: mapTileBorderDebug,
         mapCompassRoseEnabled: mapCompassRoseEnabled,
+        mapMinZoom: mapMinZoom,
+        mapMaxZoom: mapMaxZoom,
       );
 
       final settings = await AppSettingsStore.getOrCreate(session);
@@ -159,6 +166,8 @@ abstract final class AppSettingsRestHandlers {
           mapViewportDebugBorder: mapViewportDebugBorder,
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
+          mapMinZoom: mapMinZoom,
+          mapMaxZoom: mapMaxZoom,
         ),
       );
       return RestJson.ok(_encodeClientPreferences(updated));
@@ -176,6 +185,8 @@ abstract final class AppSettingsRestHandlers {
       'mapViewportDebugBorder': settings.mapViewportDebugBorder,
       'mapTileBorderDebug': settings.mapTileBorderDebug,
       'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
+      'mapMinZoom': settings.mapMinZoom,
+      'mapMaxZoom': settings.mapMaxZoom,
       'updatedAt': settings.updatedAt.toIso8601String(),
     };
   }

@@ -122,6 +122,8 @@ class AppSettingsRepository {
         payload['mapViewportDebugBorder'] as bool,
         payload['mapTileBorderDebug'] as bool,
         payload['mapCompassRoseEnabled'] as bool,
+        payload['mapMinZoom'] as double,
+        payload['mapMaxZoom'] as double,
       );
       return ClientPreferences.fromAppSettings(settings);
     } catch (error, _) {

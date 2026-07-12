@@ -2285,6 +2285,8 @@ class _AppSettingsEndpoint {
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
+    double mapMinZoom,
+    double mapMaxZoom,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2307,6 +2309,8 @@ class _AppSettingsEndpoint {
             'mapViewportDebugBorder': mapViewportDebugBorder,
             'mapTileBorderDebug': mapTileBorderDebug,
             'mapCompassRoseEnabled': mapCompassRoseEnabled,
+            'mapMinZoom': mapMinZoom,
+            'mapMaxZoom': mapMaxZoom,
           }),
           serializationManager: _serializationManager,
         );

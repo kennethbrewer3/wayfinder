@@ -22,6 +22,8 @@ Map<String, dynamic> exportAppSettingsBackup(AppSettings settings) {
     'mapViewportDebugBorder': settings.mapViewportDebugBorder,
     'mapTileBorderDebug': settings.mapTileBorderDebug,
     'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
+    'mapMinZoom': settings.mapMinZoom,
+    'mapMaxZoom': settings.mapMaxZoom,
   };
 }
 
@@ -42,6 +44,8 @@ Future<void> restoreAppSettingsBackup(
   final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
   final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
   final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
+  final mapMinZoom = _readDouble(body['mapMinZoom']);
+  final mapMaxZoom = _readDouble(body['mapMaxZoom']);
 
   if (homeLatitude == null ||
       homeLongitude == null ||
@@ -55,7 +59,9 @@ Future<void> restoreAppSettingsBackup(
       mapMarkerSizeScale == null ||
       mapViewportDebugBorder == null ||
       mapTileBorderDebug == null ||
-      mapCompassRoseEnabled == null) {
+      mapCompassRoseEnabled == null ||
+      mapMinZoom == null ||
+      mapMaxZoom == null) {
     throw const FormatException('Backup appSettings object is incomplete');
   }
 
@@ -75,6 +81,8 @@ Future<void> restoreAppSettingsBackup(
     mapViewportDebugBorder: mapViewportDebugBorder,
     mapTileBorderDebug: mapTileBorderDebug,
     mapCompassRoseEnabled: mapCompassRoseEnabled,
+    mapMinZoom: mapMinZoom,
+    mapMaxZoom: mapMaxZoom,
   );
 
   final settings = await AppSettingsStore.getOrCreate(session);
@@ -94,6 +102,8 @@ Future<void> restoreAppSettingsBackup(
       mapViewportDebugBorder: mapViewportDebugBorder,
       mapTileBorderDebug: mapTileBorderDebug,
       mapCompassRoseEnabled: mapCompassRoseEnabled,
+      mapMinZoom: mapMinZoom,
+      mapMaxZoom: mapMaxZoom,
     ),
   );
 }

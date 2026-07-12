@@ -27,8 +27,8 @@ chmod +x start.sh stop.sh
 | `.env.example` | Template for server URLs and port |
 | `.env` | Your config — **never commit** |
 | `start.sh` | Recommended start script (`docker run`; avoids Compose hangs on some hosts) |
-| `stop.sh` | Stops the client container and Compose orphans |
-| `docker_lib.sh` | Shared helpers used by `start.sh` and `stop.sh` (container name, sudo detection) |
+| `stop.sh` | Stops and removes the `wayfinder-client` container |
+| `docker_lib.sh` | Shared helpers used by `start.sh` and `stop.sh` (Docker/sudo detection, container cleanup) |
 
 `start.sh` and `stop.sh` **require** `docker_lib.sh` in the same directory.
 
@@ -38,13 +38,13 @@ URLs must be reachable from the **user's browser**, not from inside the client c
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `WAYFINDER_API_URL` | Yes | Main server API, e.g. `http://192.168.1.10:18080` |
-| `WAYFINDER_WEB_URL` | No | REST/PMTiles web URL (`:18082`). Derived from API URL if omitted |
-| `WAYFINDER_GEOCODING_WEB_URL` | No | Geocoding server web URL (`:18182`). Omit if geocoding is not installed |
+| `WAYFINDER_API_URL` | Yes | Main server API, e.g. `http://192.168.1.10:18080` or `https://api.example.com` |
+| `WAYFINDER_WEB_URL` | No | REST/PMTiles web URL (`:18082` or `https://web.example.com`). Derived from API URL if omitted |
+| `WAYFINDER_GEOCODING_WEB_URL` | No | Geocoding server web URL (`:18182` or `https://geo-web.example.com`). Omit if geocoding is not installed |
 | `WAYFINDER_CLIENT_PORT` | No | Host port for the UI (default `8080`) |
 | `WAYFINDER_CLIENT_IMAGE` | No | Pin a release, e.g. `ghcr.io/kennethbrewer3/wayfinder-client:v1.1.0` |
 
-Example (server and geocoding on different hosts):
+Direct LAN access:
 
 ```env
 WAYFINDER_CLIENT_PORT=8080
@@ -53,7 +53,18 @@ WAYFINDER_WEB_URL=http://192.168.1.10:18082
 WAYFINDER_GEOCODING_WEB_URL=http://192.168.1.11:18182
 ```
 
-Same machine as the server:
+Behind Caddy or another reverse proxy (TLS on 443):
+
+```env
+WAYFINDER_CLIENT_PORT=9080
+WAYFINDER_API_URL=https://api.example.com
+WAYFINDER_WEB_URL=https://web.example.com
+WAYFINDER_GEOCODING_WEB_URL=https://geo-web.example.com
+```
+
+Use the public hostnames your reverse proxy serves — not `localhost` inside the container. The browser must be able to reach these URLs.
+
+Same machine as the server (local testing only):
 
 ```env
 WAYFINDER_CLIENT_PORT=8080
@@ -75,16 +86,15 @@ Stop:
 ./stop.sh
 ```
 
-`start.sh` pulls the image, removes any existing `wayfinder-client` container, and runs a fresh container with your `.env` values. `stop.sh` removes the container and runs `docker compose down` for leftover Compose state.
+`start.sh` pulls the image, removes any existing `wayfinder-client` container, and runs a fresh container with your full `.env` via `--env-file`. `stop.sh` removes the container.
 
-Use **either** plain `docker` or `sudo docker` consistently on a host. If a container was created with sudo, the scripts detect it and reuse sudo.
+Use **either** plain `docker` or `sudo docker` consistently on a host. The scripts prefer whichever CLI can access the existing container, or non-sudo Docker when no container exists yet.
 
 ### Alternative: Docker Compose
 
 ```bash
 docker compose pull
-export WAYFINDER_DOCKER_IMAGE_ID="$(docker image inspect "${WAYFINDER_CLIENT_IMAGE:-ghcr.io/kennethbrewer3/wayfinder-client:latest}" --format '{{.Id}}')"
-docker compose up -d --force-recreate
+docker compose up -d
 ```
 
 Stop:
@@ -143,7 +153,7 @@ Omit `WAYFINDER_GEOCODING_WEB_URL` if you did not install the geocoding server.
 
 ### Supply Depot tips
 
-- **Custom launch URL:** **Manage → Edit → Custom launch URL** if you use a reverse proxy.
+- **Custom launch URL:** **Manage → Edit → Custom launch URL** when using a reverse proxy (e.g. `https://wayfinder.example.com`).
 - **Updates:** **Manage → Update**, or change the image tag (e.g. `:v1.1.0` → `:v1.2.0`).
 - **Logs:** **Manage → Logs** if health checks fail on startup.
 

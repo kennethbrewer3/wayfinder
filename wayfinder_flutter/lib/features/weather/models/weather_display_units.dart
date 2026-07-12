@@ -64,5 +64,7 @@ String? _readDisplayUnitsRaw(String? weatherJson) {
 }
 
 bool isWeatherJsonMetadataField(String key) {
-  return key == 'history' || key == 'source' || key == weatherJsonDisplayUnitsField;
+  return key == 'history' ||
+      key == 'source' ||
+      key == weatherJsonDisplayUnitsField;
 }

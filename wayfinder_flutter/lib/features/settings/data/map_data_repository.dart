@@ -70,8 +70,7 @@ class MapDataRepository {
     if (response.statusCode != 200) {
       final message = _readErrorMessage(response.body);
       throw Exception(
-        message ??
-            'Export failed: ${response.statusCode} ${response.body}',
+        message ?? 'Export failed: ${response.statusCode} ${response.body}',
       );
     }
     return Uint8List.fromList(response.bodyBytes);
@@ -103,7 +102,9 @@ class MapDataRepository {
     return _prettyPrintJson(response.body);
   }
 
-  Future<MapDataRestoreResult> restoreFromArchive(Uint8List archiveBytes) async {
+  Future<MapDataRestoreResult> restoreFromArchive(
+    Uint8List archiveBytes,
+  ) async {
     if (archiveBytes.isEmpty) {
       throw const FormatException('Backup archive is empty');
     }

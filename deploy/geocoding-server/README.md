@@ -28,19 +28,40 @@ cp .env.example .env
 |----------|----------|-------------|
 | `POSTGRES_PASSWORD` | Yes | Geocoding database password |
 | `WAYFINDER_GEOCODING_DATA_PATH` | Yes | Host folder for Postgres (can grow to tens of GB for planet imports) |
-| `SERVERPOD_WEB_SERVER_PUBLIC_HOST` | Yes* | LAN IP or DNS for browser access |
-| `SERVERPOD_WEB_SERVER_PUBLIC_PORT` | No | Default `18182` |
+| `SERVERPOD_API_SERVER_PUBLIC_HOST` | Yes* | LAN IP or public DNS for API clients |
+| `SERVERPOD_API_SERVER_PUBLIC_PORT` | No | Default `18180`; use `443` behind HTTPS reverse proxy |
+| `SERVERPOD_API_SERVER_PUBLIC_SCHEME` | No | Default `http`; use `https` behind reverse proxy |
+| `SERVERPOD_WEB_SERVER_PUBLIC_HOST` | Yes* | LAN IP or public DNS for browser/REST access |
+| `SERVERPOD_WEB_SERVER_PUBLIC_PORT` | No | Default `18182`; use `443` behind HTTPS reverse proxy |
+| `SERVERPOD_WEB_SERVER_PUBLIC_SCHEME` | No | Default `http`; use `https` behind reverse proxy |
 | `WAYFINDER_GEOCODING_SERVER_IMAGE` | No | Pin a release, e.g. `:v1.1.0` |
 | `GEOCODING_CROWDSOURCE_GITHUB_TOKEN` | No | Enable anonymous crowdsource uploads |
 
-Example:
+Direct LAN access:
 
 ```env
 POSTGRES_PASSWORD=<strong-password>
 WAYFINDER_GEOCODING_DATA_PATH=/mnt/storage/wayfinder-geocoding
+SERVERPOD_API_SERVER_PUBLIC_HOST=192.168.1.11
+SERVERPOD_API_SERVER_PUBLIC_PORT=18180
+SERVERPOD_API_SERVER_PUBLIC_SCHEME=http
 SERVERPOD_WEB_SERVER_PUBLIC_HOST=192.168.1.11
 SERVERPOD_WEB_SERVER_PUBLIC_PORT=18182
+SERVERPOD_WEB_SERVER_PUBLIC_SCHEME=http
 ```
+
+Behind Caddy or another reverse proxy (TLS on 443):
+
+```env
+SERVERPOD_API_SERVER_PUBLIC_HOST=geo-api.example.com
+SERVERPOD_API_SERVER_PUBLIC_PORT=443
+SERVERPOD_API_SERVER_PUBLIC_SCHEME=https
+SERVERPOD_WEB_SERVER_PUBLIC_HOST=geo-web.example.com
+SERVERPOD_WEB_SERVER_PUBLIC_PORT=443
+SERVERPOD_WEB_SERVER_PUBLIC_SCHEME=https
+```
+
+Keep the Docker host port mappings (`18180`, `18182`) unchanged. The reverse proxy forwards public HTTPS traffic to those local ports.
 
 ## Start and stop
 
@@ -70,7 +91,10 @@ curl -s http://localhost:18182/api/health
 docker compose ps
 ```
 
-Point the **client** at this server with `WAYFINDER_GEOCODING_WEB_URL=http://HOST:18182` in the client `.env` or Supply Depot environment.
+Point the **client** at this server with `WAYFINDER_GEOCODING_WEB_URL` in the client `.env` or Supply Depot environment:
+
+- Direct LAN: `http://192.168.1.11:18182`
+- Reverse proxy: `https://geo-web.example.com`
 
 ## Project N.O.M.A.D.
 

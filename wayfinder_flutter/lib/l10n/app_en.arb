@@ -147,6 +147,31 @@
   "settingsMapDisplayDescription": "Map overlays stored on the server.",
   "settingsMapCompassRoseTitle": "Show compass rose",
   "settingsMapCompassRoseDescription": "Displays a north-oriented compass in the upper-left corner of the map.",
+  "settingsMapZoomRangeWarning": "Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.",
+  "settingsMapMinZoom": "Minimum zoom",
+  "settingsMapMaxZoom": "Maximum zoom",
+  "settingsMapZoomLimitHelper": "{min}–{max}",
+  "@settingsMapZoomLimitHelper": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsMapZoomRangeSave": "Save zoom range",
+  "settingsMapZoomRangeSaved": "Map zoom range saved.",
+  "settingsMapZoomRangeInvalid": "Enter valid minimum and maximum zoom values.",
+  "settingsMapZoomRangeSaveFailed": "Failed to save map zoom range: {error}",
+  "@settingsMapZoomRangeSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "settingsMapDebugTitle": "Map debugging",
   "settingsMapDebugDescription": "Visual aids stored in this browser only.",
   "settingsMapMarkerSizeTitle": "Map marker size",

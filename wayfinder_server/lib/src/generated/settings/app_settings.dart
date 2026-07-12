@@ -29,6 +29,8 @@ abstract class AppSettings
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    double? mapMinZoom,
+    double? mapMaxZoom,
     this.restApiKeyHash,
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
@@ -39,7 +41,9 @@ abstract class AppSettings
        mapMarkerSizeScale = mapMarkerSizeScale ?? 1.0,
        mapViewportDebugBorder = mapViewportDebugBorder ?? false,
        mapTileBorderDebug = mapTileBorderDebug ?? false,
-       mapCompassRoseEnabled = mapCompassRoseEnabled ?? true;
+       mapCompassRoseEnabled = mapCompassRoseEnabled ?? true,
+       mapMinZoom = mapMinZoom ?? 2.0,
+       mapMaxZoom = mapMaxZoom ?? 18.0;
 
   factory AppSettings({
     int? id,
@@ -56,6 +60,8 @@ abstract class AppSettings
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    double? mapMinZoom,
+    double? mapMaxZoom,
     String? restApiKeyHash,
     required DateTime updatedAt,
   }) = _AppSettingsImpl;
@@ -90,6 +96,8 @@ abstract class AppSettings
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapCompassRoseEnabled'],
             ),
+      mapMinZoom: (jsonSerialization['mapMinZoom'] as num?)?.toDouble(),
+      mapMaxZoom: (jsonSerialization['mapMaxZoom'] as num?)?.toDouble(),
       restApiKeyHash: jsonSerialization['restApiKeyHash'] as String?,
       updatedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updatedAt'],
@@ -130,6 +138,10 @@ abstract class AppSettings
 
   bool mapCompassRoseEnabled;
 
+  double mapMinZoom;
+
+  double mapMaxZoom;
+
   String? restApiKeyHash;
 
   DateTime updatedAt;
@@ -155,6 +167,8 @@ abstract class AppSettings
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    double? mapMinZoom,
+    double? mapMaxZoom,
     String? restApiKeyHash,
     DateTime? updatedAt,
   });
@@ -176,6 +190,8 @@ abstract class AppSettings
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
+      'mapMinZoom': mapMinZoom,
+      'mapMaxZoom': mapMaxZoom,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
       'updatedAt': updatedAt.toJson(),
     };
@@ -199,6 +215,8 @@ abstract class AppSettings
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
+      'mapMinZoom': mapMinZoom,
+      'mapMaxZoom': mapMaxZoom,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
       'updatedAt': updatedAt.toJson(),
     };
@@ -252,6 +270,8 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    double? mapMinZoom,
+    double? mapMaxZoom,
     String? restApiKeyHash,
     required DateTime updatedAt,
   }) : super._(
@@ -269,6 +289,8 @@ class _AppSettingsImpl extends AppSettings {
          mapViewportDebugBorder: mapViewportDebugBorder,
          mapTileBorderDebug: mapTileBorderDebug,
          mapCompassRoseEnabled: mapCompassRoseEnabled,
+         mapMinZoom: mapMinZoom,
+         mapMaxZoom: mapMaxZoom,
          restApiKeyHash: restApiKeyHash,
          updatedAt: updatedAt,
        );
@@ -292,6 +314,8 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    double? mapMinZoom,
+    double? mapMaxZoom,
     Object? restApiKeyHash = _Undefined,
     DateTime? updatedAt,
   }) {
@@ -312,6 +336,8 @@ class _AppSettingsImpl extends AppSettings {
       mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
+      mapMinZoom: mapMinZoom ?? this.mapMinZoom,
+      mapMaxZoom: mapMaxZoom ?? this.mapMaxZoom,
       restApiKeyHash: restApiKeyHash is String?
           ? restApiKeyHash
           : this.restApiKeyHash,
@@ -396,6 +422,16 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
         value,
       );
 
+  _i1.ColumnValue<double, double> mapMinZoom(double value) => _i1.ColumnValue(
+    table.mapMinZoom,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> mapMaxZoom(double value) => _i1.ColumnValue(
+    table.mapMaxZoom,
+    value,
+  );
+
   _i1.ColumnValue<String, String> restApiKeyHash(String? value) =>
       _i1.ColumnValue(
         table.restApiKeyHash,
@@ -473,6 +509,16 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    mapMinZoom = _i1.ColumnDouble(
+      'mapMinZoom',
+      this,
+      hasDefault: true,
+    );
+    mapMaxZoom = _i1.ColumnDouble(
+      'mapMaxZoom',
+      this,
+      hasDefault: true,
+    );
     restApiKeyHash = _i1.ColumnString(
       'restApiKeyHash',
       this,
@@ -511,6 +557,10 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool mapCompassRoseEnabled;
 
+  late final _i1.ColumnDouble mapMinZoom;
+
+  late final _i1.ColumnDouble mapMaxZoom;
+
   late final _i1.ColumnString restApiKeyHash;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -531,6 +581,8 @@ class AppSettingsTable extends _i1.Table<int?> {
     mapViewportDebugBorder,
     mapTileBorderDebug,
     mapCompassRoseEnabled,
+    mapMinZoom,
+    mapMaxZoom,
     restApiKeyHash,
     updatedAt,
   ];

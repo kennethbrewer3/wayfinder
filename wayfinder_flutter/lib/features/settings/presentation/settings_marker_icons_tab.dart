@@ -622,8 +622,7 @@ class _SettingsMarkerIconsTabState
               items: bundledSvgIcons,
               categoryFor: (option) => option.resolvedCategory,
               categoryOrder: categoryOrder,
-              labelFor: (option) =>
-                  localizedMarkerIconLabel(l10n, option.key),
+              labelFor: (option) => localizedMarkerIconLabel(l10n, option.key),
             ).entries) ...[
           Card(
             clipBehavior: Clip.antiAlias,

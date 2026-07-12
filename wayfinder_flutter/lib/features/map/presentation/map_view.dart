@@ -12,7 +12,6 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/browser_context_menu.dart';
-import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
@@ -65,6 +64,7 @@ import '../../settings/data/pmtiles_loader.dart';
 import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
+import '../providers/map_zoom_range_provider.dart';
 import '../providers/map_compass_rose_provider.dart';
 import '../providers/map_viewport_debug_provider.dart';
 import 'map_compass_rose_overlay.dart';
@@ -2145,16 +2145,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.watch(markerIconCatalogProvider);
     final mapLayers = _visibleMapLayers;
     final enabledEntries = widget.enabledEntries;
-    final activeLayer = mapLayers.isEmpty ? null : mapLayers.first;
-    final minZoom =
-        activeLayer?.minZoom.toDouble() ??
-        (enabledEntries.isEmpty
-            ? 2.0
-            : enabledEntries
-                  .map((entry) => entry.minZoom)
-                  .reduce((a, b) => a < b ? a : b)
-                  .toDouble());
-    final maxZoom = AppConstants.maxMapZoom;
+    final mapZoomRange = ref.watch(mapZoomRangeProvider);
+    final minZoom = mapZoomRange.min;
+    final interactionMaxZoom = mapZoomRange.max;
     final lineDrawing = ref.watch(lineDrawingProvider);
     final circleDrawing = ref.watch(circleDrawingProvider);
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
@@ -2270,7 +2263,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     initialCenter: widget.viewport.center,
                     initialZoom: widget.viewport.zoom,
                     minZoom: minZoom,
-                    maxZoom: maxZoom,
+                    maxZoom: interactionMaxZoom,
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     interactionOptions: InteractionOptions(
                       flags:
@@ -2342,7 +2335,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               TileLayer(
                                 key: ValueKey('pmtiles-$catalogId'),
                                 maxNativeZoom: maxZoom,
-                                maxZoom: AppConstants.maxMapZoom,
+                                maxZoom: interactionMaxZoom,
                                 tileProvider: tileProvider,
                               ),
                             ],
@@ -2360,13 +2353,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               alignment: mapMarkerAnchorAlignment,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTap: () => _openSearchCoordinateMarkerRadialMenu(
-                                  marker,
-                                ),
+                                onTap: () =>
+                                    _openSearchCoordinateMarkerRadialMenu(
+                                      marker,
+                                    ),
                                 child: MouseRegion(
                                   cursor: SystemMouseCursors.click,
                                   child: Tooltip(
-                                    message: l10n.markerSaveSearchedCoordinatesTitle,
+                                    message:
+                                        l10n.markerSaveSearchedCoordinatesTitle,
                                     child: MapMarkerIcon(
                                       color: const Color(0xFFE07A24),
                                       iconName: marker.iconName,

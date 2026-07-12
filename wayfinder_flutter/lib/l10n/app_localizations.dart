@@ -712,6 +712,54 @@ abstract class AppLocalizations {
   /// **'Displays a north-oriented compass in the upper-left corner of the map.'**
   String get settingsMapCompassRoseDescription;
 
+  /// No description provided for @settingsMapZoomRangeWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.'**
+  String get settingsMapZoomRangeWarning;
+
+  /// No description provided for @settingsMapMinZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum zoom'**
+  String get settingsMapMinZoom;
+
+  /// No description provided for @settingsMapMaxZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum zoom'**
+  String get settingsMapMaxZoom;
+
+  /// No description provided for @settingsMapZoomLimitHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'{min}–{max}'**
+  String settingsMapZoomLimitHelper(String min, String max);
+
+  /// No description provided for @settingsMapZoomRangeSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save zoom range'**
+  String get settingsMapZoomRangeSave;
+
+  /// No description provided for @settingsMapZoomRangeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Map zoom range saved.'**
+  String get settingsMapZoomRangeSaved;
+
+  /// No description provided for @settingsMapZoomRangeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter valid minimum and maximum zoom values.'**
+  String get settingsMapZoomRangeInvalid;
+
+  /// No description provided for @settingsMapZoomRangeSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save map zoom range: {error}'**
+  String settingsMapZoomRangeSaveFailed(String error);
+
   /// No description provided for @settingsMapDebugTitle.
   ///
   /// In en, this message translates to:

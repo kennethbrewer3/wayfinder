@@ -341,6 +341,37 @@ class AppLocalizationsFr extends AppLocalizations {
       'Affiche une boussole orientée vers le nord dans le coin supérieur gauche de la carte.';
 
   @override
+  String get settingsMapZoomRangeWarning =>
+      'Modifier la plage de zoom peut ralentir la carte, augmenter l\'utilisation de la mémoire ou afficher des tuiles étirées lorsque vos données hors ligne ne contiennent pas de détails à ces niveaux. N\'augmentez le maximum que si vos archives cartographiques le prennent en charge.';
+
+  @override
+  String get settingsMapMinZoom => 'Zoom minimum';
+
+  @override
+  String get settingsMapMaxZoom => 'Zoom maximum';
+
+  @override
+  String settingsMapZoomLimitHelper(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get settingsMapZoomRangeSave => 'Enregistrer la plage de zoom';
+
+  @override
+  String get settingsMapZoomRangeSaved =>
+      'Plage de zoom de la carte enregistrée.';
+
+  @override
+  String get settingsMapZoomRangeInvalid =>
+      'Saisissez des valeurs de zoom minimum et maximum valides.';
+
+  @override
+  String settingsMapZoomRangeSaveFailed(String error) {
+    return 'Échec de l\'enregistrement de la plage de zoom : $error';
+  }
+
+  @override
   String get settingsMapDebugTitle => 'Débogage de la carte';
 
   @override

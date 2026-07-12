@@ -9,7 +9,11 @@ abstract final class MarkerIconCategorySeed {
     (key: 'people_animals', label: 'People & animals', sortOrder: 3),
     (key: 'infrastructure', label: 'Infrastructure', sortOrder: 4),
     (key: 'emergency', label: 'Emergency & medical', sortOrder: 5),
-    (key: 'natural_disasters', label: 'Weather and natural disasters', sortOrder: 6),
+    (
+      key: 'natural_disasters',
+      label: 'Weather and natural disasters',
+      sortOrder: 6,
+    ),
     (key: 'military', label: 'Military & defense', sortOrder: 7),
     (
       key: 'shelter_preparedness',

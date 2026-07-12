@@ -35,14 +35,18 @@ Edit `.env` before the first start.
 | `SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey` | Yes | Auth secret |
 | `SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper` | Yes | Auth secret |
 | `WAYFINDER_DATA_PATH` | Yes | Host folder for Postgres, Redis, and default PMTiles |
-| `SERVERPOD_API_SERVER_PUBLIC_HOST` | Yes* | LAN IP or DNS seen by browsers (* use real IP when remote clients connect) |
-| `SERVERPOD_WEB_SERVER_PUBLIC_HOST` | Yes* | Same as above for the web/REST port |
+| `SERVERPOD_API_SERVER_PUBLIC_HOST` | Yes* | LAN IP or public DNS for API clients |
+| `SERVERPOD_API_SERVER_PUBLIC_PORT` | No | Default `18080`; use `443` behind HTTPS reverse proxy |
+| `SERVERPOD_API_SERVER_PUBLIC_SCHEME` | No | Default `http`; use `https` behind reverse proxy |
+| `SERVERPOD_WEB_SERVER_PUBLIC_HOST` | Yes* | LAN IP or public DNS for browser/REST access |
+| `SERVERPOD_WEB_SERVER_PUBLIC_PORT` | No | Default `18082`; use `443` behind HTTPS reverse proxy |
+| `SERVERPOD_WEB_SERVER_PUBLIC_SCHEME` | No | Default `http`; use `https` behind reverse proxy |
 | `WAYFINDER_PMTILES_HOST_PATH` | No | Mount PMTiles from a different host folder |
 | `WAYFINDER_PMTILES_MOUNT_OPTIONS` | No | e.g. `:ro` for read-only shared tiles |
 | `WAYFINDER_MARKER_ICON_HOST_PATH` | No | Mount marker icon SVGs from a different host folder (default `{WAYFINDER_DATA_PATH}/marker-icons`) |
 | `WAYFINDER_SERVER_IMAGE` | No | Pin a release, e.g. `ghcr.io/kennethbrewer3/wayfinder-server:v1.1.0` |
 
-Example:
+Direct LAN access:
 
 ```env
 WAYFINDER_DATA_PATH=/mnt/storage/wayfinder
@@ -53,10 +57,27 @@ SERVERPOD_PASSWORD_emailSecretHashPepper=<openssl rand -base64 32>
 SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey=<openssl rand -base64 32>
 SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper=<openssl rand -base64 32>
 SERVERPOD_API_SERVER_PUBLIC_HOST=192.168.1.10
+SERVERPOD_API_SERVER_PUBLIC_PORT=18080
+SERVERPOD_API_SERVER_PUBLIC_SCHEME=http
 SERVERPOD_WEB_SERVER_PUBLIC_HOST=192.168.1.10
+SERVERPOD_WEB_SERVER_PUBLIC_PORT=18082
+SERVERPOD_WEB_SERVER_PUBLIC_SCHEME=http
 # Optional REST API bootstrap key (or create named keys in Settings → About after install)
 # WAYFINDER_REST_API_KEY=wf_...
 ```
+
+Behind Caddy or another reverse proxy (TLS on 443):
+
+```env
+SERVERPOD_API_SERVER_PUBLIC_HOST=api.example.com
+SERVERPOD_API_SERVER_PUBLIC_PORT=443
+SERVERPOD_API_SERVER_PUBLIC_SCHEME=https
+SERVERPOD_WEB_SERVER_PUBLIC_HOST=web.example.com
+SERVERPOD_WEB_SERVER_PUBLIC_PORT=443
+SERVERPOD_WEB_SERVER_PUBLIC_SCHEME=https
+```
+
+Keep the Docker host port mappings (`18080`, `18082`) unchanged. The reverse proxy forwards public HTTPS traffic to those local ports. Point the **client** at `https://web.example.com` (or your LAN URL) via `WAYFINDER_SERVER_URL`.
 
 ## Start and stop
 

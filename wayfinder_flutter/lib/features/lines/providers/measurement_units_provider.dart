@@ -12,8 +12,7 @@ final measurementUnitsProvider =
     );
 
 class MeasurementUnitsNotifier extends StateNotifier<MeasurementUnits> {
-  MeasurementUnitsNotifier(this._repository)
-    : super(MeasurementUnits.metric) {
+  MeasurementUnitsNotifier(this._repository) : super(MeasurementUnits.metric) {
     _load();
   }
 

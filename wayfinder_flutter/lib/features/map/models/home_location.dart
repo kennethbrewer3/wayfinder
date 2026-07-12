@@ -54,6 +54,7 @@ class HomeLocation {
     required String latitudeText,
     required String longitudeText,
     required String zoomText,
+    double maxZoom = AppConstants.absoluteHomeZoomMax,
   }) {
     final latitude = double.tryParse(latitudeText.trim());
     final longitude = double.tryParse(longitudeText.trim());
@@ -67,9 +68,9 @@ class HomeLocation {
     if (longitude < -180 || longitude > 180) {
       throw const FormatException('Longitude must be between -180 and 180.');
     }
-    if (zoom < 0 || zoom > AppConstants.maxMapZoom) {
+    if (zoom < 0 || zoom > maxZoom) {
       throw FormatException(
-        'Zoom must be between 0 and ${AppConstants.maxMapZoom}.',
+        'Zoom must be between 0 and $maxZoom.',
       );
     }
     return HomeLocation(

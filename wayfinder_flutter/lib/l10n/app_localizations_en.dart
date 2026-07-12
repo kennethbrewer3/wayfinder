@@ -340,6 +340,36 @@ class AppLocalizationsEn extends AppLocalizations {
       'Displays a north-oriented compass in the upper-left corner of the map.';
 
   @override
+  String get settingsMapZoomRangeWarning =>
+      'Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.';
+
+  @override
+  String get settingsMapMinZoom => 'Minimum zoom';
+
+  @override
+  String get settingsMapMaxZoom => 'Maximum zoom';
+
+  @override
+  String settingsMapZoomLimitHelper(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get settingsMapZoomRangeSave => 'Save zoom range';
+
+  @override
+  String get settingsMapZoomRangeSaved => 'Map zoom range saved.';
+
+  @override
+  String get settingsMapZoomRangeInvalid =>
+      'Enter valid minimum and maximum zoom values.';
+
+  @override
+  String settingsMapZoomRangeSaveFailed(String error) {
+    return 'Failed to save map zoom range: $error';
+  }
+
+  @override
   String get settingsMapDebugTitle => 'Map debugging';
 
   @override

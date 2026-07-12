@@ -16,7 +16,8 @@ class WeatherReadingFormatter {
       return '—';
     }
     return switch (displayUnits) {
-      WeatherDisplayUnits.metric => '${_formatNumber(celsius, fractionDigits: 1)}°C',
+      WeatherDisplayUnits.metric =>
+        '${_formatNumber(celsius, fractionDigits: 1)}°C',
       WeatherDisplayUnits.imperial =>
         '${_formatNumber(_fahrenheitFromCelsius(celsius), fractionDigits: 0)}°F',
     };

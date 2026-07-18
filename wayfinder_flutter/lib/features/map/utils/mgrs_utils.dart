@@ -16,7 +16,7 @@ class MgrsLocation {
   final double zoom;
 }
 
-/// Label placed near the center of an MGRS cell.
+/// Label placed near the center of an MGRS cell / along a grid line.
 class MgrsGridLabel {
   const MgrsGridLabel({
     required this.point,
@@ -130,84 +130,168 @@ class MgrsLatLngBounds {
   final double west;
   final double north;
   final double east;
+
+  double get centerLatitude => (south + north) / 2;
+  double get centerLongitude => (west + east) / 2;
 }
 
 /// Builds MGRS grid lines/labels for [bounds] at the given map [zoom].
+///
+/// Lines are continuous UTM easting/northing meridians so the overlay reads as
+/// a real grid rather than disconnected cell edges.
 MgrsGridGeometry buildMgrsGrid({
   required MgrsLatLngBounds bounds,
   required double zoom,
-  int maxCells = 250,
+  int maxLines = 48,
 }) {
-  final accuracy = mgrsAccuracyForZoom(zoom);
-  final stepDegrees = _sampleStepDegrees(accuracy);
-  final south = (bounds.south - stepDegrees).clamp(-80.0, 84.0);
-  final north = (bounds.north + stepDegrees).clamp(-80.0, 84.0);
-  final west = bounds.west - stepDegrees;
-  final east = bounds.east + stepDegrees;
-
-  final cells = <String>{};
-  for (var lat = south; lat <= north; lat += stepDegrees) {
-    for (var lon = west; lon <= east; lon += stepDegrees) {
-      final normalizedLon = _normalizeLongitude(lon);
-      try {
-        final mgrs = Mgrs.forward([normalizedLon, lat], accuracy);
-        cells.add(mgrs);
-        if (cells.length >= maxCells) {
-          break;
-        }
-      } catch (_) {
-        // Polar / invalid samples are skipped.
-      }
-    }
-    if (cells.length >= maxCells) {
-      break;
-    }
-  }
-
-  if (cells.isEmpty) {
+  final clampedSouth = bounds.south.clamp(-80.0, 84.0);
+  final clampedNorth = bounds.north.clamp(-80.0, 84.0);
+  if (clampedSouth >= clampedNorth) {
     return MgrsGridGeometry.empty;
   }
 
-  final edgeKeys = <String>{};
+  final accuracy = mgrsAccuracyForZoom(zoom);
+  final intervalMeters = _intervalMeters(accuracy);
+  final center = LatLng(bounds.centerLatitude, bounds.centerLongitude);
+
+  UTM centerUtm;
+  try {
+    centerUtm = Mgrs.LLtoUTM(center.latitude, center.longitude);
+  } catch (_) {
+    return MgrsGridGeometry.empty;
+  }
+
+  final cornerUtms = <UTM>[];
+  for (final point in [
+    LatLng(clampedSouth, bounds.west),
+    LatLng(clampedSouth, bounds.east),
+    LatLng(clampedNorth, bounds.west),
+    LatLng(clampedNorth, bounds.east),
+  ]) {
+    try {
+      final utm = Mgrs.LLtoUTM(point.latitude, point.longitude);
+      // Only use corners that fall in the same UTM zone as the center so easting
+      // values stay comparable. Cross-zone viewports still get a usable grid for
+      // the dominant zone.
+      if (utm.zoneNumber == centerUtm.zoneNumber) {
+        cornerUtms.add(utm);
+      }
+    } catch (_) {
+      // Skip invalid corners.
+    }
+  }
+
+  if (cornerUtms.isEmpty) {
+    cornerUtms.add(centerUtm);
+  }
+
+  var minE = cornerUtms.first.easting;
+  var maxE = cornerUtms.first.easting;
+  var minN = cornerUtms.first.northing;
+  var maxN = cornerUtms.first.northing;
+  for (final utm in cornerUtms) {
+    minE = utm.easting < minE ? utm.easting : minE;
+    maxE = utm.easting > maxE ? utm.easting : maxE;
+    minN = utm.northing < minN ? utm.northing : minN;
+    maxN = utm.northing > maxN ? utm.northing : maxN;
+  }
+
+  // Pad so lines reach past the viewport edge.
+  minE -= intervalMeters;
+  maxE += intervalMeters;
+  minN -= intervalMeters;
+  maxN += intervalMeters;
+
+  final eastings = _gridValues(minE, maxE, intervalMeters, maxLines);
+  final northings = _gridValues(minN, maxN, intervalMeters, maxLines);
+  if (eastings.isEmpty || northings.isEmpty) {
+    return MgrsGridGeometry.empty;
+  }
+
   final lines = <List<LatLng>>[];
   final labels = <MgrsGridLabel>[];
-  final showLabels = accuracy <= 2;
+  final sampleStep = intervalMeters / 8;
 
-  for (final mgrs in cells) {
-    try {
-      final box = Mgrs.inverse(mgrs);
-      final left = box[0];
-      final bottom = box[1];
-      final right = box[2];
-      final top = box[3];
-      final sw = LatLng(bottom, left);
-      final se = LatLng(bottom, right);
-      final ne = LatLng(top, right);
-      final nw = LatLng(top, left);
-
-      void addEdge(LatLng a, LatLng b) {
-        final key = _edgeKey(a, b);
-        if (edgeKeys.add(key)) {
-          lines.add([a, b]);
-        }
-      }
-
-      addEdge(sw, se);
-      addEdge(se, ne);
-      addEdge(ne, nw);
-      addEdge(nw, sw);
-
-      if (showLabels) {
+  for (final easting in eastings) {
+    final line = _utmLine(
+      zoneNumber: centerUtm.zoneNumber,
+      zoneLetter: centerUtm.zoneLetter,
+      fixedEasting: easting,
+      varyingStart: minN,
+      varyingEnd: maxN,
+      sampleStep: sampleStep,
+      varyNorthing: true,
+    );
+    if (line.length >= 2) {
+      lines.add(line);
+      final labelPoint = _utmToLatLng(
+        easting: easting,
+        northing: (minN + maxN) / 2,
+        zoneNumber: centerUtm.zoneNumber,
+        zoneLetter: centerUtm.zoneLetter,
+      );
+      if (labelPoint != null) {
         labels.add(
           MgrsGridLabel(
-            point: LatLng((bottom + top) / 2, (left + right) / 2),
-            text: formatMgrs(mgrs),
+            point: labelPoint,
+            text: _gridLineLabel(easting, accuracy),
           ),
         );
       }
-    } catch (_) {
-      // Skip cells that fail to invert.
     }
+  }
+
+  for (final northing in northings) {
+    final line = _utmLine(
+      zoneNumber: centerUtm.zoneNumber,
+      zoneLetter: centerUtm.zoneLetter,
+      fixedNorthing: northing,
+      varyingStart: minE,
+      varyingEnd: maxE,
+      sampleStep: sampleStep,
+      varyNorthing: false,
+    );
+    if (line.length >= 2) {
+      lines.add(line);
+      final labelPoint = _utmToLatLng(
+        easting: (minE + maxE) / 2,
+        northing: northing,
+        zoneNumber: centerUtm.zoneNumber,
+        zoneLetter: centerUtm.zoneLetter,
+      );
+      if (labelPoint != null) {
+        labels.add(
+          MgrsGridLabel(
+            point: labelPoint,
+            text: _gridLineLabel(northing, accuracy),
+          ),
+        );
+      }
+    }
+  }
+
+  // Prefer a few cell-center MGRS labels when the grid is coarse.
+  if (accuracy <= 1) {
+    labels
+      ..clear()
+      ..addAll(
+        _coarseCellLabels(
+          eastings: eastings,
+          northings: northings,
+          zoneNumber: centerUtm.zoneNumber,
+          zoneLetter: centerUtm.zoneLetter,
+          accuracy: accuracy,
+        ),
+      );
+  } else if (labels.length > 24) {
+    // Keep the display readable at fine grids: label every other line.
+    final thinned = <MgrsGridLabel>[];
+    for (var i = 0; i < labels.length; i += 2) {
+      thinned.add(labels[i]);
+    }
+    labels
+      ..clear()
+      ..addAll(thinned);
   }
 
   return MgrsGridGeometry(
@@ -237,14 +321,147 @@ double _zoomForAccuracy(int accuracy) {
   };
 }
 
-double _sampleStepDegrees(int accuracy) {
+int _intervalMeters(int accuracy) {
   return switch (accuracy) {
-    0 => 0.8,
-    1 => 0.08,
-    2 => 0.008,
-    3 => 0.0008,
-    _ => 0.00015,
+    0 => 100000,
+    1 => 10000,
+    2 => 1000,
+    3 => 100,
+    _ => 10,
   };
+}
+
+List<double> _gridValues(
+  double min,
+  double max,
+  int interval,
+  int maxCount,
+) {
+  if (max <= min || interval <= 0) {
+    return const [];
+  }
+  final start = (min / interval).ceil() * interval;
+  final values = <double>[];
+  for (var value = start.toDouble(); value <= max; value += interval) {
+    values.add(value);
+    if (values.length >= maxCount) {
+      break;
+    }
+  }
+  return values;
+}
+
+List<LatLng> _utmLine({
+  required int zoneNumber,
+  required String zoneLetter,
+  double? fixedEasting,
+  double? fixedNorthing,
+  required double varyingStart,
+  required double varyingEnd,
+  required double sampleStep,
+  required bool varyNorthing,
+}) {
+  final points = <LatLng>[];
+  final step = sampleStep <= 0 ? 1000.0 : sampleStep;
+  for (var value = varyingStart; value <= varyingEnd + step / 2; value += step) {
+    final clamped = value > varyingEnd ? varyingEnd : value;
+    final point = varyNorthing
+        ? _utmToLatLng(
+            easting: fixedEasting!,
+            northing: clamped,
+            zoneNumber: zoneNumber,
+            zoneLetter: zoneLetter,
+          )
+        : _utmToLatLng(
+            easting: clamped,
+            northing: fixedNorthing!,
+            zoneNumber: zoneNumber,
+            zoneLetter: zoneLetter,
+          );
+    if (point != null) {
+      points.add(point);
+    }
+  }
+  return points;
+}
+
+LatLng? _utmToLatLng({
+  required double easting,
+  required double northing,
+  required int zoneNumber,
+  required String zoneLetter,
+}) {
+  try {
+    final result = Mgrs.UTMtoLL(
+      UTM(
+        easting: easting,
+        northing: northing,
+        zoneNumber: zoneNumber,
+        zoneLetter: zoneLetter,
+      ),
+    );
+    if (result is LonLat) {
+      return LatLng(result.lat, result.lon);
+    }
+  } catch (_) {
+    return null;
+  }
+  return null;
+}
+
+String _gridLineLabel(double meters, int accuracy) {
+  // Show the MGRS grid digits for this line (not the full zone designator).
+  final interval = _intervalMeters(accuracy);
+  final digits = switch (accuracy) {
+    0 => 1,
+    1 => 2,
+    2 => 3,
+    3 => 4,
+    _ => 5,
+  };
+  final scaled = (meters / interval).round() * interval;
+  final within100k = scaled % 100000;
+  final labelValue = within100k ~/ interval;
+  return labelValue.toString().padLeft(digits, '0');
+}
+
+List<MgrsGridLabel> _coarseCellLabels({
+  required List<double> eastings,
+  required List<double> northings,
+  required int zoneNumber,
+  required String zoneLetter,
+  required int accuracy,
+}) {
+  final labels = <MgrsGridLabel>[];
+  for (var i = 0; i < eastings.length - 1; i++) {
+    for (var j = 0; j < northings.length - 1; j++) {
+      final easting = (eastings[i] + eastings[i + 1]) / 2;
+      final northing = (northings[j] + northings[j + 1]) / 2;
+      final point = _utmToLatLng(
+        easting: easting,
+        northing: northing,
+        zoneNumber: zoneNumber,
+        zoneLetter: zoneLetter,
+      );
+      if (point == null) {
+        continue;
+      }
+      try {
+        labels.add(
+          MgrsGridLabel(
+            point: point,
+            text: formatMgrs(latLngToMgrs(point, accuracy: accuracy)),
+          ),
+        );
+      } catch (_) {
+        // Skip labels that fail conversion.
+      }
+      if (labels.length >= 16) {
+        return labels;
+      }
+    }
+  }
+  return labels;
 }
 
 String? _compactMgrs(String input) {
@@ -257,23 +474,4 @@ String? _compactMgrs(String input) {
     return null;
   }
   return compact;
-}
-
-double _normalizeLongitude(double lon) {
-  var value = lon;
-  while (value < -180) {
-    value += 360;
-  }
-  while (value > 180) {
-    value -= 360;
-  }
-  return value;
-}
-
-String _edgeKey(LatLng a, LatLng b) {
-  String fmt(LatLng p) =>
-      '${p.latitude.toStringAsFixed(6)},${p.longitude.toStringAsFixed(6)}';
-  final left = fmt(a);
-  final right = fmt(b);
-  return left.compareTo(right) <= 0 ? '$left|$right' : '$right|$left';
 }

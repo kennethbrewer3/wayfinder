@@ -2345,8 +2345,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         },
                       ),
                     ...mapObjectLayerChildren,
-                    if (showMgrsGrid)
+                    if (showMgrsGrid) ...[
                       MapMgrsGridLayer(mapController: _mapController),
+                      MapMgrsGridLabelsLayer(mapController: _mapController),
+                    ],
                     if (mapTilesDisplayed)
                       if (widget.searchCoordinateMarker case final marker?)
                         MarkerLayer(

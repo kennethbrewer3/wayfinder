@@ -36,7 +36,7 @@ void main() {
   });
 
   group('buildMgrsGrid', () {
-    test('returns lines for a small viewport', () {
+    test('returns a rectangular UTM grid for a small viewport', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
           south: 38.85,
@@ -47,8 +47,10 @@ void main() {
         zoom: 11,
       );
 
-      expect(geometry.lines, isNotEmpty);
       expect(geometry.accuracy, 2);
+      // 1 km grid over ~0.1° should produce multiple easting and northing lines.
+      expect(geometry.lines.length, greaterThanOrEqualTo(8));
+      expect(geometry.lines.every((line) => line.length >= 2), isTrue);
       expect(geometry.labels, isNotEmpty);
     });
   });

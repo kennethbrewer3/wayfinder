@@ -19,6 +19,7 @@ List<Widget> buildStackedMapLayerChildren({
   required List<MapMarker> markers,
   required List<MapZone> zones,
   required void Function(MapMarker marker) onMarkerTap,
+  void Function(MapMarker marker)? onMarkerLongPress,
   required double mapMarkerSizeScale,
   UuidValue? selectedLineId,
   Map<UuidValue, LineGeometry>? geometryOverrides,
@@ -47,6 +48,9 @@ List<Widget> buildStackedMapLayerChildren({
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () => onMarkerTap(marker),
+                    onLongPress: onMarkerLongPress == null
+                        ? null
+                        : () => onMarkerLongPress(marker),
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: MapMarkerIcon(

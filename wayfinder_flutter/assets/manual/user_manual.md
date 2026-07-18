@@ -169,7 +169,7 @@ In the marker form:
 
 ### Edit or view a marker
 
-Tap a marker on the map or choose it from the sidebar. The details dialog shows coordinates, notes, and actions:
+**Tap** a marker on the map to select it (highlighted; used for GPS distance/bearing). **Long-press** a marker to open its details dialog. You can also open details from the sidebar edit control. The details dialog shows coordinates, notes, and actions:
 
 - **Edit** — change any field.
 - **Copy coordinates** — to the clipboard.

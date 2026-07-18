@@ -1116,7 +1116,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       }
       _longPressTriggered = true;
       if (_removeLineControlPointAt(menuPoint)) {
-        _cancelPendingLongPress();
+        return;
+      }
+      final hit = _hitMapObjectAtPoint(menuPoint);
+      if (hit != null && hit.kind == SelectedMapObjectKind.marker) {
+        _selectMapObject(hit, openDetails: true);
         return;
       }
       _openRadialMenuAt(center, menuPoint);
@@ -1201,8 +1205,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         );
   }
 
-  void _selectMapObject(SelectedMapObject selection) {
-    ref.read(selectedMapObjectProvider.notifier).select(selection);
+  void _selectMapObject(
+    SelectedMapObject selection, {
+    bool? openDetails,
+  }) {
+    // Markers: tap selects only (for GPS range, etc.); long-press opens details.
+    // Zones keep opening details on tap unless overridden.
+    final shouldOpenDetails =
+        openDetails ?? selection.kind != SelectedMapObjectKind.marker;
+    ref
+        .read(selectedMapObjectProvider.notifier)
+        .select(selection, openDetails: shouldOpenDetails);
     _revealSelectedObjectInSidebar(selection);
   }
 
@@ -2222,7 +2235,19 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 kind: SelectedMapObjectKind.marker,
                 id: marker.id,
               ),
+              openDetails: false,
             ),
+            onMarkerLongPress: (marker) {
+              _cancelPendingLongPress();
+              _longPressTriggered = true;
+              _selectMapObject(
+                SelectedMapObject(
+                  kind: SelectedMapObjectKind.marker,
+                  id: marker.id,
+                ),
+                openDetails: true,
+              );
+            },
           );
     final selectedLinePreviewGeometry =
         _lineEditPreviewGeometry ??

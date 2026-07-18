@@ -58,6 +58,7 @@
   "actionSignOut": "Cerrar sesión",
   "actionUploading": "Subiendo…",
   "actionExporting": "Exportando…",
+  "actionImporting": "Importando…",
   "actionRestoring": "Restaurando…",
   "actionAborting": "Cancelando…",
   "statusLoading": "Cargando…",
@@ -263,6 +264,44 @@
       }
     }
   },
+  "geoExchangeTitle": "GPX / KML / GeoJSON",
+  "geoExchangeDescription": "Importe waypoints y tracks desde GPX, KML o GeoJSON (añade marcadores y líneas sin reemplazar los datos existentes). Exporte marcadores como waypoints y líneas/tracks como rutas.",
+  "geoExchangeImportButton": "Importar archivo geográfico",
+  "geoExchangeExportButton": "Exportar archivo geográfico",
+  "geoExchangeExportFormatTitle": "Formato de exportación",
+  "geoExchangeImportSuccess": "Importados {markers} marcador(es) y {lines} línea(s).",
+  "@geoExchangeImportSuccess": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "geoExchangeImportEmpty": "No se encontraron waypoints ni tracks en ese archivo.",
+  "geoExchangeImportFailed": "Error al importar: {error}",
+  "@geoExchangeImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geoExchangeExportSuccess": "Exportación geográfica guardada.",
+  "geoExchangeExportEmpty": "Nada que exportar — añada marcadores o líneas primero.",
+  "geoExchangeExportFailed": "Error al exportar: {error}",
+  "@geoExchangeExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geoExchangeFormatGpx": "GPX",
+  "geoExchangeFormatKml": "KML",
+  "geoExchangeFormatGeojson": "GeoJSON",
   "mapTilesFolderTitle": "Carpeta PMTiles",
   "mapTilesFolderDescription": "Carpeta en el servidor que contiene archivos .pmtiles. Se guarda en la base de datos para que cada cliente use la misma biblioteca de mosaicos.",
   "mapTilesStoragePathLabel": "Ruta de almacenamiento PMTiles",

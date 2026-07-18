@@ -58,6 +58,7 @@
   "actionSignOut": "Se déconnecter",
   "actionUploading": "Téléversement…",
   "actionExporting": "Exportation…",
+  "actionImporting": "Importation…",
   "actionRestoring": "Restauration…",
   "actionAborting": "Annulation…",
   "statusLoading": "Chargement…",
@@ -263,6 +264,44 @@
       }
     }
   },
+  "geoExchangeTitle": "GPX / KML / GeoJSON",
+  "geoExchangeDescription": "Importez des waypoints et traces depuis GPX, KML ou GeoJSON (ajoute des marqueurs et lignes sans remplacer les données existantes). Exportez les marqueurs en waypoints et les lignes/traces en chemins.",
+  "geoExchangeImportButton": "Importer un fichier géographique",
+  "geoExchangeExportButton": "Exporter un fichier géographique",
+  "geoExchangeExportFormatTitle": "Format d'exportation",
+  "geoExchangeImportSuccess": "{markers} marqueur(s) et {lines} ligne(s) importé(s).",
+  "@geoExchangeImportSuccess": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "geoExchangeImportEmpty": "Aucun waypoint ni trace trouvé dans ce fichier.",
+  "geoExchangeImportFailed": "Échec de l'importation : {error}",
+  "@geoExchangeImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geoExchangeExportSuccess": "Export géographique enregistré.",
+  "geoExchangeExportEmpty": "Rien à exporter — ajoutez d'abord des marqueurs ou des lignes.",
+  "geoExchangeExportFailed": "Échec de l'exportation : {error}",
+  "@geoExchangeExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geoExchangeFormatGpx": "GPX",
+  "geoExchangeFormatKml": "KML",
+  "geoExchangeFormatGeojson": "GeoJSON",
   "mapTilesFolderTitle": "Dossier PMTiles",
   "mapTilesFolderDescription": "Dossier sur le serveur contenant les archives .pmtiles. Enregistré dans la base de données pour que chaque client utilise la même bibliothèque de tuiles après redémarrage.",
   "mapTilesStoragePathLabel": "Chemin de stockage PMTiles",

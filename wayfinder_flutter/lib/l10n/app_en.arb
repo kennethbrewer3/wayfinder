@@ -81,6 +81,7 @@
   "actionSignOut": "Sign out",
   "actionUploading": "Uploading…",
   "actionExporting": "Exporting…",
+  "actionImporting": "Importing…",
   "actionRestoring": "Restoring…",
   "actionAborting": "Aborting…",
   "statusLoading": "Loading…",
@@ -310,6 +311,44 @@
       }
     }
   },
+  "geoExchangeTitle": "GPX / KML / GeoJSON",
+  "geoExchangeDescription": "Import waypoints and tracks from GPX, KML, or GeoJSON (adds markers and lines without replacing existing data). Export markers as waypoints and lines/tracks as paths.",
+  "geoExchangeImportButton": "Import geographic file",
+  "geoExchangeExportButton": "Export geographic file",
+  "geoExchangeExportFormatTitle": "Export format",
+  "geoExchangeImportSuccess": "Imported {markers} marker(s) and {lines} line(s).",
+  "@geoExchangeImportSuccess": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "geoExchangeImportEmpty": "No waypoints or tracks found in that file.",
+  "geoExchangeImportFailed": "Import failed: {error}",
+  "@geoExchangeImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geoExchangeExportSuccess": "Geographic export saved.",
+  "geoExchangeExportEmpty": "Nothing to export — add markers or lines first.",
+  "geoExchangeExportFailed": "Export failed: {error}",
+  "@geoExchangeExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "geoExchangeFormatGpx": "GPX",
+  "geoExchangeFormatKml": "KML",
+  "geoExchangeFormatGeojson": "GeoJSON",
   "mapTilesFolderTitle": "PMTiles folder",
   "mapTilesFolderDescription": "Folder on the server containing .pmtiles archives. Stored in the database so every client uses the same map tile library after restart.",
   "mapTilesStoragePathLabel": "PMTiles storage path",

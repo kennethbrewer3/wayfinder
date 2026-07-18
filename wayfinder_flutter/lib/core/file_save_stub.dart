@@ -13,8 +13,23 @@ class BackupPickResult {
 Future<bool> saveTextFile({
   required String fileName,
   required String contents,
+  List<String> allowedExtensions = const ['json'],
 }) async {
   return false;
+}
+
+class GeoExchangePickResult {
+  const GeoExchangePickResult({
+    required this.fileName,
+    required this.contents,
+  });
+
+  final String fileName;
+  final String contents;
+}
+
+Future<GeoExchangePickResult?> pickGeoExchangeFile() async {
+  return null;
 }
 
 Future<bool> saveBinaryFile({

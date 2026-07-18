@@ -4,6 +4,13 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/serverpod_client.dart';
+import '../../geo_exchange/data/geo_exchange_service.dart';
+import '../../geo_exchange/models/geo_exchange_models.dart';
+import '../../geo_exchange/utils/geo_exchange_codec.dart';
+import '../../layers/providers/layers_provider.dart';
+import '../../markers/providers/markers_provider.dart';
+import '../../lines/providers/zones_provider.dart';
 import '../providers/map_data_providers.dart';
 
 class SettingsBackupTab extends ConsumerStatefulWidget {
@@ -18,6 +25,8 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
 
   bool _isExportingMapData = false;
   bool _isRestoringMapData = false;
+  bool _isImportingGeo = false;
+  bool _isExportingGeo = false;
 
   Future<void> _exportMapData() async {
     setState(() => _isExportingMapData = true);
@@ -133,21 +142,157 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     }
   }
 
+  Future<void> _importGeoExchange() async {
+    final picked = await pickGeoExchangeFile();
+    if (picked == null || !mounted) {
+      return;
+    }
+
+    setState(() => _isImportingGeo = true);
+    try {
+      final bundle = parseGeoExchange(
+        contents: picked.contents,
+        fileName: picked.fileName,
+      );
+      final l10n = AppLocalizations.of(context)!;
+      if (bundle.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.geoExchangeImportEmpty)),
+        );
+        return;
+      }
+
+      final client = ref.read(serverClientProvider);
+      final result = await importGeoExchangeBundle(
+        client: client,
+        bundle: bundle,
+        layerId: selectedLayerIdForCreate(ref),
+      );
+      refreshMapData(ref);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.geoExchangeImportSuccess(
+              result.markersCreated,
+              result.linesCreated,
+            ),
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '📍 Geo exchange import failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geoExchangeImportFailed(error.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isImportingGeo = false);
+      }
+    }
+  }
+
+  Future<void> _exportGeoExchange() async {
+    final l10n = AppLocalizations.of(context)!;
+    final format = await showDialog<GeoExchangeFormat>(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(l10n.geoExchangeExportFormatTitle),
+          children: [
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(context).pop(GeoExchangeFormat.gpx),
+              child: Text(l10n.geoExchangeFormatGpx),
+            ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(context).pop(GeoExchangeFormat.kml),
+              child: Text(l10n.geoExchangeFormatKml),
+            ),
+            SimpleDialogOption(
+              onPressed: () =>
+                  Navigator.of(context).pop(GeoExchangeFormat.geojson),
+              child: Text(l10n.geoExchangeFormatGeojson),
+            ),
+          ],
+        );
+      },
+    );
+    if (format == null || !mounted) {
+      return;
+    }
+
+    setState(() => _isExportingGeo = true);
+    try {
+      final markers = await ref.read(markersProvider.future);
+      final zones = await ref.read(zonesProvider.future);
+      final text = exportGeoExchangeText(
+        markers: markers,
+        zones: zones,
+        format: format,
+      );
+      final bundle = bundleFromMapObjects(markers: markers, zones: zones);
+      if (bundle.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.geoExchangeExportEmpty)),
+        );
+        return;
+      }
+
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
+      final saved = await saveTextFile(
+        fileName: 'wayfinder-export-$timestamp.${format.fileExtension}',
+        contents: text,
+        allowedExtensions: [format.fileExtension],
+      );
+      if (!mounted) return;
+      if (saved) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.geoExchangeExportSuccess)),
+        );
+      }
+    } catch (error, stackTrace) {
+      _log.error(
+        '📍 Geo exchange export failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geoExchangeExportFailed(error.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isExportingGeo = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(
           l10n.backupTitle,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: 8),
         Text(
           l10n.backupDescription,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
         FilledButton.icon(
@@ -179,6 +324,48 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
             _isRestoringMapData
                 ? l10n.actionRestoring
                 : l10n.backupRestoreButton,
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.geoExchangeTitle,
+          style: theme.textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.geoExchangeDescription,
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.tonalIcon(
+          onPressed: _isImportingGeo ? null : _importGeoExchange,
+          icon: _isImportingGeo
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.file_open),
+          label: Text(
+            _isImportingGeo
+                ? l10n.actionImporting
+                : l10n.geoExchangeImportButton,
+          ),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: _isExportingGeo ? null : _exportGeoExchange,
+          icon: _isExportingGeo
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.ios_share),
+          label: Text(
+            _isExportingGeo
+                ? l10n.actionExporting
+                : l10n.geoExchangeExportButton,
           ),
         ),
       ],

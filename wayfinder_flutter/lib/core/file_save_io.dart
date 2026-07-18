@@ -6,16 +6,17 @@ import 'package:file_picker/file_picker.dart';
 
 import 'file_save_stub.dart';
 
-export 'file_save_stub.dart' show BackupPickResult;
+export 'file_save_stub.dart' show BackupPickResult, GeoExchangePickResult;
 
 Future<bool> saveTextFile({
   required String fileName,
   required String contents,
+  List<String> allowedExtensions = const ['json'],
 }) async {
   final path = await FilePicker.platform.saveFile(
     fileName: fileName,
     type: FileType.custom,
-    allowedExtensions: const ['json'],
+    allowedExtensions: allowedExtensions,
   );
   if (path == null) {
     return false;
@@ -23,6 +24,23 @@ Future<bool> saveTextFile({
 
   await File(path).writeAsString(contents);
   return true;
+}
+
+Future<GeoExchangePickResult?> pickGeoExchangeFile() async {
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: const ['gpx', 'kml', 'geojson', 'json'],
+    withData: true,
+  );
+  if (result == null || result.files.isEmpty) {
+    return null;
+  }
+  final file = result.files.single;
+  final text = await _readPickedText(file);
+  if (text == null) {
+    return null;
+  }
+  return GeoExchangePickResult(fileName: file.name, contents: text);
 }
 
 Future<bool> saveBinaryFile({

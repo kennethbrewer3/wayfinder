@@ -7,14 +7,35 @@ import 'package:web/web.dart';
 
 import 'file_save_stub.dart';
 
-export 'file_save_stub.dart' show BackupPickResult;
+export 'file_save_stub.dart' show BackupPickResult, GeoExchangePickResult;
 
 Future<bool> saveTextFile({
   required String fileName,
   required String contents,
+  List<String> allowedExtensions = const ['json'],
 }) async {
   final bytes = Uint8List.fromList(utf8.encode(contents));
   return saveBinaryFile(fileName: fileName, bytes: bytes);
+}
+
+Future<GeoExchangePickResult?> pickGeoExchangeFile() async {
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: const ['gpx', 'kml', 'geojson', 'json'],
+    withData: true,
+  );
+  if (result == null || result.files.isEmpty) {
+    return null;
+  }
+  final file = result.files.single;
+  final bytes = file.bytes;
+  if (bytes == null) {
+    return null;
+  }
+  return GeoExchangePickResult(
+    fileName: file.name,
+    contents: utf8.decode(bytes),
+  );
 }
 
 Future<bool> saveBinaryFile({

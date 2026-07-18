@@ -466,17 +466,26 @@ After import, the geocoding server builds **trigram search indexes** on startup.
 
 ## Settings — Backup
 
-Backup exports all **layers, markers, and zones** from the Wayfinder server as a single JSON file.
+### Full backup
 
-### Export
+Backup exports all **layers, markers, zones, and custom marker icons** from the Wayfinder server as a `.zip` archive (legacy `.json` backups can still be restored).
 
-Tap **Export** to download `wayfinder-backup-<timestamp>.json`. Store it safely.
+#### Export
 
-### Restore
+Tap **Export map data** to download `wayfinder-backup-<timestamp>.zip`. Store it safely.
 
-Tap **Restore**, select a backup file, and confirm. **Restore replaces all existing map objects** on the server with the backup contents.
+#### Restore
+
+Tap **Restore from backup**, select a backup file, and confirm. **Restore replaces all existing map objects** on the server with the backup contents.
 
 Backup does **not** include PMTiles files or geocoding database contents — export those separately from their respective settings tabs.
+
+### GPX / KML / GeoJSON
+
+Use this section to exchange waypoints and paths with other mapping tools.
+
+- **Import** — pick a `.gpx`, `.kml`, or `.geojson` file. Waypoints become markers; routes/tracks/LineStrings become lines. Import is **additive** (existing map data is kept). Features are added to the currently selected create layer when one is set.
+- **Export** — choose GPX, KML, or GeoJSON. Markers export as waypoints/points; lines and track paths export as tracks/LineStrings.
 
 ---
 

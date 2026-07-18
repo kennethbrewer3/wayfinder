@@ -442,6 +442,12 @@ abstract class AppLocalizations {
   /// **'Exporting…'**
   String get actionExporting;
 
+  /// No description provided for @actionImporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing…'**
+  String get actionImporting;
+
   /// No description provided for @actionRestoring.
   ///
   /// In en, this message translates to:
@@ -1148,6 +1154,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore failed: {error}'**
   String backupRestoreFailed(String error);
+
+  /// No description provided for @geoExchangeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'GPX / KML / GeoJSON'**
+  String get geoExchangeTitle;
+
+  /// No description provided for @geoExchangeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Import waypoints and tracks from GPX, KML, or GeoJSON (adds markers and lines without replacing existing data). Export markers as waypoints and lines/tracks as paths.'**
+  String get geoExchangeDescription;
+
+  /// No description provided for @geoExchangeImportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Import geographic file'**
+  String get geoExchangeImportButton;
+
+  /// No description provided for @geoExchangeExportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export geographic file'**
+  String get geoExchangeExportButton;
+
+  /// No description provided for @geoExchangeExportFormatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export format'**
+  String get geoExchangeExportFormatTitle;
+
+  /// No description provided for @geoExchangeImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {markers} marker(s) and {lines} line(s).'**
+  String geoExchangeImportSuccess(int markers, int lines);
+
+  /// No description provided for @geoExchangeImportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No waypoints or tracks found in that file.'**
+  String get geoExchangeImportEmpty;
+
+  /// No description provided for @geoExchangeImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: {error}'**
+  String geoExchangeImportFailed(String error);
+
+  /// No description provided for @geoExchangeExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Geographic export saved.'**
+  String get geoExchangeExportSuccess;
+
+  /// No description provided for @geoExchangeExportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to export — add markers or lines first.'**
+  String get geoExchangeExportEmpty;
+
+  /// No description provided for @geoExchangeExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String geoExchangeExportFailed(String error);
+
+  /// No description provided for @geoExchangeFormatGpx.
+  ///
+  /// In en, this message translates to:
+  /// **'GPX'**
+  String get geoExchangeFormatGpx;
+
+  /// No description provided for @geoExchangeFormatKml.
+  ///
+  /// In en, this message translates to:
+  /// **'KML'**
+  String get geoExchangeFormatKml;
+
+  /// No description provided for @geoExchangeFormatGeojson.
+  ///
+  /// In en, this message translates to:
+  /// **'GeoJSON'**
+  String get geoExchangeFormatGeojson;
 
   /// No description provided for @mapTilesFolderTitle.
   ///

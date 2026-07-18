@@ -424,9 +424,6 @@ All search indexes shall be stored locally.
 
 # 5. Future Enhancements
 
-* GPX import/export
-* KML import/export
-* GeoJSON import/export
 * Route planning
 * Elevation profiles
 * Layer management

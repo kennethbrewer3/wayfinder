@@ -191,6 +191,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get actionExporting => 'Exportation…';
 
   @override
+  String get actionImporting => 'Importation…';
+
+  @override
   String get actionRestoring => 'Restauration…';
 
   @override
@@ -603,6 +606,57 @@ class AppLocalizationsFr extends AppLocalizations {
   String backupRestoreFailed(String error) {
     return 'Échec de la restauration : $error';
   }
+
+  @override
+  String get geoExchangeTitle => 'GPX / KML / GeoJSON';
+
+  @override
+  String get geoExchangeDescription =>
+      'Importez des waypoints et traces depuis GPX, KML ou GeoJSON (ajoute des marqueurs et lignes sans remplacer les données existantes). Exportez les marqueurs en waypoints et les lignes/traces en chemins.';
+
+  @override
+  String get geoExchangeImportButton => 'Importer un fichier géographique';
+
+  @override
+  String get geoExchangeExportButton => 'Exporter un fichier géographique';
+
+  @override
+  String get geoExchangeExportFormatTitle => 'Format d\'exportation';
+
+  @override
+  String geoExchangeImportSuccess(int markers, int lines) {
+    return '$markers marqueur(s) et $lines ligne(s) importé(s).';
+  }
+
+  @override
+  String get geoExchangeImportEmpty =>
+      'Aucun waypoint ni trace trouvé dans ce fichier.';
+
+  @override
+  String geoExchangeImportFailed(String error) {
+    return 'Échec de l\'importation : $error';
+  }
+
+  @override
+  String get geoExchangeExportSuccess => 'Export géographique enregistré.';
+
+  @override
+  String get geoExchangeExportEmpty =>
+      'Rien à exporter — ajoutez d\'abord des marqueurs ou des lignes.';
+
+  @override
+  String geoExchangeExportFailed(String error) {
+    return 'Échec de l\'exportation : $error';
+  }
+
+  @override
+  String get geoExchangeFormatGpx => 'GPX';
+
+  @override
+  String get geoExchangeFormatKml => 'KML';
+
+  @override
+  String get geoExchangeFormatGeojson => 'GeoJSON';
 
   @override
   String get mapTilesFolderTitle => 'Dossier PMTiles';

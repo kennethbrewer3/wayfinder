@@ -64,13 +64,47 @@ void main() {
       expect(geometry.labels.length, lessThanOrEqualTo(16));
     });
 
-    test('uses a clipped multi-zone grid around zoom 8', () {
+    test('uses GZD at continental zoom ~5.4 (no bent multi-zone UTM)', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
-          south: 30.0,
+          south: 25.0,
           west: -100.0,
-          north: 45.0,
+          north: 50.0,
           east: -70.0,
+        ),
+        zoom: 5.38,
+      );
+
+      expect(geometry.accuracy, 0);
+      expect(geometry.labels.length, inInclusiveRange(4, 20));
+      // GZD lines are meridians/parallels — each is exactly two endpoints.
+      expect(
+        geometry.lines.every((line) => line.length == 2),
+        isTrue,
+      );
+
+      var vertical = 0;
+      var horizontal = 0;
+      for (final line in geometry.lines) {
+        final dLat = (line.first.latitude - line.last.latitude).abs();
+        final dLon = (line.first.longitude - line.last.longitude).abs();
+        if (dLon < 1e-6) {
+          vertical++;
+        } else if (dLat < 1e-6) {
+          horizontal++;
+        }
+      }
+      expect(vertical, greaterThan(2));
+      expect(horizontal, greaterThan(1));
+    });
+
+    test('uses a clipped multi-zone grid for a narrow regional view', () {
+      final geometry = buildMgrsGrid(
+        bounds: const MgrsLatLngBounds(
+          south: 38.0,
+          west: -78.5,
+          north: 40.5,
+          east: -74.5,
         ),
         zoom: 8,
       );
@@ -90,7 +124,6 @@ void main() {
           roughlyHorizontal++;
         }
       }
-      // Must not be vertical-only.
       expect(roughlyHorizontal, greaterThan(0));
       expect(roughlyVertical, greaterThan(0));
     });

@@ -192,24 +192,22 @@ MgrsGridGeometry buildMgrsGrid({
   final interval = chooseMgrsIntervalMeters(spanMeters);
   final zones = _zonesIntersecting(visible.west, visible.east);
 
-  // True world / hemisphere views: GZD only (balanced vertical + horizontal).
-  if (zoom < 4.5 || lonSpan >= 90 || (interval >= 100000 && zones.length > 12)) {
+  // Continental / world: GZD meridians + latitude bands only.
+  // UTM 100 km squares misalign at zone seams and curve on Web Mercator
+  // when more than a couple of zones (or a wide lon span) are visible.
+  if (zoom < 6.0 ||
+      lonSpan >= 20 ||
+      zones.length > 3 ||
+      (interval >= 100000 && zones.length > 2)) {
     return _buildGzdGrid(visible);
   }
 
-  // Several UTM zones visible: clipped per-zone grid at 100 km / 10 km.
+  // A few adjacent UTM zones: clipped per-zone grid (no cross-zone bleed).
   if (zones.length > 1 || lonSpan >= 6.5) {
-    final regionalInterval = interval <= 10000 ? interval : 10000;
-    // Prefer 100 km when many zones so horizontals stay readable.
-    final meters = zones.length >= 4 && regionalInterval < 100000
-        ? 100000
-        : regionalInterval < 10000
-        ? 10000
-        : regionalInterval;
+    final meters = interval < 10000 ? 10000 : interval;
     return _buildMultiZoneGrid(visible, intervalMeters: meters);
   }
 
-  // Single zone — ignore unused zoom once span drives interval.
   return _buildSingleZoneGrid(
     visible,
     spanMeters: spanMeters,
@@ -296,6 +294,7 @@ MgrsGridGeometry _buildMultiZoneGrid(
   for (final zone in zones) {
     final zoneWest = _zoneWestLongitude(zone);
     final zoneEast = zoneWest + 6;
+    // Clip strictly to the zone interior so neighboring zones never overlap.
     final slice = MgrsLatLngBounds(
       south: visible.south,
       west: math.max(zoneWest, visible.west),
@@ -537,7 +536,7 @@ List<List<LatLng>> _utmLineClipped({
   required bool varyNorthing,
   MgrsLatLngBounds? clip,
 }) {
-  final raw = _utmLine(
+  final segments = _utmLineSegments(
     zoneNumber: zoneNumber,
     zoneLetter: zoneLetter,
     fixedEasting: fixedEasting,
@@ -548,9 +547,16 @@ List<List<LatLng>> _utmLineClipped({
     varyNorthing: varyNorthing,
   );
   if (clip == null) {
-    return raw.length >= 2 ? [raw] : const [];
+    return [
+      for (final segment in segments)
+        if (segment.length >= 2) segment,
+    ];
   }
-  return _clipPolylineToBounds(raw, clip);
+  final clipped = <List<LatLng>>[];
+  for (final segment in segments) {
+    clipped.addAll(_clipPolylineToBounds(segment, clip));
+  }
+  return clipped;
 }
 
 /// Splits [points] into contiguous runs that stay inside [bounds].
@@ -561,7 +567,8 @@ List<List<LatLng>> _clipPolylineToBounds(
   final runs = <List<LatLng>>[];
   List<LatLng>? current;
   for (final point in points) {
-    if (_containsLatLng(bounds, point, marginDegrees: 0.05)) {
+    // No positive margin: overlap at zone seams was drawing double lines.
+    if (_containsLatLng(bounds, point, marginDegrees: 0.0)) {
       current ??= <LatLng>[];
       current.add(point);
     } else if (current != null) {
@@ -711,7 +718,11 @@ List<double> _gridValues(double min, double max, int interval) {
   return values;
 }
 
-List<LatLng> _utmLine({
+/// Samples a constant-easting or constant-northing UTM line into segments.
+///
+/// Breaks the polyline when conversion fails or a sample jumps — otherwise
+/// flutter_map would draw a bent chord across the gap.
+List<List<LatLng>> _utmLineSegments({
   required int zoneNumber,
   required String zoneLetter,
   double? fixedEasting,
@@ -721,8 +732,19 @@ List<LatLng> _utmLine({
   required double sampleStep,
   required bool varyNorthing,
 }) {
-  final points = <LatLng>[];
+  final segments = <List<LatLng>>[];
+  var current = <LatLng>[];
+  LatLng? previous;
   final step = sampleStep <= 0 ? 1000.0 : sampleStep;
+
+  void endSegment() {
+    if (current.length >= 2) {
+      segments.add(current);
+    }
+    current = <LatLng>[];
+    previous = null;
+  }
+
   for (var value = varyingStart; value <= varyingEnd + step / 2; value += step) {
     final clamped = value > varyingEnd ? varyingEnd : value;
     final point = varyNorthing
@@ -738,11 +760,23 @@ List<LatLng> _utmLine({
             zoneNumber: zoneNumber,
             zoneLetter: zoneLetter,
           );
-    if (point != null) {
-      points.add(point);
+    if (point == null) {
+      endSegment();
+      continue;
     }
+    final prev = previous;
+    if (prev != null) {
+      final jumpLat = (point.latitude - prev.latitude).abs();
+      final jumpLon = (point.longitude - prev.longitude).abs();
+      if (jumpLat > 2.0 || jumpLon > 2.0) {
+        endSegment();
+      }
+    }
+    current.add(point);
+    previous = point;
   }
-  return points;
+  endSegment();
+  return segments;
 }
 
 LatLng? _utmToLatLng({

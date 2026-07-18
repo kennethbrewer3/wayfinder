@@ -679,6 +679,7 @@
   "rectangleCornerBLabel": "Esquina B",
   "rectangleCenterMoveHelp": "Mover el centro desplaza todo el rectángulo en el mapa.",
   "mapHomeTooltip": "Inicio",
+  "mapAtlasTooltip": "Atlas cartográfico imprimible",
   "mapSettingsTooltip": "Configuración",
   "mapDeviceLocationTooltip": "Mi ubicación",
   "mapDeviceLocationFollowingTooltip": "Siguiendo tu ubicación (desplaza para detener)",

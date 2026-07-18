@@ -2793,6 +2793,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get mapHomeTooltip;
 
+  /// No description provided for @mapAtlasTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Printable map atlas'**
+  String get mapAtlasTooltip;
+
   /// No description provided for @mapSettingsTooltip.
   ///
   /// In en, this message translates to:

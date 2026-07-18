@@ -1545,6 +1545,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapHomeTooltip => 'Home';
 
   @override
+  String get mapAtlasTooltip => 'Printable map atlas';
+
+  @override
   String get mapSettingsTooltip => 'Settings';
 
   @override

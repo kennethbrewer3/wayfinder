@@ -11,7 +11,7 @@ import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../geocoding/presentation/address_search_readiness_indicator.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
-import 'map_tiles_load_indicator.dart';
+import '../../map_atlas/presentation/map_atlas_export_action.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
 import '../../markers/utils/marker_share_url.dart';
@@ -27,6 +27,7 @@ import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/map_providers.dart';
 import '../providers/selected_map_object_provider.dart';
 import 'map_object_selection_listener.dart';
+import 'map_tiles_load_indicator.dart';
 import 'map_view.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -46,6 +47,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _queuedInitialViewportDeepLink = false;
   bool _appliedInitialMarkerLink = false;
+  bool _isExportingAtlas = false;
 
   @override
   void didUpdateWidget(MapScreen oldWidget) {
@@ -209,6 +211,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     }
     return ref.read(mapViewportProvider.notifier).goHome(home);
+  }
+
+  Future<void> _exportMapAtlas() async {
+    setState(() => _isExportingAtlas = true);
+    try {
+      await runMapAtlasExport(context: context, ref: ref);
+    } finally {
+      if (mounted) {
+        setState(() => _isExportingAtlas = false);
+      }
+    }
   }
 
   Future<void> _locateMe() async {
@@ -377,6 +390,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             tooltip: l10n.mapHomeTooltip,
             icon: const Icon(Icons.home),
             onPressed: _goHome,
+          ),
+          IconButton(
+            tooltip: l10n.mapAtlasTooltip,
+            icon: _isExportingAtlas
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                : const Icon(Icons.picture_as_pdf_outlined),
+            onPressed: _isExportingAtlas ? null : _exportMapAtlas,
           ),
           IconButton(
             tooltip: l10n.mapManualTooltip,

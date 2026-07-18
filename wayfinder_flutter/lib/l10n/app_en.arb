@@ -872,6 +872,7 @@
   "rectangleCornerBLabel": "Corner B",
   "rectangleCenterMoveHelp": "Moving the center shifts the whole rectangle on the map.",
   "mapHomeTooltip": "Home",
+  "mapAtlasTooltip": "Printable map atlas",
   "mapSettingsTooltip": "Settings",
   "mapManualTooltip": "User manual",
   "mapDeviceLocationTooltip": "My location",

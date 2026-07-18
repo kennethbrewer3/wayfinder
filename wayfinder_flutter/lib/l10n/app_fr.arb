@@ -679,6 +679,7 @@
   "rectangleCornerBLabel": "Coin B",
   "rectangleCenterMoveHelp": "Déplacer le centre déplace tout le rectangle sur la carte.",
   "mapHomeTooltip": "Accueil",
+  "mapAtlasTooltip": "Atlas cartographique imprimable",
   "mapSettingsTooltip": "Paramètres",
   "mapDeviceLocationTooltip": "Ma position",
   "mapDeviceLocationFollowingTooltip": "Suivi de votre position (faites glisser pour arrêter)",

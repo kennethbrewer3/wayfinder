@@ -34,6 +34,7 @@ Wayfinder stores your markers, lines, circles, and rectangles on a **Wayfinder s
 | Grid | Toggle MGRS grid overlay |
 | My location | Show GPS “you are here” (long-press to hide) |
 | Home | Jump to your saved home location |
+| PDF | Export a printable map atlas of the current view |
 | Book | Open this user manual |
 | Gear | Open Settings |
 
@@ -521,7 +522,7 @@ Use this section to exchange waypoints and paths with other mapping tools.
 
 ### Printable map atlas (PDF)
 
-Use this when you need paper sheets if the phone dies. Tap **Export printable atlas (PDF)** and choose:
+Use this when you need paper sheets if the phone dies. From the map, tap the **PDF** app-bar icon (or use **Settings → Backup → Export printable atlas**). Then choose:
 
 - **Coverage** — current map view (approximate), or fit all visible markers
 - **Sheet grid** — how many pages to tile the area into (with slight edge overlap)

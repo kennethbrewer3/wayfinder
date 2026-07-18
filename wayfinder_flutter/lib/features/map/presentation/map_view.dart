@@ -255,6 +255,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   int? _pendingLineControlIndex;
   int? _draggingLineControlIndex;
   LineGeometry? _lineEditPreviewGeometry;
+  LatLng? _frozenMapCenterDuringVertexEdit;
+  double? _frozenMapZoomDuringVertexEdit;
   DateTime? _lastControlPointTapAt;
   int? _lastControlPointTapIndex;
   Offset? _lastControlPointTapLocal;
@@ -999,25 +1001,45 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void _resetLineEditGestureState() {
     if (_pendingLineControlIndex == null &&
         _draggingLineControlIndex == null &&
-        _lineEditPreviewGeometry == null) {
+        _lineEditPreviewGeometry == null &&
+        _frozenMapCenterDuringVertexEdit == null) {
       return;
     }
     setState(() {
       _pendingLineControlIndex = null;
       _draggingLineControlIndex = null;
       _lineEditPreviewGeometry = null;
+      _frozenMapCenterDuringVertexEdit = null;
+      _frozenMapZoomDuringVertexEdit = null;
     });
   }
 
-  void _beginLineControlPointDrag(int index, LatLng point) {
+  void _armLineControlPointEdit(int index) {
+    // Freeze map panning immediately so the gesture moves the vertex instead.
     _cancelPendingLongPress();
-    _clearControlPointDoubleTap();
+    final camera = _mapController.camera;
+    _frozenMapCenterDuringVertexEdit = camera.center;
+    _frozenMapZoomDuringVertexEdit = camera.zoom;
     setState(() {
       _pendingLineControlIndex = null;
       _draggingLineControlIndex = index;
       _lineEditPreviewGeometry = _selectedLineGeometry();
     });
-    _updateLineControlPointDrag(point);
+  }
+
+  void _holdMapStillDuringVertexEdit() {
+    final center = _frozenMapCenterDuringVertexEdit;
+    final zoom = _frozenMapZoomDuringVertexEdit;
+    if (center == null || zoom == null) {
+      return;
+    }
+    final camera = _mapController.camera;
+    if (camera.center.latitude == center.latitude &&
+        camera.center.longitude == center.longitude &&
+        camera.zoom == zoom) {
+      return;
+    }
+    _mapController.move(center, zoom);
   }
 
   void _updateLineControlPointDrag(LatLng point) {
@@ -1355,10 +1377,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final controlPointIndex = _controlPointIndexAt(point);
     if (controlPointIndex != null) {
-      // Drag moves any vertex (including endpoints). Short-press / double-tap
-      // behavior is decided on pointer-up.
-      _pendingLineControlIndex = controlPointIndex;
-      _cancelPendingLongPress();
+      // Arm edit immediately so InteractiveFlag.drag turns off before the map
+      // can pan. Short-press vs drag is decided on pointer-up.
+      _armLineControlPointEdit(controlPointIndex);
       return;
     }
 
@@ -1398,16 +1419,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _updateRectanglePreview(point);
     }
 
-    final pendingControlIndex = _pendingLineControlIndex;
-    if (pendingControlIndex != null &&
-        _draggingLineControlIndex == null &&
-        _tapDownLocal != null &&
-        (event.localPosition - _tapDownLocal!).distance >
-            _longPressMoveTolerance) {
-      _beginLineControlPointDrag(pendingControlIndex, point);
-    }
-
     if (_draggingLineControlIndex != null) {
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _longPressMoveTolerance) {
+        _clearControlPointDoubleTap();
+      }
       _updateLineControlPointDrag(point);
     }
 
@@ -1428,24 +1445,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final bearingPlot = ref.read(bearingPlotProvider);
 
     if (_draggingLineControlIndex != null) {
-      unawaited(_commitLineControlPointDrag(point));
-      _primaryPointerGestureHandled = true;
-      _clearPointerDownSelectionState();
-      _resetLineDrawGestureState();
-      _cancelPendingLongPress();
-      return;
-    }
-
-    if (_pendingLineControlIndex != null) {
-      final controlIndex = _pendingLineControlIndex!;
-      _pendingLineControlIndex = null;
+      final controlIndex = _draggingLineControlIndex!;
       if (_isShortPress(event)) {
+        // Tap (not a drag): discard the armed edit and keep tap semantics.
+        _resetLineEditGestureState();
         final geometry = _selectedLineGeometry();
         if (geometry != null &&
             controlIndex >= 0 &&
             controlIndex < geometry.points.length) {
           if (isInteriorLineControlPoint(geometry, controlIndex)) {
-            // Double-tap removes a mid-point; single tap leaves it alone.
             if (_registerControlPointTap(
               index: controlIndex,
               local: event.localPosition,
@@ -1453,11 +1461,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               _removeLineControlPointAtIndex(controlIndex);
             }
           } else {
-            // Short-click an endpoint to start a bearing plot.
             _clearControlPointDoubleTap();
             _beginBearingPlot(geometry.points[controlIndex]);
           }
         }
+      } else {
+        _clearControlPointDoubleTap();
+        unawaited(_commitLineControlPointDrag(point));
       }
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
@@ -2524,6 +2534,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       }(),
                     ),
                     onPositionChanged: (position, hasGesture) {
+                      if (_draggingLineControlIndex != null) {
+                        _holdMapStillDuringVertexEdit();
+                        return;
+                      }
                       _scheduleVisibleLayerUpdate();
                       if (!hasGesture) return;
                       // User panned/zoomed — stop auto-recenter but keep the blue dot.

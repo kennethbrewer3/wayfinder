@@ -37,6 +37,7 @@ import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../weather/presentation/weather_station_details_section.dart';
 import '../../../core/l10n/localized_labels.dart';
+import 'marker_qr_dialog.dart';
 import 'marker_tracking_details_section.dart';
 import '../utils/effective_marker_icon.dart';
 
@@ -197,6 +198,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       l10n: l10n,
       shareUrl: shareUrl,
       onCopyShareUrl: copyShareUrl,
+      onShowQrCode: () => showMarkerQrDialog(context: context, marker: marker),
       contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
       additionalActions: geocodingReachable
           ? [
@@ -640,6 +642,7 @@ class _DetailsDialogShell extends StatelessWidget {
     required this.children,
     this.shareUrl,
     this.onCopyShareUrl,
+    this.onShowQrCode,
     this.contentWidth = 520,
     this.additionalActions = const [],
   });
@@ -651,6 +654,7 @@ class _DetailsDialogShell extends StatelessWidget {
   final List<Widget> children;
   final String? shareUrl;
   final VoidCallback? onCopyShareUrl;
+  final VoidCallback? onShowQrCode;
   final double contentWidth;
   final List<Widget> additionalActions;
 
@@ -683,6 +687,12 @@ class _DetailsDialogShell extends StatelessWidget {
             onPressed: onCopyShareUrl,
             icon: const Icon(Icons.link),
             label: Text(l10n.mapMarkerCopyUrlTooltip),
+          ),
+        if (onShowQrCode != null)
+          TextButton.icon(
+            onPressed: onShowQrCode,
+            icon: const Icon(Icons.qr_code_2),
+            label: Text(l10n.mapMarkerQrButton),
           ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),

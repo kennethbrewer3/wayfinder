@@ -602,7 +602,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get geoExchangeDescription =>
-      'Import waypoints and tracks from GPX, KML, or GeoJSON (adds markers and lines without replacing existing data). Export markers as waypoints and lines/tracks as paths.';
+      'Import waypoints and tracks from GPX, KML, or GeoJSON. When the map already has markers or zones, you can add to them, replace them, or cancel. Export markers as waypoints and lines/tracks as paths.';
 
   @override
   String get geoExchangeImportButton => 'Import geographic file';
@@ -612,6 +612,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get geoExchangeExportFormatTitle => 'Export format';
+
+  @override
+  String get geoExchangeImportConfirmTitle => 'Import geographic data?';
+
+  @override
+  String geoExchangeImportConfirmMessage(int markers, int zones) {
+    return 'The map already has $markers marker(s) and $zones zone(s). Choose Add to keep them and import alongside, Replace to delete all markers and zones first, or Cancel to abort.';
+  }
+
+  @override
+  String get geoExchangeImportAdd => 'Add to existing';
+
+  @override
+  String get geoExchangeImportReplace => 'Replace existing';
 
   @override
   String geoExchangeImportSuccess(int markers, int lines) {
@@ -2619,6 +2633,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapMarkerCopyUrlTooltip => 'Copy marker link';
+
+  @override
+  String get mapMarkerQrButton => 'QR code';
+
+  @override
+  String get mapMarkerQrTitle => 'Marker QR code';
+
+  @override
+  String get mapMarkerQrSavePng => 'Save image';
+
+  @override
+  String get mapMarkerQrSaveSvg => 'Save vector';
+
+  @override
+  String get mapMarkerQrSavedPng => 'QR code image saved.';
+
+  @override
+  String get mapMarkerQrSavedSvg => 'QR code vector saved.';
+
+  @override
+  String mapMarkerQrSaveFailed(String error) {
+    return 'Could not save QR code: $error';
+  }
 
   @override
   String get mapMarkerUrlCopied => 'Marker link copied to clipboard.';

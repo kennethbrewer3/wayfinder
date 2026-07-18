@@ -41,6 +41,7 @@ Future<GeoExchangePickResult?> pickGeoExchangeFile() async {
 Future<bool> saveBinaryFile({
   required String fileName,
   required Uint8List bytes,
+  List<String> allowedExtensions = const ['zip'],
 }) async {
   final blob = Blob([bytes.toJS].toJS);
   final url = URL.createObjectURL(blob);

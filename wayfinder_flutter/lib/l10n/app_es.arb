@@ -265,10 +265,24 @@
     }
   },
   "geoExchangeTitle": "GPX / KML / GeoJSON",
-  "geoExchangeDescription": "Importe waypoints y tracks desde GPX, KML o GeoJSON (añade marcadores y líneas sin reemplazar los datos existentes). Exporte marcadores como waypoints y líneas/tracks como rutas.",
+  "geoExchangeDescription": "Importe waypoints y tracks desde GPX, KML o GeoJSON. Si el mapa ya tiene marcadores o zonas, puede añadirlos, reemplazarlos o cancelar. Exporte marcadores como waypoints y líneas/tracks como rutas.",
   "geoExchangeImportButton": "Importar archivo geográfico",
   "geoExchangeExportButton": "Exportar archivo geográfico",
   "geoExchangeExportFormatTitle": "Formato de exportación",
+  "geoExchangeImportConfirmTitle": "¿Importar datos geográficos?",
+  "geoExchangeImportConfirmMessage": "El mapa ya tiene {markers} marcador(es) y {zones} zona(s). Elija Añadir para conservarlos e importar junto a ellos, Reemplazar para eliminar todos los marcadores y zonas primero, o Cancelar para abortar.",
+  "@geoExchangeImportConfirmMessage": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      }
+    }
+  },
+  "geoExchangeImportAdd": "Añadir a existentes",
+  "geoExchangeImportReplace": "Reemplazar existentes",
   "geoExchangeImportSuccess": "Importados {markers} marcador(es) y {lines} línea(s).",
   "@geoExchangeImportSuccess": {
     "placeholders": {
@@ -1138,6 +1152,20 @@
   "mapMgrsCopied": "MGRS copiado al portapapeles.",
   "mapMarkerShareUrlLabel": "Enlace",
   "mapMarkerCopyUrlTooltip": "Copiar enlace del marcador",
+  "mapMarkerQrButton": "Código QR",
+  "mapMarkerQrTitle": "Código QR del marcador",
+  "mapMarkerQrSavePng": "Guardar imagen",
+  "mapMarkerQrSaveSvg": "Guardar vector",
+  "mapMarkerQrSavedPng": "Imagen del código QR guardada.",
+  "mapMarkerQrSavedSvg": "Vector del código QR guardado.",
+  "mapMarkerQrSaveFailed": "No se pudo guardar el código QR: {error}",
+  "@mapMarkerQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "mapMarkerUrlCopied": "Enlace del marcador copiado al portapapeles.",
   "mapMarkerIdLabel": "ID del marcador",
   "mapMarkerCopyIdTooltip": "Copiar ID del marcador",

@@ -174,6 +174,7 @@ In the marker form:
 - **Edit** — change any field.
 - **Copy coordinates** — to the clipboard.
 - **Share link** — copies a URL that opens the map centered on this marker (`?marker=<uuid>`).
+- **QR code** — shows a scannable QR of the marker link with the Wayfinder favicon in the center. You can save it as a PNG image or SVG vector (QR modules are vector; the favicon is embedded as PNG).
 - **Delete** — remove the marker (also removes its associated track, if any).
 
 ### Tracking markers
@@ -336,7 +337,7 @@ When you pan and zoom, the URL updates with `lat`, `lng`, and `zoom`. Share that
 
 ### Marker links
 
-Select a marker and use **Share link** in the details dialog. The URL includes `?marker=<uuid>` so the recipient’s map opens on that marker.
+Select a marker and use **Share link** or **QR code** in the details dialog. The URL includes `?marker=<uuid>` so the recipient’s map opens on that marker. From the QR dialog you can save a PNG or SVG of the code.
 
 **Note:** Recipients need network access to your Wayfinder server and the same map data (tiles, markers) to see identical content.
 
@@ -484,7 +485,7 @@ Backup does **not** include PMTiles files or geocoding database contents — exp
 
 Use this section to exchange waypoints and paths with other mapping tools.
 
-- **Import** — pick a `.gpx`, `.kml`, or `.geojson` file. Waypoints become markers; routes/tracks/LineStrings become lines. Import is **additive** (existing map data is kept). Features are added to the currently selected create layer when one is set.
+- **Import** — pick a `.gpx`, `.kml`, or `.geojson` file. Waypoints become markers; routes/tracks/LineStrings become lines. Features are added to the currently selected create layer when one is set. If the map already has markers or zones, you are asked to **Add to existing**, **Replace existing** (deletes all markers and zones first), or **Cancel**.
 - **Export** — choose GPX, KML, or GeoJSON. Markers export as waypoints/points; lines and track paths export as tracks/LineStrings.
 
 ---
@@ -627,7 +628,7 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Create marker | Long-press map → Add marker |
 | Draw line / shape | Long-press map → choose tool |
 | Search | Type in app bar search field |
-| Share marker | Marker details → Share link |
+| Share marker | Marker details → Share link or QR code |
 | Tracking marker | Marker edit → Tracking marker; manage trail in sidebar (track) |
 | Backup data | Settings → Backup → Export |
 | Script with curl | Settings → About → REST API access → generate key |

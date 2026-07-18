@@ -55,12 +55,30 @@ GeoExchangeBundle bundleFromMapObjects({
   return GeoExchangeBundle(waypoints: waypoints, tracks: tracks);
 }
 
-/// Imports waypoints as markers and tracks/routes as line zones (additive).
+/// Deletes every marker and zone on the server (tracks cascade with markers).
+Future<void> clearMapMarkersAndZones(Client client) async {
+  final markers = await client.mapMarker.listMarkers();
+  for (final marker in markers) {
+    await client.mapMarker.deleteMarker(marker.id);
+  }
+
+  final zones = await client.mapZone.listZones();
+  for (final zone in zones) {
+    await client.mapZone.deleteZone(zone.id);
+  }
+}
+
+/// Imports waypoints as markers and tracks/routes as line zones.
 Future<GeoImportResult> importGeoExchangeBundle({
   required Client client,
   required GeoExchangeBundle bundle,
   UuidValue? layerId,
+  GeoImportMode mode = GeoImportMode.add,
 }) async {
+  if (mode == GeoImportMode.replace) {
+    await clearMapMarkersAndZones(client);
+  }
+
   final now = DateTime.now().toUtc();
   var markersCreated = 0;
   var linesCreated = 0;

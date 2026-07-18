@@ -123,6 +123,30 @@ String buildMarkerShareUrl({
   );
 }
 
+/// Absolute marker link suitable for QR codes (scannable from other devices).
+String buildMarkerQrUrl({
+  required MapMarker marker,
+  required String webBaseUrl,
+}) {
+  final route = _routeUri(
+    path: '/maps',
+    queryParameters: {
+      markerUrlQueryParam: marker.id.toString(),
+    },
+  );
+  if (kIsWeb) {
+    return absoluteWebShareUri(route).toString();
+  }
+  final base = Uri.parse(webBaseUrl);
+  return Uri(
+    scheme: base.scheme.isEmpty ? 'https' : base.scheme,
+    host: base.host,
+    port: base.hasPort ? base.port : null,
+    path: route.path,
+    queryParameters: route.queryParameters,
+  ).toString();
+}
+
 MapMarker? findMarkerById(List<MapMarker> markers, UuidValue id) {
   final target = id.toString().toLowerCase();
   for (final marker in markers) {

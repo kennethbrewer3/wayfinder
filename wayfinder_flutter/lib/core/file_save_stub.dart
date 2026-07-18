@@ -35,6 +35,7 @@ Future<GeoExchangePickResult?> pickGeoExchangeFile() async {
 Future<bool> saveBinaryFile({
   required String fileName,
   required Uint8List bytes,
+  List<String> allowedExtensions = const ['zip'],
 }) async {
   return false;
 }

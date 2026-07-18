@@ -265,10 +265,24 @@
     }
   },
   "geoExchangeTitle": "GPX / KML / GeoJSON",
-  "geoExchangeDescription": "Importez des waypoints et traces depuis GPX, KML ou GeoJSON (ajoute des marqueurs et lignes sans remplacer les données existantes). Exportez les marqueurs en waypoints et les lignes/traces en chemins.",
+  "geoExchangeDescription": "Importez des waypoints et traces depuis GPX, KML ou GeoJSON. Si la carte a déjà des marqueurs ou zones, vous pouvez les conserver, les remplacer ou annuler. Exportez les marqueurs en waypoints et les lignes/traces en chemins.",
   "geoExchangeImportButton": "Importer un fichier géographique",
   "geoExchangeExportButton": "Exporter un fichier géographique",
   "geoExchangeExportFormatTitle": "Format d'exportation",
+  "geoExchangeImportConfirmTitle": "Importer des données géographiques ?",
+  "geoExchangeImportConfirmMessage": "La carte contient déjà {markers} marqueur(s) et {zones} zone(s). Choisissez Ajouter pour les conserver et importer en plus, Remplacer pour supprimer tous les marqueurs et zones d'abord, ou Annuler pour abandonner.",
+  "@geoExchangeImportConfirmMessage": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      }
+    }
+  },
+  "geoExchangeImportAdd": "Ajouter aux existants",
+  "geoExchangeImportReplace": "Remplacer les existants",
   "geoExchangeImportSuccess": "{markers} marqueur(s) et {lines} ligne(s) importé(s).",
   "@geoExchangeImportSuccess": {
     "placeholders": {
@@ -1138,6 +1152,20 @@
   "mapMgrsCopied": "MGRS copié dans le presse-papiers.",
   "mapMarkerShareUrlLabel": "Lien",
   "mapMarkerCopyUrlTooltip": "Copier le lien du marqueur",
+  "mapMarkerQrButton": "Code QR",
+  "mapMarkerQrTitle": "Code QR du marqueur",
+  "mapMarkerQrSavePng": "Enregistrer l'image",
+  "mapMarkerQrSaveSvg": "Enregistrer le vecteur",
+  "mapMarkerQrSavedPng": "Image du code QR enregistrée.",
+  "mapMarkerQrSavedSvg": "Vecteur du code QR enregistré.",
+  "mapMarkerQrSaveFailed": "Impossible d'enregistrer le code QR : {error}",
+  "@mapMarkerQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "mapMarkerUrlCopied": "Lien du marqueur copié dans le presse-papiers.",
   "mapMarkerIdLabel": "ID du marqueur",
   "mapMarkerCopyIdTooltip": "Copier l'ID du marqueur",

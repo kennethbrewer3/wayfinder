@@ -142,6 +142,39 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     }
   }
 
+  Future<GeoImportMode?> _confirmGeoImportMode({
+    required int markerCount,
+    required int zoneCount,
+  }) {
+    return showDialog<GeoImportMode>(
+      context: context,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.geoExchangeImportConfirmTitle),
+          content: Text(
+            l10n.geoExchangeImportConfirmMessage(markerCount, zoneCount),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.actionCancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(GeoImportMode.add),
+              child: Text(l10n.geoExchangeImportAdd),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(GeoImportMode.replace),
+              child: Text(l10n.geoExchangeImportReplace),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _importGeoExchange() async {
     final picked = await pickGeoExchangeFile();
     if (picked == null || !mounted) {
@@ -162,11 +195,28 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         return;
       }
 
+      final markers = await ref.read(markersProvider.future);
+      final zones = await ref.read(zonesProvider.future);
+      var mode = GeoImportMode.add;
+      if (markers.isNotEmpty || zones.isNotEmpty) {
+        setState(() => _isImportingGeo = false);
+        final chosen = await _confirmGeoImportMode(
+          markerCount: markers.length,
+          zoneCount: zones.length,
+        );
+        if (chosen == null || !mounted) {
+          return;
+        }
+        mode = chosen;
+        setState(() => _isImportingGeo = true);
+      }
+
       final client = ref.read(serverClientProvider);
       final result = await importGeoExchangeBundle(
         client: client,
         bundle: bundle,
         layerId: selectedLayerIdForCreate(ref),
+        mode: mode,
       );
       refreshMapData(ref);
       if (!mounted) return;

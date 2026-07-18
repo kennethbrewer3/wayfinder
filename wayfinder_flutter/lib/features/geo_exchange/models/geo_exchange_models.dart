@@ -2,6 +2,15 @@ import 'package:latlong2/latlong.dart';
 
 enum GeoExchangeFormat { gpx, kml, geojson }
 
+/// How to apply an import when the map already has markers or zones.
+enum GeoImportMode {
+  /// Keep existing map objects and create imported ones alongside them.
+  add,
+
+  /// Delete all markers and zones, then import.
+  replace,
+}
+
 extension GeoExchangeFormatX on GeoExchangeFormat {
   String get fileExtension => switch (this) {
     GeoExchangeFormat.gpx => 'gpx',

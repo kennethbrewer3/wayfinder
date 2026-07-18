@@ -312,10 +312,24 @@
     }
   },
   "geoExchangeTitle": "GPX / KML / GeoJSON",
-  "geoExchangeDescription": "Import waypoints and tracks from GPX, KML, or GeoJSON (adds markers and lines without replacing existing data). Export markers as waypoints and lines/tracks as paths.",
+  "geoExchangeDescription": "Import waypoints and tracks from GPX, KML, or GeoJSON. When the map already has markers or zones, you can add to them, replace them, or cancel. Export markers as waypoints and lines/tracks as paths.",
   "geoExchangeImportButton": "Import geographic file",
   "geoExchangeExportButton": "Export geographic file",
   "geoExchangeExportFormatTitle": "Export format",
+  "geoExchangeImportConfirmTitle": "Import geographic data?",
+  "geoExchangeImportConfirmMessage": "The map already has {markers} marker(s) and {zones} zone(s). Choose Add to keep them and import alongside, Replace to delete all markers and zones first, or Cancel to abort.",
+  "@geoExchangeImportConfirmMessage": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      }
+    }
+  },
+  "geoExchangeImportAdd": "Add to existing",
+  "geoExchangeImportReplace": "Replace existing",
   "geoExchangeImportSuccess": "Imported {markers} marker(s) and {lines} line(s).",
   "@geoExchangeImportSuccess": {
     "placeholders": {
@@ -1448,6 +1462,20 @@
   "mapMgrsCopied": "MGRS copied to clipboard.",
   "mapMarkerShareUrlLabel": "Link",
   "mapMarkerCopyUrlTooltip": "Copy marker link",
+  "mapMarkerQrButton": "QR code",
+  "mapMarkerQrTitle": "Marker QR code",
+  "mapMarkerQrSavePng": "Save image",
+  "mapMarkerQrSaveSvg": "Save vector",
+  "mapMarkerQrSavedPng": "QR code image saved.",
+  "mapMarkerQrSavedSvg": "QR code vector saved.",
+  "mapMarkerQrSaveFailed": "Could not save QR code: {error}",
+  "@mapMarkerQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "mapMarkerUrlCopied": "Marker link copied to clipboard.",
   "mapMarkerIdLabel": "Marker ID",
   "mapMarkerCopyIdTooltip": "Copy marker ID",

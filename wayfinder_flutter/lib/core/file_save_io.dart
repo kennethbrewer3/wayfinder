@@ -46,11 +46,12 @@ Future<GeoExchangePickResult?> pickGeoExchangeFile() async {
 Future<bool> saveBinaryFile({
   required String fileName,
   required Uint8List bytes,
+  List<String> allowedExtensions = const ['zip'],
 }) async {
   final path = await FilePicker.platform.saveFile(
     fileName: fileName,
     type: FileType.custom,
-    allowedExtensions: const ['zip'],
+    allowedExtensions: allowedExtensions,
   );
   if (path == null) {
     return false;

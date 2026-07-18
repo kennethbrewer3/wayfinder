@@ -608,7 +608,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get geoExchangeDescription =>
-      'Importe waypoints y tracks desde GPX, KML o GeoJSON (añade marcadores y líneas sin reemplazar los datos existentes). Exporte marcadores como waypoints y líneas/tracks como rutas.';
+      'Importe waypoints y tracks desde GPX, KML o GeoJSON. Si el mapa ya tiene marcadores o zonas, puede añadirlos, reemplazarlos o cancelar. Exporte marcadores como waypoints y líneas/tracks como rutas.';
 
   @override
   String get geoExchangeImportButton => 'Importar archivo geográfico';
@@ -618,6 +618,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get geoExchangeExportFormatTitle => 'Formato de exportación';
+
+  @override
+  String get geoExchangeImportConfirmTitle => '¿Importar datos geográficos?';
+
+  @override
+  String geoExchangeImportConfirmMessage(int markers, int zones) {
+    return 'El mapa ya tiene $markers marcador(es) y $zones zona(s). Elija Añadir para conservarlos e importar junto a ellos, Reemplazar para eliminar todos los marcadores y zonas primero, o Cancelar para abortar.';
+  }
+
+  @override
+  String get geoExchangeImportAdd => 'Añadir a existentes';
+
+  @override
+  String get geoExchangeImportReplace => 'Reemplazar existentes';
 
   @override
   String geoExchangeImportSuccess(int markers, int lines) {
@@ -2656,6 +2670,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapMarkerCopyUrlTooltip => 'Copiar enlace del marcador';
+
+  @override
+  String get mapMarkerQrButton => 'Código QR';
+
+  @override
+  String get mapMarkerQrTitle => 'Código QR del marcador';
+
+  @override
+  String get mapMarkerQrSavePng => 'Guardar imagen';
+
+  @override
+  String get mapMarkerQrSaveSvg => 'Guardar vector';
+
+  @override
+  String get mapMarkerQrSavedPng => 'Imagen del código QR guardada.';
+
+  @override
+  String get mapMarkerQrSavedSvg => 'Vector del código QR guardado.';
+
+  @override
+  String mapMarkerQrSaveFailed(String error) {
+    return 'No se pudo guardar el código QR: $error';
+  }
 
   @override
   String get mapMarkerUrlCopied =>

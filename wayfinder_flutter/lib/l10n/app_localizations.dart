@@ -1164,7 +1164,7 @@ abstract class AppLocalizations {
   /// No description provided for @geoExchangeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Import waypoints and tracks from GPX, KML, or GeoJSON (adds markers and lines without replacing existing data). Export markers as waypoints and lines/tracks as paths.'**
+  /// **'Import waypoints and tracks from GPX, KML, or GeoJSON. When the map already has markers or zones, you can add to them, replace them, or cancel. Export markers as waypoints and lines/tracks as paths.'**
   String get geoExchangeDescription;
 
   /// No description provided for @geoExchangeImportButton.
@@ -1184,6 +1184,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export format'**
   String get geoExchangeExportFormatTitle;
+
+  /// No description provided for @geoExchangeImportConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import geographic data?'**
+  String get geoExchangeImportConfirmTitle;
+
+  /// No description provided for @geoExchangeImportConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The map already has {markers} marker(s) and {zones} zone(s). Choose Add to keep them and import alongside, Replace to delete all markers and zones first, or Cancel to abort.'**
+  String geoExchangeImportConfirmMessage(int markers, int zones);
+
+  /// No description provided for @geoExchangeImportAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to existing'**
+  String get geoExchangeImportAdd;
+
+  /// No description provided for @geoExchangeImportReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace existing'**
+  String get geoExchangeImportReplace;
 
   /// No description provided for @geoExchangeImportSuccess.
   ///
@@ -4628,6 +4652,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copy marker link'**
   String get mapMarkerCopyUrlTooltip;
+
+  /// No description provided for @mapMarkerQrButton.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code'**
+  String get mapMarkerQrButton;
+
+  /// No description provided for @mapMarkerQrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker QR code'**
+  String get mapMarkerQrTitle;
+
+  /// No description provided for @mapMarkerQrSavePng.
+  ///
+  /// In en, this message translates to:
+  /// **'Save image'**
+  String get mapMarkerQrSavePng;
+
+  /// No description provided for @mapMarkerQrSaveSvg.
+  ///
+  /// In en, this message translates to:
+  /// **'Save vector'**
+  String get mapMarkerQrSaveSvg;
+
+  /// No description provided for @mapMarkerQrSavedPng.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code image saved.'**
+  String get mapMarkerQrSavedPng;
+
+  /// No description provided for @mapMarkerQrSavedSvg.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code vector saved.'**
+  String get mapMarkerQrSavedSvg;
+
+  /// No description provided for @mapMarkerQrSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save QR code: {error}'**
+  String mapMarkerQrSaveFailed(String error);
 
   /// No description provided for @mapMarkerUrlCopied.
   ///

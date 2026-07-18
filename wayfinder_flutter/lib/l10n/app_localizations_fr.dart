@@ -612,7 +612,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get geoExchangeDescription =>
-      'Importez des waypoints et traces depuis GPX, KML ou GeoJSON (ajoute des marqueurs et lignes sans remplacer les données existantes). Exportez les marqueurs en waypoints et les lignes/traces en chemins.';
+      'Importez des waypoints et traces depuis GPX, KML ou GeoJSON. Si la carte a déjà des marqueurs ou zones, vous pouvez les conserver, les remplacer ou annuler. Exportez les marqueurs en waypoints et les lignes/traces en chemins.';
 
   @override
   String get geoExchangeImportButton => 'Importer un fichier géographique';
@@ -622,6 +622,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get geoExchangeExportFormatTitle => 'Format d\'exportation';
+
+  @override
+  String get geoExchangeImportConfirmTitle =>
+      'Importer des données géographiques ?';
+
+  @override
+  String geoExchangeImportConfirmMessage(int markers, int zones) {
+    return 'La carte contient déjà $markers marqueur(s) et $zones zone(s). Choisissez Ajouter pour les conserver et importer en plus, Remplacer pour supprimer tous les marqueurs et zones d\'abord, ou Annuler pour abandonner.';
+  }
+
+  @override
+  String get geoExchangeImportAdd => 'Ajouter aux existants';
+
+  @override
+  String get geoExchangeImportReplace => 'Remplacer les existants';
 
   @override
   String geoExchangeImportSuccess(int markers, int lines) {
@@ -2662,6 +2677,29 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapMarkerCopyUrlTooltip => 'Copier le lien du marqueur';
+
+  @override
+  String get mapMarkerQrButton => 'Code QR';
+
+  @override
+  String get mapMarkerQrTitle => 'Code QR du marqueur';
+
+  @override
+  String get mapMarkerQrSavePng => 'Enregistrer l\'image';
+
+  @override
+  String get mapMarkerQrSaveSvg => 'Enregistrer le vecteur';
+
+  @override
+  String get mapMarkerQrSavedPng => 'Image du code QR enregistrée.';
+
+  @override
+  String get mapMarkerQrSavedSvg => 'Vecteur du code QR enregistré.';
+
+  @override
+  String mapMarkerQrSaveFailed(String error) {
+    return 'Impossible d\'enregistrer le code QR : $error';
+  }
 
   @override
   String get mapMarkerUrlCopied =>

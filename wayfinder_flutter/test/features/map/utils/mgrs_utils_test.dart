@@ -35,8 +35,18 @@ void main() {
     });
   });
 
+  group('chooseMgrsIntervalMeters', () {
+    test('picks coarser intervals for wider spans', () {
+      expect(chooseMgrsIntervalMeters(500000), 100000);
+      expect(chooseMgrsIntervalMeters(80000), 10000);
+      expect(chooseMgrsIntervalMeters(8000), 1000);
+      expect(chooseMgrsIntervalMeters(800), 100);
+      expect(chooseMgrsIntervalMeters(80), 10);
+    });
+  });
+
   group('buildMgrsGrid', () {
-    test('returns a rectangular UTM grid for a small viewport', () {
+    test('keeps a readable line count for a city-scale viewport', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
           south: 38.85,
@@ -47,11 +57,28 @@ void main() {
         zoom: 11,
       );
 
+      // ~11 km span should land on 1 km grid with a modest line count.
       expect(geometry.accuracy, 2);
-      // 1 km grid over ~0.1° should produce multiple easting and northing lines.
-      expect(geometry.lines.length, greaterThanOrEqualTo(8));
+      expect(geometry.lines.length, inInclusiveRange(8, 40));
       expect(geometry.lines.every((line) => line.length >= 2), isTrue);
       expect(geometry.labels, isNotEmpty);
+    });
+
+    test('uses a coarser grid for a wide regional viewport', () {
+      final geometry = buildMgrsGrid(
+        bounds: const MgrsLatLngBounds(
+          south: 36.0,
+          west: -80.0,
+          north: 41.0,
+          east: -74.0,
+        ),
+        zoom: 7,
+      );
+
+      expect(geometry.accuracy, lessThanOrEqualTo(1));
+      expect(geometry.lines, isNotEmpty);
+      // Must not explode into a dense hairline mess.
+      expect(geometry.lines.length, lessThanOrEqualTo(40));
     });
   });
 }

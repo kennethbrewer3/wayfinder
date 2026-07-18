@@ -1122,7 +1122,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         return;
       }
       final hit = _hitMapObjectAtPoint(menuPoint);
-      if (hit != null && hit.kind == SelectedMapObjectKind.marker) {
+      if (hit != null) {
         _selectMapObject(hit, openDetails: true);
         return;
       }
@@ -1210,15 +1210,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _selectMapObject(
     SelectedMapObject selection, {
-    bool? openDetails,
+    bool openDetails = false,
   }) {
-    // Markers: tap selects only (for GPS range, etc.); long-press opens details.
-    // Zones keep opening details on tap unless overridden.
-    final shouldOpenDetails =
-        openDetails ?? selection.kind != SelectedMapObjectKind.marker;
+    // Tap selects only; long-press opens details (markers and zones).
     ref
         .read(selectedMapObjectProvider.notifier)
-        .select(selection, openDetails: shouldOpenDetails);
+        .select(selection, openDetails: openDetails);
     _revealSelectedObjectInSidebar(selection);
   }
 

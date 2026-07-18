@@ -169,7 +169,7 @@ In the marker form:
 
 ### Edit or view a marker
 
-**Tap** a marker on the map to select it (highlighted; used for GPS distance/bearing). **Long-press** a marker to open its details dialog. You can also open details from the sidebar edit control. The details dialog shows coordinates, notes, and actions:
+**Tap** a marker or zone on the map to select it (highlighted; markers are used for GPS distance/bearing). **Long-press** a marker or zone to open its details dialog. You can also open details from the sidebar edit control. Marker details show coordinates, notes, and actions:
 
 - **Edit** — change any field.
 - **Copy coordinates** — to the clipboard.
@@ -267,13 +267,16 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 3. Open the line form to set name, color, layer, and notes.
 4. Distance labels and direction arrows can appear along the line depending on settings.
 
-### Edit a line
+### Select and edit a line
 
-With a line selected or in edit mode:
+**Tap** a line to select it (details stay closed). **Long-press** the line to open its details dialog.
 
-- **Tap** the map to add a vertex.
+With a line selected:
+
+- **Tap** the line again to add a vertex at that point.
 - **Drag** a vertex to move it.
 - **Long-press** a vertex to remove it (a banner explains controls while editing).
+- **Short-click** an endpoint to start a bearing plot.
 
 Line length is shown using your configured **measurement units** (metric or imperial).
 
@@ -376,7 +379,7 @@ Set latitude, longitude, and zoom for the **Home** button on the map. If no mark
 ### Map display
 
 - **Bearings** — display absolute bearings as **true north (°T)** or **magnetic north (°M)** using WMM2025 declination at GPS position or map center.
-- **Compass rose** — show or hide the true-north compass overlay (magnetic variation is shown underneath).
+- **Compass rose** — show or hide the compass overlay (below instruction banners). **±5°** buttons rotate the map; **double-tap** the rose to reset rotation; **long-press** toggles true north (red **N**) vs magnetic north (blue **MN**). Variation uses WMM2025.
 - **Show MGRS grid** — overlay true Military Grid Reference System lines (see [MGRS grid](#mgrs-grid) under **The map**). Spacing follows zoom; zone seams and slight curvature on Web Mercator are expected for correct MGRS.
 - **Map zoom range** — optional min/max zoom limits for the map interaction range.
 

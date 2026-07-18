@@ -153,7 +153,7 @@
   "settingsMapDisplayTitle": "Map display",
   "settingsMapDisplayDescription": "Map overlays stored on the server.",
   "settingsMapCompassRoseTitle": "Show compass rose",
-  "settingsMapCompassRoseDescription": "Displays a true-north compass in the upper-left corner of the map, with magnetic variation (WMM2025) underneath.",
+  "settingsMapCompassRoseDescription": "Displays a compass below the map instruction banners. Double-tap resets rotation; long-press toggles true/magnetic north; ±5° buttons rotate the map. Variation uses WMM2025.",
   "settingsMapMgrsGridTitle": "Show MGRS grid",
   "settingsMapMgrsGridDescription": "Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.",
   "settingsMapZoomRangeWarning": "Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.",

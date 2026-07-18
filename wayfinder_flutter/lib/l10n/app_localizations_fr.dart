@@ -360,7 +360,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Affiche une boussole de nord vrai dans le coin supérieur gauche de la carte, avec la variation magnétique (WMM2025) en dessous.';
+      'Affiche une boussole sous les bannières d\'instructions. Double frappe : réinitialiser la rotation ; appui long : basculer nord vrai/magnétique ; boutons ±5° pour tourner la carte. Variation WMM2025.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Afficher la grille MGRS';

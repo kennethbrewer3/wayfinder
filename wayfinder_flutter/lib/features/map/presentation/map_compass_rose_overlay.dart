@@ -1,17 +1,25 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../lines/models/bearing_reference.dart';
+import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/utils/bearing_utils.dart';
 import '../utils/magnetic_declination.dart';
 
 const _compassAssetPath = 'assets/map/compass_rose.svg';
 const _compassSize = 56.0;
+const _rotationStepDegrees = 5.0;
 
-/// Fixed north-oriented compass rose for the upper-left map corner.
-class MapCompassRoseOverlay extends StatefulWidget {
+/// Clears the top instruction banners (line edit / bearing plot / draw).
+const _bannerClearance = 56.0;
+
+/// Compass rose with map rotation controls (upper-left, below instruction banners).
+class MapCompassRoseOverlay extends ConsumerStatefulWidget {
   const MapCompassRoseOverlay({
     super.key,
     required this.mapController,
@@ -20,10 +28,12 @@ class MapCompassRoseOverlay extends StatefulWidget {
   final MapController mapController;
 
   @override
-  State<MapCompassRoseOverlay> createState() => _MapCompassRoseOverlayState();
+  ConsumerState<MapCompassRoseOverlay> createState() =>
+      _MapCompassRoseOverlayState();
 }
 
-class _MapCompassRoseOverlayState extends State<MapCompassRoseOverlay> {
+class _MapCompassRoseOverlayState
+    extends ConsumerState<MapCompassRoseOverlay> {
   StreamSubscription<MapEvent>? _mapEvents;
 
   @override
@@ -55,88 +65,188 @@ class _MapCompassRoseOverlayState extends State<MapCompassRoseOverlay> {
     super.dispose();
   }
 
+  void _rotateBy(double deltaDegrees) {
+    final current = widget.mapController.camera.rotation;
+    widget.mapController.rotate(current + deltaDegrees);
+  }
+
+  void _resetRotation() {
+    widget.mapController.rotate(0);
+  }
+
+  Future<void> _toggleBearingReference() async {
+    final current = ref.read(bearingReferenceProvider);
+    final next = switch (current) {
+      BearingReference.trueNorth => BearingReference.magnetic,
+      BearingReference.magnetic => BearingReference.trueNorth,
+    };
+    await ref.read(bearingReferenceProvider.notifier).setReference(next);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final camera = widget.mapController.camera;
-    final northAngle = northScreenAngle(
+    final bearingReference = ref.watch(bearingReferenceProvider);
+    final declination = magneticDeclinationDegrees(location: camera.center);
+    final trueNorthAngle = northScreenAngle(
       anchor: camera.center,
       camera: camera,
     );
-    final declinationLabel = formatMagneticDeclination(
-      magneticDeclinationDegrees(location: camera.center),
-    );
+    // Magnetic north lies east of true north when declination is positive.
+    final displayAngle = switch (bearingReference) {
+      BearingReference.trueNorth => trueNorthAngle,
+      BearingReference.magnetic =>
+        trueNorthAngle + (declination * math.pi / 180),
+    };
+    final northColor = switch (bearingReference) {
+      BearingReference.trueNorth => colors.error,
+      BearingReference.magnetic => colors.primary,
+    };
+    final northLabel = switch (bearingReference) {
+      BearingReference.trueNorth => 'N',
+      BearingReference.magnetic => 'MN',
+    };
+    final modeHint = switch (bearingReference) {
+      BearingReference.trueNorth => 'True',
+      BearingReference.magnetic => 'Mag',
+    };
+    final declinationLabel = formatMagneticDeclination(declination);
 
     return Align(
       alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 12, top: 12),
-        child: IgnorePointer(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: colors.surfaceContainerHighest.withValues(alpha: 0.92),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: colors.outlineVariant),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.shadow.withValues(alpha: 0.18),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 12,
+            top: _bannerClearance,
+          ),
+          child: Material(
+            color: colors.surfaceContainerHighest.withValues(alpha: 0.92),
+            elevation: 2,
+            borderRadius: BorderRadius.circular(10),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: northColor.withValues(alpha: 0.55),
+                  width: 1.5,
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: _compassSize,
-                    height: _compassSize,
-                    child: Transform.rotate(
-                      angle: northAngle,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            _compassAssetPath,
-                            width: _compassSize,
-                            height: _compassSize,
-                            colorFilter: ColorFilter.mode(
-                              colors.onSurface,
-                              BlendMode.srcIn,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onDoubleTap: _resetRotation,
+                      onLongPress: _toggleBearingReference,
+                      child: Tooltip(
+                        message:
+                            'Double-tap: reset rotation\n'
+                            'Long-press: toggle true / magnetic north',
+                        child: SizedBox(
+                          width: _compassSize,
+                          height: _compassSize,
+                          child: Transform.rotate(
+                            angle: displayAngle,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  _compassAssetPath,
+                                  width: _compassSize,
+                                  height: _compassSize,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.onSurface,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 1,
+                                  child: Text(
+                                    northLabel,
+                                    style:
+                                        theme.textTheme.labelSmall?.copyWith(
+                                      color: northColor,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1,
+                                      fontSize: northLabel.length > 1
+                                          ? 10
+                                          : 12,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Positioned(
-                            top: 2,
-                            child: Text(
-                              'N',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: colors.error,
-                                fontWeight: FontWeight.w700,
-                                height: 1,
-                              ),
-                            ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '$modeHint · $declinationLabel',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: northColor,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                        fontWeight: FontWeight.w600,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    SizedBox(
+                      width: _compassSize,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _RotateButton(
+                            tooltip: 'Rotate left 5°',
+                            icon: Icons.rotate_left,
+                            onPressed: () => _rotateBy(-_rotationStepDegrees),
+                          ),
+                          _RotateButton(
+                            tooltip: 'Rotate right 5°',
+                            icon: Icons.rotate_right,
+                            onPressed: () => _rotateBy(_rotationStepDegrees),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    declinationLabel,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: colors.onSurfaceVariant,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                      height: 1.1,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _RotateButton extends StatelessWidget {
+  const _RotateButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      icon: Icon(icon, size: 20),
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+      style: IconButton.styleFrom(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }

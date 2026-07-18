@@ -751,7 +751,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapCompassRoseDescription.
   ///
   /// In en, this message translates to:
-  /// **'Displays a true-north compass in the upper-left corner of the map, with magnetic variation (WMM2025) underneath.'**
+  /// **'Displays a compass below the map instruction banners. Double-tap resets rotation; long-press toggles true/magnetic north; ±5° buttons rotate the map. Variation uses WMM2025.'**
   String get settingsMapCompassRoseDescription;
 
   /// No description provided for @settingsMapMgrsGridTitle.

@@ -64,7 +64,7 @@ void main() {
       expect(geometry.labels, isNotEmpty);
     });
 
-    test('uses a coarser grid for a wide regional viewport', () {
+    test('uses a coarser multi-zone grid for a regional viewport', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
           south: 36.0,
@@ -78,7 +78,23 @@ void main() {
       expect(geometry.accuracy, lessThanOrEqualTo(1));
       expect(geometry.lines, isNotEmpty);
       // Must not explode into a dense hairline mess.
-      expect(geometry.lines.length, lessThanOrEqualTo(40));
+      expect(geometry.lines.length, lessThanOrEqualTo(80));
+    });
+
+    test('draws GZD lines across a world viewport at low zoom', () {
+      final geometry = buildMgrsGrid(
+        bounds: const MgrsLatLngBounds(
+          south: -60,
+          west: -180,
+          north: 70,
+          east: 180,
+        ),
+        zoom: 3,
+      );
+
+      expect(geometry.accuracy, 0);
+      expect(geometry.lines.length, greaterThan(30));
+      expect(geometry.labels, isNotEmpty);
     });
   });
 }

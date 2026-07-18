@@ -2589,7 +2589,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 left: labelPosition.dx,
                 top: labelPosition.dy,
                 child: IgnorePointer(
-                  child: MapCursorCoordinates(location: location),
+                  child: MapCursorCoordinates(
+                    location: location,
+                    showMgrs: showMgrsGrid,
+                    zoom: _mapController.camera.zoom,
+                  ),
                 ),
               ),
             if (_radialMenuCenter case final center?

@@ -686,7 +686,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapAtlasDescription =>
-      'Export a multi-page PDF of the current map area (or all markers) with a lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use. This is a vector overlay atlas — it does not include satellite or PMTiles basemap imagery.';
+      'Export a multi-page PDF of the current map area (or all markers) with the enabled PMTiles basemap, lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use.';
 
   @override
   String get mapAtlasExportButton => 'Export printable atlas (PDF)';
@@ -696,7 +696,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapAtlasDialogDescription =>
-      'Choose coverage, page size, and how many sheets to print. Each sheet includes an approximate MGRS label for its center.';
+      'Choose coverage, page size, and how many sheets to print. Sheets include the enabled PMTiles basemap plus overlays. Each sheet has an approximate MGRS label for its center.';
 
   @override
   String get mapAtlasTitleLabel => 'Atlas title';

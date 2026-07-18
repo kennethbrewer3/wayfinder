@@ -697,7 +697,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapAtlasDescription =>
-      'Exportez un PDF multipage de la zone actuelle de la carte (ou de tous les marqueurs) avec une grille lat/lng, les marqueurs, les zones, une barre d\'échelle et une flèche nord. Les feuilles se chevauchent légèrement pour un usage terrain. C\'est un atlas vectoriel des superpositions — sans imagerie satellite ni fond PMTiles.';
+      'Exportez un PDF multipage de la zone actuelle de la carte (ou de tous les marqueurs) avec le fond PMTiles activé, une grille lat/lng, les marqueurs, les zones, une barre d\'échelle et une flèche nord. Les feuilles se chevauchent légèrement pour un usage terrain.';
 
   @override
   String get mapAtlasExportButton => 'Exporter l\'atlas imprimable (PDF)';
@@ -707,7 +707,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapAtlasDialogDescription =>
-      'Choisissez la couverture, le format de page et le nombre de feuilles. Chaque feuille inclut une étiquette MGRS approximative de son centre.';
+      'Choisissez la couverture, le format de page et le nombre de feuilles. Les feuilles incluent le fond PMTiles activé plus les superpositions. Chaque feuille a une étiquette MGRS approximative de son centre.';
 
   @override
   String get mapAtlasTitleLabel => 'Titre de l\'atlas';

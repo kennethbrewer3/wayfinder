@@ -692,7 +692,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapAtlasDescription =>
-      'Exporte un PDF de varias páginas del área actual del mapa (o de todos los marcadores) con cuadrícula lat/lng, marcadores, zonas, barra de escala y flecha norte. Las hojas se solapan ligeramente para uso en campo. Es un atlas vectorial de superposiciones — no incluye imágenes satelitales ni el basemap PMTiles.';
+      'Exporte un PDF de varias páginas del área actual del mapa (o de todos los marcadores) con el basemap PMTiles habilitado, cuadrícula lat/lng, marcadores, zonas, barra de escala y flecha norte. Las hojas se solapan ligeramente para uso en campo.';
 
   @override
   String get mapAtlasExportButton => 'Exportar atlas imprimible (PDF)';
@@ -702,7 +702,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapAtlasDialogDescription =>
-      'Elija cobertura, tamaño de página y cuántas hojas imprimir. Cada hoja incluye una etiqueta MGRS aproximada de su centro.';
+      'Elija cobertura, tamaño de página y cuántas hojas imprimir. Las hojas incluyen el basemap PMTiles habilitado más las superposiciones. Cada hoja tiene una etiqueta MGRS aproximada de su centro.';
 
   @override
   String get mapAtlasTitleLabel => 'Título del atlas';

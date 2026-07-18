@@ -529,7 +529,7 @@ Use this when you need paper sheets if the phone dies. From the map, tap the **P
 - **Page size** — US Letter or A4 landscape
 - Optional marker list on each sheet
 
-The PDF includes an index overview plus one page per sheet with a lat/lng grid, markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. It is a **vector overlay atlas** — it does **not** embed satellite or PMTiles basemap imagery.
+The PDF includes an index overview plus one page per sheet with the **enabled PMTiles basemap** (rasterized from the same archives used on the map), a lat/lng grid, markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. Export can take a moment while tiles are rendered.
 
 ---
 

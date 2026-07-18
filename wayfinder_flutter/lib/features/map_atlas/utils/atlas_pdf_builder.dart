@@ -11,10 +11,13 @@ import '../../lines/models/line_geometry.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../map/utils/mgrs_utils.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
+import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../models/atlas_bounds.dart';
 import '../models/atlas_sheet.dart';
+import 'atlas_basemap_renderer.dart';
 import 'atlas_tiler.dart';
+import 'atlas_web_mercator.dart';
 
 enum AtlasPageSize { letterLandscape, a4Landscape }
 
@@ -50,6 +53,7 @@ Future<Uint8List> buildAtlasPdf({
   required AtlasBounds coverage,
   required List<MapMarker> markers,
   required List<MapZone> zones,
+  List<PmtilesArchiveEntry> enabledPmtiles = const [],
 }) async {
   final sheets = tileAtlasBounds(
     coverage: coverage,
@@ -62,12 +66,26 @@ Future<Uint8List> buildAtlasPdf({
 
   final visibleMarkers = markers.where((marker) => marker.visible).toList();
   final visibleZones = zones.where((zone) => zone.visible).toList();
+  final basemapBySheetId = <String, Uint8List>{};
+  if (enabledPmtiles.isNotEmpty) {
+    for (final sheet in sheets) {
+      final png = await renderAtlasBasemapPng(
+        bounds: sheet.bounds,
+        enabledEntries: enabledPmtiles,
+      );
+      if (png != null) {
+        basemapBySheetId[sheet.id] = png;
+      }
+    }
+  }
+
   final doc = pw.Document(
     title: options.title,
     author: 'Wayfinder',
     creator: 'Wayfinder printable atlas',
   );
   final format = _pdfFormat(options.pageSize);
+  final hasBasemap = basemapBySheetId.isNotEmpty;
 
   doc.addPage(
     pw.Page(
@@ -79,6 +97,7 @@ Future<Uint8List> buildAtlasPdf({
         sheets: sheets,
         markerCount: visibleMarkers.length,
         zoneCount: visibleZones.length,
+        hasBasemap: hasBasemap,
       ),
     ),
   );
@@ -101,6 +120,7 @@ Future<Uint8List> buildAtlasPdf({
           markers: sheetMarkers,
           zones: visibleZones,
           includeMarkerIndex: options.includeMarkerIndex,
+          basemapPng: basemapBySheetId[sheet.id],
         ),
       ),
     );
@@ -116,6 +136,7 @@ class _IndexPage extends pw.StatelessWidget {
     required this.sheets,
     required this.markerCount,
     required this.zoneCount,
+    required this.hasBasemap,
   });
 
   final String title;
@@ -123,6 +144,7 @@ class _IndexPage extends pw.StatelessWidget {
   final List<AtlasSheet> sheets;
   final int markerCount;
   final int zoneCount;
+  final bool hasBasemap;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -172,8 +194,13 @@ class _IndexPage extends pw.StatelessWidget {
         ),
         pw.SizedBox(height: 10),
         pw.Text(
-          'Sheets use a lat/lng grid (not a satellite basemap). Edge sheets '
-          'overlap slightly. MGRS labels are approximate for sheet centers.',
+          hasBasemap
+              ? 'Sheets include the enabled PMTiles basemap plus overlays. '
+                    'Edge sheets overlap slightly. MGRS labels are approximate '
+                    'for sheet centers.'
+              : 'No PMTiles basemap was available for this export; sheets show '
+                    'overlays on a grid. Enable map tiles and try again for a '
+                    'full basemap. Edge sheets overlap slightly.',
           style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
         ),
       ],
@@ -188,6 +215,7 @@ class _SheetPage extends pw.StatelessWidget {
     required this.markers,
     required this.zones,
     required this.includeMarkerIndex,
+    this.basemapPng,
   });
 
   final String title;
@@ -195,6 +223,7 @@ class _SheetPage extends pw.StatelessWidget {
   final List<MapMarker> markers;
   final List<MapZone> zones;
   final bool includeMarkerIndex;
+  final Uint8List? basemapPng;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -203,6 +232,9 @@ class _SheetPage extends pw.StatelessWidget {
       LatLng(sheet.bounds.centerLatitude, sheet.bounds.west),
       LatLng(sheet.bounds.centerLatitude, sheet.bounds.east),
     );
+    final basemapImage = basemapPng == null
+        ? null
+        : PdfImage.file(context.document, bytes: basemapPng!);
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -258,6 +290,7 @@ class _SheetPage extends pw.StatelessWidget {
                 markers: markers,
                 zones: zones,
                 widthMeters: widthMeters,
+                basemap: basemapImage,
               ),
             ),
           ),
@@ -356,6 +389,7 @@ void _paintSheetMap({
   required List<MapMarker> markers,
   required List<MapZone> zones,
   required double widthMeters,
+  PdfImage? basemap,
 }) {
   final font = canvas.defaultFont;
   final margin = 10.0;
@@ -370,15 +404,27 @@ void _paintSheetMap({
   canvas
     ..setFillColor(PdfColors.grey100)
     ..drawRect(0, 0, size.x, size.y)
-    ..fillPath()
+    ..fillPath();
+
+  if (basemap != null) {
+    canvas.drawImage(
+      basemap,
+      plotOrigin.x,
+      plotOrigin.y,
+      plot.x,
+      plot.y,
+    );
+  }
+
+  canvas
     ..setStrokeColor(PdfColors.blueGrey800)
     ..setLineWidth(1)
     ..drawRect(plotOrigin.x, plotOrigin.y, plot.x, plot.y)
     ..strokePath();
 
   canvas
-    ..setStrokeColor(PdfColors.grey400)
-    ..setLineWidth(0.4);
+    ..setStrokeColor(basemap == null ? PdfColors.grey400 : PdfColors.grey600)
+    ..setLineWidth(basemap == null ? 0.4 : 0.25);
   for (var i = 1; i < 5; i++) {
     final lat = sheet.bounds.south + sheet.bounds.latSpan * i / 5;
     final lng = sheet.bounds.west + sheet.bounds.lngSpan * i / 5;
@@ -590,24 +636,34 @@ String _formatScaleLabel(double meters) {
   return '${meters.round()} m';
 }
 
+/// Projects lat/lng into the sheet plot using Web Mercator (matches basemap).
 class _SheetProjector {
   _SheetProjector(
     this.bounds,
     this.size, {
     PdfPoint? origin,
-  }) : origin = origin ?? const PdfPoint(0, 0);
+  }) : origin = origin ?? const PdfPoint(0, 0),
+       _westX = lngToMercatorX(bounds.west),
+       _eastX = lngToMercatorX(bounds.east),
+       _southY = latToMercatorY(bounds.south),
+       _northY = latToMercatorY(bounds.north);
 
   final AtlasBounds bounds;
   final PdfPoint size;
   final PdfPoint origin;
+  final double _westX;
+  final double _eastX;
+  final double _southY;
+  final double _northY;
 
   PdfPoint project(LatLng point) {
-    final x =
-        origin.x +
-        ((point.longitude - bounds.west) / bounds.lngSpan) * size.x;
-    final y =
-        origin.y +
-        ((point.latitude - bounds.south) / bounds.latSpan) * size.y;
+    final mx = lngToMercatorX(point.longitude);
+    final my = latToMercatorY(point.latitude);
+    final xSpan = _eastX - _westX;
+    final ySpan = _southY - _northY; // south mercY > north mercY
+    final x = origin.x + ((mx - _westX) / xSpan) * size.x;
+    // PDF y increases upward; smaller mercY (north) maps to higher PDF y.
+    final y = origin.y + ((_southY - my) / ySpan) * size.y;
     return PdfPoint(x, y);
   }
 }

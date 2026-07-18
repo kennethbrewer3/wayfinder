@@ -6,6 +6,7 @@ import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
+import '../../settings/providers/pmtiles_providers.dart';
 import '../utils/atlas_pdf_builder.dart';
 import 'map_atlas_export_dialog.dart';
 
@@ -38,6 +39,8 @@ Future<bool> runMapAtlasExport({
 
     final markers = await ref.read(markersProvider.future);
     final zones = await ref.read(zonesProvider.future);
+    final enabledPmtiles =
+        await ref.read(pmtilesEnabledMetadataProvider.future);
     if (!context.mounted) {
       return false;
     }
@@ -47,6 +50,7 @@ Future<bool> runMapAtlasExport({
       coverage: coverage,
       markers: markers,
       zones: zones,
+      enabledPmtiles: enabledPmtiles,
     );
     final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
       ':',

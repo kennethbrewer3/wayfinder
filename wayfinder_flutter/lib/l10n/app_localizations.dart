@@ -1308,7 +1308,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapAtlasDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export a multi-page PDF of the current map area (or all markers) with a lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use. This is a vector overlay atlas — it does not include satellite or PMTiles basemap imagery.'**
+  /// **'Export a multi-page PDF of the current map area (or all markers) with the enabled PMTiles basemap, lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use.'**
   String get mapAtlasDescription;
 
   /// No description provided for @mapAtlasExportButton.
@@ -1326,7 +1326,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapAtlasDialogDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose coverage, page size, and how many sheets to print. Each sheet includes an approximate MGRS label for its center.'**
+  /// **'Choose coverage, page size, and how many sheets to print. Sheets include the enabled PMTiles basemap plus overlays. Each sheet has an approximate MGRS label for its center.'**
   String get mapAtlasDialogDescription;
 
   /// No description provided for @mapAtlasTitleLabel.

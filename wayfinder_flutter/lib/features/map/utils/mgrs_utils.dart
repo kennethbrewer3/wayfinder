@@ -192,12 +192,19 @@ const _mgrsBandEdges = <double>[
   84,
 ];
 
-/// Builds MGRS grid lines/labels for [bounds] at the given map [zoom].
+/// Builds **correct** MGRS grid lines/labels for [bounds] at [zoom].
 ///
-/// Mode is chosen from geographic span:
-/// - World-scale → GZD (6° × latitude-band) mesh
-/// - Multi-zone → clipped UTM grids per zone (no cross-zone bleed)
-/// - Local → single-zone UTM grid
+/// MGRS is UTM-based. This overlay intentionally draws real UTM/MGRS geometry
+/// on a Web Mercator map, so:
+/// - **GZD** (low zoom / very wide views): meridians every 6° and latitude
+///   bands — straight on Web Mercator.
+/// - **UTM squares** (regional / local): constant easting/northing polylines,
+///   clipped per zone. Adjacent zones do not share axes, so the mesh
+///   **discontinues at zone boundaries** (correct MGRS).
+/// - UTM lines that are straight in UTM space can appear **slightly curved**
+///   when projected to Web Mercator; that is expected, not a drawing error.
+///
+/// Labels are placed at cell centers (GZD or UTM squares).
 MgrsGridGeometry buildMgrsGrid({
   required MgrsLatLngBounds bounds,
   required double zoom,

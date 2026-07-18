@@ -721,7 +721,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapMgrsGridDescription.
   ///
   /// In en, this message translates to:
-  /// **'Overlays Military Grid Reference System lines on the map. Grid spacing adjusts with zoom.'**
+  /// **'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.'**
   String get settingsMapMgrsGridDescription;
 
   /// No description provided for @settingsMapZoomRangeWarning.
@@ -2546,6 +2546,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User manual'**
   String get mapManualTooltip;
+
+  /// No description provided for @mapDeviceLocationTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'My location'**
+  String get mapDeviceLocationTooltip;
+
+  /// No description provided for @mapDeviceLocationFollowingTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Following your location (pan to stop)'**
+  String get mapDeviceLocationFollowingTooltip;
+
+  /// No description provided for @mapDeviceLocationStopTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'My location (long-press to hide)'**
+  String get mapDeviceLocationStopTooltip;
+
+  /// No description provided for @mapDeviceLocationServiceDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are turned off on this device.'**
+  String get mapDeviceLocationServiceDisabled;
+
+  /// No description provided for @mapDeviceLocationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission was denied.'**
+  String get mapDeviceLocationPermissionDenied;
+
+  /// No description provided for @mapDeviceLocationPermissionDeniedForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is blocked. Enable it in system or browser settings.'**
+  String get mapDeviceLocationPermissionDeniedForever;
+
+  /// No description provided for @mapDeviceLocationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not determine your location. On the web, use HTTPS or localhost.'**
+  String get mapDeviceLocationUnavailable;
+
+  /// No description provided for @mapDeviceLocationSelectedMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected marker'**
+  String get mapDeviceLocationSelectedMarker;
+
+  /// No description provided for @mapDeviceLocationSelectMarkerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a marker for distance and bearing'**
+  String get mapDeviceLocationSelectMarkerHint;
+
+  /// No description provided for @mapDeviceLocationToMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'To {name}: {range}'**
+  String mapDeviceLocationToMarker(String name, String range);
 
   /// No description provided for @mapMgrsGridShowTooltip.
   ///

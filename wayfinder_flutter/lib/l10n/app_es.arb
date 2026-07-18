@@ -125,7 +125,7 @@
   "settingsMapCompassRoseTitle": "Mostrar rosa de los vientos",
   "settingsMapCompassRoseDescription": "Muestra una brújula orientada al norte en la esquina superior izquierda del mapa.",
   "settingsMapMgrsGridTitle": "Mostrar cuadrícula MGRS",
-  "settingsMapMgrsGridDescription": "Superpone las líneas del sistema de referencia de cuadrícula militar (MGRS). El espaciado se ajusta con el zoom.",
+  "settingsMapMgrsGridDescription": "Superpone una cuadrícula MGRS real (basada en UTM). El espaciado sigue el zoom. Las uniones entre zonas y una ligera curvatura en el mapa Web Mercator son normales: los cuadrados MGRS no son rectángulos de lat/lng.",
   "settingsMapZoomRangeWarning": "Cambiar el rango de zoom puede ralentizar el mapa, aumentar el uso de memoria o mostrar teselas estiradas cuando sus datos sin conexión no incluyen detalle en esos niveles. Solo suba el máximo si sus archivos de mapa lo admiten.",
   "settingsMapMinZoom": "Zoom mínimo",
   "settingsMapMaxZoom": "Zoom máximo",
@@ -596,6 +596,26 @@
   "rectangleCenterMoveHelp": "Mover el centro desplaza todo el rectángulo en el mapa.",
   "mapHomeTooltip": "Inicio",
   "mapSettingsTooltip": "Configuración",
+  "mapDeviceLocationTooltip": "Mi ubicación",
+  "mapDeviceLocationFollowingTooltip": "Siguiendo tu ubicación (desplaza para detener)",
+  "mapDeviceLocationStopTooltip": "Mi ubicación (mantén pulsado para ocultar)",
+  "mapDeviceLocationServiceDisabled": "Los servicios de ubicación están desactivados en este dispositivo.",
+  "mapDeviceLocationPermissionDenied": "Se denegó el permiso de ubicación.",
+  "mapDeviceLocationPermissionDeniedForever": "El permiso de ubicación está bloqueado. Actívalo en los ajustes del sistema o del navegador.",
+  "mapDeviceLocationUnavailable": "No se pudo determinar tu ubicación. En la web, usa HTTPS o localhost.",
+  "mapDeviceLocationSelectedMarker": "Marcador seleccionado",
+  "mapDeviceLocationSelectMarkerHint": "Selecciona un marcador para distancia y rumbo",
+  "mapDeviceLocationToMarker": "A {name}: {range}",
+  "@mapDeviceLocationToMarker": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
   "mapMgrsGridShowTooltip": "Mostrar cuadrícula MGRS",
   "mapMgrsGridHideTooltip": "Ocultar cuadrícula MGRS",
   "mapShowObjectsTooltip": "Mostrar objetos del mapa",

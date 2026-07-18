@@ -148,7 +148,7 @@
   "settingsMapCompassRoseTitle": "Show compass rose",
   "settingsMapCompassRoseDescription": "Displays a north-oriented compass in the upper-left corner of the map.",
   "settingsMapMgrsGridTitle": "Show MGRS grid",
-  "settingsMapMgrsGridDescription": "Overlays Military Grid Reference System lines on the map. Grid spacing adjusts with zoom.",
+  "settingsMapMgrsGridDescription": "Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.",
   "settingsMapZoomRangeWarning": "Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.",
   "settingsMapMinZoom": "Minimum zoom",
   "settingsMapMaxZoom": "Maximum zoom",
@@ -790,6 +790,26 @@
   "mapHomeTooltip": "Home",
   "mapSettingsTooltip": "Settings",
   "mapManualTooltip": "User manual",
+  "mapDeviceLocationTooltip": "My location",
+  "mapDeviceLocationFollowingTooltip": "Following your location (pan to stop)",
+  "mapDeviceLocationStopTooltip": "My location (long-press to hide)",
+  "mapDeviceLocationServiceDisabled": "Location services are turned off on this device.",
+  "mapDeviceLocationPermissionDenied": "Location permission was denied.",
+  "mapDeviceLocationPermissionDeniedForever": "Location permission is blocked. Enable it in system or browser settings.",
+  "mapDeviceLocationUnavailable": "Could not determine your location. On the web, use HTTPS or localhost.",
+  "mapDeviceLocationSelectedMarker": "Selected marker",
+  "mapDeviceLocationSelectMarkerHint": "Select a marker for distance and bearing",
+  "mapDeviceLocationToMarker": "To {name}: {range}",
+  "@mapDeviceLocationToMarker": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
   "mapMgrsGridShowTooltip": "Show MGRS grid",
   "mapMgrsGridHideTooltip": "Hide MGRS grid",
   "userManualTitle": "User Manual",

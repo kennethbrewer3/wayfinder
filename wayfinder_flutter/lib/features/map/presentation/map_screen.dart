@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +21,7 @@ import '../../search/providers/search_coordinate_marker_provider.dart';
 import '../../search/presentation/map_search_bar.dart';
 import '../../sidebar/presentation/sidebar_panel.dart';
 import '../models/map_viewport.dart';
+import '../providers/device_location_provider.dart';
 import '../providers/home_location_provider.dart';
 import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/map_providers.dart';
@@ -198,6 +201,74 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     return ref.read(mapViewportProvider.notifier).goHome(home);
   }
 
+  Future<void> _locateMe() async {
+    final l10n = AppLocalizations.of(context)!;
+    final notifier = ref.read(deviceLocationProvider.notifier);
+    final ok = await notifier.locateAndFollow();
+    if (!mounted) {
+      return;
+    }
+    final location = ref.read(deviceLocationProvider);
+    if (!ok) {
+      final message = _deviceLocationErrorMessage(l10n, location.errorMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      return;
+    }
+    final position = location.position;
+    if (position == null) {
+      // Permission granted; waiting on the first GPS/browser fix.
+      return;
+    }
+    final currentZoom =
+        ref.read(mapViewportProvider).valueOrNull?.zoom ??
+        AppConstants.defaultZoom;
+    await ref.read(mapViewportProvider.notifier).moveTo(
+      center: position,
+      zoom: currentZoom < 14 ? 14 : currentZoom,
+    );
+  }
+
+  Future<void> _stopLocateMe() async {
+    await ref.read(deviceLocationProvider.notifier).stop();
+  }
+
+  String _deviceLocationErrorMessage(AppLocalizations l10n, String? code) {
+    return switch (DeviceLocationError.fromCode(code)) {
+      DeviceLocationError.serviceDisabled =>
+        l10n.mapDeviceLocationServiceDisabled,
+      DeviceLocationError.permissionDenied =>
+        l10n.mapDeviceLocationPermissionDenied,
+      DeviceLocationError.permissionDeniedForever =>
+        l10n.mapDeviceLocationPermissionDeniedForever,
+      DeviceLocationError.unavailable || null =>
+        l10n.mapDeviceLocationUnavailable,
+    };
+  }
+
+  void _followDeviceLocation(DeviceLocationState? previous, DeviceLocationState next) {
+    if (!next.following || next.position == null) {
+      return;
+    }
+    if (previous?.position == next.position &&
+        previous?.following == true) {
+      return;
+    }
+    final currentZoom =
+        ref.read(mapViewportProvider).valueOrNull?.zoom ??
+        AppConstants.defaultZoom;
+    // Follow updates are frequent — keep the camera in sync without
+    // rewriting saved viewport storage on every GPS tick.
+    unawaited(
+      ref.read(mapViewportProvider.notifier).moveTo(
+        center: next.position!,
+        zoom: currentZoom,
+        persist: false,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -227,6 +298,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ref.watch(geocodingSearchProvider(debouncedQuery)).isLoading;
     final showSearchResults = searchResults.isNotEmpty || geocodingLoading;
     final mgrsGridEnabled = ref.watch(mapMgrsGridEnabledProvider);
+    final deviceLocation = ref.watch(deviceLocationProvider);
+
+    ref.listen<DeviceLocationState>(
+      deviceLocationProvider,
+      _followDeviceLocation,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -254,6 +331,31 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             onPressed: () {
               ref.read(mapMgrsGridEnabledProvider.notifier).toggle();
             },
+          ),
+          IconButton(
+            tooltip: deviceLocation.tracking
+                ? (deviceLocation.following
+                      ? l10n.mapDeviceLocationFollowingTooltip
+                      : l10n.mapDeviceLocationStopTooltip)
+                : l10n.mapDeviceLocationTooltip,
+            icon: deviceLocation.busy
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(
+                    deviceLocation.tracking
+                        ? (deviceLocation.following
+                              ? Icons.gps_fixed
+                              : Icons.gps_not_fixed)
+                        : Icons.my_location,
+                    color: deviceLocation.tracking
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                  ),
+            onPressed: deviceLocation.busy ? null : _locateMe,
+            onLongPress: deviceLocation.tracking ? _stopLocateMe : null,
           ),
           IconButton(
             tooltip: l10n.mapHomeTooltip,

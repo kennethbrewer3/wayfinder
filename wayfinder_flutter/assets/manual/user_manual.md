@@ -31,6 +31,8 @@ Wayfinder stores your markers, lines, circles, and rectangles on a **Wayfinder s
 | Search field | Find markers, zones, coordinates, and geocoded places |
 | Status dot (geocoding) | Shows whether place/address search indexes are ready |
 | Layers | PMTiles load progress and enabled tile list |
+| Grid | Toggle MGRS grid overlay |
+| My location | Show GPS “you are here” (long-press to hide) |
 | Home | Jump to your saved home location |
 | Book | Open this user manual |
 | Gear | Open Settings |
@@ -47,7 +49,31 @@ Wayfinder stores your markers, lines, circles, and rectangles on a **Wayfinder s
 
 ### Cursor coordinates
 
-While the pointer is over the map, latitude and longitude appear in a small overlay. Use this when placing objects precisely.
+While the pointer is over the map, a small readout appears **above** the cursor. It shows latitude/longitude by default. When the **MGRS grid** is enabled, the readout shows the Military Grid Reference System coordinate instead (precision follows zoom).
+
+### My location (GPS)
+
+Tap the **my location** button (crosshair) in the map app bar to show a blue **you are here** dot from this device’s GPS / browser geolocation.
+
+- **No internet is required** for positioning — the OS or browser reads satellites (and related sensors) locally. Wayfinder only plots those coordinates on your offline PMTiles map.
+- The map **follows** your position until you pan or zoom; tap the button again to re-center and resume following.
+- **Long-press** the button to hide the blue dot and stop tracking.
+- An accuracy circle appears when the device reports a useful accuracy radius.
+- A **status card** (bottom-left) shows your position as lat/lng, or as **MGRS** when the MGRS grid is on. If a **marker is selected**, it also shows distance and true bearing to that marker, with a dashed guide line on the map.
+- **Web note:** browsers only allow geolocation in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts) — `https://…` or `http://localhost`. Plain `http://192.168.x.x` usually blocks location. Serve the client behind HTTPS on the LAN if you need GPS in the browser (see the client deploy guide). Native Android/iOS/macOS builds use system location APIs and do not need HTTPS for GPS.
+
+### MGRS grid
+
+Wayfinder can overlay a true **MGRS** (Military Grid Reference System) grid on the map. Toggle it from the map toolbar (grid icon) or **Settings → General → Map display → Show MGRS grid**.
+
+MGRS is based on the **UTM** projection, not on simple latitude/longitude squares:
+
+- **At wide / low zoom**, the overlay shows **Grid Zone Designator (GZD)** lines — 6° longitude zones and latitude bands. Those lines follow meridians and parallels, so they look straight on the Web Mercator basemap.
+- **When you zoom in**, the overlay draws the real **UTM easting/northing** squares used by MGRS (100 km, 10 km, 1 km, and finer as the view tightens). Labels sit at the center of each visible square.
+- **Zone boundaries are seams.** Adjacent UTM zones use different axes, so grid lines from neighboring zones do **not** meet in a continuous rectangle. That discontinuity is correct MGRS, not a map bug.
+- **Lines may look slightly curved** on this map. UTM grid lines are straight in UTM space; Wayfinder’s basemap uses **Web Mercator**, so true MGRS lines can bend a little when drawn on screen—especially across a tall north–south span.
+
+You can also **search** for an MGRS string (compact or spaced, e.g. `18SUJ23480647` or `18S UJ 23480 647`) and view/copy MGRS on marker details.
 
 ### Responsive layout
 
@@ -75,8 +101,9 @@ Enter coordinates in common formats, for example:
 
 - `38.8951, -77.0364`
 - `38.8951 -77.0364`
+- MGRS: `18SUJ23480647` or `18S UJ 23480 647`
 
-Selecting a coordinate result places a temporary pin on the map. You can save it as a marker from the pin or details flow.
+Selecting a coordinate or MGRS result places a temporary pin on the map. You can save it as a marker from the pin or details flow.
 
 ### Geocoded places and addresses
 
@@ -345,6 +372,12 @@ Set latitude, longitude, and zoom for the **Home** button on the map. If no mark
 - **Angle format** — degrees or mils for bearings.
 - **Default circle size label** — what to show for circles (radius, diameter, area, etc.).
 
+### Map display
+
+- **Compass rose** — show or hide the compass overlay on the map.
+- **Show MGRS grid** — overlay true Military Grid Reference System lines (see [MGRS grid](#mgrs-grid) under **The map**). Spacing follows zoom; zone seams and slight curvature on Web Mercator are expected for correct MGRS.
+- **Map zoom range** — optional min/max zoom limits for the map interaction range.
+
 ### Map debug (advanced)
 
 Optional overlays for troubleshooting:
@@ -592,6 +625,9 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Add map tiles | Settings → Map tiles → Upload |
 | Enable address search | Settings → Geocoding → import housenumbers |
 | Change units | Settings → General → Measurement units |
+| Toggle MGRS grid | Map toolbar grid icon, or Settings → General → Map display |
+| Search MGRS | Search bar — paste a grid reference (e.g. `18S UJ 23480 647`) |
+| Show my GPS location | Map toolbar my-location icon (long-press to hide) |
 
 ---
 

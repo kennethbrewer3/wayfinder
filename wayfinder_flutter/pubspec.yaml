@@ -66,6 +66,7 @@ dependencies:
   markdown: ^7.3.1
   package_info_plus: ^8.3.0
   vector_graphics: ^1.2.2
+  geolocator: ^14.0.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.4

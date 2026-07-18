@@ -344,7 +344,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapMgrsGridDescription =>
-      'Superpone las líneas del sistema de referencia de cuadrícula militar (MGRS). El espaciado se ajusta con el zoom.';
+      'Superpone una cuadrícula MGRS real (basada en UTM). El espaciado sigue el zoom. Las uniones entre zonas y una ligera curvatura en el mapa Web Mercator son normales: los cuadrados MGRS no son rectángulos de lat/lng.';
 
   @override
   String get settingsMapZoomRangeWarning =>
@@ -1415,6 +1415,45 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapManualTooltip => 'User manual';
+
+  @override
+  String get mapDeviceLocationTooltip => 'Mi ubicación';
+
+  @override
+  String get mapDeviceLocationFollowingTooltip =>
+      'Siguiendo tu ubicación (desplaza para detener)';
+
+  @override
+  String get mapDeviceLocationStopTooltip =>
+      'Mi ubicación (mantén pulsado para ocultar)';
+
+  @override
+  String get mapDeviceLocationServiceDisabled =>
+      'Los servicios de ubicación están desactivados en este dispositivo.';
+
+  @override
+  String get mapDeviceLocationPermissionDenied =>
+      'Se denegó el permiso de ubicación.';
+
+  @override
+  String get mapDeviceLocationPermissionDeniedForever =>
+      'El permiso de ubicación está bloqueado. Actívalo en los ajustes del sistema o del navegador.';
+
+  @override
+  String get mapDeviceLocationUnavailable =>
+      'No se pudo determinar tu ubicación. En la web, usa HTTPS o localhost.';
+
+  @override
+  String get mapDeviceLocationSelectedMarker => 'Marcador seleccionado';
+
+  @override
+  String get mapDeviceLocationSelectMarkerHint =>
+      'Selecciona un marcador para distancia y rumbo';
+
+  @override
+  String mapDeviceLocationToMarker(String name, String range) {
+    return 'A $name: $range';
+  }
 
   @override
   String get mapMgrsGridShowTooltip => 'Mostrar cuadrícula MGRS';

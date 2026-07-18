@@ -183,6 +183,15 @@ WAYFINDER_CLIENT_IMAGE=ghcr.io/kennethbrewer3/wayfinder-client:v1.1.0
 
 Pin the **server** and **geocoding** images to the same tag when upgrading. See [CHANGELOG.md](../../CHANGELOG.md).
 
+## Device GPS (“my location”) on the web
+
+The map can show a blue **you are here** dot from the browser’s Geolocation API. That does **not** need internet for the fix itself, but browsers only expose geolocation in a **secure context**:
+
+- `https://…` (recommended on a LAN via Caddy/nginx — see TLS example above), or
+- `http://localhost` / `http://127.0.0.1` on the same machine
+
+`http://192.168.x.x:8080` typically **blocks** location. Native Android/iOS/macOS builds are unaffected (they use OS location APIs).
+
 ## Troubleshooting
 
 | Issue | Fix |
@@ -192,5 +201,6 @@ Pin the **server** and **geocoding** images to the same tag when upgrading. See 
 | Compose hangs at "Creating" | Use `./start.sh` / `./stop.sh`; re-download latest scripts |
 | `container name is already in use` | Run `./stop.sh`, then `docker rm -f wayfinder-client` and `sudo docker rm -f wayfinder-client` |
 | Missing geocoding search | Set `WAYFINDER_GEOCODING_WEB_URL` in `.env` or Supply Depot env |
+| My location fails in the browser | Serve the client over **HTTPS** (or open via `localhost`). Plain LAN HTTP is not a secure context for geolocation |
 
 More detail: [DEPLOY.md](../../DEPLOY.md).

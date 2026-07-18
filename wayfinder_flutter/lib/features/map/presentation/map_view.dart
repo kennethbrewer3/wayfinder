@@ -66,10 +66,14 @@ import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
 import '../providers/map_zoom_range_provider.dart';
 import '../providers/map_compass_rose_provider.dart';
+import '../providers/device_location_provider.dart';
 import '../providers/map_mgrs_grid_provider.dart';
+import 'map_device_location_hud.dart';
+import 'map_device_location_layer.dart';
 import '../providers/map_viewport_debug_provider.dart';
 import 'map_compass_rose_overlay.dart';
 import 'map_mgrs_grid_layer.dart';
+import '../utils/device_location_readout.dart';
 import '../utils/pmtiles_archive_selection.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
@@ -2190,6 +2194,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final showMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
+    final deviceLocation = ref.watch(deviceLocationProvider);
+    final deviceLocationTarget = selectedMarkerTarget(
+      selection: selectedMapObject,
+      markers: allMarkers ?? const [],
+    );
+    final deviceLocationTargetPoint = deviceLocationTarget == null
+        ? null
+        : LatLng(
+            deviceLocationTarget.latitude,
+            deviceLocationTarget.longitude,
+          );
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
@@ -2294,6 +2309,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     onPositionChanged: (position, hasGesture) {
                       _scheduleVisibleLayerUpdate();
                       if (!hasGesture) return;
+                      // User panned/zoomed — stop auto-recenter but keep the blue dot.
+                      if (ref.read(deviceLocationProvider).following) {
+                        ref
+                            .read(deviceLocationProvider.notifier)
+                            .stopFollowing();
+                      }
                       widget.onViewportChanged(
                         MapViewport(
                           center: position.center,
@@ -2362,6 +2383,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       MapMgrsGridLayer(mapController: _mapController),
                       MapMgrsGridLabelsLayer(mapController: _mapController),
                     ],
+                    ...buildDeviceLocationMapChildren(
+                      deviceLocation,
+                      targetPoint: deviceLocationTargetPoint,
+                    ),
                     if (mapTilesDisplayed)
                       if (widget.searchCoordinateMarker case final marker?)
                         MarkerLayer(
@@ -2605,6 +2630,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   child: MapCursorCoordinates(
                     location: location,
                     showMgrs: showMgrsGrid,
+                    zoom: _mapController.camera.zoom,
+                  ),
+                ),
+              ),
+            if (deviceLocation.tracking && deviceLocation.hasFix)
+              Positioned(
+                left: 12,
+                bottom: 12,
+                child: IgnorePointer(
+                  child: MapDeviceLocationHud(
                     zoom: _mapController.camera.zoom,
                   ),
                 ),

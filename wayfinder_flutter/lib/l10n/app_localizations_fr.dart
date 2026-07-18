@@ -345,7 +345,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapMgrsGridDescription =>
-      'Superpose les lignes du système de référence de grille militaire (MGRS). L\'espacement s\'adapte au zoom.';
+      'Superpose une vraie grille MGRS (basée sur l\'UTM). L\'espacement suit le zoom. Les joints de zone et une légère courbure sur la carte Web Mercator sont attendus — les carrés MGRS ne sont pas des rectangles lat/lng.';
 
   @override
   String get settingsMapZoomRangeWarning =>
@@ -1422,6 +1422,45 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapManualTooltip => 'User manual';
+
+  @override
+  String get mapDeviceLocationTooltip => 'Ma position';
+
+  @override
+  String get mapDeviceLocationFollowingTooltip =>
+      'Suivi de votre position (faites glisser pour arrêter)';
+
+  @override
+  String get mapDeviceLocationStopTooltip =>
+      'Ma position (appui long pour masquer)';
+
+  @override
+  String get mapDeviceLocationServiceDisabled =>
+      'Les services de localisation sont désactivés sur cet appareil.';
+
+  @override
+  String get mapDeviceLocationPermissionDenied =>
+      'L\'autorisation de localisation a été refusée.';
+
+  @override
+  String get mapDeviceLocationPermissionDeniedForever =>
+      'L\'autorisation de localisation est bloquée. Activez-la dans les réglages du système ou du navigateur.';
+
+  @override
+  String get mapDeviceLocationUnavailable =>
+      'Impossible de déterminer votre position. Sur le web, utilisez HTTPS ou localhost.';
+
+  @override
+  String get mapDeviceLocationSelectedMarker => 'Marqueur sélectionné';
+
+  @override
+  String get mapDeviceLocationSelectMarkerHint =>
+      'Sélectionnez un marqueur pour la distance et le cap';
+
+  @override
+  String mapDeviceLocationToMarker(String name, String range) {
+    return 'Vers $name : $range';
+  }
 
   @override
   String get mapMgrsGridShowTooltip => 'Afficher la grille MGRS';

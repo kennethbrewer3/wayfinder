@@ -344,7 +344,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMapMgrsGridDescription =>
-      'Overlays Military Grid Reference System lines on the map. Grid spacing adjusts with zoom.';
+      'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.';
 
   @override
   String get settingsMapZoomRangeWarning =>
@@ -1403,6 +1403,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapManualTooltip => 'User manual';
+
+  @override
+  String get mapDeviceLocationTooltip => 'My location';
+
+  @override
+  String get mapDeviceLocationFollowingTooltip =>
+      'Following your location (pan to stop)';
+
+  @override
+  String get mapDeviceLocationStopTooltip => 'My location (long-press to hide)';
+
+  @override
+  String get mapDeviceLocationServiceDisabled =>
+      'Location services are turned off on this device.';
+
+  @override
+  String get mapDeviceLocationPermissionDenied =>
+      'Location permission was denied.';
+
+  @override
+  String get mapDeviceLocationPermissionDeniedForever =>
+      'Location permission is blocked. Enable it in system or browser settings.';
+
+  @override
+  String get mapDeviceLocationUnavailable =>
+      'Could not determine your location. On the web, use HTTPS or localhost.';
+
+  @override
+  String get mapDeviceLocationSelectedMarker => 'Selected marker';
+
+  @override
+  String get mapDeviceLocationSelectMarkerHint =>
+      'Select a marker for distance and bearing';
+
+  @override
+  String mapDeviceLocationToMarker(String name, String range) {
+    return 'To $name: $range';
+  }
 
   @override
   String get mapMgrsGridShowTooltip => 'Show MGRS grid';

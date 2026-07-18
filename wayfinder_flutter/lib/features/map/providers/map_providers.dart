@@ -57,16 +57,25 @@ class MapViewportNotifier extends StateNotifier<AsyncValue<MapViewport>> {
     });
   }
 
-  Future<void> setViewport(MapViewport viewport) async {
+  Future<void> setViewport(
+    MapViewport viewport, {
+    bool persist = true,
+  }) async {
     state = AsyncValue.data(viewport);
-    await _storage.saveViewport(viewport);
+    if (persist) {
+      await _storage.saveViewport(viewport);
+    }
   }
 
   Future<void> moveTo({
     required LatLng center,
     required double zoom,
+    bool persist = true,
   }) {
-    return setViewport(MapViewport(center: center, zoom: zoom));
+    return setViewport(
+      MapViewport(center: center, zoom: zoom),
+      persist: persist,
+    );
   }
 
   Future<void> goHome(HomeLocation home) {

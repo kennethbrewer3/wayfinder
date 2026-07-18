@@ -24,6 +24,10 @@
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>$(PRODUCT_COPYRIGHT)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Wayfinder uses your location to show where you are on the offline map. Location is read from this device and is not sent to the internet for positioning.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Wayfinder uses your location to show where you are on the offline map. Location is read from this device and is not sent to the internet for positioning.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

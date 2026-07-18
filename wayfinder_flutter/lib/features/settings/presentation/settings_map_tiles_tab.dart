@@ -1,8 +1,10 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
 import '../../elevation/utils/elevation_dem_detect.dart';
@@ -24,6 +26,7 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
 
   bool _isUploading = false;
   bool _isSavingStoragePath = false;
+  String? _downloadingFileId;
   final _storagePathController = TextEditingController();
 
   @override
@@ -356,6 +359,62 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
     );
   }
 
+  Future<void> _downloadFile(PmtilesFile file) async {
+    if (_downloadingFileId != null) {
+      return;
+    }
+
+    final repository = ref.read(pmtilesRepositoryProvider);
+    final fileName = repository.downloadFileName(file.name);
+    final uri = repository.fileDownloadUri(file.id);
+    _log.info('⬇️ Download pressed', data: 'id=${file.id} name="$fileName"');
+
+    setState(() => _downloadingFileId = file.id);
+    try {
+      final saved = await downloadUrlToFile(
+        url: uri,
+        fileName: fileName,
+        allowedExtensions: const ['pmtiles'],
+      );
+      if (!mounted) {
+        return;
+      }
+      final l10n = AppLocalizations.of(context)!;
+      if (!saved) {
+        _log.warn('⬇️ Download cancelled by user', data: file.id);
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            kIsWeb
+                ? l10n.mapTilesDownloadStarted(fileName)
+                : l10n.mapTilesDownloadSaved(fileName),
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '⬇️ Download failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) {
+        return;
+      }
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.mapTilesDownloadFailed(error.toString())),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _downloadingFileId = null);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -518,12 +577,14 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
                         group: group,
                         files: filesByGroupId[group.id] ?? const [],
                         groups: groups,
+                        downloadingFileId: _downloadingFileId,
                         onToggleGroup: (enabled) =>
                             _setGroupEnabled(group.id, enabled),
                         onDeleteGroup: () => _deleteGroup(group),
                         onToggleFile: (file, enabled) =>
                             _setFileEnabled(file.id, enabled),
                         onToggleGroupMembership: _toggleFileGroupMembership,
+                        onDownloadFile: _downloadFile,
                         onDeleteFile: _deleteFile,
                       ),
                       const SizedBox(height: 12),
@@ -532,10 +593,12 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
                       isUngrouped: true,
                       files: ungroupedFiles,
                       groups: groups,
+                      downloadingFileId: _downloadingFileId,
                       onToggleGroup: _setUngroupedEnabled,
                       onToggleFile: (file, enabled) =>
                           _setFileEnabled(file.id, enabled),
                       onToggleGroupMembership: _toggleFileGroupMembership,
+                      onDownloadFile: _downloadFile,
                       onDeleteFile: _deleteFile,
                     ),
                   ],
@@ -555,10 +618,12 @@ class _PmtilesGroupSection extends StatelessWidget {
     this.isUngrouped = false,
     required this.files,
     required this.groups,
+    this.downloadingFileId,
     this.onToggleGroup,
     this.onDeleteGroup,
     required this.onToggleFile,
     required this.onToggleGroupMembership,
+    required this.onDownloadFile,
     required this.onDeleteFile,
   });
 
@@ -566,6 +631,7 @@ class _PmtilesGroupSection extends StatelessWidget {
   final bool isUngrouped;
   final List<PmtilesFile> files;
   final List<PmtilesGroup> groups;
+  final String? downloadingFileId;
   final ValueChanged<bool>? onToggleGroup;
   final VoidCallback? onDeleteGroup;
   final void Function(PmtilesFile file, bool enabled) onToggleFile;
@@ -575,6 +641,7 @@ class _PmtilesGroupSection extends StatelessWidget {
     required bool include,
   })
   onToggleGroupMembership;
+  final Future<void> Function(PmtilesFile file) onDownloadFile;
   final Future<void> Function(String id, String name) onDeleteFile;
 
   bool get _groupEnabled => isUngrouped
@@ -651,6 +718,8 @@ class _PmtilesGroupSection extends StatelessWidget {
                 visibleOnMap: isUngrouped
                     ? files[i].enabledOnMap
                     : files[i].enabledOnMap || (group?.showOnMap ?? false),
+                isDownloading: downloadingFileId == files[i].id,
+                downloadEnabled: downloadingFileId == null,
                 onToggleEnabled: (enabled) => onToggleFile(files[i], enabled),
                 onToggleGroupMembership: (groupId, include) =>
                     onToggleGroupMembership(
@@ -658,6 +727,7 @@ class _PmtilesGroupSection extends StatelessWidget {
                       groupId,
                       include: include,
                     ),
+                onDownload: () => onDownloadFile(files[i]),
                 onDelete: () => onDeleteFile(files[i].id, files[i].name),
               ),
             ],
@@ -672,17 +742,23 @@ class _PmtilesFileTile extends StatelessWidget {
     required this.file,
     required this.groups,
     required this.visibleOnMap,
+    required this.isDownloading,
+    required this.downloadEnabled,
     required this.onToggleEnabled,
     required this.onToggleGroupMembership,
+    required this.onDownload,
     required this.onDelete,
   });
 
   final PmtilesFile file;
   final List<PmtilesGroup> groups;
   final bool visibleOnMap;
+  final bool isDownloading;
+  final bool downloadEnabled;
   final ValueChanged<bool> onToggleEnabled;
   final Future<void> Function(String groupId, bool include)
   onToggleGroupMembership;
+  final VoidCallback onDownload;
   final VoidCallback onDelete;
 
   List<PmtilesGroup> get _sortedGroups =>
@@ -756,6 +832,21 @@ class _PmtilesFileTile extends StatelessWidget {
             value: visibleOnMap,
             onChanged: onToggleEnabled,
           ),
+          if (isDownloading)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            IconButton(
+              tooltip: l10n.mapTilesDownloadTooltip,
+              icon: const Icon(Icons.download_outlined),
+              onPressed: downloadEnabled ? onDownload : null,
+            ),
           IconButton(
             tooltip: l10n.actionDelete,
             icon: const Icon(Icons.delete_outline),

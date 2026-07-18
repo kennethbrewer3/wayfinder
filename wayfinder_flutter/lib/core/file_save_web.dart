@@ -56,6 +56,23 @@ Future<bool> saveBinaryFile({
   return true;
 }
 
+Future<bool> downloadUrlToFile({
+  required Uri url,
+  required String fileName,
+  List<String> allowedExtensions = const ['pmtiles'],
+}) async {
+  // Streamed server download — do not buffer the archive in memory.
+  final anchor = HTMLAnchorElement()
+    ..href = url.toString()
+    ..download = fileName
+    ..rel = 'noopener'
+    ..style.display = 'none';
+  document.body?.append(anchor);
+  anchor.click();
+  anchor.remove();
+  return true;
+}
+
 Future<String?> pickTextFileContents() async {
   final result = await pickBackupFile();
   return result?.jsonText;

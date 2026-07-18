@@ -868,6 +868,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTilesFileDeleted => 'PMTiles file deleted.';
 
   @override
+  String get mapTilesDownloadTooltip => 'Download archive';
+
+  @override
+  String mapTilesDownloadStarted(String name) {
+    return 'Downloading \"$name\"…';
+  }
+
+  @override
+  String mapTilesDownloadSaved(String name) {
+    return 'Saved \"$name\".';
+  }
+
+  @override
+  String mapTilesDownloadFailed(String error) {
+    return 'Download failed: $error';
+  }
+
+  @override
   String mapTilesFilesLoadFailed(String error) {
     return 'Failed to load files: $error';
   }

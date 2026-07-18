@@ -437,6 +437,10 @@ The server stores uploaded `.pmtiles` files in a folder path configured here (us
 2. Wait for upload and processing to finish (large files take time).
 3. Enable the archive with the toggle. Multiple archives can be enabled; they composited on the map.
 
+### Download / backup tiles
+
+Use the **download** icon on each archive row to save a copy of that `.pmtiles` file (desktop/mobile picks a destination; web starts a browser download). Handy for backing up DEM packs and basemap archives stored on the server.
+
 ### Offline elevation (DEM)
 
 Upload Terrarium or Mapbox Terrain-RGB height tiles packed as `.pmtiles`. Name the file so Wayfinder recognizes it as DEM — include one of: `dem`, `terrarium`, `terrain-rgb`, or `elevation` (for example `virginia-terrarium.pmtiles`).

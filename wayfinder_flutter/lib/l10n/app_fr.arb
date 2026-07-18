@@ -448,6 +448,31 @@
     }
   },
   "mapTilesFileDeleted": "Fichier PMTiles supprimé.",
+  "mapTilesDownloadTooltip": "Télécharger l’archive",
+  "mapTilesDownloadStarted": "Téléchargement de « {name} »…",
+  "@mapTilesDownloadStarted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesDownloadSaved": "« {name} » enregistré.",
+  "@mapTilesDownloadSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesDownloadFailed": "Échec du téléchargement : {error}",
+  "@mapTilesDownloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "mapTilesFilesLoadFailed": "Échec du chargement des fichiers : {error}",
   "@mapTilesFilesLoadFailed": {
     "placeholders": {

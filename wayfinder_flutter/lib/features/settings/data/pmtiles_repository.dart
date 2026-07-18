@@ -112,12 +112,32 @@ class PmtilesRepository {
     return [for (final file in dem) _mapArchiveEntry(file)];
   }
 
+  /// Public URL used by the map client to fetch tile bytes for [id].
+  String fileUrl(String id) => '$_webServerUrl/pmtiles/files/$id';
+
+  /// Download URL that asks the server for a Content-Disposition attachment.
+  Uri fileDownloadUri(String id) => Uri.parse(fileUrl(id)).replace(
+    queryParameters: const {'download': '1'},
+  );
+
+  /// Suggested local filename for backing up a catalog entry.
+  String downloadFileName(String catalogName) {
+    var name = catalogName.replaceAll('\\', '/').split('/').last.trim();
+    if (name.isEmpty) {
+      name = 'archive.pmtiles';
+    }
+    if (!name.toLowerCase().endsWith('.pmtiles')) {
+      name = '$name.pmtiles';
+    }
+    return name.replaceAll(RegExp(r'["\\\r\n]'), '_');
+  }
+
   PmtilesArchiveEntry _mapArchiveEntry(PmtilesFile file) {
     final bounds = _boundsFromServer(file);
     return PmtilesArchiveEntry(
       id: file.id.uuid,
       name: file.name,
-      source: PmtilesSourceUrl('$_webServerUrl/pmtiles/files/${file.id.uuid}'),
+      source: PmtilesSourceUrl(fileUrl(file.id.uuid)),
       bounds: bounds.bounds,
       boundsKnown: bounds.known,
       minZoom: file.minZoom ?? 0,
@@ -204,7 +224,7 @@ class PmtilesRepository {
         request.sink.add(chunk);
         if (uploaded == chunk.length ||
             uploaded % (32 * 1024 * 1024) < chunk.length) {
-          _log.debug(
+          _log.info(
             '📤 Upload progress',
             data: '${formatBytes(uploaded)} / ${formatBytes(file.size)}',
           );

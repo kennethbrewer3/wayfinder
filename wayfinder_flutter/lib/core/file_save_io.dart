@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 
 import 'file_save_stub.dart';
 
@@ -59,6 +60,59 @@ Future<bool> saveBinaryFile({
 
   await File(path).writeAsBytes(bytes, flush: true);
   return true;
+}
+
+Future<bool> downloadUrlToFile({
+  required Uri url,
+  required String fileName,
+  List<String> allowedExtensions = const ['pmtiles'],
+}) async {
+  var path = await FilePicker.platform.saveFile(
+    fileName: fileName,
+    type: FileType.custom,
+    allowedExtensions: allowedExtensions,
+  );
+  if (path == null) {
+    return false;
+  }
+
+  if (allowedExtensions.isNotEmpty) {
+    final lower = path.toLowerCase();
+    final hasExtension = allowedExtensions.any(
+      (ext) => lower.endsWith('.${ext.toLowerCase()}'),
+    );
+    if (!hasExtension) {
+      path = '$path.${allowedExtensions.first}';
+    }
+  }
+
+  final client = http.Client();
+  try {
+    final request = http.Request('GET', url);
+    final response = await client.send(request);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw StateError(
+        'Download failed with HTTP ${response.statusCode}.',
+      );
+    }
+
+    final sink = File(path).openWrite();
+    try {
+      await response.stream.pipe(sink);
+      await sink.flush();
+    } catch (_) {
+      await sink.close();
+      final partial = File(path);
+      if (await partial.exists()) {
+        await partial.delete();
+      }
+      rethrow;
+    }
+    await sink.close();
+    return true;
+  } finally {
+    client.close();
+  }
 }
 
 Future<String?> pickTextFileContents() async {

@@ -1617,6 +1617,30 @@ abstract class AppLocalizations {
   /// **'PMTiles file deleted.'**
   String get mapTilesFileDeleted;
 
+  /// No description provided for @mapTilesDownloadTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Download archive'**
+  String get mapTilesDownloadTooltip;
+
+  /// No description provided for @mapTilesDownloadStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading \"{name}\"…'**
+  String mapTilesDownloadStarted(String name);
+
+  /// No description provided for @mapTilesDownloadSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved \"{name}\".'**
+  String mapTilesDownloadSaved(String name);
+
+  /// No description provided for @mapTilesDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed: {error}'**
+  String mapTilesDownloadFailed(String error);
+
   /// No description provided for @mapTilesFilesLoadFailed.
   ///
   /// In en, this message translates to:

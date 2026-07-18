@@ -5,6 +5,9 @@ import '../../pmtiles/pmtiles_storage.dart';
 
 /// Serves a catalog [PmtilesFile] by database id, resolving either uploaded
 /// `{uuid}` blobs or pre-existing `{name}.pmtiles` files on disk.
+///
+/// Pass `?download=1` to force a browser download with the catalog filename
+/// (map tile clients omit this so responses stay cacheable inline bytes).
 class PmtilesFileRoute extends Route {
   PmtilesFileRoute() : super(methods: {Method.get, Method.head}, path: '/**');
 
@@ -37,7 +40,35 @@ class PmtilesFileRoute extends Route {
       file,
       cacheControl: StaticRoute.publicImmutable(),
     ).asHandler;
-    return handler(request);
+    final result = await handler(request);
+    if (result is! Response || !_wantsDownload(request)) {
+      return result;
+    }
+
+    final downloadName = _downloadFileName(entry.name);
+    return result.copyWith(
+      headers: result.headers.transform((headers) {
+        headers.contentDisposition = ContentDispositionHeader.parse(
+          'attachment; filename="$downloadName"',
+        );
+      }),
+    );
+  }
+
+  bool _wantsDownload(Request request) {
+    final raw = request.queryParameters.raw['download']?.trim().toLowerCase();
+    return raw == '1' || raw == 'true' || raw == 'yes';
+  }
+
+  String _downloadFileName(String catalogName) {
+    var name = catalogName.replaceAll('\\', '/').split('/').last.trim();
+    if (name.isEmpty) {
+      name = 'archive.pmtiles';
+    }
+    if (!name.toLowerCase().endsWith('.pmtiles')) {
+      name = '$name.pmtiles';
+    }
+    return name.replaceAll(RegExp(r'["\\\r\n]'), '_');
   }
 
   String? _readIdParam(Request request) {

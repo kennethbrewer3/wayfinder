@@ -40,6 +40,17 @@ Future<bool> saveBinaryFile({
   return false;
 }
 
+/// Stream [url] to a user-chosen destination (or browser download on web).
+///
+/// Returns `false` if the user cancels. Throws on network/IO failure.
+Future<bool> downloadUrlToFile({
+  required Uri url,
+  required String fileName,
+  List<String> allowedExtensions = const ['pmtiles'],
+}) async {
+  return false;
+}
+
 Future<String?> pickTextFileContents() async {
   return null;
 }

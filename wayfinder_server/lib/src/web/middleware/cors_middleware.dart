@@ -42,6 +42,7 @@ class CorsMiddleware extends MiddlewareObject {
       'Content-Range',
       'Content-Length',
       'Content-Type',
+      'Content-Disposition',
     ]);
   }
 }

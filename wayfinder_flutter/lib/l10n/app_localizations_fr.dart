@@ -882,6 +882,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapTilesFileDeleted => 'Fichier PMTiles supprimé.';
 
   @override
+  String get mapTilesDownloadTooltip => 'Télécharger l’archive';
+
+  @override
+  String mapTilesDownloadStarted(String name) {
+    return 'Téléchargement de « $name »…';
+  }
+
+  @override
+  String mapTilesDownloadSaved(String name) {
+    return '« $name » enregistré.';
+  }
+
+  @override
+  String mapTilesDownloadFailed(String error) {
+    return 'Échec du téléchargement : $error';
+  }
+
+  @override
   String mapTilesFilesLoadFailed(String error) {
     return 'Échec du chargement des fichiers : $error';
   }

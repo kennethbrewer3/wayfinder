@@ -68,6 +68,8 @@ class _MapMgrsGridLayerState extends State<MapMgrsGridLayer> {
         west: visible.west,
         north: visible.north,
         east: visible.east,
+        longitudeCenter: visible.longitudeCenter,
+        longitudeWidth: visible.longitudeWidth,
       ),
       zoom: camera.zoom,
     );
@@ -163,6 +165,8 @@ class _MapMgrsGridLabelsLayerState extends State<MapMgrsGridLabelsLayer> {
         west: visible.west,
         north: visible.north,
         east: visible.east,
+        longitudeCenter: visible.longitudeCenter,
+        longitudeWidth: visible.longitudeWidth,
       ),
       zoom: camera.zoom,
     );

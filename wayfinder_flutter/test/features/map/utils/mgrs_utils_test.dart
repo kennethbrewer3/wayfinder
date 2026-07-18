@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/features/map/utils/mgrs_utils.dart';
@@ -61,7 +63,7 @@ void main() {
       expect(geometry.lines.length, inInclusiveRange(8, 40));
       expect(geometry.lines.every((line) => line.length >= 2), isTrue);
       expect(geometry.labels, isNotEmpty);
-      expect(geometry.labels.length, lessThanOrEqualTo(16));
+      expect(geometry.labels.length, lessThanOrEqualTo(64));
     });
 
     test('uses GZD at continental zoom ~5.4 (no bent multi-zone UTM)', () {
@@ -76,7 +78,7 @@ void main() {
       );
 
       expect(geometry.accuracy, 0);
-      expect(geometry.labels.length, inInclusiveRange(4, 20));
+      expect(geometry.labels, isNotEmpty);
       // GZD lines are meridians/parallels — each is exactly two endpoints.
       expect(
         geometry.lines.every((line) => line.length == 2),
@@ -98,20 +100,23 @@ void main() {
       expect(horizontal, greaterThan(1));
     });
 
-    test('uses a clipped multi-zone grid for a narrow regional view', () {
+    test('keeps a stable UTM grid around zoom 8.16', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
-          south: 38.0,
-          west: -78.5,
-          north: 40.5,
-          east: -74.5,
+          south: 36.0,
+          west: -82.0,
+          north: 41.0,
+          east: -74.0,
+          longitudeCenter: -78.0,
+          longitudeWidth: 8.0,
         ),
-        zoom: 8,
+        zoom: 8.16,
       );
 
+      // Must stay on UTM squares (not flip to GZD while zoomed in).
       expect(geometry.accuracy, lessThanOrEqualTo(1));
       expect(geometry.lines, isNotEmpty);
-      expect(geometry.labels.length, inInclusiveRange(4, 18));
+      expect(geometry.labels, isNotEmpty);
 
       var roughlyHorizontal = 0;
       var roughlyVertical = 0;
@@ -128,6 +133,38 @@ void main() {
       expect(roughlyVertical, greaterThan(0));
     });
 
+    test('places MGRS labels at grid-square centers', () {
+      final geometry = buildMgrsGrid(
+        bounds: const MgrsLatLngBounds(
+          south: 38.8,
+          west: -77.2,
+          north: 39.0,
+          east: -76.9,
+        ),
+        zoom: 10,
+      );
+
+      expect(geometry.labels, isNotEmpty);
+      // Labels should stay put when the same cells remain visible.
+      final again = buildMgrsGrid(
+        bounds: const MgrsLatLngBounds(
+          south: 38.81,
+          west: -77.19,
+          north: 38.99,
+          east: -76.91,
+        ),
+        zoom: 10,
+      );
+      final firstTexts = geometry.labels.map((l) => l.text).toSet();
+      final shared = again.labels.where((l) => firstTexts.contains(l.text));
+      expect(shared, isNotEmpty);
+      for (final label in shared) {
+        final match = geometry.labels.firstWhere((l) => l.text == label.text);
+        expect(label.point.latitude, closeTo(match.point.latitude, 1e-8));
+        expect(label.point.longitude, closeTo(match.point.longitude, 1e-8));
+      }
+    });
+
     test('draws balanced GZD lines for a world viewport', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
@@ -140,7 +177,7 @@ void main() {
       );
 
       expect(geometry.accuracy, 0);
-      expect(geometry.labels.length, inInclusiveRange(4, 20));
+      expect(geometry.labels, isNotEmpty);
 
       var vertical = 0;
       var horizontal = 0;
@@ -155,6 +192,55 @@ void main() {
       }
       expect(vertical, greaterThan(10));
       expect(horizontal, greaterThan(8));
+    });
+
+    test('keeps a full GZD mesh when flutter_map clamps west/east at zoom ~3.6', () {
+      // LatLngBounds.worldSafe clamps west/east to ±180 while longitudeWidth
+      // still describes the real viewport (often wraps past the antimeridian).
+      const center = -95.0;
+      const width = 220.0;
+      final geometry = buildMgrsGrid(
+        bounds: const MgrsLatLngBounds(
+          south: -45,
+          west: -180, // clamped
+          north: 70,
+          east: 15, // clamped: center + width/2
+          longitudeCenter: center,
+          longitudeWidth: width,
+        ),
+        zoom: 3.64,
+      );
+
+      expect(geometry.accuracy, 0);
+      final unwrappedWest = center - width / 2; // -205
+      final unwrappedEast = center + width / 2; // 15
+
+      var vertical = 0;
+      var horizontal = 0;
+      var spansFullWidth = false;
+      var hasWrappedMeridian = false;
+      for (final line in geometry.lines) {
+        final dLat = (line.first.latitude - line.last.latitude).abs();
+        final dLon = (line.first.longitude - line.last.longitude).abs();
+        if (dLon < 1e-6) {
+          vertical++;
+          if (line.first.longitude < -180) {
+            hasWrappedMeridian = true;
+          }
+        } else if (dLat < 1e-6) {
+          horizontal++;
+          final lo = math.min(line.first.longitude, line.last.longitude);
+          final hi = math.max(line.first.longitude, line.last.longitude);
+          if (lo <= unwrappedWest + 1 && hi >= unwrappedEast - 1) {
+            spansFullWidth = true;
+          }
+        }
+      }
+
+      expect(vertical, greaterThan(20));
+      expect(horizontal, greaterThan(5));
+      expect(hasWrappedMeridian, isTrue);
+      expect(spansFullWidth, isTrue);
     });
   });
 }

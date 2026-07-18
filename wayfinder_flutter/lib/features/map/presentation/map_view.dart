@@ -203,7 +203,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   static const _longPressDuration = Duration(milliseconds: 550);
   static const _longPressMoveTolerance = 18.0;
   static const _selectionClickSlop = 24.0;
-  static const _cursorLabelOffset = Offset(16, 16);
+  static const _cursorLabelGap = 14.0;
+  static const _cursorLabelEstimatedWidth = 240.0;
+  static const _cursorLabelEstimatedHeight = 34.0;
 
   late final MapController _mapController;
   final GlobalKey _mapHostKey = GlobalKey();
@@ -1891,14 +1893,25 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   Offset _cursorLabelPosition(Size mapSize) {
     final cursor = _cursorScreenPosition ?? Offset.zero;
-    const estimatedWidth = 220.0;
-    const estimatedHeight = 32.0;
+    const width = _cursorLabelEstimatedWidth;
+    const height = _cursorLabelEstimatedHeight;
+    const gap = _cursorLabelGap;
+    const pad = 8.0;
 
-    final left = (cursor.dx + _cursorLabelOffset.dx)
-        .clamp(8.0, math.max(8.0, mapSize.width - estimatedWidth - 8))
+    // Prefer centered horizontally, directly above the cursor.
+    var left = cursor.dx - width / 2;
+    var top = cursor.dy - height - gap;
+
+    left = left
+        .clamp(pad, math.max(pad, mapSize.width - width - pad))
         .toDouble();
-    final top = (cursor.dy + _cursorLabelOffset.dy)
-        .clamp(8.0, math.max(8.0, mapSize.height - estimatedHeight - 8))
+
+    // If there isn't room above, place it just below instead of sliding oddly.
+    if (top < pad) {
+      top = cursor.dy + gap;
+    }
+    top = top
+        .clamp(pad, math.max(pad, mapSize.height - height - pad))
         .toDouble();
 
     return Offset(left, top);

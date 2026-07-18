@@ -186,10 +186,10 @@ class _MapMgrsGridLabelsLayerState extends State<MapMgrsGridLabelsLayer> {
     return MarkerLayer(
       markers: [
         for (final label in _geometry.labels)
-          Marker(
-            point: label.point,
-            width: _geometry.accuracy <= 1 ? 108 : 44,
-            height: 20,
+                Marker(
+                  point: label.point,
+                  width: (label.text.length * 7.0 + 16).clamp(36.0, 140.0),
+                  height: 20,
             alignment: Alignment.center,
             child: IgnorePointer(
               child: DecoratedBox(

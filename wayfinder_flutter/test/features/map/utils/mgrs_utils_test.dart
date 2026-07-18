@@ -57,31 +57,45 @@ void main() {
         zoom: 11,
       );
 
-      // ~11 km span should land on 1 km grid with a modest line count.
       expect(geometry.accuracy, 2);
       expect(geometry.lines.length, inInclusiveRange(8, 40));
       expect(geometry.lines.every((line) => line.length >= 2), isTrue);
       expect(geometry.labels, isNotEmpty);
+      expect(geometry.labels.length, lessThanOrEqualTo(16));
     });
 
-    test('uses a coarser multi-zone grid for a regional viewport', () {
+    test('uses a clipped multi-zone grid around zoom 8', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
-          south: 36.0,
-          west: -80.0,
-          north: 41.0,
-          east: -74.0,
+          south: 30.0,
+          west: -100.0,
+          north: 45.0,
+          east: -70.0,
         ),
-        zoom: 7,
+        zoom: 8,
       );
 
       expect(geometry.accuracy, lessThanOrEqualTo(1));
       expect(geometry.lines, isNotEmpty);
-      // Must not explode into a dense hairline mess.
-      expect(geometry.lines.length, lessThanOrEqualTo(80));
+      expect(geometry.labels.length, inInclusiveRange(4, 18));
+
+      var roughlyHorizontal = 0;
+      var roughlyVertical = 0;
+      for (final line in geometry.lines) {
+        final dLat = (line.first.latitude - line.last.latitude).abs();
+        final dLon = (line.first.longitude - line.last.longitude).abs();
+        if (dLat >= dLon) {
+          roughlyVertical++;
+        } else {
+          roughlyHorizontal++;
+        }
+      }
+      // Must not be vertical-only.
+      expect(roughlyHorizontal, greaterThan(0));
+      expect(roughlyVertical, greaterThan(0));
     });
 
-    test('draws GZD lines across a world viewport at low zoom', () {
+    test('draws balanced GZD lines for a world viewport', () {
       final geometry = buildMgrsGrid(
         bounds: const MgrsLatLngBounds(
           south: -60,
@@ -93,8 +107,21 @@ void main() {
       );
 
       expect(geometry.accuracy, 0);
-      expect(geometry.lines.length, greaterThan(30));
-      expect(geometry.labels, isNotEmpty);
+      expect(geometry.labels.length, inInclusiveRange(4, 20));
+
+      var vertical = 0;
+      var horizontal = 0;
+      for (final line in geometry.lines) {
+        final dLat = (line.first.latitude - line.last.latitude).abs();
+        final dLon = (line.first.longitude - line.last.longitude).abs();
+        if (dLon < 1e-6) {
+          vertical++;
+        } else if (dLat < 1e-6) {
+          horizontal++;
+        }
+      }
+      expect(vertical, greaterThan(10));
+      expect(horizontal, greaterThan(8));
     });
   });
 }

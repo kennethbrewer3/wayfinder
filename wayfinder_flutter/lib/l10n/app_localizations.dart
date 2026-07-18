@@ -1299,6 +1299,114 @@ abstract class AppLocalizations {
   /// **'GeoJSON'**
   String get geoExchangeFormatGeojson;
 
+  /// No description provided for @mapAtlasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Printable map atlas'**
+  String get mapAtlasTitle;
+
+  /// No description provided for @mapAtlasDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a multi-page PDF of the current map area (or all markers) with a lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use. This is a vector overlay atlas — it does not include satellite or PMTiles basemap imagery.'**
+  String get mapAtlasDescription;
+
+  /// No description provided for @mapAtlasExportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export printable atlas (PDF)'**
+  String get mapAtlasExportButton;
+
+  /// No description provided for @mapAtlasDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export printable atlas'**
+  String get mapAtlasDialogTitle;
+
+  /// No description provided for @mapAtlasDialogDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose coverage, page size, and how many sheets to print. Each sheet includes an approximate MGRS label for its center.'**
+  String get mapAtlasDialogDescription;
+
+  /// No description provided for @mapAtlasTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Atlas title'**
+  String get mapAtlasTitleLabel;
+
+  /// No description provided for @mapAtlasCoverageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage'**
+  String get mapAtlasCoverageLabel;
+
+  /// No description provided for @mapAtlasCoverageMapView.
+  ///
+  /// In en, this message translates to:
+  /// **'Current map view'**
+  String get mapAtlasCoverageMapView;
+
+  /// No description provided for @mapAtlasCoverageMarkers.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit all markers'**
+  String get mapAtlasCoverageMarkers;
+
+  /// No description provided for @mapAtlasGridLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sheet grid'**
+  String get mapAtlasGridLabel;
+
+  /// No description provided for @mapAtlasPageSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Page size'**
+  String get mapAtlasPageSizeLabel;
+
+  /// No description provided for @mapAtlasPageLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'US Letter landscape'**
+  String get mapAtlasPageLetter;
+
+  /// No description provided for @mapAtlasPageA4.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 landscape'**
+  String get mapAtlasPageA4;
+
+  /// No description provided for @mapAtlasIncludeMarkerIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Include marker list on each sheet'**
+  String get mapAtlasIncludeMarkerIndex;
+
+  /// No description provided for @mapAtlasSheetCountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sheets'**
+  String get mapAtlasSheetCountHint;
+
+  /// No description provided for @mapAtlasExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Printable atlas PDF saved.'**
+  String get mapAtlasExportSuccess;
+
+  /// No description provided for @mapAtlasExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Atlas export failed: {error}'**
+  String mapAtlasExportFailed(String error);
+
+  /// No description provided for @mapAtlasExportNoCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not determine atlas coverage. Open the map first, or add visible markers and choose Fit all markers.'**
+  String get mapAtlasExportNoCoverage;
+
   /// No description provided for @mapTilesFolderTitle.
   ///
   /// In en, this message translates to:

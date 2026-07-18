@@ -693,6 +693,66 @@ class AppLocalizationsFr extends AppLocalizations {
   String get geoExchangeFormatGeojson => 'GeoJSON';
 
   @override
+  String get mapAtlasTitle => 'Atlas cartographique imprimable';
+
+  @override
+  String get mapAtlasDescription =>
+      'Exportez un PDF multipage de la zone actuelle de la carte (ou de tous les marqueurs) avec une grille lat/lng, les marqueurs, les zones, une barre d\'échelle et une flèche nord. Les feuilles se chevauchent légèrement pour un usage terrain. C\'est un atlas vectoriel des superpositions — sans imagerie satellite ni fond PMTiles.';
+
+  @override
+  String get mapAtlasExportButton => 'Exporter l\'atlas imprimable (PDF)';
+
+  @override
+  String get mapAtlasDialogTitle => 'Exporter l\'atlas imprimable';
+
+  @override
+  String get mapAtlasDialogDescription =>
+      'Choisissez la couverture, le format de page et le nombre de feuilles. Chaque feuille inclut une étiquette MGRS approximative de son centre.';
+
+  @override
+  String get mapAtlasTitleLabel => 'Titre de l\'atlas';
+
+  @override
+  String get mapAtlasCoverageLabel => 'Couverture';
+
+  @override
+  String get mapAtlasCoverageMapView => 'Vue carte actuelle';
+
+  @override
+  String get mapAtlasCoverageMarkers => 'Ajuster aux marqueurs';
+
+  @override
+  String get mapAtlasGridLabel => 'Grille de feuilles';
+
+  @override
+  String get mapAtlasPageSizeLabel => 'Format de page';
+
+  @override
+  String get mapAtlasPageLetter => 'Letter US paysage';
+
+  @override
+  String get mapAtlasPageA4 => 'A4 paysage';
+
+  @override
+  String get mapAtlasIncludeMarkerIndex =>
+      'Inclure la liste des marqueurs sur chaque feuille';
+
+  @override
+  String get mapAtlasSheetCountHint => 'Feuilles';
+
+  @override
+  String get mapAtlasExportSuccess => 'PDF de l\'atlas imprimable enregistré.';
+
+  @override
+  String mapAtlasExportFailed(String error) {
+    return 'Échec de l\'export de l\'atlas : $error';
+  }
+
+  @override
+  String get mapAtlasExportNoCoverage =>
+      'Impossible de déterminer la couverture de l\'atlas. Ouvrez d\'abord la carte, ou ajoutez des marqueurs visibles et choisissez Ajuster aux marqueurs.';
+
+  @override
   String get mapTilesFolderTitle => 'Dossier PMTiles';
 
   @override

@@ -1830,16 +1830,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     unawaited(copyCoordinatesToClipboard(context, point));
   }
 
-  void _beginLineDrawing() {
+  LatLng? _selectedMarkerPoint() {
     final selectedMarkerId =
         ref.read(selectedMapObjectProvider).selectedMarkerId;
     final markers = widget.markersAsync.valueOrNull ?? const <MapMarker>[];
     final selectedMarker = selectedMarkerId == null
         ? null
         : findMarkerById(markers, selectedMarkerId);
-    final point = selectedMarker == null
-        ? _radialMenuPoint
-        : LatLng(selectedMarker.latitude, selectedMarker.longitude);
+    if (selectedMarker == null) {
+      return null;
+    }
+    return LatLng(selectedMarker.latitude, selectedMarker.longitude);
+  }
+
+  void _beginLineDrawing() {
+    final point = _selectedMarkerPoint() ?? _radialMenuPoint;
 
     _closeRadialMenu();
     ref.read(selectedMapObjectProvider.notifier).clear();
@@ -1859,14 +1864,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   LatLng? _deadReckoningAnchor() {
-    final selectedMarkerId =
-        ref.read(selectedMapObjectProvider).selectedMarkerId;
-    final markers = widget.markersAsync.valueOrNull ?? const <MapMarker>[];
-    final selectedMarker = selectedMarkerId == null
-        ? null
-        : findMarkerById(markers, selectedMarkerId);
+    final selectedMarker = _selectedMarkerPoint();
     if (selectedMarker != null) {
-      return LatLng(selectedMarker.latitude, selectedMarker.longitude);
+      return selectedMarker;
     }
 
     final device = ref.read(deviceLocationProvider);
@@ -1954,7 +1954,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _beginCircleDrawing() {
-    final point = _radialMenuPoint;
+    final point = _selectedMarkerPoint() ?? _radialMenuPoint;
     _closeRadialMenu();
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(lineDrawingProvider.notifier).reset();
@@ -1978,7 +1978,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _beginCenterRectDrawing() {
-    final point = _radialMenuPoint;
+    final point = _selectedMarkerPoint() ?? _radialMenuPoint;
     _closeRadialMenu();
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(lineDrawingProvider.notifier).reset();

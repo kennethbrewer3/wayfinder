@@ -318,8 +318,8 @@ Circles represent a radius around a center point.
 
 ### Draw a circle
 
-1. Long-press → **Draw circle**.
-2. Tap to set the center, then tap again (or drag) to set the radius.
+1. Long-press → **Draw circle**. The center is the long-press point, or a **selected marker** if one is selected when you choose Draw circle.
+2. Tap again (or drag) to set the radius.
 3. Complete the form with name, color, fill opacity, layer, and notes.
 
 The map can display the radius with a **size label** (diameter, radius, area, or circumference — configurable in **Settings → General**).
@@ -334,7 +334,7 @@ Rectangles are axis-aligned or rotated boxes defined by center and dimensions, o
 
 Long-press the radial menu offers:
 
-- **Rectangle (center)** — tap center, then define size and bearing in the form.
+- **Rectangle (center)** — center is the long-press point, or a **selected marker** if one is selected; then define size and bearing.
 - **Rectangle (corners)** — tap two opposite corners on the map.
 
 Size labels can show width, height, area, or perimeter depending on display settings.
@@ -350,8 +350,8 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Add marker | New marker at this location |
 | Draw line | Start line drawing (from selected marker when one is selected) |
 | Pace count | Dead reckoning / pace-count helper |
-| Draw circle | Start circle drawing |
-| Rectangle (center) | Start center-based rectangle |
+| Draw circle | Start circle drawing (from selected marker when one is selected) |
+| Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
 | Copy coordinates | Copy lat/lng to clipboard |
 
@@ -519,6 +519,17 @@ Use this section to exchange waypoints and paths with other mapping tools.
 - **Import** — pick a `.gpx`, `.kml`, or `.geojson` file. Waypoints become markers; routes/tracks/LineStrings become lines. Features are added to the currently selected create layer when one is set. If the map already has markers or zones, you are asked to **Add to existing**, **Replace existing** (deletes all markers and zones first), or **Cancel**.
 - **Export** — choose GPX, KML, or GeoJSON. Markers export as waypoints/points; lines and track paths export as tracks/LineStrings.
 
+### Printable map atlas (PDF)
+
+Use this when you need paper sheets if the phone dies. Tap **Export printable atlas (PDF)** and choose:
+
+- **Coverage** — current map view (approximate), or fit all visible markers
+- **Sheet grid** — how many pages to tile the area into (with slight edge overlap)
+- **Page size** — US Letter or A4 landscape
+- Optional marker list on each sheet
+
+The PDF includes an index overview plus one page per sheet with a lat/lng grid, markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. It is a **vector overlay atlas** — it does **not** embed satellite or PMTiles basemap imagery.
+
 ---
 
 ## Settings — About
@@ -662,6 +673,7 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Share marker | Marker details → Share link or QR code |
 | Tracking marker | Marker edit → Tracking marker; manage trail in sidebar (track) |
 | Backup data | Settings → Backup → Export |
+| Print map sheets (PDF) | Settings → Backup → Export printable atlas |
 | Script with curl | Settings → About → REST API access → generate key |
 | Add map tiles | Settings → Map tiles → Upload |
 | Enable address search | Settings → Geocoding → import housenumbers |

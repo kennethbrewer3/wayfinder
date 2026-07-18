@@ -688,6 +688,66 @@ class AppLocalizationsEs extends AppLocalizations {
   String get geoExchangeFormatGeojson => 'GeoJSON';
 
   @override
+  String get mapAtlasTitle => 'Atlas cartográfico imprimible';
+
+  @override
+  String get mapAtlasDescription =>
+      'Exporte un PDF de varias páginas del área actual del mapa (o de todos los marcadores) con cuadrícula lat/lng, marcadores, zonas, barra de escala y flecha norte. Las hojas se solapan ligeramente para uso en campo. Es un atlas vectorial de superposiciones — no incluye imágenes satelitales ni el basemap PMTiles.';
+
+  @override
+  String get mapAtlasExportButton => 'Exportar atlas imprimible (PDF)';
+
+  @override
+  String get mapAtlasDialogTitle => 'Exportar atlas imprimible';
+
+  @override
+  String get mapAtlasDialogDescription =>
+      'Elija cobertura, tamaño de página y cuántas hojas imprimir. Cada hoja incluye una etiqueta MGRS aproximada de su centro.';
+
+  @override
+  String get mapAtlasTitleLabel => 'Título del atlas';
+
+  @override
+  String get mapAtlasCoverageLabel => 'Cobertura';
+
+  @override
+  String get mapAtlasCoverageMapView => 'Vista actual del mapa';
+
+  @override
+  String get mapAtlasCoverageMarkers => 'Ajustar a marcadores';
+
+  @override
+  String get mapAtlasGridLabel => 'Cuadrícula de hojas';
+
+  @override
+  String get mapAtlasPageSizeLabel => 'Tamaño de página';
+
+  @override
+  String get mapAtlasPageLetter => 'Carta EE. UU. horizontal';
+
+  @override
+  String get mapAtlasPageA4 => 'A4 horizontal';
+
+  @override
+  String get mapAtlasIncludeMarkerIndex =>
+      'Incluir lista de marcadores en cada hoja';
+
+  @override
+  String get mapAtlasSheetCountHint => 'Hojas';
+
+  @override
+  String get mapAtlasExportSuccess => 'PDF del atlas imprimible guardado.';
+
+  @override
+  String mapAtlasExportFailed(String error) {
+    return 'Error al exportar el atlas: $error';
+  }
+
+  @override
+  String get mapAtlasExportNoCoverage =>
+      'No se pudo determinar la cobertura del atlas. Abra el mapa primero, o añada marcadores visibles y elija Ajustar a marcadores.';
+
+  @override
   String get mapTilesFolderTitle => 'Carpeta PMTiles';
 
   @override

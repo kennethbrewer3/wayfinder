@@ -322,6 +322,31 @@
   "geoExchangeFormatGpx": "GPX",
   "geoExchangeFormatKml": "KML",
   "geoExchangeFormatGeojson": "GeoJSON",
+  "mapAtlasTitle": "Atlas cartographique imprimable",
+  "mapAtlasDescription": "Exportez un PDF multipage de la zone actuelle de la carte (ou de tous les marqueurs) avec une grille lat/lng, les marqueurs, les zones, une barre d'échelle et une flèche nord. Les feuilles se chevauchent légèrement pour un usage terrain. C'est un atlas vectoriel des superpositions — sans imagerie satellite ni fond PMTiles.",
+  "mapAtlasExportButton": "Exporter l'atlas imprimable (PDF)",
+  "mapAtlasDialogTitle": "Exporter l'atlas imprimable",
+  "mapAtlasDialogDescription": "Choisissez la couverture, le format de page et le nombre de feuilles. Chaque feuille inclut une étiquette MGRS approximative de son centre.",
+  "mapAtlasTitleLabel": "Titre de l'atlas",
+  "mapAtlasCoverageLabel": "Couverture",
+  "mapAtlasCoverageMapView": "Vue carte actuelle",
+  "mapAtlasCoverageMarkers": "Ajuster aux marqueurs",
+  "mapAtlasGridLabel": "Grille de feuilles",
+  "mapAtlasPageSizeLabel": "Format de page",
+  "mapAtlasPageLetter": "Letter US paysage",
+  "mapAtlasPageA4": "A4 paysage",
+  "mapAtlasIncludeMarkerIndex": "Inclure la liste des marqueurs sur chaque feuille",
+  "mapAtlasSheetCountHint": "Feuilles",
+  "mapAtlasExportSuccess": "PDF de l'atlas imprimable enregistré.",
+  "mapAtlasExportFailed": "Échec de l'export de l'atlas : {error}",
+  "@mapAtlasExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapAtlasExportNoCoverage": "Impossible de déterminer la couverture de l'atlas. Ouvrez d'abord la carte, ou ajoutez des marqueurs visibles et choisissez Ajuster aux marqueurs.",
   "mapTilesFolderTitle": "Dossier PMTiles",
   "mapTilesFolderDescription": "Dossier sur le serveur contenant les archives .pmtiles. Enregistré dans la base de données pour que chaque client utilise la même bibliothèque de tuiles après redémarrage.",
   "mapTilesStoragePathLabel": "Chemin de stockage PMTiles",

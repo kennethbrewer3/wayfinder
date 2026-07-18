@@ -322,6 +322,31 @@
   "geoExchangeFormatGpx": "GPX",
   "geoExchangeFormatKml": "KML",
   "geoExchangeFormatGeojson": "GeoJSON",
+  "mapAtlasTitle": "Atlas cartográfico imprimible",
+  "mapAtlasDescription": "Exporte un PDF de varias páginas del área actual del mapa (o de todos los marcadores) con cuadrícula lat/lng, marcadores, zonas, barra de escala y flecha norte. Las hojas se solapan ligeramente para uso en campo. Es un atlas vectorial de superposiciones — no incluye imágenes satelitales ni el basemap PMTiles.",
+  "mapAtlasExportButton": "Exportar atlas imprimible (PDF)",
+  "mapAtlasDialogTitle": "Exportar atlas imprimible",
+  "mapAtlasDialogDescription": "Elija cobertura, tamaño de página y cuántas hojas imprimir. Cada hoja incluye una etiqueta MGRS aproximada de su centro.",
+  "mapAtlasTitleLabel": "Título del atlas",
+  "mapAtlasCoverageLabel": "Cobertura",
+  "mapAtlasCoverageMapView": "Vista actual del mapa",
+  "mapAtlasCoverageMarkers": "Ajustar a marcadores",
+  "mapAtlasGridLabel": "Cuadrícula de hojas",
+  "mapAtlasPageSizeLabel": "Tamaño de página",
+  "mapAtlasPageLetter": "Carta EE. UU. horizontal",
+  "mapAtlasPageA4": "A4 horizontal",
+  "mapAtlasIncludeMarkerIndex": "Incluir lista de marcadores en cada hoja",
+  "mapAtlasSheetCountHint": "Hojas",
+  "mapAtlasExportSuccess": "PDF del atlas imprimible guardado.",
+  "mapAtlasExportFailed": "Error al exportar el atlas: {error}",
+  "@mapAtlasExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapAtlasExportNoCoverage": "No se pudo determinar la cobertura del atlas. Abra el mapa primero, o añada marcadores visibles y elija Ajustar a marcadores.",
   "mapTilesFolderTitle": "Carpeta PMTiles",
   "mapTilesFolderDescription": "Carpeta en el servidor que contiene archivos .pmtiles. Se guarda en la base de datos para que cada cliente use la misma biblioteca de mosaicos.",
   "mapTilesStoragePathLabel": "Ruta de almacenamiento PMTiles",

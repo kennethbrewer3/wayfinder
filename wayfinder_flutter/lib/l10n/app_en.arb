@@ -369,6 +369,31 @@
   "geoExchangeFormatGpx": "GPX",
   "geoExchangeFormatKml": "KML",
   "geoExchangeFormatGeojson": "GeoJSON",
+  "mapAtlasTitle": "Printable map atlas",
+  "mapAtlasDescription": "Export a multi-page PDF of the current map area (or all markers) with a lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use. This is a vector overlay atlas — it does not include satellite or PMTiles basemap imagery.",
+  "mapAtlasExportButton": "Export printable atlas (PDF)",
+  "mapAtlasDialogTitle": "Export printable atlas",
+  "mapAtlasDialogDescription": "Choose coverage, page size, and how many sheets to print. Each sheet includes an approximate MGRS label for its center.",
+  "mapAtlasTitleLabel": "Atlas title",
+  "mapAtlasCoverageLabel": "Coverage",
+  "mapAtlasCoverageMapView": "Current map view",
+  "mapAtlasCoverageMarkers": "Fit all markers",
+  "mapAtlasGridLabel": "Sheet grid",
+  "mapAtlasPageSizeLabel": "Page size",
+  "mapAtlasPageLetter": "US Letter landscape",
+  "mapAtlasPageA4": "A4 landscape",
+  "mapAtlasIncludeMarkerIndex": "Include marker list on each sheet",
+  "mapAtlasSheetCountHint": "Sheets",
+  "mapAtlasExportSuccess": "Printable atlas PDF saved.",
+  "mapAtlasExportFailed": "Atlas export failed: {error}",
+  "@mapAtlasExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapAtlasExportNoCoverage": "Could not determine atlas coverage. Open the map first, or add visible markers and choose Fit all markers.",
   "mapTilesFolderTitle": "PMTiles folder",
   "mapTilesFolderDescription": "Folder on the server containing .pmtiles archives. Stored in the database so every client uses the same map tile library after restart.",
   "mapTilesStoragePathLabel": "PMTiles storage path",

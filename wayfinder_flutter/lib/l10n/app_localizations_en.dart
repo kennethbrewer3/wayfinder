@@ -682,6 +682,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get geoExchangeFormatGeojson => 'GeoJSON';
 
   @override
+  String get mapAtlasTitle => 'Printable map atlas';
+
+  @override
+  String get mapAtlasDescription =>
+      'Export a multi-page PDF of the current map area (or all markers) with a lat/lng grid, markers, zones, scale bar, and north arrow. Sheets overlap slightly for field use. This is a vector overlay atlas — it does not include satellite or PMTiles basemap imagery.';
+
+  @override
+  String get mapAtlasExportButton => 'Export printable atlas (PDF)';
+
+  @override
+  String get mapAtlasDialogTitle => 'Export printable atlas';
+
+  @override
+  String get mapAtlasDialogDescription =>
+      'Choose coverage, page size, and how many sheets to print. Each sheet includes an approximate MGRS label for its center.';
+
+  @override
+  String get mapAtlasTitleLabel => 'Atlas title';
+
+  @override
+  String get mapAtlasCoverageLabel => 'Coverage';
+
+  @override
+  String get mapAtlasCoverageMapView => 'Current map view';
+
+  @override
+  String get mapAtlasCoverageMarkers => 'Fit all markers';
+
+  @override
+  String get mapAtlasGridLabel => 'Sheet grid';
+
+  @override
+  String get mapAtlasPageSizeLabel => 'Page size';
+
+  @override
+  String get mapAtlasPageLetter => 'US Letter landscape';
+
+  @override
+  String get mapAtlasPageA4 => 'A4 landscape';
+
+  @override
+  String get mapAtlasIncludeMarkerIndex => 'Include marker list on each sheet';
+
+  @override
+  String get mapAtlasSheetCountHint => 'Sheets';
+
+  @override
+  String get mapAtlasExportSuccess => 'Printable atlas PDF saved.';
+
+  @override
+  String mapAtlasExportFailed(String error) {
+    return 'Atlas export failed: $error';
+  }
+
+  @override
+  String get mapAtlasExportNoCoverage =>
+      'Could not determine atlas coverage. Open the map first, or add visible markers and choose Fit all markers.';
+
+  @override
   String get mapTilesFolderTitle => 'PMTiles folder';
 
   @override

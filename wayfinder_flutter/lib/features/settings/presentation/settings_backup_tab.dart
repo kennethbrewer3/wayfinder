@@ -9,6 +9,8 @@ import '../../geo_exchange/data/geo_exchange_service.dart';
 import '../../geo_exchange/models/geo_exchange_models.dart';
 import '../../geo_exchange/utils/geo_exchange_codec.dart';
 import '../../layers/providers/layers_provider.dart';
+import '../../map_atlas/presentation/map_atlas_export_dialog.dart';
+import '../../map_atlas/utils/atlas_pdf_builder.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../providers/map_data_providers.dart';
@@ -27,6 +29,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
   bool _isRestoringMapData = false;
   bool _isImportingGeo = false;
   bool _isExportingGeo = false;
+  bool _isExportingAtlas = false;
 
   Future<void> _exportMapData() async {
     setState(() => _isExportingMapData = true);
@@ -248,6 +251,66 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     }
   }
 
+  Future<void> _exportMapAtlas() async {
+    final options = await showMapAtlasExportDialog(
+      context: context,
+      ref: ref,
+    );
+    if (options == null || !mounted) {
+      return;
+    }
+
+    setState(() => _isExportingAtlas = true);
+    try {
+      final coverage = resolveAtlasCoverage(options: options, ref: ref);
+      final l10n = AppLocalizations.of(context)!;
+      if (coverage == null || !coverage.isValid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.mapAtlasExportNoCoverage)),
+        );
+        return;
+      }
+
+      final markers = await ref.read(markersProvider.future);
+      final zones = await ref.read(zonesProvider.future);
+      final bytes = await buildAtlasPdf(
+        options: options,
+        coverage: coverage,
+        markers: markers,
+        zones: zones,
+      );
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
+      final saved = await saveBinaryFile(
+        fileName: 'wayfinder-atlas-$timestamp.pdf',
+        bytes: bytes,
+      );
+      if (!mounted) return;
+      if (saved) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.mapAtlasExportSuccess)),
+        );
+      }
+    } catch (error, stackTrace) {
+      _log.error(
+        '🗺️ Map atlas export failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.mapAtlasExportFailed(error.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isExportingAtlas = false);
+      }
+    }
+  }
+
   Future<void> _exportGeoExchange() async {
     final l10n = AppLocalizations.of(context)!;
     final format = await showDialog<GeoExchangeFormat>(
@@ -416,6 +479,32 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
             _isExportingGeo
                 ? l10n.actionExporting
                 : l10n.geoExchangeExportButton,
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.mapAtlasTitle,
+          style: theme.textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.mapAtlasDescription,
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.tonalIcon(
+          onPressed: _isExportingAtlas ? null : _exportMapAtlas,
+          icon: _isExportingAtlas
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.picture_as_pdf_outlined),
+          label: Text(
+            _isExportingAtlas
+                ? l10n.actionExporting
+                : l10n.mapAtlasExportButton,
           ),
         ),
       ],

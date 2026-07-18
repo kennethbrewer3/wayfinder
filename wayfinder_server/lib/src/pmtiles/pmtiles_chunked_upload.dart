@@ -47,7 +47,7 @@ abstract final class PmtilesChunkedUpload {
       session,
       'pmtiles',
       '📤 Chunked upload init "$name" | uploadId=$uploadId | '
-      'storageId=$storageId | expected=${_formatBytesOrUnknown(expectedBytes)}',
+          'storageId=$storageId | expected=${_formatBytesOrUnknown(expectedBytes)}',
     );
 
     return Response.ok(
@@ -105,7 +105,7 @@ abstract final class PmtilesChunkedUpload {
         session,
         'pmtiles',
         '📤 Chunked upload chunk failed "${active.name}" | '
-        'uploadId=$uploadId | offset=${active.receivedBytes}',
+            'uploadId=$uploadId | offset=${active.receivedBytes}',
         error: error,
         stackTrace: stackTrace,
       );
@@ -125,12 +125,12 @@ abstract final class PmtilesChunkedUpload {
       session,
       'pmtiles',
       '📤 Chunked upload progress "${active.name}" | '
-      'uploadId=$uploadId | '
-      '+${_formatBytes(chunkBytes)} → '
-      'received=${_formatBytes(active.receivedBytes)}'
-      '${active.expectedBytes == null ? '' : ' / ${_formatBytes(active.expectedBytes!)}'} | '
-      'elapsed=${_formatElapsed(elapsed)}'
-      '${_rateSuffix(active.receivedBytes, elapsed)}',
+          'uploadId=$uploadId | '
+          '+${_formatBytes(chunkBytes)} → '
+          'received=${_formatBytes(active.receivedBytes)}'
+          '${active.expectedBytes == null ? '' : ' / ${_formatBytes(active.expectedBytes!)}'} | '
+          'elapsed=${_formatElapsed(elapsed)}'
+          '${_rateSuffix(active.receivedBytes, elapsed)}',
     );
 
     return Response.ok(
@@ -181,7 +181,7 @@ abstract final class PmtilesChunkedUpload {
         session,
         'pmtiles',
         '🧭 Reading PMTiles header/bounds for "${active.name}" '
-        '(chunked complete)',
+            '(chunked complete)',
       );
       final bounds = await PmtilesHeaderBounds.readFromFile(storedFile);
       final id = UuidValue.fromString(active.storageId);
@@ -205,8 +205,8 @@ abstract final class PmtilesChunkedUpload {
         session,
         'pmtiles',
         '📤 Chunked upload complete "${active.name}" | '
-        'id=${id.uuid} | size=${_formatBytes(sizeBytes)} | '
-        'elapsed=${_formatElapsed(elapsed)}',
+            'id=${id.uuid} | size=${_formatBytes(sizeBytes)} | '
+            'elapsed=${_formatElapsed(elapsed)}',
       );
 
       final json = Map<String, dynamic>.from(entry.toJson());

@@ -369,8 +369,30 @@
     }
   },
   "mapTilesMapsTitle": "Cartes PMTiles",
-  "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Une seule archive activée correspondante est affichée à la fois pour garder la carte réactive.",
+  "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils — activez-les ici, mais ils ne sont pas dessinés comme fond de carte.",
+  "mapTilesDemBadge": "DEM d'élévation",
   "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
+  "elevationDemLabel": "Élévation DEM",
+  "elevationDemUnavailable": "Pas de couverture DEM",
+  "elevationNoDemAvailable": "Aucun DEM d'élévation n'est activé. Téléversez un .pmtiles Terrarium ou Terrain-RGB nommé avec dem/terrarium/elevation et activez-le sous Tuiles cartographiques.",
+  "elevationProfileTitle": "Profil d'élévation",
+  "elevationProfileButton": "Profil d'élévation",
+  "elevationProfileEmpty": "Impossible d'échantillonner les élévations le long de ce parcours.",
+  "elevationProfileMin": "Min",
+  "elevationProfileMax": "Max",
+  "elevationProfileGain": "Dénivelé +",
+  "elevationProfileLoss": "Dénivelé −",
+  "elevationClimbToMarker": "Montée vers {name} : {delta}",
+  "@elevationClimbToMarker": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
   "mapTilesUploadSuccess": "Fichier PMTiles téléversé : {name}",
   "@mapTilesUploadSuccess": {
     "placeholders": {

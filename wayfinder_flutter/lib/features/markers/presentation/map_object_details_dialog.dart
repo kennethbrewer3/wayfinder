@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -5,6 +7,9 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/copy_coordinates.dart';
+import '../../elevation/presentation/path_profile_dialog.dart';
+import '../../elevation/providers/elevation_providers.dart';
+import '../../elevation/utils/elevation_format.dart';
 import '../../map/utils/mgrs_utils.dart';
 import '../../markers/utils/marker_share_url.dart';
 import '../../circles/models/circle_geometry.dart';
@@ -269,6 +274,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           label: l10n.mapObjectDetailElevation,
           value: _formatElevation(marker.elevation),
         ),
+        _DemElevationRow(
+          point: LatLng(marker.latitude, marker.longitude),
+          l10n: l10n,
+        ),
         _DetailRow(
           label: l10n.mapObjectDetailVisibility,
           value: marker.visible
@@ -313,6 +322,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     return switch (zone.type) {
       lineZoneType => _lineDetails(
+        context: context,
         ref: ref,
         zone: zone,
         l10n: l10n,
@@ -331,6 +341,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         measurementUnits: measurementUnits,
       ),
       trackZoneType => _trackDetails(
+        context: context,
         ref: ref,
         zone: zone,
         l10n: l10n,
@@ -352,6 +363,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   }
 
   Widget _lineDetails({
+    required BuildContext context,
     required WidgetRef ref,
     required MapZone zone,
     required AppLocalizations l10n,
@@ -376,6 +388,22 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       ),
       onEdit: onEdit,
       l10n: l10n,
+      additionalActions: [
+        TextButton.icon(
+          onPressed: () {
+            unawaited(
+              showPathProfileDialog(
+                context: context,
+                ref: ref,
+                title: zone.name,
+                pathPoints: geometry.points,
+              ),
+            );
+          },
+          icon: const Icon(Icons.terrain),
+          label: Text(l10n.elevationProfileButton),
+        ),
+      ],
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
@@ -404,6 +432,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   }
 
   Widget _trackDetails({
+    required BuildContext context,
     required WidgetRef ref,
     required MapZone zone,
     required AppLocalizations l10n,
@@ -429,6 +458,24 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       ),
       onEdit: onEdit,
       l10n: l10n,
+      additionalActions: geometry.hasRenderablePath
+          ? [
+              TextButton.icon(
+                onPressed: () {
+                  unawaited(
+                    showPathProfileDialog(
+                      context: context,
+                      ref: ref,
+                      title: zone.name,
+                      pathPoints: geometry.pathPoints,
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.terrain),
+                label: Text(l10n.elevationProfileButton),
+              ),
+            ]
+          : const [],
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
@@ -860,6 +907,33 @@ class _NotesSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DemElevationRow extends ConsumerWidget {
+  const _DemElevationRow({
+    required this.point,
+    required this.l10n,
+  });
+
+  final LatLng point;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final units = ref.watch(measurementUnitsProvider);
+    final elevationAsync = ref.watch(elevationAtProvider(point));
+    final value = elevationAsync.when(
+      data: (meters) => meters == null
+          ? l10n.elevationDemUnavailable
+          : formatElevationMeters(meters, units),
+      loading: () => '…',
+      error: (_, _) => l10n.elevationDemUnavailable,
+    );
+    return _DetailRow(
+      label: l10n.elevationDemLabel,
+      value: value,
     );
   }
 }

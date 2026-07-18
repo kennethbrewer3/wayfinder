@@ -416,8 +416,30 @@
     }
   },
   "mapTilesMapsTitle": "PMTiles Maps",
-  "mapTilesMapsDescription": "Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive.",
+  "mapTilesMapsDescription": "Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.",
+  "mapTilesDemBadge": "Elevation DEM",
   "mapTilesUploadButton": "Upload .pmtiles file",
+  "elevationDemLabel": "DEM elevation",
+  "elevationDemUnavailable": "No DEM coverage",
+  "elevationNoDemAvailable": "No elevation DEM is enabled. Upload a Terrarium or Terrain-RGB .pmtiles file named with dem/terrarium/elevation and enable it under Map tiles.",
+  "elevationProfileTitle": "Elevation profile",
+  "elevationProfileButton": "Elevation profile",
+  "elevationProfileEmpty": "Could not sample elevations along this path.",
+  "elevationProfileMin": "Min",
+  "elevationProfileMax": "Max",
+  "elevationProfileGain": "Gain",
+  "elevationProfileLoss": "Loss",
+  "elevationClimbToMarker": "Climb to {name}: {delta}",
+  "@elevationClimbToMarker": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
   "mapTilesUploadSuccess": "PMTiles file uploaded: {name}",
   "@mapTilesUploadSuccess": {
     "placeholders": {

@@ -784,10 +784,50 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapTilesMapsDescription =>
-      'Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Une seule archive activée correspondante est affichée à la fois pour garder la carte réactive.';
+      'Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d\'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils — activez-les ici, mais ils ne sont pas dessinés comme fond de carte.';
+
+  @override
+  String get mapTilesDemBadge => 'DEM d\'élévation';
 
   @override
   String get mapTilesUploadButton => 'Téléverser un fichier .pmtiles';
+
+  @override
+  String get elevationDemLabel => 'Élévation DEM';
+
+  @override
+  String get elevationDemUnavailable => 'Pas de couverture DEM';
+
+  @override
+  String get elevationNoDemAvailable =>
+      'Aucun DEM d\'élévation n\'est activé. Téléversez un .pmtiles Terrarium ou Terrain-RGB nommé avec dem/terrarium/elevation et activez-le sous Tuiles cartographiques.';
+
+  @override
+  String get elevationProfileTitle => 'Profil d\'élévation';
+
+  @override
+  String get elevationProfileButton => 'Profil d\'élévation';
+
+  @override
+  String get elevationProfileEmpty =>
+      'Impossible d\'échantillonner les élévations le long de ce parcours.';
+
+  @override
+  String get elevationProfileMin => 'Min';
+
+  @override
+  String get elevationProfileMax => 'Max';
+
+  @override
+  String get elevationProfileGain => 'Dénivelé +';
+
+  @override
+  String get elevationProfileLoss => 'Dénivelé −';
+
+  @override
+  String elevationClimbToMarker(String name, String delta) {
+    return 'Montée vers $name : $delta';
+  }
 
   @override
   String mapTilesUploadSuccess(String name) {

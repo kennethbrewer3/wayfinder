@@ -771,10 +771,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTilesMapsDescription =>
-      'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive.';
+      'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.';
+
+  @override
+  String get mapTilesDemBadge => 'Elevation DEM';
 
   @override
   String get mapTilesUploadButton => 'Upload .pmtiles file';
+
+  @override
+  String get elevationDemLabel => 'DEM elevation';
+
+  @override
+  String get elevationDemUnavailable => 'No DEM coverage';
+
+  @override
+  String get elevationNoDemAvailable =>
+      'No elevation DEM is enabled. Upload a Terrarium or Terrain-RGB .pmtiles file named with dem/terrarium/elevation and enable it under Map tiles.';
+
+  @override
+  String get elevationProfileTitle => 'Elevation profile';
+
+  @override
+  String get elevationProfileButton => 'Elevation profile';
+
+  @override
+  String get elevationProfileEmpty =>
+      'Could not sample elevations along this path.';
+
+  @override
+  String get elevationProfileMin => 'Min';
+
+  @override
+  String get elevationProfileMax => 'Max';
+
+  @override
+  String get elevationProfileGain => 'Gain';
+
+  @override
+  String get elevationProfileLoss => 'Loss';
+
+  @override
+  String elevationClimbToMarker(String name, String delta) {
+    return 'Climb to $name: $delta';
+  }
 
   @override
   String mapTilesUploadSuccess(String name) {

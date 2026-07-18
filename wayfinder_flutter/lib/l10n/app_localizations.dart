@@ -1458,14 +1458,86 @@ abstract class AppLocalizations {
   /// No description provided for @mapTilesMapsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive.'**
+  /// **'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.'**
   String get mapTilesMapsDescription;
+
+  /// No description provided for @mapTilesDemBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevation DEM'**
+  String get mapTilesDemBadge;
 
   /// No description provided for @mapTilesUploadButton.
   ///
   /// In en, this message translates to:
   /// **'Upload .pmtiles file'**
   String get mapTilesUploadButton;
+
+  /// No description provided for @elevationDemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DEM elevation'**
+  String get elevationDemLabel;
+
+  /// No description provided for @elevationDemUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No DEM coverage'**
+  String get elevationDemUnavailable;
+
+  /// No description provided for @elevationNoDemAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No elevation DEM is enabled. Upload a Terrarium or Terrain-RGB .pmtiles file named with dem/terrarium/elevation and enable it under Map tiles.'**
+  String get elevationNoDemAvailable;
+
+  /// No description provided for @elevationProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevation profile'**
+  String get elevationProfileTitle;
+
+  /// No description provided for @elevationProfileButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevation profile'**
+  String get elevationProfileButton;
+
+  /// No description provided for @elevationProfileEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sample elevations along this path.'**
+  String get elevationProfileEmpty;
+
+  /// No description provided for @elevationProfileMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get elevationProfileMin;
+
+  /// No description provided for @elevationProfileMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get elevationProfileMax;
+
+  /// No description provided for @elevationProfileGain.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain'**
+  String get elevationProfileGain;
+
+  /// No description provided for @elevationProfileLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Loss'**
+  String get elevationProfileLoss;
+
+  /// No description provided for @elevationClimbToMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Climb to {name}: {delta}'**
+  String elevationClimbToMarker(String name, String delta);
 
   /// No description provided for @mapTilesUploadSuccess.
   ///

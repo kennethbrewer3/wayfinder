@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../elevation/utils/elevation_dem_detect.dart';
 import '../data/app_settings_repository.dart';
 import '../models/pmtiles_file.dart';
 import '../models/pmtiles_group.dart';
@@ -698,14 +699,23 @@ class _PmtilesFileTile extends StatelessWidget {
         ? l10n.mapTilesNoGroups
         : l10n.mapTilesGroupCount(file.groupIds.length);
 
+    final isDem = looksLikeElevationDemArchive(file.name);
+
     return ListTile(
       leading: Icon(
-        visibleOnMap ? Icons.layers : Icons.layers_outlined,
+        isDem
+            ? Icons.terrain
+            : (visibleOnMap ? Icons.layers : Icons.layers_outlined),
         color: visibleOnMap ? Theme.of(context).colorScheme.primary : null,
       ),
       title: Text(file.name),
       subtitle: Text(
-        '${file.formattedSize} • ${file.addedAt.toLocal()} • $groupLabel',
+        [
+          if (isDem) l10n.mapTilesDemBadge,
+          file.formattedSize,
+          file.addedAt.toLocal().toString(),
+          groupLabel,
+        ].join(' • '),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

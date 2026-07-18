@@ -50,7 +50,7 @@ Wayfinder stores your markers, lines, circles, and rectangles on a **Wayfinder s
 
 ### Cursor coordinates
 
-While the pointer is over the map, a small readout appears **above** the cursor. It shows latitude/longitude by default. When the **MGRS grid** is enabled, the readout shows the Military Grid Reference System coordinate instead (precision follows zoom).
+While the pointer is over the map, a small readout appears **above** the cursor. It shows latitude/longitude by default. When the **MGRS grid** is enabled, the readout shows the Military Grid Reference System coordinate instead (precision follows zoom). If an offline **elevation DEM** pack is enabled, the readout also appends spot elevation.
 
 ### My location (GPS)
 
@@ -425,7 +425,7 @@ Leave these off during normal use.
 
 ## Settings — Map tiles
 
-PMTiles are compressed vector map archives. Wayfinder renders them locally for offline-capable basemaps.
+PMTiles are compressed map archives. Wayfinder renders vector/raster basemaps locally, and can also sample **offline elevation (DEM)** packs for height readouts.
 
 ### Storage path
 
@@ -436,6 +436,14 @@ The server stores uploaded `.pmtiles` files in a folder path configured here (us
 1. Tap **Upload** and choose a `.pmtiles` file from your device.
 2. Wait for upload and processing to finish (large files take time).
 3. Enable the archive with the toggle. Multiple archives can be enabled; they composited on the map.
+
+### Offline elevation (DEM)
+
+Upload Terrarium or Mapbox Terrain-RGB height tiles packed as `.pmtiles`. Name the file so Wayfinder recognizes it as DEM — include one of: `dem`, `terrarium`, `terrain-rgb`, or `elevation` (for example `virginia-terrarium.pmtiles`).
+
+- Enable the DEM archive with the toggle (listed with an **Elevation DEM** badge).
+- DEM packs are **not** drawn as the basemap; they are sampled for height.
+- With DEM enabled you get: **spot elevation** on the cursor readout, **climb to marker** in the GPS HUD when a marker is selected, and **Elevation profile** on line/track details.
 
 ### Groups
 
@@ -529,7 +537,7 @@ Use this when you need paper sheets if the phone dies. From the map, tap the **P
 - **Page size** — US Letter or A4 landscape
 - Optional marker list on each sheet
 
-The PDF includes an index overview plus one page per sheet with the **enabled PMTiles basemap** (rasterized from the same archives used on the map), a lat/lng grid, markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. If the **MGRS grid** is enabled on the map when you export, that grid (and its labels) is drawn on each sheet too. Export can take a moment while tiles are rendered.
+The PDF includes an index overview plus one page per sheet with the **enabled PMTiles basemap** (rasterized from the same archives used on the map), markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. Sheets use a lat/lng grid by default; if the **MGRS grid** is enabled on the map when you export, the MGRS grid (and its labels) is drawn instead. Export can take a moment while tiles are rendered.
 
 ---
 
@@ -675,6 +683,8 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Tracking marker | Marker edit → Tracking marker; manage trail in sidebar (track) |
 | Backup data | Settings → Backup → Export |
 | Print map sheets (PDF) | Settings → Backup → Export printable atlas |
+| Offline elevation DEM | Settings → Map tiles → enable `*dem*` / `*terrarium*` pack |
+| Path elevation profile | Line/track details → Elevation profile |
 | Script with curl | Settings → About → REST API access → generate key |
 | Add map tiles | Settings → Map tiles → Upload |
 | Enable address search | Settings → Geocoding → import housenumbers |

@@ -779,10 +779,50 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapTilesMapsDescription =>
-      'Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa.';
+      'Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles — actívelos aquí, pero no se dibujan como basemap.';
+
+  @override
+  String get mapTilesDemBadge => 'DEM de elevación';
 
   @override
   String get mapTilesUploadButton => 'Subir archivo .pmtiles';
+
+  @override
+  String get elevationDemLabel => 'Elevación DEM';
+
+  @override
+  String get elevationDemUnavailable => 'Sin cobertura DEM';
+
+  @override
+  String get elevationNoDemAvailable =>
+      'No hay un DEM de elevación activado. Suba un .pmtiles Terrarium o Terrain-RGB con dem/terrarium/elevation en el nombre y actívelo en Mosaicos del mapa.';
+
+  @override
+  String get elevationProfileTitle => 'Perfil de elevación';
+
+  @override
+  String get elevationProfileButton => 'Perfil de elevación';
+
+  @override
+  String get elevationProfileEmpty =>
+      'No se pudieron muestrear elevaciones en esta ruta.';
+
+  @override
+  String get elevationProfileMin => 'Mín';
+
+  @override
+  String get elevationProfileMax => 'Máx';
+
+  @override
+  String get elevationProfileGain => 'Ascenso';
+
+  @override
+  String get elevationProfileLoss => 'Descenso';
+
+  @override
+  String elevationClimbToMarker(String name, String delta) {
+    return 'Ascenso a $name: $delta';
+  }
 
   @override
   String mapTilesUploadSuccess(String name) {

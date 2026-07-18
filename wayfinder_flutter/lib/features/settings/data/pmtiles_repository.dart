@@ -7,6 +7,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../elevation/utils/elevation_dem_detect.dart';
 import '../models/pmtiles_archive_entry.dart';
 import '../models/pmtiles_file.dart' as local;
 import '../models/pmtiles_group.dart' as local_group;
@@ -67,6 +68,10 @@ class PmtilesRepository {
     };
 
     final enabled = files.where((file) {
+      // DEM packs are sampled for elevation, not painted as basemap tiles.
+      if (looksLikeElevationDemArchive(file.name)) {
+        return false;
+      }
       if (file.isActive) {
         return true;
       }
@@ -81,6 +86,30 @@ class PmtilesRepository {
     return [
       for (final file in enabled) _mapArchiveEntry(file),
     ];
+  }
+
+  /// Enabled DEM / elevation PMTiles (Terrarium or Terrain-RGB).
+  Future<List<PmtilesArchiveEntry>> resolveElevationDemEntries() async {
+    final files = await _client.pmtiles.listFiles();
+    final groups = await _client.pmtiles.listGroups();
+    final groupsOnMap = {
+      for (final group in groups)
+        if (group.showOnMap) group.id.uuid: true,
+    };
+
+    final dem = files.where((file) {
+      if (!looksLikeElevationDemArchive(file.name)) {
+        return false;
+      }
+      if (file.isActive) {
+        return true;
+      }
+      final groupIds = file.groupIds ?? const [];
+      return groupIds.any((groupId) => groupsOnMap[groupId.uuid] == true);
+    }).toList()
+      ..sort((a, b) => _compareNames(a.name, b.name));
+
+    return [for (final file in dem) _mapArchiveEntry(file)];
   }
 
   PmtilesArchiveEntry _mapArchiveEntry(PmtilesFile file) {

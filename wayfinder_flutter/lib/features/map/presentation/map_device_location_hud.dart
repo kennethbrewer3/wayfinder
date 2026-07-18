@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../elevation/providers/elevation_providers.dart';
+import '../../elevation/utils/elevation_format.dart';
 import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -41,6 +43,16 @@ class MapDeviceLocationHud extends ConsumerWidget {
       markers: markers,
     );
     final declination = magneticDeclinationDegrees(location: point);
+    final hereElevation = ref.watch(elevationAtProvider(point)).valueOrNull;
+    final targetElevation = target == null
+        ? null
+        : ref
+              .watch(
+                elevationAtProvider(
+                  LatLng(target.latitude, target.longitude),
+                ),
+              )
+              .valueOrNull;
 
     final positionText = formatDeviceLocationPosition(
       location: point,
@@ -50,6 +62,7 @@ class MapDeviceLocationHud extends ConsumerWidget {
 
     String? rangeText;
     String? targetName;
+    String? climbText;
     if (target != null) {
       targetName = target.name.trim().isEmpty
           ? l10n.mapDeviceLocationSelectedMarker
@@ -61,6 +74,15 @@ class MapDeviceLocationHud extends ConsumerWidget {
         bearingReference: bearingReference,
         declinationDegrees: declination,
       );
+      if (hereElevation != null && targetElevation != null) {
+        climbText = l10n.elevationClimbToMarker(
+          targetName,
+          formatElevationDeltaMeters(
+            targetElevation - hereElevation,
+            units,
+          ),
+        );
+      }
     }
 
     return Material(
@@ -84,7 +106,9 @@ class MapDeviceLocationHud extends ConsumerWidget {
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
-                    positionText,
+                    hereElevation == null
+                        ? positionText
+                        : '$positionText · ${formatElevationMeters(hereElevation, units)}',
                     style: theme.textTheme.labelLarge?.copyWith(
                       fontFeatures: const [FontFeature.tabularFigures()],
                       fontWeight: FontWeight.w600,
@@ -110,6 +134,16 @@ class MapDeviceLocationHud extends ConsumerWidget {
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
+              if (climbText != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  climbText,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ],
             ] else ...[
               const SizedBox(height: 2),
               Text(

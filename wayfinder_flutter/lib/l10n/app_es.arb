@@ -369,8 +369,30 @@
     }
   },
   "mapTilesMapsTitle": "Mapas PMTiles",
-  "mapTilesMapsDescription": "Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa.",
+  "mapTilesMapsDescription": "Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles — actívelos aquí, pero no se dibujan como basemap.",
+  "mapTilesDemBadge": "DEM de elevación",
   "mapTilesUploadButton": "Subir archivo .pmtiles",
+  "elevationDemLabel": "Elevación DEM",
+  "elevationDemUnavailable": "Sin cobertura DEM",
+  "elevationNoDemAvailable": "No hay un DEM de elevación activado. Suba un .pmtiles Terrarium o Terrain-RGB con dem/terrarium/elevation en el nombre y actívelo en Mosaicos del mapa.",
+  "elevationProfileTitle": "Perfil de elevación",
+  "elevationProfileButton": "Perfil de elevación",
+  "elevationProfileEmpty": "No se pudieron muestrear elevaciones en esta ruta.",
+  "elevationProfileMin": "Mín",
+  "elevationProfileMax": "Máx",
+  "elevationProfileGain": "Ascenso",
+  "elevationProfileLoss": "Descenso",
+  "elevationClimbToMarker": "Ascenso a {name}: {delta}",
+  "@elevationClimbToMarker": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
   "mapTilesUploadSuccess": "Archivo PMTiles subido: {name}",
   "@mapTilesUploadSuccess": {
     "placeholders": {

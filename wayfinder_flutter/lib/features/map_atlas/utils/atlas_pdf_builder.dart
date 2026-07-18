@@ -454,26 +454,24 @@ void _paintSheetMap({
     ..drawRect(plotOrigin.x, plotOrigin.y, plot.x, plot.y)
     ..strokePath();
 
-  // Lat/lng reference grid — lighter when MGRS is the primary mesh.
-  canvas
-    ..setStrokeColor(
-      showMgrs
-          ? PdfColors.grey500
-          : (basemap == null ? PdfColors.grey400 : PdfColors.grey600),
-    )
-    ..setLineWidth(showMgrs ? 0.2 : (basemap == null ? 0.4 : 0.25));
-  for (var i = 1; i < 5; i++) {
-    final lat = sheet.bounds.south + sheet.bounds.latSpan * i / 5;
-    final lng = sheet.bounds.west + sheet.bounds.lngSpan * i / 5;
-    final west = plotMap.project(LatLng(lat, sheet.bounds.west));
-    final east = plotMap.project(LatLng(lat, sheet.bounds.east));
-    final south = plotMap.project(LatLng(sheet.bounds.south, lng));
-    final north = plotMap.project(LatLng(sheet.bounds.north, lng));
+  // Lat/lng reference grid only when MGRS is off (both together is confusing).
+  if (!showMgrs) {
     canvas
-      ..drawLine(west.x, west.y, east.x, east.y)
-      ..drawLine(south.x, south.y, north.x, north.y);
+      ..setStrokeColor(basemap == null ? PdfColors.grey400 : PdfColors.grey600)
+      ..setLineWidth(basemap == null ? 0.4 : 0.25);
+    for (var i = 1; i < 5; i++) {
+      final lat = sheet.bounds.south + sheet.bounds.latSpan * i / 5;
+      final lng = sheet.bounds.west + sheet.bounds.lngSpan * i / 5;
+      final west = plotMap.project(LatLng(lat, sheet.bounds.west));
+      final east = plotMap.project(LatLng(lat, sheet.bounds.east));
+      final south = plotMap.project(LatLng(sheet.bounds.south, lng));
+      final north = plotMap.project(LatLng(sheet.bounds.north, lng));
+      canvas
+        ..drawLine(west.x, west.y, east.x, east.y)
+        ..drawLine(south.x, south.y, north.x, north.y);
+    }
+    canvas.strokePath();
   }
-  canvas.strokePath();
 
   if (showMgrs) {
     _paintMgrsGrid(

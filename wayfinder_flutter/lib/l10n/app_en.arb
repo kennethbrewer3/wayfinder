@@ -147,6 +147,8 @@
   "settingsMapDisplayDescription": "Map overlays stored on the server.",
   "settingsMapCompassRoseTitle": "Show compass rose",
   "settingsMapCompassRoseDescription": "Displays a north-oriented compass in the upper-left corner of the map.",
+  "settingsMapMgrsGridTitle": "Show MGRS grid",
+  "settingsMapMgrsGridDescription": "Overlays Military Grid Reference System lines on the map. Grid spacing adjusts with zoom.",
   "settingsMapZoomRangeWarning": "Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.",
   "settingsMapMinZoom": "Minimum zoom",
   "settingsMapMaxZoom": "Maximum zoom",
@@ -788,6 +790,8 @@
   "mapHomeTooltip": "Home",
   "mapSettingsTooltip": "Settings",
   "mapManualTooltip": "User manual",
+  "mapMgrsGridShowTooltip": "Show MGRS grid",
+  "mapMgrsGridHideTooltip": "Hide MGRS grid",
   "userManualTitle": "User Manual",
   "userManualContentsTitle": "Contents",
   "userManualLoadFailed": "Could not load the user manual: {error}",
@@ -819,6 +823,8 @@
   "mapObjectTypeTrack": "Track",
   "mapObjectTypeCircle": "Circle",
   "mapObjectDetailCoordinates": "Coordinates",
+  "mapObjectDetailMgrs": "MGRS",
+  "mapObjectDetailMgrsUnavailable": "Unavailable (outside MGRS coverage)",
   "mapObjectDetailElevation": "Elevation",
   "mapObjectDetailVisibility": "Visibility",
   "mapObjectVisibilityVisible": "Visible",
@@ -1379,6 +1385,8 @@
   "mapRadialAddToGeocoding": "Add to search",
   "mapAddToGeocodingSearch": "Add to geocoding search",
   "mapCoordinatesCopied": "Coordinates copied to clipboard.",
+  "mapMgrsCopyTooltip": "Copy MGRS",
+  "mapMgrsCopied": "MGRS copied to clipboard.",
   "mapMarkerShareUrlLabel": "Link",
   "mapMarkerCopyUrlTooltip": "Copy marker link",
   "mapMarkerUrlCopied": "Marker link copied to clipboard.",
@@ -1404,6 +1412,7 @@
   "rectangleModeCorners": "Corner rectangle",
   "mapObjectTypeRectangle": "Rectangle",
   "searchSubtitleCoordinates": "Coordinates",
+  "searchSubtitleMgrs": "MGRS",
   "searchSubtitleMarker": "Marker",
   "searchSubtitleZone": "Zone ({type})",
   "@searchSubtitleZone": {
@@ -1413,7 +1422,7 @@
       }
     }
   },
-  "searchHint": "Search places, markers, zones, or lat, lng (e.g. {example})",
+  "searchHint": "Search places, markers, zones, lat/lng, or MGRS (e.g. {example})",
   "@searchHint": {
     "placeholders": {
       "example": {
@@ -1426,6 +1435,8 @@
   "markerIconHome": "Home",
   "markerIconHouse": "House",
   "markerIconApartment": "Apartment",
+  "markerIconCity": "City",
+  "markerIconTown": "Town",
   "markerIconWork": "Work",
   "markerIconSchool": "School",
   "markerIconStore": "Store",

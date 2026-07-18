@@ -21,6 +21,7 @@ void main() {
           mapViewportDebugBorder: true,
           mapTileBorderDebug: false,
           mapCompassRoseEnabled: true,
+          mapMgrsGridEnabled: false,
           mapMinZoom: 2,
           mapMaxZoom: 18,
           restApiKeyHash: 'secret-hash',
@@ -42,6 +43,7 @@ void main() {
         'mapViewportDebugBorder': true,
         'mapTileBorderDebug': false,
         'mapCompassRoseEnabled': true,
+        'mapMgrsGridEnabled': false,
         'mapMinZoom': 2.0,
         'mapMaxZoom': 18.0,
       });

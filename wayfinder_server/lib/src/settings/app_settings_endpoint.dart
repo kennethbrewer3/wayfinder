@@ -111,6 +111,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
+    bool mapMgrsGridEnabled,
     double mapMinZoom,
     double mapMaxZoom,
   ) {
@@ -129,6 +130,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           mapViewportDebugBorder: mapViewportDebugBorder,
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
+          mapMgrsGridEnabled: mapMgrsGridEnabled,
           mapMinZoom: mapMinZoom,
           mapMaxZoom: mapMaxZoom,
         );
@@ -146,6 +148,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
             mapViewportDebugBorder: mapViewportDebugBorder,
             mapTileBorderDebug: mapTileBorderDebug,
             mapCompassRoseEnabled: mapCompassRoseEnabled,
+            mapMgrsGridEnabled: mapMgrsGridEnabled,
             mapMinZoom: mapMinZoom,
             mapMaxZoom: mapMaxZoom,
           ),

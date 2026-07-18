@@ -124,6 +124,8 @@
   "settingsMapDisplayDescription": "Superposiciones del mapa guardadas en el servidor.",
   "settingsMapCompassRoseTitle": "Mostrar rosa de los vientos",
   "settingsMapCompassRoseDescription": "Muestra una brújula orientada al norte en la esquina superior izquierda del mapa.",
+  "settingsMapMgrsGridTitle": "Mostrar cuadrícula MGRS",
+  "settingsMapMgrsGridDescription": "Superpone las líneas del sistema de referencia de cuadrícula militar (MGRS). El espaciado se ajusta con el zoom.",
   "settingsMapZoomRangeWarning": "Cambiar el rango de zoom puede ralentizar el mapa, aumentar el uso de memoria o mostrar teselas estiradas cuando sus datos sin conexión no incluyen detalle en esos niveles. Solo suba el máximo si sus archivos de mapa lo admiten.",
   "settingsMapMinZoom": "Zoom mínimo",
   "settingsMapMaxZoom": "Zoom máximo",
@@ -594,6 +596,8 @@
   "rectangleCenterMoveHelp": "Mover el centro desplaza todo el rectángulo en el mapa.",
   "mapHomeTooltip": "Inicio",
   "mapSettingsTooltip": "Configuración",
+  "mapMgrsGridShowTooltip": "Mostrar cuadrícula MGRS",
+  "mapMgrsGridHideTooltip": "Ocultar cuadrícula MGRS",
   "mapShowObjectsTooltip": "Mostrar objetos del mapa",
   "mapLoadFailed": "Error al cargar el mapa: {error}",
   "@mapLoadFailed": {
@@ -614,6 +618,8 @@
   "mapObjectTypeTrack": "Rastro",
   "mapObjectTypeCircle": "Círculo",
   "mapObjectDetailCoordinates": "Coordenadas",
+  "mapObjectDetailMgrs": "MGRS",
+  "mapObjectDetailMgrsUnavailable": "No disponible (fuera de cobertura MGRS)",
   "mapObjectDetailElevation": "Elevación",
   "mapObjectDetailVisibility": "Visibilidad",
   "mapObjectVisibilityVisible": "Visible",
@@ -1069,6 +1075,8 @@
   "mapRadialAddToGeocoding": "Añadir a búsqueda",
   "mapAddToGeocodingSearch": "Añadir a búsqueda geográfica",
   "mapCoordinatesCopied": "Coordenadas copiadas al portapapeles.",
+  "mapMgrsCopyTooltip": "Copiar MGRS",
+  "mapMgrsCopied": "MGRS copiado al portapapeles.",
   "mapMarkerShareUrlLabel": "Enlace",
   "mapMarkerCopyUrlTooltip": "Copiar enlace del marcador",
   "mapMarkerUrlCopied": "Enlace del marcador copiado al portapapeles.",
@@ -1094,6 +1102,7 @@
   "rectangleModeCorners": "Rectángulo por esquinas",
   "mapObjectTypeRectangle": "Rectángulo",
   "searchSubtitleCoordinates": "Coordenadas",
+  "searchSubtitleMgrs": "MGRS",
   "searchSubtitleMarker": "Marcador",
   "searchSubtitleZone": "Zona ({type})",
   "@searchSubtitleZone": {
@@ -1103,7 +1112,7 @@
       }
     }
   },
-  "searchHint": "Buscar lugares, marcadores, zonas o lat, lng (p. ej. {example})",
+  "searchHint": "Buscar lugares, marcadores, zonas, lat/lng o MGRS (p. ej. {example})",
   "@searchHint": {
     "placeholders": {
       "example": {
@@ -1116,6 +1125,8 @@
   "markerIconHome": "Casa",
   "markerIconHouse": "Vivienda",
   "markerIconApartment": "Apartamento",
+  "markerIconCity": "Ciudad",
+  "markerIconTown": "Pueblo",
   "markerIconWork": "Trabajo",
   "markerIconSchool": "Escuela",
   "markerIconStore": "Tienda",

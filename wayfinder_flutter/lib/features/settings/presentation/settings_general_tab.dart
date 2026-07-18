@@ -24,6 +24,7 @@ import '../../map/providers/map_providers.dart';
 import '../../map/models/map_zoom_limits.dart';
 import '../../map/providers/map_zoom_range_provider.dart';
 import '../../map/providers/map_compass_rose_provider.dart';
+import '../../map/providers/map_mgrs_grid_provider.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../markers/models/marker_icon_registry.dart';
@@ -311,6 +312,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
+    final showMapMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
     final mapZoomRange = ref.watch(mapZoomRangeProvider);
     ref.listen<MapZoomRange>(mapZoomRangeProvider, (previous, next) {
       if (previous != next) {
@@ -687,6 +689,15 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             ref
                 .read(mapCompassRoseEnabledProvider.notifier)
                 .setEnabled(enabled);
+          },
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsMapMgrsGridTitle),
+          subtitle: Text(l10n.settingsMapMgrsGridDescription),
+          value: showMapMgrsGrid,
+          onChanged: (enabled) {
+            ref.read(mapMgrsGridEnabledProvider.notifier).setEnabled(enabled);
           },
         ),
         const SizedBox(height: 16),

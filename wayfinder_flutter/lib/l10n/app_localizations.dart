@@ -712,6 +712,18 @@ abstract class AppLocalizations {
   /// **'Displays a north-oriented compass in the upper-left corner of the map.'**
   String get settingsMapCompassRoseDescription;
 
+  /// No description provided for @settingsMapMgrsGridTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show MGRS grid'**
+  String get settingsMapMgrsGridTitle;
+
+  /// No description provided for @settingsMapMgrsGridDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Overlays Military Grid Reference System lines on the map. Grid spacing adjusts with zoom.'**
+  String get settingsMapMgrsGridDescription;
+
   /// No description provided for @settingsMapZoomRangeWarning.
   ///
   /// In en, this message translates to:
@@ -2535,6 +2547,18 @@ abstract class AppLocalizations {
   /// **'User manual'**
   String get mapManualTooltip;
 
+  /// No description provided for @mapMgrsGridShowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Show MGRS grid'**
+  String get mapMgrsGridShowTooltip;
+
+  /// No description provided for @mapMgrsGridHideTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide MGRS grid'**
+  String get mapMgrsGridHideTooltip;
+
   /// No description provided for @userManualTitle.
   ///
   /// In en, this message translates to:
@@ -2636,6 +2660,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Coordinates'**
   String get mapObjectDetailCoordinates;
+
+  /// No description provided for @mapObjectDetailMgrs.
+  ///
+  /// In en, this message translates to:
+  /// **'MGRS'**
+  String get mapObjectDetailMgrs;
+
+  /// No description provided for @mapObjectDetailMgrsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable (outside MGRS coverage)'**
+  String get mapObjectDetailMgrsUnavailable;
 
   /// No description provided for @mapObjectDetailElevation.
   ///
@@ -4419,6 +4455,18 @@ abstract class AppLocalizations {
   /// **'Coordinates copied to clipboard.'**
   String get mapCoordinatesCopied;
 
+  /// No description provided for @mapMgrsCopyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy MGRS'**
+  String get mapMgrsCopyTooltip;
+
+  /// No description provided for @mapMgrsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'MGRS copied to clipboard.'**
+  String get mapMgrsCopied;
+
   /// No description provided for @mapMarkerShareUrlLabel.
   ///
   /// In en, this message translates to:
@@ -4569,6 +4617,12 @@ abstract class AppLocalizations {
   /// **'Coordinates'**
   String get searchSubtitleCoordinates;
 
+  /// No description provided for @searchSubtitleMgrs.
+  ///
+  /// In en, this message translates to:
+  /// **'MGRS'**
+  String get searchSubtitleMgrs;
+
   /// No description provided for @searchSubtitleMarker.
   ///
   /// In en, this message translates to:
@@ -4584,7 +4638,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search places, markers, zones, or lat, lng (e.g. {example})'**
+  /// **'Search places, markers, zones, lat/lng, or MGRS (e.g. {example})'**
   String searchHint(String example);
 
   /// No description provided for @sortGroupDigits.
@@ -4616,6 +4670,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apartment'**
   String get markerIconApartment;
+
+  /// No description provided for @markerIconCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get markerIconCity;
+
+  /// No description provided for @markerIconTown.
+  ///
+  /// In en, this message translates to:
+  /// **'Town'**
+  String get markerIconTown;
 
   /// No description provided for @markerIconWork.
   ///

@@ -2285,6 +2285,7 @@ class _AppSettingsEndpoint {
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
+    bool mapMgrsGridEnabled,
     double mapMinZoom,
     double mapMaxZoom,
   ) async {
@@ -2309,6 +2310,7 @@ class _AppSettingsEndpoint {
             'mapViewportDebugBorder': mapViewportDebugBorder,
             'mapTileBorderDebug': mapTileBorderDebug,
             'mapCompassRoseEnabled': mapCompassRoseEnabled,
+            'mapMgrsGridEnabled': mapMgrsGridEnabled,
             'mapMinZoom': mapMinZoom,
             'mapMaxZoom': mapMaxZoom,
           }),

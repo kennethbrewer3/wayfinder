@@ -22,6 +22,7 @@ Map<String, dynamic> exportAppSettingsBackup(AppSettings settings) {
     'mapViewportDebugBorder': settings.mapViewportDebugBorder,
     'mapTileBorderDebug': settings.mapTileBorderDebug,
     'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
+    'mapMgrsGridEnabled': settings.mapMgrsGridEnabled,
     'mapMinZoom': settings.mapMinZoom,
     'mapMaxZoom': settings.mapMaxZoom,
   };
@@ -44,6 +45,7 @@ Future<void> restoreAppSettingsBackup(
   final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
   final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
   final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
+  final mapMgrsGridEnabled = _readBool(body['mapMgrsGridEnabled']) ?? false;
   final mapMinZoom = _readDouble(body['mapMinZoom']);
   final mapMaxZoom = _readDouble(body['mapMaxZoom']);
 
@@ -81,6 +83,7 @@ Future<void> restoreAppSettingsBackup(
     mapViewportDebugBorder: mapViewportDebugBorder,
     mapTileBorderDebug: mapTileBorderDebug,
     mapCompassRoseEnabled: mapCompassRoseEnabled,
+    mapMgrsGridEnabled: mapMgrsGridEnabled,
     mapMinZoom: mapMinZoom,
     mapMaxZoom: mapMaxZoom,
   );
@@ -102,6 +105,7 @@ Future<void> restoreAppSettingsBackup(
       mapViewportDebugBorder: mapViewportDebugBorder,
       mapTileBorderDebug: mapTileBorderDebug,
       mapCompassRoseEnabled: mapCompassRoseEnabled,
+      mapMgrsGridEnabled: mapMgrsGridEnabled,
       mapMinZoom: mapMinZoom,
       mapMaxZoom: mapMaxZoom,
     ),

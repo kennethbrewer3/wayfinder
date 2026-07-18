@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/presentation/copy_coordinates.dart';
+import '../../map/utils/mgrs_utils.dart';
 import '../../markers/utils/marker_share_url.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
@@ -169,6 +170,9 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     final notes = marker.notes?.trim();
     final shareUrl = buildMarkerShareUrl(marker: marker);
+    final mgrs = _mgrsForLatLng(
+      LatLng(marker.latitude, marker.longitude),
+    );
     final trackZones = trackZonesById(
       ref.watch(zonesProvider).valueOrNull ?? const [],
     );
@@ -240,6 +244,18 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
             LatLng(marker.latitude, marker.longitude),
           ),
           copyTooltip: l10n.mapRadialCopyCoordinates,
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailMgrs,
+          value: mgrs ?? l10n.mapObjectDetailMgrsUnavailable,
+          onCopy: mgrs == null
+              ? null
+              : () => copyTextWithFeedback(
+                  context,
+                  text: mgrs,
+                  copiedMessage: l10n.mapMgrsCopied,
+                ),
+          copyTooltip: l10n.mapMgrsCopyTooltip,
         ),
         _MarkerShareLinkSection(
           label: l10n.mapMarkerShareUrlLabel,
@@ -874,4 +890,13 @@ String _formatElevation(double elevation) {
 
 String _formatLatLng(LatLng point) {
   return formatLatLng(point);
+}
+
+/// Spaced MGRS for [point], or null outside the supported band / on conversion failure.
+String? _mgrsForLatLng(LatLng point) {
+  try {
+    return formatMgrs(latLngToMgrs(point, accuracy: 5));
+  } catch (_) {
+    return null;
+  }
 }

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Town settlement icon">
+  <rect x="5" y="24" width="14" height="17" rx="1" fill="#FFE0B2" stroke="#202020" stroke-width="2"/>
+  <path d="M4 24l8-8 8 8z" fill="#EF6C00" stroke="#202020" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="10" y="31" width="4" height="10" fill="#6D4C41" stroke="#202020" stroke-width="1.5"/>
+  <rect x="7" y="27" width="4" height="4" fill="#90CAF9" stroke="#202020" stroke-width="1.2"/>
+
+  <rect x="20" y="26" width="12" height="15" rx="1" fill="#FFCC80" stroke="#202020" stroke-width="2"/>
+  <path d="M19 26l7-7 7 7z" fill="#E65100" stroke="#202020" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="24" y="32" width="4" height="9" fill="#6D4C41" stroke="#202020" stroke-width="1.5"/>
+  <rect x="22" y="28" width="3.5" height="3.5" fill="#90CAF9" stroke="#202020" stroke-width="1.2"/>
+
+  <rect x="34" y="22" width="9" height="19" rx="1" fill="#BCAAA4" stroke="#202020" stroke-width="2"/>
+  <path d="M33 22l5.5-6 5.5 6z" fill="#8D6E63" stroke="#202020" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="36.5" y="26" width="4" height="4" fill="#90CAF9" stroke="#202020" stroke-width="1.2"/>
+  <rect x="36.5" y="32" width="4" height="4" fill="#90CAF9" stroke="#202020" stroke-width="1.2"/>
+  <path d="M38.5 12v4" stroke="#202020" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="38.5" cy="11" r="1.5" fill="#E53935" stroke="#202020" stroke-width="1"/>
+
+  <path d="M3 41h42" stroke="#202020" stroke-width="2" stroke-linecap="round"/>
+</svg>

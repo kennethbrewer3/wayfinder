@@ -147,7 +147,7 @@ class _MapSearchFieldState extends ConsumerState<MapSearchField> {
           color: theme.colorScheme.onSurface,
         ),
         decoration: InputDecoration(
-          hintText: l10n.searchHint(_coordinateExample()),
+          hintText: l10n.searchHint(_searchHintExample()),
           hintStyle: theme.textTheme.bodyLarge?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
@@ -297,6 +297,10 @@ String _coordinateExample() {
   final lat = AppConstants.defaultLatitude.toStringAsFixed(3);
   final lng = AppConstants.defaultLongitude.toStringAsFixed(3);
   return '$lat, $lng';
+}
+
+String _searchHintExample() {
+  return '${_coordinateExample()} · 18S UJ 2348 0647';
 }
 
 /// Backwards-compatible alias used by older call sites.

@@ -151,6 +151,8 @@ String localizedMarkerIconLabel(AppLocalizations l10n, String iconKey) {
     'home' => l10n.markerIconHome,
     'house' => l10n.markerIconHouse,
     'apartment' => l10n.markerIconApartment,
+    'city' => l10n.markerIconCity,
+    'town' => l10n.markerIconTown,
     'work' => l10n.markerIconWork,
     'school' => l10n.markerIconSchool,
     'store' => l10n.markerIconStore,

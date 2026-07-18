@@ -28,6 +28,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    bool? mapMgrsGridEnabled,
     double? mapMinZoom,
     double? mapMaxZoom,
     this.restApiKeyHash,
@@ -41,6 +42,7 @@ abstract class AppSettings implements _i1.SerializableModel {
        mapViewportDebugBorder = mapViewportDebugBorder ?? false,
        mapTileBorderDebug = mapTileBorderDebug ?? false,
        mapCompassRoseEnabled = mapCompassRoseEnabled ?? true,
+       mapMgrsGridEnabled = mapMgrsGridEnabled ?? false,
        mapMinZoom = mapMinZoom ?? 2.0,
        mapMaxZoom = mapMaxZoom ?? 18.0;
 
@@ -59,6 +61,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    bool? mapMgrsGridEnabled,
     double? mapMinZoom,
     double? mapMaxZoom,
     String? restApiKeyHash,
@@ -94,6 +97,11 @@ abstract class AppSettings implements _i1.SerializableModel {
           ? null
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapCompassRoseEnabled'],
+            ),
+      mapMgrsGridEnabled: jsonSerialization['mapMgrsGridEnabled'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['mapMgrsGridEnabled'],
             ),
       mapMinZoom: (jsonSerialization['mapMinZoom'] as num?)?.toDouble(),
       mapMaxZoom: (jsonSerialization['mapMaxZoom'] as num?)?.toDouble(),
@@ -135,6 +143,8 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   bool mapCompassRoseEnabled;
 
+  bool mapMgrsGridEnabled;
+
   double mapMinZoom;
 
   double mapMaxZoom;
@@ -161,6 +171,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    bool? mapMgrsGridEnabled,
     double? mapMinZoom,
     double? mapMaxZoom,
     String? restApiKeyHash,
@@ -184,6 +195,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
+      'mapMgrsGridEnabled': mapMgrsGridEnabled,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
@@ -215,6 +227,7 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    bool? mapMgrsGridEnabled,
     double? mapMinZoom,
     double? mapMaxZoom,
     String? restApiKeyHash,
@@ -234,6 +247,7 @@ class _AppSettingsImpl extends AppSettings {
          mapViewportDebugBorder: mapViewportDebugBorder,
          mapTileBorderDebug: mapTileBorderDebug,
          mapCompassRoseEnabled: mapCompassRoseEnabled,
+         mapMgrsGridEnabled: mapMgrsGridEnabled,
          mapMinZoom: mapMinZoom,
          mapMaxZoom: mapMaxZoom,
          restApiKeyHash: restApiKeyHash,
@@ -259,6 +273,7 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    bool? mapMgrsGridEnabled,
     double? mapMinZoom,
     double? mapMaxZoom,
     Object? restApiKeyHash = _Undefined,
@@ -281,6 +296,7 @@ class _AppSettingsImpl extends AppSettings {
       mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
+      mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
       mapMinZoom: mapMinZoom ?? this.mapMinZoom,
       mapMaxZoom: mapMaxZoom ?? this.mapMaxZoom,
       restApiKeyHash: restApiKeyHash is String?

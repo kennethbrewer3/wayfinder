@@ -9,6 +9,7 @@ import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_zoom_range_provider.dart';
 import '../../map/providers/map_compass_rose_provider.dart';
+import '../../map/providers/map_mgrs_grid_provider.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -41,6 +42,7 @@ void refreshUserSettings(WidgetRef ref) {
   ref.read(mapViewportDebugBorderProvider.notifier).reload();
   ref.read(mapTileBorderDebugProvider.notifier).reload();
   ref.read(mapCompassRoseEnabledProvider.notifier).reload();
+  ref.read(mapMgrsGridEnabledProvider.notifier).reload();
   ref.read(mapZoomRangeProvider.notifier).reload();
   refreshPmtiles(ref);
 }

@@ -1374,6 +1374,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<bool>(),
               nullable: false,
             ),
+            'mapMgrsGridEnabled': _i1.ParameterDescription(
+              name: 'mapMgrsGridEnabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
             'mapMinZoom': _i1.ParameterDescription(
               name: 'mapMinZoom',
               type: _i1.getType<double>(),
@@ -1401,6 +1406,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['mapViewportDebugBorder'],
                     params['mapTileBorderDebug'],
                     params['mapCompassRoseEnabled'],
+                    params['mapMgrsGridEnabled'],
                     params['mapMinZoom'],
                     params['mapMaxZoom'],
                   ),

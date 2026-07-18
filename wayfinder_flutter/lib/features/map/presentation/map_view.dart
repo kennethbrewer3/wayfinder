@@ -66,8 +66,10 @@ import '../models/pmtiles_load_status.dart';
 import '../providers/pmtiles_load_status_provider.dart';
 import '../providers/map_zoom_range_provider.dart';
 import '../providers/map_compass_rose_provider.dart';
+import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/map_viewport_debug_provider.dart';
 import 'map_compass_rose_overlay.dart';
+import 'map_mgrs_grid_layer.dart';
 import '../utils/pmtiles_archive_selection.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_cursor_coordinates.dart';
@@ -2174,6 +2176,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showCompassRose = ref.watch(mapCompassRoseEnabledProvider);
+    final showMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
@@ -2342,6 +2345,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         },
                       ),
                     ...mapObjectLayerChildren,
+                    if (showMgrsGrid)
+                      MapMgrsGridLayer(mapController: _mapController),
                     if (mapTilesDisplayed)
                       if (widget.searchCoordinateMarker case final marker?)
                         MarkerLayer(

@@ -160,6 +160,7 @@ abstract final class AppSettingsStore {
     required bool mapViewportDebugBorder,
     required bool mapTileBorderDebug,
     required bool mapCompassRoseEnabled,
+    required bool mapMgrsGridEnabled,
     required double mapMinZoom,
     required double mapMaxZoom,
   }) {

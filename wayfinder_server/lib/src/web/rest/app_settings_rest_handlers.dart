@@ -117,6 +117,7 @@ abstract final class AppSettingsRestHandlers {
       final mapViewportDebugBorder = _readBool(body['mapViewportDebugBorder']);
       final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
       final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
+      final mapMgrsGridEnabled = _readBool(body['mapMgrsGridEnabled']) ?? false;
       final mapMinZoom = _readDouble(body['mapMinZoom']);
       final mapMaxZoom = _readDouble(body['mapMaxZoom']);
       if (measurementUnits == null ||
@@ -149,6 +150,7 @@ abstract final class AppSettingsRestHandlers {
         mapViewportDebugBorder: mapViewportDebugBorder,
         mapTileBorderDebug: mapTileBorderDebug,
         mapCompassRoseEnabled: mapCompassRoseEnabled,
+        mapMgrsGridEnabled: mapMgrsGridEnabled,
         mapMinZoom: mapMinZoom,
         mapMaxZoom: mapMaxZoom,
       );
@@ -166,6 +168,7 @@ abstract final class AppSettingsRestHandlers {
           mapViewportDebugBorder: mapViewportDebugBorder,
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
+          mapMgrsGridEnabled: mapMgrsGridEnabled,
           mapMinZoom: mapMinZoom,
           mapMaxZoom: mapMaxZoom,
         ),
@@ -185,6 +188,7 @@ abstract final class AppSettingsRestHandlers {
       'mapViewportDebugBorder': settings.mapViewportDebugBorder,
       'mapTileBorderDebug': settings.mapTileBorderDebug,
       'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
+      'mapMgrsGridEnabled': settings.mapMgrsGridEnabled,
       'mapMinZoom': settings.mapMinZoom,
       'mapMaxZoom': settings.mapMaxZoom,
       'updatedAt': settings.updatedAt.toIso8601String(),

@@ -175,6 +175,13 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
+          name: 'mapMgrsGridEnabled',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
           name: 'mapMinZoom',
           columnType: _i2.ColumnType.doublePrecision,
           isNullable: false,

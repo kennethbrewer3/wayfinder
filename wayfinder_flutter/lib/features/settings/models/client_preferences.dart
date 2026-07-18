@@ -19,6 +19,7 @@ class ClientPreferences {
     required this.mapViewportDebugBorder,
     required this.mapTileBorderDebug,
     required this.mapCompassRoseEnabled,
+    required this.mapMgrsGridEnabled,
     required this.mapMinZoom,
     required this.mapMaxZoom,
   });
@@ -32,6 +33,7 @@ class ClientPreferences {
   final bool mapViewportDebugBorder;
   final bool mapTileBorderDebug;
   final bool mapCompassRoseEnabled;
+  final bool mapMgrsGridEnabled;
   final double mapMinZoom;
   final double mapMaxZoom;
 
@@ -45,6 +47,7 @@ class ClientPreferences {
     mapViewportDebugBorder: false,
     mapTileBorderDebug: false,
     mapCompassRoseEnabled: true,
+    mapMgrsGridEnabled: false,
     mapMinZoom: MapZoomRange.defaults.min,
     mapMaxZoom: MapZoomRange.defaults.max,
   );
@@ -68,6 +71,7 @@ class ClientPreferences {
       mapViewportDebugBorder: settings.mapViewportDebugBorder,
       mapTileBorderDebug: settings.mapTileBorderDebug,
       mapCompassRoseEnabled: settings.mapCompassRoseEnabled,
+      mapMgrsGridEnabled: settings.mapMgrsGridEnabled,
       mapMinZoom: zoomRange.min,
       mapMaxZoom: zoomRange.max,
     );
@@ -97,6 +101,7 @@ class ClientPreferences {
       mapViewportDebugBorder: json['mapViewportDebugBorder'] as bool? ?? false,
       mapTileBorderDebug: json['mapTileBorderDebug'] as bool? ?? false,
       mapCompassRoseEnabled: json['mapCompassRoseEnabled'] as bool? ?? true,
+      mapMgrsGridEnabled: json['mapMgrsGridEnabled'] as bool? ?? false,
       mapMinZoom: zoomRange.min,
       mapMaxZoom: zoomRange.max,
     );
@@ -112,6 +117,7 @@ class ClientPreferences {
     bool? mapViewportDebugBorder,
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
+    bool? mapMgrsGridEnabled,
     double? mapMinZoom,
     double? mapMaxZoom,
   }) {
@@ -127,6 +133,7 @@ class ClientPreferences {
       mapTileBorderDebug: mapTileBorderDebug ?? this.mapTileBorderDebug,
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
+      mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
       mapMinZoom: mapMinZoom ?? this.mapMinZoom,
       mapMaxZoom: mapMaxZoom ?? this.mapMaxZoom,
     );
@@ -143,6 +150,7 @@ class ClientPreferences {
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
+      'mapMgrsGridEnabled': mapMgrsGridEnabled,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
     };

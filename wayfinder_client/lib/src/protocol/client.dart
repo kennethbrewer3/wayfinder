@@ -785,6 +785,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     bool mapViewportDebugBorder,
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
+    bool mapMgrsGridEnabled,
     double mapMinZoom,
     double mapMaxZoom,
   ) => caller.callServerEndpoint<_i17.AppSettings>(
@@ -800,6 +801,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
+      'mapMgrsGridEnabled': mapMgrsGridEnabled,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
     },

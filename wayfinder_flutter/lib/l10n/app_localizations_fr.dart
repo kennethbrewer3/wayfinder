@@ -341,6 +341,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Affiche une boussole orientée vers le nord dans le coin supérieur gauche de la carte.';
 
   @override
+  String get settingsMapMgrsGridTitle => 'Afficher la grille MGRS';
+
+  @override
+  String get settingsMapMgrsGridDescription =>
+      'Superpose les lignes du système de référence de grille militaire (MGRS). L\'espacement s\'adapte au zoom.';
+
+  @override
   String get settingsMapZoomRangeWarning =>
       'Modifier la plage de zoom peut ralentir la carte, augmenter l\'utilisation de la mémoire ou afficher des tuiles étirées lorsque vos données hors ligne ne contiennent pas de détails à ces niveaux. N\'augmentez le maximum que si vos archives cartographiques le prennent en charge.';
 
@@ -1417,6 +1424,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapManualTooltip => 'User manual';
 
   @override
+  String get mapMgrsGridShowTooltip => 'Afficher la grille MGRS';
+
+  @override
+  String get mapMgrsGridHideTooltip => 'Masquer la grille MGRS';
+
+  @override
   String get userManualTitle => 'User Manual';
 
   @override
@@ -1472,6 +1485,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapObjectDetailCoordinates => 'Coordonnées';
+
+  @override
+  String get mapObjectDetailMgrs => 'MGRS';
+
+  @override
+  String get mapObjectDetailMgrsUnavailable =>
+      'Indisponible (hors couverture MGRS)';
 
   @override
   String get mapObjectDetailElevation => 'Altitude';
@@ -2539,6 +2559,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Coordonnées copiées dans le presse-papiers.';
 
   @override
+  String get mapMgrsCopyTooltip => 'Copier le MGRS';
+
+  @override
+  String get mapMgrsCopied => 'MGRS copié dans le presse-papiers.';
+
+  @override
   String get mapMarkerShareUrlLabel => 'Lien';
 
   @override
@@ -2616,6 +2642,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchSubtitleCoordinates => 'Coordonnées';
 
   @override
+  String get searchSubtitleMgrs => 'MGRS';
+
+  @override
   String get searchSubtitleMarker => 'Marqueur';
 
   @override
@@ -2625,7 +2654,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String searchHint(String example) {
-    return 'Rechercher des lieux, marqueurs, zones ou lat, lng (p. ex. $example)';
+    return 'Rechercher des lieux, marqueurs, zones, lat/lng ou MGRS (p. ex. $example)';
   }
 
   @override
@@ -2642,6 +2671,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get markerIconApartment => 'Appartement';
+
+  @override
+  String get markerIconCity => 'Ville';
+
+  @override
+  String get markerIconTown => 'Bourg';
 
   @override
   String get markerIconWork => 'Travail';

@@ -20,6 +20,7 @@ import '../../search/presentation/map_search_bar.dart';
 import '../../sidebar/presentation/sidebar_panel.dart';
 import '../models/map_viewport.dart';
 import '../providers/home_location_provider.dart';
+import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/map_providers.dart';
 import '../providers/selected_map_object_provider.dart';
 import 'map_object_selection_listener.dart';
@@ -225,6 +226,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         debouncedQuery.length >= mapSearchMinGeocodingLength &&
         ref.watch(geocodingSearchProvider(debouncedQuery)).isLoading;
     final showSearchResults = searchResults.isNotEmpty || geocodingLoading;
+    final mgrsGridEnabled = ref.watch(mapMgrsGridEnabledProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -239,6 +241,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         actions: [
           const AddressSearchReadinessIndicator(),
           const MapTilesLoadIndicator(),
+          IconButton(
+            tooltip: mgrsGridEnabled
+                ? l10n.mapMgrsGridHideTooltip
+                : l10n.mapMgrsGridShowTooltip,
+            icon: Icon(
+              Icons.grid_on,
+              color: mgrsGridEnabled
+                  ? Theme.of(context).colorScheme.primary
+                  : null,
+            ),
+            onPressed: () {
+              ref.read(mapMgrsGridEnabledProvider.notifier).toggle();
+            },
+          ),
           IconButton(
             tooltip: l10n.mapHomeTooltip,
             icon: const Icon(Icons.home),

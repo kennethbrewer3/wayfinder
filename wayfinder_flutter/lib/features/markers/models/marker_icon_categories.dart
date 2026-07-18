@@ -48,6 +48,8 @@ const markerIconCategoryByKey = <String, String>{
   'home': MarkerIconCategories.places,
   'house': MarkerIconCategories.places,
   'apartment': MarkerIconCategories.places,
+  'city': MarkerIconCategories.places,
+  'town': MarkerIconCategories.places,
   'work': MarkerIconCategories.places,
   'school': MarkerIconCategories.places,
   'store': MarkerIconCategories.places,

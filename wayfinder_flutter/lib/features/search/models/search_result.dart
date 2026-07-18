@@ -4,6 +4,7 @@ import 'package:wayfinder_flutter/core/l10n/localized_labels.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../geocoding/models/geocoding_models.dart';
+import '../../map/utils/mgrs_utils.dart';
 
 enum SearchResultType { marker, zone, coordinate, place, address }
 
@@ -49,6 +50,20 @@ List<SearchResult> buildSearchResults({
         type: SearchResultType.coordinate,
         location: coordinate,
         zoom: 14,
+      ),
+    );
+  }
+
+  final mgrs = parseMgrsLocation(trimmed);
+  if (mgrs != null) {
+    results.add(
+      SearchResult(
+        id: 'mgrs',
+        label: mgrs.formatted,
+        subtitle: l10n.searchSubtitleMgrs,
+        type: SearchResultType.coordinate,
+        location: mgrs.point,
+        zoom: mgrs.zoom,
       ),
     );
   }

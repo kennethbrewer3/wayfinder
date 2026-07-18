@@ -340,6 +340,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Displays a north-oriented compass in the upper-left corner of the map.';
 
   @override
+  String get settingsMapMgrsGridTitle => 'Show MGRS grid';
+
+  @override
+  String get settingsMapMgrsGridDescription =>
+      'Overlays Military Grid Reference System lines on the map. Grid spacing adjusts with zoom.';
+
+  @override
   String get settingsMapZoomRangeWarning =>
       'Changing the zoom range can slow the map, increase memory use, or show stretched tiles when your offline data does not include detail at those levels. Only raise the maximum if your map archives support it.';
 
@@ -1398,6 +1405,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapManualTooltip => 'User manual';
 
   @override
+  String get mapMgrsGridShowTooltip => 'Show MGRS grid';
+
+  @override
+  String get mapMgrsGridHideTooltip => 'Hide MGRS grid';
+
+  @override
   String get userManualTitle => 'User Manual';
 
   @override
@@ -1452,6 +1465,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapObjectDetailCoordinates => 'Coordinates';
+
+  @override
+  String get mapObjectDetailMgrs => 'MGRS';
+
+  @override
+  String get mapObjectDetailMgrsUnavailable =>
+      'Unavailable (outside MGRS coverage)';
 
   @override
   String get mapObjectDetailElevation => 'Elevation';
@@ -2497,6 +2517,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapCoordinatesCopied => 'Coordinates copied to clipboard.';
 
   @override
+  String get mapMgrsCopyTooltip => 'Copy MGRS';
+
+  @override
+  String get mapMgrsCopied => 'MGRS copied to clipboard.';
+
+  @override
   String get mapMarkerShareUrlLabel => 'Link';
 
   @override
@@ -2572,6 +2598,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchSubtitleCoordinates => 'Coordinates';
 
   @override
+  String get searchSubtitleMgrs => 'MGRS';
+
+  @override
   String get searchSubtitleMarker => 'Marker';
 
   @override
@@ -2581,7 +2610,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String searchHint(String example) {
-    return 'Search places, markers, zones, or lat, lng (e.g. $example)';
+    return 'Search places, markers, zones, lat/lng, or MGRS (e.g. $example)';
   }
 
   @override
@@ -2598,6 +2627,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markerIconApartment => 'Apartment';
+
+  @override
+  String get markerIconCity => 'City';
+
+  @override
+  String get markerIconTown => 'Town';
 
   @override
   String get markerIconWork => 'Work';

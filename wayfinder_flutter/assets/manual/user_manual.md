@@ -169,7 +169,13 @@ In the marker form:
 
 ### Edit or view a marker
 
-**Tap** a marker or zone on the map to select it (highlighted; markers are used for GPS distance/bearing). **Long-press** a marker or zone to open its details dialog. You can also open details from the sidebar edit control. Marker details show coordinates, notes, and actions:
+**Tap** a marker or zone on the map to select it. Selected markers grow slightly and show a colored ring so the choice is obvious; the selected marker also drives GPS distance/bearing in the location HUD. **Long-press** a marker or zone to open its details dialog (or use the sidebar edit control).
+
+### Connect markers with a line (waypoints)
+
+With one marker already selected, **long-press a different marker** to create a **line zone** between them. The line form opens with endpoints set to those two pins. After you save, the destination marker stays selected so you can chain another segment (A → B → C). Long-pressing the same selected marker (or long-pressing with none selected) still opens details.
+
+Marker details show coordinates, notes, and actions:
 
 - **Edit** — change any field.
 - **Copy coordinates** — to the clipboard.

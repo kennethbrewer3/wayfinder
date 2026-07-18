@@ -24,6 +24,8 @@ class MapMarkerIcon extends ConsumerWidget {
     this.badgeColor,
     this.width = mapMarkerWidth,
     this.height = mapMarkerHeight,
+    this.isSelected = false,
+    this.selectionColor,
   });
 
   final Color color;
@@ -33,6 +35,8 @@ class MapMarkerIcon extends ConsumerWidget {
   final Color? badgeColor;
   final double width;
   final double height;
+  final bool isSelected;
+  final Color? selectionColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,6 +52,7 @@ class MapMarkerIcon extends ConsumerWidget {
     final slot = layout.iconSlotRect(width, height);
     final iconSize = layout.iconGlyphSize(width, height);
     final scale = layout.containScale(width, height);
+    final highlight = selectionColor ?? Theme.of(context).colorScheme.primary;
 
     return SizedBox(
       width: width,
@@ -55,6 +60,27 @@ class MapMarkerIcon extends ConsumerWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
+          if (isSelected)
+            Positioned(
+              left: slot.left - 6 * scale,
+              top: slot.top - 6 * scale,
+              child: Container(
+                width: slot.width + 12 * scale,
+                height: slot.height + 12 * scale,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: highlight.withValues(alpha: 0.22),
+                  border: Border.all(color: highlight, width: 3 * scale),
+                  boxShadow: [
+                    BoxShadow(
+                      color: highlight.withValues(alpha: 0.45),
+                      blurRadius: 10 * scale,
+                      spreadRadius: 1 * scale,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           markerSvgAssetPicture(
             assetPath: mapMarkerPinAssetPath,
             width: width,

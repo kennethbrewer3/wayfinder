@@ -14,6 +14,8 @@ import '../../markers/utils/effective_marker_icon.dart';
 import '../../rectangles/presentation/map_rectangle_layer.dart';
 import '../utils/map_layer_utils.dart';
 
+const _selectedMarkerScaleBoost = 1.28;
+
 List<Widget> buildStackedMapLayerChildren({
   required List<MapLayer> layers,
   required List<MapMarker> markers,
@@ -22,6 +24,8 @@ List<Widget> buildStackedMapLayerChildren({
   void Function(MapMarker marker)? onMarkerLongPress,
   required double mapMarkerSizeScale,
   UuidValue? selectedLineId,
+  UuidValue? selectedMarkerId,
+  Color? markerSelectionColor,
   Map<UuidValue, LineGeometry>? geometryOverrides,
 }) {
   final widgets = <Widget>[];
@@ -34,39 +38,56 @@ List<Widget> buildStackedMapLayerChildren({
     }
 
     if (layerMarkers.isNotEmpty) {
-      final markerWidth = mapMarkerRenderWidth(mapMarkerSizeScale);
-      final markerHeight = mapMarkerRenderHeight(mapMarkerSizeScale);
+      final baseWidth = mapMarkerRenderWidth(mapMarkerSizeScale);
+      final baseHeight = mapMarkerRenderHeight(mapMarkerSizeScale);
+      // Paint selected marker last so its halo sits above neighbors.
+      final ordered = [...layerMarkers]
+        ..sort((a, b) {
+          final aSelected = a.id == selectedMarkerId;
+          final bSelected = b.id == selectedMarkerId;
+          if (aSelected == bSelected) {
+            return 0;
+          }
+          return aSelected ? 1 : -1;
+        });
       widgets.add(
         MarkerLayer(
-          markers: layerMarkers
-              .map(
-                (marker) => Marker(
-                  point: LatLng(marker.latitude, marker.longitude),
-                  width: markerWidth,
-                  height: markerHeight,
-                  alignment: mapMarkerAnchorAlignment,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () => onMarkerTap(marker),
-                    onLongPress: onMarkerLongPress == null
-                        ? null
-                        : () => onMarkerLongPress(marker),
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: MapMarkerIcon(
-                        color: parseMarkerColor(marker.color),
-                        iconName: effectiveMarkerIconName(
-                          marker: marker,
-                          trackZonesById: trackZones,
-                        ),
-                        width: markerWidth,
-                        height: markerHeight,
-                      ),
+          markers: ordered.map((marker) {
+            final isSelected = marker.id == selectedMarkerId;
+            final markerWidth = isSelected
+                ? baseWidth * _selectedMarkerScaleBoost
+                : baseWidth;
+            final markerHeight = isSelected
+                ? baseHeight * _selectedMarkerScaleBoost
+                : baseHeight;
+            return Marker(
+              point: LatLng(marker.latitude, marker.longitude),
+              width: markerWidth,
+              height: markerHeight,
+              alignment: mapMarkerAnchorAlignment,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => onMarkerTap(marker),
+                onLongPress: onMarkerLongPress == null
+                    ? null
+                    : () => onMarkerLongPress(marker),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: MapMarkerIcon(
+                    color: parseMarkerColor(marker.color),
+                    iconName: effectiveMarkerIconName(
+                      marker: marker,
+                      trackZonesById: trackZones,
                     ),
+                    width: markerWidth,
+                    height: markerHeight,
+                    isSelected: isSelected,
+                    selectionColor: markerSelectionColor,
                   ),
                 ),
-              )
-              .toList(),
+              ),
+            );
+          }).toList(),
         ),
       );
     }

@@ -42,6 +42,7 @@ import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
+import '../../markers/utils/marker_share_url.dart';
 import '../../lines/utils/bearing_utils.dart';
 import '../utils/magnetic_declination.dart';
 import '../../tracks/presentation/track_footsteps_overlay.dart';
@@ -1123,11 +1124,72 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       }
       final hit = _hitMapObjectAtPoint(menuPoint);
       if (hit != null) {
+        if (hit.kind == SelectedMapObjectKind.marker) {
+          final markers = widget.markersAsync.valueOrNull;
+          final marker = markers == null
+              ? null
+              : findMarkerById(markers, hit.id);
+          if (marker != null) {
+            unawaited(_handleMarkerLongPress(marker));
+            return;
+          }
+        }
         _selectMapObject(hit, openDetails: true);
         return;
       }
       _openRadialMenuAt(center, menuPoint);
     });
+  }
+
+  Future<void> _handleMarkerLongPress(MapMarker marker) async {
+    if (ref.read(lineDrawingProvider).active ||
+        ref.read(bearingPlotProvider).active ||
+        ref.read(circleDrawingProvider).active ||
+        ref.read(rectangleDrawingProvider).active) {
+      return;
+    }
+
+    final selectedId = ref.read(selectedMapObjectProvider).selectedMarkerId;
+    final markers = widget.markersAsync.valueOrNull ?? const <MapMarker>[];
+    final fromMarker = selectedId == null
+        ? null
+        : findMarkerById(markers, selectedId);
+
+    // No other marker selected, or long-pressing the same pin → open details.
+    if (fromMarker == null || fromMarker.id == marker.id) {
+      _selectMapObject(
+        SelectedMapObject(
+          kind: SelectedMapObjectKind.marker,
+          id: marker.id,
+        ),
+        openDetails: true,
+      );
+      return;
+    }
+
+    final start = LatLng(fromMarker.latitude, fromMarker.longitude);
+    final end = LatLng(marker.latitude, marker.longitude);
+    if (areLinePointsTooClose(start, end)) {
+      return;
+    }
+
+    final created = await createLineBetweenPoints(
+      context: context,
+      ref: ref,
+      start: start,
+      end: end,
+    );
+    if (!mounted || !created) {
+      return;
+    }
+
+    // Keep the destination selected so you can chain waypoints A→B→C.
+    _selectMapObject(
+      SelectedMapObject(
+        kind: SelectedMapObjectKind.marker,
+        id: marker.id,
+      ),
+    );
   }
 
   SelectedMapObject? _hitMapObjectAtPoint(LatLng point) {
@@ -2240,6 +2302,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             zones: zones,
             mapMarkerSizeScale: mapMarkerSizeScale,
             selectedLineId: selectedLineId,
+            selectedMarkerId: selectedMapObject.selectedMarkerId,
+            markerSelectionColor: Theme.of(context).colorScheme.primary,
             geometryOverrides: lineGeometryOverrides,
             onMarkerTap: (marker) => _selectMapObject(
               SelectedMapObject(
@@ -2251,13 +2315,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             onMarkerLongPress: (marker) {
               _cancelPendingLongPress();
               _longPressTriggered = true;
-              _selectMapObject(
-                SelectedMapObject(
-                  kind: SelectedMapObjectKind.marker,
-                  id: marker.id,
-                ),
-                openDetails: true,
-              );
+              unawaited(_handleMarkerLongPress(marker));
             },
           );
     final selectedLinePreviewGeometry =

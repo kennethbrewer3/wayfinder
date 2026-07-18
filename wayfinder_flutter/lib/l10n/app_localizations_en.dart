@@ -2633,7 +2633,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialCopyCoordinates => 'Copy coordinates';
 
   @override
+  String get mapRadialDeadReckoning => 'Pace count';
+
+  @override
   String get mapRadialAddToGeocoding => 'Add to search';
+
+  @override
+  String get mapDeadReckoningTitle => 'Dead reckoning';
+
+  @override
+  String get mapDeadReckoningModePaces => 'Paces';
+
+  @override
+  String get mapDeadReckoningModeDistance => 'Distance';
+
+  @override
+  String get mapDeadReckoningHeadingLabel => 'Brg';
+
+  @override
+  String get mapDeadReckoningPacesLabel => 'Paces';
+
+  @override
+  String get mapDeadReckoningPaceLengthLabel => 'm/pace';
+
+  @override
+  String get mapDeadReckoningDistanceLabel => 'Dist';
+
+  @override
+  String get mapDeadReckoningPlaceMarker => 'Place marker';
+
+  @override
+  String get mapDeadReckoningCreateLine => 'Create line';
+
+  @override
+  String get mapDeadReckoningMarkerName => 'DR estimate';
 
   @override
   String get mapAddToGeocodingSearch => 'Add to geocoding search';

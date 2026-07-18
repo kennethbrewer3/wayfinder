@@ -9,6 +9,7 @@ import 'map_data_backup_archive.dart';
 import 'map_data_service.dart';
 import 'map_marker_change_broadcast.dart';
 import '../layers/map_layer_change_broadcast.dart';
+import '../zones/map_zone_change_broadcast.dart';
 
 class MapDataEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapData';
@@ -42,6 +43,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         final counts = await restoreMapDataBundle(session, decoded);
         await MapLayerChangeBroadcast.bulk(session);
         await MapMarkerChangeBroadcast.bulk(session);
+        await MapZoneChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,
@@ -85,6 +87,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         final counts = await restoreMapDataFromArchive(session, bytes);
         await MapLayerChangeBroadcast.bulk(session);
         await MapMarkerChangeBroadcast.bulk(session);
+        await MapZoneChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,

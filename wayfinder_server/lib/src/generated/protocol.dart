@@ -33,21 +33,22 @@ import 'settings/rest_api_key.dart' as _i18;
 import 'settings/rest_api_key_created.dart' as _i19;
 import 'settings/rest_api_key_info.dart' as _i20;
 import 'zones/map_zone.dart' as _i21;
+import 'zones/map_zone_change.dart' as _i22;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
-    as _i22;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i23;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i24;
+    as _i23;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i24;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i25;
 import 'package:wayfinder_server/src/generated/markers/marker_icon_catalog_entry.dart'
-    as _i25;
-import 'package:wayfinder_server/src/generated/markers/marker_icon_category_definition.dart'
     as _i26;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_server/src/generated/markers/marker_icon_category_definition.dart'
     as _i27;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i28;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
     as _i29;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i30;
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+    as _i30;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i31;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
@@ -65,6 +66,7 @@ export 'settings/rest_api_key.dart';
 export 'settings/rest_api_key_created.dart';
 export 'settings/rest_api_key_info.dart';
 export 'zones/map_zone.dart';
+export 'zones/map_zone_change.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -1254,6 +1256,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i21.MapZone) {
       return _i21.MapZone.fromJson(data) as T;
     }
+    if (t == _i22.MapZoneChange) {
+      return _i22.MapZoneChange.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i5.Category?>()) {
       return (data != null ? _i5.Category.fromJson(data) : null) as T;
     }
@@ -1311,6 +1316,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i21.MapZone?>()) {
       return (data != null ? _i21.MapZone.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<_i22.MapZoneChange?>()) {
+      return (data != null ? _i22.MapZoneChange.fromJson(data) : null) as T;
+    }
     if (t == List<_i1.UuidValue>) {
       return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
           as T;
@@ -1323,48 +1331,48 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i22.Category>) {
-      return (data as List).map((e) => deserialize<_i22.Category>(e)).toList()
+    if (t == List<_i23.Category>) {
+      return (data as List).map((e) => deserialize<_i23.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i23.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i23.MapLayer>(e)).toList()
+    if (t == List<_i24.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i24.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i24.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i24.MapMarker>(e)).toList()
+    if (t == List<_i25.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i25.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i25.MarkerIconCatalogEntry>) {
+    if (t == List<_i26.MarkerIconCatalogEntry>) {
       return (data as List)
-              .map((e) => deserialize<_i25.MarkerIconCatalogEntry>(e))
+              .map((e) => deserialize<_i26.MarkerIconCatalogEntry>(e))
               .toList()
           as T;
     }
-    if (t == List<_i26.MarkerIconCategoryDefinition>) {
+    if (t == List<_i27.MarkerIconCategoryDefinition>) {
       return (data as List)
-              .map((e) => deserialize<_i26.MarkerIconCategoryDefinition>(e))
+              .map((e) => deserialize<_i27.MarkerIconCategoryDefinition>(e))
               .toList()
           as T;
     }
-    if (t == List<_i27.PmtilesFile>) {
+    if (t == List<_i28.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i27.PmtilesFile>(e))
+              .map((e) => deserialize<_i28.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i28.PmtilesGroup>) {
+    if (t == List<_i29.PmtilesGroup>) {
       return (data as List)
-              .map((e) => deserialize<_i28.PmtilesGroup>(e))
+              .map((e) => deserialize<_i29.PmtilesGroup>(e))
               .toList()
           as T;
     }
-    if (t == List<_i29.RestApiKey>) {
-      return (data as List).map((e) => deserialize<_i29.RestApiKey>(e)).toList()
+    if (t == List<_i30.RestApiKey>) {
+      return (data as List).map((e) => deserialize<_i30.RestApiKey>(e)).toList()
           as T;
     }
-    if (t == List<_i30.MapZone>) {
-      return (data as List).map((e) => deserialize<_i30.MapZone>(e)).toList()
+    if (t == List<_i31.MapZone>) {
+      return (data as List).map((e) => deserialize<_i31.MapZone>(e)).toList()
           as T;
     }
     try {
@@ -1398,6 +1406,7 @@ class Protocol extends _i1.SerializationManagerServer {
       _i19.RestApiKeyCreated => 'RestApiKeyCreated',
       _i20.RestApiKeyInfo => 'RestApiKeyInfo',
       _i21.MapZone => 'MapZone',
+      _i22.MapZoneChange => 'MapZoneChange',
       _ => null,
     };
   }
@@ -1446,6 +1455,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'RestApiKeyInfo';
       case _i21.MapZone():
         return 'MapZone';
+      case _i22.MapZoneChange():
+        return 'MapZoneChange';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -1518,6 +1529,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (dataClassName == 'MapZone') {
       return deserialize<_i21.MapZone>(data['data']);
+    }
+    if (dataClassName == 'MapZoneChange') {
+      return deserialize<_i22.MapZoneChange>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);

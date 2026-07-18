@@ -4647,11 +4647,77 @@ abstract class AppLocalizations {
   /// **'Copy coordinates'**
   String get mapRadialCopyCoordinates;
 
+  /// No description provided for @mapRadialDeadReckoning.
+  ///
+  /// In en, this message translates to:
+  /// **'Pace count'**
+  String get mapRadialDeadReckoning;
+
   /// No description provided for @mapRadialAddToGeocoding.
   ///
   /// In en, this message translates to:
   /// **'Add to search'**
   String get mapRadialAddToGeocoding;
+
+  /// No description provided for @mapDeadReckoningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead reckoning'**
+  String get mapDeadReckoningTitle;
+
+  /// No description provided for @mapDeadReckoningModePaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Paces'**
+  String get mapDeadReckoningModePaces;
+
+  /// No description provided for @mapDeadReckoningModeDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get mapDeadReckoningModeDistance;
+
+  /// No description provided for @mapDeadReckoningHeadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Brg'**
+  String get mapDeadReckoningHeadingLabel;
+
+  /// No description provided for @mapDeadReckoningPacesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paces'**
+  String get mapDeadReckoningPacesLabel;
+
+  /// No description provided for @mapDeadReckoningPaceLengthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'m/pace'**
+  String get mapDeadReckoningPaceLengthLabel;
+
+  /// No description provided for @mapDeadReckoningDistanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dist'**
+  String get mapDeadReckoningDistanceLabel;
+
+  /// No description provided for @mapDeadReckoningPlaceMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Place marker'**
+  String get mapDeadReckoningPlaceMarker;
+
+  /// No description provided for @mapDeadReckoningCreateLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Create line'**
+  String get mapDeadReckoningCreateLine;
+
+  /// No description provided for @mapDeadReckoningMarkerName.
+  ///
+  /// In en, this message translates to:
+  /// **'DR estimate'**
+  String get mapDeadReckoningMarkerName;
 
   /// No description provided for @mapAddToGeocodingSearch.
   ///

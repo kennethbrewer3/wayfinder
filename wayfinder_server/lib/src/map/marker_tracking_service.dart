@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import '../zones/map_zone_change_broadcast.dart';
 import 'map_marker_change_broadcast.dart';
 
 const trackZoneType = 'track';
@@ -54,10 +55,13 @@ abstract final class MarkerTrackingService {
     if (trackZoneId == null) {
       return;
     }
-    await MapZone.db.deleteWhere(
+    final deleted = await MapZone.db.deleteWhere(
       session,
       where: (t) => t.id.equals(trackZoneId),
     );
+    if (deleted.isNotEmpty) {
+      await MapZoneChangeBroadcast.deleted(session, trackZoneId);
+    }
   }
 
   static Future<MapMarker> _enableTracking(
@@ -108,6 +112,7 @@ abstract final class MarkerTrackingService {
         updatedAt: now,
       ),
     );
+    await MapZoneChangeBroadcast.created(session, zone);
 
     return marker.copyWith(
       isTracking: true,
@@ -163,7 +168,7 @@ abstract final class MarkerTrackingService {
       ),
     );
 
-    await MapZone.db.updateRow(
+    final updated = await MapZone.db.updateRow(
       session,
       zone.copyWith(
         geometryJson: _encodeGeometry(
@@ -176,6 +181,7 @@ abstract final class MarkerTrackingService {
         updatedAt: DateTime.now().toUtc(),
       ),
     );
+    await MapZoneChangeBroadcast.updated(session, updated);
   }
 
   static String _encodeGeometry({

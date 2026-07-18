@@ -44,6 +44,8 @@ import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
 import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
     as _i20;
 import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i21;
+import 'package:wayfinder_server/src/generated/zones/map_zone_change.dart'
+    as _i22;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -2646,5 +2648,36 @@ class _MapZoneEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+
+  _i3.Stream<_i22.MapZoneChange> zoneChanges(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) {
+    var _localTestStreamManager = _i1.TestStreamManager<_i22.MapZoneChange>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'mapZone',
+              method: 'zoneChanges',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'mapZone',
+              methodName: 'zoneChanges',
+              arguments: {},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
   }
 }

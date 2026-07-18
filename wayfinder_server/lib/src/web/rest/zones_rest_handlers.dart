@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
 import '../../map/marker_tracking_service.dart';
+import '../../zones/map_zone_change_broadcast.dart';
 import 'rest_json.dart';
 
 abstract final class ZonesRestHandlers {
@@ -39,6 +40,7 @@ abstract final class ZonesRestHandlers {
       final body = await RestJson.readObject(request);
       final zone = _zoneFromCreateBody(body);
       final created = await MapZone.db.insertRow(session, zone);
+      await MapZoneChangeBroadcast.created(session, created);
       return RestJson.created(RestJson.encodeModel(created));
     });
   }
@@ -64,6 +66,7 @@ abstract final class ZonesRestHandlers {
         session: session,
         zone: updated,
       );
+      await MapZoneChangeBroadcast.updated(session, updated);
       return RestJson.ok(RestJson.encodeModel(updated));
     });
   }
@@ -82,6 +85,7 @@ abstract final class ZonesRestHandlers {
       if (deleted.isEmpty) {
         return RestJson.error(404, 'Zone not found');
       }
+      await MapZoneChangeBroadcast.deleted(session, id);
       return RestJson.noContent();
     });
   }

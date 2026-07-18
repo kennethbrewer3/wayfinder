@@ -29,6 +29,7 @@ import '../../layers/utils/map_layer_utils.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/bearing_plot_overlay.dart';
 import '../../lines/presentation/create_line_dialog.dart';
+import '../../lines/presentation/dead_reckoning_banner.dart';
 import '../../lines/presentation/line_distance_labels.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../lines/models/angle_display_format.dart';
@@ -37,8 +38,10 @@ import '../../lines/providers/angle_display_format_provider.dart';
 import '../../circles/utils/circle_hit_test.dart';
 import '../../lines/providers/bearing_plot_provider.dart';
 import '../../lines/providers/bearing_reference_provider.dart';
+import '../../lines/providers/dead_reckoning_provider.dart';
 import '../../lines/providers/line_drawing_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
+import '../../lines/providers/pace_length_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
@@ -248,6 +251,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _activePointerDown = false;
   bool _pendingSelectionTapOnUp = false;
   Offset? _selectionPointerDownLocal;
+  int? _pendingLineControlIndex;
   int? _draggingLineControlIndex;
   LineGeometry? _lineEditPreviewGeometry;
 
@@ -739,15 +743,19 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   RenderBox? get _mapRenderBox =>
       _mapHostKey.currentContext?.findRenderObject() as RenderBox?;
 
+  bool get _isMapToolActive =>
+      ref.read(bearingPlotProvider).active ||
+      ref.read(lineDrawingProvider).active ||
+      ref.read(circleDrawingProvider).active ||
+      ref.read(rectangleDrawingProvider).active ||
+      ref.read(deadReckoningProvider).active;
+
   void _beginSelectionPointer(PointerDownEvent event, LatLng point) {
     _activePointerDown = true;
     _selectionPointerDownLocal = event.localPosition;
     _pendingSelectionTapOnUp = false;
 
-    if (ref.read(bearingPlotProvider).active ||
-        ref.read(lineDrawingProvider).active ||
-        ref.read(circleDrawingProvider).active ||
-        ref.read(rectangleDrawingProvider).active) {
+    if (_isMapToolActive) {
       return;
     }
     if (_selectedLineSnapTarget(point) != null) {
@@ -777,10 +785,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final shouldApply =
         !_longPressTriggered &&
-        !ref.read(bearingPlotProvider).active &&
-        !ref.read(lineDrawingProvider).active &&
-        !ref.read(circleDrawingProvider).active &&
-        !ref.read(rectangleDrawingProvider).active &&
+        !_isMapToolActive &&
         _pendingSelectionTapOnUp &&
         _isSelectionClick(event);
 
@@ -999,13 +1004,26 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _resetLineEditGestureState() {
-    if (_draggingLineControlIndex == null && _lineEditPreviewGeometry == null) {
+    if (_pendingLineControlIndex == null &&
+        _draggingLineControlIndex == null &&
+        _lineEditPreviewGeometry == null) {
       return;
     }
     setState(() {
+      _pendingLineControlIndex = null;
       _draggingLineControlIndex = null;
       _lineEditPreviewGeometry = null;
     });
+  }
+
+  void _beginLineControlPointDrag(int index, LatLng point) {
+    _cancelPendingLongPress();
+    setState(() {
+      _pendingLineControlIndex = null;
+      _draggingLineControlIndex = index;
+      _lineEditPreviewGeometry = _selectedLineGeometry();
+    });
+    _updateLineControlPointDrag(point);
   }
 
   void _updateLineControlPointDrag(LatLng point) {
@@ -1120,6 +1138,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       }
       _longPressTriggered = true;
       if (_removeLineControlPointAt(menuPoint)) {
+        _pendingLineControlIndex = null;
         return;
       }
       final hit = _hitMapObjectAtPoint(menuPoint);
@@ -1142,10 +1161,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   Future<void> _handleMarkerLongPress(MapMarker marker) async {
-    if (ref.read(lineDrawingProvider).active ||
-        ref.read(bearingPlotProvider).active ||
-        ref.read(circleDrawingProvider).active ||
-        ref.read(rectangleDrawingProvider).active) {
+    if (_isMapToolActive) {
       return;
     }
 
@@ -1282,10 +1298,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _handleSecondaryMapTap(TapPosition tapPosition, LatLng point) {
-    if (ref.read(lineDrawingProvider).active ||
-        ref.read(bearingPlotProvider).active ||
-        ref.read(circleDrawingProvider).active ||
-        ref.read(rectangleDrawingProvider).active) {
+    if (_isMapToolActive) {
       return;
     }
 
@@ -1302,6 +1315,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void _handlePointerDown(PointerDownEvent event, LatLng point) {
     _longPressTriggered = false;
     _pendingSnapStart = null;
+    _pendingLineControlIndex = null;
     _tapDownLocal = event.localPosition;
     _updateCursor(event.position, point);
 
@@ -1318,6 +1332,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (ref.read(bearingPlotProvider).active) {
       _cancelPendingLongPress();
       _updateBearingPlotPreview(point);
+      return;
+    }
+
+    if (ref.read(deadReckoningProvider).active) {
+      _cancelPendingLongPress();
       return;
     }
 
@@ -1354,11 +1373,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final interiorControlPoint = _interiorControlPointIndexAt(point);
     if (interiorControlPoint != null) {
-      setState(() {
-        _draggingLineControlIndex = interiorControlPoint;
-        _lineEditPreviewGeometry = _selectedLineGeometry();
-      });
-      _cancelPendingLongPress();
+      // Hold still to remove; move past tolerance to drag. Endpoints are not
+      // removable mid-points, so they never enter this path.
+      _pendingLineControlIndex = interiorControlPoint;
+      if (event.buttons == kPrimaryMouseButton) {
+        _startLongPressTimer(event.localPosition, point);
+      }
       return;
     }
 
@@ -1409,6 +1429,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _updateRectanglePreview(point);
     }
 
+    final pendingControlIndex = _pendingLineControlIndex;
+    if (pendingControlIndex != null &&
+        _draggingLineControlIndex == null &&
+        _tapDownLocal != null &&
+        (event.localPosition - _tapDownLocal!).distance >
+            _longPressMoveTolerance) {
+      _beginLineControlPointDrag(pendingControlIndex, point);
+    }
+
     if (_draggingLineControlIndex != null) {
       _updateLineControlPointDrag(point);
     }
@@ -1431,6 +1460,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     if (_draggingLineControlIndex != null) {
       unawaited(_commitLineControlPointDrag(point));
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
+    if (_pendingLineControlIndex != null) {
+      // Short press on a mid-point: do not insert another vertex on top of it.
+      _pendingLineControlIndex = null;
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
@@ -1525,10 +1564,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         _searchCoordinateRadialCenter != null) {
       return;
     }
-    if (ref.read(bearingPlotProvider).active ||
-        ref.read(lineDrawingProvider).active ||
-        ref.read(circleDrawingProvider).active ||
-        ref.read(rectangleDrawingProvider).active) {
+    if (_isMapToolActive) {
       return;
     }
     _applyMapSelectionAt(point);
@@ -1546,7 +1582,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Widget _lineEditingBanner() {
     final theme = Theme.of(context);
     const message =
-        'Tap the line to add a curve point · drag points to move · long-press a point to remove';
+        'Tap the line to add a curve point · drag points to move · long-press a mid-point to remove';
 
     return Material(
       elevation: 2,
@@ -1605,6 +1641,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
     ref
         .read(bearingPlotProvider.notifier)
         .begin(
@@ -1669,10 +1706,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _applyMapSelectionAt(LatLng point) {
-    if (ref.read(bearingPlotProvider).active ||
-        ref.read(lineDrawingProvider).active ||
-        ref.read(circleDrawingProvider).active ||
-        ref.read(rectangleDrawingProvider).active) {
+    if (_isMapToolActive) {
       return;
     }
 
@@ -1796,6 +1830,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void _handlePointerCancel() {
     _clearPointerDownSelectionState();
     _resetLineDrawGestureState();
+    _resetLineEditGestureState();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     _cancelPendingLongPress();
@@ -1811,12 +1846,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _beginLineDrawing() {
-    final point = _radialMenuPoint;
+    final selectedMarkerId =
+        ref.read(selectedMapObjectProvider).selectedMarkerId;
+    final markers = widget.markersAsync.valueOrNull ?? const <MapMarker>[];
+    final selectedMarker = selectedMarkerId == null
+        ? null
+        : findMarkerById(markers, selectedMarkerId);
+    final point = selectedMarker == null
+        ? _radialMenuPoint
+        : LatLng(selectedMarker.latitude, selectedMarker.longitude);
+
     _closeRadialMenu();
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
     final notifier = ref.read(lineDrawingProvider.notifier);
     if (point != null) {
       notifier.setStart(point);
@@ -1826,6 +1871,96 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     } else {
       notifier.begin();
     }
+  }
+
+  LatLng? _deadReckoningAnchor() {
+    final selectedMarkerId =
+        ref.read(selectedMapObjectProvider).selectedMarkerId;
+    final markers = widget.markersAsync.valueOrNull ?? const <MapMarker>[];
+    final selectedMarker = selectedMarkerId == null
+        ? null
+        : findMarkerById(markers, selectedMarkerId);
+    if (selectedMarker != null) {
+      return LatLng(selectedMarker.latitude, selectedMarker.longitude);
+    }
+
+    final device = ref.read(deviceLocationProvider);
+    if (device.hasFix && device.position != null) {
+      return device.position;
+    }
+
+    return _radialMenuPoint;
+  }
+
+  void _beginDeadReckoning() {
+    final anchor = _deadReckoningAnchor();
+    _closeRadialMenu();
+    if (anchor == null) {
+      return;
+    }
+
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+
+    final device = ref.read(deviceLocationProvider);
+    final heading = device.headingDegrees;
+    ref
+        .read(deadReckoningProvider.notifier)
+        .begin(
+          anchor: anchor,
+          headingTrueDegrees: heading,
+          paceLengthMeters: ref.read(paceLengthProvider),
+        );
+  }
+
+  Future<void> _finalizeDeadReckoningMarker() async {
+    final state = ref.read(deadReckoningProvider);
+    final end = state.previewEnd;
+    if (end == null) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final created = await createMarkerAtPoint(
+      context: context,
+      ref: ref,
+      point: end,
+      defaultName: l10n.mapDeadReckoningMarkerName,
+    );
+    if (!mounted || !created) {
+      return;
+    }
+    ref.read(deadReckoningProvider.notifier).reset();
+  }
+
+  Future<void> _finalizeDeadReckoningLine() async {
+    final state = ref.read(deadReckoningProvider);
+    final start = state.anchor;
+    final end = state.previewEnd;
+    if (start == null || end == null) {
+      return;
+    }
+    if (areLinePointsTooClose(start, end)) {
+      return;
+    }
+
+    final created = await createLineBetweenPoints(
+      context: context,
+      ref: ref,
+      start: start,
+      end: end,
+    );
+    if (!mounted || !created) {
+      return;
+    }
+    ref.read(deadReckoningProvider.notifier).reset();
+  }
+
+  void _cancelDeadReckoning() {
+    ref.read(deadReckoningProvider.notifier).reset();
   }
 
   void _cancelLineDrawing() {
@@ -1840,6 +1975,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
     final notifier = ref.read(circleDrawingProvider.notifier);
     if (point != null) {
       notifier.setCenter(point);
@@ -1863,6 +1999,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
     final notifier = ref.read(rectangleDrawingProvider.notifier);
     if (point != null) {
       notifier.beginCenterExtent(point);
@@ -1879,6 +2016,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
     final notifier = ref.read(rectangleDrawingProvider.notifier);
     if (point != null) {
       notifier.beginCorners(point);
@@ -2256,6 +2394,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final circleDrawing = ref.watch(circleDrawingProvider);
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
     final bearingPlot = ref.watch(bearingPlotProvider);
+    final deadReckoning = ref.watch(deadReckoningProvider);
     final selectedMapObject = ref.watch(selectedMapObjectProvider);
     final selectedLineId = selectedMapObject.selectedZoneId;
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -2396,6 +2535,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               bearingPlot.active ||
                               circleDrawing.active ||
                               rectangleDrawing.active ||
+                              deadReckoning.active ||
                               _draggingLineControlIndex != null
                           ? InteractiveFlag.all & ~InteractiveFlag.drag
                           : InteractiveFlag.all,
@@ -2519,7 +2659,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         ),
                     if (mapTilesDisplayed)
                       if (selectedLine case final line?
-                          when !lineDrawing.active && !bearingPlot.active)
+                          when !lineDrawing.active &&
+                              !bearingPlot.active &&
+                              !deadReckoning.active)
                         MarkerLayer(
                           markers: buildLineSnapPointMarkers(
                             zone: line,
@@ -2636,6 +2778,26 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           ),
                         ],
                       ),
+                    if (deadReckoning.active && deadReckoning.anchor != null)
+                      PolylineLayer(
+                        polylines: [
+                          ?buildPreviewLinePolyline(
+                            start: deadReckoning.anchor!,
+                            previewEnd: deadReckoning.previewEnd,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
+                    if (deadReckoning.active && deadReckoning.anchor != null)
+                      MarkerLayer(
+                        markers: [
+                          ...buildLineEndpointMarkers(
+                            start: deadReckoning.anchor!,
+                            end: deadReckoning.previewEnd,
+                            color: previewColor,
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -2657,9 +2819,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               : null,
                           bearingPreviewStart: bearingPlot.active
                               ? bearingPlot.anchor
+                              : deadReckoning.active
+                              ? deadReckoning.anchor
                               : null,
-                          bearingPreviewEnd: bearingPlot.previewEnd,
-                          bearingPreviewColor: bearingPlot.active
+                          bearingPreviewEnd: bearingPlot.active
+                              ? bearingPlot.previewEnd
+                              : deadReckoning.previewEnd,
+                          bearingPreviewColor:
+                              bearingPlot.active || deadReckoning.active
                               ? previewColor
                               : null,
                         ),
@@ -2678,13 +2845,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               : null,
                           bearingPreviewStart: bearingPlot.active
                               ? bearingPlot.anchor
+                              : deadReckoning.active
+                              ? deadReckoning.anchor
                               : null,
-                          bearingPreviewEnd: bearingPlot.previewEnd,
-                          bearingPreviewColor: bearingPlot.active
+                          bearingPreviewEnd: bearingPlot.active
+                              ? bearingPlot.previewEnd
+                              : deadReckoning.previewEnd,
+                          bearingPreviewColor:
+                              bearingPlot.active || deadReckoning.active
                               ? previewColor
                               : null,
-                          bearingPreviewAngle:
-                              bearingPlot.relativeBearing == null
+                          bearingPreviewAngle: !bearingPlot.active ||
+                                  bearingPlot.relativeBearing == null
                               ? null
                               : formatRelativeAngle(
                                   bearingPlot.relativeBearing!,
@@ -2720,12 +2892,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               Positioned(
                 left: labelPosition.dx,
                 top: labelPosition.dy,
-                child: IgnorePointer(
-                  child: MapCursorCoordinates(
-                    location: location,
-                    showMgrs: showMgrsGrid,
-                    zoom: _mapController.camera.zoom,
-                  ),
+                child: MapCursorCoordinates(
+                  location: location,
+                  showMgrs: showMgrsGrid,
+                  zoom: _mapController.camera.zoom,
                 ),
               ),
             if (deviceLocation.tracking && deviceLocation.hasFix)
@@ -2752,6 +2922,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     icon: Icons.timeline,
                     label: l10n.mapRadialLine,
                     onSelected: _beginLineDrawing,
+                  ),
+                  MapRadialMenuAction(
+                    icon: Icons.directions_walk,
+                    label: l10n.mapRadialDeadReckoning,
+                    onSelected: _beginDeadReckoning,
                   ),
                   MapRadialMenuAction(
                     icon: Icons.radio_button_unchecked,
@@ -2807,6 +2982,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   ),
                 ),
               ),
+            if (deadReckoning.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: DeadReckoningBanner(
+                  bearingReference: navigationBearingReference,
+                  declinationDegrees: magneticDeclinationDegrees(
+                    location: deadReckoning.anchor ??
+                        _mapController.camera.center,
+                  ),
+                  onPlaceMarker: () => unawaited(_finalizeDeadReckoningMarker()),
+                  onCreateLine: () => unawaited(_finalizeDeadReckoningLine()),
+                  onCancel: _cancelDeadReckoning,
+                ),
+              ),
             if (lineDrawing.active)
               Positioned(
                 left: 0,
@@ -2817,6 +3008,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             if (selectedLine != null &&
                 !lineDrawing.active &&
                 !bearingPlot.active &&
+                !deadReckoning.active &&
                 !circleDrawing.active &&
                 !rectangleDrawing.active)
               Positioned(

@@ -4,6 +4,7 @@ import '../../generated/protocol.dart';
 import '../../layers/map_layer_bootstrap.dart';
 import '../../layers/map_layer_change_broadcast.dart';
 import '../../map/map_marker_change_broadcast.dart';
+import '../../zones/map_zone_change_broadcast.dart';
 import 'rest_json.dart';
 
 abstract final class LayersRestHandlers {
@@ -105,6 +106,7 @@ abstract final class LayersRestHandlers {
       );
       await MapLayerChangeBroadcast.deleted(session, id);
       await MapMarkerChangeBroadcast.bulk(session);
+      await MapZoneChangeBroadcast.bulk(session);
       return RestJson.noContent();
     });
   }

@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import '../map/marker_tracking_service.dart';
+import 'map_zone_change_broadcast.dart';
 
 class MapZoneEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapZone';
@@ -37,13 +38,15 @@ class MapZoneEndpoint extends Endpoint with EndpointLogging {
       'createZone',
       () async {
         final now = DateTime.now().toUtc();
-        return MapZone.db.insertRow(
+        final created = await MapZone.db.insertRow(
           session,
           zone.copyWith(
             createdAt: now,
             updatedAt: now,
           ),
         );
+        await MapZoneChangeBroadcast.created(session, created);
+        return created;
       },
       onSuccess: (created) =>
           'id=${created.id} name="${created.name}" type=${created.type}',
@@ -64,6 +67,7 @@ class MapZoneEndpoint extends Endpoint with EndpointLogging {
           session: session,
           zone: updated,
         );
+        await MapZoneChangeBroadcast.updated(session, updated);
         return updated;
       },
       onSuccess: (updated) => 'id=${updated.id} visible=${updated.visible}',
@@ -80,9 +84,21 @@ class MapZoneEndpoint extends Endpoint with EndpointLogging {
           session,
           where: (t) => t.id.equals(id),
         );
+        if (deleted.isNotEmpty) {
+          await MapZoneChangeBroadcast.deleted(session, id);
+        }
         return deleted.isNotEmpty;
       },
       onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
     );
+  }
+
+  Stream<MapZoneChange> zoneChanges(Session session) async* {
+    final changes = session.messages.createStream<MapZoneChange>(
+      MapZoneChangeBroadcast.channel,
+    );
+    await for (final change in changes) {
+      yield change;
+    }
   }
 }

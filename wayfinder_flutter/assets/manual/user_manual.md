@@ -147,6 +147,10 @@ Use the sidebar search filter (linked to the main search bar) to narrow a long l
 
 ---
 
+## Live updates across clients
+
+Wayfinder keeps an open connection to the server. When any client creates, edits, or deletes a **marker**, **line/circle/rectangle/track (zone)**, or **layer**, other open browsers and apps refresh that data automatically — no page reload required.
+
 ## Markers
 
 Markers are point locations with a name, icon, color, optional elevation, and notes.
@@ -268,8 +272,8 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 
 ### Draw a line
 
-1. Long-press the map → **Draw line**.
-2. Tap additional points along the path. Points snap to nearby geometry when close.
+1. Long-press the map → **Draw line**. The line starts at the long-press point, or at a **selected marker** if one is selected when you choose Draw line.
+2. Tap (or drag) to set the end point. Points snap to nearby geometry when close.
 3. Open the line form to set name, color, layer, and notes.
 4. Distance labels and direction arrows can appear along the line depending on settings.
 
@@ -279,16 +283,32 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 
 With a line selected:
 
-- **Tap** the line again to add a vertex at that point.
+- **Tap** the line again to add a mid-point (turns a straight segment into a curve).
 - **Drag** a vertex to move it.
-- **Long-press** a vertex to remove it (a banner explains controls while editing).
+- **Long-press** a mid-point to remove it (endpoints stay). Remove all mid-points to turn a curve back into a straight line.
 - **Short-click** an endpoint to start a bearing plot.
+
+A banner on the map explains these controls while a line is selected.
 
 Line length is shown using your configured **measurement units** (metric or imperial).
 
 ### Bearing plot
 
 From a line endpoint you can start a **bearing plot**: specify a bearing (absolute or relative) and distance to visualize a ray from that point. Absolute bearings follow Settings → Bearings (true °T or magnetic °M). Useful for navigation exercises and sight lines.
+
+### Dead reckoning / pace count
+
+When GPS is denied or unreliable, estimate a new position from a known start using heading and distance (or paces).
+
+1. Optionally **select a marker** (or enable GPS so the last fix can be used).
+2. Long-press the map → **Pace count**.
+3. Enter **bearing** (°T or °M per Settings → Bearings), then either:
+   - **Paces** — pace count × pace length (meters per pace; remembered on this device), or
+   - **Distance** — direct ground distance in your measurement units.
+4. The map shows a preview leg to the estimated point.
+5. **Place marker** drops a pin at the estimate, or **Create line** saves the leg as a line zone.
+
+Start point priority: selected marker → current GPS fix → long-press location.
 
 ---
 
@@ -328,7 +348,8 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Action | Result |
 |--------|--------|
 | Add marker | New marker at this location |
-| Draw line | Start line drawing |
+| Draw line | Start line drawing (from selected marker when one is selected) |
+| Pace count | Dead reckoning / pace-count helper |
 | Draw circle | Start circle drawing |
 | Rectangle (center) | Start center-based rectangle |
 | Rectangle (corners) | Start corner-based rectangle |

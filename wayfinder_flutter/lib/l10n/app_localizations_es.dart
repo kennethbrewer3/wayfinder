@@ -2670,7 +2670,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialCopyCoordinates => 'Copiar coordenadas';
 
   @override
+  String get mapRadialDeadReckoning => 'Pasos';
+
+  @override
   String get mapRadialAddToGeocoding => 'Añadir a búsqueda';
+
+  @override
+  String get mapDeadReckoningTitle => 'Navegación a estima';
+
+  @override
+  String get mapDeadReckoningModePaces => 'Pasos';
+
+  @override
+  String get mapDeadReckoningModeDistance => 'Distancia';
+
+  @override
+  String get mapDeadReckoningHeadingLabel => 'Rumbo';
+
+  @override
+  String get mapDeadReckoningPacesLabel => 'Pasos';
+
+  @override
+  String get mapDeadReckoningPaceLengthLabel => 'm/paso';
+
+  @override
+  String get mapDeadReckoningDistanceLabel => 'Dist';
+
+  @override
+  String get mapDeadReckoningPlaceMarker => 'Colocar marcador';
+
+  @override
+  String get mapDeadReckoningCreateLine => 'Crear línea';
+
+  @override
+  String get mapDeadReckoningMarkerName => 'Estimación DR';
 
   @override
   String get mapAddToGeocodingSearch => 'Añadir a búsqueda geográfica';

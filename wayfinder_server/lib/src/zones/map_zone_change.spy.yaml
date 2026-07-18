@@ -1,0 +1,6 @@
+class: MapZoneChange
+fields:
+  ### One of: created, updated, deleted, bulk
+  type: String
+  zone: MapZone?
+  zoneId: UuidValue?

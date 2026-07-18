@@ -11,7 +11,7 @@ import 'markers_provider.dart';
 const _reconnectDelay = Duration(seconds: 5);
 
 /// Keeps Serverpod streaming connections open and refreshes map data providers
-/// whenever the server broadcasts marker or layer changes (REST, RPC, or restore).
+/// whenever the server broadcasts marker, zone, or layer changes (REST, RPC, or restore).
 final mapMarkerUpdatesListenerProvider = Provider<MapMarkerUpdatesListener>(
   (ref) {
     final listener = MapMarkerUpdatesListener(ref);
@@ -27,10 +27,12 @@ class MapMarkerUpdatesListener {
   final Ref _ref;
   var _stopped = false;
   Future<void>? _markerLoop;
+  Future<void>? _zoneLoop;
   Future<void>? _layerLoop;
 
   void start() {
     _markerLoop ??= _connectMarkerLoop();
+    _zoneLoop ??= _connectZoneLoop();
     _layerLoop ??= _connectLayerLoop();
   }
 
@@ -52,6 +54,7 @@ class MapMarkerUpdatesListener {
             data: 'type=${change.type} id=${change.markerId}',
           );
           _ref.invalidate(markersProvider);
+          // Tracking can create/update zones alongside markers.
           _ref.read(zonesProvider.notifier).reload();
         }
       } catch (error, stackTrace) {
@@ -64,6 +67,42 @@ class MapMarkerUpdatesListener {
         );
         AppLogger.logMarkers.debug(
           '📡 Marker change stream stack trace',
+          data: stackTrace,
+        );
+        await Future<void>.delayed(_reconnectDelay);
+      }
+    }
+  }
+
+  Future<void> _connectZoneLoop() async {
+    while (!_stopped) {
+      try {
+        AppLogger.logZones.debug('📡 Connecting to zone change stream');
+        final client = _ref.read(serverClientProvider);
+        await for (final change in client.mapZone.zoneChanges()) {
+          if (_stopped) {
+            break;
+          }
+          AppLogger.logZones.debug(
+            '📡 Zone change received',
+            data: 'type=${change.type} id=${change.zoneId}',
+          );
+          _ref.read(zonesProvider.notifier).reload();
+          // Track zones can sync marker icons when updated.
+          if (change.type == 'updated' || change.type == 'bulk') {
+            _ref.invalidate(markersProvider);
+          }
+        }
+      } catch (error, stackTrace) {
+        if (_stopped) {
+          return;
+        }
+        AppLogger.logZones.warn(
+          '📡 Zone change stream disconnected; reconnecting',
+          error: error,
+        );
+        AppLogger.logZones.debug(
+          '📡 Zone change stream stack trace',
           data: stackTrace,
         );
         await Future<void>.delayed(_reconnectDelay);
@@ -85,7 +124,7 @@ class MapMarkerUpdatesListener {
             data: 'type=${change.type} id=${change.layerId}',
           );
           _ref.invalidate(layersProvider);
-          if (change.type == 'deleted') {
+          if (change.type == 'deleted' || change.type == 'bulk') {
             _ref.invalidate(markersProvider);
             _ref.read(zonesProvider.notifier).reload();
           }

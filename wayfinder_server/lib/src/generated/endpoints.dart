@@ -1576,6 +1576,20 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['id'],
                   ),
         ),
+        'zoneChanges': _i1.MethodStreamConnector(
+          name: 'zoneChanges',
+          params: {},
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['mapZone'] as _i12.MapZoneEndpoint).zoneChanges(
+                session,
+              ),
+        ),
       },
     );
     modules['serverpod_auth_idp'] = _i18.Endpoints()

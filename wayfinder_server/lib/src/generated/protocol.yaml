@@ -80,3 +80,4 @@ mapZone:
   - createZone:
   - updateZone:
   - deleteZone:
+  - zoneChanges:

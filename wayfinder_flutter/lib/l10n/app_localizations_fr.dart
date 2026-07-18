@@ -2676,7 +2676,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialCopyCoordinates => 'Copier les coordonnées';
 
   @override
+  String get mapRadialDeadReckoning => 'Pas';
+
+  @override
   String get mapRadialAddToGeocoding => 'Ajouter à la recherche';
+
+  @override
+  String get mapDeadReckoningTitle => 'Estime';
+
+  @override
+  String get mapDeadReckoningModePaces => 'Pas';
+
+  @override
+  String get mapDeadReckoningModeDistance => 'Distance';
+
+  @override
+  String get mapDeadReckoningHeadingLabel => 'Cap';
+
+  @override
+  String get mapDeadReckoningPacesLabel => 'Pas';
+
+  @override
+  String get mapDeadReckoningPaceLengthLabel => 'm/pas';
+
+  @override
+  String get mapDeadReckoningDistanceLabel => 'Dist';
+
+  @override
+  String get mapDeadReckoningPlaceMarker => 'Placer un marqueur';
+
+  @override
+  String get mapDeadReckoningCreateLine => 'Créer une ligne';
+
+  @override
+  String get mapDeadReckoningMarkerName => 'Estimation DR';
 
   @override
   String get mapAddToGeocodingSearch => 'Ajouter à la recherche géographique';

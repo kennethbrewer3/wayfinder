@@ -5,6 +5,7 @@ import '../generated/protocol.dart';
 import 'map_layer_bootstrap.dart';
 import 'map_layer_change_broadcast.dart';
 import '../map/map_marker_change_broadcast.dart';
+import '../zones/map_zone_change_broadcast.dart';
 
 class MapLayerEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapLayer';
@@ -95,6 +96,7 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
         if (deleted.isNotEmpty) {
           await MapLayerChangeBroadcast.deleted(session, id);
           await MapMarkerChangeBroadcast.bulk(session);
+          await MapZoneChangeBroadcast.bulk(session);
         }
         return deleted.isNotEmpty;
       },

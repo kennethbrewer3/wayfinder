@@ -44,7 +44,9 @@ import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
 import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
     as _i20;
 import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i21;
-import 'protocol.dart' as _i22;
+import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+    as _i22;
+import 'protocol.dart' as _i23;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -886,6 +888,17 @@ class EndpointMapZone extends _i2.EndpointRef {
         'deleteZone',
         {'id': id},
       );
+
+  _i3.Stream<_i22.MapZoneChange> zoneChanges() =>
+      caller.callStreamingServerEndpoint<
+        _i3.Stream<_i22.MapZoneChange>,
+        _i22.MapZoneChange
+      >(
+        'mapZone',
+        'zoneChanges',
+        {},
+        {},
+      );
 }
 
 class Modules {
@@ -919,7 +932,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i22.Protocol(),
+         _i23.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

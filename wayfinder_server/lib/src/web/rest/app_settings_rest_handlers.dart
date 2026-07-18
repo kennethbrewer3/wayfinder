@@ -110,6 +110,9 @@ abstract final class AppSettingsRestHandlers {
       final body = await RestJson.readObject(request);
       final measurementUnits = _readString(body['measurementUnits']);
       final angleDisplayFormat = _readString(body['angleDisplayFormat']);
+      final bearingReference =
+          _readString(body['bearingReference']) ??
+          AppSettingsConstants.defaultBearingReference;
       final circleSizeDisplay = _readString(body['circleSizeDisplay']);
       final appTheme = _readString(body['appTheme']);
       final appLocale = _readString(body['appLocale']);
@@ -143,6 +146,7 @@ abstract final class AppSettingsRestHandlers {
       AppSettingsStore.validateClientPreferences(
         measurementUnits: measurementUnits,
         angleDisplayFormat: angleDisplayFormat,
+        bearingReference: bearingReference,
         circleSizeDisplay: circleSizeDisplay,
         appTheme: appTheme,
         appLocale: appLocale,
@@ -161,6 +165,7 @@ abstract final class AppSettingsRestHandlers {
         settings.copyWith(
           measurementUnits: measurementUnits,
           angleDisplayFormat: angleDisplayFormat,
+          bearingReference: bearingReference,
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
           appLocale: appLocale,
@@ -181,6 +186,7 @@ abstract final class AppSettingsRestHandlers {
     return {
       'measurementUnits': settings.measurementUnits,
       'angleDisplayFormat': settings.angleDisplayFormat,
+      'bearingReference': settings.bearingReference,
       'circleSizeDisplay': settings.circleSizeDisplay,
       'appTheme': settings.appTheme,
       'appLocale': settings.appLocale,

@@ -4,6 +4,7 @@ import '../../../core/serverpod_client.dart';
 import '../../circles/providers/circle_size_display_provider.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
+import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/home_location_provider.dart';
@@ -35,6 +36,7 @@ void refreshUserSettings(WidgetRef ref) {
   ref.read(homeLocationProvider.notifier).reload();
   ref.read(measurementUnitsProvider.notifier).reload();
   ref.read(angleDisplayFormatProvider.notifier).reload();
+  ref.read(bearingReferenceProvider.notifier).reload();
   ref.read(circleSizeDisplayProvider.notifier).reload();
   ref.read(appThemeProvider.notifier).reload();
   ref.read(appLocaleProvider.notifier).reload();

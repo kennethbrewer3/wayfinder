@@ -8,6 +8,7 @@ fields:
   pmtilesStoragePath: String
   measurementUnits: String, default="metric"
   angleDisplayFormat: String, default="decimal"
+  bearingReference: String, default="true"
   circleSizeDisplay: String, default="radius"
   appTheme: String, default="light"
   appLocale: String, default="system"

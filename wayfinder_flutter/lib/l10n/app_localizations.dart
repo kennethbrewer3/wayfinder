@@ -646,6 +646,42 @@ abstract class AppLocalizations {
   /// **'Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.'**
   String get settingsAnglesDescription;
 
+  /// No description provided for @settingsBearingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bearings'**
+  String get settingsBearingsTitle;
+
+  /// No description provided for @settingsBearingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Show absolute bearings as true north (°T) or magnetic north (°M) using WMM2025 declination at your GPS or map center. The compass rose still marks true north; variation is shown underneath.'**
+  String get settingsBearingsDescription;
+
+  /// No description provided for @bearingReferenceTrue.
+  ///
+  /// In en, this message translates to:
+  /// **'True north'**
+  String get bearingReferenceTrue;
+
+  /// No description provided for @bearingReferenceMagnetic.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetic north'**
+  String get bearingReferenceMagnetic;
+
+  /// No description provided for @bearingReferenceTrueShort.
+  ///
+  /// In en, this message translates to:
+  /// **'True'**
+  String get bearingReferenceTrueShort;
+
+  /// No description provided for @bearingReferenceMagneticShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetic'**
+  String get bearingReferenceMagneticShort;
+
   /// No description provided for @lineArrowDensityLabel.
   ///
   /// In en, this message translates to:
@@ -715,7 +751,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapCompassRoseDescription.
   ///
   /// In en, this message translates to:
-  /// **'Displays a north-oriented compass in the upper-left corner of the map.'**
+  /// **'Displays a true-north compass in the upper-left corner of the map, with magnetic variation (WMM2025) underneath.'**
   String get settingsMapCompassRoseDescription;
 
   /// No description provided for @settingsMapMgrsGridTitle.

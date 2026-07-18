@@ -132,6 +132,12 @@ abstract final class AppSettingsStore {
     }
   }
 
+  static void validateBearingReference(String value) {
+    if (!AppSettingsConstants.allowedBearingReferences.contains(value)) {
+      throw FormatException('Unsupported bearing reference: $value');
+    }
+  }
+
   static void validateCircleSizeDisplay(String value) {
     if (!AppSettingsConstants.allowedCircleSizeDisplays.contains(value)) {
       throw FormatException('Unsupported circle size display: $value');
@@ -153,6 +159,7 @@ abstract final class AppSettingsStore {
   static void validateClientPreferences({
     required String measurementUnits,
     required String angleDisplayFormat,
+    required String bearingReference,
     required String circleSizeDisplay,
     required String appTheme,
     required String appLocale,
@@ -166,6 +173,7 @@ abstract final class AppSettingsStore {
   }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);
+    validateBearingReference(bearingReference);
     validateCircleSizeDisplay(circleSizeDisplay);
     validateAppTheme(appTheme);
     validateAppLocale(appLocale);

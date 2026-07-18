@@ -21,6 +21,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     required this.pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -35,6 +36,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
+       bearingReference = bearingReference ?? 'true',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
        appTheme = appTheme ?? 'light',
        appLocale = appLocale ?? 'system',
@@ -54,6 +56,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     required String pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -77,6 +80,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       pmtilesStoragePath: jsonSerialization['pmtilesStoragePath'] as String,
       measurementUnits: jsonSerialization['measurementUnits'] as String?,
       angleDisplayFormat: jsonSerialization['angleDisplayFormat'] as String?,
+      bearingReference: jsonSerialization['bearingReference'] as String?,
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
       appLocale: jsonSerialization['appLocale'] as String?,
@@ -129,6 +133,8 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   String angleDisplayFormat;
 
+  String bearingReference;
+
   String circleSizeDisplay;
 
   String appTheme;
@@ -164,6 +170,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     String? pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -188,6 +195,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       'pmtilesStoragePath': pmtilesStoragePath,
       'measurementUnits': measurementUnits,
       'angleDisplayFormat': angleDisplayFormat,
+      'bearingReference': bearingReference,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
@@ -220,6 +228,7 @@ class _AppSettingsImpl extends AppSettings {
     required String pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -240,6 +249,7 @@ class _AppSettingsImpl extends AppSettings {
          pmtilesStoragePath: pmtilesStoragePath,
          measurementUnits: measurementUnits,
          angleDisplayFormat: angleDisplayFormat,
+         bearingReference: bearingReference,
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
          appLocale: appLocale,
@@ -266,6 +276,7 @@ class _AppSettingsImpl extends AppSettings {
     String? pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -287,6 +298,7 @@ class _AppSettingsImpl extends AppSettings {
       pmtilesStoragePath: pmtilesStoragePath ?? this.pmtilesStoragePath,
       measurementUnits: measurementUnits ?? this.measurementUnits,
       angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
+      bearingReference: bearingReference ?? this.bearingReference,
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,

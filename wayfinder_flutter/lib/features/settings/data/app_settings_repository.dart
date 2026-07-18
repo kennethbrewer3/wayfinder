@@ -115,6 +115,7 @@ class AppSettingsRepository {
       final settings = await _client.appSettings.updateClientPreferences(
         payload['measurementUnits'] as String,
         payload['angleDisplayFormat'] as String,
+        payload['bearingReference'] as String,
         payload['circleSizeDisplay'] as String,
         payload['appTheme'] as String,
         payload['appLocale'] as String,

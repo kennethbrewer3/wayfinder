@@ -1339,6 +1339,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'bearingReference': _i1.ParameterDescription(
+              name: 'bearingReference',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
             'circleSizeDisplay': _i1.ParameterDescription(
               name: 'circleSizeDisplay',
               type: _i1.getType<String>(),
@@ -1399,6 +1404,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['measurementUnits'],
                     params['angleDisplayFormat'],
+                    params['bearingReference'],
                     params['circleSizeDisplay'],
                     params['appTheme'],
                     params['appLocale'],

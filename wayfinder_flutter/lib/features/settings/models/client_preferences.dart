@@ -4,6 +4,7 @@ import '../../../app/app_locale_choice.dart';
 import '../../../app/app_theme_choice.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../lines/models/angle_display_format.dart';
+import '../../lines/models/bearing_reference.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../map/models/map_zoom_limits.dart';
@@ -12,6 +13,7 @@ class ClientPreferences {
   const ClientPreferences({
     required this.measurementUnits,
     required this.angleDisplayFormat,
+    required this.bearingReference,
     required this.circleSizeDisplay,
     required this.appTheme,
     required this.appLocale,
@@ -26,6 +28,7 @@ class ClientPreferences {
 
   final MeasurementUnits measurementUnits;
   final AngleDisplayFormat angleDisplayFormat;
+  final BearingReference bearingReference;
   final CircleSizeDisplay circleSizeDisplay;
   final AppThemeChoice appTheme;
   final AppLocaleChoice appLocale;
@@ -40,6 +43,7 @@ class ClientPreferences {
   static final defaults = ClientPreferences(
     measurementUnits: MeasurementUnits.metric,
     angleDisplayFormat: AngleDisplayFormat.decimal,
+    bearingReference: BearingReference.trueNorth,
     circleSizeDisplay: CircleSizeDisplay.radius,
     appTheme: AppThemeChoice.light,
     appLocale: AppLocaleChoice.system,
@@ -62,6 +66,7 @@ class ClientPreferences {
       angleDisplayFormat: angleDisplayFormatFromStorage(
         settings.angleDisplayFormat,
       ),
+      bearingReference: bearingReferenceFromStorage(settings.bearingReference),
       circleSizeDisplay: circleSizeDisplayFromStorage(
         settings.circleSizeDisplay,
       ),
@@ -89,6 +94,9 @@ class ClientPreferences {
       angleDisplayFormat: angleDisplayFormatFromStorage(
         json['angleDisplayFormat'] as String?,
       ),
+      bearingReference: bearingReferenceFromStorage(
+        json['bearingReference'] as String?,
+      ),
       circleSizeDisplay: circleSizeDisplayFromStorage(
         json['circleSizeDisplay'] as String?,
       ),
@@ -110,6 +118,7 @@ class ClientPreferences {
   ClientPreferences copyWith({
     MeasurementUnits? measurementUnits,
     AngleDisplayFormat? angleDisplayFormat,
+    BearingReference? bearingReference,
     CircleSizeDisplay? circleSizeDisplay,
     AppThemeChoice? appTheme,
     AppLocaleChoice? appLocale,
@@ -124,6 +133,7 @@ class ClientPreferences {
     return ClientPreferences(
       measurementUnits: measurementUnits ?? this.measurementUnits,
       angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
+      bearingReference: bearingReference ?? this.bearingReference,
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
@@ -143,6 +153,7 @@ class ClientPreferences {
     return {
       'measurementUnits': measurementUnitsToStorage(measurementUnits),
       'angleDisplayFormat': angleDisplayFormatToStorage(angleDisplayFormat),
+      'bearingReference': bearingReferenceToStorage(bearingReference),
       'circleSizeDisplay': circleSizeDisplayToStorage(circleSizeDisplay),
       'appTheme': appThemeChoiceToStorage(appTheme),
       'appLocale': appLocaleChoiceToStorage(appLocale),

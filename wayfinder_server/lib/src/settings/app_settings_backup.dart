@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'app_settings_constants.dart';
 import 'app_settings_store.dart';
 
 const mapMarkerSizeScaleMin = 0.75;
@@ -15,6 +16,7 @@ Map<String, dynamic> exportAppSettingsBackup(AppSettings settings) {
     'pmtilesStoragePath': settings.pmtilesStoragePath,
     'measurementUnits': settings.measurementUnits,
     'angleDisplayFormat': settings.angleDisplayFormat,
+    'bearingReference': settings.bearingReference,
     'circleSizeDisplay': settings.circleSizeDisplay,
     'appTheme': settings.appTheme,
     'appLocale': settings.appLocale,
@@ -38,6 +40,9 @@ Future<void> restoreAppSettingsBackup(
   final pmtilesStoragePath = _readString(body['pmtilesStoragePath']);
   final measurementUnits = _readString(body['measurementUnits']);
   final angleDisplayFormat = _readString(body['angleDisplayFormat']);
+  final bearingReference =
+      _readString(body['bearingReference']) ??
+      AppSettingsConstants.defaultBearingReference;
   final circleSizeDisplay = _readString(body['circleSizeDisplay']);
   final appTheme = _readString(body['appTheme']);
   final appLocale = _readString(body['appLocale']);
@@ -76,6 +81,7 @@ Future<void> restoreAppSettingsBackup(
   AppSettingsStore.validateClientPreferences(
     measurementUnits: measurementUnits,
     angleDisplayFormat: angleDisplayFormat,
+    bearingReference: bearingReference,
     circleSizeDisplay: circleSizeDisplay,
     appTheme: appTheme,
     appLocale: appLocale,
@@ -98,6 +104,7 @@ Future<void> restoreAppSettingsBackup(
       pmtilesStoragePath: pmtilesStoragePath,
       measurementUnits: measurementUnits,
       angleDisplayFormat: angleDisplayFormat,
+      bearingReference: bearingReference,
       circleSizeDisplay: circleSizeDisplay,
       appTheme: appTheme,
       appLocale: appLocale,

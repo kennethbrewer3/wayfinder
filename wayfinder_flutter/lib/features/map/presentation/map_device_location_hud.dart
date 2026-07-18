@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../providers/device_location_provider.dart';
 import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/selected_map_object_provider.dart';
 import '../utils/device_location_readout.dart';
+import '../utils/magnetic_declination.dart';
 
 /// Compact GPS status: current position, plus range/bearing to a selected marker.
 class MapDeviceLocationHud extends ConsumerWidget {
@@ -31,12 +33,14 @@ class MapDeviceLocationHud extends ConsumerWidget {
 
     final showMgrs = ref.watch(mapMgrsGridEnabledProvider);
     final units = ref.watch(measurementUnitsProvider);
+    final bearingReference = ref.watch(bearingReferenceProvider);
     final selection = ref.watch(selectedMapObjectProvider);
     final markers = ref.watch(markersProvider).valueOrNull ?? const [];
     final target = selectedMarkerTarget(
       selection: selection,
       markers: markers,
     );
+    final declination = magneticDeclinationDegrees(location: point);
 
     final positionText = formatDeviceLocationPosition(
       location: point,
@@ -54,6 +58,8 @@ class MapDeviceLocationHud extends ConsumerWidget {
         from: point,
         to: LatLng(target.latitude, target.longitude),
         units: units,
+        bearingReference: bearingReference,
+        declinationDegrees: declination,
       );
     }
 
@@ -86,6 +92,14 @@ class MapDeviceLocationHud extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 2),
+            Text(
+              formatMagneticDeclination(declination),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
             if (rangeText != null && targetName != null) ...[
               const SizedBox(height: 4),

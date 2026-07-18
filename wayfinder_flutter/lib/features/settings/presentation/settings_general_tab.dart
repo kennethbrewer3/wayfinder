@@ -15,8 +15,10 @@ import '../../../core/server_config.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/providers/circle_size_display_provider.dart';
 import '../../lines/models/angle_display_format.dart';
+import '../../lines/models/bearing_reference.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
+import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
 import '../../map/providers/home_location_provider.dart';
@@ -306,6 +308,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final l10n = AppLocalizations.of(context)!;
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
+    final bearingReference = ref.watch(bearingReferenceProvider);
     final circleSizeDisplay = ref.watch(circleSizeDisplayProvider);
     final showMapViewportDebugBorder = ref.watch(
       mapViewportDebugBorderProvider,
@@ -586,6 +589,34 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             ref
                 .read(angleDisplayFormatProvider.notifier)
                 .setFormat(selection.first);
+          },
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsBearingsTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsBearingsDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        SegmentedButton<BearingReference>(
+          segments: BearingReference.values
+              .map(
+                (reference) => ButtonSegment(
+                  value: reference,
+                  label: Text(reference.localizedShortLabel(l10n)),
+                  tooltip: reference.localizedLabel(l10n),
+                ),
+              )
+              .toList(),
+          selected: {bearingReference},
+          onSelectionChanged: (selection) {
+            ref
+                .read(bearingReferenceProvider.notifier)
+                .setReference(selection.first);
           },
         ),
         const SizedBox(height: 32),

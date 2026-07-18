@@ -11,6 +11,7 @@ abstract final class AppSettingsConstants {
 
   static const defaultMeasurementUnits = 'metric';
   static const defaultAngleDisplayFormat = 'decimal';
+  static const defaultBearingReference = 'true';
   static const defaultCircleSizeDisplay = 'radius';
   static const defaultAppTheme = 'light';
   static const defaultAppLocale = 'system';
@@ -18,6 +19,7 @@ abstract final class AppSettingsConstants {
 
   static const allowedMeasurementUnits = {'metric', 'imperial', 'nautical'};
   static const allowedAngleDisplayFormats = {'decimal', 'dms'};
+  static const allowedBearingReferences = {'true', 'magnetic'};
   static const allowedCircleSizeDisplays = {'radius', 'diameter', 'none'};
   static const allowedAppThemes = {
     'light',

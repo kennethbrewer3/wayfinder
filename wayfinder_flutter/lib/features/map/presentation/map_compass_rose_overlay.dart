@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../lines/utils/bearing_utils.dart';
+import '../utils/magnetic_declination.dart';
 
 const _compassAssetPath = 'assets/map/compass_rose.svg';
 const _compassSize = 56.0;
@@ -63,6 +64,9 @@ class _MapCompassRoseOverlayState extends State<MapCompassRoseOverlay> {
       anchor: camera.center,
       camera: camera,
     );
+    final declinationLabel = formatMagneticDeclination(
+      magneticDeclinationDegrees(location: camera.center),
+    );
 
     return Align(
       alignment: Alignment.topLeft,
@@ -83,38 +87,52 @@ class _MapCompassRoseOverlayState extends State<MapCompassRoseOverlay> {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(6),
-              child: SizedBox(
-                width: _compassSize,
-                height: _compassSize,
-                child: Transform.rotate(
-                  angle: northAngle,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        _compassAssetPath,
-                        width: _compassSize,
-                        height: _compassSize,
-                        colorFilter: ColorFilter.mode(
-                          colors.onSurface,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      Positioned(
-                        top: 2,
-                        child: Text(
-                          'N',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: colors.error,
-                            fontWeight: FontWeight.w700,
-                            height: 1,
+              padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: _compassSize,
+                    height: _compassSize,
+                    child: Transform.rotate(
+                      angle: northAngle,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            _compassAssetPath,
+                            width: _compassSize,
+                            height: _compassSize,
+                            colorFilter: ColorFilter.mode(
+                              colors.onSurface,
+                              BlendMode.srcIn,
+                            ),
                           ),
-                        ),
+                          Positioned(
+                            top: 2,
+                            child: Text(
+                              'N',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colors.error,
+                                fontWeight: FontWeight.w700,
+                                height: 1,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 2),
+                  Text(
+                    declinationLabel,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      height: 1.1,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

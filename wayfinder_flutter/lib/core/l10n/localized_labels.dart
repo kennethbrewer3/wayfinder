@@ -6,6 +6,7 @@ import '../../features/markers/models/marker_icon_category_catalog.dart';
 import '../../features/circles/models/circle_geometry.dart';
 import '../../features/circles/models/circle_size_display.dart';
 import '../../features/lines/models/angle_display_format.dart';
+import '../../features/lines/models/bearing_reference.dart';
 import '../../features/lines/models/line_arrow_density.dart';
 import '../../features/lines/models/line_geometry.dart';
 import '../../features/lines/models/measurement_units.dart';
@@ -70,6 +71,18 @@ extension AngleDisplayFormatL10n on AngleDisplayFormat {
   String localizedShortLabel(AppLocalizations l10n) => switch (this) {
     AngleDisplayFormat.decimal => l10n.angleFormatDecimalShort,
     AngleDisplayFormat.degreesMinutesSeconds => l10n.angleFormatDmsShort,
+  };
+}
+
+extension BearingReferenceL10n on BearingReference {
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    BearingReference.trueNorth => l10n.bearingReferenceTrue,
+    BearingReference.magnetic => l10n.bearingReferenceMagnetic,
+  };
+
+  String localizedShortLabel(AppLocalizations l10n) => switch (this) {
+    BearingReference.trueNorth => l10n.bearingReferenceTrueShort,
+    BearingReference.magnetic => l10n.bearingReferenceMagneticShort,
   };
 }
 

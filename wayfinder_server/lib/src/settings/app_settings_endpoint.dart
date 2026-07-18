@@ -104,6 +104,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     Session session,
     String measurementUnits,
     String angleDisplayFormat,
+    String bearingReference,
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
@@ -123,6 +124,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
         AppSettingsStore.validateClientPreferences(
           measurementUnits: measurementUnits,
           angleDisplayFormat: angleDisplayFormat,
+          bearingReference: bearingReference,
           circleSizeDisplay: circleSizeDisplay,
           appTheme: appTheme,
           appLocale: appLocale,
@@ -141,6 +143,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           settings.copyWith(
             measurementUnits: measurementUnits,
             angleDisplayFormat: angleDisplayFormat,
+            bearingReference: bearingReference,
             circleSizeDisplay: circleSizeDisplay,
             appTheme: appTheme,
             appLocale: appLocale,
@@ -157,6 +160,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       onSuccess: (settings) =>
           'units=${settings.measurementUnits} '
           'angles=${settings.angleDisplayFormat} '
+          'bearing=${settings.bearingReference} '
           'circles=${settings.circleSizeDisplay} '
           'theme=${settings.appTheme} '
           'locale=${settings.appLocale} '

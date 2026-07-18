@@ -304,6 +304,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.';
 
   @override
+  String get settingsBearingsTitle => 'Bearings';
+
+  @override
+  String get settingsBearingsDescription =>
+      'Show absolute bearings as true north (°T) or magnetic north (°M) using WMM2025 declination at your GPS or map center. The compass rose still marks true north; variation is shown underneath.';
+
+  @override
+  String get bearingReferenceTrue => 'True north';
+
+  @override
+  String get bearingReferenceMagnetic => 'Magnetic north';
+
+  @override
+  String get bearingReferenceTrueShort => 'True';
+
+  @override
+  String get bearingReferenceMagneticShort => 'Magnetic';
+
+  @override
   String get lineArrowDensityLabel => 'Arrow frequency';
 
   @override
@@ -340,7 +359,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Displays a north-oriented compass in the upper-left corner of the map.';
+      'Displays a true-north compass in the upper-left corner of the map, with magnetic variation (WMM2025) underneath.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Show MGRS grid';

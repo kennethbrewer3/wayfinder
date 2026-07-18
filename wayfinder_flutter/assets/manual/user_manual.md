@@ -59,7 +59,7 @@ Tap the **my location** button (crosshair) in the map app bar to show a blue **y
 - The map **follows** your position until you pan or zoom; tap the button again to re-center and resume following.
 - **Long-press** the button to hide the blue dot and stop tracking.
 - An accuracy circle appears when the device reports a useful accuracy radius.
-- A **status card** (bottom-left) shows your position as lat/lng, or as **MGRS** when the MGRS grid is on. If a **marker is selected**, it also shows distance and true bearing to that marker, with a dashed guide line on the map.
+- A **status card** (bottom-left) shows your position as lat/lng, or as **MGRS** when the MGRS grid is on, plus magnetic variation (WMM2025). If a **marker is selected**, it also shows distance and bearing to that marker (true or magnetic per Settings → Bearings), with a dashed guide line on the map.
 - **Web note:** browsers only allow geolocation in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts) — `https://…` or `http://localhost`. Plain `http://192.168.x.x` usually blocks location. Serve the client behind HTTPS on the LAN if you need GPS in the browser (see the client deploy guide). Native Android/iOS/macOS builds use system location APIs and do not need HTTPS for GPS.
 
 ### MGRS grid
@@ -279,7 +279,7 @@ Line length is shown using your configured **measurement units** (metric or impe
 
 ### Bearing plot
 
-From a line endpoint you can start a **bearing plot**: specify a bearing (true or relative) and distance to visualize a ray from that point. Useful for navigation exercises and sight lines.
+From a line endpoint you can start a **bearing plot**: specify a bearing (absolute or relative) and distance to visualize a ray from that point. Absolute bearings follow Settings → Bearings (true °T or magnetic °M). Useful for navigation exercises and sight lines.
 
 ---
 
@@ -375,7 +375,8 @@ Set latitude, longitude, and zoom for the **Home** button on the map. If no mark
 
 ### Map display
 
-- **Compass rose** — show or hide the compass overlay on the map.
+- **Bearings** — display absolute bearings as **true north (°T)** or **magnetic north (°M)** using WMM2025 declination at GPS position or map center.
+- **Compass rose** — show or hide the true-north compass overlay (magnetic variation is shown underneath).
 - **Show MGRS grid** — overlay true Military Grid Reference System lines (see [MGRS grid](#mgrs-grid) under **The map**). Spacing follows zoom; zone seams and slight curvature on Web Mercator are expected for correct MGRS.
 - **Map zoom range** — optional min/max zoom limits for the map interaction range.
 

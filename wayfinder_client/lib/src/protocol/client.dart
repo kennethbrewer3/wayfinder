@@ -778,6 +778,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
   _i3.Future<_i17.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
+    String bearingReference,
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
@@ -794,6 +795,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     {
       'measurementUnits': measurementUnits,
       'angleDisplayFormat': angleDisplayFormat,
+      'bearingReference': bearingReference,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,

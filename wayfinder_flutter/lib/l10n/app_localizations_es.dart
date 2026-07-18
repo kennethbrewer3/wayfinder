@@ -304,6 +304,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'Elija cómo se muestran los ángulos relativos en el mapa y en los gráficos de rumbo.';
 
   @override
+  String get settingsBearingsTitle => 'Rumbos';
+
+  @override
+  String get settingsBearingsDescription =>
+      'Muestre los rumbos absolutos como norte verdadero (°T) o norte magnético (°M) con la declinación WMM2025 en su GPS o el centro del mapa. La rosa de los vientos sigue marcando el norte verdadero; la variación aparece debajo.';
+
+  @override
+  String get bearingReferenceTrue => 'Norte verdadero';
+
+  @override
+  String get bearingReferenceMagnetic => 'Norte magnético';
+
+  @override
+  String get bearingReferenceTrueShort => 'Verdadero';
+
+  @override
+  String get bearingReferenceMagneticShort => 'Magnético';
+
+  @override
   String get lineArrowDensityLabel => 'Frecuencia de flechas';
 
   @override
@@ -340,7 +359,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Muestra una brújula orientada al norte en la esquina superior izquierda del mapa.';
+      'Muestra una brújula de norte verdadero en la esquina superior izquierda del mapa, con la variación magnética (WMM2025) debajo.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Mostrar cuadrícula MGRS';

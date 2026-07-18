@@ -32,15 +32,18 @@ import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/presentation/line_distance_labels.dart';
 import '../../lines/presentation/map_line_layer.dart';
 import '../../lines/models/angle_display_format.dart';
+import '../../lines/models/bearing_reference.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
 import '../../circles/utils/circle_hit_test.dart';
 import '../../lines/providers/bearing_plot_provider.dart';
+import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/line_drawing_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
 import '../../lines/utils/bearing_utils.dart';
+import '../utils/magnetic_declination.dart';
 import '../../tracks/presentation/track_footsteps_overlay.dart';
 import '../../lines/presentation/line_direction_arrows_overlay.dart';
 import '../../lines/utils/line_distance.dart';
@@ -1937,6 +1940,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Widget _bearingPlotBanner(
     BearingPlotState bearingPlot,
     AngleDisplayFormat angleFormat,
+    BearingReference bearingReference,
+    double declinationDegrees,
   ) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
@@ -1944,12 +1949,20 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final plot = bearingPlot.plotBearing;
     final relative = bearingPlot.relativeBearing;
 
+    String formatPlotBearing(double trueBearing) {
+      return formatNavigationBearing(
+        trueBearingDegrees: trueBearing,
+        reference: bearingReference,
+        declinationDegrees: declinationDegrees,
+      );
+    }
+
     final details = StringBuffer('Bearing plot · ');
     if (reference != null) {
-      details.write('Ref ${formatTrueBearing(reference)}');
+      details.write('Ref ${formatPlotBearing(reference)}');
     }
     if (plot != null) {
-      details.write(' · Brg ${formatTrueBearing(plot)}');
+      details.write(' · Brg ${formatPlotBearing(plot)}');
     }
     if (relative != null) {
       details.write(' · ${formatRelativeAngle(relative, angleFormat)}');
@@ -2188,6 +2201,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final selectedLineId = selectedMapObject.selectedZoneId;
     final measurementUnits = ref.watch(measurementUnitsProvider);
     final angleDisplayFormat = ref.watch(angleDisplayFormatProvider);
+    final navigationBearingReference = ref.watch(bearingReferenceProvider);
     final previewColor = Theme.of(context).colorScheme.primary;
     final previewFillColor = previewColor.withValues(alpha: 0.25);
     final referenceColor = Theme.of(context).colorScheme.secondary;
@@ -2729,7 +2743,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 left: 0,
                 right: 0,
                 top: 0,
-                child: _bearingPlotBanner(bearingPlot, angleDisplayFormat),
+                child: _bearingPlotBanner(
+                  bearingPlot,
+                  angleDisplayFormat,
+                  navigationBearingReference,
+                  magneticDeclinationDegrees(
+                    location: _mapController.camera.center,
+                  ),
+                ),
               ),
             if (lineDrawing.active)
               Positioned(

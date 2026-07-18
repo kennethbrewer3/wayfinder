@@ -22,6 +22,7 @@ abstract class AppSettings
     required this.pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -36,6 +37,7 @@ abstract class AppSettings
     required this.updatedAt,
   }) : measurementUnits = measurementUnits ?? 'metric',
        angleDisplayFormat = angleDisplayFormat ?? 'decimal',
+       bearingReference = bearingReference ?? 'true',
        circleSizeDisplay = circleSizeDisplay ?? 'radius',
        appTheme = appTheme ?? 'light',
        appLocale = appLocale ?? 'system',
@@ -55,6 +57,7 @@ abstract class AppSettings
     required String pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -78,6 +81,7 @@ abstract class AppSettings
       pmtilesStoragePath: jsonSerialization['pmtilesStoragePath'] as String,
       measurementUnits: jsonSerialization['measurementUnits'] as String?,
       angleDisplayFormat: jsonSerialization['angleDisplayFormat'] as String?,
+      bearingReference: jsonSerialization['bearingReference'] as String?,
       circleSizeDisplay: jsonSerialization['circleSizeDisplay'] as String?,
       appTheme: jsonSerialization['appTheme'] as String?,
       appLocale: jsonSerialization['appLocale'] as String?,
@@ -132,6 +136,8 @@ abstract class AppSettings
 
   String angleDisplayFormat;
 
+  String bearingReference;
+
   String circleSizeDisplay;
 
   String appTheme;
@@ -170,6 +176,7 @@ abstract class AppSettings
     String? pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -194,6 +201,7 @@ abstract class AppSettings
       'pmtilesStoragePath': pmtilesStoragePath,
       'measurementUnits': measurementUnits,
       'angleDisplayFormat': angleDisplayFormat,
+      'bearingReference': bearingReference,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
@@ -220,6 +228,7 @@ abstract class AppSettings
       'pmtilesStoragePath': pmtilesStoragePath,
       'measurementUnits': measurementUnits,
       'angleDisplayFormat': angleDisplayFormat,
+      'bearingReference': bearingReference,
       'circleSizeDisplay': circleSizeDisplay,
       'appTheme': appTheme,
       'appLocale': appLocale,
@@ -276,6 +285,7 @@ class _AppSettingsImpl extends AppSettings {
     required String pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -296,6 +306,7 @@ class _AppSettingsImpl extends AppSettings {
          pmtilesStoragePath: pmtilesStoragePath,
          measurementUnits: measurementUnits,
          angleDisplayFormat: angleDisplayFormat,
+         bearingReference: bearingReference,
          circleSizeDisplay: circleSizeDisplay,
          appTheme: appTheme,
          appLocale: appLocale,
@@ -322,6 +333,7 @@ class _AppSettingsImpl extends AppSettings {
     String? pmtilesStoragePath,
     String? measurementUnits,
     String? angleDisplayFormat,
+    String? bearingReference,
     String? circleSizeDisplay,
     String? appTheme,
     String? appLocale,
@@ -343,6 +355,7 @@ class _AppSettingsImpl extends AppSettings {
       pmtilesStoragePath: pmtilesStoragePath ?? this.pmtilesStoragePath,
       measurementUnits: measurementUnits ?? this.measurementUnits,
       angleDisplayFormat: angleDisplayFormat ?? this.angleDisplayFormat,
+      bearingReference: bearingReference ?? this.bearingReference,
       circleSizeDisplay: circleSizeDisplay ?? this.circleSizeDisplay,
       appTheme: appTheme ?? this.appTheme,
       appLocale: appLocale ?? this.appLocale,
@@ -397,6 +410,12 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
   _i1.ColumnValue<String, String> angleDisplayFormat(String value) =>
       _i1.ColumnValue(
         table.angleDisplayFormat,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> bearingReference(String value) =>
+      _i1.ColumnValue(
+        table.bearingReference,
         value,
       );
 
@@ -496,6 +515,11 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    bearingReference = _i1.ColumnString(
+      'bearingReference',
+      this,
+      hasDefault: true,
+    );
     circleSizeDisplay = _i1.ColumnString(
       'circleSizeDisplay',
       this,
@@ -570,6 +594,8 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString angleDisplayFormat;
 
+  late final _i1.ColumnString bearingReference;
+
   late final _i1.ColumnString circleSizeDisplay;
 
   late final _i1.ColumnString appTheme;
@@ -603,6 +629,7 @@ class AppSettingsTable extends _i1.Table<int?> {
     pmtilesStoragePath,
     measurementUnits,
     angleDisplayFormat,
+    bearingReference,
     circleSizeDisplay,
     appTheme,
     appLocale,

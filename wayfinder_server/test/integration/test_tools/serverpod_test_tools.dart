@@ -2278,6 +2278,7 @@ class _AppSettingsEndpoint {
     _i1.TestSessionBuilder sessionBuilder,
     String measurementUnits,
     String angleDisplayFormat,
+    String bearingReference,
     String circleSizeDisplay,
     String appTheme,
     String appLocale,
@@ -2303,6 +2304,7 @@ class _AppSettingsEndpoint {
           parameters: _i1.testObjectToJson({
             'measurementUnits': measurementUnits,
             'angleDisplayFormat': angleDisplayFormat,
+            'bearingReference': bearingReference,
             'circleSizeDisplay': circleSizeDisplay,
             'appTheme': appTheme,
             'appLocale': appLocale,

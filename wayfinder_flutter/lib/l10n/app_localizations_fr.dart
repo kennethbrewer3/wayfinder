@@ -305,6 +305,25 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisissez comment les angles relatifs sont affichés sur la carte et dans les graphiques de relèvement. Enregistré sur le serveur pour que chaque navigateur utilise le même format.';
 
   @override
+  String get settingsBearingsTitle => 'Relèvements';
+
+  @override
+  String get settingsBearingsDescription =>
+      'Affichez les relèvements absolus en nord vrai (°T) ou nord magnétique (°M) avec la déclinaison WMM2025 à votre GPS ou au centre de la carte. La rose des vents indique toujours le nord vrai ; la variation apparaît en dessous.';
+
+  @override
+  String get bearingReferenceTrue => 'Nord vrai';
+
+  @override
+  String get bearingReferenceMagnetic => 'Nord magnétique';
+
+  @override
+  String get bearingReferenceTrueShort => 'Vrai';
+
+  @override
+  String get bearingReferenceMagneticShort => 'Magnétique';
+
+  @override
   String get lineArrowDensityLabel => 'Fréquence des flèches';
 
   @override
@@ -341,7 +360,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Affiche une boussole orientée vers le nord dans le coin supérieur gauche de la carte.';
+      'Affiche une boussole de nord vrai dans le coin supérieur gauche de la carte, avec la variation magnétique (WMM2025) en dessous.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Afficher la grille MGRS';

@@ -434,7 +434,7 @@ The server stores uploaded `.pmtiles` files in a folder path configured here (us
 ### Upload tiles
 
 1. Tap **Upload** and choose a `.pmtiles` file from your device.
-2. Wait for upload and processing to finish (large files take time).
+2. Wait for upload and processing to finish (large files take time). On web, large archives upload in chunks so the UI and server logs show progress while data is transferring.
 3. Enable the archive with the toggle. Multiple archives can be enabled; they composited on the map.
 
 ### Download / backup tiles

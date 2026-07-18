@@ -372,6 +372,18 @@
   "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils — activez-les ici, mais ils ne sont pas dessinés comme fond de carte.",
   "mapTilesDemBadge": "DEM d'élévation",
   "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
+  "mapTilesUploadProgress": "Téléversement {sent} / {total}",
+  "@mapTilesUploadProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesUploadProgressHint": "Les grandes archives sont téléversées par morceaux afin que les journaux serveur montrent la progression. Gardez cet onglet ouvert jusqu’à la fin.",
   "elevationDemLabel": "Élévation DEM",
   "elevationDemUnavailable": "Pas de couverture DEM",
   "elevationNoDemAvailable": "Aucun DEM d'élévation n'est activé. Téléversez un .pmtiles Terrarium ou Terrain-RGB nommé avec dem/terrarium/elevation et activez-le sous Tuiles cartographiques.",

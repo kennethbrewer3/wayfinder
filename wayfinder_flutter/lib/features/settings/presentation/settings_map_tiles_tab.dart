@@ -25,6 +25,8 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
   static final _log = AppLogger.logSettings;
 
   bool _isUploading = false;
+  int _uploadSentBytes = 0;
+  int _uploadTotalBytes = 0;
   bool _isSavingStoragePath = false;
   String? _downloadingFileId;
   final _storagePathController = TextEditingController();
@@ -136,11 +138,26 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       data: describePlatformFile(picked),
     );
 
-    setState(() => _isUploading = true);
+    setState(() {
+      _isUploading = true;
+      _uploadSentBytes = 0;
+      _uploadTotalBytes = picked.size;
+    });
 
     try {
       final repository = ref.read(pmtilesRepositoryProvider);
-      final entry = await repository.uploadFile(picked);
+      final entry = await repository.uploadFile(
+        picked,
+        onProgress: (sent, total) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _uploadSentBytes = sent;
+            _uploadTotalBytes = total;
+          });
+        },
+      );
       refreshPmtiles(ref);
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
@@ -161,7 +178,11 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
       );
     } finally {
       if (mounted) {
-        setState(() => _isUploading = false);
+        setState(() {
+          _isUploading = false;
+          _uploadSentBytes = 0;
+          _uploadTotalBytes = 0;
+        });
       }
     }
   }
@@ -492,9 +513,29 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
                 )
               : const Icon(Icons.upload_file),
           label: Text(
-            _isUploading ? l10n.actionUploading : l10n.mapTilesUploadButton,
+            _isUploading
+                ? (_uploadTotalBytes > 0
+                      ? l10n.mapTilesUploadProgress(
+                          formatBytes(_uploadSentBytes),
+                          formatBytes(_uploadTotalBytes),
+                        )
+                      : l10n.actionUploading)
+                : l10n.mapTilesUploadButton,
           ),
         ),
+        if (_isUploading) ...[
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: _uploadTotalBytes > 0
+                ? (_uploadSentBytes / _uploadTotalBytes).clamp(0.0, 1.0)
+                : null,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.mapTilesUploadProgressHint,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
         const SizedBox(height: 24),
         filesAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),

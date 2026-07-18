@@ -19,6 +19,7 @@ import 'src/web/middleware/rest_cors_middleware.dart';
 import 'src/web/routes/app_config_route.dart';
 import 'src/web/routes/marker_icon_file_route.dart';
 import 'src/web/routes/marker_icon_upload_route.dart';
+import 'src/web/routes/pmtiles_chunked_upload_routes.dart';
 import 'src/web/routes/pmtiles_file_route.dart';
 import 'src/web/routes/pmtiles_upload_route.dart';
 import 'src/web/routes/root.dart';
@@ -81,6 +82,19 @@ void run(List<String> args) async {
 
     // Serve uploaded PMTiles archives with HTTP range support for all clients.
     pod.webServer.addMiddleware(const CorsMiddleware().call, '/pmtiles');
+    // Register chunked upload paths before the monolithic /pmtiles/upload route.
+    pod.webServer.addRoute(
+      PmtilesChunkedUploadInitRoute(),
+      '/pmtiles/upload/init',
+    );
+    pod.webServer.addRoute(
+      PmtilesChunkedUploadChunkRoute(),
+      '/pmtiles/upload/chunk',
+    );
+    pod.webServer.addRoute(
+      PmtilesChunkedUploadCompleteRoute(),
+      '/pmtiles/upload/complete',
+    );
     pod.webServer.addRoute(
       PmtilesUploadRoute(),
       '/pmtiles/upload',

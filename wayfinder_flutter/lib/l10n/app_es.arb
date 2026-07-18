@@ -372,6 +372,18 @@
   "mapTilesMapsDescription": "Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles — actívelos aquí, pero no se dibujan como basemap.",
   "mapTilesDemBadge": "DEM de elevación",
   "mapTilesUploadButton": "Subir archivo .pmtiles",
+  "mapTilesUploadProgress": "Subiendo {sent} / {total}",
+  "@mapTilesUploadProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesUploadProgressHint": "Los archivos grandes se suben por partes para que los registros del servidor muestren progreso. Mantén esta pestaña abierta hasta que termine.",
   "elevationDemLabel": "Elevación DEM",
   "elevationDemUnavailable": "Sin cobertura DEM",
   "elevationNoDemAvailable": "No hay un DEM de elevación activado. Suba un .pmtiles Terrarium o Terrain-RGB con dem/terrarium/elevation en el nombre y actívelo en Mosaicos del mapa.",

@@ -4,6 +4,7 @@ import '../../generated/protocol.dart';
 import '../../pmtiles/pmtiles_catalog_sync.dart';
 import '../../pmtiles/pmtiles_file_groups.dart';
 import '../../pmtiles/pmtiles_storage.dart';
+import '../../pmtiles/pmtiles_chunked_upload.dart';
 import '../../pmtiles/pmtiles_upload_handler.dart';
 import 'rest_json.dart';
 
@@ -101,5 +102,20 @@ abstract final class PmtilesRestHandlers {
   static Future<Result> upload(Request request) async {
     final session = await request.session;
     return handlePmtilesUpload(session, request);
+  }
+
+  static Future<Result> uploadInit(Request request) async {
+    final session = await request.session;
+    return PmtilesChunkedUpload.init(session, request);
+  }
+
+  static Future<Result> uploadChunk(Request request) async {
+    final session = await request.session;
+    return PmtilesChunkedUpload.chunk(session, request);
+  }
+
+  static Future<Result> uploadComplete(Request request) async {
+    final session = await request.session;
+    return PmtilesChunkedUpload.complete(session, request);
   }
 }

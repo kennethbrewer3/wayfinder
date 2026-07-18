@@ -788,6 +788,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapTilesUploadButton => 'Subir archivo .pmtiles';
 
   @override
+  String mapTilesUploadProgress(String sent, String total) {
+    return 'Subiendo $sent / $total';
+  }
+
+  @override
+  String get mapTilesUploadProgressHint =>
+      'Los archivos grandes se suben por partes para que los registros del servidor muestren progreso. Mantén esta pestaña abierta hasta que termine.';
+
+  @override
   String get elevationDemLabel => 'Elevación DEM';
 
   @override

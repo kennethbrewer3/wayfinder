@@ -1473,6 +1473,18 @@ abstract class AppLocalizations {
   /// **'Upload .pmtiles file'**
   String get mapTilesUploadButton;
 
+  /// No description provided for @mapTilesUploadProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {sent} / {total}'**
+  String mapTilesUploadProgress(String sent, String total);
+
+  /// No description provided for @mapTilesUploadProgressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Large archives upload in chunks so server logs show progress. Keep this tab open until finished.'**
+  String get mapTilesUploadProgressHint;
+
   /// No description provided for @elevationDemLabel.
   ///
   /// In en, this message translates to:

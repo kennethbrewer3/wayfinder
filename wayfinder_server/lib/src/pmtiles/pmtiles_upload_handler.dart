@@ -41,7 +41,7 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
     session,
     'pmtiles',
     '📤 Upload started "$name" | id=$storageId | '
-    'expected=${_formatBytesOrUnknown(expectedBytes)}',
+        'expected=${_formatBytesOrUnknown(expectedBytes)}',
   );
 
   // Heartbeat so long transfers still appear active in server logs even when
@@ -52,10 +52,10 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
       session,
       'pmtiles',
       '📤 Upload still receiving "$name" | '
-      'received=${_formatBytes(receivedBytes)}'
-      '${expectedBytes == null ? '' : ' / ${_formatBytes(expectedBytes)}'} | '
-      'elapsed=${_formatElapsed(elapsed)}'
-      '${_rateSuffix(receivedBytes, elapsed)}',
+          'received=${_formatBytes(receivedBytes)}'
+          '${expectedBytes == null ? '' : ' / ${_formatBytes(expectedBytes)}'} | '
+          'elapsed=${_formatElapsed(elapsed)}'
+          '${_rateSuffix(receivedBytes, elapsed)}',
     );
   });
 
@@ -70,10 +70,10 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
           session,
           'pmtiles',
           '📤 Upload progress "$name" | '
-          'received=${_formatBytes(receivedBytes)}'
-          '${expectedBytes == null ? '' : ' / ${_formatBytes(expectedBytes)}'} | '
-          'elapsed=${_formatElapsed(elapsed)}'
-          '${_rateSuffix(receivedBytes, elapsed)}',
+              'received=${_formatBytes(receivedBytes)}'
+              '${expectedBytes == null ? '' : ' / ${_formatBytes(expectedBytes)}'} | '
+              'elapsed=${_formatElapsed(elapsed)}'
+              '${_rateSuffix(receivedBytes, elapsed)}',
         );
       }
       return chunk;
@@ -87,9 +87,9 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
       session,
       'pmtiles',
       '📤 Upload bytes received "$name" | '
-      'size=${_formatBytes(receivedBytes)} | '
-      'elapsed=${_formatElapsed(receiveElapsed)}'
-      '${_rateSuffix(receivedBytes, receiveElapsed)}',
+          'size=${_formatBytes(receivedBytes)} | '
+          'elapsed=${_formatElapsed(receiveElapsed)}'
+          '${_rateSuffix(receivedBytes, receiveElapsed)}',
     );
 
     final storedFile = storage.fileFor(storageId);
@@ -121,8 +121,8 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
       session,
       'pmtiles',
       '📤 Upload complete "$name" | id=${id.uuid} | '
-      'size=${_formatBytes(sizeBytes)} | '
-      'elapsed=${_formatElapsed(totalElapsed)}',
+          'size=${_formatBytes(sizeBytes)} | '
+          'elapsed=${_formatElapsed(totalElapsed)}',
     );
 
     final json = Map<String, dynamic>.from(entry.toJson());
@@ -137,8 +137,8 @@ Future<Result> handlePmtilesUpload(Session session, Request request) async {
       session,
       'pmtiles',
       '📤 Upload failed "$name" after '
-      '${_formatElapsed(DateTime.now().toUtc().difference(startedAt))} | '
-      'received=${_formatBytes(receivedBytes)}',
+          '${_formatElapsed(DateTime.now().toUtc().difference(startedAt))} | '
+          'received=${_formatBytes(receivedBytes)}',
       error: error,
       stackTrace: stackTrace,
     );

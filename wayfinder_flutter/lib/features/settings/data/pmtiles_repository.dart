@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
@@ -14,6 +16,8 @@ import '../models/pmtiles_group.dart' as local_group;
 import '../models/pmtiles_geo_bounds.dart';
 import '../models/pmtiles_source.dart';
 
+typedef PmtilesUploadProgress = void Function(int sentBytes, int totalBytes);
+
 class PmtilesRepository {
   PmtilesRepository({
     required Client client,
@@ -24,6 +28,10 @@ class PmtilesRepository {
   final Client _client;
   final String _webServerUrl;
   static final _log = AppLogger.logPmtiles;
+
+  /// Browser HTTP clients buffer the whole body before sending, so web uses
+  /// many smaller chunk POSTs. Native platforms stream a single request.
+  static const _webChunkBytes = 4 * 1024 * 1024;
 
   static int _compareNames(String a, String b) =>
       a.toLowerCase().compareTo(b.toLowerCase());
@@ -106,8 +114,7 @@ class PmtilesRepository {
       }
       final groupIds = file.groupIds ?? const [];
       return groupIds.any((groupId) => groupsOnMap[groupId.uuid] == true);
-    }).toList()
-      ..sort((a, b) => _compareNames(a.name, b.name));
+    }).toList()..sort((a, b) => _compareNames(a.name, b.name));
 
     return [for (final file in dem) _mapArchiveEntry(file)];
   }
@@ -171,7 +178,10 @@ class PmtilesRepository {
     );
   }
 
-  Future<local.PmtilesFile> uploadFile(PlatformFile file) async {
+  Future<local.PmtilesFile> uploadFile(
+    PlatformFile file, {
+    PmtilesUploadProgress? onProgress,
+  }) async {
     _log.info('📤 Upload started', data: describePlatformFile(file));
 
     final name = file.name;
@@ -179,11 +189,9 @@ class PmtilesRepository {
       throw FormatException('Only .pmtiles files are supported.');
     }
 
-    final uri = Uri.parse('$_webServerUrl/pmtiles/upload').replace(
-      queryParameters: {'name': name},
-    );
-
-    final response = await _postFileStream(uri, file);
+    final response = kIsWeb
+        ? await _postFileChunked(file, onProgress: onProgress)
+        : await _postFileStream(file, onProgress: onProgress);
 
     if (response.statusCode != 200) {
       _log.error(
@@ -203,7 +211,98 @@ class PmtilesRepository {
     return entry;
   }
 
-  Future<http.Response> _postFileStream(Uri uri, PlatformFile file) async {
+  Future<http.Response> _postFileChunked(
+    PlatformFile file, {
+    PmtilesUploadProgress? onProgress,
+  }) async {
+    final total = file.size > 0 ? file.size : 0;
+    final initUri = Uri.parse('$_webServerUrl/pmtiles/upload/init').replace(
+      queryParameters: {
+        'name': file.name,
+        if (total > 0) 'size': '$total',
+      },
+    );
+    _log.info(
+      '📤 Chunked upload init',
+      data: 'size=${formatBytes(total)} url=$initUri',
+    );
+
+    final initResponse = await http
+        .post(initUri)
+        .timeout(const Duration(minutes: 2));
+    if (initResponse.statusCode != 200) {
+      throw StateError(_uploadErrorMessage(initResponse));
+    }
+    final initJson = jsonDecode(initResponse.body) as Map<String, dynamic>;
+    final uploadId = initJson['uploadId'] as String?;
+    if (uploadId == null || uploadId.isEmpty) {
+      throw StateError('Server did not return uploadId for chunked upload.');
+    }
+
+    var sent = 0;
+    onProgress?.call(sent, total);
+    final builder = BytesBuilder(copy: false);
+    final stream = _openUploadStream(file);
+
+    Future<void> flushChunk(Uint8List bytes) async {
+      if (bytes.isEmpty) {
+        return;
+      }
+      final chunkUri = Uri.parse('$_webServerUrl/pmtiles/upload/chunk').replace(
+        queryParameters: {
+          'uploadId': uploadId,
+          'offset': '$sent',
+        },
+      );
+      final chunkResponse = await http
+          .post(
+            chunkUri,
+            headers: const {'Content-Type': 'application/octet-stream'},
+            body: bytes,
+          )
+          .timeout(const Duration(minutes: 30));
+      if (chunkResponse.statusCode != 200) {
+        throw StateError(_uploadErrorMessage(chunkResponse));
+      }
+      sent += bytes.length;
+      onProgress?.call(sent, total);
+      _log.info(
+        '📤 Chunked upload progress',
+        data: '${formatBytes(sent)} / ${formatBytes(total)}',
+      );
+    }
+
+    await for (final piece in stream) {
+      builder.add(piece);
+      while (builder.length >= _webChunkBytes) {
+        final all = builder.takeBytes();
+        await flushChunk(Uint8List.sublistView(all, 0, _webChunkBytes));
+        if (all.length > _webChunkBytes) {
+          builder.add(all.sublist(_webChunkBytes));
+        }
+      }
+    }
+    if (builder.isNotEmpty) {
+      await flushChunk(builder.takeBytes());
+    }
+
+    final completeUri =
+        Uri.parse('$_webServerUrl/pmtiles/upload/complete').replace(
+          queryParameters: {'uploadId': uploadId},
+        );
+    _log.info('📤 Chunked upload finalize', data: 'uploadId=$uploadId');
+    return http
+        .post(completeUri)
+        .timeout(const Duration(minutes: 10));
+  }
+
+  Future<http.Response> _postFileStream(
+    PlatformFile file, {
+    PmtilesUploadProgress? onProgress,
+  }) async {
+    final uri = Uri.parse('$_webServerUrl/pmtiles/upload').replace(
+      queryParameters: {'name': file.name},
+    );
     final stream = _openUploadStream(file);
     final request = http.StreamedRequest('POST', uri);
     request.headers['Content-Type'] = 'application/octet-stream';
@@ -212,16 +311,19 @@ class PmtilesRepository {
     }
 
     var uploaded = 0;
+    final total = file.size;
     _log.info(
       '📤 Streaming upload to server',
       data: 'size=${formatBytes(file.size)} url=$uri',
     );
+    onProgress?.call(0, total);
 
     final responseFuture = request.send();
     try {
       await for (final chunk in stream) {
         uploaded += chunk.length;
         request.sink.add(chunk);
+        onProgress?.call(uploaded, total);
         if (uploaded == chunk.length ||
             uploaded % (32 * 1024 * 1024) < chunk.length) {
           _log.info(

@@ -274,7 +274,7 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 ### Draw a line
 
 1. Long-press the map → **Draw line**. The line starts at the long-press point, or at a **selected marker** if one is selected when you choose Draw line.
-2. Move the pointer to the end point (preview follows; points snap to nearby geometry when close). **Long-press** to place the end and open the line form. A short click or drag only adjusts the preview so you can reposition freely.
+2. Move the pointer to the end point (preview follows; points snap to nearby geometry when close). **Double-tap** to place the end and open the line form. A short click or drag only adjusts the preview so you can reposition freely.
 3. Set name, color, layer, and notes in the form.
 4. Distance labels and direction arrows can appear along the line depending on settings.
 
@@ -285,9 +285,9 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 With a line selected:
 
 - **Tap** the line again to add a mid-point (turns a straight segment into a curve).
-- **Drag** an endpoint or mid-point to reposition it.
+- **Drag** an endpoint or mid-point to reposition it. When other line endpoints share the same coordinates, they move together so connected lines stay contiguous.
 - **Double-tap** a mid-point to remove it (endpoints stay). Remove all mid-points to turn a curve back into a straight line.
-- **Short-click** an endpoint to start a bearing plot.
+- **Double-tap** an endpoint to start a bearing plot (so a single press can still begin a drag).
 
 A banner on the map explains these controls while a line is selected.
 
@@ -320,7 +320,7 @@ Circles represent a radius around a center point.
 ### Draw a circle
 
 1. Long-press → **Draw circle**. The center is the long-press point, or a **selected marker** if one is selected when you choose Draw circle.
-2. Move to set the radius preview, then **long-press** to place it.
+2. Move to set the radius preview, then **double-tap** to place it.
 3. Complete the form with name, color, fill opacity, layer, and notes.
 
 The map can display the radius with a **size label** (diameter, radius, area, or circumference — configurable in **Settings → General**).
@@ -335,8 +335,8 @@ Rectangles are axis-aligned or rotated boxes defined by center and dimensions, o
 
 Long-press the radial menu offers:
 
-- **Rectangle (center)** — center is the long-press point, or a **selected marker** if one is selected; then move to define size and **long-press** to place.
-- **Rectangle (corners)** — place the first corner, then move to the opposite corner and **long-press** to place.
+- **Rectangle (center)** — center is the long-press point, or a **selected marker** if one is selected; then move to define size and **double-tap** to place.
+- **Rectangle (corners)** — place the first corner, then move to the opposite corner and **double-tap** to place.
 
 Size labels can show width, height, area, or perimeter depending on display settings.
 

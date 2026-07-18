@@ -50,6 +50,7 @@ import '../../lines/utils/bearing_utils.dart';
 import '../utils/magnetic_declination.dart';
 import '../../tracks/presentation/track_footsteps_overlay.dart';
 import '../../lines/presentation/line_direction_arrows_overlay.dart';
+import '../../lines/utils/co_located_line_endpoints.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_snap.dart';
@@ -241,8 +242,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   SearchCoordinateMarker? _searchCoordinateRadialMarker;
 
   Timer? _longPressTimer;
-  Timer? _drawingCompleteLongPressTimer;
-  Offset? _drawingCompleteLocal;
   Offset? _pendingLongPressLocal;
   LatLng? _pendingLongPressPoint;
   Offset? _tapDownLocal;
@@ -251,6 +250,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _circleDrawingPressActive = false;
   bool _rectangleDrawingPressActive = false;
   bool _bearingPlotPressActive = false;
+  DateTime? _lastDrawingCompleteTapAt;
+  Offset? _lastDrawingCompleteTapLocal;
   bool _primaryPointerGestureHandled = false;
   bool _activePointerDown = false;
   bool _pendingSelectionTapOnUp = false;
@@ -258,6 +259,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   int? _pendingLineControlIndex;
   int? _draggingLineControlIndex;
   LineGeometry? _lineEditPreviewGeometry;
+  Map<UuidValue, LineGeometry> _lineEditPreviewGeometries = const {};
+  List<CoLocatedLineEndpoint> _coLocatedEndpointDrags = const [];
   LatLng? _frozenMapCenterDuringVertexEdit;
   double? _frozenMapZoomDuringVertexEdit;
   DateTime? _lastControlPointTapAt;
@@ -278,7 +281,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void dispose() {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
-    _drawingCompleteLongPressTimer?.cancel();
     _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
     super.dispose();
@@ -878,6 +880,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   Map<UuidValue, LineGeometry>? _lineGeometryOverrides() {
+    if (_lineEditPreviewGeometries.isNotEmpty) {
+      return _lineEditPreviewGeometries;
+    }
     final zone = _selectedLineZone();
     final preview = _lineEditPreviewGeometry;
     if (zone == null || preview == null) {
@@ -983,8 +988,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   Future<void> _commitLineControlPointDrag(LatLng point) async {
     final index = _draggingLineControlIndex;
+    final selectedZone = _selectedLineZone();
     final geometry = _selectedLineGeometry();
-    if (index == null || geometry == null) {
+    final linked = List<CoLocatedLineEndpoint>.from(_coLocatedEndpointDrags);
+    if (index == null || geometry == null || selectedZone == null) {
       _resetLineEditGestureState();
       return;
     }
@@ -994,18 +1001,59 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       controlPointIndex: index,
       point: point,
     );
+    final linkedUpdates = _movedCoLocatedEndpointGeometries(point, linked);
     _resetLineEditGestureState();
     if (updated == null) {
       return;
     }
 
     await _persistLineGeometry(updated);
+    final notifier = ref.read(zonesProvider.notifier);
+    for (final entry in linkedUpdates.entries) {
+      await notifier.updateLineGeometry(
+        zoneId: entry.key,
+        geometry: entry.value,
+      );
+    }
+  }
+
+  Map<UuidValue, LineGeometry> _movedCoLocatedEndpointGeometries(
+    LatLng point,
+    List<CoLocatedLineEndpoint> linked,
+  ) {
+    if (linked.isEmpty) {
+      return const {};
+    }
+
+    final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+    final updates = <UuidValue, LineGeometry>{};
+    for (final link in linked) {
+      var base = updates[link.zoneId];
+      if (base == null) {
+        final zone = findZoneById(zones, link.zoneId);
+        base = zone == null ? null : LineGeometry.fromZone(zone);
+      }
+      if (base == null) {
+        continue;
+      }
+      final moved = moveLineControlPoint(
+        geometry: base,
+        controlPointIndex: link.controlPointIndex,
+        point: point,
+      );
+      if (moved != null) {
+        updates[link.zoneId] = moved;
+      }
+    }
+    return updates;
   }
 
   void _resetLineEditGestureState() {
     if (_pendingLineControlIndex == null &&
         _draggingLineControlIndex == null &&
         _lineEditPreviewGeometry == null &&
+        _lineEditPreviewGeometries.isEmpty &&
+        _coLocatedEndpointDrags.isEmpty &&
         _frozenMapCenterDuringVertexEdit == null) {
       return;
     }
@@ -1013,6 +1061,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _pendingLineControlIndex = null;
       _draggingLineControlIndex = null;
       _lineEditPreviewGeometry = null;
+      _lineEditPreviewGeometries = const {};
+      _coLocatedEndpointDrags = const [];
       _frozenMapCenterDuringVertexEdit = null;
       _frozenMapZoomDuringVertexEdit = null;
     });
@@ -1024,10 +1074,36 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final camera = _mapController.camera;
     _frozenMapCenterDuringVertexEdit = camera.center;
     _frozenMapZoomDuringVertexEdit = camera.zoom;
+    final geometry = _selectedLineGeometry();
+    final selectedZone = _selectedLineZone();
+    final linked = <CoLocatedLineEndpoint>[];
+    final previews = <UuidValue, LineGeometry>{};
+    if (geometry != null && selectedZone != null) {
+      previews[selectedZone.id] = geometry;
+      if (!isInteriorLineControlPoint(geometry, index)) {
+        linked.addAll(
+          findCoLocatedLineEndpoints(
+            point: geometry.points[index],
+            excludeZoneId: selectedZone.id,
+            zones: _zonesOnMap,
+          ),
+        );
+        for (final link in linked) {
+          final zone = findZoneById(_zonesOnMap, link.zoneId);
+          final otherGeometry =
+              zone == null ? null : LineGeometry.fromZone(zone);
+          if (otherGeometry != null) {
+            previews[link.zoneId] = otherGeometry;
+          }
+        }
+      }
+    }
     setState(() {
       _pendingLineControlIndex = null;
       _draggingLineControlIndex = index;
-      _lineEditPreviewGeometry = _selectedLineGeometry();
+      _lineEditPreviewGeometry = geometry;
+      _lineEditPreviewGeometries = previews;
+      _coLocatedEndpointDrags = linked;
     });
   }
 
@@ -1048,8 +1124,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _updateLineControlPointDrag(LatLng point) {
     final index = _draggingLineControlIndex;
+    final selectedZone = _selectedLineZone();
     final geometry = _selectedLineGeometry();
-    if (index == null || geometry == null) {
+    if (index == null || geometry == null || selectedZone == null) {
       return;
     }
 
@@ -1062,8 +1139,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final previews = <UuidValue, LineGeometry>{
+      selectedZone.id: updated,
+      ..._movedCoLocatedEndpointGeometries(point, _coLocatedEndpointDrags),
+    };
+
     setState(() {
       _lineEditPreviewGeometry = updated;
+      _lineEditPreviewGeometries = previews;
     });
   }
 
@@ -1142,35 +1225,34 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _pendingLongPressPoint = null;
   }
 
-  void _cancelDrawingCompleteLongPress() {
-    _drawingCompleteLongPressTimer?.cancel();
-    _drawingCompleteLongPressTimer = null;
-    _drawingCompleteLocal = null;
+  void _clearDrawingCompleteDoubleTap() {
+    _lastDrawingCompleteTapAt = null;
+    _lastDrawingCompleteTapLocal = null;
   }
 
-  /// Long-press to commit the second point of an in-progress draw tool.
-  void _startDrawingCompleteLongPress(LatLng point, Offset local) {
-    _cancelDrawingCompleteLongPress();
-    _drawingCompleteLocal = local;
-    _drawingCompleteLongPressTimer = Timer(_longPressDuration, () {
-      if (!mounted) {
-        return;
-      }
-      _cancelDrawingCompleteLongPress();
-      _longPressTriggered = true;
-      _completeActiveDrawingAt(point);
-    });
-  }
+  /// Double-tap to commit the second point of an in-progress draw tool.
+  bool _registerDrawingCompleteTap(Offset local) {
+    final now = DateTime.now();
+    final previousAt = _lastDrawingCompleteTapAt;
+    final previousLocal = _lastDrawingCompleteTapLocal;
+    final isDoubleTap =
+        previousAt != null &&
+        previousLocal != null &&
+        now.difference(previousAt) <= _controlPointDoubleTapTimeout &&
+        (local - previousLocal).distance <= _controlPointDoubleTapSlop;
 
-  void _maybeRestartDrawingCompleteLongPress(LatLng point, Offset local) {
-    final origin = _drawingCompleteLocal;
-    if (origin == null ||
-        (local - origin).distance > _longPressMoveTolerance) {
-      _startDrawingCompleteLongPress(point, local);
+    if (isDoubleTap) {
+      _clearDrawingCompleteDoubleTap();
+      return true;
     }
+
+    _lastDrawingCompleteTapAt = now;
+    _lastDrawingCompleteTapLocal = local;
+    return false;
   }
 
   void _completeActiveDrawingAt(LatLng point) {
+    _clearDrawingCompleteDoubleTap();
     final lineDrawing = ref.read(lineDrawingProvider);
     if (lineDrawing.active && lineDrawing.awaitingEnd) {
       unawaited(_finalizeLineDrawing(lineDrawing.previewEnd ?? point));
@@ -1404,7 +1486,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       _bearingPlotPressActive = true;
       _updateBearingPlotPreview(point);
-      _startDrawingCompleteLongPress(point, event.localPosition);
       return;
     }
 
@@ -1417,10 +1498,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(lineDrawingProvider).awaitingEnd) {
         _lineDrawingPressActive = true;
-        _startDrawingCompleteLongPress(
-          _snapLinePoint(point),
-          event.localPosition,
-        );
       }
       return;
     }
@@ -1429,7 +1506,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(circleDrawingProvider).awaitingRadius) {
         _circleDrawingPressActive = true;
-        _startDrawingCompleteLongPress(point, event.localPosition);
       }
       return;
     }
@@ -1438,7 +1514,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(rectangleDrawingProvider).awaitingSecondPoint) {
         _rectangleDrawingPressActive = true;
-        _startDrawingCompleteLongPress(point, event.localPosition);
       }
       return;
     }
@@ -1469,26 +1544,42 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     if (ref.read(bearingPlotProvider).active && _bearingPlotPressActive) {
       _updateBearingPlotPreview(point);
-      // Restart after meaningful moves so drag never commits; hold still to place.
-      _maybeRestartDrawingCompleteLongPress(point, event.localPosition);
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _controlPointDoubleTapSlop) {
+        _clearDrawingCompleteDoubleTap();
+      }
     }
 
     if (ref.read(lineDrawingProvider).awaitingEnd && _lineDrawingPressActive) {
-      final snapped = _snapLinePoint(point);
-      ref.read(lineDrawingProvider.notifier).setPreviewEnd(snapped);
-      _maybeRestartDrawingCompleteLongPress(snapped, event.localPosition);
+      ref
+          .read(lineDrawingProvider.notifier)
+          .setPreviewEnd(_snapLinePoint(point));
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _controlPointDoubleTapSlop) {
+        _clearDrawingCompleteDoubleTap();
+      }
     }
 
     if (ref.read(circleDrawingProvider).awaitingRadius &&
         _circleDrawingPressActive) {
       _updateCirclePreviewRadius(point);
-      _maybeRestartDrawingCompleteLongPress(point, event.localPosition);
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _controlPointDoubleTapSlop) {
+        _clearDrawingCompleteDoubleTap();
+      }
     }
 
     if (ref.read(rectangleDrawingProvider).awaitingSecondPoint &&
         _rectangleDrawingPressActive) {
       _updateRectanglePreview(point);
-      _maybeRestartDrawingCompleteLongPress(point, event.localPosition);
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _controlPointDoubleTapSlop) {
+        _clearDrawingCompleteDoubleTap();
+      }
     }
 
     if (_draggingLineControlIndex != null) {
@@ -1525,16 +1616,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         if (geometry != null &&
             controlIndex >= 0 &&
             controlIndex < geometry.points.length) {
-          if (isInteriorLineControlPoint(geometry, controlIndex)) {
-            if (_registerControlPointTap(
-              index: controlIndex,
-              local: event.localPosition,
-            )) {
+          if (_registerControlPointTap(
+            index: controlIndex,
+            local: event.localPosition,
+          )) {
+            if (isInteriorLineControlPoint(geometry, controlIndex)) {
               _removeLineControlPointAtIndex(controlIndex);
+            } else {
+              _beginBearingPlot(geometry.points[controlIndex]);
             }
-          } else {
-            _clearControlPointDoubleTap();
-            _beginBearingPlot(geometry.points[controlIndex]);
           }
         }
       } else {
@@ -1549,24 +1639,35 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (bearingPlot.active && !_longPressTriggered) {
-      // Preview follows press/hover; only long-press commits the plot.
+      // Preview follows press/drag; double-tap commits the plot.
       if (_bearingPlotPressActive) {
         _updateBearingPlotPreview(point);
+        if (_isShortPress(event) &&
+            _registerDrawingCompleteTap(event.localPosition)) {
+          _completeActiveDrawingAt(point);
+        } else if (!_isShortPress(event)) {
+          _clearDrawingCompleteDoubleTap();
+        }
       }
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
-      _cancelDrawingCompleteLongPress();
       return;
     }
 
     if (lineDrawing.active && !_longPressTriggered) {
-      // End point commits on long-press only so endpoints can be dragged freely.
+      // End point commits on double-tap so endpoints can be dragged freely.
       if (lineDrawing.awaitingEnd && _lineDrawingPressActive) {
         ref
             .read(lineDrawingProvider.notifier)
             .setPreviewEnd(_snapLinePoint(point));
+        if (_isShortPress(event) &&
+            _registerDrawingCompleteTap(event.localPosition)) {
+          _completeActiveDrawingAt(point);
+        } else if (!_isShortPress(event)) {
+          _clearDrawingCompleteDoubleTap();
+        }
       } else if (lineDrawing.awaitingStart && _isShortPress(event)) {
         _dismissLineInteraction();
       }
@@ -1574,7 +1675,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
-      _cancelDrawingCompleteLongPress();
       return;
     }
 
@@ -1582,6 +1682,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (circleDrawing.active && !_longPressTriggered) {
       if (circleDrawing.awaitingRadius && _circleDrawingPressActive) {
         _updateCirclePreviewRadius(point);
+        if (_isShortPress(event) &&
+            _registerDrawingCompleteTap(event.localPosition)) {
+          _completeActiveDrawingAt(point);
+        } else if (!_isShortPress(event)) {
+          _clearDrawingCompleteDoubleTap();
+        }
       } else if (_isShortPress(event)) {
         _cancelCircleDrawing();
       }
@@ -1589,7 +1695,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
-      _cancelDrawingCompleteLongPress();
       return;
     }
 
@@ -1598,6 +1703,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       if (rectangleDrawing.awaitingSecondPoint &&
           _rectangleDrawingPressActive) {
         _updateRectanglePreview(point);
+        if (_isShortPress(event) &&
+            _registerDrawingCompleteTap(event.localPosition)) {
+          _completeActiveDrawingAt(point);
+        } else if (!_isShortPress(event)) {
+          _clearDrawingCompleteDoubleTap();
+        }
       } else if (_isShortPress(event)) {
         _cancelRectangleDrawing();
       }
@@ -1605,13 +1716,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
-      _cancelDrawingCompleteLongPress();
       return;
     }
 
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
-    _cancelDrawingCompleteLongPress();
   }
 
   void _handleMapTap(TapPosition tapPosition, LatLng point) {
@@ -1641,7 +1750,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Widget _lineEditingBanner() {
     final theme = Theme.of(context);
     const message =
-        'Tap the line to add a curve point · drag endpoints or mid-points to move · double-tap a mid-point to remove';
+        'Tap the line to add a curve point · drag endpoints or mid-points to move · co-located endpoints move together · double-tap a mid-point to remove · double-tap an endpoint to plot a bearing';
 
     return Material(
       elevation: 2,
@@ -1674,6 +1783,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _dismissLineInteraction() {
+    _clearDrawingCompleteDoubleTap();
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(selectedMapObjectProvider.notifier).clear();
@@ -1753,6 +1863,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _cancelBearingPlot() {
+    _clearDrawingCompleteDoubleTap();
     ref.read(bearingPlotProvider.notifier).reset();
   }
 
@@ -2047,6 +2158,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _cancelCircleDrawing() {
+    _clearDrawingCompleteDoubleTap();
     _resetLineDrawGestureState();
     ref.read(circleDrawingProvider.notifier).reset();
   }
@@ -2086,6 +2198,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _cancelRectangleDrawing() {
+    _clearDrawingCompleteDoubleTap();
     _resetLineDrawGestureState();
     ref.read(rectangleDrawingProvider.notifier).reset();
   }
@@ -2223,7 +2336,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (relative != null) {
       details.write(' · ${formatRelativeAngle(relative, angleFormat)}');
     }
-    details.write(' · Long-press to plot line');
+    details.write(' · Double-tap to plot line');
 
     return Material(
       elevation: 2,
@@ -2309,7 +2422,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     final message = lineDrawing.awaitingStart
         ? 'Drag a snap point to draw freely, or click one to plot a bearing'
-        : 'Move to the end point, then long-press to place it (or Cancel)';
+        : 'Move to the end point, then double-tap to place it (or Cancel)';
 
     return Material(
       elevation: 2,
@@ -2352,7 +2465,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     const message =
-        'Move to set the radius, then long-press to place it (or Cancel)';
+        'Move to set the radius, then double-tap to place it (or Cancel)';
 
     return Material(
       elevation: 2,
@@ -2396,10 +2509,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     final message = switch (rectangleDrawing.mode) {
       RectangleCreationMode.centerExtent =>
-        'Move to set size from center, then long-press to place (or Cancel)',
+        'Move to set size from center, then double-tap to place (or Cancel)',
       RectangleCreationMode.corners =>
-        'Move to the opposite corner, then long-press to place (or Cancel)',
-      null => 'Move to define the rectangle, then long-press to place (or Cancel)',
+        'Move to the opposite corner, then double-tap to place (or Cancel)',
+      null => 'Move to define the rectangle, then double-tap to place (or Cancel)',
     };
 
     return Material(

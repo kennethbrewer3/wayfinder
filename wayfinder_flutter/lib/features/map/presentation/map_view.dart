@@ -241,6 +241,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   SearchCoordinateMarker? _searchCoordinateRadialMarker;
 
   Timer? _longPressTimer;
+  Timer? _drawingCompleteLongPressTimer;
+  Offset? _drawingCompleteLocal;
   Offset? _pendingLongPressLocal;
   LatLng? _pendingLongPressPoint;
   Offset? _tapDownLocal;
@@ -248,6 +250,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _lineDrawingPressActive = false;
   bool _circleDrawingPressActive = false;
   bool _rectangleDrawingPressActive = false;
+  bool _bearingPlotPressActive = false;
   bool _primaryPointerGestureHandled = false;
   bool _activePointerDown = false;
   bool _pendingSelectionTapOnUp = false;
@@ -275,6 +278,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void dispose() {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
+    _drawingCompleteLongPressTimer?.cancel();
     _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
     super.dispose();
@@ -1138,6 +1142,62 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _pendingLongPressPoint = null;
   }
 
+  void _cancelDrawingCompleteLongPress() {
+    _drawingCompleteLongPressTimer?.cancel();
+    _drawingCompleteLongPressTimer = null;
+    _drawingCompleteLocal = null;
+  }
+
+  /// Long-press to commit the second point of an in-progress draw tool.
+  void _startDrawingCompleteLongPress(LatLng point, Offset local) {
+    _cancelDrawingCompleteLongPress();
+    _drawingCompleteLocal = local;
+    _drawingCompleteLongPressTimer = Timer(_longPressDuration, () {
+      if (!mounted) {
+        return;
+      }
+      _cancelDrawingCompleteLongPress();
+      _longPressTriggered = true;
+      _completeActiveDrawingAt(point);
+    });
+  }
+
+  void _maybeRestartDrawingCompleteLongPress(LatLng point, Offset local) {
+    final origin = _drawingCompleteLocal;
+    if (origin == null ||
+        (local - origin).distance > _longPressMoveTolerance) {
+      _startDrawingCompleteLongPress(point, local);
+    }
+  }
+
+  void _completeActiveDrawingAt(LatLng point) {
+    final lineDrawing = ref.read(lineDrawingProvider);
+    if (lineDrawing.active && lineDrawing.awaitingEnd) {
+      unawaited(_finalizeLineDrawing(lineDrawing.previewEnd ?? point));
+      return;
+    }
+    final circleDrawing = ref.read(circleDrawingProvider);
+    if (circleDrawing.active && circleDrawing.awaitingRadius) {
+      unawaited(_finalizeCircleDrawing(point));
+      return;
+    }
+    final rectangleDrawing = ref.read(rectangleDrawingProvider);
+    if (rectangleDrawing.active && rectangleDrawing.awaitingSecondPoint) {
+      unawaited(
+        _finalizeRectangleDrawing(rectangleDrawing.previewPoint ?? point),
+      );
+      return;
+    }
+    final bearingPlot = ref.read(bearingPlotProvider);
+    if (bearingPlot.active) {
+      final anchor = bearingPlot.anchor;
+      final previewEnd = bearingPlot.previewEnd ?? point;
+      if (anchor != null && !areLinePointsTooClose(anchor, previewEnd)) {
+        unawaited(_finalizeBearingPlot());
+      }
+    }
+  }
+
   void _startLongPressTimer(Offset local, LatLng point) {
     _cancelPendingLongPress();
     _pendingLongPressLocal = local;
@@ -1342,7 +1402,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     if (ref.read(bearingPlotProvider).active) {
       _cancelPendingLongPress();
+      _bearingPlotPressActive = true;
       _updateBearingPlotPreview(point);
+      _startDrawingCompleteLongPress(point, event.localPosition);
       return;
     }
 
@@ -1355,6 +1417,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(lineDrawingProvider).awaitingEnd) {
         _lineDrawingPressActive = true;
+        _startDrawingCompleteLongPress(
+          _snapLinePoint(point),
+          event.localPosition,
+        );
       }
       return;
     }
@@ -1363,6 +1429,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(circleDrawingProvider).awaitingRadius) {
         _circleDrawingPressActive = true;
+        _startDrawingCompleteLongPress(point, event.localPosition);
       }
       return;
     }
@@ -1371,6 +1438,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPendingLongPress();
       if (ref.read(rectangleDrawingProvider).awaitingSecondPoint) {
         _rectangleDrawingPressActive = true;
+        _startDrawingCompleteLongPress(point, event.localPosition);
       }
       return;
     }
@@ -1399,24 +1467,28 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       }
     }
 
-    if (ref.read(bearingPlotProvider).active) {
+    if (ref.read(bearingPlotProvider).active && _bearingPlotPressActive) {
       _updateBearingPlotPreview(point);
+      // Restart after meaningful moves so drag never commits; hold still to place.
+      _maybeRestartDrawingCompleteLongPress(point, event.localPosition);
     }
 
     if (ref.read(lineDrawingProvider).awaitingEnd && _lineDrawingPressActive) {
-      ref
-          .read(lineDrawingProvider.notifier)
-          .setPreviewEnd(_snapLinePoint(point));
+      final snapped = _snapLinePoint(point);
+      ref.read(lineDrawingProvider.notifier).setPreviewEnd(snapped);
+      _maybeRestartDrawingCompleteLongPress(snapped, event.localPosition);
     }
 
     if (ref.read(circleDrawingProvider).awaitingRadius &&
         _circleDrawingPressActive) {
       _updateCirclePreviewRadius(point);
+      _maybeRestartDrawingCompleteLongPress(point, event.localPosition);
     }
 
     if (ref.read(rectangleDrawingProvider).awaitingSecondPoint &&
         _rectangleDrawingPressActive) {
       _updateRectanglePreview(point);
+      _maybeRestartDrawingCompleteLongPress(point, event.localPosition);
     }
 
     if (_draggingLineControlIndex != null) {
@@ -1477,27 +1549,24 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (bearingPlot.active && !_longPressTriggered) {
-      if (_isShortPress(event)) {
+      // Preview follows press/hover; only long-press commits the plot.
+      if (_bearingPlotPressActive) {
         _updateBearingPlotPreview(point);
-        final updated = ref.read(bearingPlotProvider);
-        final anchor = updated.anchor;
-        final previewEnd = updated.previewEnd;
-        if (anchor != null &&
-            previewEnd != null &&
-            !areLinePointsTooClose(anchor, previewEnd)) {
-          unawaited(_finalizeBearingPlot());
-        }
       }
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
+      _cancelDrawingCompleteLongPress();
       return;
     }
 
     if (lineDrawing.active && !_longPressTriggered) {
+      // End point commits on long-press only so endpoints can be dragged freely.
       if (lineDrawing.awaitingEnd && _lineDrawingPressActive) {
-        unawaited(_finalizeLineDrawing(point));
+        ref
+            .read(lineDrawingProvider.notifier)
+            .setPreviewEnd(_snapLinePoint(point));
       } else if (lineDrawing.awaitingStart && _isShortPress(event)) {
         _dismissLineInteraction();
       }
@@ -1505,13 +1574,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
+      _cancelDrawingCompleteLongPress();
       return;
     }
 
     final circleDrawing = ref.read(circleDrawingProvider);
     if (circleDrawing.active && !_longPressTriggered) {
       if (circleDrawing.awaitingRadius && _circleDrawingPressActive) {
-        unawaited(_finalizeCircleDrawing(point));
+        _updateCirclePreviewRadius(point);
       } else if (_isShortPress(event)) {
         _cancelCircleDrawing();
       }
@@ -1519,6 +1589,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
+      _cancelDrawingCompleteLongPress();
       return;
     }
 
@@ -1526,7 +1597,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (rectangleDrawing.active && !_longPressTriggered) {
       if (rectangleDrawing.awaitingSecondPoint &&
           _rectangleDrawingPressActive) {
-        unawaited(_finalizeRectangleDrawing(point));
+        _updateRectanglePreview(point);
       } else if (_isShortPress(event)) {
         _cancelRectangleDrawing();
       }
@@ -1534,11 +1605,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
       _cancelPendingLongPress();
+      _cancelDrawingCompleteLongPress();
       return;
     }
 
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
+    _cancelDrawingCompleteLongPress();
   }
 
   void _handleMapTap(TapPosition tapPosition, LatLng point) {
@@ -1561,6 +1634,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _lineDrawingPressActive = false;
     _circleDrawingPressActive = false;
     _rectangleDrawingPressActive = false;
+    _bearingPlotPressActive = false;
     _tapDownLocal = null;
   }
 
@@ -2149,7 +2223,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (relative != null) {
       details.write(' · ${formatRelativeAngle(relative, angleFormat)}');
     }
-    details.write(' · Click to plot line');
+    details.write(' · Long-press to plot line');
 
     return Material(
       elevation: 2,
@@ -2235,7 +2309,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     final message = lineDrawing.awaitingStart
         ? 'Drag a snap point to draw freely, or click one to plot a bearing'
-        : 'Click or drag to the end point, or use Cancel to exit';
+        : 'Move to the end point, then long-press to place it (or Cancel)';
 
     return Material(
       elevation: 2,
@@ -2278,7 +2352,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     const message =
-        'Click or drag to set the circle radius, or use Cancel to exit';
+        'Move to set the radius, then long-press to place it (or Cancel)';
 
     return Material(
       elevation: 2,
@@ -2322,10 +2396,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     final message = switch (rectangleDrawing.mode) {
       RectangleCreationMode.centerExtent =>
-        'Click or drag to set the rectangle size from center, or use Cancel to exit',
+        'Move to set size from center, then long-press to place (or Cancel)',
       RectangleCreationMode.corners =>
-        'Click or drag to set the opposite corner, or use Cancel to exit',
-      null => 'Click or drag to define the rectangle, or use Cancel to exit',
+        'Move to the opposite corner, then long-press to place (or Cancel)',
+      null => 'Move to define the rectangle, then long-press to place (or Cancel)',
     };
 
     return Material(

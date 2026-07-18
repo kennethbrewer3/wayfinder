@@ -274,8 +274,8 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 ### Draw a line
 
 1. Long-press the map → **Draw line**. The line starts at the long-press point, or at a **selected marker** if one is selected when you choose Draw line.
-2. Tap (or drag) to set the end point. Points snap to nearby geometry when close.
-3. Open the line form to set name, color, layer, and notes.
+2. Move the pointer to the end point (preview follows; points snap to nearby geometry when close). **Long-press** to place the end and open the line form. A short click or drag only adjusts the preview so you can reposition freely.
+3. Set name, color, layer, and notes in the form.
 4. Distance labels and direction arrows can appear along the line depending on settings.
 
 ### Select and edit a line
@@ -320,7 +320,7 @@ Circles represent a radius around a center point.
 ### Draw a circle
 
 1. Long-press → **Draw circle**. The center is the long-press point, or a **selected marker** if one is selected when you choose Draw circle.
-2. Tap again (or drag) to set the radius.
+2. Move to set the radius preview, then **long-press** to place it.
 3. Complete the form with name, color, fill opacity, layer, and notes.
 
 The map can display the radius with a **size label** (diameter, radius, area, or circumference — configurable in **Settings → General**).
@@ -335,8 +335,8 @@ Rectangles are axis-aligned or rotated boxes defined by center and dimensions, o
 
 Long-press the radial menu offers:
 
-- **Rectangle (center)** — center is the long-press point, or a **selected marker** if one is selected; then define size and bearing.
-- **Rectangle (corners)** — tap two opposite corners on the map.
+- **Rectangle (center)** — center is the long-press point, or a **selected marker** if one is selected; then move to define size and **long-press** to place.
+- **Rectangle (corners)** — place the first corner, then move to the opposite corner and **long-press** to place.
 
 Size labels can show width, height, area, or perimeter depending on display settings.
 

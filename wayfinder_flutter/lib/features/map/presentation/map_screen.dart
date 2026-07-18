@@ -50,8 +50,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   void didUpdateWidget(MapScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialViewport != widget.initialViewport ||
-        oldWidget.initialMarkerId != widget.initialMarkerId) {
+    // Compare by value — go_router rebuilds with new MapViewport instances
+    // on every URL sync, which must not re-arm deep-link camera moves.
+    if (!_sameViewport(oldWidget.initialViewport, widget.initialViewport) ||
+        !_sameMarkerId(oldWidget.initialMarkerId, widget.initialMarkerId)) {
       _queuedInitialViewportDeepLink = false;
       _appliedInitialMarkerLink = false;
     }
@@ -97,6 +99,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
     _appliedInitialMarkerLink = true;
     if (marker == null) {
+      return;
+    }
+
+    // Selecting a marker syncs `?marker=` into the URL. That rebuilds this
+    // screen with the same id — do not treat that as a share/deep link and
+    // yank the camera to the marker.
+    final selectedId = ref.read(selectedMapObjectProvider).selectedMarkerId;
+    if (_sameMarkerId(selectedId, markerId)) {
       return;
     }
 
@@ -477,4 +487,26 @@ MapViewport? parseMapViewportFromUri(Uri uri) {
     center: LatLng(lat, lng),
     zoom: zoom ?? AppConstants.defaultZoom,
   );
+}
+
+bool _sameViewport(MapViewport? a, MapViewport? b) {
+  if (identical(a, b)) {
+    return true;
+  }
+  if (a == null || b == null) {
+    return false;
+  }
+  return a.center.latitude == b.center.latitude &&
+      a.center.longitude == b.center.longitude &&
+      a.zoom == b.zoom;
+}
+
+bool _sameMarkerId(UuidValue? a, UuidValue? b) {
+  if (identical(a, b)) {
+    return true;
+  }
+  if (a == null || b == null) {
+    return false;
+  }
+  return a.toString().toLowerCase() == b.toString().toLowerCase();
 }

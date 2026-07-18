@@ -88,23 +88,17 @@ Uri buildMapShareUri({
   required MapViewport viewport,
   UuidValue? markerId,
 }) {
+  // Always keep viewport params so selecting a marker does not drop lat/lng
+  // from the URL (which used to re-trigger a deep-link camera jump).
+  final queryParameters = <String, String>{
+    'lat': viewport.center.latitude.toStringAsFixed(6),
+    'lng': viewport.center.longitude.toStringAsFixed(6),
+    'zoom': viewport.zoom.toStringAsFixed(2),
+  };
   if (markerId != null) {
-    return _routeUri(
-      path: '/maps',
-      queryParameters: {
-        markerUrlQueryParam: markerId.toString(),
-      },
-    );
+    queryParameters[markerUrlQueryParam] = markerId.toString();
   }
-
-  return _routeUri(
-    path: '/maps',
-    queryParameters: {
-      'lat': viewport.center.latitude.toStringAsFixed(6),
-      'lng': viewport.center.longitude.toStringAsFixed(6),
-      'zoom': viewport.zoom.toStringAsFixed(2),
-    },
-  );
+  return _routeUri(path: '/maps', queryParameters: queryParameters);
 }
 
 String buildMapShareUrl({

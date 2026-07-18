@@ -25,7 +25,7 @@ void main() {
     );
   });
 
-  test('mapShareLocation builds a go_router location string', () {
+  test('mapShareLocation keeps viewport and marker in the location string', () {
     final uri = buildMapShareUri(
       viewport: MapViewport(center: LatLng(1, 2), zoom: 12),
       markerId: UuidValue.fromString('22222222-2222-4222-8222-222222222222'),
@@ -33,7 +33,8 @@ void main() {
 
     expect(
       mapShareLocation(uri),
-      '/maps?marker=22222222-2222-4222-8222-222222222222',
+      '/maps?lat=1.000000&lng=2.000000&zoom=12.00'
+      '&marker=22222222-2222-4222-8222-222222222222',
     );
   });
 
@@ -51,7 +52,9 @@ void main() {
 
     expect(
       absolute.toString(),
-      'http://atlas.brewerhomestead.com:9080/maps?marker=3e006b9c-621b-41bf-a4e8-05e1f8a12117',
+      'http://atlas.brewerhomestead.com:9080/maps'
+      '?lat=1.000000&lng=2.000000&zoom=12.00'
+      '&marker=3e006b9c-621b-41bf-a4e8-05e1f8a12117',
     );
     expect(absolute.fragment, isEmpty);
   });

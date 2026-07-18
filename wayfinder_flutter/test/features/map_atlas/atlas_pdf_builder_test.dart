@@ -37,4 +37,28 @@ void main() {
     expect(bytes.length, greaterThan(500));
     expect(String.fromCharCodes(bytes.take(5)), '%PDF-');
   });
+
+  test('buildAtlasPdf with MGRS grid still produces a PDF', () async {
+    final bytes = await buildAtlasPdf(
+      options: const AtlasExportOptions(
+        title: 'MGRS Atlas',
+        coverageMode: AtlasCoverageMode.currentMapView,
+        columns: 1,
+        rows: 1,
+        pageSize: AtlasPageSize.letterLandscape,
+      ),
+      coverage: const AtlasBounds(
+        south: 38.85,
+        west: -77.15,
+        north: 38.95,
+        east: -77.0,
+      ),
+      markers: const [],
+      zones: const [],
+      includeMgrsGrid: true,
+    );
+
+    expect(bytes.length, greaterThan(500));
+    expect(String.fromCharCodes(bytes.take(5)), '%PDF-');
+  });
 }

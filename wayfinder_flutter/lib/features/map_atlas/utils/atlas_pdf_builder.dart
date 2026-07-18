@@ -19,6 +19,10 @@ import 'atlas_basemap_renderer.dart';
 import 'atlas_tiler.dart';
 import 'atlas_web_mercator.dart';
 
+// Matches the on-map MGRS line color (light theme).
+const _mgrsLineColor = PdfColor.fromInt(0xE6C62828);
+const _mgrsLabelColor = PdfColor.fromInt(0xFFB71C1C);
+
 enum AtlasPageSize { letterLandscape, a4Landscape }
 
 enum AtlasCoverageMode { currentMapView, fitMarkers }
@@ -54,6 +58,7 @@ Future<Uint8List> buildAtlasPdf({
   required List<MapMarker> markers,
   required List<MapZone> zones,
   List<PmtilesArchiveEntry> enabledPmtiles = const [],
+  bool includeMgrsGrid = false,
 }) async {
   final sheets = tileAtlasBounds(
     coverage: coverage,
@@ -98,6 +103,7 @@ Future<Uint8List> buildAtlasPdf({
         markerCount: visibleMarkers.length,
         zoneCount: visibleZones.length,
         hasBasemap: hasBasemap,
+        includeMgrsGrid: includeMgrsGrid,
       ),
     ),
   );
@@ -110,6 +116,20 @@ Future<Uint8List> buildAtlasPdf({
           ),
         )
         .toList();
+    final sheetZoom = pickAtlasTileZoom(sheet.bounds).toDouble();
+    final mgrsGeometry = includeMgrsGrid
+        ? buildMgrsGrid(
+            bounds: MgrsLatLngBounds(
+              south: sheet.bounds.south,
+              west: sheet.bounds.west,
+              north: sheet.bounds.north,
+              east: sheet.bounds.east,
+              longitudeCenter: sheet.bounds.centerLongitude,
+              longitudeWidth: sheet.bounds.lngSpan,
+            ),
+            zoom: sheetZoom,
+          )
+        : MgrsGridGeometry.empty;
     doc.addPage(
       pw.Page(
         pageFormat: format,
@@ -121,6 +141,7 @@ Future<Uint8List> buildAtlasPdf({
           zones: visibleZones,
           includeMarkerIndex: options.includeMarkerIndex,
           basemapPng: basemapBySheetId[sheet.id],
+          mgrsGeometry: mgrsGeometry,
         ),
       ),
     );
@@ -137,6 +158,7 @@ class _IndexPage extends pw.StatelessWidget {
     required this.markerCount,
     required this.zoneCount,
     required this.hasBasemap,
+    required this.includeMgrsGrid,
   });
 
   final String title;
@@ -145,6 +167,7 @@ class _IndexPage extends pw.StatelessWidget {
   final int markerCount;
   final int zoneCount;
   final bool hasBasemap;
+  final bool includeMgrsGrid;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -194,13 +217,17 @@ class _IndexPage extends pw.StatelessWidget {
         ),
         pw.SizedBox(height: 10),
         pw.Text(
-          hasBasemap
-              ? 'Sheets include the enabled PMTiles basemap plus overlays. '
-                    'Edge sheets overlap slightly. MGRS labels are approximate '
-                    'for sheet centers.'
-              : 'No PMTiles basemap was available for this export; sheets show '
-                    'overlays on a grid. Enable map tiles and try again for a '
-                    'full basemap. Edge sheets overlap slightly.',
+          [
+            if (hasBasemap)
+              'Sheets include the enabled PMTiles basemap plus overlays.'
+            else
+              'No PMTiles basemap was available for this export; sheets show '
+                  'overlays on a grid. Enable map tiles and try again for a '
+                  'full basemap.',
+            if (includeMgrsGrid)
+              'MGRS grid is included because it was enabled on the map.',
+            'Edge sheets overlap slightly. Center MGRS labels are approximate.',
+          ].join(' '),
           style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
         ),
       ],
@@ -216,6 +243,7 @@ class _SheetPage extends pw.StatelessWidget {
     required this.zones,
     required this.includeMarkerIndex,
     this.basemapPng,
+    this.mgrsGeometry = MgrsGridGeometry.empty,
   });
 
   final String title;
@@ -224,6 +252,7 @@ class _SheetPage extends pw.StatelessWidget {
   final List<MapZone> zones;
   final bool includeMarkerIndex;
   final Uint8List? basemapPng;
+  final MgrsGridGeometry mgrsGeometry;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -291,6 +320,7 @@ class _SheetPage extends pw.StatelessWidget {
                 zones: zones,
                 widthMeters: widthMeters,
                 basemap: basemapImage,
+                mgrsGeometry: mgrsGeometry,
               ),
             ),
           ),
@@ -390,6 +420,7 @@ void _paintSheetMap({
   required List<MapZone> zones,
   required double widthMeters,
   PdfImage? basemap,
+  MgrsGridGeometry mgrsGeometry = MgrsGridGeometry.empty,
 }) {
   final font = canvas.defaultFont;
   final margin = 10.0;
@@ -400,6 +431,7 @@ void _paintSheetMap({
     plot,
     origin: plotOrigin,
   );
+  final showMgrs = mgrsGeometry.lines.isNotEmpty;
 
   canvas
     ..setFillColor(PdfColors.grey100)
@@ -422,9 +454,14 @@ void _paintSheetMap({
     ..drawRect(plotOrigin.x, plotOrigin.y, plot.x, plot.y)
     ..strokePath();
 
+  // Lat/lng reference grid — lighter when MGRS is the primary mesh.
   canvas
-    ..setStrokeColor(basemap == null ? PdfColors.grey400 : PdfColors.grey600)
-    ..setLineWidth(basemap == null ? 0.4 : 0.25);
+    ..setStrokeColor(
+      showMgrs
+          ? PdfColors.grey500
+          : (basemap == null ? PdfColors.grey400 : PdfColors.grey600),
+    )
+    ..setLineWidth(showMgrs ? 0.2 : (basemap == null ? 0.4 : 0.25));
   for (var i = 1; i < 5; i++) {
     final lat = sheet.bounds.south + sheet.bounds.latSpan * i / 5;
     final lng = sheet.bounds.west + sheet.bounds.lngSpan * i / 5;
@@ -437,6 +474,17 @@ void _paintSheetMap({
       ..drawLine(south.x, south.y, north.x, north.y);
   }
   canvas.strokePath();
+
+  if (showMgrs) {
+    _paintMgrsGrid(
+      canvas: canvas,
+      plotMap: plotMap,
+      plotOrigin: plotOrigin,
+      plot: plot,
+      geometry: mgrsGeometry,
+      font: font,
+    );
+  }
 
   for (final zone in zones) {
     _paintZone(canvas, plotMap, zone);
@@ -505,6 +553,54 @@ void _paintSheetMap({
         plotOrigin.y + plot.y - 10,
       );
   }
+}
+
+void _paintMgrsGrid({
+  required PdfGraphics canvas,
+  required _SheetProjector plotMap,
+  required PdfPoint plotOrigin,
+  required PdfPoint plot,
+  required MgrsGridGeometry geometry,
+  required PdfFont? font,
+}) {
+  canvas
+    ..saveContext()
+    ..drawRect(plotOrigin.x, plotOrigin.y, plot.x, plot.y)
+    ..clipPath()
+    ..setStrokeColor(_mgrsLineColor)
+    ..setLineWidth(geometry.accuracy <= 1 ? 1.1 : 0.8);
+
+  for (final line in geometry.lines) {
+    if (line.length < 2) {
+      continue;
+    }
+    for (var i = 0; i < line.length - 1; i++) {
+      final a = plotMap.project(line[i]);
+      final b = plotMap.project(line[i + 1]);
+      canvas.drawLine(a.x, a.y, b.x, b.y);
+    }
+  }
+  canvas.strokePath();
+
+  if (font != null) {
+    for (final label in geometry.labels.take(40)) {
+      final point = plotMap.project(label.point);
+      if (point.x < plotOrigin.x ||
+          point.x > plotOrigin.x + plot.x ||
+          point.y < plotOrigin.y ||
+          point.y > plotOrigin.y + plot.y) {
+        continue;
+      }
+      canvas
+        ..setFillColor(PdfColors.white)
+        ..drawRect(point.x - 2, point.y - 2, label.text.length * 4.2 + 4, 9)
+        ..fillPath()
+        ..setFillColor(_mgrsLabelColor)
+        ..drawString(font, 7, label.text, point.x, point.y);
+    }
+  }
+
+  canvas.restoreContext();
 }
 
 void _paintZone(

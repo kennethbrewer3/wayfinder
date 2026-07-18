@@ -4,6 +4,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../map/providers/map_mgrs_grid_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../settings/providers/pmtiles_providers.dart';
@@ -41,6 +42,7 @@ Future<bool> runMapAtlasExport({
     final zones = await ref.read(zonesProvider.future);
     final enabledPmtiles =
         await ref.read(pmtilesEnabledMetadataProvider.future);
+    final includeMgrsGrid = ref.read(mapMgrsGridEnabledProvider);
     if (!context.mounted) {
       return false;
     }
@@ -51,6 +53,7 @@ Future<bool> runMapAtlasExport({
       markers: markers,
       zones: zones,
       enabledPmtiles: enabledPmtiles,
+      includeMgrsGrid: includeMgrsGrid,
     );
     final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
       ':',

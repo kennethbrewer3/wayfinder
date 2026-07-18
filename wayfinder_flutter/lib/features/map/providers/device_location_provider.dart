@@ -68,27 +68,49 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
   DeviceLocationNotifier() : super(const DeviceLocationState());
 
   static final _log = AppLogger.logMap;
-  StreamSubscription<Position>? _subscription;
+  static const _positionTimeout = Duration(seconds: 10);
 
-  LocationSettings get _locationSettings {
+  StreamSubscription<Position>? _subscription;
+  var _locateGeneration = 0;
+
+  LocationSettings _settings({Duration? timeLimit}) {
     if (kIsWeb) {
       return WebSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 5,
+        timeLimit: timeLimit,
       );
     }
-    return const LocationSettings(
+    return LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 5,
+      timeLimit: timeLimit,
     );
   }
 
-  /// Start watching location, center-friendly first fix. Enables [following].
+  /// Start watching location (or resume follow if already tracking).
   Future<bool> locateAndFollow() async {
+    // Already live — do not re-enter getCurrentPosition (can hang on web and
+    // leave busy=true, which disables the toolbar button entirely).
+    if (state.tracking && _subscription != null) {
+      state = state.copyWith(
+        following: true,
+        busy: false,
+        clearError: true,
+      );
+      return true;
+    }
+
+    final generation = ++_locateGeneration;
     state = state.copyWith(busy: true, clearError: true, following: true);
-    final ok = await _ensureTracking();
-    state = state.copyWith(busy: false);
-    return ok;
+    try {
+      final ok = await _ensureTracking(generation);
+      return ok;
+    } finally {
+      if (generation == _locateGeneration) {
+        state = state.copyWith(busy: false);
+      }
+    }
   }
 
   /// Keep the blue dot updating but stop recentering the map.
@@ -105,14 +127,18 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
 
   /// Stop the position stream and hide the overlay.
   Future<void> stop() async {
+    _locateGeneration++;
     await _subscription?.cancel();
     _subscription = null;
     state = const DeviceLocationState();
   }
 
-  Future<bool> _ensureTracking() async {
+  Future<bool> _ensureTracking(int generation) async {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!_isCurrentGeneration(generation)) {
+        return false;
+      }
       if (!serviceEnabled) {
         state = state.copyWith(
           tracking: false,
@@ -123,8 +149,14 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
       }
 
       var permission = await Geolocator.checkPermission();
+      if (!_isCurrentGeneration(generation)) {
+        return false;
+      }
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
+        if (!_isCurrentGeneration(generation)) {
+          return false;
+        }
       }
       if (permission == LocationPermission.denied) {
         state = state.copyWith(
@@ -143,21 +175,48 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
         return false;
       }
 
-      // Fresh fix for immediate feedback, then stream for updates.
+      // Prefer a quick cached fix so the UI is not blocked on a cold GNSS lock.
+      try {
+        final last = await Geolocator.getLastKnownPosition();
+        if (!_isCurrentGeneration(generation)) {
+          return false;
+        }
+        if (last != null) {
+          _applyPosition(last);
+        }
+      } catch (_) {
+        // Optional warm start.
+      }
+
       try {
         final current = await Geolocator.getCurrentPosition(
-          locationSettings: _locationSettings,
+          locationSettings: _settings(timeLimit: _positionTimeout),
         );
+        if (!_isCurrentGeneration(generation)) {
+          return false;
+        }
         _applyPosition(current);
       } catch (error) {
-        _log.warn('📍 getCurrentPosition failed; waiting on stream', error: error);
+        _log.warn(
+          '📍 getCurrentPosition failed; waiting on stream',
+          error: error,
+        );
+      }
+
+      if (!_isCurrentGeneration(generation)) {
+        return false;
       }
 
       await _subscription?.cancel();
       _subscription = Geolocator.getPositionStream(
-        locationSettings: _locationSettings,
+        locationSettings: _settings(),
       ).listen(
-        _applyPosition,
+        (position) {
+          if (_subscription == null) {
+            return;
+          }
+          _applyPosition(position);
+        },
         onError: (Object error) {
           _log.warn('📍 Position stream error', error: error);
           state = state.copyWith(
@@ -169,6 +228,9 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
       state = state.copyWith(tracking: true, clearError: true);
       return state.hasFix || state.tracking;
     } catch (error, stackTrace) {
+      if (!_isCurrentGeneration(generation)) {
+        return false;
+      }
       _log.error(
         '📍 Failed to start device location',
         error: error,
@@ -183,6 +245,8 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
       return false;
     }
   }
+
+  bool _isCurrentGeneration(int generation) => generation == _locateGeneration;
 
   void _applyPosition(Position position) {
     state = state.copyWith(
@@ -200,6 +264,7 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
 
   @override
   void dispose() {
+    _locateGeneration++;
     unawaited(_subscription?.cancel());
     _subscription = null;
     super.dispose();

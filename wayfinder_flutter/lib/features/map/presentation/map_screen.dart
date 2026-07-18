@@ -349,10 +349,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       : l10n.mapDeviceLocationStopTooltip)
                 : l10n.mapDeviceLocationTooltip,
             icon: deviceLocation.busy
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   )
                 : Icon(
                     deviceLocation.tracking
@@ -364,8 +367,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         ? Theme.of(context).colorScheme.primary
                         : null,
                   ),
-            onPressed: deviceLocation.busy ? null : _locateMe,
-            onLongPress: deviceLocation.tracking ? _stopLocateMe : null,
+            // Keep the button enabled while busy so long-press can still stop.
+            onPressed: _locateMe,
+            onLongPress: (deviceLocation.tracking || deviceLocation.busy)
+                ? _stopLocateMe
+                : null,
           ),
           IconButton(
             tooltip: l10n.mapHomeTooltip,

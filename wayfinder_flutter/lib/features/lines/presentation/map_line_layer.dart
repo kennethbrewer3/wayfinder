@@ -70,8 +70,8 @@ Marker _endpointSnapPointMarker({
     child: IgnorePointer(
       child: Tooltip(
         message: isStart
-            ? 'Click to plot bearing · drag to draw line'
-            : 'Click to plot bearing · drag to draw line',
+            ? 'Click to plot bearing · drag to move endpoint'
+            : 'Click to plot bearing · drag to move endpoint',
         child: DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,

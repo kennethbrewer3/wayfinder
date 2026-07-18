@@ -214,6 +214,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   static const _longPressDuration = Duration(milliseconds: 550);
   static const _longPressMoveTolerance = 18.0;
   static const _selectionClickSlop = 24.0;
+  static const _controlPointDoubleTapTimeout = Duration(milliseconds: 400);
+  static const _controlPointDoubleTapSlop = 28.0;
   static const _cursorLabelGap = 14.0;
   static const _cursorLabelEstimatedWidth = 240.0;
   static const _cursorLabelEstimatedHeight = 34.0;
@@ -246,7 +248,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _lineDrawingPressActive = false;
   bool _circleDrawingPressActive = false;
   bool _rectangleDrawingPressActive = false;
-  LatLng? _pendingSnapStart;
   bool _primaryPointerGestureHandled = false;
   bool _activePointerDown = false;
   bool _pendingSelectionTapOnUp = false;
@@ -254,6 +255,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   int? _pendingLineControlIndex;
   int? _draggingLineControlIndex;
   LineGeometry? _lineEditPreviewGeometry;
+  DateTime? _lastControlPointTapAt;
+  int? _lastControlPointTapIndex;
+  Offset? _lastControlPointTapLocal;
 
   @override
   void initState() {
@@ -758,7 +762,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (_isMapToolActive) {
       return;
     }
-    if (_selectedLineSnapTarget(point) != null) {
+    if (_controlPointIndexAt(point) != null) {
       return;
     }
     _pendingSelectionTapOnUp = true;
@@ -845,36 +849,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
   }
 
-  LatLng? _selectedLineSnapTarget(LatLng point) {
-    final selected = ref.read(selectedMapObjectProvider);
-    if (selected?.kind != SelectedMapObjectKind.zone) {
-      return null;
-    }
-
-    final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
-    final selectedZone = findZoneById(zones, selected!.id);
-    if (selectedZone == null || selectedZone.type != lineZoneType) {
-      return null;
-    }
-
-    final geometry = LineGeometry.fromZone(selectedZone);
-    if (geometry == null || !geometry.isValid) {
-      return null;
-    }
-
-    final tapScreen = _mapController.camera.latLngToScreenOffset(point);
-    for (final candidate in [geometry.start!, geometry.end!]) {
-      final candidateScreen = _mapController.camera.latLngToScreenOffset(
-        candidate,
-      );
-      if ((tapScreen - candidateScreen).distance <= lineSnapRadiusPx) {
-        return candidate;
-      }
-    }
-
-    return null;
-  }
-
   MapZone? _selectedLineZone() {
     final selected = ref.read(selectedMapObjectProvider);
     if (selected?.kind != SelectedMapObjectKind.zone) {
@@ -906,21 +880,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return {zone.id: preview};
   }
 
-  int? _interiorControlPointIndexAt(LatLng point) {
+  int? _controlPointIndexAt(LatLng point) {
     final geometry = _selectedLineGeometry();
     if (geometry == null) {
       return null;
     }
 
-    final index = hitTestLineControlPointIndex(
+    return hitTestLineControlPointIndex(
       geometry: geometry,
       tap: point,
       camera: _mapController.camera,
     );
-    if (index == null || !isInteriorLineControlPoint(geometry, index)) {
-      return null;
-    }
-    return index;
   }
 
   Future<void> _persistLineGeometry(LineGeometry geometry) async {
@@ -955,18 +925,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     await _persistLineGeometry(updated);
   }
 
-  bool _removeLineControlPointAt(LatLng point) {
+  bool _removeLineControlPointAtIndex(int index) {
     final geometry = _selectedLineGeometry();
-    if (geometry == null) {
-      return false;
-    }
-
-    final index = hitTestLineControlPointIndex(
-      geometry: geometry,
-      tap: point,
-      camera: _mapController.camera,
-    );
-    if (index == null || !isInteriorLineControlPoint(geometry, index)) {
+    if (geometry == null || !isInteriorLineControlPoint(geometry, index)) {
       return false;
     }
 
@@ -980,6 +941,38 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     unawaited(_persistLineGeometry(updated));
     return true;
+  }
+
+  void _clearControlPointDoubleTap() {
+    _lastControlPointTapAt = null;
+    _lastControlPointTapIndex = null;
+    _lastControlPointTapLocal = null;
+  }
+
+  bool _registerControlPointTap({
+    required int index,
+    required Offset local,
+  }) {
+    final now = DateTime.now();
+    final previousAt = _lastControlPointTapAt;
+    final previousIndex = _lastControlPointTapIndex;
+    final previousLocal = _lastControlPointTapLocal;
+    final isDoubleTap =
+        previousAt != null &&
+        previousIndex == index &&
+        previousLocal != null &&
+        now.difference(previousAt) <= _controlPointDoubleTapTimeout &&
+        (local - previousLocal).distance <= _controlPointDoubleTapSlop;
+
+    if (isDoubleTap) {
+      _clearControlPointDoubleTap();
+      return true;
+    }
+
+    _lastControlPointTapAt = now;
+    _lastControlPointTapIndex = index;
+    _lastControlPointTapLocal = local;
+    return false;
   }
 
   Future<void> _commitLineControlPointDrag(LatLng point) async {
@@ -1018,6 +1011,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _beginLineControlPointDrag(int index, LatLng point) {
     _cancelPendingLongPress();
+    _clearControlPointDoubleTap();
     setState(() {
       _pendingLineControlIndex = null;
       _draggingLineControlIndex = index;
@@ -1137,10 +1131,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         return;
       }
       _longPressTriggered = true;
-      if (_removeLineControlPointAt(menuPoint)) {
-        _pendingLineControlIndex = null;
-        return;
-      }
       final hit = _hitMapObjectAtPoint(menuPoint);
       if (hit != null) {
         if (hit.kind == SelectedMapObjectKind.marker) {
@@ -1314,7 +1304,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _handlePointerDown(PointerDownEvent event, LatLng point) {
     _longPressTriggered = false;
-    _pendingSnapStart = null;
     _pendingLineControlIndex = null;
     _tapDownLocal = event.localPosition;
     _updateCursor(event.position, point);
@@ -1364,21 +1353,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    final snapTarget = _selectedLineSnapTarget(point);
-    if (snapTarget != null) {
-      _pendingSnapStart = snapTarget;
+    final controlPointIndex = _controlPointIndexAt(point);
+    if (controlPointIndex != null) {
+      // Drag moves any vertex (including endpoints). Short-press / double-tap
+      // behavior is decided on pointer-up.
+      _pendingLineControlIndex = controlPointIndex;
       _cancelPendingLongPress();
-      return;
-    }
-
-    final interiorControlPoint = _interiorControlPointIndexAt(point);
-    if (interiorControlPoint != null) {
-      // Hold still to remove; move past tolerance to drag. Endpoints are not
-      // removable mid-points, so they never enter this path.
-      _pendingLineControlIndex = interiorControlPoint;
-      if (event.buttons == kPrimaryMouseButton) {
-        _startLongPressTimer(event.localPosition, point);
-      }
       return;
     }
 
@@ -1400,17 +1380,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     if (ref.read(bearingPlotProvider).active) {
       _updateBearingPlotPreview(point);
-    }
-
-    if (_pendingSnapStart != null &&
-        _tapDownLocal != null &&
-        !ref.read(lineDrawingProvider).active) {
-      if ((event.localPosition - _tapDownLocal!).distance >
-          _longPressMoveTolerance) {
-        ref.read(lineDrawingProvider.notifier).setStart(_pendingSnapStart!);
-        _lineDrawingPressActive = true;
-        _pendingSnapStart = null;
-      }
     }
 
     if (ref.read(lineDrawingProvider).awaitingEnd && _lineDrawingPressActive) {
@@ -1468,20 +1437,27 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (_pendingLineControlIndex != null) {
-      // Short press on a mid-point: do not insert another vertex on top of it.
+      final controlIndex = _pendingLineControlIndex!;
       _pendingLineControlIndex = null;
-      _primaryPointerGestureHandled = true;
-      _clearPointerDownSelectionState();
-      _resetLineDrawGestureState();
-      _cancelPendingLongPress();
-      return;
-    }
-
-    if (_pendingSnapStart != null && !lineDrawing.active) {
-      final snapAnchor = _pendingSnapStart!;
-      _pendingSnapStart = null;
       if (_isShortPress(event)) {
-        _beginBearingPlot(snapAnchor);
+        final geometry = _selectedLineGeometry();
+        if (geometry != null &&
+            controlIndex >= 0 &&
+            controlIndex < geometry.points.length) {
+          if (isInteriorLineControlPoint(geometry, controlIndex)) {
+            // Double-tap removes a mid-point; single tap leaves it alone.
+            if (_registerControlPointTap(
+              index: controlIndex,
+              local: event.localPosition,
+            )) {
+              _removeLineControlPointAtIndex(controlIndex);
+            }
+          } else {
+            // Short-click an endpoint to start a bearing plot.
+            _clearControlPointDoubleTap();
+            _beginBearingPlot(geometry.points[controlIndex]);
+          }
+        }
       }
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
@@ -1575,14 +1551,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _lineDrawingPressActive = false;
     _circleDrawingPressActive = false;
     _rectangleDrawingPressActive = false;
-    _pendingSnapStart = null;
     _tapDownLocal = null;
   }
 
   Widget _lineEditingBanner() {
     final theme = Theme.of(context);
     const message =
-        'Tap the line to add a curve point · drag points to move · long-press a mid-point to remove';
+        'Tap the line to add a curve point · drag endpoints or mid-points to move · double-tap a mid-point to remove';
 
     return Material(
       elevation: 2,
@@ -2530,15 +2505,23 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     maxZoom: interactionMaxZoom,
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     interactionOptions: InteractionOptions(
-                      flags:
-                          lineDrawing.active ||
-                              bearingPlot.active ||
-                              circleDrawing.active ||
-                              rectangleDrawing.active ||
-                              deadReckoning.active ||
-                              _draggingLineControlIndex != null
-                          ? InteractiveFlag.all & ~InteractiveFlag.drag
-                          : InteractiveFlag.all,
+                      flags: () {
+                        var flags = InteractiveFlag.all;
+                        if (lineDrawing.active ||
+                            bearingPlot.active ||
+                            circleDrawing.active ||
+                            rectangleDrawing.active ||
+                            deadReckoning.active ||
+                            _draggingLineControlIndex != null) {
+                          flags &= ~InteractiveFlag.drag;
+                        }
+                        // Free double-tap for mid-point removal while editing.
+                        if (selectedLine != null &&
+                            selectedLine.type == lineZoneType) {
+                          flags &= ~InteractiveFlag.doubleTapZoom;
+                        }
+                        return flags;
+                      }(),
                     ),
                     onPositionChanged: (position, hasGesture) {
                       _scheduleVisibleLayerUpdate();

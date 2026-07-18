@@ -284,8 +284,8 @@ Lines are polylines drawn on the map — useful for trails, boundaries, or measu
 With a line selected:
 
 - **Tap** the line again to add a mid-point (turns a straight segment into a curve).
-- **Drag** a vertex to move it.
-- **Long-press** a mid-point to remove it (endpoints stay). Remove all mid-points to turn a curve back into a straight line.
+- **Drag** an endpoint or mid-point to reposition it.
+- **Double-tap** a mid-point to remove it (endpoints stay). Remove all mid-points to turn a curve back into a straight line.
 - **Short-click** an endpoint to start a bearing plot.
 
 A banner on the map explains these controls while a line is selected.

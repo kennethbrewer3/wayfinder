@@ -11,6 +11,7 @@ import '../../settings/data/pmtiles_archive_pool.dart';
 import '../../settings/data/pmtiles_loader.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_source.dart';
+import '../utils/dem_tile_decode.dart';
 import '../utils/elevation_dem_detect.dart';
 import '../utils/terrarium_decode.dart';
 
@@ -20,7 +21,7 @@ final _log = AppLogger.logPmtiles;
 class ElevationSampler {
   ElevationSampler({
     required List<PmtilesArchiveEntry> demEntries,
-  }) : _entries = List.unmodifiable(demEntries);
+  }) : _entries = List.unmodifiable(_preferRegionalDemEntries(demEntries));
 
   final List<PmtilesArchiveEntry> _entries;
   final Map<String, DecodedDemTile> _tileCache = {};
@@ -28,7 +29,39 @@ class ElevationSampler {
   final Map<String, PmtilesSource> _heldSources = {};
   final Set<String> _loggedFetchFailures = {};
   final Set<String> _loggedDecodeFailures = {};
+  final Set<String> _loggedSampleMisses = {};
+  var _loggedSampleHit = false;
   static const _maxCachedTiles = 48;
+
+  /// Drop planet-scale DEM archives when any regional pack is available.
+  static List<PmtilesArchiveEntry> _preferRegionalDemEntries(
+    List<PmtilesArchiveEntry> entries,
+  ) {
+    if (entries.length <= 1) {
+      return entries;
+    }
+    const planetArea = 360.0 * 180.0 * 0.9;
+    final regional = [
+      for (final entry in entries)
+        if (!entry.boundsKnown || entry.bounds.geographicArea < planetArea)
+          entry,
+    ];
+    if (regional.isEmpty || regional.length == entries.length) {
+      return regional.isEmpty ? entries : regional;
+    }
+    final regionalIds = {for (final entry in regional) entry.id};
+    final skipped = [
+      for (final entry in entries)
+        if (!regionalIds.contains(entry.id)) entry.name,
+    ];
+    _log.info(
+      '⛰️ Preferring regional DEM over planet-scale archive(s)',
+      data:
+          'using=${regional.map((e) => e.name).join(', ')} '
+          'skipped=${skipped.join(', ')}',
+    );
+    return regional;
+  }
 
   bool get hasDem => _entries.isNotEmpty;
 
@@ -42,6 +75,26 @@ class ElevationSampler {
     if (_entries.isEmpty) {
       return null;
     }
+    try {
+      return await _elevationAtUnchecked(point, preferredZoom: preferredZoom);
+    } catch (error, stackTrace) {
+      _log.warn(
+        '⛰️ DEM sample error',
+        data: 'lat=${point.latitude} lng=${point.longitude} error=$error',
+      );
+      assert(() {
+        // ignore: avoid_print
+        print(stackTrace);
+        return true;
+      }());
+      return null;
+    }
+  }
+
+  Future<double?> _elevationAtUnchecked(
+    LatLng point, {
+    int? preferredZoom,
+  }) async {
     final entry = _pickEntry(point);
     if (entry == null) {
       _log.debug(
@@ -66,8 +119,29 @@ class ElevationSampler {
         encoding: encoding,
       );
       if (sample != null) {
+        if (!_loggedSampleHit) {
+          _loggedSampleHit = true;
+          _log.info(
+            '⛰️ DEM sample ok',
+            data:
+                'archive=${entry.name} z=$z '
+                'lat=${point.latitude.toStringAsFixed(5)} '
+                'lng=${point.longitude.toStringAsFixed(5)} '
+                'elev=${sample.toStringAsFixed(1)}m',
+          );
+        }
         return sample;
       }
+    }
+    final missKey = entry.id;
+    if (_loggedSampleMisses.add(missKey)) {
+      _log.warn(
+        '⛰️ DEM sample miss (no tile / decode) for archive',
+        data:
+            'archive=${entry.name} tried z=$zoom..$minZoom '
+            'lat=${point.latitude.toStringAsFixed(5)} '
+            'lng=${point.longitude.toStringAsFixed(5)}',
+      );
     }
     return null;
   }
@@ -151,11 +225,13 @@ class ElevationSampler {
       if (bytes == null || bytes.isEmpty) {
         return null;
       }
-      tile = decodeDemTileBytes(bytes, encoding: encoding);
+      tile = await decodeDemTileBytesAsync(bytes, encoding: encoding);
       if (tile == null) {
         final failKey = '${entry.id}:${archive.tileType}';
         if (_loggedDecodeFailures.add(failKey)) {
-          final magic = bytes.length >= 4 ? bytes.sublist(0, 4).toList() : bytes;
+          final magic = bytes.length >= 4
+              ? bytes.sublist(0, 4).toList()
+              : bytes;
           _log.warn(
             '⛰️ DEM tile decode failed',
             data:

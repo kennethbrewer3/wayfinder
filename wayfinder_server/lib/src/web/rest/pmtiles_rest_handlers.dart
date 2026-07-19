@@ -6,6 +6,7 @@ import '../../pmtiles/pmtiles_file_groups.dart';
 import '../../pmtiles/pmtiles_storage.dart';
 import '../../pmtiles/pmtiles_chunked_upload.dart';
 import '../../pmtiles/pmtiles_upload_handler.dart';
+import '../../pmtiles/pmtiles_dem_extract.dart';
 import '../../pmtiles/pmtiles_url_import.dart';
 import 'rest_json.dart';
 
@@ -124,5 +125,11 @@ abstract final class PmtilesRestHandlers {
   static Future<Result> importUrl(Request request) async {
     final session = await request.session;
     return PmtilesUrlImport.import(session, request);
+  }
+
+  /// Extracts a regional DEM via `pmtiles extract` and catalogs it.
+  static Future<Result> extractDem(Request request) async {
+    final session = await request.session;
+    return PmtilesDemExtract.extract(session, request);
   }
 }

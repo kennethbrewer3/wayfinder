@@ -1488,13 +1488,25 @@ abstract class AppLocalizations {
   /// No description provided for @mapTilesGetMapsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches the file into its storage — keep this dialog open until the import finishes.'**
+  /// **'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage — keep this dialog open until the import finishes.'**
   String get mapTilesGetMapsDescription;
+
+  /// No description provided for @mapTilesGetMapsBasemapDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import — the server downloads it into Map tiles storage.'**
+  String get mapTilesGetMapsBasemapDescription;
+
+  /// No description provided for @mapTilesGetMapsDemDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server — keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.'**
+  String get mapTilesGetMapsDemDescription;
 
   /// No description provided for @mapTilesGetMapsSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search states or DEM…'**
+  /// **'Search states…'**
   String get mapTilesGetMapsSearchHint;
 
   /// No description provided for @mapTilesGetMapsImportAction.
@@ -1503,11 +1515,23 @@ abstract class AppLocalizations {
   /// **'Import'**
   String get mapTilesGetMapsImportAction;
 
+  /// No description provided for @mapTilesGetMapsExtractAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract'**
+  String get mapTilesGetMapsExtractAction;
+
   /// No description provided for @mapTilesGetMapsImporting.
   ///
   /// In en, this message translates to:
   /// **'Importing {title}…'**
   String mapTilesGetMapsImporting(String title);
+
+  /// No description provided for @mapTilesGetMapsExtracting.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting {title} on the server…'**
+  String mapTilesGetMapsExtracting(String title);
 
   /// No description provided for @mapTilesGetMapsImported.
   ///
@@ -1532,6 +1556,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'size unknown'**
   String get mapTilesGetMapsSizeUnknown;
+
+  /// No description provided for @mapTilesGetMapsSizeRegional.
+  ///
+  /// In en, this message translates to:
+  /// **'regional extract'**
+  String get mapTilesGetMapsSizeRegional;
 
   /// No description provided for @mapTilesGetMapsBasemapBadge.
   ///

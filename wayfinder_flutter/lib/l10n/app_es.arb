@@ -374,11 +374,22 @@
   "mapTilesUploadButton": "Subir archivo .pmtiles",
   "mapTilesGetMapsButton": "Obtener mapas",
   "mapTilesGetMapsTitle": "Obtener mapas",
-  "mapTilesGetMapsDescription": "Descargue basemaps regionales Protomaps de Project NOMAD, o un DEM Terrarium de Mapterhorn. El servidor Wayfinder descarga el archivo a su almacenamiento; mantenga este diálogo abierto hasta que termine.",
-  "mapTilesGetMapsSearchHint": "Buscar estados o DEM…",
+  "mapTilesGetMapsDescription": "Descargue basemaps regionales Protomaps de Project NOMAD, o un DEM Terrarium de Mapterhorn. El servidor Wayfinder descarga o extrae el archivo; mantenga este diálogo abierto hasta que termine.",
+  "mapTilesGetMapsBasemapDescription": "Basemaps vectoriales por estado de EE. UU. (Project NOMAD, unos cientos de MB). Busque su estado e Importar: el servidor lo descarga al almacenamiento de mosaicos.",
+  "mapTilesGetMapsDemDescription": "DEM Terrarium por estado (Mapterhorn). Extraer ejecuta un recorte regional en el servidor Wayfinder; mantenga el diálogo abierto (los estados grandes pueden tardar varios minutos). Prefiera un estado a la opción de planeta al final de la lista.",
+  "mapTilesGetMapsSearchHint": "Buscar estados…",
   "mapTilesGetMapsImportAction": "Importar",
+  "mapTilesGetMapsExtractAction": "Extraer",
   "mapTilesGetMapsImporting": "Importando {title}…",
   "@mapTilesGetMapsImporting": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsExtracting": "Extrayendo {title} en el servidor…",
+  "@mapTilesGetMapsExtracting": {
     "placeholders": {
       "title": {
         "type": "String"
@@ -403,6 +414,7 @@
   },
   "mapTilesGetMapsEmpty": "Ningún paquete coincide con la búsqueda.",
   "mapTilesGetMapsSizeUnknown": "tamaño desconocido",
+  "mapTilesGetMapsSizeRegional": "extracto regional",
   "mapTilesGetMapsBasemapBadge": "Basemap",
   "mapTilesUploadProgress": "Subiendo {sent} / {total}",
   "@mapTilesUploadProgress": {

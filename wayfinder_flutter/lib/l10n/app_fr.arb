@@ -374,11 +374,22 @@
   "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
   "mapTilesGetMapsButton": "Obtenir des cartes",
   "mapTilesGetMapsTitle": "Obtenir des cartes",
-  "mapTilesGetMapsDescription": "Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder récupère le fichier dans son stockage — gardez cette boîte de dialogue ouverte jusqu'à la fin.",
-  "mapTilesGetMapsSearchHint": "Rechercher un État ou DEM…",
+  "mapTilesGetMapsDescription": "Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder télécharge ou extrait le fichier — gardez cette boîte de dialogue ouverte jusqu'à la fin.",
+  "mapTilesGetMapsBasemapDescription": "Basemaps vectoriels par État américain (Project NOMAD, quelques centaines de Mo). Cherchez votre État puis Importer — le serveur le télécharge dans le stockage des tuiles.",
+  "mapTilesGetMapsDemDescription": "DEM Terrarium par État américain (Mapterhorn). Extraire lance un découpage régional sur le serveur Wayfinder — gardez la boîte ouverte (les grands États peuvent prendre plusieurs minutes). Préférez un État à l'option planète en bas de liste.",
+  "mapTilesGetMapsSearchHint": "Rechercher un État…",
   "mapTilesGetMapsImportAction": "Importer",
+  "mapTilesGetMapsExtractAction": "Extraire",
   "mapTilesGetMapsImporting": "Importation de {title}…",
   "@mapTilesGetMapsImporting": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsExtracting": "Extraction de {title} sur le serveur…",
+  "@mapTilesGetMapsExtracting": {
     "placeholders": {
       "title": {
         "type": "String"
@@ -403,6 +414,7 @@
   },
   "mapTilesGetMapsEmpty": "Aucun paquet ne correspond à votre recherche.",
   "mapTilesGetMapsSizeUnknown": "taille inconnue",
+  "mapTilesGetMapsSizeRegional": "extrait régional",
   "mapTilesGetMapsBasemapBadge": "Fond de carte",
   "mapTilesUploadProgress": "Téléversement {sent} / {total}",
   "@mapTilesUploadProgress": {

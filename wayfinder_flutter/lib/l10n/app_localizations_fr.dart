@@ -800,17 +800,33 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapTilesGetMapsDescription =>
-      'Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder récupère le fichier dans son stockage — gardez cette boîte de dialogue ouverte jusqu\'à la fin.';
+      'Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder télécharge ou extrait le fichier — gardez cette boîte de dialogue ouverte jusqu\'à la fin.';
 
   @override
-  String get mapTilesGetMapsSearchHint => 'Rechercher un État ou DEM…';
+  String get mapTilesGetMapsBasemapDescription =>
+      'Basemaps vectoriels par État américain (Project NOMAD, quelques centaines de Mo). Cherchez votre État puis Importer — le serveur le télécharge dans le stockage des tuiles.';
+
+  @override
+  String get mapTilesGetMapsDemDescription =>
+      'DEM Terrarium par État américain (Mapterhorn). Extraire lance un découpage régional sur le serveur Wayfinder — gardez la boîte ouverte (les grands États peuvent prendre plusieurs minutes). Préférez un État à l\'option planète en bas de liste.';
+
+  @override
+  String get mapTilesGetMapsSearchHint => 'Rechercher un État…';
 
   @override
   String get mapTilesGetMapsImportAction => 'Importer';
 
   @override
+  String get mapTilesGetMapsExtractAction => 'Extraire';
+
+  @override
   String mapTilesGetMapsImporting(String title) {
     return 'Importation de $title…';
+  }
+
+  @override
+  String mapTilesGetMapsExtracting(String title) {
+    return 'Extraction de $title sur le serveur…';
   }
 
   @override
@@ -829,6 +845,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapTilesGetMapsSizeUnknown => 'taille inconnue';
+
+  @override
+  String get mapTilesGetMapsSizeRegional => 'extrait régional';
 
   @override
   String get mapTilesGetMapsBasemapBadge => 'Fond de carte';

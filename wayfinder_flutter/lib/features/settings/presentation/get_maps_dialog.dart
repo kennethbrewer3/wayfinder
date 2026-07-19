@@ -15,6 +15,8 @@ Future<bool?> showGetMapsDialog(BuildContext context) {
   );
 }
 
+enum _GetMapsTab { basemap, dem }
+
 class GetMapsDialog extends ConsumerStatefulWidget {
   const GetMapsDialog({super.key});
 
@@ -25,6 +27,7 @@ class GetMapsDialog extends ConsumerStatefulWidget {
 class _GetMapsDialogState extends ConsumerState<GetMapsDialog> {
   late Future<List<RemotePmtilesPack>> _catalogFuture;
   final _queryController = TextEditingController();
+  _GetMapsTab _tab = _GetMapsTab.basemap;
   String? _importingId;
   String? _statusMessage;
   String? _errorMessage;
@@ -47,7 +50,9 @@ class _GetMapsDialogState extends ConsumerState<GetMapsDialog> {
     setState(() {
       _importingId = pack.id;
       _errorMessage = null;
-      _statusMessage = l10n.mapTilesGetMapsImporting(pack.title);
+      _statusMessage = pack.isDemExtract
+          ? l10n.mapTilesGetMapsExtracting(pack.title)
+          : l10n.mapTilesGetMapsImporting(pack.title);
     });
     try {
       await ref.read(pmtilesRepositoryProvider).importRemotePack(pack);
@@ -90,13 +95,36 @@ class _GetMapsDialogState extends ConsumerState<GetMapsDialog> {
       title: Text(l10n.mapTilesGetMapsTitle),
       content: SizedBox(
         width: 560,
-        height: 520,
+        height: 560,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              l10n.mapTilesGetMapsDescription,
+              _tab == _GetMapsTab.basemap
+                  ? l10n.mapTilesGetMapsBasemapDescription
+                  : l10n.mapTilesGetMapsDemDescription,
               style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 12),
+            SegmentedButton<_GetMapsTab>(
+              segments: [
+                ButtonSegment(
+                  value: _GetMapsTab.basemap,
+                  label: Text(l10n.mapTilesGetMapsBasemapBadge),
+                  icon: const Icon(Icons.map_outlined),
+                ),
+                ButtonSegment(
+                  value: _GetMapsTab.dem,
+                  label: Text(l10n.mapTilesDemBadge),
+                  icon: const Icon(Icons.terrain),
+                ),
+              ],
+              selected: {_tab},
+              onSelectionChanged: busy
+                  ? null
+                  : (value) {
+                      setState(() => _tab = value.first);
+                    },
             ),
             const SizedBox(height: 12),
             TextField(
@@ -125,21 +153,21 @@ class _GetMapsDialogState extends ConsumerState<GetMapsDialog> {
                       ),
                     );
                   }
-                  final query = _queryController.text.trim().toLowerCase();
+
                   final packs = snapshot.data ?? const <RemotePmtilesPack>[];
-                  final filtered = query.isEmpty
-                      ? packs
-                      : packs
-                            .where(
-                              (pack) =>
-                                  pack.title.toLowerCase().contains(query) ||
-                                  pack.name.toLowerCase().contains(query) ||
-                                  (pack.sourceLabel?.toLowerCase().contains(
-                                        query,
-                                      ) ??
-                                      false),
-                            )
-                            .toList();
+                  final query = _queryController.text.trim().toLowerCase();
+                  final filtered = packs
+                      .where(
+                        (pack) =>
+                            _tab == _GetMapsTab.dem ? pack.isDem : !pack.isDem,
+                      )
+                      .where(
+                        (pack) =>
+                            query.isEmpty ||
+                            pack.title.toLowerCase().contains(query) ||
+                            pack.name.toLowerCase().contains(query),
+                      )
+                      .toList();
                   if (filtered.isEmpty) {
                     return Text(l10n.mapTilesGetMapsEmpty);
                   }
@@ -149,39 +177,11 @@ class _GetMapsDialogState extends ConsumerState<GetMapsDialog> {
                     separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (context, index) {
                       final pack = filtered[index];
-                      final importing = _importingId == pack.id;
-                      final sizeLabel = pack.bytes == null
-                          ? l10n.mapTilesGetMapsSizeUnknown
-                          : formatBytes(pack.bytes!);
-                      final kindLabel = pack.isDem
-                          ? l10n.mapTilesDemBadge
-                          : l10n.mapTilesGetMapsBasemapBadge;
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(pack.title),
-                        subtitle: Text(
-                          [
-                            kindLabel,
-                            sizeLabel,
-                            if (pack.sourceLabel != null) pack.sourceLabel!,
-                            if (pack.description != null) pack.description!,
-                          ].join(' · '),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        isThreeLine: pack.description != null,
-                        trailing: FilledButton(
-                          onPressed: busy ? null : () => _importPack(pack),
-                          child: importing
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Text(l10n.mapTilesGetMapsImportAction),
-                        ),
+                      return _PackTile(
+                        pack: pack,
+                        busy: busy,
+                        importing: _importingId == pack.id,
+                        onImport: () => _importPack(pack),
                       );
                     },
                   );
@@ -217,6 +217,63 @@ class _GetMapsDialogState extends ConsumerState<GetMapsDialog> {
           child: Text(l10n.actionClose),
         ),
       ],
+    );
+  }
+}
+
+class _PackTile extends StatelessWidget {
+  const _PackTile({
+    required this.pack,
+    required this.busy,
+    required this.importing,
+    required this.onImport,
+  });
+
+  final RemotePmtilesPack pack;
+  final bool busy;
+  final bool importing;
+  final VoidCallback onImport;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final sizeLabel = pack.isDemExtract
+        ? l10n.mapTilesGetMapsSizeRegional
+        : pack.bytes == null
+        ? l10n.mapTilesGetMapsSizeUnknown
+        : formatBytes(pack.bytes!);
+    final kindLabel = pack.isDem
+        ? l10n.mapTilesDemBadge
+        : l10n.mapTilesGetMapsBasemapBadge;
+
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(pack.title),
+      subtitle: Text(
+        [
+          kindLabel,
+          sizeLabel,
+          if (pack.sourceLabel != null) pack.sourceLabel!,
+          if (pack.description != null) pack.description!,
+        ].join(' · '),
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
+      isThreeLine: pack.description != null,
+      trailing: FilledButton(
+        onPressed: busy ? null : onImport,
+        child: importing
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(
+                pack.isDemExtract
+                    ? l10n.mapTilesGetMapsExtractAction
+                    : l10n.mapTilesGetMapsImportAction,
+              ),
+      ),
     );
   }
 }

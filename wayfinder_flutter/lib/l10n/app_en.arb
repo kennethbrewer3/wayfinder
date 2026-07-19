@@ -421,11 +421,22 @@
   "mapTilesUploadButton": "Upload .pmtiles file",
   "mapTilesGetMapsButton": "Get maps",
   "mapTilesGetMapsTitle": "Get maps",
-  "mapTilesGetMapsDescription": "Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches the file into its storage — keep this dialog open until the import finishes.",
-  "mapTilesGetMapsSearchHint": "Search states or DEM…",
+  "mapTilesGetMapsDescription": "Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage — keep this dialog open until the import finishes.",
+  "mapTilesGetMapsBasemapDescription": "US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import — the server downloads it into Map tiles storage.",
+  "mapTilesGetMapsDemDescription": "US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server — keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.",
+  "mapTilesGetMapsSearchHint": "Search states…",
   "mapTilesGetMapsImportAction": "Import",
+  "mapTilesGetMapsExtractAction": "Extract",
   "mapTilesGetMapsImporting": "Importing {title}…",
   "@mapTilesGetMapsImporting": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsExtracting": "Extracting {title} on the server…",
+  "@mapTilesGetMapsExtracting": {
     "placeholders": {
       "title": {
         "type": "String"
@@ -450,6 +461,7 @@
   },
   "mapTilesGetMapsEmpty": "No packs match your search.",
   "mapTilesGetMapsSizeUnknown": "size unknown",
+  "mapTilesGetMapsSizeRegional": "regional extract",
   "mapTilesGetMapsBasemapBadge": "Basemap",
   "mapTilesUploadProgress": "Uploading {sent} / {total}",
   "@mapTilesUploadProgress": {

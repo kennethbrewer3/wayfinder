@@ -787,17 +787,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTilesGetMapsDescription =>
-      'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches the file into its storage — keep this dialog open until the import finishes.';
+      'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage — keep this dialog open until the import finishes.';
 
   @override
-  String get mapTilesGetMapsSearchHint => 'Search states or DEM…';
+  String get mapTilesGetMapsBasemapDescription =>
+      'US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import — the server downloads it into Map tiles storage.';
+
+  @override
+  String get mapTilesGetMapsDemDescription =>
+      'US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server — keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.';
+
+  @override
+  String get mapTilesGetMapsSearchHint => 'Search states…';
 
   @override
   String get mapTilesGetMapsImportAction => 'Import';
 
   @override
+  String get mapTilesGetMapsExtractAction => 'Extract';
+
+  @override
   String mapTilesGetMapsImporting(String title) {
     return 'Importing $title…';
+  }
+
+  @override
+  String mapTilesGetMapsExtracting(String title) {
+    return 'Extracting $title on the server…';
   }
 
   @override
@@ -815,6 +831,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTilesGetMapsSizeUnknown => 'size unknown';
+
+  @override
+  String get mapTilesGetMapsSizeRegional => 'regional extract';
 
   @override
   String get mapTilesGetMapsBasemapBadge => 'Basemap';

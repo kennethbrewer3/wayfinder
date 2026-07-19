@@ -21,7 +21,30 @@ RUN dart compile exe bin/main.dart -o bin/server
 # Final stage
 FROM alpine:latest
 
-RUN apk add --no-cache ca-certificates
+ARG TARGETARCH
+ARG PMTILES_VERSION=1.31.1
+
+RUN apk add --no-cache ca-certificates curl tar \
+  && ARCH="${TARGETARCH:-}" \
+  && if [ -z "$ARCH" ]; then \
+       case "$(uname -m)" in \
+         x86_64|amd64) ARCH=amd64 ;; \
+         aarch64|arm64) ARCH=arm64 ;; \
+         *) echo "Unsupported machine $(uname -m)" >&2; exit 1 ;; \
+       esac; \
+     fi \
+  && case "$ARCH" in \
+       amd64) PMTILES_ARCH=x86_64 ;; \
+       arm64) PMTILES_ARCH=arm64 ;; \
+       *) echo "Unsupported TARGETARCH=$ARCH" >&2; exit 1 ;; \
+     esac \
+  && curl -fsSL \
+       "https://github.com/protomaps/go-pmtiles/releases/download/v${PMTILES_VERSION}/go-pmtiles_${PMTILES_VERSION}_Linux_${PMTILES_ARCH}.tar.gz" \
+       -o /tmp/go-pmtiles.tar.gz \
+  && tar -xzf /tmp/go-pmtiles.tar.gz -C /tmp \
+  && install -m 0755 /tmp/pmtiles /usr/local/bin/pmtiles \
+  && rm -rf /tmp/go-pmtiles.tar.gz /tmp/pmtiles /tmp/LICENSE* /tmp/README* \
+  && pmtiles --help >/dev/null
 
 ENV runmode=development
 ENV serverid=default
@@ -29,6 +52,7 @@ ENV logging=normal
 ENV role=monolith
 ENV WAYFINDER_PMTILES_STORAGE=/data/pmtiles
 ENV WAYFINDER_MARKER_ICON_STORAGE=/data/marker-icons
+ENV WAYFINDER_PMTILES_CLI=/usr/local/bin/pmtiles
 ENV SERVERPOD_APPLY_MIGRATIONS=true
 ENV SERVERPOD_DATABASE_HOST=postgres
 ENV SERVERPOD_DATABASE_PORT=5432

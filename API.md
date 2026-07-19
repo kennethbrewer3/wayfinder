@@ -827,6 +827,8 @@ curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 | GET | `/api/pmtiles` | List PMTiles catalog |
 | POST | `/api/pmtiles/import-url` | Download a remote `.pmtiles` URL into server storage (`{"url","name?"}`) |
 | POST | `/pmtiles/import-url` | Same as above (web client path) |
+| POST | `/api/pmtiles/extract-dem` | Regional DEM via `pmtiles extract` (`{"bbox":[minLon,minLat,maxLon,maxLat],"name","sourceUrl?"}`) |
+| POST | `/pmtiles/extract-dem` | Same as above (web client path) |
 | POST | `/api/pmtiles/upload?name=…` | Upload PMTiles bytes |
 | GET | `/api/pmtiles/active` | Get active file id |
 | PUT | `/api/pmtiles/active` | Set active file |

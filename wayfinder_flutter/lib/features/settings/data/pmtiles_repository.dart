@@ -486,7 +486,14 @@ class PmtilesRepository {
   }
 
   /// Asks the Wayfinder server to download [pack] into PMTiles storage.
+  ///
+  /// Regional DEM packs with [RemotePmtilesPack.extractBbox] use server-side
+  /// `pmtiles extract` instead of downloading the whole remote archive.
   Future<local.PmtilesFile> importRemotePack(RemotePmtilesPack pack) async {
+    if (pack.isDemExtract) {
+      return _extractDemPack(pack);
+    }
+
     _log.info(
       '📥 Remote import requested',
       data: 'name=${pack.name} url=${pack.url}',
@@ -518,6 +525,48 @@ class PmtilesRepository {
     _log.success(
       '📥 Remote import complete',
       data: 'id=${entry.id} name="${entry.name}"',
+    );
+    return entry;
+  }
+
+  Future<local.PmtilesFile> _extractDemPack(RemotePmtilesPack pack) async {
+    final bbox = pack.extractBbox!;
+    _log.info(
+      '⛰️ DEM extract requested',
+      data: 'name=${pack.name} bbox=$bbox source=${pack.url}',
+    );
+    final uri = Uri.parse('$_webServerUrl/pmtiles/extract-dem');
+    final response = await http
+        .post(
+          uri,
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'name': pack.name,
+            'bbox': bbox,
+            'sourceUrl': pack.url,
+          }),
+        )
+        .timeout(const Duration(hours: 6));
+
+    if (response.statusCode == 409) {
+      throw StateError(
+        'Archive "${pack.name}" is already on this server.',
+      );
+    }
+    if (response.statusCode == 503) {
+      throw StateError(
+        'Another DEM extract is already running on the server. Try again shortly.',
+      );
+    }
+    if (response.statusCode != 200) {
+      throw StateError(_uploadErrorMessage(response));
+    }
+
+    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    final entry = _mapFile(PmtilesFile.fromJson(decoded));
+    _log.success(
+      '⛰️ DEM extract complete',
+      data: 'id=${entry.id} name="${entry.name}" size=${entry.sizeBytes}',
     );
     return entry;
   }

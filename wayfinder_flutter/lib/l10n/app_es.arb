@@ -434,6 +434,15 @@
   "elevationProfileTitle": "Perfil de elevación",
   "elevationProfileButton": "Perfil de elevación",
   "elevationProfileEmpty": "No se pudieron muestrear elevaciones en esta ruta.",
+  "elevationProfileFailed": "No se pudo crear el perfil de elevación: {error}",
+  "@elevationProfileFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "elevationProfileFlatHint": "Poco cambio de elevación en esta ruta: el gráfico puede verse casi plano.",
   "elevationProfileMin": "Mín",
   "elevationProfileMax": "Máx",
   "elevationProfileGain": "Ascenso",

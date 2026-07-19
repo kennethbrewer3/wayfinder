@@ -481,6 +481,15 @@
   "elevationProfileTitle": "Elevation profile",
   "elevationProfileButton": "Elevation profile",
   "elevationProfileEmpty": "Could not sample elevations along this path.",
+  "elevationProfileFailed": "Could not build elevation profile: {error}",
+  "@elevationProfileFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "elevationProfileFlatHint": "Little elevation change along this path — the chart may look nearly flat.",
   "elevationProfileMin": "Min",
   "elevationProfileMax": "Max",
   "elevationProfileGain": "Gain",

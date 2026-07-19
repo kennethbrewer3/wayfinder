@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -70,21 +71,31 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
       if (!mounted) {
         return;
       }
+      final stats = buildPathProfileStats(
+        samplePoints: stations,
+        elevations: elevations,
+      );
       setState(() {
-        _stats = buildPathProfileStats(
-          samplePoints: stations,
-          elevations: elevations,
-        );
+        _stats = stats;
         _loading = false;
+        if (stats.isEmpty) {
+          _error = l10n.elevationProfileEmpty;
+        }
       });
-    } catch (error) {
+    } catch (error, stackTrace) {
       if (!mounted) {
         return;
       }
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _error = error;
+        _error = l10n.elevationProfileFailed(error.toString());
         _loading = false;
       });
+      assert(() {
+        // ignore: avoid_print
+        print('Elevation profile failed: $error\n$stackTrace');
+        return true;
+      }());
     }
   }
 
@@ -93,6 +104,11 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
     final l10n = AppLocalizations.of(context)!;
     final units = ref.watch(measurementUnitsProvider);
     final theme = Theme.of(context);
+    final stats = _stats;
+    final flatPath =
+        stats != null &&
+        !stats.isEmpty &&
+        (stats.maxElevationMeters - stats.minElevationMeters).abs() < 0.5;
 
     return AlertDialog(
       title: Text(l10n.elevationProfileTitle),
@@ -104,8 +120,13 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
                 child: Center(child: CircularProgressIndicator()),
               )
             : _error != null
-            ? Text(_error.toString())
-            : _stats == null || _stats!.isEmpty
+            ? Text(
+                _error.toString(),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              )
+            : stats == null || stats.isEmpty
             ? Text(l10n.elevationProfileEmpty)
             : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -118,30 +139,39 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
                   const SizedBox(height: 8),
                   Text(
                     '${l10n.mapObjectDetailLength}: '
-                    '${formatLineDistance(_stats!.lengthMeters, units)}',
+                    '${formatLineDistance(stats.lengthMeters, units)}',
                   ),
                   Text(
                     '${l10n.elevationProfileMin}: '
-                    '${formatElevationMeters(_stats!.minElevationMeters, units)}',
+                    '${formatElevationMeters(stats.minElevationMeters, units)}',
                   ),
                   Text(
                     '${l10n.elevationProfileMax}: '
-                    '${formatElevationMeters(_stats!.maxElevationMeters, units)}',
+                    '${formatElevationMeters(stats.maxElevationMeters, units)}',
                   ),
                   Text(
                     '${l10n.elevationProfileGain}: '
-                    '${formatElevationMeters(_stats!.gainMeters, units)}',
+                    '${formatElevationMeters(stats.gainMeters, units)}',
                   ),
                   Text(
                     '${l10n.elevationProfileLoss}: '
-                    '${formatElevationMeters(_stats!.lossMeters, units)}',
+                    '${formatElevationMeters(stats.lossMeters, units)}',
                   ),
+                  if (flatPath) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.elevationProfileFlatHint,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 140,
                     child: CustomPaint(
                       painter: _ProfileChartPainter(
-                        samples: _stats!.samples,
+                        samples: stats.samples,
                         lineColor: theme.colorScheme.primary,
                         gridColor: theme.colorScheme.outlineVariant,
                       ),
@@ -184,7 +214,10 @@ class _ProfileChartPainter extends CustomPainter {
         .map((s) => s.elevationMeters)
         .reduce((a, b) => a > b ? a : b);
     final maxD = samples.last.distanceMeters;
-    final elevSpan = (maxE - minE).abs() < 1 ? 1.0 : (maxE - minE);
+    // Keep a minimum vertical span so flat paths draw as a centered line.
+    final elevSpan = math.max(1.0, (maxE - minE).abs());
+    final pad = size.height * 0.15;
+    final plotHeight = size.height - pad * 2;
 
     final gridPaint = Paint()
       ..color = gridColor
@@ -198,8 +231,9 @@ class _ProfileChartPainter extends CustomPainter {
     for (var i = 0; i < samples.length; i++) {
       final x = maxD <= 0 ? 0.0 : samples[i].distanceMeters / maxD * size.width;
       final y =
-          size.height -
-          ((samples[i].elevationMeters - minE) / elevSpan) * size.height;
+          pad +
+          plotHeight -
+          ((samples[i].elevationMeters - minE) / elevSpan) * plotHeight;
       if (i == 0) {
         path.moveTo(x, y);
       } else {
@@ -211,7 +245,9 @@ class _ProfileChartPainter extends CustomPainter {
       Paint()
         ..color = lineColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
+        ..strokeWidth = 2
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round,
     );
   }
 

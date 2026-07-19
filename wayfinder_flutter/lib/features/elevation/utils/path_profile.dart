@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:latlong2/latlong.dart';
 
 import '../../lines/utils/line_distance.dart';
@@ -54,7 +56,10 @@ List<LatLng> samplePointsAlongPath(
     return [points.first];
   }
 
-  final spacing = (total / (maxSamples - 1)).clamp(minSpacingMeters, total);
+  // For short paths, minSpacing may exceed total — clamp requires lower <= upper.
+  final rawSpacing = total / (maxSamples - 1);
+  final minSpacing = math.min(minSpacingMeters, total);
+  final spacing = rawSpacing.clamp(minSpacing, total);
   final count = (total / spacing).ceil().clamp(2, maxSamples);
   final step = total / (count - 1);
   final result = <LatLng>[points.first];

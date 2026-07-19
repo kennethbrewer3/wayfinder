@@ -1617,6 +1617,18 @@ abstract class AppLocalizations {
   /// **'Could not sample elevations along this path.'**
   String get elevationProfileEmpty;
 
+  /// No description provided for @elevationProfileFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not build elevation profile: {error}'**
+  String elevationProfileFailed(String error);
+
+  /// No description provided for @elevationProfileFlatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Little elevation change along this path — the chart may look nearly flat.'**
+  String get elevationProfileFlatHint;
+
   /// No description provided for @elevationProfileMin.
   ///
   /// In en, this message translates to:

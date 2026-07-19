@@ -882,6 +882,15 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible d\'échantillonner les élévations le long de ce parcours.';
 
   @override
+  String elevationProfileFailed(String error) {
+    return 'Impossible de créer le profil d\'élévation : $error';
+  }
+
+  @override
+  String get elevationProfileFlatHint =>
+      'Peu de dénivelé sur ce parcours — le graphique peut paraître presque plat.';
+
+  @override
   String get elevationProfileMin => 'Min';
 
   @override

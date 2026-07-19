@@ -434,6 +434,15 @@
   "elevationProfileTitle": "Profil d'élévation",
   "elevationProfileButton": "Profil d'élévation",
   "elevationProfileEmpty": "Impossible d'échantillonner les élévations le long de ce parcours.",
+  "elevationProfileFailed": "Impossible de créer le profil d'élévation : {error}",
+  "@elevationProfileFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "elevationProfileFlatHint": "Peu de dénivelé sur ce parcours — le graphique peut paraître presque plat.",
   "elevationProfileMin": "Min",
   "elevationProfileMax": "Max",
   "elevationProfileGain": "Dénivelé +",

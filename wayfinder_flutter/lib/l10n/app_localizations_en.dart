@@ -868,6 +868,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not sample elevations along this path.';
 
   @override
+  String elevationProfileFailed(String error) {
+    return 'Could not build elevation profile: $error';
+  }
+
+  @override
+  String get elevationProfileFlatHint =>
+      'Little elevation change along this path — the chart may look nearly flat.';
+
+  @override
   String get elevationProfileMin => 'Min';
 
   @override

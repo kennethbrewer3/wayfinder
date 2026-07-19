@@ -876,6 +876,15 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudieron muestrear elevaciones en esta ruta.';
 
   @override
+  String elevationProfileFailed(String error) {
+    return 'No se pudo crear el perfil de elevación: $error';
+  }
+
+  @override
+  String get elevationProfileFlatHint =>
+      'Poco cambio de elevación en esta ruta: el gráfico puede verse casi plano.';
+
+  @override
   String get elevationProfileMin => 'Mín';
 
   @override

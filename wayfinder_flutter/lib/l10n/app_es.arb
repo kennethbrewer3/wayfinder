@@ -372,6 +372,38 @@
   "mapTilesMapsDescription": "Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles — actívelos aquí, pero no se dibujan como basemap.",
   "mapTilesDemBadge": "DEM de elevación",
   "mapTilesUploadButton": "Subir archivo .pmtiles",
+  "mapTilesGetMapsButton": "Obtener mapas",
+  "mapTilesGetMapsTitle": "Obtener mapas",
+  "mapTilesGetMapsDescription": "Descargue basemaps regionales Protomaps de Project NOMAD, o un DEM Terrarium de Mapterhorn. El servidor Wayfinder descarga el archivo a su almacenamiento; mantenga este diálogo abierto hasta que termine.",
+  "mapTilesGetMapsSearchHint": "Buscar estados o DEM…",
+  "mapTilesGetMapsImportAction": "Importar",
+  "mapTilesGetMapsImporting": "Importando {title}…",
+  "@mapTilesGetMapsImporting": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsImported": "Importado {title}.",
+  "@mapTilesGetMapsImported": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsCatalogFailed": "No se pudo cargar el catálogo: {error}",
+  "@mapTilesGetMapsCatalogFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsEmpty": "Ningún paquete coincide con la búsqueda.",
+  "mapTilesGetMapsSizeUnknown": "tamaño desconocido",
+  "mapTilesGetMapsBasemapBadge": "Basemap",
   "mapTilesUploadProgress": "Subiendo {sent} / {total}",
   "@mapTilesUploadProgress": {
     "placeholders": {

@@ -51,6 +51,7 @@ class RestApiRoute extends Route {
       ..post('/map-data/restore', MapDataRestHandlers.restore)
       ..post('/map-data/backup.zip', MapDataRestHandlers.restoreArchive)
       ..get('/pmtiles', PmtilesRestHandlers.list)
+      ..post('/pmtiles/import-url', PmtilesRestHandlers.importUrl)
       ..post('/pmtiles/upload/init', PmtilesRestHandlers.uploadInit)
       ..post('/pmtiles/upload/chunk', PmtilesRestHandlers.uploadChunk)
       ..post('/pmtiles/upload/complete', PmtilesRestHandlers.uploadComplete)
@@ -120,6 +121,7 @@ class RestApiRoute extends Route {
         'mapDataRestoreZip': '/api/map-data/backup.zip',
         'pmtiles': '/api/pmtiles',
         'pmtilesUpload': '/api/pmtiles/upload?name=<file.pmtiles>',
+        'pmtilesImportUrl': '/api/pmtiles/import-url',
         'pmtilesDownload': '/pmtiles/files/<id>',
         'markerIcons': '/api/marker-icons',
         'markerIconSvgUpload': '/api/marker-icons/<key>/svg',

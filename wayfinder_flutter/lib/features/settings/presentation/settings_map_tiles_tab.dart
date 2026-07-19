@@ -12,6 +12,7 @@ import '../data/app_settings_repository.dart';
 import '../models/pmtiles_file.dart';
 import '../models/pmtiles_group.dart';
 import '../providers/pmtiles_providers.dart';
+import 'get_maps_dialog.dart';
 
 class SettingsMapTilesTab extends ConsumerStatefulWidget {
   const SettingsMapTilesTab({super.key});
@@ -503,25 +504,43 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
           ],
         ),
         const SizedBox(height: 16),
-        FilledButton.icon(
-          onPressed: _isUploading ? null : _uploadPmtiles,
-          icon: _isUploading
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.upload_file),
-          label: Text(
-            _isUploading
-                ? (_uploadTotalBytes > 0
-                      ? l10n.mapTilesUploadProgress(
-                          formatBytes(_uploadSentBytes),
-                          formatBytes(_uploadTotalBytes),
-                        )
-                      : l10n.actionUploading)
-                : l10n.mapTilesUploadButton,
-          ),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            FilledButton.icon(
+              onPressed: _isUploading
+                  ? null
+                  : () async {
+                      final imported = await showGetMapsDialog(context);
+                      if (imported == true && mounted) {
+                        refreshPmtiles(ref);
+                      }
+                    },
+              icon: const Icon(Icons.cloud_download),
+              label: Text(l10n.mapTilesGetMapsButton),
+            ),
+            FilledButton.tonalIcon(
+              onPressed: _isUploading ? null : _uploadPmtiles,
+              icon: _isUploading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.upload_file),
+              label: Text(
+                _isUploading
+                    ? (_uploadTotalBytes > 0
+                          ? l10n.mapTilesUploadProgress(
+                              formatBytes(_uploadSentBytes),
+                              formatBytes(_uploadTotalBytes),
+                            )
+                          : l10n.actionUploading)
+                    : l10n.mapTilesUploadButton,
+              ),
+            ),
+          ],
         ),
         if (_isUploading) ...[
           const SizedBox(height: 8),

@@ -15,6 +15,7 @@ import '../models/pmtiles_file.dart' as local;
 import '../models/pmtiles_group.dart' as local_group;
 import '../models/pmtiles_geo_bounds.dart';
 import '../models/pmtiles_source.dart';
+import '../models/remote_pmtiles_catalog.dart';
 
 typedef PmtilesUploadProgress = void Function(int sentBytes, int totalBytes);
 
@@ -286,14 +287,12 @@ class PmtilesRepository {
       await flushChunk(builder.takeBytes());
     }
 
-    final completeUri =
-        Uri.parse('$_webServerUrl/pmtiles/upload/complete').replace(
+    final completeUri = Uri.parse('$_webServerUrl/pmtiles/upload/complete')
+        .replace(
           queryParameters: {'uploadId': uploadId},
         );
     _log.info('📤 Chunked upload finalize', data: 'uploadId=$uploadId');
-    return http
-        .post(completeUri)
-        .timeout(const Duration(minutes: 10));
+    return http.post(completeUri).timeout(const Duration(minutes: 10));
   }
 
   Future<http.Response> _postFileStream(
@@ -484,6 +483,43 @@ class PmtilesRepository {
       throw StateError('PMTiles file not found: $id');
     }
     _log.success('🗑️ Delete complete', data: id);
+  }
+
+  /// Asks the Wayfinder server to download [pack] into PMTiles storage.
+  Future<local.PmtilesFile> importRemotePack(RemotePmtilesPack pack) async {
+    _log.info(
+      '📥 Remote import requested',
+      data: 'name=${pack.name} url=${pack.url}',
+    );
+    // Same unauthenticated web path as local uploads (/pmtiles/…).
+    final uri = Uri.parse('$_webServerUrl/pmtiles/import-url');
+    final response = await http
+        .post(
+          uri,
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'url': pack.url,
+            'name': pack.name,
+          }),
+        )
+        .timeout(const Duration(hours: 6));
+
+    if (response.statusCode == 409) {
+      throw StateError(
+        'Archive "${pack.name}" is already on this server.',
+      );
+    }
+    if (response.statusCode != 200) {
+      throw StateError(_uploadErrorMessage(response));
+    }
+
+    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    final entry = _mapFile(PmtilesFile.fromJson(decoded));
+    _log.success(
+      '📥 Remote import complete',
+      data: 'id=${entry.id} name="${entry.name}"',
+    );
+    return entry;
   }
 
   local.PmtilesFile _mapFile(PmtilesFile file) {

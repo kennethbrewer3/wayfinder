@@ -1473,6 +1473,72 @@ abstract class AppLocalizations {
   /// **'Upload .pmtiles file'**
   String get mapTilesUploadButton;
 
+  /// No description provided for @mapTilesGetMapsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Get maps'**
+  String get mapTilesGetMapsButton;
+
+  /// No description provided for @mapTilesGetMapsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get maps'**
+  String get mapTilesGetMapsTitle;
+
+  /// No description provided for @mapTilesGetMapsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches the file into its storage — keep this dialog open until the import finishes.'**
+  String get mapTilesGetMapsDescription;
+
+  /// No description provided for @mapTilesGetMapsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search states or DEM…'**
+  String get mapTilesGetMapsSearchHint;
+
+  /// No description provided for @mapTilesGetMapsImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get mapTilesGetMapsImportAction;
+
+  /// No description provided for @mapTilesGetMapsImporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing {title}…'**
+  String mapTilesGetMapsImporting(String title);
+
+  /// No description provided for @mapTilesGetMapsImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {title}.'**
+  String mapTilesGetMapsImported(String title);
+
+  /// No description provided for @mapTilesGetMapsCatalogFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load map catalog: {error}'**
+  String mapTilesGetMapsCatalogFailed(String error);
+
+  /// No description provided for @mapTilesGetMapsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No packs match your search.'**
+  String get mapTilesGetMapsEmpty;
+
+  /// No description provided for @mapTilesGetMapsSizeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'size unknown'**
+  String get mapTilesGetMapsSizeUnknown;
+
+  /// No description provided for @mapTilesGetMapsBasemapBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Basemap'**
+  String get mapTilesGetMapsBasemapBadge;
+
   /// No description provided for @mapTilesUploadProgress.
   ///
   /// In en, this message translates to:

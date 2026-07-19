@@ -793,6 +793,47 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapTilesUploadButton => 'Téléverser un fichier .pmtiles';
 
   @override
+  String get mapTilesGetMapsButton => 'Obtenir des cartes';
+
+  @override
+  String get mapTilesGetMapsTitle => 'Obtenir des cartes';
+
+  @override
+  String get mapTilesGetMapsDescription =>
+      'Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder récupère le fichier dans son stockage — gardez cette boîte de dialogue ouverte jusqu\'à la fin.';
+
+  @override
+  String get mapTilesGetMapsSearchHint => 'Rechercher un État ou DEM…';
+
+  @override
+  String get mapTilesGetMapsImportAction => 'Importer';
+
+  @override
+  String mapTilesGetMapsImporting(String title) {
+    return 'Importation de $title…';
+  }
+
+  @override
+  String mapTilesGetMapsImported(String title) {
+    return '$title importé.';
+  }
+
+  @override
+  String mapTilesGetMapsCatalogFailed(String error) {
+    return 'Impossible de charger le catalogue : $error';
+  }
+
+  @override
+  String get mapTilesGetMapsEmpty =>
+      'Aucun paquet ne correspond à votre recherche.';
+
+  @override
+  String get mapTilesGetMapsSizeUnknown => 'taille inconnue';
+
+  @override
+  String get mapTilesGetMapsBasemapBadge => 'Fond de carte';
+
+  @override
   String mapTilesUploadProgress(String sent, String total) {
     return 'Téléversement $sent / $total';
   }

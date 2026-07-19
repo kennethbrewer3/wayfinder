@@ -443,9 +443,18 @@ PMTiles are compressed map archives. Wayfinder renders vector/raster basemaps lo
 
 The server stores uploaded `.pmtiles` files in a folder path configured here (usually set once by your administrator). All clients use the same library after upload.
 
+### Get maps (recommended)
+
+Tap **Get maps** to import curated archives. The Wayfinder **server** downloads them into its storage (keep the dialog open until finished):
+
+- **US state basemaps** — regional Protomaps vector extracts hosted by [Project NOMAD Maps](https://github.com/Crosstalk-Solutions/project-nomad-maps) (ODbL). Prefer these over a full-planet file.
+- **Elevation DEM** — [Mapterhorn](https://mapterhorn.com/data-access/) Terrarium planet pack (named `mapterhorn-terrarium-z12.pmtiles` so Wayfinder treats it as DEM). It is large; for smaller areas, extract a region with the [`pmtiles extract`](https://docs.protomaps.com/pmtiles/cli#extract) CLI, then use **Upload**.
+
+You can also build your own cutouts from the daily Protomaps planet at [maps.protomaps.com/builds](https://maps.protomaps.com/builds) using `pmtiles extract`.
+
 ### Upload tiles
 
-1. Tap **Upload** and choose a `.pmtiles` file from your device.
+1. Tap **Upload** and choose a `.pmtiles` file from your device (or a DEM extract you created offline).
 2. Wait for upload and processing to finish (large files take time). On web, large archives upload in chunks so the UI and server logs show progress while data is transferring.
 3. Enable the archive with the toggle. Multiple archives can be enabled; they composited on the map.
 
@@ -455,11 +464,12 @@ Use the **download** icon on each archive row to save a copy of that `.pmtiles` 
 
 ### Offline elevation (DEM)
 
-Upload Terrarium or Mapbox Terrain-RGB height tiles packed as `.pmtiles`. Name the file so Wayfinder recognizes it as DEM — include one of: `dem`, `terrarium`, `terrain-rgb`, or `elevation` (for example `virginia-terrarium.pmtiles`).
+Use **Get maps → Mapterhorn Terrarium**, or upload Terrarium / Mapbox Terrain-RGB height tiles packed as `.pmtiles`. Name the file so Wayfinder recognizes it as DEM — include one of: `dem`, `terrarium`, `terrain-rgb`, or `elevation` (for example `virginia-terrarium.pmtiles`).
 
 - Enable the DEM archive with the toggle (listed with an **Elevation DEM** badge).
 - DEM packs are **not** drawn as the basemap; they are sampled for height.
 - With DEM enabled you get: **spot elevation** on the cursor readout, **climb to marker** in the GPS HUD when a marker is selected, and **Elevation profile** on line/track details.
+- Avoid serving a single ~150 GB worldwide DEM over HTTP if Range requests stall; prefer a regional extract.
 
 ### Groups
 

@@ -21,6 +21,7 @@ import 'src/web/routes/marker_icon_file_route.dart';
 import 'src/web/routes/marker_icon_upload_route.dart';
 import 'src/web/routes/pmtiles_chunked_upload_routes.dart';
 import 'src/web/routes/pmtiles_file_route.dart';
+import 'src/web/routes/pmtiles_import_url_route.dart';
 import 'src/web/routes/pmtiles_upload_route.dart';
 import 'src/web/routes/root.dart';
 import 'src/web/rest/rest_api_route.dart';
@@ -98,6 +99,10 @@ void run(List<String> args) async {
     pod.webServer.addRoute(
       PmtilesUploadRoute(),
       '/pmtiles/upload',
+    );
+    pod.webServer.addRoute(
+      PmtilesImportUrlRoute(),
+      '/pmtiles/import-url',
     );
     pod.webServer.addRoute(
       PmtilesFileRoute(),

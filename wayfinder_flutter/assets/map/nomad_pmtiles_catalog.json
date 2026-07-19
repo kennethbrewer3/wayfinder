@@ -1,0 +1,512 @@
+[
+  {
+    "id": "alabama_2025-12",
+    "name": "alabama_2025-12.pmtiles",
+    "title": "Alabama",
+    "bytes": 247862564,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/alabama_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "alaska_2025-12",
+    "name": "alaska_2025-12.pmtiles",
+    "title": "Alaska",
+    "bytes": 717501935,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/alaska_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "arizona_2025-12",
+    "name": "arizona_2025-12.pmtiles",
+    "title": "Arizona",
+    "bytes": 425725420,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/arizona_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "arkansas_2025-12",
+    "name": "arkansas_2025-12.pmtiles",
+    "title": "Arkansas",
+    "bytes": 166656107,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/arkansas_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "california_2025-12",
+    "name": "california_2025-12.pmtiles",
+    "title": "California",
+    "bytes": 1185114056,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/california_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "colorado_2025-12",
+    "name": "colorado_2025-12.pmtiles",
+    "title": "Colorado",
+    "bytes": 475708630,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/colorado_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "connecticut_2025-12",
+    "name": "connecticut_2025-12.pmtiles",
+    "title": "Connecticut",
+    "bytes": 169750223,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/connecticut_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "delaware_2025-12",
+    "name": "delaware_2025-12.pmtiles",
+    "title": "Delaware",
+    "bytes": 31523716,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/delaware_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "florida_2025-12",
+    "name": "florida_2025-12.pmtiles",
+    "title": "Florida",
+    "bytes": 1072848714,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/florida_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "georgia_2025-12",
+    "name": "georgia_2025-12.pmtiles",
+    "title": "Georgia",
+    "bytes": 404526556,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/georgia_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "global-min_2025-12",
+    "name": "global-min_2025-12.pmtiles",
+    "title": "Global (min overview)",
+    "bytes": 184137576,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/global-min_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "Low-detail worldwide Protomaps overview from Project NOMAD maps."
+  },
+  {
+    "id": "hawaii_2025-12",
+    "name": "hawaii_2025-12.pmtiles",
+    "title": "Hawaii",
+    "bytes": 29646251,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/hawaii_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "idaho_2025-12",
+    "name": "idaho_2025-12.pmtiles",
+    "title": "Idaho",
+    "bytes": 232817787,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/idaho_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "illinois_2025-12",
+    "name": "illinois_2025-12.pmtiles",
+    "title": "Illinois",
+    "bytes": 431000554,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/illinois_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "indiana_2025-12",
+    "name": "indiana_2025-12.pmtiles",
+    "title": "Indiana",
+    "bytes": 258859848,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/indiana_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "iowa_2025-12",
+    "name": "iowa_2025-12.pmtiles",
+    "title": "Iowa",
+    "bytes": 225908650,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/iowa_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "kansas_2025-12",
+    "name": "kansas_2025-12.pmtiles",
+    "title": "Kansas",
+    "bytes": 214290032,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/kansas_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "kentucky_2025-12",
+    "name": "kentucky_2025-12.pmtiles",
+    "title": "Kentucky",
+    "bytes": 207680198,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/kentucky_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "louisiana_2025-12",
+    "name": "louisiana_2025-12.pmtiles",
+    "title": "Louisiana",
+    "bytes": 208734408,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/louisiana_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "maine_2025-12",
+    "name": "maine_2025-12.pmtiles",
+    "title": "Maine",
+    "bytes": 180791471,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/maine_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "maryland_2025-12",
+    "name": "maryland_2025-12.pmtiles",
+    "title": "Maryland",
+    "bytes": 227214173,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/maryland_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "massachusetts_2025-12",
+    "name": "massachusetts_2025-12.pmtiles",
+    "title": "Massachusetts",
+    "bytes": 271136339,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/massachusetts_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "michigan_2025-12",
+    "name": "michigan_2025-12.pmtiles",
+    "title": "Michigan",
+    "bytes": 442043575,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/michigan_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "minnesota_2025-12",
+    "name": "minnesota_2025-12.pmtiles",
+    "title": "Minnesota",
+    "bytes": 429700232,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/minnesota_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "mississippi_2025-12",
+    "name": "mississippi_2025-12.pmtiles",
+    "title": "Mississippi",
+    "bytes": 140087370,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/mississippi_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "missouri_2025-12",
+    "name": "missouri_2025-12.pmtiles",
+    "title": "Missouri",
+    "bytes": 320096922,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/missouri_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "montana_2025-12",
+    "name": "montana_2025-12.pmtiles",
+    "title": "Montana",
+    "bytes": 282681262,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/montana_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "nebraska_2025-12",
+    "name": "nebraska_2025-12.pmtiles",
+    "title": "Nebraska",
+    "bytes": 174208997,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/nebraska_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "nevada_2025-12",
+    "name": "nevada_2025-12.pmtiles",
+    "title": "Nevada",
+    "bytes": 211211458,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/nevada_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "new_hampshire_2025-12",
+    "name": "new_hampshire_2025-12.pmtiles",
+    "title": "New Hampshire",
+    "bytes": 96707672,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/new_hampshire_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "new_jersey_2025-12",
+    "name": "new_jersey_2025-12.pmtiles",
+    "title": "New Jersey",
+    "bytes": 195493293,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/new_jersey_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "new_mexico_2025-12",
+    "name": "new_mexico_2025-12.pmtiles",
+    "title": "New Mexico",
+    "bytes": 248754913,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/new_mexico_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "new_york_2025-12",
+    "name": "new_york_2025-12.pmtiles",
+    "title": "New York",
+    "bytes": 541225235,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/new_york_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "north_carolina_2025-12",
+    "name": "north_carolina_2025-12.pmtiles",
+    "title": "North Carolina",
+    "bytes": 479969689,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/north_carolina_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "north_dakota_2025-12",
+    "name": "north_dakota_2025-12.pmtiles",
+    "title": "North Dakota",
+    "bytes": 202588772,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/north_dakota_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "ohio_2025-12",
+    "name": "ohio_2025-12.pmtiles",
+    "title": "Ohio",
+    "bytes": 427922388,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/ohio_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "oklahoma_2025-12",
+    "name": "oklahoma_2025-12.pmtiles",
+    "title": "Oklahoma",
+    "bytes": 219178663,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/oklahoma_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "oregon_2025-12",
+    "name": "oregon_2025-12.pmtiles",
+    "title": "Oregon",
+    "bytes": 398259952,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/oregon_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "pennsylvania_2025-12",
+    "name": "pennsylvania_2025-12.pmtiles",
+    "title": "Pennsylvania",
+    "bytes": 439122561,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/pennsylvania_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "rhode_island_2025-12",
+    "name": "rhode_island_2025-12.pmtiles",
+    "title": "Rhode Island",
+    "bytes": 58993612,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/rhode_island_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "south_carolina_2025-12",
+    "name": "south_carolina_2025-12.pmtiles",
+    "title": "South Carolina",
+    "bytes": 224142714,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/south_carolina_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "south_dakota_2025-12",
+    "name": "south_dakota_2025-12.pmtiles",
+    "title": "South Dakota",
+    "bytes": 123632416,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/south_dakota_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "tennessee_2025-12",
+    "name": "tennessee_2025-12.pmtiles",
+    "title": "Tennessee",
+    "bytes": 244701893,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/tennessee_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "texas_2025-12",
+    "name": "texas_2025-12.pmtiles",
+    "title": "Texas",
+    "bytes": 903490126,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/texas_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "utah_2025-12",
+    "name": "utah_2025-12.pmtiles",
+    "title": "Utah",
+    "bytes": 260469908,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/utah_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "vermont_2025-12",
+    "name": "vermont_2025-12.pmtiles",
+    "title": "Vermont",
+    "bytes": 76261813,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/vermont_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "virginia_2025-12",
+    "name": "virginia_2025-12.pmtiles",
+    "title": "Virginia",
+    "bytes": 467537819,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/virginia_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "washington_2025-12",
+    "name": "washington_2025-12.pmtiles",
+    "title": "Washington",
+    "bytes": 489176579,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/washington_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "west_virginia_2025-12",
+    "name": "west_virginia_2025-12.pmtiles",
+    "title": "West Virginia",
+    "bytes": 219623067,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/west_virginia_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "wisconsin_2025-12",
+    "name": "wisconsin_2025-12.pmtiles",
+    "title": "Wisconsin",
+    "bytes": 426790243,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/wisconsin_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  },
+  {
+    "id": "wyoming_2025-12",
+    "name": "wyoming_2025-12.pmtiles",
+    "title": "Wyoming",
+    "bytes": 222816475,
+    "kind": "basemap",
+    "url": "https://media.githubusercontent.com/media/Crosstalk-Solutions/project-nomad-maps/master/pmtiles/wyoming_2025-12.pmtiles",
+    "sourceLabel": "Project NOMAD",
+    "description": "US state Protomaps vector basemap extract (ODbL)."
+  }
+]

@@ -825,6 +825,8 @@ curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 | POST | `/api/map-data/restore` | Restore map data from backup JSON |
 | POST | `/api/map-data/backup.zip` | Restore map data from backup zip |
 | GET | `/api/pmtiles` | List PMTiles catalog |
+| POST | `/api/pmtiles/import-url` | Download a remote `.pmtiles` URL into server storage (`{"url","name?"}`) |
+| POST | `/pmtiles/import-url` | Same as above (web client path) |
 | POST | `/api/pmtiles/upload?name=…` | Upload PMTiles bytes |
 | GET | `/api/pmtiles/active` | Get active file id |
 | PUT | `/api/pmtiles/active` | Set active file |

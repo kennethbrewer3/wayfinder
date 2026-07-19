@@ -780,6 +780,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTilesUploadButton => 'Upload .pmtiles file';
 
   @override
+  String get mapTilesGetMapsButton => 'Get maps';
+
+  @override
+  String get mapTilesGetMapsTitle => 'Get maps';
+
+  @override
+  String get mapTilesGetMapsDescription =>
+      'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches the file into its storage — keep this dialog open until the import finishes.';
+
+  @override
+  String get mapTilesGetMapsSearchHint => 'Search states or DEM…';
+
+  @override
+  String get mapTilesGetMapsImportAction => 'Import';
+
+  @override
+  String mapTilesGetMapsImporting(String title) {
+    return 'Importing $title…';
+  }
+
+  @override
+  String mapTilesGetMapsImported(String title) {
+    return 'Imported $title.';
+  }
+
+  @override
+  String mapTilesGetMapsCatalogFailed(String error) {
+    return 'Could not load map catalog: $error';
+  }
+
+  @override
+  String get mapTilesGetMapsEmpty => 'No packs match your search.';
+
+  @override
+  String get mapTilesGetMapsSizeUnknown => 'size unknown';
+
+  @override
+  String get mapTilesGetMapsBasemapBadge => 'Basemap';
+
+  @override
   String mapTilesUploadProgress(String sent, String total) {
     return 'Uploading $sent / $total';
   }

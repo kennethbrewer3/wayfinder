@@ -6,6 +6,7 @@ import '../../pmtiles/pmtiles_file_groups.dart';
 import '../../pmtiles/pmtiles_storage.dart';
 import '../../pmtiles/pmtiles_chunked_upload.dart';
 import '../../pmtiles/pmtiles_upload_handler.dart';
+import '../../pmtiles/pmtiles_url_import.dart';
 import 'rest_json.dart';
 
 abstract final class PmtilesRestHandlers {
@@ -117,5 +118,11 @@ abstract final class PmtilesRestHandlers {
   static Future<Result> uploadComplete(Request request) async {
     final session = await request.session;
     return PmtilesChunkedUpload.complete(session, request);
+  }
+
+  /// Downloads a remote `.pmtiles` URL into server storage and catalogs it.
+  static Future<Result> importUrl(Request request) async {
+    final session = await request.session;
+    return PmtilesUrlImport.import(session, request);
   }
 }

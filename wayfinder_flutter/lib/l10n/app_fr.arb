@@ -372,6 +372,38 @@
   "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils — activez-les ici, mais ils ne sont pas dessinés comme fond de carte.",
   "mapTilesDemBadge": "DEM d'élévation",
   "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
+  "mapTilesGetMapsButton": "Obtenir des cartes",
+  "mapTilesGetMapsTitle": "Obtenir des cartes",
+  "mapTilesGetMapsDescription": "Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder récupère le fichier dans son stockage — gardez cette boîte de dialogue ouverte jusqu'à la fin.",
+  "mapTilesGetMapsSearchHint": "Rechercher un État ou DEM…",
+  "mapTilesGetMapsImportAction": "Importer",
+  "mapTilesGetMapsImporting": "Importation de {title}…",
+  "@mapTilesGetMapsImporting": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsImported": "{title} importé.",
+  "@mapTilesGetMapsImported": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsCatalogFailed": "Impossible de charger le catalogue : {error}",
+  "@mapTilesGetMapsCatalogFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesGetMapsEmpty": "Aucun paquet ne correspond à votre recherche.",
+  "mapTilesGetMapsSizeUnknown": "taille inconnue",
+  "mapTilesGetMapsBasemapBadge": "Fond de carte",
   "mapTilesUploadProgress": "Téléversement {sent} / {total}",
   "@mapTilesUploadProgress": {
     "placeholders": {

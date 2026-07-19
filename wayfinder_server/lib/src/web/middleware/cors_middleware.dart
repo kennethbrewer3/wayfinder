@@ -28,7 +28,13 @@ class CorsMiddleware extends MiddlewareObject {
     mh.accessControlAllowOrigin =
         const AccessControlAllowOriginHeader.wildcard();
     mh.accessControlAllowMethods = AccessControlAllowMethodsHeader.methods(
-      [Method.get, Method.head, Method.post, Method.options],
+      [
+        Method.get,
+        Method.head,
+        Method.post,
+        Method.put,
+        Method.options,
+      ],
     );
     mh.accessControlAllowHeaders = AccessControlAllowHeadersHeader.headers([
       'Content-Type',

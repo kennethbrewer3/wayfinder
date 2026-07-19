@@ -469,6 +469,7 @@ Use **Get maps → Elevation DEM**, search for your state, and tap **Extract**. 
 - Enable the DEM archive with the toggle (listed with an **Elevation DEM** badge).
 - DEM packs are **not** drawn as the basemap; they are sampled for height.
 - With DEM enabled you get: **spot elevation** on the cursor readout, **climb to marker** in the GPS HUD when a marker is selected, and **Elevation profile** on line/track details.
+- To profile several park legs as one route: in the sidebar, check the lines/tracks in walk order, then tap **Elevation profile** in the selection bar. Short legs (under 25 m) stay in the chart — every vertex is kept. Legs may reverse so endpoints connect.
 - Prefer a US-state extract over a worldwide DEM — large planet archives often stall when served over HTTP Range requests.
 
 ### Groups
@@ -710,7 +711,7 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Backup data | Settings → Backup → Export |
 | Print map sheets (PDF) | Settings → Backup → Export printable atlas |
 | Offline elevation DEM | Settings → Map tiles → enable `*dem*` / `*terrarium*` pack |
-| Path elevation profile | Line/track details → Elevation profile |
+| Path elevation profile | Line/track details → Elevation profile, or sidebar checkboxes → Elevation profile |
 | Script with curl | Settings → About → REST API access → generate key |
 | Add map tiles | Settings → Map tiles → Upload |
 | Enable address search | Settings → Geocoding → import housenumbers |

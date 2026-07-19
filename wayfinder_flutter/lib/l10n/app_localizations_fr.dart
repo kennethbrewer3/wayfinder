@@ -891,6 +891,19 @@ class AppLocalizationsFr extends AppLocalizations {
       'Peu de dénivelé sur ce parcours — le graphique peut paraître presque plat.';
 
   @override
+  String elevationProfileCombinedLegs(int count) {
+    return 'Combiné à partir de $count segments (ordre de sélection ; chaque segment peut être inversé pour se connecter).';
+  }
+
+  @override
+  String elevationProfileSelectionCount(int count) {
+    return '$count parcours sélectionnés pour le profil d\'élévation';
+  }
+
+  @override
+  String get elevationProfileClearSelection => 'Effacer';
+
+  @override
   String get elevationProfileMin => 'Min';
 
   @override

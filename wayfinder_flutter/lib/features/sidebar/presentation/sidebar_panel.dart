@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,6 +12,10 @@ import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/utils/circle_distance.dart';
+import '../../elevation/presentation/path_profile_dialog.dart';
+import '../../elevation/providers/path_profile_selection_provider.dart';
+import '../../elevation/utils/path_profile.dart';
+import '../../elevation/utils/path_profile_zone.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
@@ -206,6 +212,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
+        const _PathProfileSelectionBar(),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -1212,6 +1219,11 @@ class _LineZoneListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
+    final profileSelected = ref.watch(
+      pathProfileSelectionProvider.select(
+        (ids) => ids.contains(zone.id.uuid),
+      ),
+    );
     final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
@@ -1224,7 +1236,7 @@ class _LineZoneListTile extends ConsumerWidget {
     );
 
     return ColoredBox(
-      color: isSelected
+      color: isSelected || profileSelected
           ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
           : Colors.transparent,
       child: Column(
@@ -1239,10 +1251,20 @@ class _LineZoneListTile extends ConsumerWidget {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.fromLTRB(8, 12, 16, 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Checkbox(
+                    value: profileSelected,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    onChanged: (_) {
+                      ref
+                          .read(pathProfileSelectionProvider.notifier)
+                          .toggle(zone.id.uuid);
+                    },
+                  ),
                   CircleAvatar(
                     backgroundColor: _parseColor(zone.color),
                     radius: 18,
@@ -1369,6 +1391,11 @@ class _TrackZoneListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
+    final profileSelected = ref.watch(
+      pathProfileSelectionProvider.select(
+        (ids) => ids.contains(zone.id.uuid),
+      ),
+    );
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -1382,7 +1409,7 @@ class _TrackZoneListTile extends ConsumerWidget {
         : '—';
 
     return ColoredBox(
-      color: isSelected
+      color: isSelected || profileSelected
           ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
           : Colors.transparent,
       child: Column(
@@ -1397,10 +1424,22 @@ class _TrackZoneListTile extends ConsumerWidget {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.fromLTRB(8, 12, 16, 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Checkbox(
+                    value: profileSelected,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    onChanged: geometry.hasRenderablePath
+                        ? (_) {
+                            ref
+                                .read(pathProfileSelectionProvider.notifier)
+                                .toggle(zone.id.uuid);
+                          }
+                        : null,
+                  ),
                   CircleAvatar(
                     backgroundColor: _parseColor(zone.color),
                     radius: 18,
@@ -1967,6 +2006,82 @@ class _MapObjectIconAction extends StatelessWidget {
               foregroundColor: theme.colorScheme.onSurfaceVariant,
             ),
       icon: Icon(icon, size: 20),
+    );
+  }
+}
+
+class _PathProfileSelectionBar extends ConsumerWidget {
+  const _PathProfileSelectionBar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIds = ref.watch(pathProfileSelectionProvider);
+    if (selectedIds.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final zonesAsync = ref.watch(zonesProvider);
+
+    return Material(
+      color: theme.colorScheme.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.elevationProfileSelectionCount(selectedIds.length),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSecondaryContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                ref.read(pathProfileSelectionProvider.notifier).clear();
+              },
+              child: Text(l10n.elevationProfileClearSelection),
+            ),
+            const SizedBox(width: 4),
+            FilledButton.icon(
+              onPressed: zonesAsync.asData == null
+                  ? null
+                  : () {
+                      final zones = zonesAsync.requireValue;
+                      final byId = {
+                        for (final zone in zones) zone.id.uuid: zone,
+                      };
+                      final legs = <PathProfileLeg>[];
+                      for (final id in selectedIds) {
+                        final zone = byId[id];
+                        if (zone == null) {
+                          continue;
+                        }
+                        final leg = pathProfileLegFromZone(zone);
+                        if (leg != null) {
+                          legs.add(leg);
+                        }
+                      }
+                      if (legs.isEmpty) {
+                        return;
+                      }
+                      unawaited(
+                        showCombinedPathProfileDialog(
+                          context: context,
+                          ref: ref,
+                          legs: legs,
+                        ),
+                      );
+                    },
+              icon: const Icon(Icons.terrain, size: 18),
+              label: Text(l10n.elevationProfileButton),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

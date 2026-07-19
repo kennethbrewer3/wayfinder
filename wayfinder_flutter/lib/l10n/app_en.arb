@@ -490,6 +490,23 @@
     }
   },
   "elevationProfileFlatHint": "Little elevation change along this path — the chart may look nearly flat.",
+  "elevationProfileCombinedLegs": "Combined from {count} legs (check order; each leg may reverse to connect).",
+  "@elevationProfileCombinedLegs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "elevationProfileSelectionCount": "{count} paths selected for elevation profile",
+  "@elevationProfileSelectionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "elevationProfileClearSelection": "Clear",
   "elevationProfileMin": "Min",
   "elevationProfileMax": "Max",
   "elevationProfileGain": "Gain",

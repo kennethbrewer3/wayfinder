@@ -1629,6 +1629,24 @@ abstract class AppLocalizations {
   /// **'Little elevation change along this path — the chart may look nearly flat.'**
   String get elevationProfileFlatHint;
 
+  /// No description provided for @elevationProfileCombinedLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Combined from {count} legs (check order; each leg may reverse to connect).'**
+  String elevationProfileCombinedLegs(int count);
+
+  /// No description provided for @elevationProfileSelectionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} paths selected for elevation profile'**
+  String elevationProfileSelectionCount(int count);
+
+  /// No description provided for @elevationProfileClearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get elevationProfileClearSelection;
+
   /// No description provided for @elevationProfileMin.
   ///
   /// In en, this message translates to:

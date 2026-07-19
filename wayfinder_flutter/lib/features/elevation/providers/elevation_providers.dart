@@ -20,12 +20,12 @@ final elevationDemEntriesProvider = FutureProvider<List<PmtilesArchiveEntry>>((
     data: entries.isEmpty
         ? 'none enabled'
         : entries
-            .map(
-              (e) =>
-                  '${e.name} z${e.minZoom}-${e.maxZoom} '
-                  'boundsKnown=${e.boundsKnown}',
-            )
-            .join('; '),
+              .map(
+                (e) =>
+                    '${e.name} z${e.minZoom}-${e.maxZoom} '
+                    'boundsKnown=${e.boundsKnown}',
+              )
+              .join('; '),
   );
   return entries;
 });

@@ -877,6 +877,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Little elevation change along this path — the chart may look nearly flat.';
 
   @override
+  String elevationProfileCombinedLegs(int count) {
+    return 'Combined from $count legs (check order; each leg may reverse to connect).';
+  }
+
+  @override
+  String elevationProfileSelectionCount(int count) {
+    return '$count paths selected for elevation profile';
+  }
+
+  @override
+  String get elevationProfileClearSelection => 'Clear';
+
+  @override
   String get elevationProfileMin => 'Min';
 
   @override

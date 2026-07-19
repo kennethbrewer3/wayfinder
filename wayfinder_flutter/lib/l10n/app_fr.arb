@@ -443,6 +443,23 @@
     }
   },
   "elevationProfileFlatHint": "Peu de dénivelé sur ce parcours — le graphique peut paraître presque plat.",
+  "elevationProfileCombinedLegs": "Combiné à partir de {count} segments (ordre de sélection ; chaque segment peut être inversé pour se connecter).",
+  "@elevationProfileCombinedLegs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "elevationProfileSelectionCount": "{count} parcours sélectionnés pour le profil d'élévation",
+  "@elevationProfileSelectionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "elevationProfileClearSelection": "Effacer",
   "elevationProfileMin": "Min",
   "elevationProfileMax": "Max",
   "elevationProfileGain": "Dénivelé +",

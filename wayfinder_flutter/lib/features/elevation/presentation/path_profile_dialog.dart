@@ -17,13 +17,37 @@ Future<void> showPathProfileDialog({
   required WidgetRef ref,
   required String title,
   required List<LatLng> pathPoints,
+  List<PathProfileLeg> legs = const [],
 }) {
   return showDialog<void>(
     context: context,
     builder: (context) => _PathProfileDialog(
       title: title,
       pathPoints: pathPoints,
+      legs: legs,
     ),
+  );
+}
+
+/// Opens a profile for one or more line/track legs (chained into one path).
+Future<void> showCombinedPathProfileDialog({
+  required BuildContext context,
+  required WidgetRef ref,
+  required List<PathProfileLeg> legs,
+}) {
+  final usable = [
+    for (final leg in legs)
+      if (leg.isValid) leg,
+  ];
+  final title = usable.length == 1
+      ? usable.first.name
+      : usable.map((leg) => leg.name).join(' · ');
+  return showPathProfileDialog(
+    context: context,
+    ref: ref,
+    title: title,
+    pathPoints: combinePathLegs(usable),
+    legs: usable,
   );
 }
 
@@ -31,10 +55,12 @@ class _PathProfileDialog extends ConsumerStatefulWidget {
   const _PathProfileDialog({
     required this.title,
     required this.pathPoints,
+    this.legs = const [],
   });
 
   final String title;
   final List<LatLng> pathPoints;
+  final List<PathProfileLeg> legs;
 
   @override
   ConsumerState<_PathProfileDialog> createState() => _PathProfileDialogState();
@@ -62,6 +88,14 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
         setState(() {
           _loading = false;
           _error = l10n.elevationNoDemAvailable;
+        });
+        return;
+      }
+
+      if (widget.pathPoints.length < 2) {
+        setState(() {
+          _loading = false;
+          _error = l10n.elevationProfileEmpty;
         });
         return;
       }
@@ -109,6 +143,7 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
         stats != null &&
         !stats.isEmpty &&
         (stats.maxElevationMeters - stats.minElevationMeters).abs() < 0.5;
+    final legCount = widget.legs.length;
 
     return AlertDialog(
       title: Text(l10n.elevationProfileTitle),
@@ -135,7 +170,18 @@ class _PathProfileDialogState extends ConsumerState<_PathProfileDialog> {
                   Text(
                     widget.title,
                     style: theme.textTheme.titleSmall,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  if (legCount > 1) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.elevationProfileCombinedLegs(legCount),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   Text(
                     '${l10n.mapObjectDetailLength}: '

@@ -443,6 +443,23 @@
     }
   },
   "elevationProfileFlatHint": "Poco cambio de elevación en esta ruta: el gráfico puede verse casi plano.",
+  "elevationProfileCombinedLegs": "Combinado de {count} tramos (orden de selección; cada tramo puede invertirse para conectar).",
+  "@elevationProfileCombinedLegs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "elevationProfileSelectionCount": "{count} rutas seleccionadas para el perfil de elevación",
+  "@elevationProfileSelectionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "elevationProfileClearSelection": "Borrar",
   "elevationProfileMin": "Mín",
   "elevationProfileMax": "Máx",
   "elevationProfileGain": "Ascenso",

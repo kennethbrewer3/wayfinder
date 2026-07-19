@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:latlong2/latlong.dart';
 
 import '../../lines/utils/line_distance.dart';
@@ -38,7 +36,54 @@ class PathProfileStats {
   bool get isEmpty => samples.isEmpty;
 }
 
-/// Evenly distribute sample stations along [points] by distance.
+/// A named polyline leg that can be chained into a combined profile.
+class PathProfileLeg {
+  const PathProfileLeg({
+    required this.id,
+    required this.name,
+    required this.points,
+  });
+
+  final String id;
+  final String name;
+  final List<LatLng> points;
+
+  bool get isValid => points.length >= 2;
+}
+
+/// Chain [legs] into one continuous polyline.
+///
+/// Legs stay in [legs] order (selection order). Each leg after the first may be
+/// reversed so its nearer endpoint connects to the current tip. Short legs
+/// (&lt; 25 m) are fully included — every vertex is kept.
+List<LatLng> combinePathLegs(List<PathProfileLeg> legs) {
+  final usable = [
+    for (final leg in legs)
+      if (leg.isValid) leg,
+  ];
+  if (usable.isEmpty) {
+    return const [];
+  }
+
+  final combined = <LatLng>[...usable.first.points];
+  for (var i = 1; i < usable.length; i++) {
+    final next = usable[i].points;
+    final tip = combined.last;
+    final toStart = lineLengthMeters(tip, next.first);
+    final toEnd = lineLengthMeters(tip, next.last);
+    final oriented = toEnd < toStart ? next.reversed.toList() : next;
+    // Skip duplicate join vertex when legs already share an endpoint.
+    final startIndex = lineLengthMeters(tip, oriented.first) < 1.0 ? 1 : 0;
+    combined.addAll(oriented.skip(startIndex));
+  }
+  return combined;
+}
+
+/// Sample stations along [points] for DEM lookup.
+///
+/// Always keeps every input vertex (so short legs remain in the profile), and
+/// inserts intermediates on spans longer than [minSpacingMeters], capped by
+/// [maxSamples].
 List<LatLng> samplePointsAlongPath(
   List<LatLng> points, {
   int maxSamples = 80,
@@ -51,53 +96,40 @@ List<LatLng> samplePointsAlongPath(
     return [points.first];
   }
 
-  final total = lineLengthMetersForPoints(points);
-  if (total <= 0) {
-    return [points.first];
+  final densified = <LatLng>[points.first];
+  for (var i = 0; i < points.length - 1; i++) {
+    final start = points[i];
+    final end = points[i + 1];
+    final segmentLength = lineLengthMeters(start, end);
+    if (segmentLength > minSpacingMeters && minSpacingMeters > 0) {
+      final insertCount = (segmentLength / minSpacingMeters).floor();
+      for (var step = 1; step <= insertCount; step++) {
+        final distance = step * minSpacingMeters;
+        if (distance >= segmentLength - 1e-6) {
+          break;
+        }
+        densified.add(_lerp(start, end, distance / segmentLength));
+      }
+    }
+    densified.add(end);
   }
 
-  // For short paths, minSpacing may exceed total — clamp requires lower <= upper.
-  final rawSpacing = total / (maxSamples - 1);
-  final minSpacing = math.min(minSpacingMeters, total);
-  final spacing = rawSpacing.clamp(minSpacing, total);
-  final count = (total / spacing).ceil().clamp(2, maxSamples);
-  final step = total / (count - 1);
-  final result = <LatLng>[points.first];
-  var walked = 0.0;
-  var target = step;
-  var segmentIndex = 0;
-  var segmentStart = points.first;
-  var segmentEnd = points[1];
-  var segmentLength = lineLengthMeters(segmentStart, segmentEnd);
-  var alongSegment = 0.0;
-
-  while (result.length < count && segmentIndex < points.length - 1) {
-    final remaining = segmentLength - alongSegment;
-    final need = target - walked;
-    if (remaining >= need - 1e-6) {
-      final t = segmentLength <= 0
-          ? 0.0
-          : (alongSegment + need) / segmentLength;
-      result.add(_lerp(segmentStart, segmentEnd, t.clamp(0.0, 1.0)));
-      alongSegment += need;
-      walked = target;
-      target += step;
-      continue;
-    }
-
-    walked += remaining;
-    segmentIndex += 1;
-    if (segmentIndex >= points.length - 1) {
-      break;
-    }
-    alongSegment = 0;
-    segmentStart = points[segmentIndex];
-    segmentEnd = points[segmentIndex + 1];
-    segmentLength = lineLengthMeters(segmentStart, segmentEnd);
+  if (densified.length <= maxSamples) {
+    return densified;
   }
 
-  if (result.last != points.last) {
-    result.add(points.last);
+  // Thin while always keeping the first and last vertices.
+  final result = <LatLng>[densified.first];
+  final innerCount = maxSamples - 2;
+  for (var i = 1; i <= innerCount; i++) {
+    final index = ((i * (densified.length - 1)) / (innerCount + 1)).round();
+    final point = densified[index.clamp(1, densified.length - 2)];
+    if (result.last != point) {
+      result.add(point);
+    }
+  }
+  if (result.last != densified.last) {
+    result.add(densified.last);
   }
   return result;
 }

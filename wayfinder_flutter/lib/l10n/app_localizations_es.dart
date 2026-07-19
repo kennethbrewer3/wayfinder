@@ -885,6 +885,19 @@ class AppLocalizationsEs extends AppLocalizations {
       'Poco cambio de elevación en esta ruta: el gráfico puede verse casi plano.';
 
   @override
+  String elevationProfileCombinedLegs(int count) {
+    return 'Combinado de $count tramos (orden de selección; cada tramo puede invertirse para conectar).';
+  }
+
+  @override
+  String elevationProfileSelectionCount(int count) {
+    return '$count rutas seleccionadas para el perfil de elevación';
+  }
+
+  @override
+  String get elevationProfileClearSelection => 'Borrar';
+
+  @override
   String get elevationProfileMin => 'Mín';
 
   @override

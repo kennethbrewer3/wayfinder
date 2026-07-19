@@ -4989,6 +4989,12 @@ abstract class AppLocalizations {
   /// **'Rect corners'**
   String get mapRadialRectCorners;
 
+  /// No description provided for @mapRadialPolygon.
+  ///
+  /// In en, this message translates to:
+  /// **'Polygon AOI'**
+  String get mapRadialPolygon;
+
   /// No description provided for @mapRadialCopyCoordinates.
   ///
   /// In en, this message translates to:
@@ -5055,6 +5061,24 @@ abstract class AppLocalizations {
   /// **'Slope'**
   String get slopeModeSlope;
 
+  /// No description provided for @slopeMobilityWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk'**
+  String get slopeMobilityWalk;
+
+  /// No description provided for @slopeMobilityBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike'**
+  String get slopeMobilityBike;
+
+  /// No description provided for @slopeMobilityDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive'**
+  String get slopeMobilityDrive;
+
   /// No description provided for @slopeComputeAction.
   ///
   /// In en, this message translates to:
@@ -5100,8 +5124,32 @@ abstract class AppLocalizations {
   /// No description provided for @slopeLegendHint.
   ///
   /// In en, this message translates to:
-  /// **'Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.'**
+  /// **'Green = gentle / easier · Red = steep / costly. DEM slope only — pick Walk, Bike, or Drive.'**
   String get slopeLegendHint;
+
+  /// No description provided for @slopeLegendHintWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk cost: green = easy footing · red = steep scramble. DEM slope only (no trails).'**
+  String get slopeLegendHintWalk;
+
+  /// No description provided for @slopeLegendHintBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike cost: green = easy spin · red = steep climb. DEM slope only (no roads/trails).'**
+  String get slopeLegendHintBike;
+
+  /// No description provided for @slopeLegendHintDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive cost: green = gentle grade · red = steep for vehicles. DEM slope only (no road network).'**
+  String get slopeLegendHintDrive;
+
+  /// No description provided for @slopeLegendHintSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope angle: green = flat · red = steep (~35°+). Raw DEM grade, not travel cost.'**
+  String get slopeLegendHintSlope;
 
   /// No description provided for @viewshedInstructions.
   ///
@@ -5474,6 +5522,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rectangle'**
   String get mapObjectTypeRectangle;
+
+  /// No description provided for @mapObjectTypePolygon.
+  ///
+  /// In en, this message translates to:
+  /// **'Polygon'**
+  String get mapObjectTypePolygon;
+
+  /// No description provided for @polygonCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create polygon AOI'**
+  String get polygonCreateTitle;
+
+  /// No description provided for @polygonEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit polygon AOI'**
+  String get polygonEditTitle;
+
+  /// No description provided for @polygonDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Polygon'**
+  String get polygonDefaultName;
+
+  /// No description provided for @polygonNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Property line, patrol sector, no-go…'**
+  String get polygonNameHint;
+
+  /// No description provided for @polygonVertexCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} vertices'**
+  String polygonVertexCount(int count);
+
+  /// No description provided for @polygonDrawingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add vertices. Double-tap or Finish when done (3+). Undo removes the last point.'**
+  String get polygonDrawingHint;
+
+  /// No description provided for @polygonFinishAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get polygonFinishAction;
+
+  /// No description provided for @polygonUndoAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get polygonUndoAction;
+
+  /// No description provided for @sidebarHidePolygon.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide polygon'**
+  String get sidebarHidePolygon;
+
+  /// No description provided for @sidebarShowPolygon.
+  ///
+  /// In en, this message translates to:
+  /// **'Show polygon'**
+  String get sidebarShowPolygon;
+
+  /// No description provided for @sidebarEditPolygon.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit polygon'**
+  String get sidebarEditPolygon;
+
+  /// No description provided for @sidebarDeletePolygon.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete polygon'**
+  String get sidebarDeletePolygon;
+
+  /// No description provided for @mapObjectDetailVertices.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertices'**
+  String get mapObjectDetailVertices;
 
   /// No description provided for @searchSubtitleCoordinates.
   ///

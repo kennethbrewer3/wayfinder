@@ -33,6 +33,8 @@ import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../polygons/models/polygon_geometry.dart';
+import '../../polygons/presentation/create_polygon_dialog.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
 import '../../rectangles/utils/rectangle_dimensions.dart';
@@ -96,6 +98,12 @@ Future<void> _editSelectedObject({
           await updateCircleFromForm(context: context, ref: ref, zone: zone);
         case rectangleZoneType:
           await updateRectangleFromForm(
+            context: context,
+            ref: ref,
+            zone: zone,
+          );
+        case polygonZoneType:
+          await updatePolygonFromForm(
             context: context,
             ref: ref,
             zone: zone,
@@ -339,6 +347,11 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         zone: zone,
         l10n: l10n,
         measurementUnits: measurementUnits,
+      ),
+      polygonZoneType => _polygonDetails(
+        ref: ref,
+        zone: zone,
+        l10n: l10n,
       ),
       trackZoneType => _trackDetails(
         context: context,
@@ -613,6 +626,51 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         _DetailRow(
           label: l10n.mapObjectDetailMapLabel,
           value: mapLabel ?? l10n.mapObjectMapLabelNone,
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
+        ),
+        _zoneLayerAssignment(ref, zone),
+        if (notes != null && notes.isNotEmpty)
+          _NotesSection(l10n: l10n, markdown: notes),
+      ],
+    );
+  }
+
+  Widget _polygonDetails({
+    required WidgetRef ref,
+    required MapZone zone,
+    required AppLocalizations l10n,
+  }) {
+    final geometry = PolygonGeometry.fromZone(zone);
+    if (geometry == null || !geometry.isValid) {
+      return _genericZoneDetails(ref: ref, zone: zone, l10n: l10n);
+    }
+
+    final notes = geometry.notes?.trim();
+    return _DetailsDialogShell(
+      title: zone.name,
+      leading: _ZoneTypeAvatar(
+        color: parseMarkerColor(zone.borderColor),
+        icon: Icons.polyline,
+      ),
+      onEdit: onEdit,
+      l10n: l10n,
+      children: [
+        _DetailRow(
+          label: l10n.mapObjectDetailType,
+          value: l10n.mapObjectTypePolygon,
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailVertices,
+          value: '${geometry.points.length}',
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailCenter,
+          value: _formatLatLng(geometry.labelPoint),
         ),
         _DetailRow(
           label: l10n.mapObjectDetailVisibility,

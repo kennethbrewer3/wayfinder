@@ -1305,6 +1305,7 @@
   "mapRadialCircle": "Cercle",
   "mapRadialRectCenter": "Rect. centre",
   "mapRadialRectCorners": "Rect. coins",
+  "mapRadialPolygon": "Polygone AOI",
   "mapRadialCopyCoordinates": "Copier les coordonnées",
   "mapRadialDeadReckoning": "Pas",
   "mapRadialViewshed": "Bassin de vue",
@@ -1315,6 +1316,9 @@
   "slopeOpacityLabel": "Opacité",
   "slopeModeCost": "Coût",
   "slopeModeSlope": "Pente",
+  "slopeMobilityWalk": "Marche",
+  "slopeMobilityBike": "Vélo",
+  "slopeMobilityDrive": "Voiture",
   "slopeComputeAction": "Calculer",
   "slopeStatusReadyToCompute": "Prêt",
   "slopeStatusComputing": "Calcul {percent}%",
@@ -1339,7 +1343,11 @@
       }
     }
   },
-  "slopeLegendHint": "Vert = doux / plus facile · Rouge = raide / coûteux. Heuristique approximative à partir du DEM seulement.",
+  "slopeLegendHint": "Vert = doux / plus facile · Rouge = raide / coûteux. Pente DEM seulement — choisissez Marche, Vélo ou Voiture.",
+  "slopeLegendHintWalk": "Coût à pied : vert = facile · rouge = raide. Pente DEM seulement (pas de sentiers).",
+  "slopeLegendHintBike": "Coût vélo : vert = facile · rouge = montée raide. Pente DEM seulement (pas de routes).",
+  "slopeLegendHintDrive": "Coût voiture : vert = pente douce · rouge = raide pour véhicules. Pente DEM seulement (pas de réseau routier).",
+  "slopeLegendHintSlope": "Angle de pente : vert = plat · rouge = raide (~35°+). Grade DEM brut, pas un coût de déplacement.",
   "viewshedInstructions": "Antenne = hauteur de l'observateur au-dessus du sol (bâtiment + mât). Cible = hauteur AGL du récepteur/œil (0 = sol). Portée = distance à calculer. Les hauteurs et la portée suivent vos unités de mesure (Réglages).",
   "viewshedAntennaHeightLabel": "Ant. ({unit})",
   "@viewshedAntennaHeightLabel": {
@@ -1448,6 +1456,27 @@
   "rectangleModeCenter": "Rectangle centré",
   "rectangleModeCorners": "Rectangle par coins",
   "mapObjectTypeRectangle": "Rectangle",
+  "mapObjectTypePolygon": "Polygone",
+  "polygonCreateTitle": "Créer un polygone AOI",
+  "polygonEditTitle": "Modifier le polygone AOI",
+  "polygonDefaultName": "Polygone",
+  "polygonNameHint": "Limite, secteur de patrouille, zone interdite…",
+  "polygonVertexCount": "{count} sommets",
+  "@polygonVertexCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "polygonDrawingHint": "Touchez pour ajouter des sommets. Double-touche ou Terminer (3+). Annuler retire le dernier point.",
+  "polygonFinishAction": "Terminer",
+  "polygonUndoAction": "Annuler",
+  "sidebarHidePolygon": "Masquer le polygone",
+  "sidebarShowPolygon": "Afficher le polygone",
+  "sidebarEditPolygon": "Modifier le polygone",
+  "sidebarDeletePolygon": "Supprimer le polygone",
+  "mapObjectDetailVertices": "Sommets",
   "searchSubtitleCoordinates": "Coordonnées",
   "searchSubtitleMgrs": "MGRS",
   "searchSubtitleMarker": "Marqueur",

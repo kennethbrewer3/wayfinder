@@ -10,6 +10,7 @@ import '../../circles/models/circle_geometry.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../map/utils/mgrs_utils.dart';
+import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../tracks/models/track_geometry.dart';
@@ -631,6 +632,12 @@ void _paintZone(
         return;
       }
       _paintRectangle(canvas, map, rectangle);
+    case polygonZoneType:
+      final polygon = PolygonGeometry.fromZone(zone);
+      if (polygon == null || !polygon.isValid) {
+        return;
+      }
+      _paintPolygon(canvas, map, polygon);
     default:
       break;
   }
@@ -702,6 +709,26 @@ void _paintRectangle(
     final a = map.project(corners[i]);
     final c = map.project(corners[(i + 1) % corners.length]);
     canvas.drawLine(a.x, a.y, c.x, c.y);
+  }
+  canvas.strokePath();
+}
+
+void _paintPolygon(
+  PdfGraphics canvas,
+  _SheetProjector map,
+  PolygonGeometry polygon,
+) {
+  final points = polygon.points;
+  if (points.length < 3) {
+    return;
+  }
+  canvas
+    ..setStrokeColor(PdfColors.pink800)
+    ..setLineWidth(1.1);
+  for (var i = 0; i < points.length; i++) {
+    final a = map.project(points[i]);
+    final b = map.project(points[(i + 1) % points.length]);
+    canvas.drawLine(a.x, a.y, b.x, b.y);
   }
   canvas.strokePath();
 }

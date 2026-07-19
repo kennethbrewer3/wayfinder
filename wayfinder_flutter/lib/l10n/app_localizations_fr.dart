@@ -2885,6 +2885,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect. coins';
 
   @override
+  String get mapRadialPolygon => 'Polygone AOI';
+
+  @override
   String get mapRadialCopyCoordinates => 'Copier les coordonnées';
 
   @override
@@ -2918,6 +2921,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get slopeModeSlope => 'Pente';
 
   @override
+  String get slopeMobilityWalk => 'Marche';
+
+  @override
+  String get slopeMobilityBike => 'Vélo';
+
+  @override
+  String get slopeMobilityDrive => 'Voiture';
+
+  @override
   String get slopeComputeAction => 'Calculer';
 
   @override
@@ -2944,7 +2956,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get slopeLegendHint =>
-      'Vert = doux / plus facile · Rouge = raide / coûteux. Heuristique approximative à partir du DEM seulement.';
+      'Vert = doux / plus facile · Rouge = raide / coûteux. Pente DEM seulement — choisissez Marche, Vélo ou Voiture.';
+
+  @override
+  String get slopeLegendHintWalk =>
+      'Coût à pied : vert = facile · rouge = raide. Pente DEM seulement (pas de sentiers).';
+
+  @override
+  String get slopeLegendHintBike =>
+      'Coût vélo : vert = facile · rouge = montée raide. Pente DEM seulement (pas de routes).';
+
+  @override
+  String get slopeLegendHintDrive =>
+      'Coût voiture : vert = pente douce · rouge = raide pour véhicules. Pente DEM seulement (pas de réseau routier).';
+
+  @override
+  String get slopeLegendHintSlope =>
+      'Angle de pente : vert = plat · rouge = raide (~35°+). Grade DEM brut, pas un coût de déplacement.';
 
   @override
   String get viewshedInstructions =>
@@ -3150,6 +3178,52 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapObjectTypeRectangle => 'Rectangle';
+
+  @override
+  String get mapObjectTypePolygon => 'Polygone';
+
+  @override
+  String get polygonCreateTitle => 'Créer un polygone AOI';
+
+  @override
+  String get polygonEditTitle => 'Modifier le polygone AOI';
+
+  @override
+  String get polygonDefaultName => 'Polygone';
+
+  @override
+  String get polygonNameHint =>
+      'Limite, secteur de patrouille, zone interdite…';
+
+  @override
+  String polygonVertexCount(int count) {
+    return '$count sommets';
+  }
+
+  @override
+  String get polygonDrawingHint =>
+      'Touchez pour ajouter des sommets. Double-touche ou Terminer (3+). Annuler retire le dernier point.';
+
+  @override
+  String get polygonFinishAction => 'Terminer';
+
+  @override
+  String get polygonUndoAction => 'Annuler';
+
+  @override
+  String get sidebarHidePolygon => 'Masquer le polygone';
+
+  @override
+  String get sidebarShowPolygon => 'Afficher le polygone';
+
+  @override
+  String get sidebarEditPolygon => 'Modifier le polygone';
+
+  @override
+  String get sidebarDeletePolygon => 'Supprimer le polygone';
+
+  @override
+  String get mapObjectDetailVertices => 'Sommets';
 
   @override
   String get searchSubtitleCoordinates => 'Coordonnées';

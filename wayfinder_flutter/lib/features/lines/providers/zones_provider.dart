@@ -5,6 +5,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
+import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
 import '../models/line_geometry.dart';
@@ -200,6 +201,14 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
     );
   }
 
+  Future<void> togglePolygonNameLabel(UuidValue zoneId) {
+    return _togglePolygonLabel(
+      zoneId: zoneId,
+      toggle: (geometry) =>
+          geometry.copyWith(showNameLabel: !geometry.showNameLabel),
+    );
+  }
+
   Future<void> toggleRectangleSizeLabel(UuidValue zoneId) {
     return _toggleRectangleLabel(
       zoneId: zoneId,
@@ -243,6 +252,47 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
     } catch (error, stackTrace) {
       AppLogger.logZones.error(
         '📡 Failed to toggle rectangle label',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      state = previousState;
+    }
+  }
+
+  Future<void> _togglePolygonLabel({
+    required UuidValue zoneId,
+    required PolygonGeometry Function(PolygonGeometry geometry) toggle,
+  }) async {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+
+    final index = current.indexWhere((zone) => zone.id == zoneId);
+    if (index < 0) {
+      return;
+    }
+
+    final zone = current[index];
+    final geometry = PolygonGeometry.fromZone(zone);
+    if (geometry == null || !geometry.isValid) {
+      return;
+    }
+
+    final updatedZone = updateZonePolygonGeometry(zone, toggle(geometry));
+    final previousState = state;
+
+    state = AsyncData([
+      for (var i = 0; i < current.length; i++)
+        if (i == index) updatedZone else current[i],
+    ]);
+
+    try {
+      final client = ref.read(serverClientProvider);
+      await client.mapZone.updateZone(updatedZone);
+    } catch (error, stackTrace) {
+      AppLogger.logZones.error(
+        '📡 Failed to toggle polygon label',
         error: error,
         stackTrace: stackTrace,
       );

@@ -16,6 +16,8 @@ import '../../elevation/presentation/path_profile_dialog.dart';
 import '../../elevation/providers/path_profile_selection_provider.dart';
 import '../../elevation/utils/path_profile.dart';
 import '../../elevation/utils/path_profile_zone.dart';
+import '../../polygons/models/polygon_geometry.dart';
+import '../../polygons/presentation/create_polygon_dialog.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
@@ -1183,6 +1185,14 @@ class _ZoneListTile extends ConsumerWidget {
         onZoomTo: onZoomTo,
       );
     }
+    final isPolygon = zone.type == polygonZoneType;
+    if (isPolygon) {
+      return _PolygonZoneListTile(
+        key: ValueKey(zone.id),
+        zone: zone,
+        onZoomTo: onZoomTo,
+      );
+    }
     final isTrack = zone.type == trackZoneType;
     if (isTrack) {
       return _TrackZoneListTile(
@@ -1837,6 +1847,141 @@ class _RectangleZoneListTile extends ConsumerWidget {
   }
 }
 
+class _PolygonZoneListTile extends ConsumerWidget {
+  const _PolygonZoneListTile({
+    super.key,
+    required this.zone,
+    required this.onZoomTo,
+  });
+
+  final MapZone zone;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final zoneId = zone.id;
+    final geometry = PolygonGeometry.fromZone(zone);
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
+    final notesPreview = geometry?.notes?.trim();
+
+    if (geometry == null || !geometry.isValid) {
+      return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
+    }
+
+    return ColoredBox(
+      color: _selectionHighlightColor(theme, isSelected),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              onZoomTo(geometry.labelPoint);
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _parseColor(zone.borderColor),
+                    radius: 18,
+                    child: const Icon(
+                      Icons.polyline,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          zone.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.polygonVertexCount(geometry.points.length),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (notesPreview != null &&
+                            notesPreview.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          MapObjectNotesPreview(
+                            markdown: notesPreview,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: geometry.showNameLabel
+                    ? l10n.sidebarHideNameOnMap
+                    : l10n.sidebarShowNameOnMap,
+                icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
+                toggled: geometry.showNameLabel,
+                isToggle: true,
+                onPressed: () =>
+                    togglePolygonNameLabel(ref: ref, zoneId: zoneId),
+              ),
+              _MapObjectIconAction(
+                tooltip: zone.visible
+                    ? l10n.sidebarHidePolygon
+                    : l10n.sidebarShowPolygon,
+                icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: zone.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.updateZone(
+                    zone.copyWith(visible: !zone.visible),
+                  );
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarEditPolygon,
+                icon: Icons.edit_outlined,
+                onPressed: () => updatePolygonFromForm(
+                  context: context,
+                  ref: ref,
+                  zone: zone,
+                ),
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarDeletePolygon,
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.deleteZone(zoneId);
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _GenericZoneListTile extends ConsumerWidget {
   const _GenericZoneListTile({
     super.key,
@@ -1864,6 +2009,7 @@ class _GenericZoneListTile extends ConsumerWidget {
             onTap: () {
               ref.read(selectedMapObjectProvider.notifier).clear();
               final center =
+                  polygonZoneCenter(zone) ??
                   rectangleZoneCenter(zone) ??
                   circleZoneCenter(zone) ??
                   lineZoneCenter(zone);

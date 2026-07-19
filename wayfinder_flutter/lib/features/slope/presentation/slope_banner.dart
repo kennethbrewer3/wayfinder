@@ -8,6 +8,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../lines/models/distance_input_unit.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../providers/slope_provider.dart';
+import '../utils/slope_compute.dart';
 
 class SlopeBanner extends ConsumerStatefulWidget {
   const SlopeBanner({
@@ -49,6 +50,8 @@ class _SlopeBannerState extends ConsumerState<SlopeBanner> {
     }
     final meters = distanceInputValueToMeters(value, _rangeUnit);
     ref.read(slopeProvider.notifier).setRangeMeters(meters);
+    final applied = ref.read(slopeProvider).rangeMeters;
+    _rangeController.text = formatDistanceInputFieldValue(applied, _rangeUnit);
   }
 
   String _statusText(AppLocalizations l10n, SlopeState state) {
@@ -219,6 +222,34 @@ class _SlopeBannerState extends ConsumerState<SlopeBanner> {
                             );
                           },
                   ),
+                  if (state.colorMode == SlopeColorMode.cost)
+                    SegmentedButton<SlopeMobilityMode>(
+                      segments: [
+                        ButtonSegment(
+                          value: SlopeMobilityMode.walk,
+                          label: Text(l10n.slopeMobilityWalk),
+                        ),
+                        ButtonSegment(
+                          value: SlopeMobilityMode.bike,
+                          label: Text(l10n.slopeMobilityBike),
+                        ),
+                        ButtonSegment(
+                          value: SlopeMobilityMode.drive,
+                          label: Text(l10n.slopeMobilityDrive),
+                        ),
+                      ],
+                      selected: {state.mobilityMode},
+                      onSelectionChanged: computing
+                          ? null
+                          : (value) {
+                              ref
+                                  .read(slopeProvider.notifier)
+                                  .setMobilityMode(value.first);
+                              unawaited(
+                                ref.read(slopeProvider.notifier).compute(),
+                              );
+                            },
+                    ),
                   SizedBox(
                     width: 140,
                     child: Row(
@@ -259,7 +290,13 @@ class _SlopeBannerState extends ConsumerState<SlopeBanner> {
               ),
               const SizedBox(height: 4),
               Text(
-                l10n.slopeLegendHint,
+                state.colorMode == SlopeColorMode.slope
+                    ? l10n.slopeLegendHintSlope
+                    : switch (state.mobilityMode) {
+                        SlopeMobilityMode.walk => l10n.slopeLegendHintWalk,
+                        SlopeMobilityMode.bike => l10n.slopeLegendHintBike,
+                        SlopeMobilityMode.drive => l10n.slopeLegendHintDrive,
+                      },
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: onInverse.withValues(alpha: 0.85),
                 ),

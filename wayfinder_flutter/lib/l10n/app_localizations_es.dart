@@ -2878,6 +2878,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect. esquinas';
 
   @override
+  String get mapRadialPolygon => 'Polígono AOI';
+
+  @override
   String get mapRadialCopyCoordinates => 'Copiar coordenadas';
 
   @override
@@ -2911,6 +2914,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get slopeModeSlope => 'Pendiente';
 
   @override
+  String get slopeMobilityWalk => 'A pie';
+
+  @override
+  String get slopeMobilityBike => 'Bici';
+
+  @override
+  String get slopeMobilityDrive => 'Coche';
+
+  @override
   String get slopeComputeAction => 'Calcular';
 
   @override
@@ -2937,7 +2949,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get slopeLegendHint =>
-      'Verde = suave / más fácil · Rojo = empinado / costoso. Heurística aproximada solo con DEM.';
+      'Verde = suave / más fácil · Rojo = empinado / costoso. Solo pendiente DEM — elige A pie, Bici o Coche.';
+
+  @override
+  String get slopeLegendHintWalk =>
+      'Coste a pie: verde = fácil · rojo = trepada empinada. Solo pendiente DEM (sin senderos).';
+
+  @override
+  String get slopeLegendHintBike =>
+      'Coste en bici: verde = rodaje fácil · rojo = subida dura. Solo pendiente DEM (sin carreteras).';
+
+  @override
+  String get slopeLegendHintDrive =>
+      'Coste en coche: verde = pendiente suave · rojo = empinado para vehículos. Solo pendiente DEM (sin red vial).';
+
+  @override
+  String get slopeLegendHintSlope =>
+      'Ángulo de pendiente: verde = llano · rojo = empinado (~35°+). Grado DEM bruto, no coste de viaje.';
 
   @override
   String get viewshedInstructions =>
@@ -3140,6 +3168,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapObjectTypeRectangle => 'Rectángulo';
+
+  @override
+  String get mapObjectTypePolygon => 'Polígono';
+
+  @override
+  String get polygonCreateTitle => 'Crear polígono AOI';
+
+  @override
+  String get polygonEditTitle => 'Editar polígono AOI';
+
+  @override
+  String get polygonDefaultName => 'Polígono';
+
+  @override
+  String get polygonNameHint => 'Límite, sector de patrulla, zona prohibida…';
+
+  @override
+  String polygonVertexCount(int count) {
+    return '$count vértices';
+  }
+
+  @override
+  String get polygonDrawingHint =>
+      'Toca para añadir vértices. Doble toque o Finalizar (3+). Deshacer quita el último punto.';
+
+  @override
+  String get polygonFinishAction => 'Finalizar';
+
+  @override
+  String get polygonUndoAction => 'Deshacer';
+
+  @override
+  String get sidebarHidePolygon => 'Ocultar polígono';
+
+  @override
+  String get sidebarShowPolygon => 'Mostrar polígono';
+
+  @override
+  String get sidebarEditPolygon => 'Editar polígono';
+
+  @override
+  String get sidebarDeletePolygon => 'Eliminar polígono';
+
+  @override
+  String get mapObjectDetailVertices => 'Vértices';
 
   @override
   String get searchSubtitleCoordinates => 'Coordenadas';

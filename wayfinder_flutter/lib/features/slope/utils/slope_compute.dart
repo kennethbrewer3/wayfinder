@@ -8,26 +8,101 @@ import 'package:latlong2/latlong.dart';
 
 import '../../lines/utils/bearing_utils.dart';
 
+/// How slope is interpreted as travel difficulty.
+enum SlopeMobilityMode {
+  /// On foot — tolerates steeper grades than bike/drive.
+  walk,
+
+  /// Bicycle — cost rises early; sustained climbs are hard.
+  bike,
+
+  /// Vehicle — gentle/highway grades stay cheap; steep terrain costly.
+  drive,
+}
+
 /// Rough cross-country cost from slope degrees (higher = harder).
 ///
-/// Tuned as a simple walk/drive heuristic, not a mobility model:
-/// gentle grades stay cheap; steep slopes rise quickly toward impassable.
-double crossCountryCostFromSlopeDegrees(double slopeDegrees) {
+/// DEM slope only — ignores roads, trails, vegetation, and surface.
+/// Curves differ by [mode] so the same hill can be green for driving
+/// and yellow/red for walking or cycling.
+double crossCountryCostFromSlopeDegrees(
+  double slopeDegrees, {
+  SlopeMobilityMode mode = SlopeMobilityMode.walk,
+}) {
   final s = slopeDegrees.clamp(0.0, 90.0);
-  if (s <= 3) {
-    return s / 3 * 0.15;
+  return switch (mode) {
+    SlopeMobilityMode.walk => _walkCost(s),
+    SlopeMobilityMode.bike => _bikeCost(s),
+    SlopeMobilityMode.drive => _driveCost(s),
+  };
+}
+
+double _lerpCost(double s, double lo, double hi, double c0, double c1) {
+  if (s <= lo) {
+    return c0;
+  }
+  if (s >= hi) {
+    return c1;
+  }
+  return c0 + (s - lo) / (hi - lo) * (c1 - c0);
+}
+
+/// Walk: fine through trail grades; hard above ~30°.
+double _walkCost(double s) {
+  if (s <= 5) {
+    return _lerpCost(s, 0, 5, 0, 0.12);
+  }
+  if (s <= 12) {
+    return _lerpCost(s, 5, 12, 0.12, 0.35);
+  }
+  if (s <= 20) {
+    return _lerpCost(s, 12, 20, 0.35, 0.60);
+  }
+  if (s <= 30) {
+    return _lerpCost(s, 20, 30, 0.60, 0.85);
+  }
+  if (s <= 40) {
+    return _lerpCost(s, 30, 40, 0.85, 1.0);
+  }
+  return 1.0;
+}
+
+/// Bike: climbs hurt early; ~18°+ treated as near-impassable.
+double _bikeCost(double s) {
+  if (s <= 2) {
+    return _lerpCost(s, 0, 2, 0, 0.10);
+  }
+  if (s <= 5) {
+    return _lerpCost(s, 2, 5, 0.10, 0.40);
   }
   if (s <= 8) {
-    return 0.15 + (s - 3) / 5 * 0.25;
+    return _lerpCost(s, 5, 8, 0.40, 0.65);
+  }
+  if (s <= 12) {
+    return _lerpCost(s, 8, 12, 0.65, 0.85);
+  }
+  if (s <= 18) {
+    return _lerpCost(s, 12, 18, 0.85, 1.0);
+  }
+  return 1.0;
+}
+
+/// Drive: highway grades stay cheap; steep off-road / mountain costly.
+double _driveCost(double s) {
+  if (s <= 3) {
+    return _lerpCost(s, 0, 3, 0, 0.10);
+  }
+  if (s <= 6) {
+    return _lerpCost(s, 3, 6, 0.10, 0.30);
+  }
+  if (s <= 10) {
+    return _lerpCost(s, 6, 10, 0.30, 0.55);
   }
   if (s <= 15) {
-    return 0.40 + (s - 8) / 7 * 0.25;
+    return _lerpCost(s, 10, 15, 0.55, 0.80);
   }
   if (s <= 25) {
-    return 0.65 + (s - 15) / 10 * 0.20;
-  }
-  if (s <= 35) {
-    return 0.85 + (s - 25) / 10 * 0.15;
+    return _lerpCost(s, 15, 25, 0.80, 1.0);
   }
   return 1.0;
 }
@@ -86,40 +161,61 @@ double? slopeDegreesFromNeighborhood({
   return math.atan(riseRun) * 180 / math.pi;
 }
 
-/// Grid step for a slope analysis of [rangeMeters] half-width.
-double slopeStepMetersForRange(double rangeMeters, {int targetCells = 40}) {
-  final safeRange = rangeMeters.clamp(200.0, 15000.0);
-  return (safeRange * 2 / targetCells).clamp(25.0, 250.0);
+/// Minimum / maximum analysis radius (half-width of the square grid).
+const minSlopeRangeMeters = 200.0;
+
+/// ~50 miles — enough for regional drive-range overviews.
+const maxSlopeRangeMeters = 50 * 1609.344;
+
+/// Grid layout that always spans [rangeMeters] in every direction.
+///
+/// Cell count stays bounded for DEM sampling cost; step coarsens as range
+/// grows so a 50‑mile radius still paints the full circle.
+({int size, double stepMeters}) slopeGridLayoutForRange(double rangeMeters) {
+  final safeRange = rangeMeters.clamp(minSlopeRangeMeters, maxSlopeRangeMeters);
+  final size = switch (safeRange) {
+    <= 2000 => 41,
+    <= 10000 => 49,
+    <= 30000 => 57,
+    _ => 64,
+  };
+  final step = (2 * safeRange) / (size - 1);
+  return (size: size, stepMeters: step);
 }
 
-int slopeGridSizeForRange(double rangeMeters, double stepMeters) {
-  if (stepMeters <= 0) {
-    return 2;
-  }
-  final cells = ((rangeMeters * 2) / stepMeters).ceil() + 1;
-  return cells.clamp(8, 64);
+/// Grid step for a slope analysis of [rangeMeters] half-width.
+double slopeStepMetersForRange(double rangeMeters) {
+  return slopeGridLayoutForRange(rangeMeters).stepMeters;
+}
+
+int slopeGridSizeForRange(double rangeMeters, [double? stepMeters]) {
+  return slopeGridLayoutForRange(rangeMeters).size;
 }
 
 /// Build sample points for a square DEM grid centered on [center].
 ///
 /// Returns row-major points (north → south rows, west → east within row).
+/// The grid always spans [−rangeMeters, +rangeMeters] on both axes.
 List<LatLng> slopeGridSamplePoints({
   required LatLng center,
   required double rangeMeters,
   required double stepMeters,
 }) {
-  final half = rangeMeters;
-  final size = slopeGridSizeForRange(rangeMeters, stepMeters);
+  final half = rangeMeters.clamp(minSlopeRangeMeters, maxSlopeRangeMeters);
+  final size = slopeGridSizeForRange(half, stepMeters);
+  // Re-derive step so the last cell lands exactly on −half even if the
+  // caller’s step was slightly inconsistent with size.
+  final step = size <= 1 ? stepMeters : (2 * half) / (size - 1);
   final points = <LatLng>[];
   for (var row = 0; row < size; row++) {
-    final northOffset = half - row * stepMeters;
+    final northOffset = half - row * step;
     final rowAnchor = pointAtTrueBearing(
       anchor: center,
       bearingDegrees: northOffset >= 0 ? 0 : 180,
       distanceMeters: northOffset.abs(),
     );
     for (var col = 0; col < size; col++) {
-      final eastOffset = -half + col * stepMeters;
+      final eastOffset = -half + col * step;
       points.add(
         pointAtTrueBearing(
           anchor: rowAnchor,
@@ -201,6 +297,7 @@ Future<Uint8List> encodeSlopeHeatmapPng({
   required List<double?> slopesDegrees,
   required int size,
   required bool colorByCost,
+  SlopeMobilityMode mobilityMode = SlopeMobilityMode.walk,
   double opacity = 0.55,
 }) async {
   assert(slopesDegrees.length == size * size);
@@ -216,7 +313,7 @@ Future<Uint8List> encodeSlopeHeatmapPng({
       }
       final color = colorByCost
           ? costColorForValue(
-              crossCountryCostFromSlopeDegrees(slope),
+              crossCountryCostFromSlopeDegrees(slope, mode: mobilityMode),
               alpha: opacity,
             )
           : slopeColorForDegrees(slope, alpha: opacity);

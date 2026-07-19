@@ -8,6 +8,7 @@ import '../../markers/models/marker_icon_registry.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../lines/models/line_geometry.dart';
+import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../map/providers/map_providers.dart';
 
@@ -73,6 +74,7 @@ Color zoneSortColor(MapZone zone) {
     lineZoneType => parseMarkerColor(zone.color),
     circleZoneType => parseMarkerColor(zone.borderColor),
     rectangleZoneType => parseMarkerColor(zone.borderColor),
+    polygonZoneType => parseMarkerColor(zone.borderColor),
     _ => parseMarkerColor(zone.color),
   };
 }
@@ -87,6 +89,7 @@ int zoneTypeSortOrder(String type) {
     trackZoneType => 1,
     circleZoneType => 2,
     rectangleZoneType => 3,
+    polygonZoneType => 4,
     _ => 99,
   };
 }
@@ -342,6 +345,7 @@ IconData zoneTypeIcon(String type) {
     trackZoneType => Icons.directions_walk,
     circleZoneType => Icons.radio_button_unchecked,
     rectangleZoneType => Icons.crop_square,
+    polygonZoneType => Icons.polyline,
     _ => Icons.layers,
   };
 }

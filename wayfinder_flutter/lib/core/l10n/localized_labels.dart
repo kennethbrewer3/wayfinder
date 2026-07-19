@@ -12,6 +12,7 @@ import '../../features/lines/models/line_geometry.dart';
 import '../../features/lines/models/measurement_units.dart';
 import '../../features/lines/presentation/line_form_dialog.dart';
 import '../../features/map/providers/map_providers.dart';
+import '../../features/polygons/models/polygon_geometry.dart';
 import '../../features/rectangles/models/rectangle_geometry.dart';
 import '../../features/rectangles/models/rectangle_size_display.dart';
 import '../../features/tracks/models/track_geometry.dart';
@@ -369,6 +370,7 @@ String localizedZoneTypeLabel(AppLocalizations l10n, String type) {
     trackZoneType => l10n.mapObjectTypeTrack,
     circleZoneType => l10n.mapObjectTypeCircle,
     rectangleZoneType => l10n.mapObjectTypeRectangle,
+    polygonZoneType => l10n.mapObjectTypePolygon,
     _ => type,
   };
 }

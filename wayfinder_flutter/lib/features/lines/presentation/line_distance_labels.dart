@@ -10,6 +10,7 @@ import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/presentation/map_circle_layer.dart';
 import '../../circles/utils/circle_distance.dart';
+import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/utils/rectangle_bounds.dart';
 import '../../rectangles/utils/rectangle_dimensions.dart';
@@ -133,6 +134,36 @@ List<LineMapLabelContent> collectRectangleMapLabelContents(
     }
   }
   return contents;
+}
+
+List<LineMapLabelContent> collectPolygonMapLabelContents(
+  List<MapZone> zones,
+) {
+  final contents = <LineMapLabelContent>[];
+  for (final zone in zones) {
+    if (!zone.visible || zone.type != polygonZoneType) {
+      continue;
+    }
+    final content = polygonMapLabelContentForZone(zone);
+    if (content != null) {
+      contents.add(content);
+    }
+  }
+  return contents;
+}
+
+LineMapLabelContent? polygonMapLabelContentForZone(MapZone zone) {
+  final geometry = PolygonGeometry.fromZone(zone);
+  if (geometry == null || !geometry.isValid || !geometry.showNameLabel) {
+    return null;
+  }
+
+  return LineMapLabelContent(
+    id: zone.id.uuid,
+    point: geometry.labelPoint,
+    color: parseMarkerColor(zone.borderColor),
+    name: zone.name,
+  );
 }
 
 LineMapLabelContent? rectangleMapLabelContentForZone(
@@ -357,6 +388,7 @@ class _LineMapLabelsOverlayState extends State<LineMapLabelsOverlay> {
         widget.zones,
         widget.units,
       ),
+      ...collectPolygonMapLabelContents(widget.zones),
     ];
 
     if (widget.previewStart case final start?

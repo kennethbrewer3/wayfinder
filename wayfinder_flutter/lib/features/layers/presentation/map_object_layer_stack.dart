@@ -11,6 +11,7 @@ import '../../markers/models/marker_color.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/utils/effective_marker_icon.dart';
+import '../../polygons/presentation/map_polygon_layer.dart';
 import '../../rectangles/presentation/map_rectangle_layer.dart';
 import '../utils/map_layer_utils.dart';
 
@@ -101,6 +102,7 @@ List<Widget> buildStackedMapLayerChildren({
         polygons: [
           ...buildSavedCirclePolygons(layerZones),
           ...buildSavedRectanglePolygons(layerZones),
+          ...buildSavedPolygonPolygons(layerZones),
         ],
       ),
     );

@@ -17,81 +17,85 @@ import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/presentation/map_circle_layer.dart';
 import '../../circles/providers/circle_drawing_provider.dart';
-import '../../rectangles/models/rectangle_geometry.dart';
-import '../../rectangles/presentation/create_rectangle_dialog.dart';
-import '../../rectangles/presentation/map_rectangle_layer.dart';
-import '../../rectangles/providers/rectangle_drawing_provider.dart';
-import '../../rectangles/utils/rectangle_bounds.dart';
-import '../../rectangles/utils/rectangle_hit_test.dart';
+import '../../circles/utils/circle_hit_test.dart';
+import '../../geocoding/presentation/submit_geocoding_contribution.dart';
+import '../../geocoding/providers/geocoding_server_provider.dart';
 import '../../layers/presentation/map_object_layer_stack.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../layers/utils/map_layer_utils.dart';
+import '../../lines/models/angle_display_format.dart';
+import '../../lines/models/bearing_reference.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/bearing_plot_overlay.dart';
 import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/presentation/dead_reckoning_banner.dart';
+import '../../lines/presentation/line_direction_arrows_overlay.dart';
 import '../../lines/presentation/line_distance_labels.dart';
 import '../../lines/presentation/map_line_layer.dart';
-import '../../lines/models/angle_display_format.dart';
-import '../../lines/models/bearing_reference.dart';
 import '../../lines/providers/angle_display_format_provider.dart';
-import '../../circles/utils/circle_hit_test.dart';
 import '../../lines/providers/bearing_plot_provider.dart';
 import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/dead_reckoning_provider.dart';
 import '../../lines/providers/line_drawing_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/pace_length_provider.dart';
-import '../../map/providers/map_providers.dart';
-import '../../map/providers/selected_map_object_provider.dart';
-import '../../markers/utils/marker_hit_test.dart';
-import '../../markers/utils/marker_share_url.dart';
+import '../../lines/providers/zones_provider.dart';
 import '../../lines/utils/bearing_utils.dart';
-import '../utils/magnetic_declination.dart';
-import '../../tracks/presentation/track_footsteps_overlay.dart';
-import '../../lines/presentation/line_direction_arrows_overlay.dart';
 import '../../lines/utils/co_located_line_endpoints.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_snap.dart';
+import '../../map/providers/map_providers.dart';
+import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
-import '../../lines/providers/zones_provider.dart';
-import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
-import '../../slope/presentation/map_slope_layer.dart';
-import '../../slope/presentation/slope_banner.dart';
-import '../../slope/providers/slope_provider.dart';
-import '../../viewshed/presentation/map_viewshed_layer.dart';
-import '../../viewshed/presentation/viewshed_banner.dart';
-import '../../viewshed/providers/viewshed_provider.dart';
-import '../../viewshed/utils/viewshed_compute.dart';
-import '../../geocoding/presentation/submit_geocoding_contribution.dart';
-import '../../geocoding/providers/geocoding_server_provider.dart';
+import '../../markers/providers/markers_provider.dart';
+import '../../markers/utils/marker_hit_test.dart';
+import '../../markers/utils/marker_share_url.dart';
+import '../../polygons/presentation/create_polygon_dialog.dart';
+import '../../polygons/presentation/map_polygon_layer.dart';
+import '../../polygons/providers/polygon_drawing_provider.dart';
+import '../../polygons/utils/polygon_hit_test.dart';
+import '../../rectangles/models/rectangle_geometry.dart';
+import '../../rectangles/presentation/create_rectangle_dialog.dart';
+import '../../rectangles/presentation/map_rectangle_layer.dart';
+import '../../rectangles/providers/rectangle_drawing_provider.dart';
+import '../../rectangles/utils/rectangle_bounds.dart';
+import '../../rectangles/utils/rectangle_hit_test.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
+import '../../settings/data/pmtiles_loader.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
 import '../../settings/models/pmtiles_source.dart';
 import '../../settings/providers/pmtiles_providers.dart';
-import '../../settings/data/pmtiles_loader.dart';
+import '../../slope/presentation/map_slope_layer.dart';
+import '../../slope/presentation/slope_banner.dart';
+import '../../slope/providers/slope_provider.dart';
+import '../../tracks/presentation/track_footsteps_overlay.dart';
+import '../../viewshed/presentation/map_viewshed_layer.dart';
+import '../../viewshed/presentation/viewshed_banner.dart';
+import '../../viewshed/providers/viewshed_provider.dart';
+import '../../viewshed/utils/viewshed_compute.dart';
 import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
-import '../providers/pmtiles_load_status_provider.dart';
-import '../providers/map_zoom_range_provider.dart';
-import '../providers/map_compass_rose_provider.dart';
 import '../providers/device_location_provider.dart';
+import '../providers/map_compass_rose_provider.dart';
 import '../providers/map_mgrs_grid_provider.dart';
-import 'map_device_location_hud.dart';
-import 'map_device_location_layer.dart';
 import '../providers/map_viewport_debug_provider.dart';
-import 'map_compass_rose_overlay.dart';
-import 'map_mgrs_grid_layer.dart';
+import '../providers/map_zoom_range_provider.dart';
+import '../providers/pmtiles_load_status_provider.dart';
 import '../utils/device_location_readout.dart';
+import '../utils/magnetic_declination.dart';
 import '../utils/pmtiles_archive_selection.dart';
 import '../utils/pmtiles_viewport.dart';
+import 'map_compass_rose_overlay.dart';
 import 'map_cursor_coordinates.dart';
+import 'map_device_location_hud.dart';
+import 'map_device_location_layer.dart';
+import 'map_mgrs_grid_layer.dart';
 import 'map_radial_menu.dart';
 import 'map_viewport_debug_overlay.dart';
 
@@ -256,6 +260,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _lineDrawingPressActive = false;
   bool _circleDrawingPressActive = false;
   bool _rectangleDrawingPressActive = false;
+  bool _polygonDrawingPressActive = false;
   bool _bearingPlotPressActive = false;
   DateTime? _lastDrawingCompleteTapAt;
   Offset? _lastDrawingCompleteTapLocal;
@@ -767,6 +772,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       ref.read(lineDrawingProvider).active ||
       ref.read(circleDrawingProvider).active ||
       ref.read(rectangleDrawingProvider).active ||
+      ref.read(polygonDrawingProvider).active ||
       ref.read(deadReckoningProvider).active ||
       ref.read(viewshedProvider).active ||
       ref.read(slopeProvider).active;
@@ -1280,6 +1286,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       );
       return;
     }
+    final polygonDrawing = ref.read(polygonDrawingProvider);
+    if (polygonDrawing.active && polygonDrawing.canFinish) {
+      unawaited(_finalizePolygonDrawing());
+      return;
+    }
     final bearingPlot = ref.read(bearingPlotProvider);
     if (bearingPlot.active) {
       final anchor = bearingPlot.anchor;
@@ -1425,6 +1436,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       );
     }
 
+    final polygonId = hitTestPolygonAtPoint(
+      point: point,
+      zones: visibleZones,
+      camera: _mapController.camera,
+    );
+    if (polygonId != null) {
+      return SelectedMapObject(
+        kind: SelectedMapObjectKind.zone,
+        id: polygonId,
+      );
+    }
+
     return null;
   }
 
@@ -1533,6 +1556,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    if (ref.read(polygonDrawingProvider).active) {
+      _cancelPendingLongPress();
+      _polygonDrawingPressActive = true;
+      return;
+    }
+
     final controlPointIndex = _controlPointIndexAt(point);
     if (controlPointIndex != null) {
       // Arm edit immediately so InteractiveFlag.drag turns off before the map
@@ -1590,6 +1619,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (ref.read(rectangleDrawingProvider).awaitingSecondPoint &&
         _rectangleDrawingPressActive) {
       _updateRectanglePreview(point);
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _controlPointDoubleTapSlop) {
+        _clearDrawingCompleteDoubleTap();
+      }
+    }
+
+    if (ref.read(polygonDrawingProvider).active) {
+      ref.read(polygonDrawingProvider.notifier).setPreviewPoint(point);
       if (_tapDownLocal != null &&
           (event.localPosition - _tapDownLocal!).distance >
               _controlPointDoubleTapSlop) {
@@ -1734,6 +1772,26 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final polygonDrawing = ref.read(polygonDrawingProvider);
+    if (polygonDrawing.active && !_longPressTriggered) {
+      if (_polygonDrawingPressActive) {
+        ref.read(polygonDrawingProvider.notifier).setPreviewPoint(point);
+        if (_isShortPress(event) &&
+            _registerDrawingCompleteTap(event.localPosition)) {
+          _completeActiveDrawingAt(point);
+        } else if (_isShortPress(event)) {
+          ref.read(polygonDrawingProvider.notifier).addVertex(point);
+        } else {
+          _clearDrawingCompleteDoubleTap();
+        }
+      }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
   }
@@ -1758,6 +1816,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _lineDrawingPressActive = false;
     _circleDrawingPressActive = false;
     _rectangleDrawingPressActive = false;
+    _polygonDrawingPressActive = false;
     _bearingPlotPressActive = false;
     _tapDownLocal = null;
   }
@@ -1828,6 +1887,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref
         .read(bearingPlotProvider.notifier)
         .begin(
@@ -2020,6 +2080,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _resetLineEditGestureState();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     _cancelPendingLongPress();
   }
 
@@ -2058,6 +2119,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2098,6 +2160,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
@@ -2127,6 +2190,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
@@ -2158,6 +2222,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2227,6 +2292,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2254,6 +2320,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2273,6 +2340,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2290,6 +2358,40 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _clearDrawingCompleteDoubleTap();
     _resetLineDrawGestureState();
     ref.read(rectangleDrawingProvider.notifier).reset();
+  }
+
+  void _beginPolygonDrawing() {
+    final point = _selectedMarkerPoint() ?? _radialMenuPoint;
+    _closeRadialMenu();
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).begin(firstPoint: point);
+    if (point != null && _cursorLocation != null) {
+      ref.read(polygonDrawingProvider.notifier).setPreviewPoint(_cursorLocation!);
+    }
+  }
+
+  void _cancelPolygonDrawing() {
+    _clearDrawingCompleteDoubleTap();
+    _resetLineDrawGestureState();
+    ref.read(polygonDrawingProvider.notifier).reset();
+  }
+
+  Future<void> _finalizePolygonDrawing() async {
+    final drawing = ref.read(polygonDrawingProvider);
+    if (!drawing.canFinish) {
+      return;
+    }
+    final points = List<LatLng>.from(drawing.points);
+    ref.read(polygonDrawingProvider.notifier).reset();
+    _polygonDrawingPressActive = false;
+    await createPolygonFromPoints(context: context, ref: ref, points: points);
   }
 
   void _openRadialMenuAt(Offset center, LatLng point) {
@@ -2642,6 +2744,64 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     );
   }
 
+  Widget _polygonDrawingBanner(PolygonDrawingState polygonDrawing) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.polyline,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.polygonDrawingHint,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (polygonDrawing.points.isNotEmpty)
+                TextButton(
+                  onPressed: () =>
+                      ref.read(polygonDrawingProvider.notifier).undoLastVertex(),
+                  child: Text(
+                    l10n.polygonUndoAction,
+                    style: TextStyle(color: theme.colorScheme.inversePrimary),
+                  ),
+                ),
+              if (polygonDrawing.canFinish)
+                TextButton(
+                  onPressed: () => unawaited(_finalizePolygonDrawing()),
+                  child: Text(
+                    l10n.polygonFinishAction,
+                    style: TextStyle(color: theme.colorScheme.inversePrimary),
+                  ),
+                ),
+              TextButton(
+                onPressed: _cancelPolygonDrawing,
+                child: Text(
+                  l10n.actionCancel,
+                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -2655,6 +2815,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final lineDrawing = ref.watch(lineDrawingProvider);
     final circleDrawing = ref.watch(circleDrawingProvider);
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
+    final polygonDrawing = ref.watch(polygonDrawingProvider);
     final bearingPlot = ref.watch(bearingPlotProvider);
     final deadReckoning = ref.watch(deadReckoningProvider);
     final viewshed = ref.watch(viewshedProvider);
@@ -2800,6 +2961,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             bearingPlot.active ||
                             circleDrawing.active ||
                             rectangleDrawing.active ||
+                            polygonDrawing.active ||
                             deadReckoning.active ||
                             _draggingLineControlIndex != null) {
                           flags &= ~InteractiveFlag.drag;
@@ -3034,6 +3196,24 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           ),
                         ],
                       ),
+                    if (polygonDrawing.active) ...[
+                      PolygonLayer(
+                        polygons: [
+                          ?buildPreviewPolygon(
+                            points: polygonDrawing.points,
+                            previewPoint: polygonDrawing.previewPoint,
+                            borderColor: previewColor,
+                            fillColor: previewFillColor,
+                          ),
+                        ],
+                      ),
+                      MarkerLayer(
+                        markers: buildPreviewPolygonVertexMarkers(
+                          points: polygonDrawing.points,
+                          color: previewColor,
+                        ),
+                      ),
+                    ],
                     if (lineDrawing.start case final start?)
                       PolylineLayer(
                         polylines: [
@@ -3305,6 +3485,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     onSelected: _beginCornersRectDrawing,
                   ),
                   MapRadialMenuAction(
+                    icon: Icons.polyline,
+                    label: l10n.mapRadialPolygon,
+                    onSelected: _beginPolygonDrawing,
+                  ),
+                  MapRadialMenuAction(
                     icon: Icons.copy,
                     label: l10n.mapRadialCopyCoordinates,
                     onSelected: _copyRadialMenuCoordinates,
@@ -3388,7 +3573,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 !viewshed.active &&
                 !slope.active &&
                 !circleDrawing.active &&
-                !rectangleDrawing.active)
+                !rectangleDrawing.active &&
+                !polygonDrawing.active)
               Positioned(
                 left: 0,
                 right: 0,
@@ -3408,6 +3594,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 right: 0,
                 top: 0,
                 child: _rectangleDrawingBanner(rectangleDrawing),
+              ),
+            if (polygonDrawing.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _polygonDrawingBanner(polygonDrawing),
               ),
             if (showViewportDebugBorder)
               Positioned(

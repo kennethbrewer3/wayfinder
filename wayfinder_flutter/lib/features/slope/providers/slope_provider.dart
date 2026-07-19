@@ -23,7 +23,7 @@ enum SlopeColorMode {
   /// Color by slope angle (green gentle → red steep).
   slope,
 
-  /// Color by rough walk/drive cost derived from slope.
+  /// Color by mobility cost derived from slope ([SlopeMobilityMode]).
   cost,
 }
 
@@ -34,6 +34,7 @@ class SlopeState {
     this.rangeMeters = 3000,
     this.opacity = 0.55,
     this.colorMode = SlopeColorMode.cost,
+    this.mobilityMode = SlopeMobilityMode.drive,
     this.bounds,
     this.heatmapBytes,
     this.rangeRing = const [],
@@ -49,6 +50,7 @@ class SlopeState {
   final double rangeMeters;
   final double opacity;
   final SlopeColorMode colorMode;
+  final SlopeMobilityMode mobilityMode;
   final LatLngBounds? bounds;
   final Uint8List? heatmapBytes;
   final List<LatLng> rangeRing;
@@ -75,6 +77,7 @@ class SlopeState {
     double? rangeMeters,
     double? opacity,
     SlopeColorMode? colorMode,
+    SlopeMobilityMode? mobilityMode,
     LatLngBounds? bounds,
     Uint8List? heatmapBytes,
     List<LatLng>? rangeRing,
@@ -95,6 +98,7 @@ class SlopeState {
       rangeMeters: rangeMeters ?? this.rangeMeters,
       opacity: opacity ?? this.opacity,
       colorMode: colorMode ?? this.colorMode,
+      mobilityMode: mobilityMode ?? this.mobilityMode,
       bounds: clearBounds ? null : bounds ?? this.bounds,
       heatmapBytes: clearHeatmap ? null : heatmapBytes ?? this.heatmapBytes,
       rangeRing: rangeRing ?? this.rangeRing,
@@ -129,6 +133,7 @@ class SlopeNotifier extends StateNotifier<SlopeState> {
       rangeMeters: state.rangeMeters,
       opacity: state.opacity,
       colorMode: state.colorMode,
+      mobilityMode: state.mobilityMode,
       rangeRing: circleBoundaryPoints(
         center: center,
         radiusMeters: state.rangeMeters,
@@ -143,7 +148,7 @@ class SlopeNotifier extends StateNotifier<SlopeState> {
       return;
     }
     final center = state.center;
-    final clamped = meters.clamp(200.0, 15000.0);
+    final clamped = meters.clamp(minSlopeRangeMeters, maxSlopeRangeMeters);
     state = state.copyWith(
       rangeMeters: clamped,
       rangeRing: center == null
@@ -178,6 +183,20 @@ class SlopeNotifier extends StateNotifier<SlopeState> {
     );
   }
 
+  void setMobilityMode(SlopeMobilityMode mode) {
+    if (!state.active || mode == state.mobilityMode) {
+      return;
+    }
+    state = state.copyWith(
+      mobilityMode: mode,
+      clearHeatmap: true,
+      clearBounds: true,
+      clearStats: true,
+      status: SlopeStatus.readyToCompute,
+      clearError: true,
+    );
+  }
+
   Future<void> compute() async {
     final center = state.center;
     if (!state.active || center == null) {
@@ -185,9 +204,13 @@ class SlopeNotifier extends StateNotifier<SlopeState> {
     }
 
     final generation = ++_computeGeneration;
-    final range = state.rangeMeters;
-    final step = slopeStepMetersForRange(range);
-    final size = slopeGridSizeForRange(range, step);
+    final range = state.rangeMeters.clamp(
+      minSlopeRangeMeters,
+      maxSlopeRangeMeters,
+    );
+    final layout = slopeGridLayoutForRange(range);
+    final step = layout.stepMeters;
+    final size = layout.size;
     final bounds = slopeBoundsForCenter(center: center, rangeMeters: range);
 
     state = state.copyWith(
@@ -260,6 +283,7 @@ class SlopeNotifier extends StateNotifier<SlopeState> {
       slopesDegrees: slopes,
       size: size,
       colorByCost: state.colorMode == SlopeColorMode.cost,
+      mobilityMode: state.mobilityMode,
       opacity: 1.0, // layer opacity applied by OverlayImage
     );
     if (generation != _computeGeneration) {

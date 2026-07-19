@@ -2840,6 +2840,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect corners';
 
   @override
+  String get mapRadialPolygon => 'Polygon AOI';
+
+  @override
   String get mapRadialCopyCoordinates => 'Copy coordinates';
 
   @override
@@ -2873,6 +2876,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get slopeModeSlope => 'Slope';
 
   @override
+  String get slopeMobilityWalk => 'Walk';
+
+  @override
+  String get slopeMobilityBike => 'Bike';
+
+  @override
+  String get slopeMobilityDrive => 'Drive';
+
+  @override
   String get slopeComputeAction => 'Compute';
 
   @override
@@ -2899,7 +2911,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get slopeLegendHint =>
-      'Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.';
+      'Green = gentle / easier · Red = steep / costly. DEM slope only — pick Walk, Bike, or Drive.';
+
+  @override
+  String get slopeLegendHintWalk =>
+      'Walk cost: green = easy footing · red = steep scramble. DEM slope only (no trails).';
+
+  @override
+  String get slopeLegendHintBike =>
+      'Bike cost: green = easy spin · red = steep climb. DEM slope only (no roads/trails).';
+
+  @override
+  String get slopeLegendHintDrive =>
+      'Drive cost: green = gentle grade · red = steep for vehicles. DEM slope only (no road network).';
+
+  @override
+  String get slopeLegendHintSlope =>
+      'Slope angle: green = flat · red = steep (~35°+). Raw DEM grade, not travel cost.';
 
   @override
   String get viewshedInstructions =>
@@ -3100,6 +3128,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapObjectTypeRectangle => 'Rectangle';
+
+  @override
+  String get mapObjectTypePolygon => 'Polygon';
+
+  @override
+  String get polygonCreateTitle => 'Create polygon AOI';
+
+  @override
+  String get polygonEditTitle => 'Edit polygon AOI';
+
+  @override
+  String get polygonDefaultName => 'Polygon';
+
+  @override
+  String get polygonNameHint => 'Property line, patrol sector, no-go…';
+
+  @override
+  String polygonVertexCount(int count) {
+    return '$count vertices';
+  }
+
+  @override
+  String get polygonDrawingHint =>
+      'Tap to add vertices. Double-tap or Finish when done (3+). Undo removes the last point.';
+
+  @override
+  String get polygonFinishAction => 'Finish';
+
+  @override
+  String get polygonUndoAction => 'Undo';
+
+  @override
+  String get sidebarHidePolygon => 'Hide polygon';
+
+  @override
+  String get sidebarShowPolygon => 'Show polygon';
+
+  @override
+  String get sidebarEditPolygon => 'Edit polygon';
+
+  @override
+  String get sidebarDeletePolygon => 'Delete polygon';
+
+  @override
+  String get mapObjectDetailVertices => 'Vertices';
 
   @override
   String get searchSubtitleCoordinates => 'Coordinates';

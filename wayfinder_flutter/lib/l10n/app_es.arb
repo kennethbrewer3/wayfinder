@@ -1305,6 +1305,7 @@
   "mapRadialCircle": "Círculo",
   "mapRadialRectCenter": "Rect. centro",
   "mapRadialRectCorners": "Rect. esquinas",
+  "mapRadialPolygon": "Polígono AOI",
   "mapRadialCopyCoordinates": "Copiar coordenadas",
   "mapRadialDeadReckoning": "Pasos",
   "mapRadialViewshed": "Cuenca visual",
@@ -1315,6 +1316,9 @@
   "slopeOpacityLabel": "Opacidad",
   "slopeModeCost": "Coste",
   "slopeModeSlope": "Pendiente",
+  "slopeMobilityWalk": "A pie",
+  "slopeMobilityBike": "Bici",
+  "slopeMobilityDrive": "Coche",
   "slopeComputeAction": "Calcular",
   "slopeStatusReadyToCompute": "Listo",
   "slopeStatusComputing": "Calculando {percent}%",
@@ -1339,7 +1343,11 @@
       }
     }
   },
-  "slopeLegendHint": "Verde = suave / más fácil · Rojo = empinado / costoso. Heurística aproximada solo con DEM.",
+  "slopeLegendHint": "Verde = suave / más fácil · Rojo = empinado / costoso. Solo pendiente DEM — elige A pie, Bici o Coche.",
+  "slopeLegendHintWalk": "Coste a pie: verde = fácil · rojo = trepada empinada. Solo pendiente DEM (sin senderos).",
+  "slopeLegendHintBike": "Coste en bici: verde = rodaje fácil · rojo = subida dura. Solo pendiente DEM (sin carreteras).",
+  "slopeLegendHintDrive": "Coste en coche: verde = pendiente suave · rojo = empinado para vehículos. Solo pendiente DEM (sin red vial).",
+  "slopeLegendHintSlope": "Ángulo de pendiente: verde = llano · rojo = empinado (~35°+). Grado DEM bruto, no coste de viaje.",
   "viewshedInstructions": "Antena = altura del observador sobre el suelo (edificio + mástil). Objetivo = altura AGL del receptor/ojo (0 = suelo). Alcance = distancia a calcular. Las alturas y el alcance usan tus unidades de medida (Ajustes).",
   "viewshedAntennaHeightLabel": "Ant. ({unit})",
   "@viewshedAntennaHeightLabel": {
@@ -1448,6 +1456,27 @@
   "rectangleModeCenter": "Rectángulo centrado",
   "rectangleModeCorners": "Rectángulo por esquinas",
   "mapObjectTypeRectangle": "Rectángulo",
+  "mapObjectTypePolygon": "Polígono",
+  "polygonCreateTitle": "Crear polígono AOI",
+  "polygonEditTitle": "Editar polígono AOI",
+  "polygonDefaultName": "Polígono",
+  "polygonNameHint": "Límite, sector de patrulla, zona prohibida…",
+  "polygonVertexCount": "{count} vértices",
+  "@polygonVertexCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "polygonDrawingHint": "Toca para añadir vértices. Doble toque o Finalizar (3+). Deshacer quita el último punto.",
+  "polygonFinishAction": "Finalizar",
+  "polygonUndoAction": "Deshacer",
+  "sidebarHidePolygon": "Ocultar polígono",
+  "sidebarShowPolygon": "Mostrar polígono",
+  "sidebarEditPolygon": "Editar polígono",
+  "sidebarDeletePolygon": "Eliminar polígono",
+  "mapObjectDetailVertices": "Vértices",
   "searchSubtitleCoordinates": "Coordenadas",
   "searchSubtitleMgrs": "MGRS",
   "searchSubtitleMarker": "Marcador",

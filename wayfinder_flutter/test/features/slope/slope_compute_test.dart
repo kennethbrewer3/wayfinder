@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/features/slope/utils/slope_compute.dart';
 
 void main() {
@@ -47,6 +48,26 @@ void main() {
     expect(crossCountryCostFromSlopeDegrees(40), 1.0);
   });
 
+  test('mobility modes differ at moderate grades', () {
+    const grade = 8.0;
+    final walk = crossCountryCostFromSlopeDegrees(
+      grade,
+      mode: SlopeMobilityMode.walk,
+    );
+    final bike = crossCountryCostFromSlopeDegrees(
+      grade,
+      mode: SlopeMobilityMode.bike,
+    );
+    final drive = crossCountryCostFromSlopeDegrees(
+      grade,
+      mode: SlopeMobilityMode.drive,
+    );
+    // Bike finds the climb hardest; walk is easiest of the three.
+    expect(bike, greaterThan(drive));
+    expect(drive, greaterThan(walk));
+    expect(bike, greaterThan(walk));
+  });
+
   test('slopeDegreesGrid matches neighborhood size', () {
     final elevations = List<double?>.filled(9, 100.0);
     elevations[5] = 130; // east of center
@@ -60,5 +81,28 @@ void main() {
     expect(slopes.length, 9);
     expect(slopes[4], isNotNull);
     expect(slopes[4]!, greaterThan(0));
+  });
+
+  test('50-mile layout spans full diameter with bounded samples', () {
+    const fiftyMiles = 50 * 1609.344;
+    final layout = slopeGridLayoutForRange(fiftyMiles);
+    expect(layout.size, lessThanOrEqualTo(64));
+    expect(layout.size, greaterThanOrEqualTo(8));
+    expect((layout.size - 1) * layout.stepMeters, closeTo(2 * fiftyMiles, 1e-6));
+
+    final points = slopeGridSamplePoints(
+      center: const LatLng(38.0, -78.0),
+      rangeMeters: fiftyMiles,
+      stepMeters: layout.stepMeters,
+    );
+    expect(points.length, layout.size * layout.size);
+  });
+
+  test('range above max clamps in layout helpers', () {
+    final layout = slopeGridLayoutForRange(maxSlopeRangeMeters * 2);
+    expect(
+      (layout.size - 1) * layout.stepMeters,
+      closeTo(2 * maxSlopeRangeMeters, 1e-6),
+    );
   });
 }

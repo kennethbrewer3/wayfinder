@@ -1615,6 +1615,7 @@
   "mapRadialCircle": "Circle",
   "mapRadialRectCenter": "Rect center",
   "mapRadialRectCorners": "Rect corners",
+  "mapRadialPolygon": "Polygon AOI",
   "mapRadialCopyCoordinates": "Copy coordinates",
   "mapRadialDeadReckoning": "Pace count",
   "mapRadialViewshed": "Viewshed",
@@ -1626,6 +1627,9 @@
   "slopeOpacityLabel": "Fade",
   "slopeModeCost": "Cost",
   "slopeModeSlope": "Slope",
+  "slopeMobilityWalk": "Walk",
+  "slopeMobilityBike": "Bike",
+  "slopeMobilityDrive": "Drive",
   "slopeComputeAction": "Compute",
   "slopeStatusReadyToCompute": "Ready",
   "slopeStatusComputing": "Computing {percent}%",
@@ -1650,7 +1654,11 @@
       }
     }
   },
-  "slopeLegendHint": "Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.",
+  "slopeLegendHint": "Green = gentle / easier · Red = steep / costly. DEM slope only — pick Walk, Bike, or Drive.",
+  "slopeLegendHintWalk": "Walk cost: green = easy footing · red = steep scramble. DEM slope only (no trails).",
+  "slopeLegendHintBike": "Bike cost: green = easy spin · red = steep climb. DEM slope only (no roads/trails).",
+  "slopeLegendHintDrive": "Drive cost: green = gentle grade · red = steep for vehicles. DEM slope only (no road network).",
+  "slopeLegendHintSlope": "Slope angle: green = flat · red = steep (~35°+). Raw DEM grade, not travel cost.",
   "viewshedInstructions": "Antenna = observer height above ground (building + mast). Target = receiver/eye height AGL (0 = ground). Range = how far to check. Heights and range use your measurement units (Settings).",
   "viewshedAntennaHeightLabel": "Ant. ({unit})",
   "@viewshedAntennaHeightLabel": {
@@ -1758,6 +1766,27 @@
   "rectangleModeCenter": "Center rectangle",
   "rectangleModeCorners": "Corner rectangle",
   "mapObjectTypeRectangle": "Rectangle",
+  "mapObjectTypePolygon": "Polygon",
+  "polygonCreateTitle": "Create polygon AOI",
+  "polygonEditTitle": "Edit polygon AOI",
+  "polygonDefaultName": "Polygon",
+  "polygonNameHint": "Property line, patrol sector, no-go…",
+  "polygonVertexCount": "{count} vertices",
+  "@polygonVertexCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "polygonDrawingHint": "Tap to add vertices. Double-tap or Finish when done (3+). Undo removes the last point.",
+  "polygonFinishAction": "Finish",
+  "polygonUndoAction": "Undo",
+  "sidebarHidePolygon": "Hide polygon",
+  "sidebarShowPolygon": "Show polygon",
+  "sidebarEditPolygon": "Edit polygon",
+  "sidebarDeletePolygon": "Delete polygon",
+  "mapObjectDetailVertices": "Vertices",
   "searchSubtitleCoordinates": "Coordinates",
   "searchSubtitleMgrs": "MGRS",
   "searchSubtitleMarker": "Marker",

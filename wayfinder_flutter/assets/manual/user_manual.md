@@ -327,10 +327,11 @@ Requires DEM elevation data for the area. Observer ground and eye height are sho
 Rough “can we walk/drive this?” shading from DEM slope around a point.
 
 1. Long-press the map → **Slope / cost** (uses a selected marker’s location when one is selected).
-2. Adjust **range**, opacity, and mode (**Cost** = walk/drive heuristic, **Slope** = degrees).
-3. Tap **Compute** (first run starts automatically). Green is gentler / cheaper; red is steeper / costlier.
+2. Adjust **range** (up to about 50 miles / 80 km), opacity, and mode (**Cost** or raw **Slope** degrees).
+3. In **Cost** mode, pick **Walk**, **Bike**, or **Drive** — each uses a different grade curve (the same hill can be green for driving and yellow/red on foot or bike).
+4. Tap **Compute** (first run starts automatically). Green is gentler / cheaper; red is steeper / costlier. Large ranges use a coarser grid so the full circle still paints.
 
-Requires DEM elevation data. This is a terrain heuristic only — not a full mobility or vehicle model. Cancel clears the overlay.
+Requires DEM elevation data. Terrain slope only — not roads, trails, or a full mobility model. Cancel clears the overlay.
 
 ---
 
@@ -363,6 +364,21 @@ Size labels can show width, height, area, or perimeter depending on display sett
 
 ---
 
+## Polygon AOIs
+
+Freeform polygons for property lines, patrol sectors, no-go zones, and other areas that circles or rectangles cannot describe.
+
+### Draw a polygon
+
+1. Long-press → **Polygon AOI** (first vertex is the long-press point, or a **selected marker** if one is selected).
+2. **Tap** to add more vertices. A dashed preview follows the cursor.
+3. **Double-tap** or tap **Finish** when you have at least three vertices (banner **Undo** removes the last point).
+4. Complete the form with name, border/fill colors, layer, and notes.
+
+Polygons are saved as map zones like circles and rectangles. Toggle the name label from the sidebar. Cancel clears an in-progress drawing (it is not saved until you finish the form).
+
+---
+
 ## Long-press radial menu
 
 Long-press (hold) on empty map space to open the radial menu. Available actions include:
@@ -377,6 +393,7 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Draw circle | Start circle drawing (from selected marker when one is selected) |
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
+| Polygon AOI | Draw a freeform polygon (property line, patrol sector, no-go…) |
 | Copy coordinates | Copy lat/lng to clipboard |
 
 Cancel by tapping outside the menu or pressing Escape where supported.

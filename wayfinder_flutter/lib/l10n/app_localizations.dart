@@ -5259,11 +5259,41 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get sortName;
 
+  /// No description provided for @sortCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get sortCreated;
+
   /// No description provided for @sortHue.
   ///
   /// In en, this message translates to:
   /// **'Hue'**
   String get sortHue;
+
+  /// No description provided for @sidebarMergeLines.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge lines'**
+  String get sidebarMergeLines;
+
+  /// No description provided for @sidebarMergeLinesNeedTwo.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least two lines to merge.'**
+  String get sidebarMergeLinesNeedTwo;
+
+  /// No description provided for @sidebarMergeLinesDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Lines merged. Control points were kept in walk order.'**
+  String get sidebarMergeLinesDone;
+
+  /// No description provided for @sidebarMergeLinesFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not merge lines: {error}'**
+  String sidebarMergeLinesFailed(String error);
 
   /// No description provided for @sortIcon.
   ///

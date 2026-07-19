@@ -153,6 +153,7 @@ extension MarkerSortFieldL10n on MarkerSortField {
 extension ZoneSortFieldL10n on ZoneSortField {
   String localizedLabel(AppLocalizations l10n) => switch (this) {
     ZoneSortField.name => l10n.sortName,
+    ZoneSortField.created => l10n.sortCreated,
     ZoneSortField.hue => l10n.sortHue,
     ZoneSortField.type => l10n.sortType,
     ZoneSortField.visibility => l10n.sortVisibility,

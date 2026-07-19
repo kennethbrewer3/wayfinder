@@ -1374,7 +1374,19 @@
   "mapMarkerIdCopied": "ID du marqueur copié dans le presse-papiers.",
   "mapRelativeAngleLabel": "Rel°",
   "sortName": "Nom",
+  "sortCreated": "Création",
   "sortHue": "Teinte",
+  "sidebarMergeLines": "Fusionner les lignes",
+  "sidebarMergeLinesNeedTwo": "Sélectionnez au moins deux lignes à fusionner.",
+  "sidebarMergeLinesDone": "Lignes fusionnées. Les points de contrôle sont conservés dans l'ordre du parcours.",
+  "sidebarMergeLinesFailed": "Impossible de fusionner les lignes : {error}",
+  "@sidebarMergeLinesFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "sortIcon": "Icône",
   "sortVisibility": "Visibilité",
   "sortType": "Type",

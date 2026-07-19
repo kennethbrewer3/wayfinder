@@ -1684,7 +1684,19 @@
   "mapMarkerIdCopied": "Marker ID copied to clipboard.",
   "mapRelativeAngleLabel": "Rel°",
   "sortName": "Name",
+  "sortCreated": "Created",
   "sortHue": "Hue",
+  "sidebarMergeLines": "Merge lines",
+  "sidebarMergeLinesNeedTwo": "Select at least two lines to merge.",
+  "sidebarMergeLinesDone": "Lines merged. Control points were kept in walk order.",
+  "sidebarMergeLinesFailed": "Could not merge lines: {error}",
+  "@sidebarMergeLinesFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "sortIcon": "Icon",
   "sortVisibility": "Visibility",
   "sortType": "Type",

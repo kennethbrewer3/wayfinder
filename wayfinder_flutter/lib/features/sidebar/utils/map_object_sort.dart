@@ -119,6 +119,7 @@ int compareMarkers(MapMarker a, MapMarker b, MarkerSortField sort) {
 int compareZones(MapZone a, MapZone b, ZoneSortField sort) {
   final primary = switch (sort) {
     ZoneSortField.name => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+    ZoneSortField.created => a.createdAt.compareTo(b.createdAt),
     ZoneSortField.hue => compareColorHue(zoneSortColor(a), zoneSortColor(b)),
     ZoneSortField.type => zoneTypeSortOrder(
       a.type,
@@ -128,7 +129,7 @@ int compareZones(MapZone a, MapZone b, ZoneSortField sort) {
   if (primary != 0) {
     return primary;
   }
-  if (sort == ZoneSortField.name) {
+  if (sort == ZoneSortField.name || sort == ZoneSortField.created) {
     return a.id.uuid.compareTo(b.id.uuid);
   }
   final nameCompare = a.name.toLowerCase().compareTo(b.name.toLowerCase());
@@ -182,6 +183,7 @@ int compareZoneGroups(
 ) {
   return switch (sort) {
     ZoneSortField.name => compareNameGroupKeys(a.key, b.key),
+    ZoneSortField.created => a.key.compareTo(b.key),
     ZoneSortField.hue => compareColorHue(
       parseMarkerColor(a.key),
       parseMarkerColor(b.key),
@@ -253,6 +255,7 @@ List<MapObjectTreeGroup<MapZone>> groupZones(
   for (final zone in zones) {
     final key = switch (sort) {
       ZoneSortField.name => markerNameGroupKey(zone.name),
+      ZoneSortField.created => 'created',
       ZoneSortField.hue => formatMarkerColorHex(zoneSortColor(zone)),
       ZoneSortField.type => zone.type,
       ZoneSortField.visibility => zone.visible ? 'visible' : 'hidden',
@@ -262,7 +265,15 @@ List<MapObjectTreeGroup<MapZone>> groupZones(
 
   final groups = grouped.entries.map((entry) {
     final items = [...entry.value]
-      ..sort((a, b) => compareZones(a, b, ZoneSortField.name));
+      ..sort(
+        (a, b) => compareZones(
+          a,
+          b,
+          sort == ZoneSortField.created
+              ? ZoneSortField.created
+              : ZoneSortField.name,
+        ),
+      );
     return MapObjectTreeGroup<MapZone>(
       key: entry.key,
       label: zoneGroupLabel(entry.key, sort, l10n),
@@ -294,6 +305,7 @@ String zoneGroupLabel(
 ) {
   return switch (sort) {
     ZoneSortField.name => markerNameGroupLabel(key, l10n),
+    ZoneSortField.created => l10n.sortCreated,
     ZoneSortField.hue => key,
     ZoneSortField.type => zoneTypeLabel(key, l10n),
     ZoneSortField.visibility => localizedVisibilityGroupLabel(l10n, key),

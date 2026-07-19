@@ -3020,7 +3020,26 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sortName => 'Nombre';
 
   @override
+  String get sortCreated => 'Creación';
+
+  @override
   String get sortHue => 'Tono';
+
+  @override
+  String get sidebarMergeLines => 'Fusionar líneas';
+
+  @override
+  String get sidebarMergeLinesNeedTwo =>
+      'Seleccione al menos dos líneas para fusionar.';
+
+  @override
+  String get sidebarMergeLinesDone =>
+      'Líneas fusionadas. Se conservaron los puntos de control en orden de recorrido.';
+
+  @override
+  String sidebarMergeLinesFailed(String error) {
+    return 'No se pudieron fusionar las líneas: $error';
+  }
 
   @override
   String get sortIcon => 'Icono';

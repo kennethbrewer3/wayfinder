@@ -470,6 +470,7 @@ Use **Get maps → Elevation DEM**, search for your state, and tap **Extract**. 
 - DEM packs are **not** drawn as the basemap; they are sampled for height.
 - With DEM enabled you get: **spot elevation** on the cursor readout, **climb to marker** in the GPS HUD when a marker is selected, and **Elevation profile** on line/track details.
 - To profile several park legs as one route: in the sidebar, check the lines/tracks in walk order, then tap **Elevation profile** in the selection bar. Short legs (under 25 m) stay in the chart — every vertex is kept. Legs may reverse so endpoints connect.
+- Prefer building one continuous path: check two or more **lines** in walk order and tap **Merge lines**. Control points from every leg are kept; the first selected line remains and the others are deleted. Sort zones by **Created** if you want list order to match drawing order.
 - Prefer a US-state extract over a worldwide DEM — large planet archives often stall when served over HTTP Range requests.
 
 ### Groups

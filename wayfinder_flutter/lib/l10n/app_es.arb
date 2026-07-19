@@ -1374,7 +1374,19 @@
   "mapMarkerIdCopied": "ID del marcador copiado al portapapeles.",
   "mapRelativeAngleLabel": "Rel°",
   "sortName": "Nombre",
+  "sortCreated": "Creación",
   "sortHue": "Tono",
+  "sidebarMergeLines": "Fusionar líneas",
+  "sidebarMergeLinesNeedTwo": "Seleccione al menos dos líneas para fusionar.",
+  "sidebarMergeLinesDone": "Líneas fusionadas. Se conservaron los puntos de control en orden de recorrido.",
+  "sidebarMergeLinesFailed": "No se pudieron fusionar las líneas: {error}",
+  "@sidebarMergeLinesFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "sortIcon": "Icono",
   "sortVisibility": "Visibilidad",
   "sortType": "Tipo",

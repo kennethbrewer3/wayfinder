@@ -2981,7 +2981,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sortName => 'Name';
 
   @override
+  String get sortCreated => 'Created';
+
+  @override
   String get sortHue => 'Hue';
+
+  @override
+  String get sidebarMergeLines => 'Merge lines';
+
+  @override
+  String get sidebarMergeLinesNeedTwo => 'Select at least two lines to merge.';
+
+  @override
+  String get sidebarMergeLinesDone =>
+      'Lines merged. Control points were kept in walk order.';
+
+  @override
+  String sidebarMergeLinesFailed(String error) {
+    return 'Could not merge lines: $error';
+  }
 
   @override
   String get sortIcon => 'Icon';

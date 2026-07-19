@@ -8,6 +8,7 @@ import '../../circles/models/circle_size_display.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
 import '../models/line_geometry.dart';
+import '../utils/merge_line_geometry.dart';
 
 class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
   @override
@@ -102,6 +103,75 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
         stackTrace: stackTrace,
       );
       state = previousState;
+    }
+  }
+
+  /// Merge line zones in [zoneIds] order into the first zone; delete the rest.
+  ///
+  /// Returns the kept zone id, or null if merge was not possible.
+  Future<UuidValue?> mergeLines(List<UuidValue> zoneIds) async {
+    if (zoneIds.length < 2) {
+      return null;
+    }
+    final current = state.valueOrNull;
+    if (current == null) {
+      return null;
+    }
+
+    final byId = {for (final zone in current) zone.id: zone};
+    final lineZones = <MapZone>[];
+    final geometries = <LineGeometry>[];
+    for (final id in zoneIds) {
+      final zone = byId[id];
+      if (zone == null || zone.type != lineZoneType) {
+        continue;
+      }
+      final geometry = LineGeometry.fromZone(zone);
+      if (geometry == null || !geometry.isValid) {
+        continue;
+      }
+      lineZones.add(zone);
+      geometries.add(geometry);
+    }
+    if (lineZones.length < 2) {
+      return null;
+    }
+
+    final mergedGeometry = mergeLineGeometries(geometries);
+    final keep = lineZones.first;
+    final dropIds = {for (final zone in lineZones.skip(1)) zone.id};
+    final updatedKeep = updateZoneLineGeometry(keep, mergedGeometry);
+    final previousState = state;
+
+    state = AsyncData([
+      for (final zone in current)
+        if (zone.id == keep.id)
+          updatedKeep
+        else if (!dropIds.contains(zone.id))
+          zone,
+    ]);
+
+    try {
+      final client = ref.read(serverClientProvider);
+      await client.mapZone.updateZone(updatedKeep);
+      for (final id in dropIds) {
+        await client.mapZone.deleteZone(id);
+      }
+      AppLogger.logZones.success(
+        '📎 Merged lines',
+        data:
+            'kept=${keep.id.uuid} dropped=${dropIds.length} '
+            'points=${mergedGeometry.points.length}',
+      );
+      return keep.id;
+    } catch (error, stackTrace) {
+      AppLogger.logZones.error(
+        '📎 Failed to merge lines',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      state = previousState;
+      rethrow;
     }
   }
 

@@ -97,7 +97,7 @@ enum SidebarPanelTab { markers, zones }
 
 enum MarkerSortField { name, hue, icon, visibility }
 
-enum ZoneSortField { name, hue, type, visibility }
+enum ZoneSortField { name, created, hue, type, visibility }
 
 extension MarkerSortFieldLabel on MarkerSortField {
   String get label => switch (this) {
@@ -111,6 +111,7 @@ extension MarkerSortFieldLabel on MarkerSortField {
 extension ZoneSortFieldLabel on ZoneSortField {
   String get label => switch (this) {
     ZoneSortField.name => 'Name',
+    ZoneSortField.created => 'Created',
     ZoneSortField.hue => 'Hue',
     ZoneSortField.type => 'Type',
     ZoneSortField.visibility => 'Visibility',

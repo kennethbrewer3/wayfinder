@@ -27,6 +27,7 @@ import '../../lines/models/line_geometry.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/presentation/create_line_dialog.dart';
 import '../../lines/providers/measurement_units_provider.dart';
+import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_distance.dart';
@@ -41,7 +42,6 @@ import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/utils/effective_marker_icon.dart';
 import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
-import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../utils/map_object_sort.dart';
 
@@ -2023,65 +2023,123 @@ class _PathProfileSelectionBar extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final zonesAsync = ref.watch(zonesProvider);
+    final zones = zonesAsync.asData?.value;
+    final selectedLineIds = <UuidValue>[];
+    if (zones != null) {
+      final byId = {for (final zone in zones) zone.id.uuid: zone};
+      for (final id in selectedIds) {
+        final zone = byId[id];
+        if (zone != null && zone.type == lineZoneType) {
+          selectedLineIds.add(zone.id);
+        }
+      }
+    }
+    final canMergeLines = selectedLineIds.length >= 2;
 
     return Material(
       color: theme.colorScheme.secondaryContainer,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Text(
-                l10n.elevationProfileSelectionCount(selectedIds.length),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSecondaryContainer,
-                  fontWeight: FontWeight.w600,
-                ),
+            Text(
+              l10n.elevationProfileSelectionCount(selectedIds.length),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSecondaryContainer,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            TextButton(
-              onPressed: () {
-                ref.read(pathProfileSelectionProvider.notifier).clear();
-              },
-              child: Text(l10n.elevationProfileClearSelection),
-            ),
-            const SizedBox(width: 4),
-            FilledButton.icon(
-              onPressed: zonesAsync.asData == null
-                  ? null
-                  : () {
-                      final zones = zonesAsync.requireValue;
-                      final byId = {
-                        for (final zone in zones) zone.id.uuid: zone,
-                      };
-                      final legs = <PathProfileLeg>[];
-                      for (final id in selectedIds) {
-                        final zone = byId[id];
-                        if (zone == null) {
-                          continue;
-                        }
-                        final leg = pathProfileLegFromZone(zone);
-                        if (leg != null) {
-                          legs.add(leg);
-                        }
-                      }
-                      if (legs.isEmpty) {
-                        return;
-                      }
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    ref.read(pathProfileSelectionProvider.notifier).clear();
+                  },
+                  child: Text(l10n.elevationProfileClearSelection),
+                ),
+                if (canMergeLines)
+                  FilledButton.tonalIcon(
+                    onPressed: () {
                       unawaited(
-                        showCombinedPathProfileDialog(
+                        _mergeSelectedLines(
                           context: context,
                           ref: ref,
-                          legs: legs,
+                          lineIds: selectedLineIds,
                         ),
                       );
                     },
-              icon: const Icon(Icons.terrain, size: 18),
-              label: Text(l10n.elevationProfileButton),
+                    icon: const Icon(Icons.merge_type, size: 18),
+                    label: Text(l10n.sidebarMergeLines),
+                  ),
+                FilledButton.icon(
+                  onPressed: zones == null
+                      ? null
+                      : () {
+                          final byId = {
+                            for (final zone in zones) zone.id.uuid: zone,
+                          };
+                          final legs = <PathProfileLeg>[];
+                          for (final id in selectedIds) {
+                            final zone = byId[id];
+                            if (zone == null) {
+                              continue;
+                            }
+                            final leg = pathProfileLegFromZone(zone);
+                            if (leg != null) {
+                              legs.add(leg);
+                            }
+                          }
+                          if (legs.isEmpty) {
+                            return;
+                          }
+                          unawaited(
+                            showCombinedPathProfileDialog(
+                              context: context,
+                              ref: ref,
+                              legs: legs,
+                            ),
+                          );
+                        },
+                  icon: const Icon(Icons.terrain, size: 18),
+                  label: Text(l10n.elevationProfileButton),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+Future<void> _mergeSelectedLines({
+  required BuildContext context,
+  required WidgetRef ref,
+  required List<UuidValue> lineIds,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final messenger = ScaffoldMessenger.maybeOf(context);
+  try {
+    final keptId = await ref.read(zonesProvider.notifier).mergeLines(lineIds);
+    if (keptId == null) {
+      messenger?.showSnackBar(
+        SnackBar(content: Text(l10n.sidebarMergeLinesNeedTwo)),
+      );
+      return;
+    }
+    ref.read(pathProfileSelectionProvider.notifier).clear();
+    ref.read(pathProfileSelectionProvider.notifier).toggle(keptId.uuid);
+    messenger?.showSnackBar(
+      SnackBar(content: Text(l10n.sidebarMergeLinesDone)),
+    );
+  } catch (error) {
+    messenger?.showSnackBar(
+      SnackBar(content: Text(l10n.sidebarMergeLinesFailed(error.toString()))),
     );
   }
 }

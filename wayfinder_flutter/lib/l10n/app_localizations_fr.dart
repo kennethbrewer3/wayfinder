@@ -360,7 +360,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Affiche une boussole sous les bannières d\'instructions. Double frappe : réinitialiser la rotation ; appui long : basculer nord vrai/magnétique ; boutons ±5° pour tourner la carte. Variation WMM2025.';
+      'Affiche une boussole en bas à gauche de la carte (au-dessus de la barre d\'état GPS si elle est visible). Double frappe : réinitialiser la rotation ; appui long : basculer nord vrai/magnétique ; boutons ±5° pour tourner la carte. Variation WMM2025.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Afficher la grille MGRS';

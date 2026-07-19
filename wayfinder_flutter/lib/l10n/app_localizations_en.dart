@@ -359,7 +359,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Displays a compass below the map instruction banners. Double-tap resets rotation; long-press toggles true/magnetic north; ±5° buttons rotate the map. Variation uses WMM2025.';
+      'Displays a compass in the bottom-left of the map (above the GPS status bar when shown). Double-tap resets rotation; long-press toggles true/magnetic north; ±5° buttons rotate the map. Variation uses WMM2025.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Show MGRS grid';

@@ -15,10 +15,7 @@ const _compassAssetPath = 'assets/map/compass_rose.svg';
 const _compassSize = 56.0;
 const _rotationStepDegrees = 5.0;
 
-/// Clears the top instruction banners (line edit / bearing plot / draw).
-const _bannerClearance = 56.0;
-
-/// Compass rose with map rotation controls (upper-left, below instruction banners).
+/// Compass rose with map rotation controls (bottom-left of the map stack).
 class MapCompassRoseOverlay extends ConsumerStatefulWidget {
   const MapCompassRoseOverlay({
     super.key,
@@ -113,107 +110,96 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
     };
     final declinationLabel = formatMagneticDeclination(declination);
 
-    return Align(
-      alignment: Alignment.topLeft,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 12,
-            top: _bannerClearance,
+    return Material(
+      color: colors.surfaceContainerHighest.withValues(alpha: 0.92),
+      elevation: 2,
+      borderRadius: BorderRadius.circular(10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: northColor.withValues(alpha: 0.55),
+            width: 1.5,
           ),
-          child: Material(
-            color: colors.surfaceContainerHighest.withValues(alpha: 0.92),
-            elevation: 2,
-            borderRadius: BorderRadius.circular(10),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: northColor.withValues(alpha: 0.55),
-                  width: 1.5,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onDoubleTap: _resetRotation,
-                      onLongPress: _toggleBearingReference,
-                      child: Tooltip(
-                        message:
-                            'Double-tap: reset rotation\n'
-                            'Long-press: toggle true / magnetic north',
-                        child: SizedBox(
-                          width: _compassSize,
-                          height: _compassSize,
-                          child: Transform.rotate(
-                            angle: displayAngle,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  _compassAssetPath,
-                                  width: _compassSize,
-                                  height: _compassSize,
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 1,
-                                  child: Text(
-                                    northLabel,
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: northColor,
-                                      fontWeight: FontWeight.w800,
-                                      height: 1,
-                                      fontSize: northLabel.length > 1 ? 10 : 12,
-                                    ),
-                                  ),
-                                ),
-                              ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onDoubleTap: _resetRotation,
+                onLongPress: _toggleBearingReference,
+                child: Tooltip(
+                  message:
+                      'Double-tap: reset rotation\n'
+                      'Long-press: toggle true / magnetic north',
+                  child: SizedBox(
+                    width: _compassSize,
+                    height: _compassSize,
+                    child: Transform.rotate(
+                      angle: displayAngle,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            _compassAssetPath,
+                            width: _compassSize,
+                            height: _compassSize,
+                            colorFilter: ColorFilter.mode(
+                              colors.onSurface,
+                              BlendMode.srcIn,
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '$modeHint · $declinationLabel',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: northColor,
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                        fontWeight: FontWeight.w600,
-                        height: 1.1,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    SizedBox(
-                      width: _compassSize,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _RotateButton(
-                            tooltip: 'Rotate left 5°',
-                            icon: Icons.rotate_left,
-                            onPressed: () => _rotateBy(-_rotationStepDegrees),
-                          ),
-                          _RotateButton(
-                            tooltip: 'Rotate right 5°',
-                            icon: Icons.rotate_right,
-                            onPressed: () => _rotateBy(_rotationStepDegrees),
+                          Positioned(
+                            top: 1,
+                            child: Text(
+                              northLabel,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: northColor,
+                                fontWeight: FontWeight.w800,
+                                height: 1,
+                                fontSize: northLabel.length > 1 ? 10 : 12,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '$modeHint · $declinationLabel',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: northColor,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                ),
+              ),
+              const SizedBox(height: 2),
+              SizedBox(
+                width: _compassSize,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _RotateButton(
+                      tooltip: 'Rotate left 5°',
+                      icon: Icons.rotate_left,
+                      onPressed: () => _rotateBy(-_rotationStepDegrees),
+                    ),
+                    _RotateButton(
+                      tooltip: 'Rotate right 5°',
+                      icon: Icons.rotate_right,
+                      onPressed: () => _rotateBy(_rotationStepDegrees),
+                    ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
         ),
       ),

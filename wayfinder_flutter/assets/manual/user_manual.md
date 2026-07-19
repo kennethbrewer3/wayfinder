@@ -419,7 +419,7 @@ Set latitude, longitude, and zoom for the **Home** button on the map. If no mark
 ### Map display
 
 - **Bearings** — display absolute bearings as **true north (°T)** or **magnetic north (°M)** using WMM2025 declination at GPS position or map center.
-- **Compass rose** — show or hide the compass overlay (below instruction banners). **±5°** buttons rotate the map; **double-tap** the rose to reset rotation; **long-press** toggles true north (red **N**) vs magnetic north (blue **MN**). Variation uses WMM2025.
+- **Compass rose** — show or hide the compass overlay (bottom-left, above the GPS status bar when shown). **±5°** buttons rotate the map; **double-tap** the rose to reset rotation; **long-press** toggles true north (red **N**) vs magnetic north (blue **MN**). Variation uses WMM2025.
 - **Show MGRS grid** — overlay true Military Grid Reference System lines (see [MGRS grid](#mgrs-grid) under **The map**). Spacing follows zoom; zone seams and slight curvature on Web Mercator are expected for correct MGRS.
 - **Map zoom range** — optional min/max zoom limits for the map interaction range.
 

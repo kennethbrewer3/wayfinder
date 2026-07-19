@@ -3165,13 +3165,31 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   zoom: _mapController.camera.zoom,
                 ),
               ),
-            if (deviceLocation.tracking && deviceLocation.hasFix)
+            if (showCompassRose ||
+                (deviceLocation.tracking && deviceLocation.hasFix))
               Positioned(
                 left: 12,
                 bottom: 12,
-                child: IgnorePointer(
-                  child: MapDeviceLocationHud(
-                    zoom: _mapController.camera.zoom,
+                child: SafeArea(
+                  top: false,
+                  right: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (showCompassRose)
+                        MapCompassRoseOverlay(mapController: _mapController),
+                      if (showCompassRose &&
+                          deviceLocation.tracking &&
+                          deviceLocation.hasFix)
+                        const SizedBox(height: 8),
+                      if (deviceLocation.tracking && deviceLocation.hasFix)
+                        IgnorePointer(
+                          child: MapDeviceLocationHud(
+                            zoom: _mapController.camera.zoom,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -3312,8 +3330,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 top: 0,
                 child: _rectangleDrawingBanner(rectangleDrawing),
               ),
-            if (showCompassRose)
-              MapCompassRoseOverlay(mapController: _mapController),
             if (showViewportDebugBorder)
               Positioned(
                 left: 0,

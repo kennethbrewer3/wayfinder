@@ -130,7 +130,7 @@
   "settingsMapDisplayTitle": "Visualización del mapa",
   "settingsMapDisplayDescription": "Superposiciones del mapa guardadas en el servidor.",
   "settingsMapCompassRoseTitle": "Mostrar rosa de los vientos",
-  "settingsMapCompassRoseDescription": "Muestra una brújula debajo de los banners de instrucciones. Doble toque restablece la rotación; pulsación larga alterna norte verdadero/magnético; botones ±5° rotan el mapa. Variación WMM2025.",
+  "settingsMapCompassRoseDescription": "Muestra una brújula abajo a la izquierda del mapa (encima de la barra de estado GPS si está visible). Doble toque restablece la rotación; pulsación larga alterna norte verdadero/magnético; botones ±5° rotan el mapa. Variación WMM2025.",
   "settingsMapMgrsGridTitle": "Mostrar cuadrícula MGRS",
   "settingsMapMgrsGridDescription": "Superpone una cuadrícula MGRS real (basada en UTM). El espaciado sigue el zoom. Las uniones entre zonas y una ligera curvatura en el mapa Web Mercator son normales: los cuadrados MGRS no son rectángulos de lat/lng.",
   "settingsMapZoomRangeWarning": "Cambiar el rango de zoom puede ralentizar el mapa, aumentar el uso de memoria o mostrar teselas estiradas cuando sus datos sin conexión no incluyen detalle en esos niveles. Solo suba el máximo si sus archivos de mapa lo admiten.",

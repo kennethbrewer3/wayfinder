@@ -359,7 +359,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapCompassRoseDescription =>
-      'Muestra una brújula debajo de los banners de instrucciones. Doble toque restablece la rotación; pulsación larga alterna norte verdadero/magnético; botones ±5° rotan el mapa. Variación WMM2025.';
+      'Muestra una brújula abajo a la izquierda del mapa (encima de la barra de estado GPS si está visible). Doble toque restablece la rotación; pulsación larga alterna norte verdadero/magnético; botones ±5° rotan el mapa. Variación WMM2025.';
 
   @override
   String get settingsMapMgrsGridTitle => 'Mostrar cuadrícula MGRS';

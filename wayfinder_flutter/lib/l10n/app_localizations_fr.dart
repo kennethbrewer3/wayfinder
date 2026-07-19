@@ -2947,10 +2947,18 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vert = doux / plus facile · Rouge = raide / coûteux. Heuristique approximative à partir du DEM seulement.';
 
   @override
-  String get viewshedAntennaHeightLabel => 'Ant. m';
+  String get viewshedInstructions =>
+      'Antenne = hauteur de l\'observateur au-dessus du sol (bâtiment + mât). Cible = hauteur AGL du récepteur/œil (0 = sol). Portée = distance à calculer. Les hauteurs et la portée suivent vos unités de mesure (Réglages).';
 
   @override
-  String get viewshedTargetHeightLabel => 'Cible m';
+  String viewshedAntennaHeightLabel(String unit) {
+    return 'Ant. ($unit)';
+  }
+
+  @override
+  String viewshedTargetHeightLabel(String unit) {
+    return 'Cible ($unit)';
+  }
 
   @override
   String get viewshedRangeLabel => 'Portée';
@@ -2981,7 +2989,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String viewshedObserverElevation(String ground, String eye) {
-    return 'Sol $ground m · œil $eye m';
+    return 'Sol $ground · œil $eye';
   }
 
   @override

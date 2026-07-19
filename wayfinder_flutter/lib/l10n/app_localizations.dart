@@ -5103,17 +5103,23 @@ abstract class AppLocalizations {
   /// **'Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.'**
   String get slopeLegendHint;
 
+  /// No description provided for @viewshedInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Antenna = observer height above ground (building + mast). Target = receiver/eye height AGL (0 = ground). Range = how far to check. Heights and range use your measurement units (Settings).'**
+  String get viewshedInstructions;
+
   /// No description provided for @viewshedAntennaHeightLabel.
   ///
   /// In en, this message translates to:
-  /// **'Ant. m'**
-  String get viewshedAntennaHeightLabel;
+  /// **'Ant. ({unit})'**
+  String viewshedAntennaHeightLabel(String unit);
 
   /// No description provided for @viewshedTargetHeightLabel.
   ///
   /// In en, this message translates to:
-  /// **'Tgt m'**
-  String get viewshedTargetHeightLabel;
+  /// **'Tgt ({unit})'**
+  String viewshedTargetHeightLabel(String unit);
 
   /// No description provided for @viewshedRangeLabel.
   ///
@@ -5166,7 +5172,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewshedObserverElevation.
   ///
   /// In en, this message translates to:
-  /// **'Ground {ground} m · eye {eye} m'**
+  /// **'Ground {ground} · eye {eye}'**
   String viewshedObserverElevation(String ground, String eye);
 
   /// No description provided for @mapDeadReckoningTitle.

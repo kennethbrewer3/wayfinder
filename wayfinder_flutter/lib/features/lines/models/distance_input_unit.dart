@@ -37,6 +37,15 @@ List<DistanceInputUnit> distanceInputUnitsFor(MeasurementUnits units) {
   };
 }
 
+/// Height AGL inputs: meters for metric, feet for imperial/nautical.
+DistanceInputUnit heightInputUnitFor(MeasurementUnits units) {
+  return switch (units) {
+    MeasurementUnits.metric => DistanceInputUnit.meters,
+    MeasurementUnits.imperial || MeasurementUnits.nautical =>
+      DistanceInputUnit.feet,
+  };
+}
+
 DistanceInputUnit defaultDistanceInputUnit(
   double meters,
   MeasurementUnits units,

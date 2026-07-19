@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../elevation/utils/elevation_format.dart';
 import '../../lines/models/distance_input_unit.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../providers/viewshed_provider.dart';
@@ -24,21 +25,29 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
   late final TextEditingController _rangeController;
   late final TextEditingController _targetHeightController;
   DistanceInputUnit _rangeUnit = DistanceInputUnit.meters;
+  DistanceInputUnit _heightUnit = DistanceInputUnit.meters;
 
   @override
   void initState() {
     super.initState();
     final state = ref.read(viewshedProvider);
     final units = ref.read(measurementUnitsProvider);
+    _heightUnit = heightInputUnitFor(units);
     _rangeUnit = defaultDistanceInputUnit(state.rangeMeters, units);
     _antennaController = TextEditingController(
-      text: _trimNumber(state.antennaHeightMeters),
+      text: formatDistanceInputFieldValue(
+        state.antennaHeightMeters,
+        _heightUnit,
+      ),
     );
     _rangeController = TextEditingController(
       text: formatDistanceInputFieldValue(state.rangeMeters, _rangeUnit),
     );
     _targetHeightController = TextEditingController(
-      text: _trimNumber(state.targetHeightAglMeters),
+      text: formatDistanceInputFieldValue(
+        state.targetHeightAglMeters,
+        _heightUnit,
+      ),
     );
   }
 
@@ -50,19 +59,13 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
     super.dispose();
   }
 
-  String _trimNumber(double value) {
-    if (value == value.roundToDouble()) {
-      return value.round().toString();
-    }
-    return value.toStringAsFixed(1);
-  }
-
   void _applyAntenna(String raw) {
     final value = double.tryParse(raw.trim());
     if (value == null || value < 0) {
       return;
     }
-    ref.read(viewshedProvider.notifier).setAntennaHeightMeters(value);
+    final meters = distanceInputValueToMeters(value, _heightUnit);
+    ref.read(viewshedProvider.notifier).setAntennaHeightMeters(meters);
   }
 
   void _applyRange(String raw) {
@@ -79,7 +82,8 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
     if (value == null || value < 0) {
       return;
     }
-    ref.read(viewshedProvider.notifier).setTargetHeightAglMeters(value);
+    final meters = distanceInputValueToMeters(value, _heightUnit);
+    ref.read(viewshedProvider.notifier).setTargetHeightAglMeters(meters);
   }
 
   String _statusText(AppLocalizations l10n, ViewshedState state) {
@@ -102,8 +106,32 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(viewshedProvider);
     final units = ref.watch(measurementUnitsProvider);
+    ref.listen(measurementUnitsProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      final heightUnit = heightInputUnitFor(next);
+      final rangeUnit = defaultDistanceInputUnit(state.rangeMeters, next);
+      setState(() {
+        _heightUnit = heightUnit;
+        _rangeUnit = rangeUnit;
+        _antennaController.text = formatDistanceInputFieldValue(
+          state.antennaHeightMeters,
+          heightUnit,
+        );
+        _targetHeightController.text = formatDistanceInputFieldValue(
+          state.targetHeightAglMeters,
+          heightUnit,
+        );
+        _rangeController.text = formatDistanceInputFieldValue(
+          state.rangeMeters,
+          rangeUnit,
+        );
+      });
+    });
     final onInverse = theme.colorScheme.onInverseSurface;
     final computing = state.status == ViewshedStatus.computing;
+    final heightSuffix = _heightUnit.shortLabel;
 
     return Material(
       elevation: 2,
@@ -140,6 +168,13 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
                   ),
                 ],
               ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.viewshedInstructions,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: onInverse.withValues(alpha: 0.85),
+                ),
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -147,13 +182,13 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   SizedBox(
-                    width: 88,
+                    width: 96,
                     child: TextField(
                       controller: _antennaController,
                       enabled: !computing,
                       decoration: _fieldDecoration(
                         theme,
-                        l10n.viewshedAntennaHeightLabel,
+                        l10n.viewshedAntennaHeightLabel(heightSuffix),
                       ),
                       style: TextStyle(color: onInverse, fontSize: 13),
                       keyboardType: const TextInputType.numberWithOptions(
@@ -168,13 +203,13 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
                     ),
                   ),
                   SizedBox(
-                    width: 88,
+                    width: 96,
                     child: TextField(
                       controller: _targetHeightController,
                       enabled: !computing,
                       decoration: _fieldDecoration(
                         theme,
-                        l10n.viewshedTargetHeightLabel,
+                        l10n.viewshedTargetHeightLabel(heightSuffix),
                       ),
                       style: TextStyle(color: onInverse, fontSize: 13),
                       keyboardType: const TextInputType.numberWithOptions(
@@ -258,8 +293,11 @@ class _ViewshedBannerState extends ConsumerState<ViewshedBanner> {
                 const SizedBox(height: 6),
                 Text(
                   l10n.viewshedObserverElevation(
-                    state.observerGroundMeters!.round().toString(),
-                    (state.observerEyeMeters ?? 0).round().toString(),
+                    formatElevationMeters(state.observerGroundMeters!, units),
+                    formatElevationMeters(
+                      state.observerEyeMeters ?? state.observerGroundMeters!,
+                      units,
+                    ),
                   ),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: onInverse.withValues(alpha: 0.85),

@@ -1340,8 +1340,23 @@
     }
   },
   "slopeLegendHint": "Verde = suave / más fácil · Rojo = empinado / costoso. Heurística aproximada solo con DEM.",
-  "viewshedAntennaHeightLabel": "Ant. m",
-  "viewshedTargetHeightLabel": "Obj. m",
+  "viewshedInstructions": "Antena = altura del observador sobre el suelo (edificio + mástil). Objetivo = altura AGL del receptor/ojo (0 = suelo). Alcance = distancia a calcular. Las alturas y el alcance usan tus unidades de medida (Ajustes).",
+  "viewshedAntennaHeightLabel": "Ant. ({unit})",
+  "@viewshedAntennaHeightLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "viewshedTargetHeightLabel": "Obj. ({unit})",
+  "@viewshedTargetHeightLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "viewshedRangeLabel": "Alcance",
   "viewshedComputeAction": "Calcular",
   "viewshedStatusReadyToCompute": "Listo",
@@ -1357,7 +1372,7 @@
   "viewshedStatusMissingDem": "Sin datos DEM de elevación",
   "viewshedStatusMissingElevation": "Sin elevación en el observador",
   "viewshedStatusError": "Error en la cuenca visual",
-  "viewshedObserverElevation": "Suelo {ground} m · ojo {eye} m",
+  "viewshedObserverElevation": "Suelo {ground} · ojo {eye}",
   "@viewshedObserverElevation": {
     "placeholders": {
       "ground": {

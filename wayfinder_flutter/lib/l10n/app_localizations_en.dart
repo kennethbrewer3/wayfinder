@@ -2902,10 +2902,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.';
 
   @override
-  String get viewshedAntennaHeightLabel => 'Ant. m';
+  String get viewshedInstructions =>
+      'Antenna = observer height above ground (building + mast). Target = receiver/eye height AGL (0 = ground). Range = how far to check. Heights and range use your measurement units (Settings).';
 
   @override
-  String get viewshedTargetHeightLabel => 'Tgt m';
+  String viewshedAntennaHeightLabel(String unit) {
+    return 'Ant. ($unit)';
+  }
+
+  @override
+  String viewshedTargetHeightLabel(String unit) {
+    return 'Tgt ($unit)';
+  }
 
   @override
   String get viewshedRangeLabel => 'Range';
@@ -2935,7 +2943,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String viewshedObserverElevation(String ground, String eye) {
-    return 'Ground $ground m · eye $eye m';
+    return 'Ground $ground · eye $eye';
   }
 
   @override

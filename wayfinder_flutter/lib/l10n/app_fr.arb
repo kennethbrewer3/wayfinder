@@ -1340,8 +1340,23 @@
     }
   },
   "slopeLegendHint": "Vert = doux / plus facile · Rouge = raide / coûteux. Heuristique approximative à partir du DEM seulement.",
-  "viewshedAntennaHeightLabel": "Ant. m",
-  "viewshedTargetHeightLabel": "Cible m",
+  "viewshedInstructions": "Antenne = hauteur de l'observateur au-dessus du sol (bâtiment + mât). Cible = hauteur AGL du récepteur/œil (0 = sol). Portée = distance à calculer. Les hauteurs et la portée suivent vos unités de mesure (Réglages).",
+  "viewshedAntennaHeightLabel": "Ant. ({unit})",
+  "@viewshedAntennaHeightLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "viewshedTargetHeightLabel": "Cible ({unit})",
+  "@viewshedTargetHeightLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "viewshedRangeLabel": "Portée",
   "viewshedComputeAction": "Calculer",
   "viewshedStatusReadyToCompute": "Prêt",
@@ -1357,7 +1372,7 @@
   "viewshedStatusMissingDem": "Pas de données DEM",
   "viewshedStatusMissingElevation": "Pas d'altitude à l'observateur",
   "viewshedStatusError": "Échec du bassin de vue",
-  "viewshedObserverElevation": "Sol {ground} m · œil {eye} m",
+  "viewshedObserverElevation": "Sol {ground} · œil {eye}",
   "@viewshedObserverElevation": {
     "placeholders": {
       "ground": {

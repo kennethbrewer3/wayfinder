@@ -1743,7 +1743,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No disponible (fuera de cobertura MGRS)';
 
   @override
-  String get mapObjectDetailElevation => 'Elevación';
+  String get mapObjectDetailElevation => 'Altitud almacenada';
 
   @override
   String get mapObjectDetailVisibility => 'Visibilidad';

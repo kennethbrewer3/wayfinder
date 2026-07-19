@@ -923,13 +923,23 @@ class _DemElevationRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final units = ref.watch(measurementUnitsProvider);
+    final demEntriesAsync = ref.watch(elevationDemEntriesProvider);
     final elevationAsync = ref.watch(elevationAtProvider(point));
-    final value = elevationAsync.when(
-      data: (meters) => meters == null
-          ? l10n.elevationDemUnavailable
-          : formatElevationMeters(meters, units),
+    final value = demEntriesAsync.when(
       loading: () => '…',
       error: (_, _) => l10n.elevationDemUnavailable,
+      data: (entries) {
+        if (entries.isEmpty) {
+          return l10n.elevationNoDemAvailable;
+        }
+        return elevationAsync.when(
+          data: (meters) => meters == null
+              ? l10n.elevationDemUnavailable
+              : formatElevationMeters(meters, units),
+          loading: () => '…',
+          error: (_, _) => l10n.elevationDemUnavailable,
+        );
+      },
     );
     return _DetailRow(
       label: l10n.elevationDemLabel,

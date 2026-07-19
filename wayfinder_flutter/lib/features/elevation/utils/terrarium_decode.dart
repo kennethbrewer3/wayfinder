@@ -67,7 +67,15 @@ DecodedDemTile? decodeDemTilePng(
   Uint8List bytes, {
   DemEncodingHint encoding = DemEncodingHint.terrarium,
 }) {
-  final image = img.decodePng(bytes);
+  return decodeDemTileBytes(bytes, encoding: encoding);
+}
+
+/// Decode DEM raster bytes (PNG preferred; falls back to general image decode).
+DecodedDemTile? decodeDemTileBytes(
+  Uint8List bytes, {
+  DemEncodingHint encoding = DemEncodingHint.terrarium,
+}) {
+  final image = img.decodePng(bytes) ?? img.decodeImage(bytes);
   if (image == null || image.width <= 0 || image.height <= 0) {
     return null;
   }

@@ -792,7 +792,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get elevationDemLabel => 'DEM elevation';
 
   @override
-  String get elevationDemUnavailable => 'No DEM coverage';
+  String get elevationDemUnavailable => 'No DEM coverage at this point';
 
   @override
   String get elevationNoDemAvailable =>
@@ -1728,7 +1728,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unavailable (outside MGRS coverage)';
 
   @override
-  String get mapObjectDetailElevation => 'Elevation';
+  String get mapObjectDetailElevation => 'Stored altitude';
 
   @override
   String get mapObjectDetailVisibility => 'Visibility';

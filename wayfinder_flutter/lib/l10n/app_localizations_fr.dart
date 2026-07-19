@@ -1751,7 +1751,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Indisponible (hors couverture MGRS)';
 
   @override
-  String get mapObjectDetailElevation => 'Altitude';
+  String get mapObjectDetailElevation => 'Altitude enregistrée';
 
   @override
   String get mapObjectDetailVisibility => 'Visibilité';

@@ -1494,7 +1494,7 @@ abstract class AppLocalizations {
   /// No description provided for @elevationDemUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'No DEM coverage'**
+  /// **'No DEM coverage at this point'**
   String get elevationDemUnavailable;
 
   /// No description provided for @elevationNoDemAvailable.
@@ -3108,7 +3108,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapObjectDetailElevation.
   ///
   /// In en, this message translates to:
-  /// **'Elevation'**
+  /// **'Stored altitude'**
   String get mapObjectDetailElevation;
 
   /// No description provided for @mapObjectDetailVisibility.

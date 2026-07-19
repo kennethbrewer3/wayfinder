@@ -784,7 +784,7 @@
   "mapObjectDetailCoordinates": "Coordenadas",
   "mapObjectDetailMgrs": "MGRS",
   "mapObjectDetailMgrsUnavailable": "No disponible (fuera de cobertura MGRS)",
-  "mapObjectDetailElevation": "Elevación",
+  "mapObjectDetailElevation": "Altitud almacenada",
   "mapObjectDetailVisibility": "Visibilidad",
   "mapObjectVisibilityVisible": "Visible",
   "mapObjectVisibilityHidden": "Oculto",

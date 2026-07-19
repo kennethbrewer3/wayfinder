@@ -1618,8 +1618,39 @@
   "mapRadialCopyCoordinates": "Copy coordinates",
   "mapRadialDeadReckoning": "Pace count",
   "mapRadialViewshed": "Viewshed",
+  "mapRadialSlope": "Slope / cost",
   "mapRadialAddToGeocoding": "Add to search",
   "viewshedTitle": "Viewshed / RF LOS",
+  "slopeTitle": "Slope / cross-country",
+  "slopeRangeLabel": "Range",
+  "slopeOpacityLabel": "Fade",
+  "slopeModeCost": "Cost",
+  "slopeModeSlope": "Slope",
+  "slopeComputeAction": "Compute",
+  "slopeStatusReadyToCompute": "Ready",
+  "slopeStatusComputing": "Computing {percent}%",
+  "@slopeStatusComputing": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "slopeStatusReady": "Ready",
+  "slopeStatusMissingDem": "No DEM elevation data",
+  "slopeStatusError": "Slope analysis failed",
+  "slopeStats": "Mean slope {mean}° · Max {max}°",
+  "@slopeStats": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "slopeLegendHint": "Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.",
   "viewshedAntennaHeightLabel": "Ant. m",
   "viewshedTargetHeightLabel": "Tgt m",
   "viewshedRangeLabel": "Range",

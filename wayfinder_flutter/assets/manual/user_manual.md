@@ -322,6 +322,16 @@ Estimate terrain-masked visibility from a lookout, repeater, mesh node, or any m
 
 Requires DEM elevation data for the area. Observer ground and eye height are shown in the banner when available.
 
+### Slope / cross-country cost
+
+Rough “can we walk/drive this?” shading from DEM slope around a point.
+
+1. Long-press the map → **Slope / cost** (uses a selected marker’s location when one is selected).
+2. Adjust **range**, opacity, and mode (**Cost** = walk/drive heuristic, **Slope** = degrees).
+3. Tap **Compute** (first run starts automatically). Green is gentler / cheaper; red is steeper / costlier.
+
+Requires DEM elevation data. This is a terrain heuristic only — not a full mobility or vehicle model. Cancel clears the overlay.
+
 ---
 
 ## Circles
@@ -363,6 +373,7 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Draw line | Start line drawing (from selected marker when one is selected) |
 | Pace count | Dead reckoning / pace-count helper |
 | Viewshed | Terrain / RF line-of-sight from this point (or selected marker) |
+| Slope / cost | DEM slope / cross-country cost shading around this point |
 | Draw circle | Start circle drawing (from selected marker when one is selected) |
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |

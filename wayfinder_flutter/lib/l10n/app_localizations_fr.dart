@@ -2894,10 +2894,57 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialViewshed => 'Bassin de vue';
 
   @override
+  String get mapRadialSlope => 'Pente / coût';
+
+  @override
   String get mapRadialAddToGeocoding => 'Ajouter à la recherche';
 
   @override
   String get viewshedTitle => 'Bassin de vue / RF';
+
+  @override
+  String get slopeTitle => 'Pente / tout-terrain';
+
+  @override
+  String get slopeRangeLabel => 'Portée';
+
+  @override
+  String get slopeOpacityLabel => 'Opacité';
+
+  @override
+  String get slopeModeCost => 'Coût';
+
+  @override
+  String get slopeModeSlope => 'Pente';
+
+  @override
+  String get slopeComputeAction => 'Calculer';
+
+  @override
+  String get slopeStatusReadyToCompute => 'Prêt';
+
+  @override
+  String slopeStatusComputing(int percent) {
+    return 'Calcul $percent%';
+  }
+
+  @override
+  String get slopeStatusReady => 'Prêt';
+
+  @override
+  String get slopeStatusMissingDem => 'Pas de données DEM d\'élévation';
+
+  @override
+  String get slopeStatusError => 'Échec de l\'analyse de pente';
+
+  @override
+  String slopeStats(String mean, String max) {
+    return 'Pente moyenne $mean° · Max $max°';
+  }
+
+  @override
+  String get slopeLegendHint =>
+      'Vert = doux / plus facile · Rouge = raide / coûteux. Heuristique approximative à partir du DEM seulement.';
 
   @override
   String get viewshedAntennaHeightLabel => 'Ant. m';

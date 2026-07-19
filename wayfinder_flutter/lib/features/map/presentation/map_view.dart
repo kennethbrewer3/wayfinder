@@ -61,6 +61,9 @@ import '../../markers/providers/map_marker_size_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
+import '../../slope/presentation/map_slope_layer.dart';
+import '../../slope/presentation/slope_banner.dart';
+import '../../slope/providers/slope_provider.dart';
 import '../../viewshed/presentation/map_viewshed_layer.dart';
 import '../../viewshed/presentation/viewshed_banner.dart';
 import '../../viewshed/providers/viewshed_provider.dart';
@@ -765,7 +768,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       ref.read(circleDrawingProvider).active ||
       ref.read(rectangleDrawingProvider).active ||
       ref.read(deadReckoningProvider).active ||
-      ref.read(viewshedProvider).active;
+      ref.read(viewshedProvider).active ||
+      ref.read(slopeProvider).active;
 
   void _beginSelectionPointer(PointerDownEvent event, LatLng point) {
     _activePointerDown = true;
@@ -1823,6 +1827,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
     ref
         .read(bearingPlotProvider.notifier)
         .begin(
@@ -2056,6 +2061,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
     final notifier = ref.read(lineDrawingProvider.notifier);
     if (point != null) {
       notifier.setStart(point);
@@ -2094,6 +2100,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
 
     final device = ref.read(deviceLocationProvider);
     final heading = device.headingDegrees;
@@ -2122,6 +2129,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
 
     unawaited(
       ref
@@ -2137,6 +2145,28 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   void _cancelViewshed() {
     ref.read(viewshedProvider.notifier).reset();
+  }
+
+  void _beginSlope() {
+    final point = _selectedMarkerPoint() ?? _radialMenuPoint;
+    _closeRadialMenu();
+    if (point == null) {
+      return;
+    }
+
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+
+    unawaited(ref.read(slopeProvider.notifier).begin(center: point));
+  }
+
+  void _cancelSlope() {
+    ref.read(slopeProvider.notifier).reset();
   }
 
   Future<void> _finalizeDeadReckoningMarker() async {
@@ -2200,6 +2230,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
     final notifier = ref.read(circleDrawingProvider.notifier);
     if (point != null) {
       notifier.setCenter(point);
@@ -2226,6 +2257,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
     final notifier = ref.read(rectangleDrawingProvider.notifier);
     if (point != null) {
       notifier.beginCenterExtent(point);
@@ -2244,6 +2276,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
     final notifier = ref.read(rectangleDrawingProvider.notifier);
     if (point != null) {
       notifier.beginCorners(point);
@@ -2625,6 +2658,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final bearingPlot = ref.watch(bearingPlotProvider);
     final deadReckoning = ref.watch(deadReckoningProvider);
     final viewshed = ref.watch(viewshedProvider);
+    final slope = ref.watch(slopeProvider);
     final selectedMapObject = ref.watch(selectedMapObjectProvider);
     final selectedLineId = selectedMapObject.selectedZoneId;
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -3064,6 +3098,38 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           ],
                         ),
                     ],
+                    if (slope.active) ...[
+                      Builder(
+                        builder: (context) {
+                          final overlays = buildSlopeOverlayImages(
+                            image: slope.heatmapImage,
+                            bounds: slope.bounds,
+                            opacity: slope.opacity,
+                          );
+                          if (overlays.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return OverlayImageLayer(overlayImages: overlays);
+                        },
+                      ),
+                      PolygonLayer(
+                        polygons: [
+                          ?buildSlopeRangeRingPolygon(
+                            points: slope.rangeRing,
+                            borderColor: previewColor.withValues(alpha: 0.7),
+                          ),
+                        ],
+                      ),
+                      if (slope.center case final center?)
+                        MarkerLayer(
+                          markers: [
+                            buildSlopeCenterMarker(
+                              center: center,
+                              color: previewColor,
+                            ),
+                          ],
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -3219,6 +3285,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     onSelected: _beginViewshed,
                   ),
                   MapRadialMenuAction(
+                    icon: Icons.terrain,
+                    label: l10n.mapRadialSlope,
+                    onSelected: _beginSlope,
+                  ),
+                  MapRadialMenuAction(
                     icon: Icons.radio_button_unchecked,
                     label: l10n.mapRadialCircle,
                     onSelected: _beginCircleDrawing,
@@ -3296,6 +3367,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 top: 0,
                 child: ViewshedBanner(onCancel: _cancelViewshed),
               ),
+            if (slope.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: SlopeBanner(onCancel: _cancelSlope),
+              ),
             if (lineDrawing.active)
               Positioned(
                 left: 0,
@@ -3308,6 +3386,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 !bearingPlot.active &&
                 !deadReckoning.active &&
                 !viewshed.active &&
+                !slope.active &&
                 !circleDrawing.active &&
                 !rectangleDrawing.active)
               Positioned(

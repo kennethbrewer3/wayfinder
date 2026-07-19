@@ -2887,10 +2887,57 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialViewshed => 'Cuenca visual';
 
   @override
+  String get mapRadialSlope => 'Pendiente / coste';
+
+  @override
   String get mapRadialAddToGeocoding => 'Añadir a búsqueda';
 
   @override
   String get viewshedTitle => 'Cuenca visual / RF';
+
+  @override
+  String get slopeTitle => 'Pendiente / campo a través';
+
+  @override
+  String get slopeRangeLabel => 'Alcance';
+
+  @override
+  String get slopeOpacityLabel => 'Opacidad';
+
+  @override
+  String get slopeModeCost => 'Coste';
+
+  @override
+  String get slopeModeSlope => 'Pendiente';
+
+  @override
+  String get slopeComputeAction => 'Calcular';
+
+  @override
+  String get slopeStatusReadyToCompute => 'Listo';
+
+  @override
+  String slopeStatusComputing(int percent) {
+    return 'Calculando $percent%';
+  }
+
+  @override
+  String get slopeStatusReady => 'Listo';
+
+  @override
+  String get slopeStatusMissingDem => 'Sin datos DEM de elevación';
+
+  @override
+  String get slopeStatusError => 'Falló el análisis de pendiente';
+
+  @override
+  String slopeStats(String mean, String max) {
+    return 'Pendiente media $mean° · Máx $max°';
+  }
+
+  @override
+  String get slopeLegendHint =>
+      'Verde = suave / más fácil · Rojo = empinado / costoso. Heurística aproximada solo con DEM.';
 
   @override
   String get viewshedAntennaHeightLabel => 'Ant. m';

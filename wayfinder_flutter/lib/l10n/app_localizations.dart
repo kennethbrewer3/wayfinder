@@ -5007,6 +5007,12 @@ abstract class AppLocalizations {
   /// **'Viewshed'**
   String get mapRadialViewshed;
 
+  /// No description provided for @mapRadialSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope / cost'**
+  String get mapRadialSlope;
+
   /// No description provided for @mapRadialAddToGeocoding.
   ///
   /// In en, this message translates to:
@@ -5018,6 +5024,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Viewshed / RF LOS'**
   String get viewshedTitle;
+
+  /// No description provided for @slopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope / cross-country'**
+  String get slopeTitle;
+
+  /// No description provided for @slopeRangeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Range'**
+  String get slopeRangeLabel;
+
+  /// No description provided for @slopeOpacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade'**
+  String get slopeOpacityLabel;
+
+  /// No description provided for @slopeModeCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost'**
+  String get slopeModeCost;
+
+  /// No description provided for @slopeModeSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope'**
+  String get slopeModeSlope;
+
+  /// No description provided for @slopeComputeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute'**
+  String get slopeComputeAction;
+
+  /// No description provided for @slopeStatusReadyToCompute.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get slopeStatusReadyToCompute;
+
+  /// No description provided for @slopeStatusComputing.
+  ///
+  /// In en, this message translates to:
+  /// **'Computing {percent}%'**
+  String slopeStatusComputing(int percent);
+
+  /// No description provided for @slopeStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get slopeStatusReady;
+
+  /// No description provided for @slopeStatusMissingDem.
+  ///
+  /// In en, this message translates to:
+  /// **'No DEM elevation data'**
+  String get slopeStatusMissingDem;
+
+  /// No description provided for @slopeStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope analysis failed'**
+  String get slopeStatusError;
+
+  /// No description provided for @slopeStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Mean slope {mean}° · Max {max}°'**
+  String slopeStats(String mean, String max);
+
+  /// No description provided for @slopeLegendHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.'**
+  String get slopeLegendHint;
 
   /// No description provided for @viewshedAntennaHeightLabel.
   ///

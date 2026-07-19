@@ -1308,7 +1308,38 @@
   "mapRadialCopyCoordinates": "Copier les coordonnées",
   "mapRadialDeadReckoning": "Pas",
   "mapRadialViewshed": "Bassin de vue",
+  "mapRadialSlope": "Pente / coût",
   "viewshedTitle": "Bassin de vue / RF",
+  "slopeTitle": "Pente / tout-terrain",
+  "slopeRangeLabel": "Portée",
+  "slopeOpacityLabel": "Opacité",
+  "slopeModeCost": "Coût",
+  "slopeModeSlope": "Pente",
+  "slopeComputeAction": "Calculer",
+  "slopeStatusReadyToCompute": "Prêt",
+  "slopeStatusComputing": "Calcul {percent}%",
+  "@slopeStatusComputing": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "slopeStatusReady": "Prêt",
+  "slopeStatusMissingDem": "Pas de données DEM d'élévation",
+  "slopeStatusError": "Échec de l'analyse de pente",
+  "slopeStats": "Pente moyenne {mean}° · Max {max}°",
+  "@slopeStats": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "slopeLegendHint": "Vert = doux / plus facile · Rouge = raide / coûteux. Heuristique approximative à partir du DEM seulement.",
   "viewshedAntennaHeightLabel": "Ant. m",
   "viewshedTargetHeightLabel": "Cible m",
   "viewshedRangeLabel": "Portée",

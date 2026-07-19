@@ -1308,7 +1308,38 @@
   "mapRadialCopyCoordinates": "Copiar coordenadas",
   "mapRadialDeadReckoning": "Pasos",
   "mapRadialViewshed": "Cuenca visual",
+  "mapRadialSlope": "Pendiente / coste",
   "viewshedTitle": "Cuenca visual / RF",
+  "slopeTitle": "Pendiente / campo a través",
+  "slopeRangeLabel": "Alcance",
+  "slopeOpacityLabel": "Opacidad",
+  "slopeModeCost": "Coste",
+  "slopeModeSlope": "Pendiente",
+  "slopeComputeAction": "Calcular",
+  "slopeStatusReadyToCompute": "Listo",
+  "slopeStatusComputing": "Calculando {percent}%",
+  "@slopeStatusComputing": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "slopeStatusReady": "Listo",
+  "slopeStatusMissingDem": "Sin datos DEM de elevación",
+  "slopeStatusError": "Falló el análisis de pendiente",
+  "slopeStats": "Pendiente media {mean}° · Máx {max}°",
+  "@slopeStats": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "slopeLegendHint": "Verde = suave / más fácil · Rojo = empinado / costoso. Heurística aproximada solo con DEM.",
   "viewshedAntennaHeightLabel": "Ant. m",
   "viewshedTargetHeightLabel": "Obj. m",
   "viewshedRangeLabel": "Alcance",

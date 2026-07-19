@@ -2849,10 +2849,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialViewshed => 'Viewshed';
 
   @override
+  String get mapRadialSlope => 'Slope / cost';
+
+  @override
   String get mapRadialAddToGeocoding => 'Add to search';
 
   @override
   String get viewshedTitle => 'Viewshed / RF LOS';
+
+  @override
+  String get slopeTitle => 'Slope / cross-country';
+
+  @override
+  String get slopeRangeLabel => 'Range';
+
+  @override
+  String get slopeOpacityLabel => 'Fade';
+
+  @override
+  String get slopeModeCost => 'Cost';
+
+  @override
+  String get slopeModeSlope => 'Slope';
+
+  @override
+  String get slopeComputeAction => 'Compute';
+
+  @override
+  String get slopeStatusReadyToCompute => 'Ready';
+
+  @override
+  String slopeStatusComputing(int percent) {
+    return 'Computing $percent%';
+  }
+
+  @override
+  String get slopeStatusReady => 'Ready';
+
+  @override
+  String get slopeStatusMissingDem => 'No DEM elevation data';
+
+  @override
+  String get slopeStatusError => 'Slope analysis failed';
+
+  @override
+  String slopeStats(String mean, String max) {
+    return 'Mean slope $mean° · Max $max°';
+  }
+
+  @override
+  String get slopeLegendHint =>
+      'Green = gentle / easier · Red = steep / costly. Rough walk/drive heuristic from DEM only.';
 
   @override
   String get viewshedAntennaHeightLabel => 'Ant. m';

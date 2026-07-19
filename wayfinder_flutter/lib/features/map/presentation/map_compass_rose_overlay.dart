@@ -32,8 +32,7 @@ class MapCompassRoseOverlay extends ConsumerStatefulWidget {
       _MapCompassRoseOverlayState();
 }
 
-class _MapCompassRoseOverlayState
-    extends ConsumerState<MapCompassRoseOverlay> {
+class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
   StreamSubscription<MapEvent>? _mapEvents;
 
   @override
@@ -168,14 +167,11 @@ class _MapCompassRoseOverlayState
                                   top: 1,
                                   child: Text(
                                     northLabel,
-                                    style:
-                                        theme.textTheme.labelSmall?.copyWith(
+                                    style: theme.textTheme.labelSmall?.copyWith(
                                       color: northColor,
                                       fontWeight: FontWeight.w800,
                                       height: 1,
-                                      fontSize: northLabel.length > 1
-                                          ? 10
-                                          : 12,
+                                      fontSize: northLabel.length > 1 ? 10 : 12,
                                     ),
                                   ),
                                 ),

@@ -311,6 +311,17 @@ When GPS is denied or unreliable, estimate a new position from a known start usi
 
 Start point priority: selected marker → current GPS fix → long-press location.
 
+### Viewshed / RF line-of-sight
+
+Estimate terrain-masked visibility from a lookout, repeater, mesh node, or any map point using DEM elevation (elevation-angle occlusion; no Fresnel clearance).
+
+1. Optionally **select a marker** (lookouts / radio markers get a sensible default antenna height).
+2. Long-press the map → **Viewshed**.
+3. Adjust **antenna height** (AGL), optional **target height** (AGL), and **range**, then **Compute** (first run starts automatically).
+4. The map shows a filled visible footprint and a dotted max-range ring. Cancel clears the overlay (it is not saved as a zone).
+
+Requires DEM elevation data for the area. Observer ground and eye height are shown in the banner when available.
+
 ---
 
 ## Circles
@@ -351,6 +362,7 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Add marker | New marker at this location |
 | Draw line | Start line drawing (from selected marker when one is selected) |
 | Pace count | Dead reckoning / pace-count helper |
+| Viewshed | Terrain / RF line-of-sight from this point (or selected marker) |
 | Draw circle | Start circle drawing (from selected marker when one is selected) |
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |

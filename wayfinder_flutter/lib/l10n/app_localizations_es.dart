@@ -2803,7 +2803,50 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialDeadReckoning => 'Pasos';
 
   @override
+  String get mapRadialViewshed => 'Cuenca visual';
+
+  @override
   String get mapRadialAddToGeocoding => 'Añadir a búsqueda';
+
+  @override
+  String get viewshedTitle => 'Cuenca visual / RF';
+
+  @override
+  String get viewshedAntennaHeightLabel => 'Ant. m';
+
+  @override
+  String get viewshedTargetHeightLabel => 'Obj. m';
+
+  @override
+  String get viewshedRangeLabel => 'Alcance';
+
+  @override
+  String get viewshedComputeAction => 'Calcular';
+
+  @override
+  String get viewshedStatusReadyToCompute => 'Listo';
+
+  @override
+  String viewshedStatusComputing(int percent) {
+    return 'Calculando… $percent%';
+  }
+
+  @override
+  String get viewshedStatusReady => 'Listo';
+
+  @override
+  String get viewshedStatusMissingDem => 'Sin datos DEM de elevación';
+
+  @override
+  String get viewshedStatusMissingElevation => 'Sin elevación en el observador';
+
+  @override
+  String get viewshedStatusError => 'Error en la cuenca visual';
+
+  @override
+  String viewshedObserverElevation(String ground, String eye) {
+    return 'Suelo $ground m · ojo $eye m';
+  }
 
   @override
   String get mapDeadReckoningTitle => 'Navegación a estima';

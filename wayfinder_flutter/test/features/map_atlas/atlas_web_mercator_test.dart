@@ -21,8 +21,7 @@ void main() {
     );
     final zoom = pickAtlasTileZoom(bounds, maxTiles: 48);
     final range = tileRangeForBounds(bounds: bounds, zoom: zoom);
-    final count =
-        (range.maxX - range.minX + 1) * (range.maxY - range.minY + 1);
+    final count = (range.maxX - range.minX + 1) * (range.maxY - range.minY + 1);
     expect(zoom, inInclusiveRange(1, 15));
     expect(count, lessThanOrEqualTo(48));
   });

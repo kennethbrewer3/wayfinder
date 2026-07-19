@@ -61,8 +61,7 @@ class MapCursorCoordinates extends ConsumerStatefulWidget {
       _MapCursorCoordinatesState();
 }
 
-class _MapCursorCoordinatesState
-    extends ConsumerState<MapCursorCoordinates> {
+class _MapCursorCoordinatesState extends ConsumerState<MapCursorCoordinates> {
   Timer? _idleTimer;
   Timer? _elevationTimer;
   var _opacity = 1.0;

@@ -70,7 +70,9 @@ List<LatLng> samplePointsAlongPath(
     final remaining = segmentLength - alongSegment;
     final need = target - walked;
     if (remaining >= need - 1e-6) {
-      final t = segmentLength <= 0 ? 0.0 : (alongSegment + need) / segmentLength;
+      final t = segmentLength <= 0
+          ? 0.0
+          : (alongSegment + need) / segmentLength;
       result.add(_lerp(segmentStart, segmentEnd, t.clamp(0.0, 1.0)));
       alongSegment += need;
       walked = target;

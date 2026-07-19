@@ -167,8 +167,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
               child: Text(l10n.geoExchangeImportAdd),
             ),
             FilledButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(GeoImportMode.replace),
+              onPressed: () => Navigator.of(context).pop(GeoImportMode.replace),
               child: Text(l10n.geoExchangeImportReplace),
             ),
           ],

@@ -44,7 +44,10 @@ void main() {
       GeoExchangeFormat.geojson,
     );
     expect(
-      detectGeoExchangeFormat(fileName: 'a.txt', contents: '<gpx version="1.1">'),
+      detectGeoExchangeFormat(
+        fileName: 'a.txt',
+        contents: '<gpx version="1.1">',
+      ),
       GeoExchangeFormat.gpx,
     );
   });

@@ -6,10 +6,9 @@ import 'dead_reckoning_provider.dart';
 const _paceLengthStorageKey = 'wayfinder.paceLengthMeters';
 
 /// Preferred pace length in meters (device-local, offline).
-final paceLengthProvider =
-    StateNotifierProvider<PaceLengthNotifier, double>(
-      (ref) => PaceLengthNotifier()..load(),
-    );
+final paceLengthProvider = StateNotifierProvider<PaceLengthNotifier, double>(
+  (ref) => PaceLengthNotifier()..load(),
+);
 
 class PaceLengthNotifier extends StateNotifier<double> {
   PaceLengthNotifier() : super(defaultPaceLengthMeters);

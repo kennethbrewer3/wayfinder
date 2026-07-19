@@ -196,9 +196,7 @@ class _ProfileChartPainter extends CustomPainter {
 
     final path = ui.Path();
     for (var i = 0; i < samples.length; i++) {
-      final x = maxD <= 0
-          ? 0.0
-          : samples[i].distanceMeters / maxD * size.width;
+      final x = maxD <= 0 ? 0.0 : samples[i].distanceMeters / maxD * size.width;
       final y =
           size.height -
           ((samples[i].elevationMeters - minE) / elevSpan) * size.height;
@@ -219,7 +217,6 @@ class _ProfileChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ProfileChartPainter oldDelegate) {
-    return oldDelegate.samples != samples ||
-        oldDelegate.lineColor != lineColor;
+    return oldDelegate.samples != samples || oldDelegate.lineColor != lineColor;
   }
 }

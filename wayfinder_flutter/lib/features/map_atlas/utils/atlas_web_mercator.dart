@@ -18,9 +18,7 @@ double latToMercatorY(double latitude) {
   final lat = latitude.clamp(-atlasMercatorMaxLat, atlasMercatorMaxLat);
   final latRad = lat * math.pi / 180.0;
   final y =
-      (1 -
-          math.log(math.tan(latRad) + 1 / math.cos(latRad)) / math.pi) /
-      2;
+      (1 - math.log(math.tan(latRad) + 1 / math.cos(latRad)) / math.pi) / 2;
   return y.clamp(0.0, 1.0);
 }
 
@@ -68,8 +66,7 @@ int pickAtlasTileZoom(
 
   while (zoom > minZoom) {
     final range = tileRangeForBounds(bounds: bounds, zoom: zoom);
-    final count =
-        (range.maxX - range.minX + 1) * (range.maxY - range.minY + 1);
+    final count = (range.maxX - range.minX + 1) * (range.maxY - range.minY + 1);
     if (count <= maxTiles) {
       break;
     }

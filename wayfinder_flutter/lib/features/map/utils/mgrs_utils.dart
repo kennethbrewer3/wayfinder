@@ -226,7 +226,10 @@ MgrsGridGeometry buildMgrsGrid({
   final lonSpan = visible.effectiveLongitudeWidth;
   final spanMeters = geographicSpanMeters(visible);
   final interval = chooseMgrsIntervalMeters(spanMeters);
-  final zones = _zonesIntersecting(visible.unwrappedWest, visible.unwrappedEast);
+  final zones = _zonesIntersecting(
+    visible.unwrappedWest,
+    visible.unwrappedEast,
+  );
 
   // Zoom-primary modes so panning near zone counts does not flip the mesh.
   // Continental / world: GZD only. Regional+: clipped UTM squares.
@@ -318,7 +321,10 @@ MgrsGridGeometry _buildMultiZoneGrid(
   final accuracy = accuracyForIntervalMeters(intervalMeters);
   final lines = <List<LatLng>>[];
   final labels = <MgrsGridLabel>[];
-  final zones = _zonesIntersecting(visible.unwrappedWest, visible.unwrappedEast);
+  final zones = _zonesIntersecting(
+    visible.unwrappedWest,
+    visible.unwrappedEast,
+  );
   final south = visible.south;
   final north = visible.north;
 
@@ -519,9 +525,11 @@ List<MgrsGridLabel> _gzdCellCenterLabels(MgrsLatLngBounds visible) {
       }
 
       final centerLat = (bandSouth + bandNorth) / 2;
-      for (var world = (west / 360).floor() - 1;
-          world <= (east / 360).ceil() + 1;
-          world++) {
+      for (
+        var world = (west / 360).floor() - 1;
+        world <= (east / 360).ceil() + 1;
+        world++
+      ) {
         final cellWest = zoneWest + 360.0 * world;
         final cellEast = zoneEast + 360.0 * world;
         if (cellEast < west || cellWest > east) {
@@ -831,7 +839,11 @@ List<List<LatLng>> _utmLineSegments({
     previous = null;
   }
 
-  for (var value = varyingStart; value <= varyingEnd + step / 2; value += step) {
+  for (
+    var value = varyingStart;
+    value <= varyingEnd + step / 2;
+    value += step
+  ) {
     final clamped = value > varyingEnd ? varyingEnd : value;
     final point = varyNorthing
         ? _utmToLatLng(

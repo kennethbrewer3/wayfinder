@@ -208,22 +208,23 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
       }
 
       await _subscription?.cancel();
-      _subscription = Geolocator.getPositionStream(
-        locationSettings: _settings(),
-      ).listen(
-        (position) {
-          if (_subscription == null) {
-            return;
-          }
-          _applyPosition(position);
-        },
-        onError: (Object error) {
-          _log.warn('📍 Position stream error', error: error);
-          state = state.copyWith(
-            errorMessage: DeviceLocationError.unavailable.code,
+      _subscription =
+          Geolocator.getPositionStream(
+            locationSettings: _settings(),
+          ).listen(
+            (position) {
+              if (_subscription == null) {
+                return;
+              }
+              _applyPosition(position);
+            },
+            onError: (Object error) {
+              _log.warn('📍 Position stream error', error: error);
+              state = state.copyWith(
+                errorMessage: DeviceLocationError.unavailable.code,
+              );
+            },
           );
-        },
-      );
 
       state = state.copyWith(tracking: true, clearError: true);
       return state.hasFix || state.tracking;

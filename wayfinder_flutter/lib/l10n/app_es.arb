@@ -1237,6 +1237,36 @@
   "mapRadialRectCorners": "Rect. esquinas",
   "mapRadialCopyCoordinates": "Copiar coordenadas",
   "mapRadialDeadReckoning": "Pasos",
+  "mapRadialViewshed": "Cuenca visual",
+  "viewshedTitle": "Cuenca visual / RF",
+  "viewshedAntennaHeightLabel": "Ant. m",
+  "viewshedTargetHeightLabel": "Obj. m",
+  "viewshedRangeLabel": "Alcance",
+  "viewshedComputeAction": "Calcular",
+  "viewshedStatusReadyToCompute": "Listo",
+  "viewshedStatusComputing": "Calculando… {percent}%",
+  "@viewshedStatusComputing": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "viewshedStatusReady": "Listo",
+  "viewshedStatusMissingDem": "Sin datos DEM de elevación",
+  "viewshedStatusMissingElevation": "Sin elevación en el observador",
+  "viewshedStatusError": "Error en la cuenca visual",
+  "viewshedObserverElevation": "Suelo {ground} m · ojo {eye} m",
+  "@viewshedObserverElevation": {
+    "placeholders": {
+      "ground": {
+        "type": "String"
+      },
+      "eye": {
+        "type": "String"
+      }
+    }
+  },
   "mapDeadReckoningTitle": "Navegación a estima",
   "mapDeadReckoningModePaces": "Pasos",
   "mapDeadReckoningModeDistance": "Distancia",

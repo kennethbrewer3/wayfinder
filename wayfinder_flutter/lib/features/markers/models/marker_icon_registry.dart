@@ -146,6 +146,7 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(
     key: 'radio_repeater',
     icon: Icons.settings_input_antenna,
+    assetPath: 'assets/markers/radio_repeater.svg',
     label: 'Radio repeater',
   ),
   MarkerIconOption(
@@ -169,7 +170,12 @@ const markerIconOptions = <MarkerIconOption>[
   MarkerIconOption(key: 'fuel', icon: Icons.local_gas_station, label: 'Fuel'),
   MarkerIconOption(key: 'gate', icon: Icons.fence, label: 'Gate'),
   MarkerIconOption(key: 'crossing', icon: Icons.add_road, label: 'Crossing'),
-  MarkerIconOption(key: 'lookout', icon: Icons.visibility, label: 'Lookout'),
+  MarkerIconOption(
+    key: 'lookout',
+    icon: Icons.visibility,
+    assetPath: 'assets/markers/lookout.svg',
+    label: 'Lookout',
+  ),
   MarkerIconOption(
     key: 'solar_power_plant',
     icon: Icons.solar_power,

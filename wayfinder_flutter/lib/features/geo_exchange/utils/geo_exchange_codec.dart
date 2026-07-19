@@ -10,8 +10,7 @@ GeoExchangeBundle parseGeoExchange({
   GeoExchangeFormat? format,
 }) {
   final resolved =
-      format ??
-      detectGeoExchangeFormat(fileName: fileName, contents: contents);
+      format ?? detectGeoExchangeFormat(fileName: fileName, contents: contents);
   if (resolved == null) {
     throw FormatException(
       'Unrecognized geographic file. Use GPX, KML, or GeoJSON.',

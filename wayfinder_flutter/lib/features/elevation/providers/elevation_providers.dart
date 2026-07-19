@@ -6,12 +6,13 @@ import '../../settings/providers/pmtiles_providers.dart';
 import '../data/elevation_sampler.dart';
 
 /// Enabled DEM catalog entries (filename heuristic + enabled toggle/group).
-final elevationDemEntriesProvider =
-    FutureProvider<List<PmtilesArchiveEntry>>((ref) async {
-      ref.watch(pmtilesRevisionProvider);
-      final repository = ref.watch(pmtilesRepositoryProvider);
-      return repository.resolveElevationDemEntries();
-    });
+final elevationDemEntriesProvider = FutureProvider<List<PmtilesArchiveEntry>>((
+  ref,
+) async {
+  ref.watch(pmtilesRevisionProvider);
+  final repository = ref.watch(pmtilesRepositoryProvider);
+  return repository.resolveElevationDemEntries();
+});
 
 final elevationSamplerProvider = FutureProvider<ElevationSampler>((ref) async {
   final entries = await ref.watch(elevationDemEntriesProvider.future);
@@ -19,11 +20,13 @@ final elevationSamplerProvider = FutureProvider<ElevationSampler>((ref) async {
 });
 
 /// Spot elevation at [point], null when unavailable.
-final elevationAtProvider =
-    FutureProvider.family<double?, LatLng>((ref, point) async {
-      final sampler = await ref.watch(elevationSamplerProvider.future);
-      if (!sampler.hasDem) {
-        return null;
-      }
-      return sampler.elevationAt(point);
-    });
+final elevationAtProvider = FutureProvider.family<double?, LatLng>((
+  ref,
+  point,
+) async {
+  final sampler = await ref.watch(elevationSamplerProvider.future);
+  if (!sampler.hasDem) {
+    return null;
+  }
+  return sampler.elevationAt(point);
+});

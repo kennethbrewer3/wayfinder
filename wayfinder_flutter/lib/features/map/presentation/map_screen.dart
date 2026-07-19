@@ -247,10 +247,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final currentZoom =
         ref.read(mapViewportProvider).valueOrNull?.zoom ??
         AppConstants.defaultZoom;
-    await ref.read(mapViewportProvider.notifier).moveTo(
-      center: position,
-      zoom: currentZoom < 14 ? 14 : currentZoom,
-    );
+    await ref
+        .read(mapViewportProvider.notifier)
+        .moveTo(
+          center: position,
+          zoom: currentZoom < 14 ? 14 : currentZoom,
+        );
   }
 
   Future<void> _stopLocateMe() async {
@@ -265,17 +267,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         l10n.mapDeviceLocationPermissionDenied,
       DeviceLocationError.permissionDeniedForever =>
         l10n.mapDeviceLocationPermissionDeniedForever,
-      DeviceLocationError.unavailable || null =>
-        l10n.mapDeviceLocationUnavailable,
+      DeviceLocationError.unavailable ||
+      null => l10n.mapDeviceLocationUnavailable,
     };
   }
 
-  void _followDeviceLocation(DeviceLocationState? previous, DeviceLocationState next) {
+  void _followDeviceLocation(
+    DeviceLocationState? previous,
+    DeviceLocationState next,
+  ) {
     if (!next.following || next.position == null) {
       return;
     }
-    if (previous?.position == next.position &&
-        previous?.following == true) {
+    if (previous?.position == next.position && previous?.following == true) {
       return;
     }
     final currentZoom =
@@ -284,11 +288,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     // Follow updates are frequent — keep the camera in sync without
     // rewriting saved viewport storage on every GPS tick.
     unawaited(
-      ref.read(mapViewportProvider.notifier).moveTo(
-        center: next.position!,
-        zoom: currentZoom,
-        persist: false,
-      ),
+      ref
+          .read(mapViewportProvider.notifier)
+          .moveTo(
+            center: next.position!,
+            zoom: currentZoom,
+            persist: false,
+          ),
     );
   }
 

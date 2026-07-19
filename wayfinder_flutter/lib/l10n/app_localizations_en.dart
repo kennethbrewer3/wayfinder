@@ -2765,7 +2765,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialDeadReckoning => 'Pace count';
 
   @override
+  String get mapRadialViewshed => 'Viewshed';
+
+  @override
   String get mapRadialAddToGeocoding => 'Add to search';
+
+  @override
+  String get viewshedTitle => 'Viewshed / RF LOS';
+
+  @override
+  String get viewshedAntennaHeightLabel => 'Ant. m';
+
+  @override
+  String get viewshedTargetHeightLabel => 'Tgt m';
+
+  @override
+  String get viewshedRangeLabel => 'Range';
+
+  @override
+  String get viewshedComputeAction => 'Compute';
+
+  @override
+  String get viewshedStatusReadyToCompute => 'Ready';
+
+  @override
+  String viewshedStatusComputing(int percent) {
+    return 'Computing… $percent%';
+  }
+
+  @override
+  String get viewshedStatusReady => 'Ready';
+
+  @override
+  String get viewshedStatusMissingDem => 'No DEM elevation data';
+
+  @override
+  String get viewshedStatusMissingElevation => 'No elevation at observer';
+
+  @override
+  String get viewshedStatusError => 'Viewshed failed';
+
+  @override
+  String viewshedObserverElevation(String ground, String eye) {
+    return 'Ground $ground m · eye $eye m';
+  }
 
   @override
   String get mapDeadReckoningTitle => 'Dead reckoning';

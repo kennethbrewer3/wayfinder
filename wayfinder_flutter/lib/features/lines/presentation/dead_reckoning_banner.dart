@@ -146,7 +146,10 @@ class _DeadReckoningBannerState extends ConsumerState<DeadReckoningBanner> {
       return InputDecoration(
         isDense: true,
         labelText: label,
-        labelStyle: TextStyle(color: onInverse.withValues(alpha: 0.8), fontSize: 11),
+        labelStyle: TextStyle(
+          color: onInverse.withValues(alpha: 0.8),
+          fontSize: 11,
+        ),
         filled: true,
         fillColor: theme.colorScheme.surface.withValues(alpha: 0.15),
         border: const OutlineInputBorder(),
@@ -232,7 +235,8 @@ class _DeadReckoningBannerState extends ConsumerState<DeadReckoningBanner> {
                       onSubmitted: _applyHeading,
                     ),
                   ),
-                  if (state.distanceMode == DeadReckoningDistanceMode.paces) ...[
+                  if (state.distanceMode ==
+                      DeadReckoningDistanceMode.paces) ...[
                     SizedBox(
                       width: 88,
                       child: TextField(

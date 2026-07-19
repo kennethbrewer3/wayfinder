@@ -61,6 +61,10 @@ import '../../markers/providers/map_marker_size_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
+import '../../viewshed/presentation/map_viewshed_layer.dart';
+import '../../viewshed/presentation/viewshed_banner.dart';
+import '../../viewshed/providers/viewshed_provider.dart';
+import '../../viewshed/utils/viewshed_compute.dart';
 import '../../geocoding/presentation/submit_geocoding_contribution.dart';
 import '../../geocoding/providers/geocoding_server_provider.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
@@ -760,7 +764,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       ref.read(lineDrawingProvider).active ||
       ref.read(circleDrawingProvider).active ||
       ref.read(rectangleDrawingProvider).active ||
-      ref.read(deadReckoningProvider).active;
+      ref.read(deadReckoningProvider).active ||
+      ref.read(viewshedProvider).active;
 
   void _beginSelectionPointer(PointerDownEvent event, LatLng point) {
     _activePointerDown = true;
@@ -1090,8 +1095,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         );
         for (final link in linked) {
           final zone = findZoneById(_zonesOnMap, link.zoneId);
-          final otherGeometry =
-              zone == null ? null : LineGeometry.fromZone(zone);
+          final otherGeometry = zone == null
+              ? null
+              : LineGeometry.fromZone(zone);
           if (otherGeometry != null) {
             previews[link.zoneId] = otherGeometry;
           }
@@ -1494,6 +1500,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    if (ref.read(viewshedProvider).active) {
+      _cancelPendingLongPress();
+      return;
+    }
+
     if (ref.read(lineDrawingProvider).active) {
       _cancelPendingLongPress();
       if (ref.read(lineDrawingProvider).awaitingEnd) {
@@ -1811,6 +1822,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
     ref
         .read(bearingPlotProvider.notifier)
         .begin(
@@ -2015,13 +2027,19 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     unawaited(copyCoordinatesToClipboard(context, point));
   }
 
-  LatLng? _selectedMarkerPoint() {
-    final selectedMarkerId =
-        ref.read(selectedMapObjectProvider).selectedMarkerId;
+  MapMarker? _selectedMarker() {
+    final selectedMarkerId = ref
+        .read(selectedMapObjectProvider)
+        .selectedMarkerId;
     final markers = widget.markersAsync.valueOrNull ?? const <MapMarker>[];
-    final selectedMarker = selectedMarkerId == null
-        ? null
-        : findMarkerById(markers, selectedMarkerId);
+    if (selectedMarkerId == null) {
+      return null;
+    }
+    return findMarkerById(markers, selectedMarkerId);
+  }
+
+  LatLng? _selectedMarkerPoint() {
+    final selectedMarker = _selectedMarker();
     if (selectedMarker == null) {
       return null;
     }
@@ -2037,6 +2055,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
     final notifier = ref.read(lineDrawingProvider.notifier);
     if (point != null) {
       notifier.setStart(point);
@@ -2074,6 +2093,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
 
     final device = ref.read(deviceLocationProvider);
     final heading = device.headingDegrees;
@@ -2084,6 +2104,39 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           headingTrueDegrees: heading,
           paceLengthMeters: ref.read(paceLengthProvider),
         );
+  }
+
+  void _beginViewshed() {
+    final selectedMarker = _selectedMarker();
+    final point = selectedMarker == null
+        ? _radialMenuPoint
+        : LatLng(selectedMarker.latitude, selectedMarker.longitude);
+    _closeRadialMenu();
+    if (point == null) {
+      return;
+    }
+
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+
+    unawaited(
+      ref
+          .read(viewshedProvider.notifier)
+          .begin(
+            observer: point,
+            antennaHeightMeters: defaultAntennaHeightForMarkerIcon(
+              selectedMarker?.icon,
+            ),
+          ),
+    );
+  }
+
+  void _cancelViewshed() {
+    ref.read(viewshedProvider.notifier).reset();
   }
 
   Future<void> _finalizeDeadReckoningMarker() async {
@@ -2146,6 +2199,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
     final notifier = ref.read(circleDrawingProvider.notifier);
     if (point != null) {
       notifier.setCenter(point);
@@ -2171,6 +2225,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
     final notifier = ref.read(rectangleDrawingProvider.notifier);
     if (point != null) {
       notifier.beginCenterExtent(point);
@@ -2188,6 +2243,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
     final notifier = ref.read(rectangleDrawingProvider.notifier);
     if (point != null) {
       notifier.beginCorners(point);
@@ -2512,7 +2568,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         'Move to set size from center, then double-tap to place (or Cancel)',
       RectangleCreationMode.corners =>
         'Move to the opposite corner, then double-tap to place (or Cancel)',
-      null => 'Move to define the rectangle, then double-tap to place (or Cancel)',
+      null =>
+        'Move to define the rectangle, then double-tap to place (or Cancel)',
     };
 
     return Material(
@@ -2567,6 +2624,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
     final bearingPlot = ref.watch(bearingPlotProvider);
     final deadReckoning = ref.watch(deadReckoningProvider);
+    final viewshed = ref.watch(viewshedProvider);
     final selectedMapObject = ref.watch(selectedMapObjectProvider);
     final selectedLineId = selectedMapObject.selectedZoneId;
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -2982,6 +3040,30 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           ),
                         ],
                       ),
+                    if (viewshed.active) ...[
+                      PolygonLayer(
+                        polygons: [
+                          ?buildViewshedRangeRingPolygon(
+                            points: viewshed.rangeRing,
+                            borderColor: previewColor.withValues(alpha: 0.7),
+                          ),
+                          ?buildViewshedVisiblePolygon(
+                            points: viewshed.visiblePolygon,
+                            borderColor: previewColor,
+                            fillColor: previewFillColor,
+                          ),
+                        ],
+                      ),
+                      if (viewshed.observer case final observer?)
+                        MarkerLayer(
+                          markers: [
+                            buildViewshedObserverMarker(
+                              observer: observer,
+                              color: previewColor,
+                            ),
+                          ],
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -3039,7 +3121,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               bearingPlot.active || deadReckoning.active
                               ? previewColor
                               : null,
-                          bearingPreviewAngle: !bearingPlot.active ||
+                          bearingPreviewAngle:
+                              !bearingPlot.active ||
                                   bearingPlot.relativeBearing == null
                               ? null
                               : formatRelativeAngle(
@@ -3113,6 +3196,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     onSelected: _beginDeadReckoning,
                   ),
                   MapRadialMenuAction(
+                    icon: Icons.visibility,
+                    label: l10n.mapRadialViewshed,
+                    onSelected: _beginViewshed,
+                  ),
+                  MapRadialMenuAction(
                     icon: Icons.radio_button_unchecked,
                     label: l10n.mapRadialCircle,
                     onSelected: _beginCircleDrawing,
@@ -3174,13 +3262,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 child: DeadReckoningBanner(
                   bearingReference: navigationBearingReference,
                   declinationDegrees: magneticDeclinationDegrees(
-                    location: deadReckoning.anchor ??
-                        _mapController.camera.center,
+                    location:
+                        deadReckoning.anchor ?? _mapController.camera.center,
                   ),
-                  onPlaceMarker: () => unawaited(_finalizeDeadReckoningMarker()),
+                  onPlaceMarker: () =>
+                      unawaited(_finalizeDeadReckoningMarker()),
                   onCreateLine: () => unawaited(_finalizeDeadReckoningLine()),
                   onCancel: _cancelDeadReckoning,
                 ),
+              ),
+            if (viewshed.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: ViewshedBanner(onCancel: _cancelViewshed),
               ),
             if (lineDrawing.active)
               Positioned(
@@ -3193,6 +3289,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 !lineDrawing.active &&
                 !bearingPlot.active &&
                 !deadReckoning.active &&
+                !viewshed.active &&
                 !circleDrawing.active &&
                 !rectangleDrawing.active)
               Positioned(

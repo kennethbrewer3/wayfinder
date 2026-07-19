@@ -1237,6 +1237,36 @@
   "mapRadialRectCorners": "Rect. coins",
   "mapRadialCopyCoordinates": "Copier les coordonnées",
   "mapRadialDeadReckoning": "Pas",
+  "mapRadialViewshed": "Bassin de vue",
+  "viewshedTitle": "Bassin de vue / RF",
+  "viewshedAntennaHeightLabel": "Ant. m",
+  "viewshedTargetHeightLabel": "Cible m",
+  "viewshedRangeLabel": "Portée",
+  "viewshedComputeAction": "Calculer",
+  "viewshedStatusReadyToCompute": "Prêt",
+  "viewshedStatusComputing": "Calcul… {percent} %",
+  "@viewshedStatusComputing": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "viewshedStatusReady": "Prêt",
+  "viewshedStatusMissingDem": "Pas de données DEM",
+  "viewshedStatusMissingElevation": "Pas d'altitude à l'observateur",
+  "viewshedStatusError": "Échec du bassin de vue",
+  "viewshedObserverElevation": "Sol {ground} m · œil {eye} m",
+  "@viewshedObserverElevation": {
+    "placeholders": {
+      "ground": {
+        "type": "String"
+      },
+      "eye": {
+        "type": "String"
+      }
+    }
+  },
   "mapDeadReckoningTitle": "Estime",
   "mapDeadReckoningModePaces": "Pas",
   "mapDeadReckoningModeDistance": "Distance",

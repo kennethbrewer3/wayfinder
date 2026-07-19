@@ -12,9 +12,11 @@ GeoExchangeBundle parseKml(String contents) {
     final name = _childText(placemark, 'name') ?? 'Placemark';
     final description = _childText(placemark, 'description');
 
-    final pointCoords = placemark.findAllElements('Point').expand(
-      (point) => point.findElements('coordinates'),
-    );
+    final pointCoords = placemark
+        .findAllElements('Point')
+        .expand(
+          (point) => point.findElements('coordinates'),
+        );
     for (final coords in pointCoords) {
       final points = _parseCoordinateList(coords.innerText);
       if (points.isNotEmpty) {
@@ -28,9 +30,11 @@ GeoExchangeBundle parseKml(String contents) {
       }
     }
 
-    final lineCoords = placemark.findAllElements('LineString').expand(
-      (line) => line.findElements('coordinates'),
-    );
+    final lineCoords = placemark
+        .findAllElements('LineString')
+        .expand(
+          (line) => line.findElements('coordinates'),
+        );
     for (final coords in lineCoords) {
       final points = _parseCoordinateList(coords.innerText);
       if (points.length >= 2) {
@@ -94,9 +98,7 @@ String encodeKml(GeoExchangeBundle bundle) {
                     builder.element('tessellate', nest: '1');
                     builder.element(
                       'coordinates',
-                      nest: track.points
-                          .map(_formatCoordinate)
-                          .join('\n'),
+                      nest: track.points.map(_formatCoordinate).join('\n'),
                     );
                   },
                 );

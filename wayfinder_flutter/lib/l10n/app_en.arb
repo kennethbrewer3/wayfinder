@@ -1547,7 +1547,37 @@
   "mapRadialRectCorners": "Rect corners",
   "mapRadialCopyCoordinates": "Copy coordinates",
   "mapRadialDeadReckoning": "Pace count",
+  "mapRadialViewshed": "Viewshed",
   "mapRadialAddToGeocoding": "Add to search",
+  "viewshedTitle": "Viewshed / RF LOS",
+  "viewshedAntennaHeightLabel": "Ant. m",
+  "viewshedTargetHeightLabel": "Tgt m",
+  "viewshedRangeLabel": "Range",
+  "viewshedComputeAction": "Compute",
+  "viewshedStatusReadyToCompute": "Ready",
+  "viewshedStatusComputing": "Computing… {percent}%",
+  "@viewshedStatusComputing": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "viewshedStatusReady": "Ready",
+  "viewshedStatusMissingDem": "No DEM elevation data",
+  "viewshedStatusMissingElevation": "No elevation at observer",
+  "viewshedStatusError": "Viewshed failed",
+  "viewshedObserverElevation": "Ground {ground} m · eye {eye} m",
+  "@viewshedObserverElevation": {
+    "placeholders": {
+      "ground": {
+        "type": "String"
+      },
+      "eye": {
+        "type": "String"
+      }
+    }
+  },
   "mapDeadReckoningTitle": "Dead reckoning",
   "mapDeadReckoningModePaces": "Paces",
   "mapDeadReckoningModeDistance": "Distance",

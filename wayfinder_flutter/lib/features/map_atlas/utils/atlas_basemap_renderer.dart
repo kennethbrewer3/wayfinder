@@ -296,7 +296,12 @@ Future<Uint8List> _stitchAndCrop({
     final cropCanvas = ui.Canvas(cropRecorder);
     cropCanvas.drawImageRect(
       mosaic,
-      ui.Rect.fromLTWH(cropLeft, cropTop, cropWidth.toDouble(), cropHeight.toDouble()),
+      ui.Rect.fromLTWH(
+        cropLeft,
+        cropTop,
+        cropWidth.toDouble(),
+        cropHeight.toDouble(),
+      ),
       ui.Rect.fromLTWH(0, 0, cropWidth.toDouble(), cropHeight.toDouble()),
       ui.Paint(),
     );

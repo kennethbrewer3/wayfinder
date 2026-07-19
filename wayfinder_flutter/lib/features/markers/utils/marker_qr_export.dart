@@ -36,7 +36,10 @@ Future<Uint8List> buildMarkerQrPngBytes({
     gapless: true,
     embeddedImage: logo,
     embeddedImageStyle: QrEmbeddedImageStyle(
-      size: Size(size * markerQrLogoModuleFraction, size * markerQrLogoModuleFraction),
+      size: Size(
+        size * markerQrLogoModuleFraction,
+        size * markerQrLogoModuleFraction,
+      ),
     ),
     eyeStyle: const QrEyeStyle(
       eyeShape: QrEyeShape.square,

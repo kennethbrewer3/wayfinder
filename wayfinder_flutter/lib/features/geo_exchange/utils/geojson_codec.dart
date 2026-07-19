@@ -130,8 +130,7 @@ String encodeGeoJson(GeoExchangeBundle bundle) {
         'geometry': {
           'type': 'LineString',
           'coordinates': [
-            for (final point in track.points)
-              [point.longitude, point.latitude],
+            for (final point in track.points) [point.longitude, point.latitude],
           ],
         },
       },

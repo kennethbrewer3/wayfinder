@@ -194,53 +194,56 @@ void main() {
       expect(horizontal, greaterThan(8));
     });
 
-    test('keeps a full GZD mesh when flutter_map clamps west/east at zoom ~3.6', () {
-      // LatLngBounds.worldSafe clamps west/east to ±180 while longitudeWidth
-      // still describes the real viewport (often wraps past the antimeridian).
-      const center = -95.0;
-      const width = 220.0;
-      final geometry = buildMgrsGrid(
-        bounds: const MgrsLatLngBounds(
-          south: -45,
-          west: -180, // clamped
-          north: 70,
-          east: 15, // clamped: center + width/2
-          longitudeCenter: center,
-          longitudeWidth: width,
-        ),
-        zoom: 3.64,
-      );
+    test(
+      'keeps a full GZD mesh when flutter_map clamps west/east at zoom ~3.6',
+      () {
+        // LatLngBounds.worldSafe clamps west/east to ±180 while longitudeWidth
+        // still describes the real viewport (often wraps past the antimeridian).
+        const center = -95.0;
+        const width = 220.0;
+        final geometry = buildMgrsGrid(
+          bounds: const MgrsLatLngBounds(
+            south: -45,
+            west: -180, // clamped
+            north: 70,
+            east: 15, // clamped: center + width/2
+            longitudeCenter: center,
+            longitudeWidth: width,
+          ),
+          zoom: 3.64,
+        );
 
-      expect(geometry.accuracy, 0);
-      final unwrappedWest = center - width / 2; // -205
-      final unwrappedEast = center + width / 2; // 15
+        expect(geometry.accuracy, 0);
+        final unwrappedWest = center - width / 2; // -205
+        final unwrappedEast = center + width / 2; // 15
 
-      var vertical = 0;
-      var horizontal = 0;
-      var spansFullWidth = false;
-      var hasWrappedMeridian = false;
-      for (final line in geometry.lines) {
-        final dLat = (line.first.latitude - line.last.latitude).abs();
-        final dLon = (line.first.longitude - line.last.longitude).abs();
-        if (dLon < 1e-6) {
-          vertical++;
-          if (line.first.longitude < -180) {
-            hasWrappedMeridian = true;
-          }
-        } else if (dLat < 1e-6) {
-          horizontal++;
-          final lo = math.min(line.first.longitude, line.last.longitude);
-          final hi = math.max(line.first.longitude, line.last.longitude);
-          if (lo <= unwrappedWest + 1 && hi >= unwrappedEast - 1) {
-            spansFullWidth = true;
+        var vertical = 0;
+        var horizontal = 0;
+        var spansFullWidth = false;
+        var hasWrappedMeridian = false;
+        for (final line in geometry.lines) {
+          final dLat = (line.first.latitude - line.last.latitude).abs();
+          final dLon = (line.first.longitude - line.last.longitude).abs();
+          if (dLon < 1e-6) {
+            vertical++;
+            if (line.first.longitude < -180) {
+              hasWrappedMeridian = true;
+            }
+          } else if (dLat < 1e-6) {
+            horizontal++;
+            final lo = math.min(line.first.longitude, line.last.longitude);
+            final hi = math.max(line.first.longitude, line.last.longitude);
+            if (lo <= unwrappedWest + 1 && hi >= unwrappedEast - 1) {
+              spansFullWidth = true;
+            }
           }
         }
-      }
 
-      expect(vertical, greaterThan(20));
-      expect(horizontal, greaterThan(5));
-      expect(hasWrappedMeridian, isTrue);
-      expect(spansFullWidth, isTrue);
-    });
+        expect(vertical, greaterThan(20));
+        expect(horizontal, greaterThan(5));
+        expect(hasWrappedMeridian, isTrue);
+        expect(spansFullWidth, isTrue);
+      },
+    );
   });
 }

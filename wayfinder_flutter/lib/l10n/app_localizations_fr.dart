@@ -2809,7 +2809,51 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialDeadReckoning => 'Pas';
 
   @override
+  String get mapRadialViewshed => 'Bassin de vue';
+
+  @override
   String get mapRadialAddToGeocoding => 'Ajouter à la recherche';
+
+  @override
+  String get viewshedTitle => 'Bassin de vue / RF';
+
+  @override
+  String get viewshedAntennaHeightLabel => 'Ant. m';
+
+  @override
+  String get viewshedTargetHeightLabel => 'Cible m';
+
+  @override
+  String get viewshedRangeLabel => 'Portée';
+
+  @override
+  String get viewshedComputeAction => 'Calculer';
+
+  @override
+  String get viewshedStatusReadyToCompute => 'Prêt';
+
+  @override
+  String viewshedStatusComputing(int percent) {
+    return 'Calcul… $percent %';
+  }
+
+  @override
+  String get viewshedStatusReady => 'Prêt';
+
+  @override
+  String get viewshedStatusMissingDem => 'Pas de données DEM';
+
+  @override
+  String get viewshedStatusMissingElevation =>
+      'Pas d\'altitude à l\'observateur';
+
+  @override
+  String get viewshedStatusError => 'Échec du bassin de vue';
+
+  @override
+  String viewshedObserverElevation(String ground, String eye) {
+    return 'Sol $ground m · œil $eye m';
+  }
 
   @override
   String get mapDeadReckoningTitle => 'Estime';

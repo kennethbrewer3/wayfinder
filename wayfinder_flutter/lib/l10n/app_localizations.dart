@@ -4875,11 +4875,89 @@ abstract class AppLocalizations {
   /// **'Pace count'**
   String get mapRadialDeadReckoning;
 
+  /// No description provided for @mapRadialViewshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewshed'**
+  String get mapRadialViewshed;
+
   /// No description provided for @mapRadialAddToGeocoding.
   ///
   /// In en, this message translates to:
   /// **'Add to search'**
   String get mapRadialAddToGeocoding;
+
+  /// No description provided for @viewshedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewshed / RF LOS'**
+  String get viewshedTitle;
+
+  /// No description provided for @viewshedAntennaHeightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ant. m'**
+  String get viewshedAntennaHeightLabel;
+
+  /// No description provided for @viewshedTargetHeightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tgt m'**
+  String get viewshedTargetHeightLabel;
+
+  /// No description provided for @viewshedRangeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Range'**
+  String get viewshedRangeLabel;
+
+  /// No description provided for @viewshedComputeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute'**
+  String get viewshedComputeAction;
+
+  /// No description provided for @viewshedStatusReadyToCompute.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get viewshedStatusReadyToCompute;
+
+  /// No description provided for @viewshedStatusComputing.
+  ///
+  /// In en, this message translates to:
+  /// **'Computing… {percent}%'**
+  String viewshedStatusComputing(int percent);
+
+  /// No description provided for @viewshedStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get viewshedStatusReady;
+
+  /// No description provided for @viewshedStatusMissingDem.
+  ///
+  /// In en, this message translates to:
+  /// **'No DEM elevation data'**
+  String get viewshedStatusMissingDem;
+
+  /// No description provided for @viewshedStatusMissingElevation.
+  ///
+  /// In en, this message translates to:
+  /// **'No elevation at observer'**
+  String get viewshedStatusMissingElevation;
+
+  /// No description provided for @viewshedStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewshed failed'**
+  String get viewshedStatusError;
+
+  /// No description provided for @viewshedObserverElevation.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground {ground} m · eye {eye} m'**
+  String viewshedObserverElevation(String ground, String eye);
 
   /// No description provided for @mapDeadReckoningTitle.
   ///

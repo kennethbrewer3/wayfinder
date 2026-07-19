@@ -40,8 +40,9 @@ Future<bool> runMapAtlasExport({
 
     final markers = await ref.read(markersProvider.future);
     final zones = await ref.read(zonesProvider.future);
-    final enabledPmtiles =
-        await ref.read(pmtilesEnabledMetadataProvider.future);
+    final enabledPmtiles = await ref.read(
+      pmtilesEnabledMetadataProvider.future,
+    );
     final includeMgrsGrid = ref.read(mapMgrsGridEnabledProvider);
     if (!context.mounted) {
       return false;

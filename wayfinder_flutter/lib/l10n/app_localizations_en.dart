@@ -3907,7 +3907,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get evacKitEditingHint =>
-      'Drag a waypoint or control point to move · tap a segment to add a control point · long-press a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished';
+      'Drag a waypoint or control point to move · tap a segment to add a control point · double-tap a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · long-press a mid-point to remove (keep 2+ waypoints) · Done when finished';
 
   @override
   String get evacKitExtendingHint =>

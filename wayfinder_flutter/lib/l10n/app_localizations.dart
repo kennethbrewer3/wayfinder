@@ -6838,7 +6838,7 @@ abstract class AppLocalizations {
   /// No description provided for @evacKitEditingHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag a waypoint or control point to move · tap a segment to add a control point · long-press a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished'**
+  /// **'Drag a waypoint or control point to move · tap a segment to add a control point · double-tap a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · long-press a mid-point to remove (keep 2+ waypoints) · Done when finished'**
   String get evacKitEditingHint;
 
   /// No description provided for @evacKitExtendingHint.

@@ -306,8 +306,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   EvacKitGeometry? _evacKitEditPreviewGeometry;
   int? _draggingEvacWaypointIndex;
   int? _selectedEvacWaypointIndex;
-  int? _pendingEvacKindToggleIndex;
-  Timer? _evacKindToggleLongPressTimer;
+  int? _pendingEvacRemoveIndex;
+  Timer? _evacRemoveLongPressTimer;
   bool _evacKitExtending = false;
   LatLng? _evacKitExtendPreviewPoint;
   DateTime? _lastEvacKitBodyTapAt;
@@ -329,7 +329,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
     _polygonVertexLongPressTimer?.cancel();
-    _evacKindToggleLongPressTimer?.cancel();
+    _evacRemoveLongPressTimer?.cancel();
     _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
     super.dispose();
@@ -1583,7 +1583,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _exitEvacKitRouteEdit() {
-    _cancelEvacKindToggleLongPress();
+    _cancelEvacRemoveLongPress();
     if (!_evacKitRouteEditActive &&
         _draggingEvacWaypointIndex == null &&
         _evacKitEditPreviewGeometry == null) {
@@ -1605,32 +1605,33 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
   }
 
-  void _cancelEvacKindToggleLongPress() {
-    _evacKindToggleLongPressTimer?.cancel();
-    _evacKindToggleLongPressTimer = null;
-    _pendingEvacKindToggleIndex = null;
+  void _cancelEvacRemoveLongPress() {
+    _evacRemoveLongPressTimer?.cancel();
+    _evacRemoveLongPressTimer = null;
+    _pendingEvacRemoveIndex = null;
   }
 
-  void _startEvacKindToggleLongPress(int index) {
-    _cancelEvacKindToggleLongPress();
+  void _startEvacRemoveLongPress(int index) {
+    _cancelEvacRemoveLongPress();
     final route = _editingEvacRoute();
-    if (route == null || !canToggleEvacPointKind(route, index)) {
+    if (route == null || !canRemoveEvacPoint(route, index)) {
       return;
     }
-    _pendingEvacKindToggleIndex = index;
-    _evacKindToggleLongPressTimer = Timer(_longPressDuration, () {
+    _pendingEvacRemoveIndex = index;
+    _evacRemoveLongPressTimer = Timer(_longPressDuration, () {
       if (!mounted) {
         return;
       }
-      final pending = _pendingEvacKindToggleIndex;
-      _evacKindToggleLongPressTimer = null;
-      _pendingEvacKindToggleIndex = null;
+      final pending = _pendingEvacRemoveIndex;
+      _evacRemoveLongPressTimer = null;
+      _pendingEvacRemoveIndex = null;
       if (pending != index) {
         return;
       }
+      // Held still long enough — remove instead of dragging.
       _longPressTriggered = true;
       _clearControlPointDoubleTap();
-      unawaited(_toggleEvacPointKindAtIndex(index));
+      _removeEvacWaypointAtIndex(index);
       _resetEvacEditGestureState(keepEditMode: true);
     });
   }
@@ -1672,7 +1673,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _evacKitExtendPreviewPoint = null;
       _evacKitEditPreviewGeometry = geometry;
     });
-    _startEvacKindToggleLongPress(index);
+    // Long-press (hold still) removes; drag cancels this timer.
+    _startEvacRemoveLongPress(index);
   }
 
   void _updateEvacWaypointDrag(LatLng point) {
@@ -1731,7 +1733,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _resetEvacEditGestureState({required bool keepEditMode}) {
-    _cancelEvacKindToggleLongPress();
+    _cancelEvacRemoveLongPress();
     setState(() {
       _draggingEvacWaypointIndex = null;
       if (!keepEditMode) {
@@ -2399,9 +2401,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           (event.localPosition - _tapDownLocal!).distance >
               _longPressMoveTolerance) {
         _clearControlPointDoubleTap();
-        _cancelEvacKindToggleLongPress();
+        _cancelEvacRemoveLongPress();
       }
-      // Skip live drag updates after a long-press kind toggle fired.
+      // Skip live drag updates after a long-press remove fired.
       if (!_longPressTriggered) {
         _updateEvacWaypointDrag(point);
       }
@@ -2564,10 +2566,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (_draggingEvacWaypointIndex != null) {
-      _cancelEvacKindToggleLongPress();
+      _cancelEvacRemoveLongPress();
       final index = _draggingEvacWaypointIndex!;
       if (_longPressTriggered) {
-        // Kind toggle already handled by the long-press timer.
+        // Remove already handled by the long-press timer.
         _resetEvacEditGestureState(keepEditMode: true);
       } else if (_isShortPress(event)) {
         // Tap (not a drag): discard the armed edit and keep tap semantics.
@@ -2582,7 +2584,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               index: index,
               local: event.localPosition,
             )) {
-          _removeEvacWaypointAtIndex(index);
+          unawaited(_toggleEvacPointKindAtIndex(index));
         }
       } else {
         _clearControlPointDoubleTap();

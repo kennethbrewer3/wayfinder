@@ -3948,7 +3948,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get evacKitEditingHint =>
-      'Arrastra un waypoint o punto de control para mover · toca un segmento para añadir un punto de control · mantén pulsado un punto intermedio para convertir waypoint ↔ control · toca el último waypoint para alargar · doble toque en un punto intermedio para quitar (mín. 2 waypoints) · Listo al terminar';
+      'Arrastra un waypoint o punto de control para mover · toca un segmento para añadir un punto de control · doble toque en un punto intermedio para convertir waypoint ↔ control · toca el último waypoint para alargar · mantén pulsado un punto intermedio para quitar (mín. 2 waypoints) · Listo al terminar';
 
   @override
   String get evacKitExtendingHint =>

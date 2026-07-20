@@ -3961,7 +3961,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get evacKitEditingHint =>
-      'Glisser un waypoint ou un point de contrôle pour déplacer · toucher un segment pour ajouter un point de contrôle · appui long sur un point intermédiaire pour convertir waypoint ↔ contrôle · toucher le dernier waypoint pour prolonger · double-tapper un point intermédiaire pour retirer (min. 2 waypoints) · Terminé quand fini';
+      'Glisser un waypoint ou un point de contrôle pour déplacer · toucher un segment pour ajouter un point de contrôle · double-tapper un point intermédiaire pour convertir waypoint ↔ contrôle · toucher le dernier waypoint pour prolonger · appui long pour retirer (min. 2 waypoints) · Terminé quand fini';
 
   @override
   String get evacKitExtendingHint =>

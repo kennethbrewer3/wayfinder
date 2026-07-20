@@ -12,6 +12,7 @@ import '../../lines/providers/zones_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../models/circle_size_display.dart';
 import '../models/circle_geometry.dart';
+import '../models/range_ring.dart';
 import '../providers/circle_size_display_provider.dart';
 import 'circle_form_dialog.dart';
 
@@ -20,6 +21,8 @@ Future<bool> createCircleAtCenter({
   required WidgetRef ref,
   required LatLng center,
   required double radiusMeters,
+  String? defaultName,
+  RangeRingSpec? rangeRing,
 }) async {
   final measurementUnits = ref.read(measurementUnitsProvider);
   final defaultSizeDisplay = ref.read(circleSizeDisplayProvider);
@@ -28,6 +31,7 @@ Future<bool> createCircleAtCenter({
     center: center,
     radiusMeters: radiusMeters,
     measurementUnits: measurementUnits,
+    defaultName: defaultName,
     initialSizeDisplay: defaultSizeDisplay == CircleSizeDisplay.none
         ? CircleSizeDisplay.radius
         : defaultSizeDisplay,
@@ -51,6 +55,7 @@ Future<bool> createCircleAtCenter({
     notes: formData.notes,
     sizeDisplay: formData.sizeDisplay,
     showNameLabel: formData.showNameLabel,
+    rangeRing: rangeRing,
   );
 
   await client.mapZone.createZone(
@@ -112,6 +117,8 @@ Future<bool> updateCircleFromForm({
     notes: formData.notes,
     sizeDisplay: formData.sizeDisplay,
     showNameLabel: formData.showNameLabel,
+    // Preserve range-ring provenance when editing a computed circle.
+    rangeRing: geometry.rangeRing,
   );
 
   await client.mapZone.updateZone(

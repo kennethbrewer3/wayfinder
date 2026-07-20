@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../models/circle_size_display.dart';
+import 'range_ring.dart';
 
 const circleZoneType = 'circle';
 const defaultCircleRadiusLineBearing = 90.0;
@@ -16,6 +17,7 @@ class CircleGeometry {
     this.notes,
     this.sizeDisplay = CircleSizeDisplay.radius,
     this.showNameLabel = false,
+    this.rangeRing,
   });
 
   final LatLng center;
@@ -24,6 +26,7 @@ class CircleGeometry {
   final String? notes;
   final CircleSizeDisplay sizeDisplay;
   final bool showNameLabel;
+  final RangeRingSpec? rangeRing;
 
   bool get isValid => radiusMeters >= 1;
 
@@ -34,7 +37,9 @@ class CircleGeometry {
     String? notes,
     CircleSizeDisplay? sizeDisplay,
     bool? showNameLabel,
+    RangeRingSpec? rangeRing,
     bool clearNotes = false,
+    bool clearRangeRing = false,
   }) {
     return CircleGeometry(
       center: center ?? this.center,
@@ -43,6 +48,7 @@ class CircleGeometry {
       notes: clearNotes ? null : notes ?? this.notes,
       sizeDisplay: sizeDisplay ?? this.sizeDisplay,
       showNameLabel: showNameLabel ?? this.showNameLabel,
+      rangeRing: clearRangeRing ? null : rangeRing ?? this.rangeRing,
     );
   }
 
@@ -57,6 +63,7 @@ class CircleGeometry {
       'sizeDisplay': circleSizeDisplayToStorage(sizeDisplay),
       'showNameLabel': showNameLabel,
       if (notes != null && notes!.trim().isNotEmpty) 'notes': notes,
+      if (rangeRing != null) 'rangeRing': rangeRing!.toJson(),
     };
   }
 
@@ -102,6 +109,7 @@ class CircleGeometry {
       notes: json['notes'] as String?,
       sizeDisplay: _parseSizeDisplay(json),
       showNameLabel: json['showNameLabel'] == true,
+      rangeRing: RangeRingSpec.fromJson(json['rangeRing']),
     );
   }
 

@@ -932,6 +932,7 @@
   "mapObjectTypeLine": "Línea",
   "mapObjectTypeTrack": "Rastro",
   "mapObjectTypeCircle": "Círculo",
+  "mapObjectTypeRangeRing": "Anillo de alcance",
   "mapObjectDetailCoordinates": "Coordenadas",
   "mapObjectDetailMgrs": "MGRS",
   "mapObjectDetailMgrsUnavailable": "No disponible (fuera de cobertura MGRS)",
@@ -1396,6 +1397,116 @@
   "mapRadialDeadReckoning": "Pasos",
   "mapRadialViewshed": "Cuenca visual",
   "mapRadialSlope": "Pendiente / coste",
+  "mapRadialRangeRing": "Anillo de alcance",
+  "mapRadialEvacKit": "Kit de evacuación",
+  "rangeRingTitle": "Anillo de alcance",
+  "rangeRingHelp": "Calcule un radio de viaje o combustible desde el hogar, un marcador seleccionado (punto de reunión) o el punto del mapa, y guárdelo como círculo.",
+  "rangeRingCenterLabel": "Centro",
+  "rangeRingCenterMarker": "Marcador",
+  "rangeRingCenterHome": "Hogar",
+  "rangeRingCenterMapPoint": "Punto del mapa",
+  "rangeRingNoCenter": "Seleccione un marcador, configure un hogar o mantenga pulsado el mapa primero.",
+  "rangeRingModeLabel": "Modo",
+  "rangeRingBasisLabel": "Base",
+  "rangeRingBasisDuration": "Duración",
+  "rangeRingBasisFuel": "Combustible",
+  "rangeRingDurationHoursLabel": "Duración (horas)",
+  "rangeRingDurationHelp": "Usa {speedKmh} km/h de velocidad planificada (editable en Supuestos).",
+  "@rangeRingDurationHelp": {
+    "placeholders": {
+      "speedKmh": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingFuelAmountLabel": "Cantidad de combustible",
+  "rangeRingFuelUnitLabel": "Unidad",
+  "rangeRingFuelUnitLiters": "L",
+  "rangeRingFuelUnitGallons": "gal",
+  "rangeRingFuelTankHelp": "Depósito predeterminado ≈ {amount} {unit}.",
+  "@rangeRingFuelTankHelp": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingAssumptionsTitle": "Supuestos",
+  "rangeRingSpeedKmhLabel": "Velocidad (km/h)",
+  "rangeRingEconomyLabel": "Consumo (L/100 km)",
+  "rangeRingEconomyHelp": "Un valor más bajo es más eficiente. El ATV consume más que un coche.",
+  "rangeRingTankLabel": "Capacidad del depósito ({unit})",
+  "@rangeRingTankLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingUseFullTank": "Usar depósito lleno",
+  "rangeRingPreviewEmpty": "Introduzca una duración o cantidad de combustible para previsualizar el radio.",
+  "rangeRingPreviewRadius": "Radio ≈ {distance}",
+  "@rangeRingPreviewRadius": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingContinue": "Continuar",
+  "rangeRingInvalidInput": "Introduzca una duración o cantidad de combustible válida.",
+  "rangeRingSuggestedNameDuration": "{mode} · {hours} h",
+  "@rangeRingSuggestedNameDuration": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingSuggestedNameFuel": "{mode} · {amount} {unit}",
+  "@rangeRingSuggestedNameFuel": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingSuggestedNameMode": "Alcance {mode}",
+  "@rangeRingSuggestedNameMode": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingDetailDurationHours": "{hours} h",
+  "@rangeRingDetailDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingDetailFuelLiters": "{liters} L",
+  "@rangeRingDetailFuelLiters": {
+    "placeholders": {
+      "liters": {
+        "type": "String"
+      }
+    }
+  },
   "viewshedTitle": "Cuenca visual / RF",
   "slopeTitle": "Pendiente / campo a través",
   "slopeRangeLabel": "Alcance",
@@ -1543,6 +1654,59 @@
   "rectangleModeCorners": "Rectángulo por esquinas",
   "mapObjectTypeRectangle": "Rectángulo",
   "mapObjectTypePolygon": "Polígono",
+  "mapObjectTypeEvacKit": "Kit de rutas de evacuación",
+  "evacKitCreateTitle": "Crear kit de rutas de evacuación",
+  "evacKitEditTitle": "Editar kit de rutas de evacuación",
+  "evacKitDefaultName": "Kit de evacuación",
+  "evacKitNameHint": "Punto de reunión → refugio…",
+  "evacKitFormHelp": "{count} puntos en la ruta principal",
+  "@evacKitFormHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "evacKitEtaPreview": "{mode}: {eta}",
+  "@evacKitEtaPreview": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "eta": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitPrimaryRouteName": "Principal",
+  "evacKitPrimaryRouteNameLabel": "Nombre de la ruta principal",
+  "evacKitDefaultModeLabel": "Modo de viaje predeterminado",
+  "evacKitShowNameLabel": "Mostrar nombre en el mapa",
+  "evacKitAddAlternateTitle": "Añadir ruta alternativa",
+  "evacKitRouteNameLabel": "Nombre de la ruta",
+  "evacKitAlternateRouteName": "Alternativa {index}",
+  "@evacKitAlternateRouteName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "evacKitDrawingHint": "Toca para añadir puntos (o toca marcadores). Doble toque o Finalizar (2+). Deshacer quita el último punto.",
+  "evacKitDrawingFinish": "Finalizar",
+  "evacKitDrawingUndo": "Deshacer",
+  "evacKitDrawingCancel": "Cancelar",
+  "evacKitRoutesLabel": "Rutas",
+  "evacKitPrimaryBadge": "Principal",
+  "evacKitAlternateBadge": "Alternativa",
+  "evacKitWaypointsLabel": "Puntos",
+  "evacKitDistanceLabel": "Distancia",
+  "evacKitEtaLabel": "ETA",
+  "evacKitAddAlternate": "Añadir ruta alternativa",
+  "evacKitRemoveAlternate": "Quitar alternativa",
+  "evacKitRemoveAlternateConfirm": "¿Quitar esta ruta alternativa del kit?",
+  "sidebarEditEvacKit": "Editar kit de evacuación",
+  "sidebarDeleteEvacKit": "Eliminar kit de evacuación",
   "polygonCreateTitle": "Crear polígono AOI",
   "polygonEditTitle": "Editar polígono AOI",
   "polygonDefaultName": "Polígono",

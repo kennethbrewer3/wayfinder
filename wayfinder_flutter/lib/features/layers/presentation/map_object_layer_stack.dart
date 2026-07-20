@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../circles/presentation/map_circle_layer.dart';
+import '../../evac_kits/presentation/map_evac_kit_layer.dart';
 import '../../tracks/presentation/map_track_layer.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/presentation/map_line_layer.dart';
@@ -28,6 +29,7 @@ List<Widget> buildStackedMapLayerChildren({
   UuidValue? selectedLineId,
   UuidValue? selectedMarkerId,
   UuidValue? selectedPolygonId,
+  UuidValue? selectedEvacKitId,
   PolygonGeometry? polygonGeometryOverride,
   Color? markerSelectionColor,
   Map<UuidValue, LineGeometry>? geometryOverrides,
@@ -138,6 +140,24 @@ List<Widget> buildStackedMapLayerChildren({
         ),
       ),
     );
+    widgets.add(
+      PolylineLayer(
+        polylines: buildSavedEvacKitPolylines(
+          layerZones,
+          selectedKitId: selectedEvacKitId,
+        ),
+      ),
+    );
+    if (selectedEvacKitId != null) {
+      widgets.add(
+        MarkerLayer(
+          markers: buildSavedEvacKitWaypointMarkers(
+            layerZones,
+            selectedKitId: selectedEvacKitId,
+          ),
+        ),
+      );
+    }
   }
 
   for (final layer in visibleMapLayersForRendering(layers)) {

@@ -15,9 +15,15 @@ import '../../../core/browser_context_menu.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
+import '../../circles/presentation/create_range_ring.dart';
 import '../../circles/presentation/map_circle_layer.dart';
 import '../../circles/providers/circle_drawing_provider.dart';
 import '../../circles/utils/circle_hit_test.dart';
+import '../../evac_kits/models/evac_kit_geometry.dart';
+import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
+import '../../evac_kits/presentation/map_evac_kit_layer.dart';
+import '../../evac_kits/providers/evac_kit_drawing_provider.dart';
+import '../../evac_kits/utils/evac_kit_hit_test.dart';
 import '../../geocoding/presentation/submit_geocoding_contribution.dart';
 import '../../geocoding/providers/geocoding_server_provider.dart';
 import '../../layers/presentation/map_object_layer_stack.dart';
@@ -263,6 +269,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   bool _circleDrawingPressActive = false;
   bool _rectangleDrawingPressActive = false;
   bool _polygonDrawingPressActive = false;
+  bool _evacKitDrawingPressActive = false;
   bool _bearingPlotPressActive = false;
   DateTime? _lastDrawingCompleteTapAt;
   Offset? _lastDrawingCompleteTapLocal;
@@ -784,6 +791,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       ref.read(circleDrawingProvider).active ||
       ref.read(rectangleDrawingProvider).active ||
       ref.read(polygonDrawingProvider).active ||
+      ref.read(evacKitDrawingProvider).active ||
       ref.read(deadReckoningProvider).active ||
       ref.read(viewshedProvider).active ||
       ref.read(slopeProvider).active;
@@ -1534,6 +1542,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       unawaited(_finalizePolygonDrawing());
       return;
     }
+    final evacKitDrawing = ref.read(evacKitDrawingProvider);
+    if (evacKitDrawing.active && evacKitDrawing.canFinish) {
+      unawaited(_finalizeEvacKitDrawing());
+      return;
+    }
     final bearingPlot = ref.read(bearingPlotProvider);
     if (bearingPlot.active) {
       final anchor = bearingPlot.anchor;
@@ -1691,6 +1704,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       );
     }
 
+    final evacKit = findEvacKitAtPoint(
+      zones: visibleZones,
+      tap: point,
+      camera: _mapController.camera,
+    );
+    if (evacKit != null) {
+      return SelectedMapObject(
+        kind: SelectedMapObjectKind.zone,
+        id: evacKit.id,
+      );
+    }
+
     return null;
   }
 
@@ -1805,6 +1830,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    if (ref.read(evacKitDrawingProvider).active) {
+      _cancelPendingLongPress();
+      _evacKitDrawingPressActive = true;
+      return;
+    }
+
     final polygonVertexIndex = _polygonVertexIndexAt(point);
     if (polygonVertexIndex != null) {
       // Drag immediately (like line vertices); long-hold still removes.
@@ -1879,6 +1910,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     if (ref.read(polygonDrawingProvider).active) {
       ref.read(polygonDrawingProvider.notifier).setPreviewPoint(point);
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _controlPointDoubleTapSlop) {
+        _clearDrawingCompleteDoubleTap();
+      }
+    }
+
+    if (ref.read(evacKitDrawingProvider).active) {
+      ref.read(evacKitDrawingProvider.notifier).setPreviewPoint(point);
       if (_tapDownLocal != null &&
           (event.localPosition - _tapDownLocal!).distance >
               _controlPointDoubleTapSlop) {
@@ -2084,6 +2124,26 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final evacKitDrawing = ref.read(evacKitDrawingProvider);
+    if (evacKitDrawing.active && !_longPressTriggered) {
+      if (_evacKitDrawingPressActive) {
+        ref.read(evacKitDrawingProvider.notifier).setPreviewPoint(point);
+        if (_isShortPress(event) &&
+            _registerDrawingCompleteTap(event.localPosition)) {
+          _completeActiveDrawingAt(point);
+        } else if (_isShortPress(event)) {
+          ref.read(evacKitDrawingProvider.notifier).addPoint(point);
+        } else {
+          _clearDrawingCompleteDoubleTap();
+        }
+      }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
     _resetLineDrawGestureState();
     _cancelPendingLongPress();
   }
@@ -2109,6 +2169,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _circleDrawingPressActive = false;
     _rectangleDrawingPressActive = false;
     _polygonDrawingPressActive = false;
+    _evacKitDrawingPressActive = false;
     _bearingPlotPressActive = false;
     _tapDownLocal = null;
   }
@@ -2221,6 +2282,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref
         .read(bearingPlotProvider.notifier)
         .begin(
@@ -2454,6 +2516,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     _cancelPendingLongPress();
   }
 
@@ -2493,6 +2556,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2534,6 +2598,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
@@ -2564,6 +2629,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
@@ -2596,11 +2662,38 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
 
     unawaited(ref.read(slopeProvider.notifier).begin(center: point));
+  }
+
+  Future<void> _beginRangeRing() async {
+    final selectedMarker = _selectedMarker();
+    final mapPoint = _radialMenuPoint;
+    _closeRadialMenu();
+    if (selectedMarker == null && mapPoint == null) {
+      return;
+    }
+
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
+
+    await createRangeRing(
+      context: context,
+      ref: ref,
+      selectedMarker: selectedMarker,
+      mapPoint: mapPoint,
+    );
   }
 
   void _cancelSlope() {
@@ -2666,6 +2759,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(rectangleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2694,6 +2788,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2714,6 +2809,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(lineDrawingProvider.notifier).reset();
     ref.read(circleDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(bearingPlotProvider.notifier).reset();
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
@@ -2744,6 +2840,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(deadReckoningProvider.notifier).reset();
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     ref.read(polygonDrawingProvider.notifier).begin(firstPoint: point);
     if (point != null && _cursorLocation != null) {
       ref.read(polygonDrawingProvider.notifier).setPreviewPoint(_cursorLocation!);
@@ -2754,6 +2851,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _clearDrawingCompleteDoubleTap();
     _resetLineDrawGestureState();
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
   }
 
   Future<void> _finalizePolygonDrawing() async {
@@ -2763,8 +2861,88 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
     final points = List<LatLng>.from(drawing.points);
     ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
     _polygonDrawingPressActive = false;
     await createPolygonFromPoints(context: context, ref: ref, points: points);
+  }
+
+  void _beginEvacKit() {
+    final selectedMarker = _selectedMarker();
+    _closeRadialMenu();
+    ref.read(selectedMapObjectProvider.notifier).clear();
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
+
+    EvacWaypoint? firstWaypoint;
+    if (selectedMarker != null) {
+      firstWaypoint = EvacWaypoint(
+        kind: EvacWaypointKind.marker,
+        point: LatLng(selectedMarker.latitude, selectedMarker.longitude),
+        markerId: selectedMarker.id.toString(),
+        label: selectedMarker.name,
+      );
+    }
+    ref
+        .read(evacKitDrawingProvider.notifier)
+        .beginNewKit(firstWaypoint: firstWaypoint);
+    if (firstWaypoint != null && _cursorLocation != null) {
+      ref
+          .read(evacKitDrawingProvider.notifier)
+          .setPreviewPoint(_cursorLocation!);
+    }
+  }
+
+  // Entry point for alternate-route drawing started from map chrome.
+  // Details dialog calls [beginEvacKitAlternateDrawing] directly.
+  // ignore: unused_element
+  void _beginEvacKitAlternate(MapZone zone) {
+    _closeRadialMenu();
+    beginEvacKitAlternateDrawing(ref: ref, zone: zone);
+  }
+
+  void _cancelEvacKitDrawing() {
+    _clearDrawingCompleteDoubleTap();
+    _resetLineDrawGestureState();
+    ref.read(evacKitDrawingProvider.notifier).reset();
+  }
+
+  Future<void> _finalizeEvacKitDrawing() async {
+    final drawing = ref.read(evacKitDrawingProvider);
+    if (!drawing.canFinish) {
+      return;
+    }
+    final waypoints = List<EvacWaypoint>.from(drawing.waypoints);
+    final addingAlternate = drawing.addingAlternate;
+    final kitId = drawing.existingKitId;
+    ref.read(evacKitDrawingProvider.notifier).reset();
+    _evacKitDrawingPressActive = false;
+
+    if (addingAlternate && kitId != null) {
+      final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+      final zone = findZoneById(zones, kitId);
+      if (zone == null) {
+        return;
+      }
+      await addEvacKitAlternateRoute(
+        context: context,
+        ref: ref,
+        zone: zone,
+        waypoints: waypoints,
+      );
+      return;
+    }
+
+    await createEvacKitFromWaypoints(
+      context: context,
+      ref: ref,
+      waypoints: waypoints,
+    );
   }
 
   void _openRadialMenuAt(Offset center, LatLng point) {
@@ -3177,6 +3355,68 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     );
   }
 
+  Widget _evacKitDrawingBanner(EvacKitDrawingState evacKitDrawing) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final hint = evacKitDrawing.addingAlternate
+        ? '${l10n.evacKitAddAlternateTitle}: ${evacKitDrawing.existingKitName ?? ''}'
+        : l10n.evacKitDrawingHint;
+
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.route,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  hint,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (evacKitDrawing.waypoints.isNotEmpty)
+                TextButton(
+                  onPressed: () => ref
+                      .read(evacKitDrawingProvider.notifier)
+                      .undoLastWaypoint(),
+                  child: Text(
+                    l10n.evacKitDrawingUndo,
+                    style: TextStyle(color: theme.colorScheme.inversePrimary),
+                  ),
+                ),
+              if (evacKitDrawing.canFinish)
+                TextButton(
+                  onPressed: () => unawaited(_finalizeEvacKitDrawing()),
+                  child: Text(
+                    l10n.evacKitDrawingFinish,
+                    style: TextStyle(color: theme.colorScheme.inversePrimary),
+                  ),
+                ),
+              TextButton(
+                onPressed: _cancelEvacKitDrawing,
+                child: Text(
+                  l10n.evacKitDrawingCancel,
+                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -3191,6 +3431,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final circleDrawing = ref.watch(circleDrawingProvider);
     final rectangleDrawing = ref.watch(rectangleDrawingProvider);
     final polygonDrawing = ref.watch(polygonDrawingProvider);
+    final evacKitDrawing = ref.watch(evacKitDrawingProvider);
     final bearingPlot = ref.watch(bearingPlotProvider);
     final deadReckoning = ref.watch(deadReckoningProvider);
     final viewshed = ref.watch(viewshedProvider);
@@ -3214,6 +3455,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         selectedZone?.type == lineZoneType ? selectedZone : null;
     final selectedPolygon =
         selectedZone?.type == polygonZoneType ? selectedZone : null;
+    final selectedEvacKit =
+        selectedZone?.type == evacKitZoneType ? selectedZone : null;
     final lineGeometryOverrides = _lineGeometryOverrides();
     final polygonGeometryOverride = _polygonEditPreviewGeometry ??
         (selectedPolygon == null
@@ -3251,19 +3494,28 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             selectedLineId: selectedLine?.id,
             selectedPolygonId:
                 _polygonVertexEditActive ? selectedPolygon?.id : null,
+            selectedEvacKitId: selectedEvacKit?.id,
             polygonGeometryOverride: _polygonVertexEditActive
                 ? polygonGeometryOverride
                 : null,
             selectedMarkerId: selectedMapObject.selectedMarkerId,
             markerSelectionColor: Theme.of(context).colorScheme.primary,
             geometryOverrides: lineGeometryOverrides,
-            onMarkerTap: (marker) => _selectMapObject(
-              SelectedMapObject(
-                kind: SelectedMapObjectKind.marker,
-                id: marker.id,
-              ),
-              openDetails: false,
-            ),
+            onMarkerTap: (marker) {
+              if (ref.read(evacKitDrawingProvider).active) {
+                ref
+                    .read(evacKitDrawingProvider.notifier)
+                    .addMarkerWaypoint(marker);
+                return;
+              }
+              _selectMapObject(
+                SelectedMapObject(
+                  kind: SelectedMapObjectKind.marker,
+                  id: marker.id,
+                ),
+                openDetails: false,
+              );
+            },
             onMarkerLongPress: (marker) {
               _cancelPendingLongPress();
               _longPressTriggered = true;
@@ -3350,6 +3602,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             circleDrawing.active ||
                             rectangleDrawing.active ||
                             polygonDrawing.active ||
+                            evacKitDrawing.active ||
                             deadReckoning.active ||
                             _draggingLineControlIndex != null ||
                             _draggingPolygonVertexIndex != null ||
@@ -3612,6 +3865,55 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           points: polygonDrawing.points,
                           color: previewColor,
                         ),
+                      ),
+                    ],
+                    if (evacKitDrawing.active) ...[
+                      PolylineLayer(
+                        polylines: [
+                          Polyline(
+                            points: evacKitDrawingPreviewPoints(
+                              waypoints: evacKitDrawing.waypoints,
+                              previewPoint: evacKitDrawing.previewPoint,
+                            ),
+                            color: previewColor,
+                            strokeWidth: 4,
+                            pattern: StrokePattern.dashed(
+                              segments: const [12, 8],
+                            ),
+                          ),
+                        ],
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          for (final (index, waypoint)
+                              in evacKitDrawing.waypoints.indexed)
+                            Marker(
+                              point: waypoint.point,
+                              width: 22,
+                              height: 22,
+                              alignment: Alignment.center,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: previewColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                     if (lineDrawing.start case final start?)
@@ -3888,6 +4190,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           onSelected: _beginSlope,
                         ),
                         MapRadialMenuAction(
+                          icon: Icons.radar,
+                          label: l10n.mapRadialRangeRing,
+                          onSelected: () {
+                            unawaited(_beginRangeRing());
+                          },
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.route,
+                          label: l10n.mapRadialEvacKit,
+                          onSelected: _beginEvacKit,
+                        ),
+                        MapRadialMenuAction(
                           icon: Icons.directions_walk,
                           label: l10n.mapRadialDeadReckoning,
                           onSelected: _beginDeadReckoning,
@@ -3988,7 +4302,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 !slope.active &&
                 !circleDrawing.active &&
                 !rectangleDrawing.active &&
-                !polygonDrawing.active)
+                !polygonDrawing.active &&
+                !evacKitDrawing.active)
               Positioned(
                 left: 0,
                 right: 0,
@@ -3998,6 +4313,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             if (_polygonVertexEditActive &&
                 selectedPolygon != null &&
                 !polygonDrawing.active &&
+                !evacKitDrawing.active &&
                 !viewshed.active &&
                 !slope.active)
               Positioned(
@@ -4026,6 +4342,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 right: 0,
                 top: 0,
                 child: _polygonDrawingBanner(polygonDrawing),
+              ),
+            if (evacKitDrawing.active)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _evacKitDrawingBanner(evacKitDrawing),
               ),
             if (showViewportDebugBorder)
               Positioned(

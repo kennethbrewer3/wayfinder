@@ -16,6 +16,9 @@ import '../../elevation/presentation/path_profile_dialog.dart';
 import '../../elevation/providers/path_profile_selection_provider.dart';
 import '../../elevation/utils/path_profile.dart';
 import '../../elevation/utils/path_profile_zone.dart';
+import '../../evac_kits/models/evac_kit_geometry.dart';
+import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
+import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../polygons/presentation/create_polygon_dialog.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
@@ -1229,6 +1232,14 @@ class _ZoneListTile extends ConsumerWidget {
         onZoomTo: onZoomTo,
       );
     }
+    final isEvacKit = zone.type == evacKitZoneType;
+    if (isEvacKit) {
+      return _EvacKitZoneListTile(
+        key: ValueKey(zone.id),
+        zone: zone,
+        onZoomTo: onZoomTo,
+      );
+    }
     final isTrack = zone.type == trackZoneType;
     if (isTrack) {
       return _TrackZoneListTile(
@@ -2018,6 +2029,145 @@ class _PolygonZoneListTile extends ConsumerWidget {
   }
 }
 
+class _EvacKitZoneListTile extends ConsumerWidget {
+  const _EvacKitZoneListTile({
+    super.key,
+    required this.zone,
+    required this.onZoomTo,
+  });
+
+  final MapZone zone;
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final zoneId = zone.id;
+    final geometry = EvacKitGeometry.fromZone(zone);
+    final selected = ref.watch(selectedMapObjectProvider);
+    final isSelected =
+        selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
+    final notesPreview = geometry?.notes?.trim();
+
+    if (geometry == null || !geometry.isValid) {
+      return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
+    }
+
+    final primary = geometry.primaryRoute!;
+    final lengthMeters = evacRouteLengthMeters(primary);
+    final eta = formatEvacDuration(
+      evacRouteDuration(
+        lengthMeters: lengthMeters,
+        mode: geometry.defaultMode,
+      ),
+    );
+    final subtitle =
+        '${geometry.routes.length} · ${geometry.defaultMode.label(l10n)} $eta';
+
+    return ColoredBox(
+      color: _selectionHighlightColor(theme, isSelected),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () {
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              final center = evacKitZoneCenter(zone);
+              if (center != null) {
+                onZoomTo(center);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _parseColor(zone.color),
+                    radius: 18,
+                    child: const Icon(
+                      Icons.route,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          zone.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (notesPreview != null &&
+                            notesPreview.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          MapObjectNotesPreview(
+                            markdown: notesPreview,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _MapObjectActionBar(
+            actions: [
+              _MapObjectIconAction(
+                tooltip: zone.visible
+                    ? l10n.sidebarHideZone
+                    : l10n.sidebarShowZone,
+                icon: zone.visible ? Icons.visibility : Icons.visibility_off,
+                toggled: zone.visible,
+                isToggle: true,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.updateZone(
+                    zone.copyWith(visible: !zone.visible),
+                  );
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarEditEvacKit,
+                icon: Icons.edit_outlined,
+                onPressed: () => updateEvacKitFromForm(
+                  context: context,
+                  ref: ref,
+                  zone: zone,
+                ),
+              ),
+              _MapObjectIconAction(
+                tooltip: l10n.sidebarDeleteEvacKit,
+                icon: Icons.delete_outline,
+                onPressed: () async {
+                  final client = ref.read(serverClientProvider);
+                  await client.mapZone.deleteZone(zoneId);
+                  ref.read(zonesProvider.notifier).reload();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _GenericZoneListTile extends ConsumerWidget {
   const _GenericZoneListTile({
     super.key,
@@ -2048,7 +2198,8 @@ class _GenericZoneListTile extends ConsumerWidget {
                   polygonZoneCenter(zone) ??
                   rectangleZoneCenter(zone) ??
                   circleZoneCenter(zone) ??
-                  lineZoneCenter(zone);
+                  lineZoneCenter(zone) ??
+                  evacKitZoneCenter(zone);
               if (center != null) {
                 onZoomTo(center);
               }

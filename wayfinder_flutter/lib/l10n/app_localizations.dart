@@ -3387,6 +3387,12 @@ abstract class AppLocalizations {
   /// **'Circle'**
   String get mapObjectTypeCircle;
 
+  /// No description provided for @mapObjectTypeRangeRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Range ring'**
+  String get mapObjectTypeRangeRing;
+
   /// No description provided for @mapObjectDetailCoordinates.
   ///
   /// In en, this message translates to:
@@ -5223,6 +5229,216 @@ abstract class AppLocalizations {
   /// **'Slope / cost'**
   String get mapRadialSlope;
 
+  /// No description provided for @mapRadialRangeRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Range ring'**
+  String get mapRadialRangeRing;
+
+  /// No description provided for @mapRadialEvacKit.
+  ///
+  /// In en, this message translates to:
+  /// **'Evac kit'**
+  String get mapRadialEvacKit;
+
+  /// No description provided for @rangeRingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Range ring'**
+  String get rangeRingTitle;
+
+  /// No description provided for @rangeRingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute a travel or fuel radius from home, a selected marker (rally point), or the map point, then save it as a circle.'**
+  String get rangeRingHelp;
+
+  /// No description provided for @rangeRingCenterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Center'**
+  String get rangeRingCenterLabel;
+
+  /// No description provided for @rangeRingCenterMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker'**
+  String get rangeRingCenterMarker;
+
+  /// No description provided for @rangeRingCenterHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get rangeRingCenterHome;
+
+  /// No description provided for @rangeRingCenterMapPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Map point'**
+  String get rangeRingCenterMapPoint;
+
+  /// No description provided for @rangeRingNoCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a marker, set a home location, or long-press the map first.'**
+  String get rangeRingNoCenter;
+
+  /// No description provided for @rangeRingModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get rangeRingModeLabel;
+
+  /// No description provided for @rangeRingBasisLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Basis'**
+  String get rangeRingBasisLabel;
+
+  /// No description provided for @rangeRingBasisDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get rangeRingBasisDuration;
+
+  /// No description provided for @rangeRingBasisFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get rangeRingBasisFuel;
+
+  /// No description provided for @rangeRingDurationHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (hours)'**
+  String get rangeRingDurationHoursLabel;
+
+  /// No description provided for @rangeRingDurationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses {speedKmh} km/h planning speed (editable under Assumptions).'**
+  String rangeRingDurationHelp(String speedKmh);
+
+  /// No description provided for @rangeRingFuelAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel amount'**
+  String get rangeRingFuelAmountLabel;
+
+  /// No description provided for @rangeRingFuelUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get rangeRingFuelUnitLabel;
+
+  /// No description provided for @rangeRingFuelUnitLiters.
+  ///
+  /// In en, this message translates to:
+  /// **'L'**
+  String get rangeRingFuelUnitLiters;
+
+  /// No description provided for @rangeRingFuelUnitGallons.
+  ///
+  /// In en, this message translates to:
+  /// **'gal'**
+  String get rangeRingFuelUnitGallons;
+
+  /// No description provided for @rangeRingFuelTankHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Default tank ≈ {amount} {unit}.'**
+  String rangeRingFuelTankHelp(String amount, String unit);
+
+  /// No description provided for @rangeRingAssumptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Assumptions'**
+  String get rangeRingAssumptionsTitle;
+
+  /// No description provided for @rangeRingSpeedKmhLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed (km/h)'**
+  String get rangeRingSpeedKmhLabel;
+
+  /// No description provided for @rangeRingEconomyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel economy (L/100 km)'**
+  String get rangeRingEconomyLabel;
+
+  /// No description provided for @rangeRingEconomyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower is more efficient. ATV defaults are thirstier than a car.'**
+  String get rangeRingEconomyHelp;
+
+  /// No description provided for @rangeRingTankLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tank size ({unit})'**
+  String rangeRingTankLabel(String unit);
+
+  /// No description provided for @rangeRingUseFullTank.
+  ///
+  /// In en, this message translates to:
+  /// **'Use full tank'**
+  String get rangeRingUseFullTank;
+
+  /// No description provided for @rangeRingPreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a duration or fuel amount to preview the radius.'**
+  String get rangeRingPreviewEmpty;
+
+  /// No description provided for @rangeRingPreviewRadius.
+  ///
+  /// In en, this message translates to:
+  /// **'Radius ≈ {distance}'**
+  String rangeRingPreviewRadius(String distance);
+
+  /// No description provided for @rangeRingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get rangeRingContinue;
+
+  /// No description provided for @rangeRingInvalidInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid duration or fuel amount.'**
+  String get rangeRingInvalidInput;
+
+  /// No description provided for @rangeRingSuggestedNameDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode} · {hours} h'**
+  String rangeRingSuggestedNameDuration(String mode, String hours);
+
+  /// No description provided for @rangeRingSuggestedNameFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode} · {amount} {unit}'**
+  String rangeRingSuggestedNameFuel(String mode, String amount, String unit);
+
+  /// No description provided for @rangeRingSuggestedNameMode.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode} range'**
+  String rangeRingSuggestedNameMode(String mode);
+
+  /// No description provided for @rangeRingDetailDurationHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h'**
+  String rangeRingDetailDurationHours(String hours);
+
+  /// No description provided for @rangeRingDetailFuelLiters.
+  ///
+  /// In en, this message translates to:
+  /// **'{liters} L'**
+  String rangeRingDetailFuelLiters(String liters);
+
   /// No description provided for @mapRadialAddToGeocoding.
   ///
   /// In en, this message translates to:
@@ -5732,6 +5948,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Polygon'**
   String get mapObjectTypePolygon;
+
+  /// No description provided for @mapObjectTypeEvacKit.
+  ///
+  /// In en, this message translates to:
+  /// **'Evac route kit'**
+  String get mapObjectTypeEvacKit;
+
+  /// No description provided for @evacKitCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create evac route kit'**
+  String get evacKitCreateTitle;
+
+  /// No description provided for @evacKitEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit evac route kit'**
+  String get evacKitEditTitle;
+
+  /// No description provided for @evacKitDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Evac kit'**
+  String get evacKitDefaultName;
+
+  /// No description provided for @evacKitNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rally → safe house…'**
+  String get evacKitNameHint;
+
+  /// No description provided for @evacKitFormHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} waypoints on primary route'**
+  String evacKitFormHelp(int count);
+
+  /// No description provided for @evacKitEtaPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode}: {eta}'**
+  String evacKitEtaPreview(String mode, String eta);
+
+  /// No description provided for @evacKitPrimaryRouteName.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get evacKitPrimaryRouteName;
+
+  /// No description provided for @evacKitPrimaryRouteNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary route name'**
+  String get evacKitPrimaryRouteNameLabel;
+
+  /// No description provided for @evacKitDefaultModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default travel mode'**
+  String get evacKitDefaultModeLabel;
+
+  /// No description provided for @evacKitShowNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show name on map'**
+  String get evacKitShowNameLabel;
+
+  /// No description provided for @evacKitAddAlternateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add alternate route'**
+  String get evacKitAddAlternateTitle;
+
+  /// No description provided for @evacKitRouteNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Route name'**
+  String get evacKitRouteNameLabel;
+
+  /// No description provided for @evacKitAlternateRouteName.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternate {index}'**
+  String evacKitAlternateRouteName(int index);
+
+  /// No description provided for @evacKitDrawingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add waypoints (or tap markers). Double-tap or Finish when done (2+). Undo removes the last point.'**
+  String get evacKitDrawingHint;
+
+  /// No description provided for @evacKitDrawingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get evacKitDrawingFinish;
+
+  /// No description provided for @evacKitDrawingUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get evacKitDrawingUndo;
+
+  /// No description provided for @evacKitDrawingCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get evacKitDrawingCancel;
+
+  /// No description provided for @evacKitRoutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Routes'**
+  String get evacKitRoutesLabel;
+
+  /// No description provided for @evacKitPrimaryBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get evacKitPrimaryBadge;
+
+  /// No description provided for @evacKitAlternateBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternate'**
+  String get evacKitAlternateBadge;
+
+  /// No description provided for @evacKitWaypointsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Waypoints'**
+  String get evacKitWaypointsLabel;
+
+  /// No description provided for @evacKitDistanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get evacKitDistanceLabel;
+
+  /// No description provided for @evacKitEtaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ETA'**
+  String get evacKitEtaLabel;
+
+  /// No description provided for @evacKitAddAlternate.
+  ///
+  /// In en, this message translates to:
+  /// **'Add alternate route'**
+  String get evacKitAddAlternate;
+
+  /// No description provided for @evacKitRemoveAlternate.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove alternate'**
+  String get evacKitRemoveAlternate;
+
+  /// No description provided for @evacKitRemoveAlternateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this alternate route from the kit?'**
+  String get evacKitRemoveAlternateConfirm;
+
+  /// No description provided for @sidebarEditEvacKit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit evac kit'**
+  String get sidebarEditEvacKit;
+
+  /// No description provided for @sidebarDeleteEvacKit.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete evac kit'**
+  String get sidebarDeleteEvacKit;
 
   /// No description provided for @polygonCreateTitle.
   ///

@@ -1137,6 +1137,7 @@
   "mapObjectTypeLine": "Line",
   "mapObjectTypeTrack": "Track",
   "mapObjectTypeCircle": "Circle",
+  "mapObjectTypeRangeRing": "Range ring",
   "mapObjectDetailCoordinates": "Coordinates",
   "mapObjectDetailMgrs": "MGRS",
   "mapObjectDetailMgrsUnavailable": "Unavailable (outside MGRS coverage)",
@@ -1706,6 +1707,116 @@
   "mapRadialDeadReckoning": "Pace count",
   "mapRadialViewshed": "Viewshed",
   "mapRadialSlope": "Slope / cost",
+  "mapRadialRangeRing": "Range ring",
+  "mapRadialEvacKit": "Evac kit",
+  "rangeRingTitle": "Range ring",
+  "rangeRingHelp": "Compute a travel or fuel radius from home, a selected marker (rally point), or the map point, then save it as a circle.",
+  "rangeRingCenterLabel": "Center",
+  "rangeRingCenterMarker": "Marker",
+  "rangeRingCenterHome": "Home",
+  "rangeRingCenterMapPoint": "Map point",
+  "rangeRingNoCenter": "Select a marker, set a home location, or long-press the map first.",
+  "rangeRingModeLabel": "Mode",
+  "rangeRingBasisLabel": "Basis",
+  "rangeRingBasisDuration": "Duration",
+  "rangeRingBasisFuel": "Fuel",
+  "rangeRingDurationHoursLabel": "Duration (hours)",
+  "rangeRingDurationHelp": "Uses {speedKmh} km/h planning speed (editable under Assumptions).",
+  "@rangeRingDurationHelp": {
+    "placeholders": {
+      "speedKmh": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingFuelAmountLabel": "Fuel amount",
+  "rangeRingFuelUnitLabel": "Unit",
+  "rangeRingFuelUnitLiters": "L",
+  "rangeRingFuelUnitGallons": "gal",
+  "rangeRingFuelTankHelp": "Default tank ≈ {amount} {unit}.",
+  "@rangeRingFuelTankHelp": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingAssumptionsTitle": "Assumptions",
+  "rangeRingSpeedKmhLabel": "Speed (km/h)",
+  "rangeRingEconomyLabel": "Fuel economy (L/100 km)",
+  "rangeRingEconomyHelp": "Lower is more efficient. ATV defaults are thirstier than a car.",
+  "rangeRingTankLabel": "Tank size ({unit})",
+  "@rangeRingTankLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingUseFullTank": "Use full tank",
+  "rangeRingPreviewEmpty": "Enter a duration or fuel amount to preview the radius.",
+  "rangeRingPreviewRadius": "Radius ≈ {distance}",
+  "@rangeRingPreviewRadius": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingContinue": "Continue",
+  "rangeRingInvalidInput": "Enter a valid duration or fuel amount.",
+  "rangeRingSuggestedNameDuration": "{mode} · {hours} h",
+  "@rangeRingSuggestedNameDuration": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingSuggestedNameFuel": "{mode} · {amount} {unit}",
+  "@rangeRingSuggestedNameFuel": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingSuggestedNameMode": "{mode} range",
+  "@rangeRingSuggestedNameMode": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingDetailDurationHours": "{hours} h",
+  "@rangeRingDetailDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingDetailFuelLiters": "{liters} L",
+  "@rangeRingDetailFuelLiters": {
+    "placeholders": {
+      "liters": {
+        "type": "String"
+      }
+    }
+  },
   "mapRadialAddToGeocoding": "Add to search",
   "viewshedTitle": "Viewshed / RF LOS",
   "slopeTitle": "Slope / cross-country",
@@ -1853,6 +1964,59 @@
   "rectangleModeCorners": "Corner rectangle",
   "mapObjectTypeRectangle": "Rectangle",
   "mapObjectTypePolygon": "Polygon",
+  "mapObjectTypeEvacKit": "Evac route kit",
+  "evacKitCreateTitle": "Create evac route kit",
+  "evacKitEditTitle": "Edit evac route kit",
+  "evacKitDefaultName": "Evac kit",
+  "evacKitNameHint": "Rally → safe house…",
+  "evacKitFormHelp": "{count} waypoints on primary route",
+  "@evacKitFormHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "evacKitEtaPreview": "{mode}: {eta}",
+  "@evacKitEtaPreview": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "eta": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitPrimaryRouteName": "Primary",
+  "evacKitPrimaryRouteNameLabel": "Primary route name",
+  "evacKitDefaultModeLabel": "Default travel mode",
+  "evacKitShowNameLabel": "Show name on map",
+  "evacKitAddAlternateTitle": "Add alternate route",
+  "evacKitRouteNameLabel": "Route name",
+  "evacKitAlternateRouteName": "Alternate {index}",
+  "@evacKitAlternateRouteName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "evacKitDrawingHint": "Tap to add waypoints (or tap markers). Double-tap or Finish when done (2+). Undo removes the last point.",
+  "evacKitDrawingFinish": "Finish",
+  "evacKitDrawingUndo": "Undo",
+  "evacKitDrawingCancel": "Cancel",
+  "evacKitRoutesLabel": "Routes",
+  "evacKitPrimaryBadge": "Primary",
+  "evacKitAlternateBadge": "Alternate",
+  "evacKitWaypointsLabel": "Waypoints",
+  "evacKitDistanceLabel": "Distance",
+  "evacKitEtaLabel": "ETA",
+  "evacKitAddAlternate": "Add alternate route",
+  "evacKitRemoveAlternate": "Remove alternate",
+  "evacKitRemoveAlternateConfirm": "Remove this alternate route from the kit?",
+  "sidebarEditEvacKit": "Edit evac kit",
+  "sidebarDeleteEvacKit": "Delete evac kit",
   "polygonCreateTitle": "Create polygon AOI",
   "polygonEditTitle": "Edit polygon AOI",
   "polygonDefaultName": "Polygon",

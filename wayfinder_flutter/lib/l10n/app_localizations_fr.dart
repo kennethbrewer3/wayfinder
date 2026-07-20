@@ -1931,6 +1931,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapObjectTypeCircle => 'Cercle';
 
   @override
+  String get mapObjectTypeRangeRing => 'Anneau de portée';
+
+  @override
   String get mapObjectDetailCoordinates => 'Coordonnées';
 
   @override
@@ -3025,6 +3028,134 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialSlope => 'Pente / coût';
 
   @override
+  String get mapRadialRangeRing => 'Anneau de portée';
+
+  @override
+  String get mapRadialEvacKit => 'Kit d\'évacuation';
+
+  @override
+  String get rangeRingTitle => 'Anneau de portée';
+
+  @override
+  String get rangeRingHelp =>
+      'Calculez un rayon de déplacement ou de carburant depuis le domicile, un marqueur sélectionné (point de ralliement) ou le point de la carte, puis enregistrez-le comme cercle.';
+
+  @override
+  String get rangeRingCenterLabel => 'Centre';
+
+  @override
+  String get rangeRingCenterMarker => 'Marqueur';
+
+  @override
+  String get rangeRingCenterHome => 'Domicile';
+
+  @override
+  String get rangeRingCenterMapPoint => 'Point carte';
+
+  @override
+  String get rangeRingNoCenter =>
+      'Sélectionnez d’abord un marqueur, définissez un domicile ou appuyez longuement sur la carte.';
+
+  @override
+  String get rangeRingModeLabel => 'Mode';
+
+  @override
+  String get rangeRingBasisLabel => 'Base';
+
+  @override
+  String get rangeRingBasisDuration => 'Durée';
+
+  @override
+  String get rangeRingBasisFuel => 'Carburant';
+
+  @override
+  String get rangeRingDurationHoursLabel => 'Durée (heures)';
+
+  @override
+  String rangeRingDurationHelp(String speedKmh) {
+    return 'Utilise $speedKmh km/h de vitesse planifiée (modifiable sous Hypothèses).';
+  }
+
+  @override
+  String get rangeRingFuelAmountLabel => 'Quantité de carburant';
+
+  @override
+  String get rangeRingFuelUnitLabel => 'Unité';
+
+  @override
+  String get rangeRingFuelUnitLiters => 'L';
+
+  @override
+  String get rangeRingFuelUnitGallons => 'gal';
+
+  @override
+  String rangeRingFuelTankHelp(String amount, String unit) {
+    return 'Réservoir par défaut ≈ $amount $unit.';
+  }
+
+  @override
+  String get rangeRingAssumptionsTitle => 'Hypothèses';
+
+  @override
+  String get rangeRingSpeedKmhLabel => 'Vitesse (km/h)';
+
+  @override
+  String get rangeRingEconomyLabel => 'Consommation (L/100 km)';
+
+  @override
+  String get rangeRingEconomyHelp =>
+      'Plus bas = plus efficace. Les VTT ont une conso plus élevée qu’une voiture.';
+
+  @override
+  String rangeRingTankLabel(String unit) {
+    return 'Capacité du réservoir ($unit)';
+  }
+
+  @override
+  String get rangeRingUseFullTank => 'Utiliser le plein';
+
+  @override
+  String get rangeRingPreviewEmpty =>
+      'Saisissez une durée ou une quantité de carburant pour prévisualiser le rayon.';
+
+  @override
+  String rangeRingPreviewRadius(String distance) {
+    return 'Rayon ≈ $distance';
+  }
+
+  @override
+  String get rangeRingContinue => 'Continuer';
+
+  @override
+  String get rangeRingInvalidInput =>
+      'Saisissez une durée ou une quantité de carburant valide.';
+
+  @override
+  String rangeRingSuggestedNameDuration(String mode, String hours) {
+    return '$mode · $hours h';
+  }
+
+  @override
+  String rangeRingSuggestedNameFuel(String mode, String amount, String unit) {
+    return '$mode · $amount $unit';
+  }
+
+  @override
+  String rangeRingSuggestedNameMode(String mode) {
+    return 'Portée $mode';
+  }
+
+  @override
+  String rangeRingDetailDurationHours(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String rangeRingDetailFuelLiters(String liters) {
+    return '$liters L';
+  }
+
+  @override
   String get mapRadialAddToGeocoding => 'Ajouter à la recherche';
 
   @override
@@ -3306,6 +3437,101 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mapObjectTypePolygon => 'Polygone';
+
+  @override
+  String get mapObjectTypeEvacKit => 'Kit de routes d\'évacuation';
+
+  @override
+  String get evacKitCreateTitle => 'Créer un kit de routes d\'évacuation';
+
+  @override
+  String get evacKitEditTitle => 'Modifier le kit de routes d\'évacuation';
+
+  @override
+  String get evacKitDefaultName => 'Kit d\'évacuation';
+
+  @override
+  String get evacKitNameHint => 'Point de ralliement → abri…';
+
+  @override
+  String evacKitFormHelp(int count) {
+    return '$count points sur la route principale';
+  }
+
+  @override
+  String evacKitEtaPreview(String mode, String eta) {
+    return '$mode: $eta';
+  }
+
+  @override
+  String get evacKitPrimaryRouteName => 'Principale';
+
+  @override
+  String get evacKitPrimaryRouteNameLabel => 'Nom de la route principale';
+
+  @override
+  String get evacKitDefaultModeLabel => 'Mode de déplacement par défaut';
+
+  @override
+  String get evacKitShowNameLabel => 'Afficher le nom sur la carte';
+
+  @override
+  String get evacKitAddAlternateTitle => 'Ajouter une route alternative';
+
+  @override
+  String get evacKitRouteNameLabel => 'Nom de la route';
+
+  @override
+  String evacKitAlternateRouteName(int index) {
+    return 'Alternative $index';
+  }
+
+  @override
+  String get evacKitDrawingHint =>
+      'Touchez pour ajouter des points (ou touchez des marqueurs). Double-touche ou Terminer (2+). Annuler retire le dernier point.';
+
+  @override
+  String get evacKitDrawingFinish => 'Terminer';
+
+  @override
+  String get evacKitDrawingUndo => 'Annuler';
+
+  @override
+  String get evacKitDrawingCancel => 'Annuler';
+
+  @override
+  String get evacKitRoutesLabel => 'Routes';
+
+  @override
+  String get evacKitPrimaryBadge => 'Principale';
+
+  @override
+  String get evacKitAlternateBadge => 'Alternative';
+
+  @override
+  String get evacKitWaypointsLabel => 'Points';
+
+  @override
+  String get evacKitDistanceLabel => 'Distance';
+
+  @override
+  String get evacKitEtaLabel => 'ETA';
+
+  @override
+  String get evacKitAddAlternate => 'Ajouter une route alternative';
+
+  @override
+  String get evacKitRemoveAlternate => 'Supprimer l\'alternative';
+
+  @override
+  String get evacKitRemoveAlternateConfirm =>
+      'Supprimer cette route alternative du kit ?';
+
+  @override
+  String get sidebarEditEvacKit => 'Modifier le kit d\'évacuation';
+
+  @override
+  String get sidebarDeleteEvacKit => 'Supprimer le kit d\'évacuation';
 
   @override
   String get polygonCreateTitle => 'Créer un polygone AOI';

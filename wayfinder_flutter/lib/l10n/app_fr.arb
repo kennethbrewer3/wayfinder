@@ -932,6 +932,7 @@
   "mapObjectTypeLine": "Ligne",
   "mapObjectTypeTrack": "Trace",
   "mapObjectTypeCircle": "Cercle",
+  "mapObjectTypeRangeRing": "Anneau de portée",
   "mapObjectDetailCoordinates": "Coordonnées",
   "mapObjectDetailMgrs": "MGRS",
   "mapObjectDetailMgrsUnavailable": "Indisponible (hors couverture MGRS)",
@@ -1396,6 +1397,116 @@
   "mapRadialDeadReckoning": "Pas",
   "mapRadialViewshed": "Bassin de vue",
   "mapRadialSlope": "Pente / coût",
+  "mapRadialRangeRing": "Anneau de portée",
+  "mapRadialEvacKit": "Kit d'évacuation",
+  "rangeRingTitle": "Anneau de portée",
+  "rangeRingHelp": "Calculez un rayon de déplacement ou de carburant depuis le domicile, un marqueur sélectionné (point de ralliement) ou le point de la carte, puis enregistrez-le comme cercle.",
+  "rangeRingCenterLabel": "Centre",
+  "rangeRingCenterMarker": "Marqueur",
+  "rangeRingCenterHome": "Domicile",
+  "rangeRingCenterMapPoint": "Point carte",
+  "rangeRingNoCenter": "Sélectionnez d’abord un marqueur, définissez un domicile ou appuyez longuement sur la carte.",
+  "rangeRingModeLabel": "Mode",
+  "rangeRingBasisLabel": "Base",
+  "rangeRingBasisDuration": "Durée",
+  "rangeRingBasisFuel": "Carburant",
+  "rangeRingDurationHoursLabel": "Durée (heures)",
+  "rangeRingDurationHelp": "Utilise {speedKmh} km/h de vitesse planifiée (modifiable sous Hypothèses).",
+  "@rangeRingDurationHelp": {
+    "placeholders": {
+      "speedKmh": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingFuelAmountLabel": "Quantité de carburant",
+  "rangeRingFuelUnitLabel": "Unité",
+  "rangeRingFuelUnitLiters": "L",
+  "rangeRingFuelUnitGallons": "gal",
+  "rangeRingFuelTankHelp": "Réservoir par défaut ≈ {amount} {unit}.",
+  "@rangeRingFuelTankHelp": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingAssumptionsTitle": "Hypothèses",
+  "rangeRingSpeedKmhLabel": "Vitesse (km/h)",
+  "rangeRingEconomyLabel": "Consommation (L/100 km)",
+  "rangeRingEconomyHelp": "Plus bas = plus efficace. Les VTT ont une conso plus élevée qu’une voiture.",
+  "rangeRingTankLabel": "Capacité du réservoir ({unit})",
+  "@rangeRingTankLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingUseFullTank": "Utiliser le plein",
+  "rangeRingPreviewEmpty": "Saisissez une durée ou une quantité de carburant pour prévisualiser le rayon.",
+  "rangeRingPreviewRadius": "Rayon ≈ {distance}",
+  "@rangeRingPreviewRadius": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingContinue": "Continuer",
+  "rangeRingInvalidInput": "Saisissez une durée ou une quantité de carburant valide.",
+  "rangeRingSuggestedNameDuration": "{mode} · {hours} h",
+  "@rangeRingSuggestedNameDuration": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingSuggestedNameFuel": "{mode} · {amount} {unit}",
+  "@rangeRingSuggestedNameFuel": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingSuggestedNameMode": "Portée {mode}",
+  "@rangeRingSuggestedNameMode": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingDetailDurationHours": "{hours} h",
+  "@rangeRingDetailDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeRingDetailFuelLiters": "{liters} L",
+  "@rangeRingDetailFuelLiters": {
+    "placeholders": {
+      "liters": {
+        "type": "String"
+      }
+    }
+  },
   "viewshedTitle": "Bassin de vue / RF",
   "slopeTitle": "Pente / tout-terrain",
   "slopeRangeLabel": "Portée",
@@ -1543,6 +1654,59 @@
   "rectangleModeCorners": "Rectangle par coins",
   "mapObjectTypeRectangle": "Rectangle",
   "mapObjectTypePolygon": "Polygone",
+  "mapObjectTypeEvacKit": "Kit de routes d'évacuation",
+  "evacKitCreateTitle": "Créer un kit de routes d'évacuation",
+  "evacKitEditTitle": "Modifier le kit de routes d'évacuation",
+  "evacKitDefaultName": "Kit d'évacuation",
+  "evacKitNameHint": "Point de ralliement → abri…",
+  "evacKitFormHelp": "{count} points sur la route principale",
+  "@evacKitFormHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "evacKitEtaPreview": "{mode}: {eta}",
+  "@evacKitEtaPreview": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "eta": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitPrimaryRouteName": "Principale",
+  "evacKitPrimaryRouteNameLabel": "Nom de la route principale",
+  "evacKitDefaultModeLabel": "Mode de déplacement par défaut",
+  "evacKitShowNameLabel": "Afficher le nom sur la carte",
+  "evacKitAddAlternateTitle": "Ajouter une route alternative",
+  "evacKitRouteNameLabel": "Nom de la route",
+  "evacKitAlternateRouteName": "Alternative {index}",
+  "@evacKitAlternateRouteName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "evacKitDrawingHint": "Touchez pour ajouter des points (ou touchez des marqueurs). Double-touche ou Terminer (2+). Annuler retire le dernier point.",
+  "evacKitDrawingFinish": "Terminer",
+  "evacKitDrawingUndo": "Annuler",
+  "evacKitDrawingCancel": "Annuler",
+  "evacKitRoutesLabel": "Routes",
+  "evacKitPrimaryBadge": "Principale",
+  "evacKitAlternateBadge": "Alternative",
+  "evacKitWaypointsLabel": "Points",
+  "evacKitDistanceLabel": "Distance",
+  "evacKitEtaLabel": "ETA",
+  "evacKitAddAlternate": "Ajouter une route alternative",
+  "evacKitRemoveAlternate": "Supprimer l'alternative",
+  "evacKitRemoveAlternateConfirm": "Supprimer cette route alternative du kit ?",
+  "sidebarEditEvacKit": "Modifier le kit d'évacuation",
+  "sidebarDeleteEvacKit": "Supprimer le kit d'évacuation",
   "polygonCreateTitle": "Créer un polygone AOI",
   "polygonEditTitle": "Modifier le polygone AOI",
   "polygonDefaultName": "Polygone",

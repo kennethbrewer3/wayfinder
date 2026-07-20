@@ -14,8 +14,12 @@ import '../../map/utils/mgrs_utils.dart';
 import '../../markers/utils/marker_share_url.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
+import '../../circles/models/range_ring.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/utils/circle_distance.dart';
+import '../../evac_kits/models/evac_kit_geometry.dart';
+import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
+import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../layers/presentation/layer_assignment_row.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/models/measurement_units.dart';
@@ -44,6 +48,7 @@ import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../weather/presentation/weather_station_details_section.dart';
 import '../../../core/l10n/localized_labels.dart';
+import '../../../core/serverpod_client.dart';
 import 'marker_inventory_details_section.dart';
 import 'marker_qr_dialog.dart';
 import 'marker_tracking_details_section.dart';
@@ -105,6 +110,12 @@ Future<void> _editSelectedObject({
           );
         case polygonZoneType:
           await updatePolygonFromForm(
+            context: context,
+            ref: ref,
+            zone: zone,
+          );
+        case evacKitZoneType:
+          await updateEvacKitFromForm(
             context: context,
             ref: ref,
             zone: zone,
@@ -355,6 +366,13 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         zone: zone,
         l10n: l10n,
       ),
+      evacKitZoneType => _evacKitDetails(
+        context: context,
+        ref: ref,
+        zone: zone,
+        l10n: l10n,
+        measurementUnits: measurementUnits,
+      ),
       trackZoneType => _trackDetails(
         context: context,
         ref: ref,
@@ -555,8 +573,37 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
-          value: l10n.mapObjectTypeCircle,
+          value: geometry.rangeRing == null
+              ? l10n.mapObjectTypeCircle
+              : l10n.mapObjectTypeRangeRing,
         ),
+        if (geometry.rangeRing case final rangeRing?) ...[
+          _DetailRow(
+            label: l10n.rangeRingModeLabel,
+            value: rangeRing.mode.label(l10n),
+          ),
+          _DetailRow(
+            label: l10n.rangeRingBasisLabel,
+            value: switch (rangeRing.basis) {
+              RangeRingBasis.duration => l10n.rangeRingBasisDuration,
+              RangeRingBasis.fuel => l10n.rangeRingBasisFuel,
+            },
+          ),
+          if (rangeRing.durationHours != null)
+            _DetailRow(
+              label: l10n.rangeRingDurationHoursLabel,
+              value: l10n.rangeRingDetailDurationHours(
+                _trimDetailNumber(rangeRing.durationHours!),
+              ),
+            ),
+          if (rangeRing.fuelLiters != null)
+            _DetailRow(
+              label: l10n.rangeRingFuelAmountLabel,
+              value: l10n.rangeRingDetailFuelLiters(
+                _trimDetailNumber(rangeRing.fuelLiters!),
+              ),
+            ),
+        ],
         _DetailRow(label: l10n.mapObjectDetailRadius, value: radius),
         _DetailRow(label: l10n.mapObjectDetailDiameter, value: diameter),
         _DetailRow(
@@ -681,6 +728,90 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
               : l10n.mapObjectVisibilityHidden,
         ),
         _zoneLayerAssignment(ref, zone),
+        if (notes != null && notes.isNotEmpty)
+          _NotesSection(l10n: l10n, markdown: notes),
+      ],
+    );
+  }
+
+  Widget _evacKitDetails({
+    required BuildContext context,
+    required WidgetRef ref,
+    required MapZone zone,
+    required AppLocalizations l10n,
+    required MeasurementUnits measurementUnits,
+  }) {
+    final geometry = EvacKitGeometry.fromZone(zone);
+    if (geometry == null || !geometry.isValid) {
+      return _genericZoneDetails(ref: ref, zone: zone, l10n: l10n);
+    }
+
+    final notes = geometry.notes?.trim();
+    final theme = Theme.of(context);
+
+    return _DetailsDialogShell(
+      title: zone.name,
+      leading: _ZoneTypeAvatar(
+        color: parseMarkerColor(zone.color),
+        icon: Icons.route,
+      ),
+      onEdit: onEdit,
+      l10n: l10n,
+      additionalActions: [
+        TextButton.icon(
+          onPressed: () {
+            Navigator.of(context).pop();
+            beginEvacKitAlternateDrawing(ref: ref, zone: zone);
+          },
+          icon: const Icon(Icons.alt_route),
+          label: Text(l10n.evacKitAddAlternate),
+        ),
+      ],
+      children: [
+        _DetailRow(
+          label: l10n.mapObjectDetailType,
+          value: l10n.mapObjectTypeEvacKit,
+        ),
+        _DetailRow(
+          label: l10n.evacKitDefaultModeLabel,
+          value: geometry.defaultMode.label(l10n),
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailVisibility,
+          value: zone.visible
+              ? l10n.mapObjectVisibilityVisible
+              : l10n.mapObjectVisibilityHidden,
+        ),
+        _zoneLayerAssignment(ref, zone),
+        const SizedBox(height: 8),
+        Text(
+          l10n.evacKitRoutesLabel,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        for (final route in geometry.routes) ...[
+          _EvacKitRouteSection(
+            route: route,
+            isPrimary: route.id == geometry.primaryRouteId,
+            defaultMode: geometry.defaultMode,
+            measurementUnits: measurementUnits,
+            l10n: l10n,
+            onRemove: route.id == geometry.primaryRouteId
+                ? null
+                : () => unawaited(
+                    _removeEvacKitAlternate(
+                      context: context,
+                      ref: ref,
+                      zone: zone,
+                      geometry: geometry,
+                      routeId: route.id,
+                    ),
+                  ),
+          ),
+          const SizedBox(height: 12),
+        ],
         if (notes != null && notes.isNotEmpty)
           _NotesSection(l10n: l10n, markdown: notes),
       ],
@@ -1033,6 +1164,157 @@ class _ZoneTypeAvatar extends StatelessWidget {
           : Icon(icon!, color: Colors.white, size: 18),
     );
   }
+}
+
+class _EvacKitRouteSection extends StatelessWidget {
+  const _EvacKitRouteSection({
+    required this.route,
+    required this.isPrimary,
+    required this.defaultMode,
+    required this.measurementUnits,
+    required this.l10n,
+    this.onRemove,
+  });
+
+  final EvacRoute route;
+  final bool isPrimary;
+  final TrackTransportationMode defaultMode;
+  final MeasurementUnits measurementUnits;
+  final AppLocalizations l10n;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final lengthMeters = evacRouteLengthMeters(route);
+    final distance = formatLineDistance(lengthMeters, measurementUnits);
+    final defaultEta = formatEvacDuration(
+      evacRouteDuration(lengthMeters: lengthMeters, mode: defaultMode),
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    route.name,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Chip(
+                  label: Text(
+                    isPrimary
+                        ? l10n.evacKitPrimaryBadge
+                        : l10n.evacKitAlternateBadge,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                if (onRemove != null) ...[
+                  const SizedBox(width: 4),
+                  IconButton(
+                    tooltip: l10n.evacKitRemoveAlternate,
+                    onPressed: onRemove,
+                    icon: const Icon(Icons.delete_outline),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 8),
+            _DetailRow(
+              label: l10n.evacKitWaypointsLabel,
+              value: '${route.waypoints.length}',
+            ),
+            _DetailRow(
+              label: l10n.evacKitDistanceLabel,
+              value: distance,
+            ),
+            _DetailRow(
+              label: l10n.evacKitEtaLabel,
+              value: '${defaultMode.label(l10n)}: $defaultEta',
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final mode in evacKitEtaModes)
+                  Chip(
+                    avatar: TrackTransportationIcon(mode, size: 16),
+                    label: Text(
+                      formatEvacDuration(
+                        evacRouteDuration(
+                          lengthMeters: lengthMeters,
+                          mode: mode,
+                        ),
+                      ),
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _removeEvacKitAlternate({
+  required BuildContext context,
+  required WidgetRef ref,
+  required MapZone zone,
+  required EvacKitGeometry geometry,
+  required String routeId,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: Text(l10n.evacKitRemoveAlternate),
+        content: Text(l10n.evacKitRemoveAlternateConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.actionCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.actionDelete),
+          ),
+        ],
+      );
+    },
+  );
+  if (confirmed != true || !context.mounted) {
+    return;
+  }
+  final client = ref.read(serverClientProvider);
+  await client.mapZone.updateZone(
+    updateZoneEvacKitGeometry(zone, geometry.withoutRoute(routeId)),
+  );
+  ref.read(zonesProvider.notifier).reload();
+}
+
+String _trimDetailNumber(double value) {
+  if (value == value.roundToDouble()) {
+    return value.round().toString();
+  }
+  return value.toStringAsFixed(2).replaceFirst(RegExp(r'\.?0+$'), '');
 }
 
 String _formatElevation(double elevation) {

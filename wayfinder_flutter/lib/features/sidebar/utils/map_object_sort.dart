@@ -6,6 +6,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../circles/models/circle_geometry.dart';
+import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../polygons/models/polygon_geometry.dart';
@@ -90,6 +91,7 @@ int zoneTypeSortOrder(String type) {
     circleZoneType => 2,
     rectangleZoneType => 3,
     polygonZoneType => 4,
+    evacKitZoneType => 5,
     _ => 99,
   };
 }
@@ -346,6 +348,7 @@ IconData zoneTypeIcon(String type) {
     circleZoneType => Icons.radio_button_unchecked,
     rectangleZoneType => Icons.crop_square,
     polygonZoneType => Icons.polyline,
+    evacKitZoneType => Icons.route,
     _ => Icons.layers,
   };
 }

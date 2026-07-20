@@ -354,6 +354,38 @@ Circles represent a radius around a center point.
 
 The map can display the radius with a **size label** (diameter, radius, area, or circumference — configurable in **Settings → General**).
 
+### Range rings by mode
+
+Estimate how far you can travel from **home**, a **selected marker** (for example a rally point), or the long-press map point, then save the result as a normal circle.
+
+1. Optionally **select a marker**, or rely on your saved **home location** / long-press point.
+2. Long-press → **More** → **Range ring**.
+3. Choose a **mode**: walking, horseback, bicycle, motorcycle, ATV, or land vehicle.
+4. Enter a **duration** (hours), or for motorized modes switch to **Fuel** and enter tank amount (liters or gallons).
+5. Optionally expand **Assumptions** to adjust planning speed (km/h), fuel economy (L/100 km), and tank size. ATV defaults use a smaller tank and thirstier economy than a car.
+6. Review the preview radius, tap **Continue**, then finish the circle form (name is prefilled from mode and duration/fuel).
+
+Range rings are stored as circles; details show the mode and duration or fuel used to compute them. Defaults are rough planning estimates, not vehicle specifications.
+
+---
+
+## Evac route kits
+
+Evac route kits store a primary escape route plus optional alternates, with planning ETAs by travel mode.
+
+### Draw an evac kit
+
+1. Long-press → **More** → **Evac kit**. If a marker is selected, it becomes the first waypoint.
+2. **Tap** the map to add free waypoints, or **tap markers** to snap waypoints to them. A dashed preview follows the cursor.
+3. **Double-tap** or tap **Finish** when you have at least two waypoints (banner **Undo** removes the last point).
+4. Complete the form with name, primary route name, default travel mode, color, layer, and notes.
+
+### Alternate routes
+
+Open kit details → **Add alternate route**, then draw another path the same way. Alternates appear dashed on the map. Remove an alternate from the details dialog (the primary route cannot be removed this way).
+
+ETAs use planning speeds (for example on foot ≈ 5 km/h). They are estimates, not live traffic or terrain routing.
+
 ---
 
 ## Rectangles
@@ -405,7 +437,7 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
 | Polygon | Draw a freeform polygon (property line, patrol sector, no-go…) |
-| More | Opens overflow tools (Viewshed, Slope / cost, Pace count, Copy coordinates) |
+| More | Opens overflow tools (Viewshed, Slope / cost, Range ring, Evac kit, Pace count, Copy coordinates) |
 | Back | Returns from the More menu to the main radial actions |
 
 Cancel by tapping outside the menu or pressing Escape where supported.

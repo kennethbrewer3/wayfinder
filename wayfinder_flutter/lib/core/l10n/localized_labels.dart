@@ -5,6 +5,7 @@ import '../../app/app_theme_choice.dart';
 import '../../features/markers/models/marker_icon_category_catalog.dart';
 import '../../features/circles/models/circle_geometry.dart';
 import '../../features/circles/models/circle_size_display.dart';
+import '../../features/evac_kits/models/evac_kit_geometry.dart';
 import '../../features/lines/models/angle_display_format.dart';
 import '../../features/lines/models/bearing_reference.dart';
 import '../../features/lines/models/line_arrow_density.dart';
@@ -371,6 +372,7 @@ String localizedZoneTypeLabel(AppLocalizations l10n, String type) {
     circleZoneType => l10n.mapObjectTypeCircle,
     rectangleZoneType => l10n.mapObjectTypeRectangle,
     polygonZoneType => l10n.mapObjectTypePolygon,
+    evacKitZoneType => l10n.mapObjectTypeEvacKit,
     _ => type,
   };
 }

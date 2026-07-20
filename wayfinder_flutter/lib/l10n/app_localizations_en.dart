@@ -1907,6 +1907,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapObjectTypeCircle => 'Circle';
 
   @override
+  String get mapObjectTypeRangeRing => 'Range ring';
+
+  @override
   String get mapObjectDetailCoordinates => 'Coordinates';
 
   @override
@@ -2979,6 +2982,133 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialSlope => 'Slope / cost';
 
   @override
+  String get mapRadialRangeRing => 'Range ring';
+
+  @override
+  String get mapRadialEvacKit => 'Evac kit';
+
+  @override
+  String get rangeRingTitle => 'Range ring';
+
+  @override
+  String get rangeRingHelp =>
+      'Compute a travel or fuel radius from home, a selected marker (rally point), or the map point, then save it as a circle.';
+
+  @override
+  String get rangeRingCenterLabel => 'Center';
+
+  @override
+  String get rangeRingCenterMarker => 'Marker';
+
+  @override
+  String get rangeRingCenterHome => 'Home';
+
+  @override
+  String get rangeRingCenterMapPoint => 'Map point';
+
+  @override
+  String get rangeRingNoCenter =>
+      'Select a marker, set a home location, or long-press the map first.';
+
+  @override
+  String get rangeRingModeLabel => 'Mode';
+
+  @override
+  String get rangeRingBasisLabel => 'Basis';
+
+  @override
+  String get rangeRingBasisDuration => 'Duration';
+
+  @override
+  String get rangeRingBasisFuel => 'Fuel';
+
+  @override
+  String get rangeRingDurationHoursLabel => 'Duration (hours)';
+
+  @override
+  String rangeRingDurationHelp(String speedKmh) {
+    return 'Uses $speedKmh km/h planning speed (editable under Assumptions).';
+  }
+
+  @override
+  String get rangeRingFuelAmountLabel => 'Fuel amount';
+
+  @override
+  String get rangeRingFuelUnitLabel => 'Unit';
+
+  @override
+  String get rangeRingFuelUnitLiters => 'L';
+
+  @override
+  String get rangeRingFuelUnitGallons => 'gal';
+
+  @override
+  String rangeRingFuelTankHelp(String amount, String unit) {
+    return 'Default tank ≈ $amount $unit.';
+  }
+
+  @override
+  String get rangeRingAssumptionsTitle => 'Assumptions';
+
+  @override
+  String get rangeRingSpeedKmhLabel => 'Speed (km/h)';
+
+  @override
+  String get rangeRingEconomyLabel => 'Fuel economy (L/100 km)';
+
+  @override
+  String get rangeRingEconomyHelp =>
+      'Lower is more efficient. ATV defaults are thirstier than a car.';
+
+  @override
+  String rangeRingTankLabel(String unit) {
+    return 'Tank size ($unit)';
+  }
+
+  @override
+  String get rangeRingUseFullTank => 'Use full tank';
+
+  @override
+  String get rangeRingPreviewEmpty =>
+      'Enter a duration or fuel amount to preview the radius.';
+
+  @override
+  String rangeRingPreviewRadius(String distance) {
+    return 'Radius ≈ $distance';
+  }
+
+  @override
+  String get rangeRingContinue => 'Continue';
+
+  @override
+  String get rangeRingInvalidInput => 'Enter a valid duration or fuel amount.';
+
+  @override
+  String rangeRingSuggestedNameDuration(String mode, String hours) {
+    return '$mode · $hours h';
+  }
+
+  @override
+  String rangeRingSuggestedNameFuel(String mode, String amount, String unit) {
+    return '$mode · $amount $unit';
+  }
+
+  @override
+  String rangeRingSuggestedNameMode(String mode) {
+    return '$mode range';
+  }
+
+  @override
+  String rangeRingDetailDurationHours(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String rangeRingDetailFuelLiters(String liters) {
+    return '$liters L';
+  }
+
+  @override
   String get mapRadialAddToGeocoding => 'Add to search';
 
   @override
@@ -3255,6 +3385,101 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapObjectTypePolygon => 'Polygon';
+
+  @override
+  String get mapObjectTypeEvacKit => 'Evac route kit';
+
+  @override
+  String get evacKitCreateTitle => 'Create evac route kit';
+
+  @override
+  String get evacKitEditTitle => 'Edit evac route kit';
+
+  @override
+  String get evacKitDefaultName => 'Evac kit';
+
+  @override
+  String get evacKitNameHint => 'Rally → safe house…';
+
+  @override
+  String evacKitFormHelp(int count) {
+    return '$count waypoints on primary route';
+  }
+
+  @override
+  String evacKitEtaPreview(String mode, String eta) {
+    return '$mode: $eta';
+  }
+
+  @override
+  String get evacKitPrimaryRouteName => 'Primary';
+
+  @override
+  String get evacKitPrimaryRouteNameLabel => 'Primary route name';
+
+  @override
+  String get evacKitDefaultModeLabel => 'Default travel mode';
+
+  @override
+  String get evacKitShowNameLabel => 'Show name on map';
+
+  @override
+  String get evacKitAddAlternateTitle => 'Add alternate route';
+
+  @override
+  String get evacKitRouteNameLabel => 'Route name';
+
+  @override
+  String evacKitAlternateRouteName(int index) {
+    return 'Alternate $index';
+  }
+
+  @override
+  String get evacKitDrawingHint =>
+      'Tap to add waypoints (or tap markers). Double-tap or Finish when done (2+). Undo removes the last point.';
+
+  @override
+  String get evacKitDrawingFinish => 'Finish';
+
+  @override
+  String get evacKitDrawingUndo => 'Undo';
+
+  @override
+  String get evacKitDrawingCancel => 'Cancel';
+
+  @override
+  String get evacKitRoutesLabel => 'Routes';
+
+  @override
+  String get evacKitPrimaryBadge => 'Primary';
+
+  @override
+  String get evacKitAlternateBadge => 'Alternate';
+
+  @override
+  String get evacKitWaypointsLabel => 'Waypoints';
+
+  @override
+  String get evacKitDistanceLabel => 'Distance';
+
+  @override
+  String get evacKitEtaLabel => 'ETA';
+
+  @override
+  String get evacKitAddAlternate => 'Add alternate route';
+
+  @override
+  String get evacKitRemoveAlternate => 'Remove alternate';
+
+  @override
+  String get evacKitRemoveAlternateConfirm =>
+      'Remove this alternate route from the kit?';
+
+  @override
+  String get sidebarEditEvacKit => 'Edit evac kit';
+
+  @override
+  String get sidebarDeleteEvacKit => 'Delete evac kit';
 
   @override
   String get polygonCreateTitle => 'Create polygon AOI';

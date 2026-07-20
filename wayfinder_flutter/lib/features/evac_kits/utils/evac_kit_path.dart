@@ -1,9 +1,22 @@
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../lines/models/line_geometry.dart';
 import '../../lines/utils/line_path.dart';
 import '../../lines/utils/line_snap.dart';
 import '../models/evac_kit_geometry.dart';
+
+LineGeometry evacRouteAsLineGeometry(EvacRoute route) {
+  return LineGeometry(
+    points: route.pathPoints,
+    showArrows: route.showArrows,
+    pathMode: route.pathMode,
+  );
+}
+
+List<LatLng> buildEvacRouteRenderPoints(EvacRoute route) {
+  return buildLineRenderPoints(evacRouteAsLineGeometry(route));
+}
 
 int? hitTestEvacWaypointIndex({
   required List<EvacWaypoint> waypoints,
@@ -40,6 +53,35 @@ class EvacRouteSegmentHit {
 }
 
 EvacRouteSegmentHit? closestEvacRouteSegment({
+  required EvacRoute route,
+  required LatLng tap,
+  required MapCamera camera,
+  double hitRadiusPx = 22,
+}) {
+  final segment = closestLineRenderSegment(
+    geometry: evacRouteAsLineGeometry(route),
+    tap: tap,
+    camera: camera,
+    hitRadiusPx: hitRadiusPx,
+  );
+  if (segment == null) {
+    return null;
+  }
+  final tapScreen = camera.latLngToScreenOffset(tap);
+  final distance = distanceToSegmentPx(
+    tapScreen,
+    camera.latLngToScreenOffset(segment.start),
+    camera.latLngToScreenOffset(segment.end),
+  );
+  return EvacRouteSegmentHit(
+    segmentIndex: segment.controlSegmentIndex,
+    distancePx: distance,
+    projected: projectPointOnSegment(segment.start, segment.end, tap),
+  );
+}
+
+/// Legacy chord hit-test when only waypoints are available (drawing drafts).
+EvacRouteSegmentHit? closestEvacWaypointChordSegment({
   required List<EvacWaypoint> waypoints,
   required LatLng tap,
   required MapCamera camera,
@@ -74,13 +116,13 @@ EvacRouteSegmentHit? closestEvacRouteSegment({
 }
 
 bool isNearEvacRouteSegment({
-  required List<EvacWaypoint> waypoints,
+  required EvacRoute route,
   required LatLng tap,
   required MapCamera camera,
   double hitRadiusPx = 22,
 }) {
   return closestEvacRouteSegment(
-        waypoints: waypoints,
+        route: route,
         tap: tap,
         camera: camera,
         hitRadiusPx: hitRadiusPx,
@@ -94,7 +136,7 @@ EvacRoute? insertEvacWaypoint({
   required MapCamera camera,
 }) {
   final hit = closestEvacRouteSegment(
-    waypoints: route.waypoints,
+    route: route,
     tap: tap,
     camera: camera,
   );
@@ -109,7 +151,10 @@ EvacRoute? insertEvacWaypoint({
         point: hit.projected,
       ),
     );
-  return route.copyWith(waypoints: updated);
+  return route.copyWith(
+    waypoints: updated,
+    pathMode: LinePathMode.smooth,
+  );
 }
 
 EvacRoute? moveEvacWaypoint({
@@ -141,7 +186,10 @@ EvacRoute? removeEvacWaypoint({
     return null;
   }
   final updated = [...route.waypoints]..removeAt(waypointIndex);
-  return route.copyWith(waypoints: updated);
+  return route.copyWith(
+    waypoints: updated,
+    pathMode: updated.length > 2 ? route.pathMode : LinePathMode.straight,
+  );
 }
 
 EvacRoute? appendEvacWaypoint({

@@ -1,0 +1,4 @@
+class: TideSample
+fields:
+  time: DateTime
+  heightMeters: double

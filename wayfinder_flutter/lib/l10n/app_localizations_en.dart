@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabGeocoding => 'Geocoding';
 
   @override
+  String get settingsTabTides => 'Tides';
+
+  @override
   String get settingsTabBackup => 'Backup';
 
   @override
@@ -2988,7 +2991,177 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialSunMoon => 'Sun / moon';
 
   @override
+  String get mapRadialTides => 'Tides';
+
+  @override
   String get mapRadialEvacKit => 'Evac kit';
+
+  @override
+  String get tidesTitle => 'Tide tables';
+
+  @override
+  String get tidesSubtitle =>
+      'Nearest coastal station from packs on your Wayfinder server — for boat and water crossings.';
+
+  @override
+  String get tidesLocationLabel => 'Location';
+
+  @override
+  String get tidesAnchorMarker => 'Marker';
+
+  @override
+  String get tidesAnchorHome => 'Home';
+
+  @override
+  String get tidesAnchorMapPoint => 'Map point';
+
+  @override
+  String get tidesDateLabel => 'Date';
+
+  @override
+  String get tidesPickDate => 'Pick date';
+
+  @override
+  String get tidesMissingLocation => 'Choose a location to query tides.';
+
+  @override
+  String tidesQueryFailed(String error) {
+    return 'Could not load tides: $error';
+  }
+
+  @override
+  String get tidesApproximateBanner =>
+      'Heights are harmonic planning estimates from the installed coastal pack (not live NOAA observations).';
+
+  @override
+  String tidesStationHeading(String name, String id) {
+    return '$name ($id)';
+  }
+
+  @override
+  String tidesStationMeta(String distance, String datum) {
+    return '$distance away · datum $datum';
+  }
+
+  @override
+  String get tidesExtremesSection => 'Highs and lows';
+
+  @override
+  String get tidesCurveSection => 'Tide curve';
+
+  @override
+  String get tidesNoExtremes => 'No high/low extremes found for this day.';
+
+  @override
+  String get tidesCrossingHint =>
+      'Use low-tide windows for fords and high-tide windows for deeper boat passages. Confirm locally before committing.';
+
+  @override
+  String get tidesExtremeHigh => 'High';
+
+  @override
+  String get tidesExtremeLow => 'Low';
+
+  @override
+  String tidesHeightMeters(String value) {
+    return '$value m';
+  }
+
+  @override
+  String tidesHeightFeet(String value) {
+    return '$value ft';
+  }
+
+  @override
+  String get tidesDistanceUnknown => 'distance unknown';
+
+  @override
+  String tidesDistanceMeters(String value) {
+    return '$value m';
+  }
+
+  @override
+  String tidesDistanceKm(String value) {
+    return '$value km';
+  }
+
+  @override
+  String tidesDistanceFeet(String value) {
+    return '$value ft';
+  }
+
+  @override
+  String tidesDistanceMiles(String value) {
+    return '$value mi';
+  }
+
+  @override
+  String get tidesSettingsTitle => 'Coastal tide packs';
+
+  @override
+  String get tidesSettingsSubtitle =>
+      'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline from NOAA’s perspective (server must reach NOAA once to import).';
+
+  @override
+  String get tidesInstalledPacks => 'Installed packs';
+
+  @override
+  String get tidesNoPacksInstalled =>
+      'No coastal packs installed yet. Download a region below.';
+
+  @override
+  String tidesPackMeta(int stations, String size, String date) {
+    return '$stations stations · $size · $date';
+  }
+
+  @override
+  String get tidesGetCoastalPacks => 'Get coastal packs';
+
+  @override
+  String get tidesGetCoastalPacksHint =>
+      'Imports up to ~80 NOAA tide-prediction stations in the region. May take several minutes.';
+
+  @override
+  String get tidesDownloadPack => 'Download';
+
+  @override
+  String get tidesImportInProgress => 'Downloading coastal pack from NOAA…';
+
+  @override
+  String tidesImportSuccess(String name, int stations) {
+    return 'Installed “$name” with $stations stations.';
+  }
+
+  @override
+  String tidesImportFailed(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
+  String tidesActionFailed(String error) {
+    return 'Tide action failed: $error';
+  }
+
+  @override
+  String get tidesDeletePack => 'Delete pack';
+
+  @override
+  String tidesDeletePackConfirm(String name) {
+    return 'Delete coastal pack “$name” from the server?';
+  }
+
+  @override
+  String tidesRegionBbox(
+    String minLat,
+    String minLng,
+    String maxLat,
+    String maxLng,
+  ) {
+    return '$minLat°, $minLng° → $maxLat°, $maxLng°';
+  }
+
+  @override
+  String get tidesOpenFromEvac => 'Tide tables at route';
 
   @override
   String get sunMoonTitle => 'Sun / moon / twilight';

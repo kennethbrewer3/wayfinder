@@ -1,0 +1,8 @@
+class: TideCoastalRegion
+fields:
+  id: String
+  name: String
+  minLatitude: double
+  minLongitude: double
+  maxLatitude: double
+  maxLongitude: double

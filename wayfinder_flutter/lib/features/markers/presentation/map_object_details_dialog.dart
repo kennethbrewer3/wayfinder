@@ -20,6 +20,7 @@ import '../../circles/utils/circle_distance.dart';
 import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
+import '../../tides/presentation/create_tide_tables.dart';
 import '../../layers/presentation/layer_assignment_row.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/models/measurement_units.dart';
@@ -766,6 +767,25 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           icon: const Icon(Icons.alt_route),
           label: Text(l10n.evacKitAddAlternate),
         ),
+        if (_isWaterEvacMode(geometry.defaultMode))
+          TextButton.icon(
+            onPressed: () {
+              final point = _evacKitTideQueryPoint(geometry);
+              Navigator.of(context).pop();
+              if (point == null) {
+                return;
+              }
+              unawaited(
+                showTideTablesAtPoint(
+                  context: context,
+                  ref: ref,
+                  mapPoint: point,
+                ),
+              );
+            },
+            icon: const Icon(Icons.waves),
+            label: Text(l10n.tidesOpenFromEvac),
+          ),
       ],
       children: [
         _DetailRow(
@@ -1482,6 +1502,24 @@ Future<void> _removeEvacKitRoute({
     updateZoneEvacKitGeometry(zone, next),
   );
   ref.read(zonesProvider.notifier).reload();
+}
+
+bool _isWaterEvacMode(TrackTransportationMode mode) {
+  return switch (mode) {
+    TrackTransportationMode.canoe ||
+    TrackTransportationMode.watercraft ||
+    TrackTransportationMode.sailboat => true,
+    _ => false,
+  };
+}
+
+LatLng? _evacKitTideQueryPoint(EvacKitGeometry geometry) {
+  final route = geometry.primaryRoute;
+  if (route == null || route.waypoints.isEmpty) {
+    return null;
+  }
+  final mid = route.waypoints[route.waypoints.length ~/ 2];
+  return mid.point;
 }
 
 String _trimDetailNumber(double value) {

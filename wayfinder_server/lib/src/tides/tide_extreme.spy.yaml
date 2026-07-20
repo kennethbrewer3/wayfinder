@@ -1,0 +1,6 @@
+class: TideExtreme
+fields:
+  time: DateTime
+  heightMeters: double
+  ### One of: high, low
+  type: String

@@ -394,9 +394,9 @@ From kit details you can:
 
 1. **Select** the kit, then **double-tap** the route you want (primary or alternate), or open details → **Edit route on map** on that route. With multiple routes, use the chips in the edit banner to switch which one you are editing; tapping another route’s line also switches.
 2. **Drag** a numbered waypoint to move it.
-3. **Tap a segment** between waypoints to insert a new point.
+3. **Tap a segment** between waypoints to insert a new point — this also turns the route into a **smooth curve** (same Catmull-Rom style as map lines). Drag interior waypoints to reshape the curve.
 4. **Tap the last waypoint** to extend the route — then tap the map or markers to append more points. **Done** stops extending (or exits edit).
-5. **Long-press** a waypoint to remove it (at least two waypoints remain).
+5. **Long-press** a waypoint to remove it (at least two waypoints remain). Removing mid-points until only two remain returns the route to a straight segment.
 
 ETAs use planning speeds (for example on foot ≈ 5 km/h). They are estimates, not live traffic or terrain routing.
 
@@ -439,6 +439,17 @@ Polygons are saved as map zones like circles and rectangles. Toggle the name lab
 
 ---
 
+## Tide tables
+
+Coastal tide packs live on the Wayfinder **server** (NOAA harmonic constituents). Clients query the server — useful for boat and evac water crossings.
+
+1. **Settings → Tides** → download a coastal region pack (server must reach NOAA once during import; can take several minutes).
+2. Activate the pack(s) you want used for queries.
+3. Long-press the map → **More** → **Tides** (or open **Tide tables at route** from a water-mode evac kit). Pick a date to see nearest station highs/lows and a tide curve.
+4. Heights are planning estimates from installed harmonics, not live water-level observations. Confirm locally before committing a crossing.
+
+---
+
 ## Sun / moon / twilight
 
 Offline sunrise, sunset, twilight bands, moon phase, and a night-ops dark window for any lat/lng and date (no network).
@@ -465,7 +476,7 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
 | Polygon | Draw a freeform polygon (property line, patrol sector, no-go…) |
-| More | Opens overflow tools (Viewshed, Slope / cost, Range ring, Sun / moon, Evac kit, Pace count, Copy coordinates) |
+| More | Opens overflow tools (Viewshed, Slope / cost, Range ring, Sun / moon, Tides, Evac kit, Pace count, Copy coordinates) |
 | Back | Returns from the More menu to the main radial actions |
 
 Cancel by tapping outside the menu or pressing Escape where supported.

@@ -13,6 +13,7 @@ import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
 import 'src/markers/marker_icon_category_service.dart';
 import 'src/markers/marker_icon_storage.dart';
+import 'src/tides/tide_storage.dart';
 import 'src/web/middleware/cors_middleware.dart';
 import 'src/web/middleware/rest_auth_middleware.dart';
 import 'src/web/middleware/rest_cors_middleware.dart';
@@ -211,6 +212,22 @@ void run(List<String> args) async {
         syncSession,
         'server',
         '📍 Marker icon storage unavailable | path=${WayfinderEnv.markerIconStoragePath}',
+      );
+    }
+
+    TideStorage.configure(WayfinderEnv.tidesStoragePath);
+    final tidesReady = await TideStorage().ensureReady();
+    if (tidesReady) {
+      WfLog.info(
+        syncSession,
+        'server',
+        '🌊 Tide storage ready | path=${WayfinderEnv.tidesStoragePath}',
+      );
+    } else {
+      WfLog.warn(
+        syncSession,
+        'server',
+        '🌊 Tide storage unavailable | path=${WayfinderEnv.tidesStoragePath}',
       );
     }
   } finally {

@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../markers/models/marker_color.dart';
 import '../models/evac_kit_geometry.dart';
+import '../utils/evac_kit_path.dart';
 
 List<Polyline> buildSavedEvacKitPolylines(
   List<MapZone> zones, {
@@ -44,8 +45,18 @@ List<Polyline> buildSavedEvacKitPolylines(
           ? StrokePattern.dashed(segments: const [12, 8])
           : const StrokePattern.solid();
       final points = isEditing && extendPreviewPoint != null
-          ? [...route.pathPoints, extendPreviewPoint]
-          : route.pathPoints;
+          ? buildEvacRouteRenderPoints(
+              route.copyWith(
+                waypoints: [
+                  ...route.waypoints,
+                  EvacWaypoint(
+                    kind: EvacWaypointKind.point,
+                    point: extendPreviewPoint,
+                  ),
+                ],
+              ),
+            )
+          : buildEvacRouteRenderPoints(route);
       polylines.add(
         Polyline(
           points: points,

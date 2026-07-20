@@ -136,6 +136,12 @@ abstract class AppLocalizations {
   /// **'Geocoding'**
   String get settingsTabGeocoding;
 
+  /// No description provided for @settingsTabTides.
+  ///
+  /// In en, this message translates to:
+  /// **'Tides'**
+  String get settingsTabTides;
+
   /// No description provided for @settingsTabBackup.
   ///
   /// In en, this message translates to:
@@ -5241,11 +5247,274 @@ abstract class AppLocalizations {
   /// **'Sun / moon'**
   String get mapRadialSunMoon;
 
+  /// No description provided for @mapRadialTides.
+  ///
+  /// In en, this message translates to:
+  /// **'Tides'**
+  String get mapRadialTides;
+
   /// No description provided for @mapRadialEvacKit.
   ///
   /// In en, this message translates to:
   /// **'Evac kit'**
   String get mapRadialEvacKit;
+
+  /// No description provided for @tidesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tide tables'**
+  String get tidesTitle;
+
+  /// No description provided for @tidesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest coastal station from packs on your Wayfinder server — for boat and water crossings.'**
+  String get tidesSubtitle;
+
+  /// No description provided for @tidesLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get tidesLocationLabel;
+
+  /// No description provided for @tidesAnchorMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker'**
+  String get tidesAnchorMarker;
+
+  /// No description provided for @tidesAnchorHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get tidesAnchorHome;
+
+  /// No description provided for @tidesAnchorMapPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Map point'**
+  String get tidesAnchorMapPoint;
+
+  /// No description provided for @tidesDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get tidesDateLabel;
+
+  /// No description provided for @tidesPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick date'**
+  String get tidesPickDate;
+
+  /// No description provided for @tidesMissingLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a location to query tides.'**
+  String get tidesMissingLocation;
+
+  /// No description provided for @tidesQueryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load tides: {error}'**
+  String tidesQueryFailed(String error);
+
+  /// No description provided for @tidesApproximateBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Heights are harmonic planning estimates from the installed coastal pack (not live NOAA observations).'**
+  String get tidesApproximateBanner;
+
+  /// No description provided for @tidesStationHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({id})'**
+  String tidesStationHeading(String name, String id);
+
+  /// No description provided for @tidesStationMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} away · datum {datum}'**
+  String tidesStationMeta(String distance, String datum);
+
+  /// No description provided for @tidesExtremesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Highs and lows'**
+  String get tidesExtremesSection;
+
+  /// No description provided for @tidesCurveSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Tide curve'**
+  String get tidesCurveSection;
+
+  /// No description provided for @tidesNoExtremes.
+  ///
+  /// In en, this message translates to:
+  /// **'No high/low extremes found for this day.'**
+  String get tidesNoExtremes;
+
+  /// No description provided for @tidesCrossingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use low-tide windows for fords and high-tide windows for deeper boat passages. Confirm locally before committing.'**
+  String get tidesCrossingHint;
+
+  /// No description provided for @tidesExtremeHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get tidesExtremeHigh;
+
+  /// No description provided for @tidesExtremeLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get tidesExtremeLow;
+
+  /// No description provided for @tidesHeightMeters.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} m'**
+  String tidesHeightMeters(String value);
+
+  /// No description provided for @tidesHeightFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ft'**
+  String tidesHeightFeet(String value);
+
+  /// No description provided for @tidesDistanceUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'distance unknown'**
+  String get tidesDistanceUnknown;
+
+  /// No description provided for @tidesDistanceMeters.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} m'**
+  String tidesDistanceMeters(String value);
+
+  /// No description provided for @tidesDistanceKm.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} km'**
+  String tidesDistanceKm(String value);
+
+  /// No description provided for @tidesDistanceFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ft'**
+  String tidesDistanceFeet(String value);
+
+  /// No description provided for @tidesDistanceMiles.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} mi'**
+  String tidesDistanceMiles(String value);
+
+  /// No description provided for @tidesSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coastal tide packs'**
+  String get tidesSettingsTitle;
+
+  /// No description provided for @tidesSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline from NOAA’s perspective (server must reach NOAA once to import).'**
+  String get tidesSettingsSubtitle;
+
+  /// No description provided for @tidesInstalledPacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed packs'**
+  String get tidesInstalledPacks;
+
+  /// No description provided for @tidesNoPacksInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'No coastal packs installed yet. Download a region below.'**
+  String get tidesNoPacksInstalled;
+
+  /// No description provided for @tidesPackMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{stations} stations · {size} · {date}'**
+  String tidesPackMeta(int stations, String size, String date);
+
+  /// No description provided for @tidesGetCoastalPacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Get coastal packs'**
+  String get tidesGetCoastalPacks;
+
+  /// No description provided for @tidesGetCoastalPacksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Imports up to ~80 NOAA tide-prediction stations in the region. May take several minutes.'**
+  String get tidesGetCoastalPacksHint;
+
+  /// No description provided for @tidesDownloadPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get tidesDownloadPack;
+
+  /// No description provided for @tidesImportInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading coastal pack from NOAA…'**
+  String get tidesImportInProgress;
+
+  /// No description provided for @tidesImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed “{name}” with {stations} stations.'**
+  String tidesImportSuccess(String name, int stations);
+
+  /// No description provided for @tidesImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: {error}'**
+  String tidesImportFailed(String error);
+
+  /// No description provided for @tidesActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Tide action failed: {error}'**
+  String tidesActionFailed(String error);
+
+  /// No description provided for @tidesDeletePack.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete pack'**
+  String get tidesDeletePack;
+
+  /// No description provided for @tidesDeletePackConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete coastal pack “{name}” from the server?'**
+  String tidesDeletePackConfirm(String name);
+
+  /// No description provided for @tidesRegionBbox.
+  ///
+  /// In en, this message translates to:
+  /// **'{minLat}°, {minLng}° → {maxLat}°, {maxLng}°'**
+  String tidesRegionBbox(
+    String minLat,
+    String minLng,
+    String maxLat,
+    String maxLng,
+  );
+
+  /// No description provided for @tidesOpenFromEvac.
+  ///
+  /// In en, this message translates to:
+  /// **'Tide tables at route'**
+  String get tidesOpenFromEvac;
 
   /// No description provided for @sunMoonTitle.
   ///

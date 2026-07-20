@@ -17,6 +17,7 @@ import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/presentation/create_range_ring.dart';
 import '../../sun_moon/presentation/create_sun_moon.dart';
+import '../../tides/presentation/create_tide_tables.dart';
 import '../../circles/presentation/map_circle_layer.dart';
 import '../../circles/providers/circle_drawing_provider.dart';
 import '../../circles/utils/circle_hit_test.dart';
@@ -2988,7 +2989,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             final route = _editingEvacRoute();
             final onCurrentRoute = route != null &&
                 isNearEvacRouteSegment(
-                  waypoints: route.waypoints,
+                  route: route,
                   tap: point,
                   camera: _mapController.camera,
                 );
@@ -3317,6 +3318,29 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(slopeProvider.notifier).reset();
 
     await showSunMoonAtPoint(
+      context: context,
+      ref: ref,
+      selectedMarker: selectedMarker,
+      mapPoint: mapPoint,
+    );
+  }
+
+  Future<void> _beginTideTables() async {
+    final selectedMarker = _selectedMarker();
+    final mapPoint = _radialMenuPoint;
+    _closeRadialMenu();
+
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
+
+    await showTideTablesAtPoint(
       context: context,
       ref: ref,
       selectedMarker: selectedMarker,
@@ -4890,6 +4914,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           label: l10n.mapRadialSunMoon,
                           onSelected: () {
                             unawaited(_beginSunMoon());
+                          },
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.waves,
+                          label: l10n.mapRadialTides,
+                          onSelected: () {
+                            unawaited(_beginTideTables());
                           },
                         ),
                         MapRadialMenuAction(

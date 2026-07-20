@@ -1,5 +1,6 @@
 import '../../circles/models/range_ring.dart';
-import '../../lines/utils/line_distance.dart';
+import '../../lines/models/line_geometry.dart';
+import '../../lines/utils/line_path.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../models/evac_kit_geometry.dart';
 
@@ -33,7 +34,13 @@ double evacPlanningSpeedKmh(TrackTransportationMode mode) {
 }
 
 double evacRouteLengthMeters(EvacRoute route) {
-  return lineLengthMetersForPoints(route.pathPoints);
+  return linePathLengthMeters(
+    LineGeometry(
+      points: route.pathPoints,
+      showArrows: false,
+      pathMode: route.pathMode,
+    ),
+  );
 }
 
 Duration evacRouteDuration({

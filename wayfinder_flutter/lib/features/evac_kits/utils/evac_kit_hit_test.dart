@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../models/evac_kit_geometry.dart';
+import 'evac_kit_path.dart';
 
 /// Returns true when [tap] is near any route polyline in the kit.
 bool isNearEvacKit({
@@ -27,31 +28,25 @@ EvacRoute? findClosestEvacRoute({
   required MapCamera camera,
   double hitRadiusPx = 16,
 }) {
-  final tapOffset = camera.latLngToScreenOffset(tap);
-  final radiusSq = hitRadiusPx * hitRadiusPx;
   EvacRoute? closest;
-  var closestDistSq = radiusSq;
+  var closestDistance = hitRadiusPx;
 
   for (final route in geometry.routes) {
     if (!route.isValid) {
       continue;
     }
-    final points = route.pathPoints;
-    for (var i = 0; i < points.length - 1; i++) {
-      final a = camera.latLngToScreenOffset(points[i]);
-      final b = camera.latLngToScreenOffset(points[i + 1]);
-      final distSq = _distanceToSegmentSq(
-        tapOffset.dx,
-        tapOffset.dy,
-        a.dx,
-        a.dy,
-        b.dx,
-        b.dy,
-      );
-      if (distSq <= closestDistSq) {
-        closestDistSq = distSq;
-        closest = route;
-      }
+    final hit = closestEvacRouteSegment(
+      route: route,
+      tap: tap,
+      camera: camera,
+      hitRadiusPx: hitRadiusPx,
+    );
+    if (hit == null) {
+      continue;
+    }
+    if (closest == null || hit.distancePx < closestDistance) {
+      closestDistance = hit.distancePx;
+      closest = route;
     }
   }
   return closest;

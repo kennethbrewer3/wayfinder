@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/features/evac_kits/models/evac_kit_geometry.dart';
 import 'package:wayfinder_flutter/features/evac_kits/utils/evac_kit_eta.dart';
+import 'package:wayfinder_flutter/features/lines/models/line_geometry.dart';
 import 'package:wayfinder_flutter/features/tracks/models/track_transportation_mode.dart';
 
 void main() {
@@ -65,6 +66,29 @@ void main() {
     );
     expect(duration, const Duration(hours: 2));
     expect(formatEvacDuration(duration), '2h');
+  });
+
+  test('pathMode round-trips through JSON', () {
+    final geometry = EvacKitGeometry(
+      primaryRouteId: 'r1',
+      routes: [
+        EvacRoute(
+          id: 'r1',
+          name: 'Primary',
+          role: EvacRouteRole.primary,
+          pathMode: LinePathMode.smooth,
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0.5)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+          ],
+        ),
+      ],
+    );
+
+    final decoded = EvacKitGeometry.fromJsonString(geometry.encode());
+    expect(decoded, isNotNull);
+    expect(decoded!.primaryRoute!.pathMode, LinePathMode.smooth);
   });
 
   test('primaryOriginWaypoint is the first primary waypoint', () {

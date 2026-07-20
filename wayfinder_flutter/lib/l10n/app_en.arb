@@ -9,6 +9,7 @@
   "settingsTabMapTiles": "Map tiles",
   "settingsTabMarkerIcons": "Marker icons",
   "settingsTabGeocoding": "Geocoding",
+  "settingsTabTides": "Tides",
   "settingsTabBackup": "Backup",
   "settingsTabAbout": "About",
   "settingsAboutTitle": "About Wayfinder",
@@ -1709,7 +1710,180 @@
   "mapRadialSlope": "Slope / cost",
   "mapRadialRangeRing": "Range ring",
   "mapRadialSunMoon": "Sun / moon",
+  "mapRadialTides": "Tides",
   "mapRadialEvacKit": "Evac kit",
+  "tidesTitle": "Tide tables",
+  "tidesSubtitle": "Nearest coastal station from packs on your Wayfinder server — for boat and water crossings.",
+  "tidesLocationLabel": "Location",
+  "tidesAnchorMarker": "Marker",
+  "tidesAnchorHome": "Home",
+  "tidesAnchorMapPoint": "Map point",
+  "tidesDateLabel": "Date",
+  "tidesPickDate": "Pick date",
+  "tidesMissingLocation": "Choose a location to query tides.",
+  "tidesQueryFailed": "Could not load tides: {error}",
+  "@tidesQueryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesApproximateBanner": "Heights are harmonic planning estimates from the installed coastal pack (not live NOAA observations).",
+  "tidesStationHeading": "{name} ({id})",
+  "@tidesStationHeading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesStationMeta": "{distance} away · datum {datum}",
+  "@tidesStationMeta": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "datum": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesExtremesSection": "Highs and lows",
+  "tidesCurveSection": "Tide curve",
+  "tidesNoExtremes": "No high/low extremes found for this day.",
+  "tidesCrossingHint": "Use low-tide windows for fords and high-tide windows for deeper boat passages. Confirm locally before committing.",
+  "tidesExtremeHigh": "High",
+  "tidesExtremeLow": "Low",
+  "tidesHeightMeters": "{value} m",
+  "@tidesHeightMeters": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesHeightFeet": "{value} ft",
+  "@tidesHeightFeet": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceUnknown": "distance unknown",
+  "tidesDistanceMeters": "{value} m",
+  "@tidesDistanceMeters": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceKm": "{value} km",
+  "@tidesDistanceKm": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceFeet": "{value} ft",
+  "@tidesDistanceFeet": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceMiles": "{value} mi",
+  "@tidesDistanceMiles": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesSettingsTitle": "Coastal tide packs",
+  "tidesSettingsSubtitle": "Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline from NOAA’s perspective (server must reach NOAA once to import).",
+  "tidesInstalledPacks": "Installed packs",
+  "tidesNoPacksInstalled": "No coastal packs installed yet. Download a region below.",
+  "tidesPackMeta": "{stations} stations · {size} · {date}",
+  "@tidesPackMeta": {
+    "placeholders": {
+      "stations": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesGetCoastalPacks": "Get coastal packs",
+  "tidesGetCoastalPacksHint": "Imports up to ~80 NOAA tide-prediction stations in the region. May take several minutes.",
+  "tidesDownloadPack": "Download",
+  "tidesImportInProgress": "Downloading coastal pack from NOAA…",
+  "tidesImportSuccess": "Installed “{name}” with {stations} stations.",
+  "@tidesImportSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "stations": {
+        "type": "int"
+      }
+    }
+  },
+  "tidesImportFailed": "Import failed: {error}",
+  "@tidesImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesActionFailed": "Tide action failed: {error}",
+  "@tidesActionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDeletePack": "Delete pack",
+  "tidesDeletePackConfirm": "Delete coastal pack “{name}” from the server?",
+  "@tidesDeletePackConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesRegionBbox": "{minLat}°, {minLng}° → {maxLat}°, {maxLng}°",
+  "@tidesRegionBbox": {
+    "placeholders": {
+      "minLat": {
+        "type": "String"
+      },
+      "minLng": {
+        "type": "String"
+      },
+      "maxLat": {
+        "type": "String"
+      },
+      "maxLng": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesOpenFromEvac": "Tide tables at route",
+
   "sunMoonTitle": "Sun / moon / twilight",
   "sunMoonSubtitle": "Offline sunrise, sunset, twilight, moon phase, and night-ops windows for a place and date.",
   "sunMoonLocationLabel": "Location",

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../../lines/models/line_geometry.dart';
+import '../../lines/utils/line_path.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 
 const evacKitZoneType = 'evac_kit';
@@ -107,6 +109,7 @@ class EvacRoute {
     this.color,
     this.borderPattern = 'solid',
     this.showArrows = true,
+    this.pathMode = LinePathMode.straight,
   });
 
   final String id;
@@ -116,6 +119,7 @@ class EvacRoute {
   final String? color;
   final String borderPattern;
   final bool showArrows;
+  final LinePathMode pathMode;
 
   bool get isValid => waypoints.length >= 2;
 
@@ -131,6 +135,7 @@ class EvacRoute {
     String? color,
     String? borderPattern,
     bool? showArrows,
+    LinePathMode? pathMode,
     bool clearColor = false,
   }) {
     return EvacRoute(
@@ -141,6 +146,7 @@ class EvacRoute {
       color: clearColor ? null : color ?? this.color,
       borderPattern: borderPattern ?? this.borderPattern,
       showArrows: showArrows ?? this.showArrows,
+      pathMode: pathMode ?? this.pathMode,
     );
   }
 
@@ -154,6 +160,8 @@ class EvacRoute {
     if (color != null) 'color': color,
     'borderPattern': borderPattern,
     'showArrows': showArrows,
+    if (pathMode != LinePathMode.straight)
+      'pathMode': linePathModeToJson(pathMode),
   };
 
   static EvacRoute? fromJson(Map<String, dynamic> json) {
@@ -186,6 +194,7 @@ class EvacRoute {
     if (waypoints.length < 2) {
       return null;
     }
+    final pathModeRaw = json['pathMode']?.toString();
     return EvacRoute(
       id: id,
       name: name,
@@ -196,6 +205,9 @@ class EvacRoute {
           ? json['borderPattern'] as String
           : 'solid',
       showArrows: json['showArrows'] != false,
+      pathMode: pathModeRaw == 'smooth'
+          ? LinePathMode.smooth
+          : LinePathMode.straight,
     );
   }
 }
@@ -248,16 +260,12 @@ class EvacKitGeometry {
     if (primary == null || !primary.isValid) {
       return null;
     }
-    final points = primary.pathPoints;
-    final mid = points.length ~/ 2;
-    if (points.length.isOdd) {
-      return points[mid];
-    }
-    final a = points[mid - 1];
-    final b = points[mid];
-    return LatLng(
-      (a.latitude + b.latitude) / 2,
-      (a.longitude + b.longitude) / 2,
+    return linePathMidpoint(
+      LineGeometry(
+        points: primary.pathPoints,
+        showArrows: false,
+        pathMode: primary.pathMode,
+      ),
     );
   }
 

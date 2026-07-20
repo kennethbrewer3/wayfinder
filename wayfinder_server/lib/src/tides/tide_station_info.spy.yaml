@@ -1,0 +1,7 @@
+class: TideStationInfo
+fields:
+  id: String
+  name: String
+  latitude: double
+  longitude: double
+  distanceMeters: double?

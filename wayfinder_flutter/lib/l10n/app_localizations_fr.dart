@@ -27,6 +27,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabGeocoding => 'Géocodage';
 
   @override
+  String get settingsTabTides => 'Marées';
+
+  @override
   String get settingsTabBackup => 'Sauvegarde';
 
   @override
@@ -3034,7 +3037,178 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialSunMoon => 'Soleil / lune';
 
   @override
+  String get mapRadialTides => 'Marées';
+
+  @override
   String get mapRadialEvacKit => 'Kit d\'évacuation';
+
+  @override
+  String get tidesTitle => 'Tables des marées';
+
+  @override
+  String get tidesSubtitle =>
+      'Station côtière la plus proche depuis les packs sur votre serveur Wayfinder — pour passages en bateau.';
+
+  @override
+  String get tidesLocationLabel => 'Lieu';
+
+  @override
+  String get tidesAnchorMarker => 'Repère';
+
+  @override
+  String get tidesAnchorHome => 'Accueil';
+
+  @override
+  String get tidesAnchorMapPoint => 'Point carte';
+
+  @override
+  String get tidesDateLabel => 'Date';
+
+  @override
+  String get tidesPickDate => 'Choisir la date';
+
+  @override
+  String get tidesMissingLocation =>
+      'Choisissez un lieu pour consulter les marées.';
+
+  @override
+  String tidesQueryFailed(String error) {
+    return 'Impossible de charger les marées : $error';
+  }
+
+  @override
+  String get tidesApproximateBanner =>
+      'Hauteurs estimées par harmoniques du pack côtier (pas d\'observations NOAA en direct).';
+
+  @override
+  String tidesStationHeading(String name, String id) {
+    return '$name ($id)';
+  }
+
+  @override
+  String tidesStationMeta(String distance, String datum) {
+    return 'À $distance · datum $datum';
+  }
+
+  @override
+  String get tidesExtremesSection => 'Hautes et basses mers';
+
+  @override
+  String get tidesCurveSection => 'Courbe de marée';
+
+  @override
+  String get tidesNoExtremes => 'Aucun extrême pour ce jour.';
+
+  @override
+  String get tidesCrossingHint =>
+      'Basse mer pour gués, haute mer pour passages plus profonds. Confirmez sur place.';
+
+  @override
+  String get tidesExtremeHigh => 'Haute';
+
+  @override
+  String get tidesExtremeLow => 'Basse';
+
+  @override
+  String tidesHeightMeters(String value) {
+    return '$value m';
+  }
+
+  @override
+  String tidesHeightFeet(String value) {
+    return '$value ft';
+  }
+
+  @override
+  String get tidesDistanceUnknown => 'distance inconnue';
+
+  @override
+  String tidesDistanceMeters(String value) {
+    return '$value m';
+  }
+
+  @override
+  String tidesDistanceKm(String value) {
+    return '$value km';
+  }
+
+  @override
+  String tidesDistanceFeet(String value) {
+    return '$value ft';
+  }
+
+  @override
+  String tidesDistanceMiles(String value) {
+    return '$value mi';
+  }
+
+  @override
+  String get tidesSettingsTitle => 'Packs de marées côtières';
+
+  @override
+  String get tidesSettingsSubtitle =>
+      'Téléchargez des packs harmoniques NOAA sur ce serveur Wayfinder. L\'outil Marées interroge ces packs (le serveur doit joindre NOAA à l\'import).';
+
+  @override
+  String get tidesInstalledPacks => 'Packs installés';
+
+  @override
+  String get tidesNoPacksInstalled =>
+      'Aucun pack. Téléchargez une région ci-dessous.';
+
+  @override
+  String tidesPackMeta(int stations, String size, String date) {
+    return '$stations stations · $size · $date';
+  }
+
+  @override
+  String get tidesGetCoastalPacks => 'Obtenir des packs côtiers';
+
+  @override
+  String get tidesGetCoastalPacksHint =>
+      'Importe jusqu\'à ~80 stations NOAA de la région. Peut prendre plusieurs minutes.';
+
+  @override
+  String get tidesDownloadPack => 'Télécharger';
+
+  @override
+  String get tidesImportInProgress => 'Téléchargement du pack côtier NOAA…';
+
+  @override
+  String tidesImportSuccess(String name, int stations) {
+    return '« $name » installé avec $stations stations.';
+  }
+
+  @override
+  String tidesImportFailed(String error) {
+    return 'Échec de l\'import : $error';
+  }
+
+  @override
+  String tidesActionFailed(String error) {
+    return 'Échec marées : $error';
+  }
+
+  @override
+  String get tidesDeletePack => 'Supprimer le pack';
+
+  @override
+  String tidesDeletePackConfirm(String name) {
+    return 'Supprimer le pack côtier « $name » du serveur ?';
+  }
+
+  @override
+  String tidesRegionBbox(
+    String minLat,
+    String minLng,
+    String maxLat,
+    String maxLng,
+  ) {
+    return '$minLat°, $minLng° → $maxLat°, $maxLng°';
+  }
+
+  @override
+  String get tidesOpenFromEvac => 'Marées sur l\'itinéraire';
 
   @override
   String get sunMoonTitle => 'Soleil / lune / crépuscule';

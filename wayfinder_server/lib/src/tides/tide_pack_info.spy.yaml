@@ -1,0 +1,15 @@
+class: TidePackInfo
+fields:
+  id: String
+  name: String
+  source: String
+  datum: String
+  units: String
+  stationCount: int
+  sizeBytes: int
+  addedAt: DateTime
+  isActive: bool
+  minLatitude: double
+  minLongitude: double
+  maxLatitude: double
+  maxLongitude: double

@@ -1,0 +1,9 @@
+class: TideQueryResult
+fields:
+  station: TideStationInfo
+  datum: String
+  units: String
+  samples: List<TideSample>
+  extremes: List<TideExtreme>
+  approximate: bool
+  message: String?

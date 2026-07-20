@@ -53,6 +53,19 @@ class WayfinderEnv {
         'storage/marker-icons';
   }
 
+  /// Directory containing coastal tide packs (`catalog.json` + pack folders).
+  static String get tidesStoragePath => resolveInitialTidesStoragePath();
+
+  static String resolveInitialTidesStoragePath() {
+    for (final key in ['WAYFINDER_TIDES_STORAGE']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+    return _readDotEnv('WAYFINDER_TIDES_STORAGE') ?? 'storage/tides';
+  }
+
   /// Optional shared secret for `/api` REST requests.
   ///
   /// When set (via process env or `.env`), REST clients must send this value in

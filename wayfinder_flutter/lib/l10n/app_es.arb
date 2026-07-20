@@ -9,6 +9,7 @@
   "settingsTabMapTiles": "Mosaicos del mapa",
   "settingsTabMarkerIcons": "Iconos de marcadores",
   "settingsTabGeocoding": "Geocodificación",
+  "settingsTabTides": "Mareas",
   "settingsTabBackup": "Copia de seguridad",
   "settingsTabAbout": "Acerca de",
   "settingsAboutTitle": "Acerca de Wayfinder",
@@ -1399,7 +1400,179 @@
   "mapRadialSlope": "Pendiente / coste",
   "mapRadialRangeRing": "Anillo de alcance",
   "mapRadialSunMoon": "Sol / luna",
+  "mapRadialTides": "Mareas",
   "mapRadialEvacKit": "Kit de evacuación",
+  "tidesTitle": "Tablas de mareas",
+  "tidesSubtitle": "Estación costera más cercana desde los paquetes en tu servidor Wayfinder — para cruces en barco.",
+  "tidesLocationLabel": "Ubicación",
+  "tidesAnchorMarker": "Marcador",
+  "tidesAnchorHome": "Inicio",
+  "tidesAnchorMapPoint": "Punto del mapa",
+  "tidesDateLabel": "Fecha",
+  "tidesPickDate": "Elegir fecha",
+  "tidesMissingLocation": "Elige una ubicación para consultar mareas.",
+  "tidesQueryFailed": "No se pudieron cargar las mareas: {error}",
+  "@tidesQueryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesApproximateBanner": "Alturas estimadas por armónicos del paquete costero (no son observaciones NOAA en vivo).",
+  "tidesStationHeading": "{name} ({id})",
+  "@tidesStationHeading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesStationMeta": "A {distance} · datum {datum}",
+  "@tidesStationMeta": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "datum": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesExtremesSection": "Pleamares y bajamares",
+  "tidesCurveSection": "Curva de marea",
+  "tidesNoExtremes": "No hay extremos para este día.",
+  "tidesCrossingHint": "Usa bajamar para vados y pleamar para pasos más profundos. Confirma en el lugar.",
+  "tidesExtremeHigh": "Pleamar",
+  "tidesExtremeLow": "Bajamar",
+  "tidesHeightMeters": "{value} m",
+  "@tidesHeightMeters": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesHeightFeet": "{value} ft",
+  "@tidesHeightFeet": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceUnknown": "distancia desconocida",
+  "tidesDistanceMeters": "{value} m",
+  "@tidesDistanceMeters": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceKm": "{value} km",
+  "@tidesDistanceKm": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceFeet": "{value} ft",
+  "@tidesDistanceFeet": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDistanceMiles": "{value} mi",
+  "@tidesDistanceMiles": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesSettingsTitle": "Paquetes de mareas costeras",
+  "tidesSettingsSubtitle": "Descarga paquetes armónicos NOAA a este servidor Wayfinder. La herramienta Mareas consulta esos paquetes (el servidor debe alcanzar NOAA al importar).",
+  "tidesInstalledPacks": "Paquetes instalados",
+  "tidesNoPacksInstalled": "Aún no hay paquetes. Descarga una región abajo.",
+  "tidesPackMeta": "{stations} estaciones · {size} · {date}",
+  "@tidesPackMeta": {
+    "placeholders": {
+      "stations": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesGetCoastalPacks": "Obtener paquetes costeros",
+  "tidesGetCoastalPacksHint": "Importa hasta ~80 estaciones NOAA de la región. Puede tardar varios minutos.",
+  "tidesDownloadPack": "Descargar",
+  "tidesImportInProgress": "Descargando paquete costero de NOAA…",
+  "tidesImportSuccess": "Instalado “{name}” con {stations} estaciones.",
+  "@tidesImportSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "stations": {
+        "type": "int"
+      }
+    }
+  },
+  "tidesImportFailed": "Error de importación: {error}",
+  "@tidesImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesActionFailed": "Error de mareas: {error}",
+  "@tidesActionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesDeletePack": "Eliminar paquete",
+  "tidesDeletePackConfirm": "¿Eliminar el paquete costero “{name}” del servidor?",
+  "@tidesDeletePackConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesRegionBbox": "{minLat}°, {minLng}° → {maxLat}°, {maxLng}°",
+  "@tidesRegionBbox": {
+    "placeholders": {
+      "minLat": {
+        "type": "String"
+      },
+      "minLng": {
+        "type": "String"
+      },
+      "maxLat": {
+        "type": "String"
+      },
+      "maxLng": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesOpenFromEvac": "Mareas en la ruta",
   "sunMoonTitle": "Sol / luna / crepúsculo",
   "sunMoonSubtitle": "Salida y puesta del sol, crepúsculo, fase lunar y ventanas nocturnas sin API, para un lugar y fecha.",
   "sunMoonLocationLabel": "Ubicación",

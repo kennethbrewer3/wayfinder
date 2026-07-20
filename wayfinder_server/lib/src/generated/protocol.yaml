@@ -74,6 +74,13 @@ appSettings:
   - createRestApiKey:
   - deleteRestApiKey:
   - clearRestApiKeys:
+tides:
+  - listPacks:
+  - listCoastalRegions:
+  - importCoastalRegion:
+  - setPackActive:
+  - deletePack:
+  - queryAt:
 mapZone:
   - listZones:
   - getZone:

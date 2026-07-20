@@ -1,0 +1,15 @@
+---
+description: Always format and analyze Dart before committing or pushing
+alwaysApply: true
+---
+
+# Dart format and analyze before commit/push
+
+Before any `git commit` or `git push` that includes Dart changes:
+
+1. Run `dart format` on the packages you touched (at minimum `wayfinder_server`; also Flutter/client if those changed).
+2. Run `dart analyze --fatal-infos` in `wayfinder_server` (CI Analyze workflow uses this and fails on warnings/infos).
+3. Fix any analyze issues, then format again if needed.
+4. Only then stage, commit, and push.
+
+Do not rely on a previous format from earlier in the session — re-run format on the final diff before committing.

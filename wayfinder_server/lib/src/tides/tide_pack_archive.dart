@@ -140,10 +140,7 @@ Uint8List? _readArchiveFile(Archive archive, String fileName) {
     final name = file.name.replaceAll('\\', '/');
     final base = name.split('/').last;
     if (base == fileName || name == fileName) {
-      final content = file.content;
-      if (content is List<int>) {
-        return Uint8List.fromList(content);
-      }
+      return Uint8List.fromList(file.content);
     }
   }
   return null;

@@ -69,11 +69,13 @@ class EvacKitDrawingNotifier extends StateNotifier<EvacKitDrawingState> {
   void beginAlternate({
     required UuidValue kitId,
     required String kitName,
+    EvacWaypoint? firstWaypoint,
   }) {
     state = EvacKitDrawingState(
       active: true,
       existingKitId: kitId,
       existingKitName: kitName,
+      waypoints: firstWaypoint == null ? const [] : [firstWaypoint],
     );
   }
 

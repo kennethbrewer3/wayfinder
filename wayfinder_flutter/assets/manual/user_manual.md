@@ -375,14 +375,14 @@ Evac route kits store a primary escape route plus optional alternates, with plan
 
 ### Draw an evac kit
 
-1. Long-press → **More** → **Evac kit**. If a marker is selected, it becomes the first waypoint.
+1. Optionally **select a marker** on the map or in the sidebar (it stays selected). Long-press → **More** → **Evac kit**. The selected marker becomes waypoint **1**; otherwise the long-press point is used.
 2. **Tap** the map to add free waypoints, or **tap markers** to snap waypoints to them. A dashed preview follows the cursor.
 3. **Double-tap** or tap **Finish** when you have at least two waypoints (banner **Undo** removes the last point).
 4. Complete the form with name, primary route name, default travel mode, color, layer, and notes.
 
 ### Alternate routes
 
-Open kit details → **Add alternate route**, then draw another path the same way. Alternates appear dashed on the map. Remove an alternate from the details dialog (the primary route cannot be removed this way).
+Open kit details → **Add alternate route**. Drawing starts at the same origin as the primary (waypoint **1**); tap additional waypoints for the alternate path. Alternates appear dashed on the map. Remove an alternate from the details dialog (the primary route cannot be removed this way).
 
 ETAs use planning speeds (for example on foot ≈ 5 km/h). They are estimates, not live traffic or terrain routing.
 

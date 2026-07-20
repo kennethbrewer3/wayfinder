@@ -228,6 +228,15 @@ class EvacKitGeometry {
     return routes.isEmpty ? null : routes.first;
   }
 
+  /// First waypoint of the primary route — shared origin for alternates.
+  EvacWaypoint? get primaryOriginWaypoint {
+    final primary = primaryRoute;
+    if (primary == null || primary.waypoints.isEmpty) {
+      return null;
+    }
+    return primary.waypoints.first;
+  }
+
   List<EvacRoute> get alternateRoutes => [
     for (final route in routes)
       if (route.id != primaryRouteId) route,

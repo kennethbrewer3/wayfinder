@@ -2867,7 +2867,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _beginEvacKit() {
+    // Capture before close — radial dismiss clears [_radialMenuPoint].
     final selectedMarker = _selectedMarker();
+    final radialPoint = _radialMenuPoint;
     _closeRadialMenu();
     ref.read(selectedMapObjectProvider.notifier).clear();
     ref.read(lineDrawingProvider.notifier).reset();
@@ -2879,7 +2881,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
 
-    EvacWaypoint? firstWaypoint;
+    // Prefer a selected marker (linked waypoint); otherwise seed from the
+    // long-press point so the route does not start empty.
+    final EvacWaypoint? firstWaypoint;
     if (selectedMarker != null) {
       firstWaypoint = EvacWaypoint(
         kind: EvacWaypointKind.marker,
@@ -2887,6 +2891,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         markerId: selectedMarker.id.toString(),
         label: selectedMarker.name,
       );
+    } else if (radialPoint != null) {
+      firstWaypoint = EvacWaypoint(
+        kind: EvacWaypointKind.point,
+        point: radialPoint,
+      );
+    } else {
+      firstWaypoint = null;
     }
     ref
         .read(evacKitDrawingProvider.notifier)
@@ -4145,6 +4156,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 when _radialMenuPoint != null)
               MapRadialMenu(
                 center: center,
+                onDismiss: _closeRadialMenu,
                 actions: _radialMenuPage == 0
                     ? [
                         MapRadialMenuAction(
@@ -4228,6 +4240,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 when _searchCoordinateRadialMarker != null)
               MapRadialMenu(
                 center: center,
+                onDismiss: _closeRadialMenu,
                 actions: [
                   MapRadialMenuAction(
                     icon: Icons.add_location_alt,

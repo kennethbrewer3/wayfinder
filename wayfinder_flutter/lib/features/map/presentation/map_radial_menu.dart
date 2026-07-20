@@ -20,6 +20,7 @@ class MapRadialMenu extends StatelessWidget {
     required this.center,
     required this.actions,
     this.footerAction,
+    this.onDismiss,
   });
 
   final Offset center;
@@ -27,6 +28,10 @@ class MapRadialMenu extends StatelessWidget {
 
   /// Always placed at the bottom of the ring (e.g. More / Back).
   final MapRadialMenuAction? footerAction;
+
+  /// Called when the dimmed backdrop is tapped. Must absorb the hit so the
+  /// map underneath does not also treat it as a selection-clearing tap.
+  final VoidCallback? onDismiss;
 
   static const _buttonSize = 48.0;
   static const _labelWidth = 84.0;
@@ -49,21 +54,29 @@ class MapRadialMenu extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        IgnorePointer(
-          child: ColoredBox(
-            color: Colors.black.withValues(alpha: 0.12),
+        // Absorb backdrop taps so they dismiss the menu without falling
+        // through to the map (which would clear a selected marker).
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onDismiss,
+            child: ColoredBox(
+              color: Colors.black.withValues(alpha: 0.12),
+            ),
           ),
         ),
         Positioned(
           left: center.dx - 6,
           top: center.dy - 6,
-          child: Container(
-            width: 12,
-            height: 12,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.colorScheme.primary,
-              border: Border.all(color: Colors.white, width: 2),
+          child: IgnorePointer(
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.colorScheme.primary,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
             ),
           ),
         ),
@@ -141,53 +154,59 @@ class _RadialMenuButton extends StatelessWidget {
       width: labelWidth,
       child: Tooltip(
         message: action.label,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              child: Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(buttonSize / 2),
-                color: theme.colorScheme.surface,
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  onTap: action.onSelected,
-                  borderRadius: BorderRadius.circular(buttonSize / 2),
-                  child: SizedBox(
-                    width: buttonSize,
-                    height: buttonSize,
-                    child: Icon(
-                      action.icon,
-                      size: 24,
-                      color: theme.colorScheme.primary,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: action.onSelected,
+            borderRadius: BorderRadius.circular(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  child: Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(buttonSize / 2),
+                    color: theme.colorScheme.surface,
+                    clipBehavior: Clip.antiAlias,
+                    child: SizedBox(
+                      width: buttonSize,
+                      height: buttonSize,
+                      child: Icon(
+                        action.icon,
+                        size: 24,
+                        color: theme.colorScheme.primary,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface.withValues(alpha: 0.92),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                child: Text(
-                  action.label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontSize: 10,
-                    height: 1.15,
-                    fontWeight: FontWeight.w600,
+                const SizedBox(height: 4),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: Text(
+                      action.label,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontSize: 10,
+                        height: 1.15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

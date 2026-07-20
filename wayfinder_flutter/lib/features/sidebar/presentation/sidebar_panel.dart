@@ -1097,7 +1097,9 @@ class _MarkerListTile extends ConsumerWidget {
         children: [
           InkWell(
             onTap: () {
-              ref.read(selectedMapObjectProvider.notifier).clear();
+              ref
+                  .read(selectedMapObjectProvider.notifier)
+                  .selectMarker(marker.id, openDetails: false);
               onZoomTo(LatLng(marker.latitude, marker.longitude));
             },
             child: Padding(

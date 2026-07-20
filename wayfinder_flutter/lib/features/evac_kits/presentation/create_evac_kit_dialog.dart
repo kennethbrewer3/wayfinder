@@ -23,6 +23,9 @@ import '../utils/evac_kit_eta.dart';
 import 'evac_kit_form_dialog.dart';
 
 /// Resets other map tools and starts alternate-route drawing for [zone].
+///
+/// Seeds waypoint 1 from the primary route origin so alternates share the
+/// same start (marker or point).
 void beginEvacKitAlternateDrawing({
   required WidgetRef ref,
   required MapZone zone,
@@ -36,9 +39,16 @@ void beginEvacKitAlternateDrawing({
   ref.read(deadReckoningProvider.notifier).reset();
   ref.read(viewshedProvider.notifier).reset();
   ref.read(slopeProvider.notifier).reset();
+
+  final geometry = EvacKitGeometry.fromZone(zone);
+  final origin = geometry?.primaryOriginWaypoint;
   ref
       .read(evacKitDrawingProvider.notifier)
-      .beginAlternate(kitId: zone.id, kitName: zone.name);
+      .beginAlternate(
+        kitId: zone.id,
+        kitName: zone.name,
+        firstWaypoint: origin,
+      );
 }
 
 Future<bool> createEvacKitFromWaypoints({

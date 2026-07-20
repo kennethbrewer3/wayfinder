@@ -66,4 +66,34 @@ void main() {
     expect(duration, const Duration(hours: 2));
     expect(formatEvacDuration(duration), '2h');
   });
+
+  test('primaryOriginWaypoint is the first primary waypoint', () {
+    final routeId = 'route_primary';
+    final origin = EvacWaypoint(
+      kind: EvacWaypointKind.marker,
+      point: const LatLng(38.1, -78.5),
+      markerId: 'home',
+      label: 'Home',
+    );
+    final geometry = EvacKitGeometry(
+      primaryRouteId: routeId,
+      routes: [
+        EvacRoute(
+          id: routeId,
+          name: 'Primary',
+          role: EvacRouteRole.primary,
+          waypoints: [
+            origin,
+            const EvacWaypoint(
+              kind: EvacWaypointKind.point,
+              point: LatLng(38.2, -78.4),
+            ),
+          ],
+        ),
+      ],
+    );
+
+    expect(geometry.primaryOriginWaypoint?.markerId, 'home');
+    expect(geometry.primaryOriginWaypoint?.label, 'Home');
+  });
 }

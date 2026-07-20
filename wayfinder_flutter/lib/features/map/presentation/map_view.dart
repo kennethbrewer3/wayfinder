@@ -1256,7 +1256,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _pendingPolygonVertexIndex = null;
   }
 
-  void _startPolygonVertexLongPress(int index, Offset local, LatLng point) {
+  void _startPolygonVertexLongPressRemove(int index) {
     _cancelPolygonVertexLongPress();
     _cancelPendingLongPress();
     _pendingPolygonVertexIndex = index;
@@ -1269,8 +1269,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       if (pending != index) {
         return;
       }
+      // Held still long enough — remove instead of dragging.
       _longPressTriggered = true;
-      _armPolygonVertexEdit(index);
+      _removePolygonVertexAtIndex(index);
+      _resetPolygonEditGestureState(keepEditMode: true);
     });
   }
 
@@ -1805,11 +1807,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final polygonVertexIndex = _polygonVertexIndexAt(point);
     if (polygonVertexIndex != null) {
-      _startPolygonVertexLongPress(
-        polygonVertexIndex,
-        event.localPosition,
-        point,
-      );
+      // Drag immediately (like line vertices); long-hold still removes.
+      _armPolygonVertexEdit(polygonVertexIndex);
+      _startPolygonVertexLongPressRemove(polygonVertexIndex);
       return;
     }
 
@@ -2040,8 +2040,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (_draggingPolygonVertexIndex != null) {
-      // Drag is armed only after a long-press, so always commit on release.
-      unawaited(_commitPolygonVertexDrag(point));
+      _cancelPolygonVertexLongPress();
+      if (_isShortPress(event)) {
+        // Quick tap — do not move or remove.
+        _resetPolygonEditGestureState(keepEditMode: true);
+      } else {
+        unawaited(_commitPolygonVertexDrag(point));
+      }
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
@@ -2050,15 +2055,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (_pendingPolygonVertexIndex != null) {
-      final controlIndex = _pendingPolygonVertexIndex!;
+      // Long-press remove already handled in the timer, or was cancelled.
       _cancelPolygonVertexLongPress();
-      if (_isShortPress(event) &&
-          _registerControlPointTap(
-            index: controlIndex,
-            local: event.localPosition,
-          )) {
-        _removePolygonVertexAtIndex(controlIndex);
-      }
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
@@ -2331,11 +2329,22 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           return;
         }
         if (zone?.type == polygonZoneType) {
+          final local = _selectionPointerDownLocal ?? Offset.zero;
           if (_polygonVertexEditActive) {
-            unawaited(_insertPolygonVertexAt(point));
+            // Double-click between vertices (on an edge) inserts a point.
+            final geometry = _selectedPolygonGeometry();
+            final onEdge = geometry != null &&
+                _polygonVertexIndexAt(point) == null &&
+                isNearPolygonEdge(
+                  geometry: geometry,
+                  tap: point,
+                  camera: _mapController.camera,
+                );
+            if (onEdge && _registerPolygonBodyDoubleTap(local)) {
+              unawaited(_insertPolygonVertexAt(point));
+            }
             return;
           }
-          final local = _selectionPointerDownLocal ?? Offset.zero;
           if (_registerPolygonBodyDoubleTap(local)) {
             _enterPolygonVertexEdit();
             return;
@@ -3847,11 +3856,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           onSelected: _beginLineDrawing,
                         ),
                         MapRadialMenuAction(
-                          icon: Icons.directions_walk,
-                          label: l10n.mapRadialDeadReckoning,
-                          onSelected: _beginDeadReckoning,
-                        ),
-                        MapRadialMenuAction(
                           icon: Icons.radio_button_unchecked,
                           label: l10n.mapRadialCircle,
                           onSelected: _beginCircleDrawing,
@@ -3871,11 +3875,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           label: l10n.mapRadialPolygon,
                           onSelected: _beginPolygonDrawing,
                         ),
-                        MapRadialMenuAction(
-                          icon: Icons.copy,
-                          label: l10n.mapRadialCopyCoordinates,
-                          onSelected: _copyRadialMenuCoordinates,
-                        ),
                       ]
                     : [
                         MapRadialMenuAction(
@@ -3887,6 +3886,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           icon: Icons.terrain,
                           label: l10n.mapRadialSlope,
                           onSelected: _beginSlope,
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.directions_walk,
+                          label: l10n.mapRadialDeadReckoning,
+                          onSelected: _beginDeadReckoning,
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.copy,
+                          label: l10n.mapRadialCopyCoordinates,
+                          onSelected: _copyRadialMenuCoordinates,
                         ),
                       ],
                 footerAction: _radialMenuPage == 0

@@ -50,11 +50,26 @@ class _PolygonEdgeHit {
   final LatLng projected;
 }
 
+bool isNearPolygonEdge({
+  required PolygonGeometry geometry,
+  required LatLng tap,
+  required MapCamera camera,
+  double hitRadiusPx = 22,
+}) {
+  return _closestPolygonEdge(
+        geometry: geometry,
+        tap: tap,
+        camera: camera,
+        hitRadiusPx: hitRadiusPx,
+      ) !=
+      null;
+}
+
 _PolygonEdgeHit? _closestPolygonEdge({
   required PolygonGeometry geometry,
   required LatLng tap,
   required MapCamera camera,
-  double hitRadiusPx = 16,
+  double hitRadiusPx = 22,
 }) {
   final points = geometry.points;
   if (points.length < 3) {

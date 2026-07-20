@@ -70,7 +70,7 @@ class MapRadialMenu extends StatelessWidget {
         for (var index = 0; index < actions.length; index++)
           _RadialMenuButton(
             action: actions[index],
-            angle: _angleForMainIndex(index, actions.length),
+            angle: _angleForIndex(index, totalCount),
             radius: radius,
             buttonSize: _buttonSize,
             labelWidth: _labelWidth,
@@ -89,27 +89,24 @@ class MapRadialMenu extends StatelessWidget {
     );
   }
 
-  /// Horseshoe arc through the top, leaving the bottom for [footerAction].
-  double _angleForMainIndex(int index, int count) {
-    if (count <= 0) {
+  /// Even spacing around the full circle for every visible item.
+  ///
+  /// When [footerAction] is set it occupies the bottom slot (`π/2`); the
+  /// remaining actions fill the other slots in order, clockwise from bottom.
+  double _angleForIndex(int index, int totalCount) {
+    if (totalCount <= 0) {
       return -math.pi / 2;
     }
     if (footerAction == null) {
-      if (count == 1) {
+      if (totalCount == 1) {
         return -math.pi / 2;
       }
-      final startAngle = -math.pi / 2;
-      final sweep = (2 * math.pi) / count;
-      return startAngle + sweep * index;
+      // Start at top, even spacing.
+      return -math.pi / 2 + (2 * math.pi * index) / totalCount;
     }
-    if (count == 1) {
-      return -math.pi / 2;
-    }
-    // From ~-153° through top to ~+153°, gap at bottom for footer.
-    const start = -math.pi * 0.85;
-    const end = math.pi * 0.85;
-    final t = index / (count - 1);
-    return start + (end - start) * t;
+    // Footer is the last slot at bottom; main items use slots 0..n-1 after it.
+    final step = (2 * math.pi) / totalCount;
+    return _footerAngle + step * (index + 1);
   }
 }
 

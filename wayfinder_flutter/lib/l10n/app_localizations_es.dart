@@ -3023,7 +3023,221 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapRadialRangeRing => 'Anillo de alcance';
 
   @override
+  String get mapRadialSunMoon => 'Sol / luna';
+
+  @override
   String get mapRadialEvacKit => 'Kit de evacuación';
+
+  @override
+  String get sunMoonTitle => 'Sol / luna / crepúsculo';
+
+  @override
+  String get sunMoonSubtitle =>
+      'Salida y puesta del sol, crepúsculo, fase lunar y ventanas nocturnas sin API, para un lugar y fecha.';
+
+  @override
+  String get sunMoonLocationLabel => 'Ubicación';
+
+  @override
+  String get sunMoonAnchorMarker => 'Marcador';
+
+  @override
+  String get sunMoonAnchorHome => 'Inicio';
+
+  @override
+  String get sunMoonAnchorMapPoint => 'Punto del mapa';
+
+  @override
+  String get sunMoonDateLabel => 'Fecha';
+
+  @override
+  String get sunMoonPickDate => 'Elegir fecha';
+
+  @override
+  String get sunMoonTimezoneSection => 'Zona horaria';
+
+  @override
+  String get sunMoonTimezoneHint =>
+      'Convierte las horas con horario estándar o de verano. Auto sigue las reglas IANA DST de la fecha.';
+
+  @override
+  String get sunMoonTimeBaseLabel => 'Mostrar horas como';
+
+  @override
+  String get sunMoonTimeBaseZone => 'Zona';
+
+  @override
+  String get sunMoonTimeBaseDevice => 'Dispositivo';
+
+  @override
+  String get sunMoonTimeBaseUtc => 'UTC';
+
+  @override
+  String get sunMoonZoneLabel => 'Zona';
+
+  @override
+  String sunMoonZoneLongitude(String iana) {
+    return 'Por longitud ($iana)';
+  }
+
+  @override
+  String get sunMoonDstLabel => 'Ajuste DST';
+
+  @override
+  String get sunMoonDstAuto => 'Auto';
+
+  @override
+  String get sunMoonDstStandard => 'Estándar';
+
+  @override
+  String get sunMoonDstDaylight => 'Verano';
+
+  @override
+  String get sunMoonDstAutoHint =>
+      'Usar las reglas DST de la zona en cada evento';
+
+  @override
+  String get sunMoonDstStandardHint => 'Forzar el desfase estándar (sin DST)';
+
+  @override
+  String get sunMoonDstDaylightHint => 'Forzar el desfase de horario de verano';
+
+  @override
+  String get sunMoonDstNoDstHint =>
+      'Esta zona no tiene reglas IANA DST. Verano aplica +1 hora de planificación al horario estándar.';
+
+  @override
+  String get sunMoonTzSummaryUtc => 'Mostrando UTC';
+
+  @override
+  String sunMoonTzSummaryDevice(String name, String offset) {
+    return 'Dispositivo · $name · $offset';
+  }
+
+  @override
+  String sunMoonTzSummaryZone(
+    String iana,
+    String abbr,
+    String offset,
+    String dst,
+  ) {
+    return '$iana · $abbr · $offset · $dst';
+  }
+
+  @override
+  String sunMoonTimeUtc(String time) {
+    return '$time UTC';
+  }
+
+  @override
+  String get sunMoonMissingLocation => 'Elige una ubicación para calcular.';
+
+  @override
+  String get sunMoonNotApplicable => '—';
+
+  @override
+  String get sunMoonPolarDay => 'Día polar: el sol no se pone en esta fecha.';
+
+  @override
+  String get sunMoonPolarNight => 'Noche polar: el sol no sale en esta fecha.';
+
+  @override
+  String get sunMoonSunSection => 'Sol';
+
+  @override
+  String get sunMoonSunrise => 'Salida del sol';
+
+  @override
+  String get sunMoonSolarNoon => 'Mediodía solar';
+
+  @override
+  String get sunMoonSunset => 'Puesta del sol';
+
+  @override
+  String get sunMoonTwilightSection => 'Crepúsculo';
+
+  @override
+  String get sunMoonCivilDawn => 'Alba civil';
+
+  @override
+  String get sunMoonCivilDusk => 'Ocaso civil';
+
+  @override
+  String get sunMoonNauticalDawn => 'Alba náutica';
+
+  @override
+  String get sunMoonNauticalDusk => 'Ocaso náutico';
+
+  @override
+  String get sunMoonAstronomicalDawn => 'Alba astronómica';
+
+  @override
+  String get sunMoonAstronomicalDusk => 'Ocaso astronómico';
+
+  @override
+  String get sunMoonNightOpsSection => 'Operaciones nocturnas';
+
+  @override
+  String get sunMoonNightOpsHint =>
+      'Del ocaso náutico al siguiente alba náutica (sol a 12° o más bajo el horizonte).';
+
+  @override
+  String get sunMoonNightOpsStart => 'Inicio de oscuridad';
+
+  @override
+  String get sunMoonNightOpsEnd => 'Fin de oscuridad';
+
+  @override
+  String get sunMoonMoonSection => 'Luna';
+
+  @override
+  String get sunMoonPhaseLabel => 'Fase';
+
+  @override
+  String get sunMoonPhaseNew => 'Luna nueva';
+
+  @override
+  String get sunMoonPhaseWaxingCrescent => 'Creciente';
+
+  @override
+  String get sunMoonPhaseFirstQuarter => 'Cuarto creciente';
+
+  @override
+  String get sunMoonPhaseWaxingGibbous => 'Gibosa creciente';
+
+  @override
+  String get sunMoonPhaseFull => 'Luna llena';
+
+  @override
+  String get sunMoonPhaseWaningGibbous => 'Gibosa menguante';
+
+  @override
+  String get sunMoonPhaseLastQuarter => 'Cuarto menguante';
+
+  @override
+  String get sunMoonPhaseWaningCrescent => 'Menguante';
+
+  @override
+  String get sunMoonIlluminationLabel => 'Iluminación';
+
+  @override
+  String sunMoonIlluminationValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get sunMoonAgeLabel => 'Edad';
+
+  @override
+  String sunMoonAgeValue(String days) {
+    return '$days días';
+  }
+
+  @override
+  String get sunMoonMoonrise => 'Salida de la luna';
+
+  @override
+  String get sunMoonMoonset => 'Puesta de la luna';
 
   @override
   String get rangeRingTitle => 'Anillo de alcance';
@@ -3515,6 +3729,33 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get evacKitRemoveAlternateConfirm =>
       '¿Quitar esta ruta alternativa del kit?';
+
+  @override
+  String get evacKitRemoveRoute => 'Quitar ruta';
+
+  @override
+  String get evacKitRemovePrimaryConfirm =>
+      '¿Quitar la ruta principal? Elige qué alternativa será la nueva principal.';
+
+  @override
+  String evacKitRemovePrimarySingleConfirm(String name) {
+    return '¿Quitar la ruta principal? “$name” pasará a ser la principal.';
+  }
+
+  @override
+  String get evacKitChooseNewPrimary => 'Nueva ruta principal';
+
+  @override
+  String get evacKitMakePrimary => 'Hacer principal';
+
+  @override
+  String evacKitMakePrimaryConfirm(String name) {
+    return '¿Hacer “$name” la ruta principal? La actual pasará a ser alternativa.';
+  }
+
+  @override
+  String get evacKitCannotRemoveLastRoute =>
+      'Un kit debe conservar al menos una ruta.';
 
   @override
   String get evacKitEditRouteOnMap => 'Editar ruta en el mapa';

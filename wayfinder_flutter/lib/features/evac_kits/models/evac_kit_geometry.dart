@@ -289,16 +289,77 @@ class EvacKitGeometry {
     return copyWith(routes: next);
   }
 
-  EvacKitGeometry withoutRoute(String routeId) {
+  /// Promotes [routeId] to primary; former primary becomes an alternate.
+  EvacKitGeometry withPrimaryRoute(String routeId) {
+    if (!routes.any((route) => route.id == routeId)) {
+      return this;
+    }
     if (routeId == primaryRouteId) {
       return this;
     }
-    return copyWith(
-      routes: [
-        for (final route in routes)
-          if (route.id != routeId) route,
-      ],
-    );
+    final updatedRoutes = [
+      for (final route in routes)
+        if (route.id == routeId)
+          route.copyWith(
+            role: EvacRouteRole.primary,
+            borderPattern: 'solid',
+          )
+        else if (route.id == primaryRouteId)
+          route.copyWith(
+            role: EvacRouteRole.alternate,
+            borderPattern: 'dashed',
+          )
+        else
+          route,
+    ];
+    return copyWith(routes: updatedRoutes, primaryRouteId: routeId);
+  }
+
+  /// Removes [routeId]. For the primary, pass [newPrimaryRouteId] (or the
+  /// first remaining alternate is promoted). Cannot remove the last route.
+  EvacKitGeometry? withoutRoute(
+    String routeId, {
+    String? newPrimaryRouteId,
+  }) {
+    if (routes.length <= 1) {
+      return null;
+    }
+    if (!routes.any((route) => route.id == routeId)) {
+      return null;
+    }
+
+    final remaining = [
+      for (final route in routes)
+        if (route.id != routeId) route,
+    ];
+    if (remaining.isEmpty) {
+      return null;
+    }
+
+    if (routeId != primaryRouteId) {
+      return copyWith(routes: remaining);
+    }
+
+    final promoteId = newPrimaryRouteId != null &&
+            remaining.any((route) => route.id == newPrimaryRouteId)
+        ? newPrimaryRouteId
+        : remaining.first.id;
+    final updated = [
+      for (final route in remaining)
+        if (route.id == promoteId)
+          route.copyWith(
+            role: EvacRouteRole.primary,
+            borderPattern: 'solid',
+          )
+        else if (route.role == EvacRouteRole.primary)
+          route.copyWith(
+            role: EvacRouteRole.alternate,
+            borderPattern: 'dashed',
+          )
+        else
+          route,
+    ];
+    return copyWith(routes: updated, primaryRouteId: promoteId);
   }
 
   Map<String, dynamic> toJson() => {

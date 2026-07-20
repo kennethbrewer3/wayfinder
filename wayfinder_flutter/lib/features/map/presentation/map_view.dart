@@ -16,6 +16,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/presentation/create_range_ring.dart';
+import '../../sun_moon/presentation/create_sun_moon.dart';
 import '../../circles/presentation/map_circle_layer.dart';
 import '../../circles/providers/circle_drawing_provider.dart';
 import '../../circles/utils/circle_hit_test.dart';
@@ -1512,16 +1513,37 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return false;
   }
 
-  void _enterEvacKitRouteEdit({String? routeId}) {
+  void _enterEvacKitRouteEdit({String? routeId, LatLng? atPoint}) {
     final zone = _selectedEvacKitZone();
     if (zone == null) {
       return;
     }
+    _enterEvacKitRouteEditForZone(zone: zone, routeId: routeId, atPoint: atPoint);
+  }
+
+  void _enterEvacKitRouteEditForZone({
+    required MapZone zone,
+    String? routeId,
+    LatLng? atPoint,
+  }) {
     final geometry = EvacKitGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
       return;
     }
-    final targetRouteId = routeId ?? geometry.primaryRouteId;
+    var targetRouteId = routeId ?? geometry.primaryRouteId;
+    if (routeId == null && atPoint != null) {
+      final closest = findClosestEvacRoute(
+        geometry: geometry,
+        tap: atPoint,
+        camera: _mapController.camera,
+      );
+      if (closest != null) {
+        targetRouteId = closest.id;
+      }
+    }
+    if (!geometry.routes.any((route) => route.id == targetRouteId)) {
+      targetRouteId = geometry.primaryRouteId;
+    }
     _exitPolygonVertexEdit();
     setState(() {
       _evacKitRouteEditActive = true;
@@ -1530,6 +1552,25 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _selectedEvacWaypointIndex = null;
       _evacKitExtending = false;
       _evacKitExtendPreviewPoint = null;
+    });
+  }
+
+  void _switchEvacKitEditingRoute(String routeId) {
+    if (!_evacKitRouteEditActive || _evacKitEditingRouteId == routeId) {
+      return;
+    }
+    final geometry = _selectedEvacKitGeometry();
+    if (geometry == null ||
+        !geometry.routes.any((route) => route.id == routeId)) {
+      return;
+    }
+    _cancelEvacWaypointLongPress();
+    setState(() {
+      _evacKitEditingRouteId = routeId;
+      _selectedEvacWaypointIndex = null;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+      _draggingEvacWaypointIndex = null;
     });
   }
 
@@ -2642,6 +2683,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Widget _evacKitEditingBanner() {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final geometry = _selectedEvacKitGeometry();
+    final routes = geometry?.routes ?? const <EvacRoute>[];
+    final editingId = _evacKitEditingRouteId;
     return Material(
       elevation: 2,
       color: theme.colorScheme.inverseSurface,
@@ -2649,31 +2693,64 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.route,
-                color: theme.colorScheme.onInverseSurface,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  _evacKitExtending
-                      ? l10n.evacKitExtendingHint
-                      : l10n.evacKitEditingHint,
-                  style: theme.textTheme.bodyMedium?.copyWith(
+              Row(
+                children: [
+                  Icon(
+                    Icons.route,
                     color: theme.colorScheme.onInverseSurface,
-                    fontWeight: FontWeight.w600,
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _evacKitExtending
+                          ? l10n.evacKitExtendingHint
+                          : l10n.evacKitEditingHint,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onInverseSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _handleEvacKitEditDone,
+                    child: Text(
+                      l10n.actionDone,
+                      style: TextStyle(
+                        color: theme.colorScheme.inversePrimary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: _handleEvacKitEditDone,
-                child: Text(
-                  l10n.actionDone,
-                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+              if (routes.length > 1) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    for (final route in routes)
+                      ChoiceChip(
+                        label: Text(
+                          route.id == geometry?.primaryRouteId
+                              ? '${route.name} (${l10n.evacKitPrimaryBadge})'
+                              : route.name,
+                        ),
+                        selected: route.id == editingId,
+                        onSelected: _evacKitExtending
+                            ? null
+                            : (selected) {
+                                if (selected) {
+                                  _switchEvacKitEditingRoute(route.id);
+                                }
+                              },
+                      ),
+                  ],
                 ),
-              ),
+              ],
             ],
           ),
         ),
@@ -2839,7 +2916,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             final local = _selectionPointerDownLocal ?? Offset.zero;
             _selectMapObject(hit);
             if (_registerEvacKitBodyDoubleTap(local)) {
-              _enterEvacKitRouteEdit();
+              _enterEvacKitRouteEdit(atPoint: point);
             }
             return;
           }
@@ -2909,19 +2986,33 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               return;
             }
             final route = _editingEvacRoute();
-            if (route != null &&
+            final onCurrentRoute = route != null &&
                 isNearEvacRouteSegment(
                   waypoints: route.waypoints,
                   tap: point,
                   camera: _mapController.camera,
-                )) {
+                );
+            if (onCurrentRoute) {
               unawaited(_insertEvacWaypointAt(point));
+              return;
+            }
+            // Tap landed on a different route — switch edit target.
+            final geometry = _selectedEvacKitGeometry();
+            final closest = geometry == null
+                ? null
+                : findClosestEvacRoute(
+                    geometry: geometry,
+                    tap: point,
+                    camera: _mapController.camera,
+                  );
+            if (closest != null && closest.id != route?.id) {
+              _switchEvacKitEditingRoute(closest.id);
               return;
             }
             return;
           }
           if (_registerEvacKitBodyDoubleTap(local)) {
-            _enterEvacKitRouteEdit();
+            _enterEvacKitRouteEdit(atPoint: point);
             return;
           }
           return;
@@ -3203,6 +3294,29 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(slopeProvider.notifier).reset();
 
     await createRangeRing(
+      context: context,
+      ref: ref,
+      selectedMarker: selectedMarker,
+      mapPoint: mapPoint,
+    );
+  }
+
+  Future<void> _beginSunMoon() async {
+    final selectedMarker = _selectedMarker();
+    final mapPoint = _radialMenuPoint;
+    _closeRadialMenu();
+
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
+
+    await showSunMoonAtPoint(
       context: context,
       ref: ref,
       selectedMarker: selectedMarker,
@@ -3954,16 +4068,27 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       if (next == null) {
         return;
       }
+      final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+      final zone = findZoneById(zones, next.kitId);
+      if (zone != null && zone.type == evacKitZoneType) {
+        _selectMapObject(
+          SelectedMapObject(
+            kind: SelectedMapObjectKind.zone,
+            id: next.kitId,
+          ),
+          openDetails: false,
+        );
+        _enterEvacKitRouteEditForZone(zone: zone, routeId: next.routeId);
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) {
           return;
         }
-        final selected = ref.read(selectedMapObjectProvider);
-        if (selected?.kind == SelectedMapObjectKind.zone &&
-            selected?.id == next.kitId) {
-          _enterEvacKitRouteEdit(routeId: next.routeId);
+        final current = ref.read(evacKitRouteEditIntentProvider);
+        if (current?.kitId == next.kitId &&
+            current?.routeId == next.routeId) {
+          ref.read(evacKitRouteEditIntentProvider.notifier).state = null;
         }
-        ref.read(evacKitRouteEditIntentProvider.notifier).state = null;
       });
     });
     final mapLayers = _visibleMapLayers;
@@ -4758,6 +4883,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           label: l10n.mapRadialRangeRing,
                           onSelected: () {
                             unawaited(_beginRangeRing());
+                          },
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.wb_twilight,
+                          label: l10n.mapRadialSunMoon,
+                          onSelected: () {
+                            unawaited(_beginSunMoon());
                           },
                         ),
                         MapRadialMenuAction(

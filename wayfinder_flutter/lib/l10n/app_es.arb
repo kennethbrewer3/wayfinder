@@ -1398,7 +1398,125 @@
   "mapRadialViewshed": "Cuenca visual",
   "mapRadialSlope": "Pendiente / coste",
   "mapRadialRangeRing": "Anillo de alcance",
+  "mapRadialSunMoon": "Sol / luna",
   "mapRadialEvacKit": "Kit de evacuación",
+  "sunMoonTitle": "Sol / luna / crepúsculo",
+  "sunMoonSubtitle": "Salida y puesta del sol, crepúsculo, fase lunar y ventanas nocturnas sin API, para un lugar y fecha.",
+  "sunMoonLocationLabel": "Ubicación",
+  "sunMoonAnchorMarker": "Marcador",
+  "sunMoonAnchorHome": "Inicio",
+  "sunMoonAnchorMapPoint": "Punto del mapa",
+  "sunMoonDateLabel": "Fecha",
+  "sunMoonPickDate": "Elegir fecha",
+  "sunMoonTimezoneSection": "Zona horaria",
+  "sunMoonTimezoneHint": "Convierte las horas con horario estándar o de verano. Auto sigue las reglas IANA DST de la fecha.",
+  "sunMoonTimeBaseLabel": "Mostrar horas como",
+  "sunMoonTimeBaseZone": "Zona",
+  "sunMoonTimeBaseDevice": "Dispositivo",
+  "sunMoonTimeBaseUtc": "UTC",
+  "sunMoonZoneLabel": "Zona",
+  "sunMoonZoneLongitude": "Por longitud ({iana})",
+  "@sunMoonZoneLongitude": {
+    "placeholders": {
+      "iana": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonDstLabel": "Ajuste DST",
+  "sunMoonDstAuto": "Auto",
+  "sunMoonDstStandard": "Estándar",
+  "sunMoonDstDaylight": "Verano",
+  "sunMoonDstAutoHint": "Usar las reglas DST de la zona en cada evento",
+  "sunMoonDstStandardHint": "Forzar el desfase estándar (sin DST)",
+  "sunMoonDstDaylightHint": "Forzar el desfase de horario de verano",
+  "sunMoonDstNoDstHint": "Esta zona no tiene reglas IANA DST. Verano aplica +1 hora de planificación al horario estándar.",
+  "sunMoonTzSummaryUtc": "Mostrando UTC",
+  "sunMoonTzSummaryDevice": "Dispositivo · {name} · {offset}",
+  "@sunMoonTzSummaryDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonTzSummaryZone": "{iana} · {abbr} · {offset} · {dst}",
+  "@sunMoonTzSummaryZone": {
+    "placeholders": {
+      "iana": {
+        "type": "String"
+      },
+      "abbr": {
+        "type": "String"
+      },
+      "offset": {
+        "type": "String"
+      },
+      "dst": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonTimeUtc": "{time} UTC",
+  "@sunMoonTimeUtc": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonMissingLocation": "Elige una ubicación para calcular.",
+  "sunMoonNotApplicable": "—",
+  "sunMoonPolarDay": "Día polar: el sol no se pone en esta fecha.",
+  "sunMoonPolarNight": "Noche polar: el sol no sale en esta fecha.",
+  "sunMoonSunSection": "Sol",
+  "sunMoonSunrise": "Salida del sol",
+  "sunMoonSolarNoon": "Mediodía solar",
+  "sunMoonSunset": "Puesta del sol",
+  "sunMoonTwilightSection": "Crepúsculo",
+  "sunMoonCivilDawn": "Alba civil",
+  "sunMoonCivilDusk": "Ocaso civil",
+  "sunMoonNauticalDawn": "Alba náutica",
+  "sunMoonNauticalDusk": "Ocaso náutico",
+  "sunMoonAstronomicalDawn": "Alba astronómica",
+  "sunMoonAstronomicalDusk": "Ocaso astronómico",
+  "sunMoonNightOpsSection": "Operaciones nocturnas",
+  "sunMoonNightOpsHint": "Del ocaso náutico al siguiente alba náutica (sol a 12° o más bajo el horizonte).",
+  "sunMoonNightOpsStart": "Inicio de oscuridad",
+  "sunMoonNightOpsEnd": "Fin de oscuridad",
+  "sunMoonMoonSection": "Luna",
+  "sunMoonPhaseLabel": "Fase",
+  "sunMoonPhaseNew": "Luna nueva",
+  "sunMoonPhaseWaxingCrescent": "Creciente",
+  "sunMoonPhaseFirstQuarter": "Cuarto creciente",
+  "sunMoonPhaseWaxingGibbous": "Gibosa creciente",
+  "sunMoonPhaseFull": "Luna llena",
+  "sunMoonPhaseWaningGibbous": "Gibosa menguante",
+  "sunMoonPhaseLastQuarter": "Cuarto menguante",
+  "sunMoonPhaseWaningCrescent": "Menguante",
+  "sunMoonIlluminationLabel": "Iluminación",
+  "sunMoonIlluminationValue": "{percent}%",
+  "@sunMoonIlluminationValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "sunMoonAgeLabel": "Edad",
+  "sunMoonAgeValue": "{days} días",
+  "@sunMoonAgeValue": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonMoonrise": "Salida de la luna",
+  "sunMoonMoonset": "Puesta de la luna",
   "rangeRingTitle": "Anillo de alcance",
   "rangeRingHelp": "Calcule un radio de viaje o combustible desde el hogar, un marcador seleccionado (punto de reunión) o el punto del mapa, y guárdelo como círculo.",
   "rangeRingCenterLabel": "Centro",
@@ -1705,6 +1823,27 @@
   "evacKitAddAlternate": "Añadir ruta alternativa",
   "evacKitRemoveAlternate": "Quitar alternativa",
   "evacKitRemoveAlternateConfirm": "¿Quitar esta ruta alternativa del kit?",
+  "evacKitRemoveRoute": "Quitar ruta",
+  "evacKitRemovePrimaryConfirm": "¿Quitar la ruta principal? Elige qué alternativa será la nueva principal.",
+  "evacKitRemovePrimarySingleConfirm": "¿Quitar la ruta principal? “{name}” pasará a ser la principal.",
+  "@evacKitRemovePrimarySingleConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitChooseNewPrimary": "Nueva ruta principal",
+  "evacKitMakePrimary": "Hacer principal",
+  "evacKitMakePrimaryConfirm": "¿Hacer “{name}” la ruta principal? La actual pasará a ser alternativa.",
+  "@evacKitMakePrimaryConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitCannotRemoveLastRoute": "Un kit debe conservar al menos una ruta.",
   "evacKitEditRouteOnMap": "Editar ruta en el mapa",
   "evacKitEditingHint": "Arrastra un punto para mover · toca un segmento para insertar · toca el último punto para alargar · mantén pulsado un punto para quitar (mín. 2) · Listo al terminar",
   "evacKitExtendingHint": "Toca el mapa o marcadores para añadir puntos al final. Listo deja de alargar.",

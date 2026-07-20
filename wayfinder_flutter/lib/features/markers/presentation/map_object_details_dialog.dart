@@ -795,6 +795,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           _EvacKitRouteSection(
             route: route,
             isPrimary: route.id == geometry.primaryRouteId,
+            canRemove: geometry.routes.length > 1,
             defaultMode: geometry.defaultMode,
             measurementUnits: measurementUnits,
             l10n: l10n,
@@ -806,10 +807,21 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
                 routeId: route.id,
               );
             },
-            onRemove: route.id == geometry.primaryRouteId
+            onMakePrimary: route.id == geometry.primaryRouteId
                 ? null
                 : () => unawaited(
-                    _removeEvacKitAlternate(
+                    _makeEvacKitPrimary(
+                      context: context,
+                      ref: ref,
+                      zone: zone,
+                      geometry: geometry,
+                      routeId: route.id,
+                    ),
+                  ),
+            onRemove: geometry.routes.length <= 1
+                ? null
+                : () => unawaited(
+                    _removeEvacKitRoute(
                       context: context,
                       ref: ref,
                       zone: zone,
@@ -1178,19 +1190,23 @@ class _EvacKitRouteSection extends StatelessWidget {
   const _EvacKitRouteSection({
     required this.route,
     required this.isPrimary,
+    required this.canRemove,
     required this.defaultMode,
     required this.measurementUnits,
     required this.l10n,
     required this.onEditOnMap,
+    this.onMakePrimary,
     this.onRemove,
   });
 
   final EvacRoute route;
   final bool isPrimary;
+  final bool canRemove;
   final TrackTransportationMode defaultMode;
   final MeasurementUnits measurementUnits;
   final AppLocalizations l10n;
   final VoidCallback onEditOnMap;
+  final VoidCallback? onMakePrimary;
   final VoidCallback? onRemove;
 
   @override
@@ -1234,7 +1250,9 @@ class _EvacKitRouteSection extends StatelessWidget {
                 if (onRemove != null) ...[
                   const SizedBox(width: 4),
                   IconButton(
-                    tooltip: l10n.evacKitRemoveAlternate,
+                    tooltip: canRemove && !isPrimary
+                        ? l10n.evacKitRemoveAlternate
+                        : l10n.evacKitRemoveRoute,
                     onPressed: onRemove,
                     icon: const Icon(Icons.delete_outline),
                     visualDensity: VisualDensity.compact,
@@ -1277,13 +1295,22 @@ class _EvacKitRouteSection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: onEditOnMap,
-                icon: const Icon(Icons.edit_road),
-                label: Text(l10n.evacKitEditRouteOnMap),
-              ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                TextButton.icon(
+                  onPressed: onEditOnMap,
+                  icon: const Icon(Icons.edit_road),
+                  label: Text(l10n.evacKitEditRouteOnMap),
+                ),
+                if (onMakePrimary != null)
+                  TextButton.icon(
+                    onPressed: onMakePrimary,
+                    icon: const Icon(Icons.star_outline),
+                    label: Text(l10n.evacKitMakePrimary),
+                  ),
+              ],
             ),
           ],
         ),
@@ -1292,7 +1319,7 @@ class _EvacKitRouteSection extends StatelessWidget {
   }
 }
 
-Future<void> _removeEvacKitAlternate({
+Future<void> _makeEvacKitPrimary({
   required BuildContext context,
   required WidgetRef ref,
   required MapZone zone,
@@ -1300,12 +1327,18 @@ Future<void> _removeEvacKitAlternate({
   required String routeId,
 }) async {
   final l10n = AppLocalizations.of(context)!;
+  final route = geometry.routes
+      .where((entry) => entry.id == routeId)
+      .firstOrNull;
+  if (route == null) {
+    return;
+  }
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
-        title: Text(l10n.evacKitRemoveAlternate),
-        content: Text(l10n.evacKitRemoveAlternateConfirm),
+        title: Text(l10n.evacKitMakePrimary),
+        content: Text(l10n.evacKitMakePrimaryConfirm(route.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -1313,7 +1346,7 @@ Future<void> _removeEvacKitAlternate({
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.actionDelete),
+            child: Text(l10n.evacKitMakePrimary),
           ),
         ],
       );
@@ -1324,7 +1357,129 @@ Future<void> _removeEvacKitAlternate({
   }
   final client = ref.read(serverClientProvider);
   await client.mapZone.updateZone(
-    updateZoneEvacKitGeometry(zone, geometry.withoutRoute(routeId)),
+    updateZoneEvacKitGeometry(zone, geometry.withPrimaryRoute(routeId)),
+  );
+  ref.read(zonesProvider.notifier).reload();
+}
+
+Future<void> _removeEvacKitRoute({
+  required BuildContext context,
+  required WidgetRef ref,
+  required MapZone zone,
+  required EvacKitGeometry geometry,
+  required String routeId,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  if (geometry.routes.length <= 1) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.evacKitCannotRemoveLastRoute)),
+    );
+    return;
+  }
+
+  final isPrimary = routeId == geometry.primaryRouteId;
+  final alternates = [
+    for (final route in geometry.routes)
+      if (route.id != geometry.primaryRouteId) route,
+  ];
+
+  String? newPrimaryRouteId;
+  if (isPrimary) {
+    if (alternates.length == 1) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: Text(l10n.evacKitRemoveRoute),
+            content: Text(
+              l10n.evacKitRemovePrimarySingleConfirm(alternates.first.name),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: Text(l10n.actionCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(l10n.actionDelete),
+              ),
+            ],
+          );
+        },
+      );
+      if (confirmed != true) {
+        return;
+      }
+      newPrimaryRouteId = alternates.first.id;
+    } else {
+      newPrimaryRouteId = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          return SimpleDialog(
+            title: Text(l10n.evacKitChooseNewPrimary),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+                child: Text(l10n.evacKitRemovePrimaryConfirm),
+              ),
+              for (final route in alternates)
+                SimpleDialogOption(
+                  onPressed: () => Navigator.of(dialogContext).pop(route.id),
+                  child: Text(route.name),
+                ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(l10n.actionCancel),
+              ),
+            ],
+          );
+        },
+      );
+      if (newPrimaryRouteId == null) {
+        return;
+      }
+    }
+  } else {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.evacKitRemoveAlternate),
+          content: Text(l10n.evacKitRemoveAlternateConfirm),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.actionCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.actionDelete),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true) {
+      return;
+    }
+  }
+
+  if (!context.mounted) {
+    return;
+  }
+  final next = geometry.withoutRoute(
+    routeId,
+    newPrimaryRouteId: newPrimaryRouteId,
+  );
+  if (next == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.evacKitCannotRemoveLastRoute)),
+    );
+    return;
+  }
+  final client = ref.read(serverClientProvider);
+  await client.mapZone.updateZone(
+    updateZoneEvacKitGeometry(zone, next),
   );
   ref.read(zonesProvider.notifier).reload();
 }

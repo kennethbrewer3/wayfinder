@@ -5235,11 +5235,400 @@ abstract class AppLocalizations {
   /// **'Range ring'**
   String get mapRadialRangeRing;
 
+  /// No description provided for @mapRadialSunMoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun / moon'**
+  String get mapRadialSunMoon;
+
   /// No description provided for @mapRadialEvacKit.
   ///
   /// In en, this message translates to:
   /// **'Evac kit'**
   String get mapRadialEvacKit;
+
+  /// No description provided for @sunMoonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun / moon / twilight'**
+  String get sunMoonTitle;
+
+  /// No description provided for @sunMoonSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline sunrise, sunset, twilight, moon phase, and night-ops windows for a place and date.'**
+  String get sunMoonSubtitle;
+
+  /// No description provided for @sunMoonLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get sunMoonLocationLabel;
+
+  /// No description provided for @sunMoonAnchorMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker'**
+  String get sunMoonAnchorMarker;
+
+  /// No description provided for @sunMoonAnchorHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get sunMoonAnchorHome;
+
+  /// No description provided for @sunMoonAnchorMapPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Map point'**
+  String get sunMoonAnchorMapPoint;
+
+  /// No description provided for @sunMoonDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get sunMoonDateLabel;
+
+  /// No description provided for @sunMoonPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick date'**
+  String get sunMoonPickDate;
+
+  /// No description provided for @sunMoonTimezoneSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Time zone'**
+  String get sunMoonTimezoneSection;
+
+  /// No description provided for @sunMoonTimezoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert event times with standard or daylight offsets. Auto follows IANA DST rules for the selected date.'**
+  String get sunMoonTimezoneHint;
+
+  /// No description provided for @sunMoonTimeBaseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display times as'**
+  String get sunMoonTimeBaseLabel;
+
+  /// No description provided for @sunMoonTimeBaseZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Zone'**
+  String get sunMoonTimeBaseZone;
+
+  /// No description provided for @sunMoonTimeBaseDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get sunMoonTimeBaseDevice;
+
+  /// No description provided for @sunMoonTimeBaseUtc.
+  ///
+  /// In en, this message translates to:
+  /// **'UTC'**
+  String get sunMoonTimeBaseUtc;
+
+  /// No description provided for @sunMoonZoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Zone'**
+  String get sunMoonZoneLabel;
+
+  /// No description provided for @sunMoonZoneLongitude.
+  ///
+  /// In en, this message translates to:
+  /// **'From longitude ({iana})'**
+  String sunMoonZoneLongitude(String iana);
+
+  /// No description provided for @sunMoonDstLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DST adjustment'**
+  String get sunMoonDstLabel;
+
+  /// No description provided for @sunMoonDstAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get sunMoonDstAuto;
+
+  /// No description provided for @sunMoonDstStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get sunMoonDstStandard;
+
+  /// No description provided for @sunMoonDstDaylight.
+  ///
+  /// In en, this message translates to:
+  /// **'Daylight'**
+  String get sunMoonDstDaylight;
+
+  /// No description provided for @sunMoonDstAutoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the zone’s DST rules for each event'**
+  String get sunMoonDstAutoHint;
+
+  /// No description provided for @sunMoonDstStandardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Force the standard (non-DST) offset'**
+  String get sunMoonDstStandardHint;
+
+  /// No description provided for @sunMoonDstDaylightHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Force the daylight (DST) offset'**
+  String get sunMoonDstDaylightHint;
+
+  /// No description provided for @sunMoonDstNoDstHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This zone has no IANA DST rules. Daylight applies a +1 hour planning offset to the standard time.'**
+  String get sunMoonDstNoDstHint;
+
+  /// No description provided for @sunMoonTzSummaryUtc.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing UTC'**
+  String get sunMoonTzSummaryUtc;
+
+  /// No description provided for @sunMoonTzSummaryDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device · {name} · {offset}'**
+  String sunMoonTzSummaryDevice(String name, String offset);
+
+  /// No description provided for @sunMoonTzSummaryZone.
+  ///
+  /// In en, this message translates to:
+  /// **'{iana} · {abbr} · {offset} · {dst}'**
+  String sunMoonTzSummaryZone(
+    String iana,
+    String abbr,
+    String offset,
+    String dst,
+  );
+
+  /// No description provided for @sunMoonTimeUtc.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} UTC'**
+  String sunMoonTimeUtc(String time);
+
+  /// No description provided for @sunMoonMissingLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a location to compute.'**
+  String get sunMoonMissingLocation;
+
+  /// No description provided for @sunMoonNotApplicable.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get sunMoonNotApplicable;
+
+  /// No description provided for @sunMoonPolarDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Polar day — the sun does not set on this date.'**
+  String get sunMoonPolarDay;
+
+  /// No description provided for @sunMoonPolarNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Polar night — the sun does not rise on this date.'**
+  String get sunMoonPolarNight;
+
+  /// No description provided for @sunMoonSunSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunMoonSunSection;
+
+  /// No description provided for @sunMoonSunrise.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunrise'**
+  String get sunMoonSunrise;
+
+  /// No description provided for @sunMoonSolarNoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Solar noon'**
+  String get sunMoonSolarNoon;
+
+  /// No description provided for @sunMoonSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset'**
+  String get sunMoonSunset;
+
+  /// No description provided for @sunMoonTwilightSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Twilight'**
+  String get sunMoonTwilightSection;
+
+  /// No description provided for @sunMoonCivilDawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Civil dawn'**
+  String get sunMoonCivilDawn;
+
+  /// No description provided for @sunMoonCivilDusk.
+  ///
+  /// In en, this message translates to:
+  /// **'Civil dusk'**
+  String get sunMoonCivilDusk;
+
+  /// No description provided for @sunMoonNauticalDawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Nautical dawn'**
+  String get sunMoonNauticalDawn;
+
+  /// No description provided for @sunMoonNauticalDusk.
+  ///
+  /// In en, this message translates to:
+  /// **'Nautical dusk'**
+  String get sunMoonNauticalDusk;
+
+  /// No description provided for @sunMoonAstronomicalDawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Astronomical dawn'**
+  String get sunMoonAstronomicalDawn;
+
+  /// No description provided for @sunMoonAstronomicalDusk.
+  ///
+  /// In en, this message translates to:
+  /// **'Astronomical dusk'**
+  String get sunMoonAstronomicalDusk;
+
+  /// No description provided for @sunMoonNightOpsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Night ops'**
+  String get sunMoonNightOpsSection;
+
+  /// No description provided for @sunMoonNightOpsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nautical dusk to the next nautical dawn (sun 12° or more below the horizon).'**
+  String get sunMoonNightOpsHint;
+
+  /// No description provided for @sunMoonNightOpsStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark start'**
+  String get sunMoonNightOpsStart;
+
+  /// No description provided for @sunMoonNightOpsEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark end'**
+  String get sunMoonNightOpsEnd;
+
+  /// No description provided for @sunMoonMoonSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Moon'**
+  String get sunMoonMoonSection;
+
+  /// No description provided for @sunMoonPhaseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase'**
+  String get sunMoonPhaseLabel;
+
+  /// No description provided for @sunMoonPhaseNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New moon'**
+  String get sunMoonPhaseNew;
+
+  /// No description provided for @sunMoonPhaseWaxingCrescent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waxing crescent'**
+  String get sunMoonPhaseWaxingCrescent;
+
+  /// No description provided for @sunMoonPhaseFirstQuarter.
+  ///
+  /// In en, this message translates to:
+  /// **'First quarter'**
+  String get sunMoonPhaseFirstQuarter;
+
+  /// No description provided for @sunMoonPhaseWaxingGibbous.
+  ///
+  /// In en, this message translates to:
+  /// **'Waxing gibbous'**
+  String get sunMoonPhaseWaxingGibbous;
+
+  /// No description provided for @sunMoonPhaseFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full moon'**
+  String get sunMoonPhaseFull;
+
+  /// No description provided for @sunMoonPhaseWaningGibbous.
+  ///
+  /// In en, this message translates to:
+  /// **'Waning gibbous'**
+  String get sunMoonPhaseWaningGibbous;
+
+  /// No description provided for @sunMoonPhaseLastQuarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Last quarter'**
+  String get sunMoonPhaseLastQuarter;
+
+  /// No description provided for @sunMoonPhaseWaningCrescent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waning crescent'**
+  String get sunMoonPhaseWaningCrescent;
+
+  /// No description provided for @sunMoonIlluminationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Illumination'**
+  String get sunMoonIlluminationLabel;
+
+  /// No description provided for @sunMoonIlluminationValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String sunMoonIlluminationValue(int percent);
+
+  /// No description provided for @sunMoonAgeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get sunMoonAgeLabel;
+
+  /// No description provided for @sunMoonAgeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days'**
+  String sunMoonAgeValue(String days);
+
+  /// No description provided for @sunMoonMoonrise.
+  ///
+  /// In en, this message translates to:
+  /// **'Moonrise'**
+  String get sunMoonMoonrise;
+
+  /// No description provided for @sunMoonMoonset.
+  ///
+  /// In en, this message translates to:
+  /// **'Moonset'**
+  String get sunMoonMoonset;
 
   /// No description provided for @rangeRingTitle.
   ///
@@ -6110,6 +6499,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove this alternate route from the kit?'**
   String get evacKitRemoveAlternateConfirm;
+
+  /// No description provided for @evacKitRemoveRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove route'**
+  String get evacKitRemoveRoute;
+
+  /// No description provided for @evacKitRemovePrimaryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the primary route? Choose which alternate becomes the new primary.'**
+  String get evacKitRemovePrimaryConfirm;
+
+  /// No description provided for @evacKitRemovePrimarySingleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the primary route? “{name}” will become the new primary.'**
+  String evacKitRemovePrimarySingleConfirm(String name);
+
+  /// No description provided for @evacKitChooseNewPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'New primary route'**
+  String get evacKitChooseNewPrimary;
+
+  /// No description provided for @evacKitMakePrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Make primary'**
+  String get evacKitMakePrimary;
+
+  /// No description provided for @evacKitMakePrimaryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Make “{name}” the primary route? The current primary becomes an alternate.'**
+  String evacKitMakePrimaryConfirm(String name);
+
+  /// No description provided for @evacKitCannotRemoveLastRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'A kit must keep at least one route.'**
+  String get evacKitCannotRemoveLastRoute;
 
   /// No description provided for @evacKitEditRouteOnMap.
   ///

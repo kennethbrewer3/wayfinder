@@ -1708,7 +1708,125 @@
   "mapRadialViewshed": "Viewshed",
   "mapRadialSlope": "Slope / cost",
   "mapRadialRangeRing": "Range ring",
+  "mapRadialSunMoon": "Sun / moon",
   "mapRadialEvacKit": "Evac kit",
+  "sunMoonTitle": "Sun / moon / twilight",
+  "sunMoonSubtitle": "Offline sunrise, sunset, twilight, moon phase, and night-ops windows for a place and date.",
+  "sunMoonLocationLabel": "Location",
+  "sunMoonAnchorMarker": "Marker",
+  "sunMoonAnchorHome": "Home",
+  "sunMoonAnchorMapPoint": "Map point",
+  "sunMoonDateLabel": "Date",
+  "sunMoonPickDate": "Pick date",
+  "sunMoonTimezoneSection": "Time zone",
+  "sunMoonTimezoneHint": "Convert event times with standard or daylight offsets. Auto follows IANA DST rules for the selected date.",
+  "sunMoonTimeBaseLabel": "Display times as",
+  "sunMoonTimeBaseZone": "Zone",
+  "sunMoonTimeBaseDevice": "Device",
+  "sunMoonTimeBaseUtc": "UTC",
+  "sunMoonZoneLabel": "Zone",
+  "sunMoonZoneLongitude": "From longitude ({iana})",
+  "@sunMoonZoneLongitude": {
+    "placeholders": {
+      "iana": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonDstLabel": "DST adjustment",
+  "sunMoonDstAuto": "Auto",
+  "sunMoonDstStandard": "Standard",
+  "sunMoonDstDaylight": "Daylight",
+  "sunMoonDstAutoHint": "Use the zone’s DST rules for each event",
+  "sunMoonDstStandardHint": "Force the standard (non-DST) offset",
+  "sunMoonDstDaylightHint": "Force the daylight (DST) offset",
+  "sunMoonDstNoDstHint": "This zone has no IANA DST rules. Daylight applies a +1 hour planning offset to the standard time.",
+  "sunMoonTzSummaryUtc": "Showing UTC",
+  "sunMoonTzSummaryDevice": "Device · {name} · {offset}",
+  "@sunMoonTzSummaryDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonTzSummaryZone": "{iana} · {abbr} · {offset} · {dst}",
+  "@sunMoonTzSummaryZone": {
+    "placeholders": {
+      "iana": {
+        "type": "String"
+      },
+      "abbr": {
+        "type": "String"
+      },
+      "offset": {
+        "type": "String"
+      },
+      "dst": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonTimeUtc": "{time} UTC",
+  "@sunMoonTimeUtc": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonMissingLocation": "Choose a location to compute.",
+  "sunMoonNotApplicable": "—",
+  "sunMoonPolarDay": "Polar day — the sun does not set on this date.",
+  "sunMoonPolarNight": "Polar night — the sun does not rise on this date.",
+  "sunMoonSunSection": "Sun",
+  "sunMoonSunrise": "Sunrise",
+  "sunMoonSolarNoon": "Solar noon",
+  "sunMoonSunset": "Sunset",
+  "sunMoonTwilightSection": "Twilight",
+  "sunMoonCivilDawn": "Civil dawn",
+  "sunMoonCivilDusk": "Civil dusk",
+  "sunMoonNauticalDawn": "Nautical dawn",
+  "sunMoonNauticalDusk": "Nautical dusk",
+  "sunMoonAstronomicalDawn": "Astronomical dawn",
+  "sunMoonAstronomicalDusk": "Astronomical dusk",
+  "sunMoonNightOpsSection": "Night ops",
+  "sunMoonNightOpsHint": "Nautical dusk to the next nautical dawn (sun 12° or more below the horizon).",
+  "sunMoonNightOpsStart": "Dark start",
+  "sunMoonNightOpsEnd": "Dark end",
+  "sunMoonMoonSection": "Moon",
+  "sunMoonPhaseLabel": "Phase",
+  "sunMoonPhaseNew": "New moon",
+  "sunMoonPhaseWaxingCrescent": "Waxing crescent",
+  "sunMoonPhaseFirstQuarter": "First quarter",
+  "sunMoonPhaseWaxingGibbous": "Waxing gibbous",
+  "sunMoonPhaseFull": "Full moon",
+  "sunMoonPhaseWaningGibbous": "Waning gibbous",
+  "sunMoonPhaseLastQuarter": "Last quarter",
+  "sunMoonPhaseWaningCrescent": "Waning crescent",
+  "sunMoonIlluminationLabel": "Illumination",
+  "sunMoonIlluminationValue": "{percent}%",
+  "@sunMoonIlluminationValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "sunMoonAgeLabel": "Age",
+  "sunMoonAgeValue": "{days} days",
+  "@sunMoonAgeValue": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "sunMoonMoonrise": "Moonrise",
+  "sunMoonMoonset": "Moonset",
   "rangeRingTitle": "Range ring",
   "rangeRingHelp": "Compute a travel or fuel radius from home, a selected marker (rally point), or the map point, then save it as a circle.",
   "rangeRingCenterLabel": "Center",
@@ -2015,6 +2133,27 @@
   "evacKitAddAlternate": "Add alternate route",
   "evacKitRemoveAlternate": "Remove alternate",
   "evacKitRemoveAlternateConfirm": "Remove this alternate route from the kit?",
+  "evacKitRemoveRoute": "Remove route",
+  "evacKitRemovePrimaryConfirm": "Remove the primary route? Choose which alternate becomes the new primary.",
+  "evacKitRemovePrimarySingleConfirm": "Remove the primary route? “{name}” will become the new primary.",
+  "@evacKitRemovePrimarySingleConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitChooseNewPrimary": "New primary route",
+  "evacKitMakePrimary": "Make primary",
+  "evacKitMakePrimaryConfirm": "Make “{name}” the primary route? The current primary becomes an alternate.",
+  "@evacKitMakePrimaryConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "evacKitCannotRemoveLastRoute": "A kit must keep at least one route.",
   "evacKitEditRouteOnMap": "Edit route on map",
   "evacKitEditingHint": "Drag a waypoint to move · tap a segment to insert · tap the last waypoint to extend · long-press a waypoint to remove (keep 2+) · Done when finished",
   "evacKitExtendingHint": "Tap the map or markers to append waypoints after the end. Done stops extending.",

@@ -96,4 +96,139 @@ void main() {
     expect(geometry.primaryOriginWaypoint?.markerId, 'home');
     expect(geometry.primaryOriginWaypoint?.label, 'Home');
   });
+
+  test('withPrimaryRoute promotes an alternate', () {
+    final geometry = EvacKitGeometry(
+      primaryRouteId: 'primary',
+      routes: [
+        EvacRoute(
+          id: 'primary',
+          name: 'Primary',
+          role: EvacRouteRole.primary,
+          borderPattern: 'solid',
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+          ],
+        ),
+        EvacRoute(
+          id: 'alt',
+          name: 'Alt',
+          role: EvacRouteRole.alternate,
+          borderPattern: 'dashed',
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(1, 0)),
+          ],
+        ),
+      ],
+    );
+
+    final promoted = geometry.withPrimaryRoute('alt');
+    expect(promoted.primaryRouteId, 'alt');
+    expect(promoted.primaryRoute!.role, EvacRouteRole.primary);
+    expect(promoted.primaryRoute!.borderPattern, 'solid');
+    final former = promoted.routes.firstWhere((r) => r.id == 'primary');
+    expect(former.role, EvacRouteRole.alternate);
+    expect(former.borderPattern, 'dashed');
+  });
+
+  test('withoutRoute removes an alternate and keeps primary', () {
+    final geometry = EvacKitGeometry(
+      primaryRouteId: 'primary',
+      routes: [
+        EvacRoute(
+          id: 'primary',
+          name: 'Primary',
+          role: EvacRouteRole.primary,
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+          ],
+        ),
+        EvacRoute(
+          id: 'alt',
+          name: 'Alt',
+          role: EvacRouteRole.alternate,
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(1, 0)),
+          ],
+        ),
+      ],
+    );
+
+    final next = geometry.withoutRoute('alt');
+    expect(next, isNotNull);
+    expect(next!.routes.length, 1);
+    expect(next.primaryRouteId, 'primary');
+  });
+
+  test('withoutRoute on primary promotes chosen alternate', () {
+    final geometry = EvacKitGeometry(
+      primaryRouteId: 'primary',
+      routes: [
+        EvacRoute(
+          id: 'primary',
+          name: 'Primary',
+          role: EvacRouteRole.primary,
+          borderPattern: 'solid',
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+          ],
+        ),
+        EvacRoute(
+          id: 'alt-a',
+          name: 'Alt A',
+          role: EvacRouteRole.alternate,
+          borderPattern: 'dashed',
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(1, 0)),
+          ],
+        ),
+        EvacRoute(
+          id: 'alt-b',
+          name: 'Alt B',
+          role: EvacRouteRole.alternate,
+          borderPattern: 'dashed',
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, -1)),
+          ],
+        ),
+      ],
+    );
+
+    final next = geometry.withoutRoute(
+      'primary',
+      newPrimaryRouteId: 'alt-b',
+    );
+    expect(next, isNotNull);
+    expect(next!.routes.length, 2);
+    expect(next.primaryRouteId, 'alt-b');
+    expect(next.primaryRoute!.name, 'Alt B');
+    expect(next.primaryRoute!.role, EvacRouteRole.primary);
+    expect(next.primaryRoute!.borderPattern, 'solid');
+  });
+
+  test('withoutRoute refuses to remove the last route', () {
+    final geometry = EvacKitGeometry(
+      primaryRouteId: 'primary',
+      routes: [
+        EvacRoute(
+          id: 'primary',
+          name: 'Primary',
+          role: EvacRouteRole.primary,
+          waypoints: const [
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+            EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+          ],
+        ),
+      ],
+    );
+
+    expect(geometry.withoutRoute('primary'), isNull);
+  });
 }

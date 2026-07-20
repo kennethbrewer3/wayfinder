@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.5"
+  astronomia:
+    dependency: transitive
+    description:
+      name: astronomia
+      sha256: "34df5331f6184f1491ce9e13b87309b579bada8c26a5c2e6758bebbec94c2594"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   async:
     dependency: transitive
     description:
@@ -1722,6 +1730,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.17"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      sha256: "981d1020d6ef8fe1e7b3de5054e5b25579ae7c403d7734adc508ffc47668e9cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.11.1"
   typed_data:
     dependency: transitive
     description:

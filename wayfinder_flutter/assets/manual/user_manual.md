@@ -382,11 +382,17 @@ Evac route kits store a primary escape route plus optional alternates, with plan
 
 ### Alternate routes
 
-Open kit details → **Add alternate route**. Drawing starts at the same origin as the primary (waypoint **1**); tap additional waypoints for the alternate path. Alternates appear dashed on the map. Remove an alternate from the details dialog (the primary route cannot be removed this way).
+Open kit details → **Add alternate route**. Drawing starts at the same origin as the primary (waypoint **1**); tap additional waypoints for the alternate path. Alternates appear dashed on the map.
+
+From kit details you can:
+
+- **Remove** an alternate with the trash control (primary stays).
+- **Make primary** on an alternate to promote it; the former primary becomes an alternate.
+- **Remove** the primary when at least one alternate exists — you choose which alternate becomes the new primary (or it is chosen automatically if there is only one). A kit always keeps at least one route.
 
 ### Edit a route on the map
 
-1. **Select** the kit, then **double-tap** it (or open details → **Edit route on map** for a specific primary/alternate).
+1. **Select** the kit, then **double-tap** the route you want (primary or alternate), or open details → **Edit route on map** on that route. With multiple routes, use the chips in the edit banner to switch which one you are editing; tapping another route’s line also switches.
 2. **Drag** a numbered waypoint to move it.
 3. **Tap a segment** between waypoints to insert a new point.
 4. **Tap the last waypoint** to extend the route — then tap the map or markers to append more points. **Done** stops extending (or exits edit).
@@ -433,6 +439,20 @@ Polygons are saved as map zones like circles and rectangles. Toggle the name lab
 
 ---
 
+## Sun / moon / twilight
+
+Offline sunrise, sunset, twilight bands, moon phase, and a night-ops dark window for any lat/lng and date (no network).
+
+1. Long-press the map → **More** → **Sun / moon**. A selected marker is preferred; otherwise the long-press point (or Home) is used.
+2. Pick the **date**.
+3. In the **Time zone** panel, choose **Zone** (IANA or longitude-based fixed offset), **Device**, or **UTC**. For Zone, set **DST adjustment** to **Auto** (IANA rules for that date), **Standard**, or **Daylight**.
+4. Read sunrise / solar noon / sunset, civil / nautical / astronomical dawn and dusk, moonrise / moonset, phase and illumination.
+5. **Night ops** is nautical dusk through the next nautical dawn (sun 12° or more below the horizon). Polar day or night is called out when the sun does not rise or set.
+
+Times are planning estimates from standard astronomical algorithms, not a live almanac service. Longitude-based zones are approximate civil offsets (no political boundaries).
+
+---
+
 ## Long-press radial menu
 
 Long-press (hold) on empty map space to open the radial menu. Available actions include:
@@ -445,7 +465,7 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
 | Polygon | Draw a freeform polygon (property line, patrol sector, no-go…) |
-| More | Opens overflow tools (Viewshed, Slope / cost, Range ring, Evac kit, Pace count, Copy coordinates) |
+| More | Opens overflow tools (Viewshed, Slope / cost, Range ring, Sun / moon, Evac kit, Pace count, Copy coordinates) |
 | Back | Returns from the More menu to the main radial actions |
 
 Cancel by tapping outside the menu or pressing Escape where supported.

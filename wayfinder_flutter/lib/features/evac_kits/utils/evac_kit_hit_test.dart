@@ -11,20 +11,50 @@ bool isNearEvacKit({
   required MapCamera camera,
   double hitRadiusPx = 16,
 }) {
+  return findClosestEvacRoute(
+        geometry: geometry,
+        tap: tap,
+        camera: camera,
+        hitRadiusPx: hitRadiusPx,
+      ) !=
+      null;
+}
+
+/// Closest valid route under [tap], or null if none are within [hitRadiusPx].
+EvacRoute? findClosestEvacRoute({
+  required EvacKitGeometry geometry,
+  required LatLng tap,
+  required MapCamera camera,
+  double hitRadiusPx = 16,
+}) {
+  final tapOffset = camera.latLngToScreenOffset(tap);
+  final radiusSq = hitRadiusPx * hitRadiusPx;
+  EvacRoute? closest;
+  var closestDistSq = radiusSq;
+
   for (final route in geometry.routes) {
     if (!route.isValid) {
       continue;
     }
-    if (isNearPolyline(
-      points: route.pathPoints,
-      tap: tap,
-      camera: camera,
-      hitRadiusPx: hitRadiusPx,
-    )) {
-      return true;
+    final points = route.pathPoints;
+    for (var i = 0; i < points.length - 1; i++) {
+      final a = camera.latLngToScreenOffset(points[i]);
+      final b = camera.latLngToScreenOffset(points[i + 1]);
+      final distSq = _distanceToSegmentSq(
+        tapOffset.dx,
+        tapOffset.dy,
+        a.dx,
+        a.dy,
+        b.dx,
+        b.dy,
+      );
+      if (distSq <= closestDistSq) {
+        closestDistSq = distSq;
+        closest = route;
+      }
     }
   }
-  return false;
+  return closest;
 }
 
 MapZone? findEvacKitAtPoint({

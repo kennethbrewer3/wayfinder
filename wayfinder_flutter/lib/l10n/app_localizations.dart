@@ -4995,11 +4995,35 @@ abstract class AppLocalizations {
   /// **'Polygon AOI'**
   String get mapRadialPolygon;
 
+  /// No description provided for @mapRadialMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get mapRadialMore;
+
+  /// No description provided for @mapRadialBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get mapRadialBack;
+
   /// No description provided for @mapRadialCopyCoordinates.
   ///
   /// In en, this message translates to:
   /// **'Copy coordinates'**
   String get mapRadialCopyCoordinates;
+
+  /// No description provided for @actionDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get actionDone;
+
+  /// No description provided for @polygonEditingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press a vertex to drag · tap an edge to add · double-tap a vertex to remove (keep 3+) · Done when finished'**
+  String get polygonEditingHint;
 
   /// No description provided for @mapRadialDeadReckoning.
   ///

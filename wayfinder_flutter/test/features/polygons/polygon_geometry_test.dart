@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/features/polygons/models/polygon_geometry.dart';
 import 'package:wayfinder_flutter/features/polygons/utils/polygon_hit_test.dart';
+import 'package:wayfinder_flutter/features/polygons/utils/polygon_path.dart';
 
 void main() {
   test('polygon requires at least three vertices', () {
@@ -56,5 +57,34 @@ void main() {
     ];
     expect(pointInPolygonScreen(const Offset(5, 5), square), isTrue);
     expect(pointInPolygonScreen(const Offset(15, 5), square), isFalse);
+  });
+
+  test('move and remove polygon vertices', () {
+    final geometry = PolygonGeometry(
+      points: const [
+        LatLng(0, 0),
+        LatLng(0, 1),
+        LatLng(1, 1),
+        LatLng(1, 0),
+      ],
+    );
+    final moved = movePolygonVertex(
+      geometry: geometry,
+      vertexIndex: 1,
+      point: const LatLng(0.2, 1.2),
+    );
+    expect(moved, isNotNull);
+    expect(moved!.points[1].latitude, closeTo(0.2, 1e-9));
+
+    final removed = removePolygonVertex(geometry: geometry, vertexIndex: 1);
+    expect(removed, isNotNull);
+    expect(removed!.points.length, 3);
+
+    final tooSmall = removePolygonVertex(
+      geometry: removed,
+      vertexIndex: 0,
+    );
+    // Cannot go below 3 vertices.
+    expect(tooSmall, isNull);
   });
 }

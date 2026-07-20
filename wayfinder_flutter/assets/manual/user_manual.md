@@ -377,6 +377,13 @@ Freeform polygons for property lines, patrol sectors, no-go zones, and other are
 
 Polygons are saved as map zones like circles and rectangles. Toggle the name label from the sidebar. Cancel clears an in-progress drawing (it is not saved until you finish the form).
 
+### Edit polygon vertices
+
+1. **Double-tap** a polygon to enter vertex edit mode (vertices appear on the corners).
+2. **Long-press** a vertex, then drag to move it.
+3. **Tap** near an edge to insert a vertex; **double-tap** a vertex to remove it (at least three vertices remain).
+4. Tap **Done** in the banner when finished.
+
 ---
 
 ## Long-press radial menu
@@ -388,13 +395,13 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Add marker | New marker at this location |
 | Draw line | Start line drawing (from selected marker when one is selected) |
 | Pace count | Dead reckoning / pace-count helper |
-| Viewshed | Terrain / RF line-of-sight from this point (or selected marker) |
-| Slope / cost | DEM slope / cross-country cost shading around this point |
 | Draw circle | Start circle drawing (from selected marker when one is selected) |
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
 | Polygon AOI | Draw a freeform polygon (property line, patrol sector, no-go…) |
 | Copy coordinates | Copy lat/lng to clipboard |
+| More | Opens analysis tools (Viewshed, Slope / cost) |
+| Back | Returns from the More menu to the main radial actions |
 
 Cancel by tapping outside the menu or pressing Escape where supported.
 

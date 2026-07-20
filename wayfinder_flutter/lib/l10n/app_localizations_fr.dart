@@ -2888,7 +2888,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialPolygon => 'Polygone AOI';
 
   @override
+  String get mapRadialMore => 'Plus';
+
+  @override
+  String get mapRadialBack => 'Retour';
+
+  @override
   String get mapRadialCopyCoordinates => 'Copier les coordonnées';
+
+  @override
+  String get actionDone => 'Terminé';
+
+  @override
+  String get polygonEditingHint =>
+      'Appui long sur un sommet pour déplacer · touchez un bord pour ajouter · double-touche pour retirer (min. 3) · Terminé pour quitter';
 
   @override
   String get mapRadialDeadReckoning => 'Pas';

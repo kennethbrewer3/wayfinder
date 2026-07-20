@@ -19,13 +19,18 @@ class MapRadialMenu extends StatelessWidget {
     super.key,
     required this.center,
     required this.actions,
+    this.footerAction,
   });
 
   final Offset center;
   final List<MapRadialMenuAction> actions;
 
+  /// Always placed at the bottom of the ring (e.g. More / Back).
+  final MapRadialMenuAction? footerAction;
+
   static const _buttonSize = 48.0;
   static const _labelWidth = 84.0;
+  static const _footerAngle = math.pi / 2;
 
   double _radiusForCount(int count) {
     return switch (count) {
@@ -38,7 +43,8 @@ class MapRadialMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final radius = _radiusForCount(actions.length);
+    final totalCount = actions.length + (footerAction == null ? 0 : 1);
+    final radius = _radiusForCount(totalCount);
 
     return Stack(
       fit: StackFit.expand,
@@ -64,7 +70,16 @@ class MapRadialMenu extends StatelessWidget {
         for (var index = 0; index < actions.length; index++)
           _RadialMenuButton(
             action: actions[index],
-            angle: _angleForIndex(index, actions.length),
+            angle: _angleForMainIndex(index, actions.length),
+            radius: radius,
+            buttonSize: _buttonSize,
+            labelWidth: _labelWidth,
+            center: center,
+          ),
+        if (footerAction case final footer?)
+          _RadialMenuButton(
+            action: footer,
+            angle: _footerAngle,
             radius: radius,
             buttonSize: _buttonSize,
             labelWidth: _labelWidth,
@@ -74,13 +89,27 @@ class MapRadialMenu extends StatelessWidget {
     );
   }
 
-  double _angleForIndex(int index, int count) {
+  /// Horseshoe arc through the top, leaving the bottom for [footerAction].
+  double _angleForMainIndex(int index, int count) {
+    if (count <= 0) {
+      return -math.pi / 2;
+    }
+    if (footerAction == null) {
+      if (count == 1) {
+        return -math.pi / 2;
+      }
+      final startAngle = -math.pi / 2;
+      final sweep = (2 * math.pi) / count;
+      return startAngle + sweep * index;
+    }
     if (count == 1) {
       return -math.pi / 2;
     }
-    final startAngle = -math.pi / 2;
-    final sweep = (2 * math.pi) / count;
-    return startAngle + sweep * index;
+    // From ~-153° through top to ~+153°, gap at bottom for footer.
+    const start = -math.pi * 0.85;
+    const end = math.pi * 0.85;
+    final t = index / (count - 1);
+    return start + (end - start) * t;
   }
 }
 

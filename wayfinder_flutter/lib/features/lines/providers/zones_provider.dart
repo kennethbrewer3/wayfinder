@@ -107,6 +107,42 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
     }
   }
 
+  Future<void> updatePolygonGeometry({
+    required UuidValue zoneId,
+    required PolygonGeometry geometry,
+  }) async {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+
+    final index = current.indexWhere((zone) => zone.id == zoneId);
+    if (index < 0) {
+      return;
+    }
+
+    final zone = current[index];
+    final updatedZone = updateZonePolygonGeometry(zone, geometry);
+    final previousState = state;
+
+    state = AsyncData([
+      for (var i = 0; i < current.length; i++)
+        if (i == index) updatedZone else current[i],
+    ]);
+
+    try {
+      final client = ref.read(serverClientProvider);
+      await client.mapZone.updateZone(updatedZone);
+    } catch (error, stackTrace) {
+      AppLogger.logZones.error(
+        '📡 Failed to update polygon geometry',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      state = previousState;
+    }
+  }
+
   /// Merge line zones in [zoneIds] order into the first zone; delete the rest.
   ///
   /// Returns the kept zone id, or null if merge was not possible.

@@ -2843,7 +2843,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialPolygon => 'Polygon AOI';
 
   @override
+  String get mapRadialMore => 'More';
+
+  @override
+  String get mapRadialBack => 'Back';
+
+  @override
   String get mapRadialCopyCoordinates => 'Copy coordinates';
+
+  @override
+  String get actionDone => 'Done';
+
+  @override
+  String get polygonEditingHint =>
+      'Long-press a vertex to drag · tap an edge to add · double-tap a vertex to remove (keep 3+) · Done when finished';
 
   @override
   String get mapRadialDeadReckoning => 'Pace count';

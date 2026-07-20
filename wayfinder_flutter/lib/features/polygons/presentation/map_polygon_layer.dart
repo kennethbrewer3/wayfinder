@@ -6,22 +6,29 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../markers/models/marker_color.dart';
 import '../models/polygon_geometry.dart';
 
-List<Polygon> buildSavedPolygonPolygons(List<MapZone> zones) {
+List<Polygon> buildSavedPolygonPolygons(
+  List<MapZone> zones, {
+  UuidValue? selectedPolygonId,
+  PolygonGeometry? geometryOverride,
+}) {
   final polygons = <Polygon>[];
   for (final zone in zones) {
     if (!zone.visible || zone.type != polygonZoneType) {
       continue;
     }
-    final geometry = PolygonGeometry.fromZone(zone);
+    final geometry = zone.id == selectedPolygonId && geometryOverride != null
+        ? geometryOverride
+        : PolygonGeometry.fromZone(zone);
     if (geometry == null || !geometry.isValid) {
       continue;
     }
+    final selected = zone.id == selectedPolygonId;
     polygons.add(
       Polygon(
         points: geometry.points,
         color: parseMarkerColor(zone.fillColor),
         borderColor: parseMarkerColor(zone.borderColor),
-        borderStrokeWidth: 2.5,
+        borderStrokeWidth: selected ? 4 : 2.5,
         pattern: const StrokePattern.solid(),
       ),
     );
@@ -42,8 +49,6 @@ Polygon? buildPreviewPolygon({
   if (ring.length < 2) {
     return null;
   }
-  // Need 3+ points for a filled polygon; with 2 draw a thin closed strip
-  // by duplicating so flutter_map still paints a border path.
   if (ring.length < 3) {
     return Polygon(
       points: [...ring, ring.first],
@@ -73,11 +78,44 @@ List<Marker> buildPreviewPolygonVertexMarkers({
         width: 14,
         height: 14,
         alignment: Alignment.center,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-            border: Border.all(color: Colors.white, width: 2),
+        child: IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+          ),
+        ),
+      ),
+  ];
+}
+
+List<Marker> buildEditablePolygonVertexMarkers({
+  required List<LatLng> points,
+  required Color color,
+}) {
+  return [
+    for (final point in points)
+      Marker(
+        point: point,
+        width: 18,
+        height: 18,
+        alignment: Alignment.center,
+        child: IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
+              border: Border.all(color: Colors.white, width: 2.5),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x44000000),
+                  blurRadius: 3,
+                  offset: Offset(0, 1),
+                ),
+              ],
+            ),
           ),
         ),
       ),

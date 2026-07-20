@@ -115,7 +115,9 @@ class _EvacKitFormDialogState extends State<EvacKitFormDialog> {
     _routeNameController = TextEditingController(
       text: widget.initialPrimaryRouteName,
     );
-    _notesController = createMarkerNotesController(markdown: widget.initialNotes);
+    _notesController = createMarkerNotesController(
+      markdown: widget.initialNotes,
+    );
     _color = widget.initialColor;
     _defaultMode = widget.initialDefaultMode;
     _showNameLabel = widget.initialShowNameLabel;

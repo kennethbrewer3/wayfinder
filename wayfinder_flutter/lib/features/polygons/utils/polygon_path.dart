@@ -113,7 +113,8 @@ PolygonGeometry? insertPolygonVertex({
   if (hit == null) {
     return null;
   }
-  final updated = [...geometry.points]..insert(hit.edgeIndex + 1, hit.projected);
+  final updated = [...geometry.points]
+    ..insert(hit.edgeIndex + 1, hit.projected);
   return geometry.copyWith(points: updated);
 }
 

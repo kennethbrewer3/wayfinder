@@ -6,6 +6,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
+import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import 'markers_provider.dart';
 
 const _reconnectDelay = Duration(seconds: 5);
@@ -29,11 +30,13 @@ class MapMarkerUpdatesListener {
   Future<void>? _markerLoop;
   Future<void>? _zoneLoop;
   Future<void>? _layerLoop;
+  Future<void>? _seasonalOverlayLoop;
 
   void start() {
     _markerLoop ??= _connectMarkerLoop();
     _zoneLoop ??= _connectZoneLoop();
     _layerLoop ??= _connectLayerLoop();
+    _seasonalOverlayLoop ??= _connectSeasonalOverlayLoop();
   }
 
   void dispose() {
@@ -139,6 +142,38 @@ class MapMarkerUpdatesListener {
         );
         AppLogger.logMap.debug(
           '📡 Layer change stream stack trace',
+          data: stackTrace,
+        );
+        await Future<void>.delayed(_reconnectDelay);
+      }
+    }
+  }
+
+  Future<void> _connectSeasonalOverlayLoop() async {
+    while (!_stopped) {
+      try {
+        AppLogger.logMap.debug('📡 Connecting to seasonal overlay stream');
+        final client = _ref.read(serverClientProvider);
+        await for (final change in client.seasonalOverlay.overlayChanges()) {
+          if (_stopped) {
+            break;
+          }
+          AppLogger.logMap.debug(
+            '📡 Seasonal overlay change received',
+            data: 'type=${change.type} id=${change.overlayId}',
+          );
+          _ref.invalidate(seasonalOverlaysProvider);
+        }
+      } catch (error, stackTrace) {
+        if (_stopped) {
+          return;
+        }
+        AppLogger.logMap.warn(
+          '📡 Seasonal overlay stream disconnected; reconnecting',
+          error: error,
+        );
+        AppLogger.logMap.debug(
+          '📡 Seasonal overlay stream stack trace',
           data: stackTrace,
         );
         await Future<void>.delayed(_reconnectDelay);

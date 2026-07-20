@@ -10,6 +10,7 @@
   "settingsTabMarkerIcons": "Marker icons",
   "settingsTabGeocoding": "Geocoding",
   "settingsTabTides": "Tides",
+  "settingsTabSeasonalOverlays": "Seasons",
   "settingsTabBackup": "Backup",
   "settingsTabAbout": "About",
   "settingsAboutTitle": "About Wayfinder",
@@ -265,7 +266,7 @@
   "circleSizeToggleDiameter": "Showing diameter on map · tap for none",
   "circleSizeToggleNone": "Size hidden on map · tap for radius",
   "backupTitle": "Map data backup",
-  "backupDescription": "Export or restore all layers, markers, zones, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.",
+  "backupDescription": "Export or restore all layers, markers, zones, seasonal overlays, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -278,9 +279,9 @@
     }
   },
   "backupRestoreConfirmTitle": "Restore map data?",
-  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, and custom marker icons on the server with the selected backup file. This cannot be undone.",
-  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), and {zones} zone(s).",
-  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {icons} custom icon(s).",
+  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, seasonal overlays, and custom marker icons on the server with the selected backup file. This cannot be undone.",
+  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {seasonalOverlays} seasonal overlay(s).",
+  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {icons} custom icon(s).",
   "@backupRestoreSuccessWithIcons": {
     "placeholders": {
       "layers": {
@@ -290,6 +291,9 @@
         "type": "int"
       },
       "zones": {
+        "type": "int"
+      },
+      "seasonalOverlays": {
         "type": "int"
       },
       "icons": {
@@ -306,6 +310,9 @@
         "type": "int"
       },
       "zones": {
+        "type": "int"
+      },
+      "seasonalOverlays": {
         "type": "int"
       }
     }
@@ -1711,6 +1718,7 @@
   "mapRadialRangeRing": "Range ring",
   "mapRadialSunMoon": "Sun / moon",
   "mapRadialTides": "Tides",
+  "mapRadialSeasonalOverlay": "Season",
   "mapRadialEvacKit": "Evac kit",
   "tidesTitle": "Tide tables",
   "tidesSubtitle": "Nearest coastal station from packs on your Wayfinder server — for boat and water crossings.",
@@ -2329,7 +2337,7 @@
   },
   "evacKitCannotRemoveLastRoute": "A kit must keep at least one route.",
   "evacKitEditRouteOnMap": "Edit route on map",
-  "evacKitEditingHint": "Drag a waypoint or control point to move · tap a segment to add a control point · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished",
+  "evacKitEditingHint": "Drag a waypoint or control point to move · tap a segment to add a control point · long-press a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished",
   "evacKitExtendingHint": "Tap the map or markers to append waypoints after the end. Done stops extending.",
   "sidebarEditEvacKit": "Edit evac kit",
   "sidebarDeleteEvacKit": "Delete evac kit",
@@ -2585,5 +2593,77 @@
   "settingsRestApiClientKeyDescription": "Store the API key here so this app can call REST fallbacks (backup restore, settings sync, etc.).",
   "settingsRestApiClientKeyLabel": "API key",
   "settingsRestApiSaveClientKeyAction": "Save key on this device",
-  "settingsRestApiKeySaved": "API key saved on this device."
+  "settingsRestApiKeySaved": "API key saved on this device.",
+  "seasonalOverlayCreateTitle": "Create seasonal overlay",
+  "seasonalOverlayEditTitle": "Edit seasonal overlay",
+  "seasonalOverlayDefaultName": "Seasonal area",
+  "seasonalOverlayVertexCount": "{count} vertices",
+  "@seasonalOverlayVertexCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seasonalOverlayDrawingHint": "Tap to add vertices for this seasonal area. Double-tap or Finish when you have 3+ points.",
+  "seasonalOverlayDateMode": "Date mode",
+  "seasonalOverlayDateModeAbsolute": "Absolute",
+  "seasonalOverlayDateModeRecurring": "Recurring",
+  "seasonalOverlayWindows": "Date windows",
+  "seasonalOverlayAddWindow": "Add window",
+  "seasonalOverlayEditWindow": "Edit date window",
+  "seasonalOverlayStartDate": "Start date",
+  "seasonalOverlayEndDate": "End date",
+  "seasonalOverlayStartMonth": "Start month",
+  "seasonalOverlayStartDay": "Start day",
+  "seasonalOverlayEndMonth": "End month",
+  "seasonalOverlayEndDay": "End day",
+  "seasonalOverlayRecurringHint": "Month/day each year. Ranges may wrap across New Year.",
+  "seasonalOverlayStatusActive": "In season",
+  "seasonalOverlayStatusInactive": "Out of season",
+  "seasonalOverlayWindowCount": "{count} window(s)",
+  "@seasonalOverlayWindowCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seasonalOverlayHide": "Hide overlay",
+  "seasonalOverlayShow": "Show overlay",
+  "seasonalOverlayZoomTo": "Zoom to overlay",
+  "seasonalOverlayDeleteTitle": "Delete seasonal overlay?",
+  "seasonalOverlayDeleteConfirm": "Delete “{name}”? This cannot be undone.",
+  "@seasonalOverlayDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "seasonalOverlaysSettingsTitle": "Seasonal overlays",
+  "seasonalOverlaysSettingsSubtitle": "Dated polygon layers for hunting seasons, freeze/thaw windows, and other recurring or one-time map seasons. Stored on the server and included in map backups.",
+  "seasonalOverlaysShowInactive": "Show out-of-season overlays",
+  "seasonalOverlaysShowInactiveHint": "When off, overlays outside their date windows stay hidden even if enabled.",
+  "seasonalOverlaysDrawHint": "Long-press the map → More → Season, then draw a polygon and set date windows.",
+  "seasonalOverlaysInstalled": "Overlays",
+  "seasonalOverlaysEmpty": "No seasonal overlays yet.",
+  "seasonalOverlaysLoadFailed": "Could not load seasonal overlays: {error}",
+  "@seasonalOverlaysLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sidebarSeasonalOverlays": "Seasonal overlays",
+  "sidebarSeasonalOverlaysLoading": "Loading…",
+  "sidebarSeasonalOverlaysCount": "{count} overlay(s)",
+  "@sidebarSeasonalOverlaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

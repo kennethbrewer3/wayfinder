@@ -113,7 +113,9 @@ class _InventoryDetailRow extends StatelessWidget {
           style: theme.textTheme.bodyMedium,
         ),
         Text(
-          l10n.markerInventoryDetailCategory(_categoryLabel(l10n, item.category)),
+          l10n.markerInventoryDetailCategory(
+            _categoryLabel(l10n, item.category),
+          ),
           style: theme.textTheme.bodySmall,
         ),
         Text(

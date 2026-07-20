@@ -20,19 +20,22 @@ import '../map/map_data_endpoint.dart' as _i7;
 import '../map/map_marker_endpoint.dart' as _i8;
 import '../markers/marker_icon_endpoint.dart' as _i9;
 import '../pmtiles/pmtiles_endpoint.dart' as _i10;
-import '../settings/app_settings_endpoint.dart' as _i11;
-import '../tides/tides_endpoint.dart' as _i12;
-import '../zones/map_zone_endpoint.dart' as _i13;
+import '../seasonal_overlays/seasonal_overlay_endpoint.dart' as _i11;
+import '../settings/app_settings_endpoint.dart' as _i12;
+import '../tides/tides_endpoint.dart' as _i13;
+import '../zones/map_zone_endpoint.dart' as _i14;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
-    as _i14;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i15;
-import 'dart:typed_data' as _i16;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i17;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i18;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i15;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i16;
+import 'dart:typed_data' as _i17;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i18;
+import 'package:wayfinder_server/src/generated/seasonal_overlays/seasonal_overlay.dart'
     as _i19;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i20;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i21;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i20;
+    as _i22;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -92,19 +95,25 @@ class Endpoints extends _i1.EndpointDispatch {
           'pmtiles',
           null,
         ),
-      'appSettings': _i11.AppSettingsEndpoint()
+      'seasonalOverlay': _i11.SeasonalOverlayEndpoint()
+        ..initialize(
+          server,
+          'seasonalOverlay',
+          null,
+        ),
+      'appSettings': _i12.AppSettingsEndpoint()
         ..initialize(
           server,
           'appSettings',
           null,
         ),
-      'tides': _i12.TidesEndpoint()
+      'tides': _i13.TidesEndpoint()
         ..initialize(
           server,
           'tides',
           null,
         ),
-      'mapZone': _i13.MapZoneEndpoint()
+      'mapZone': _i14.MapZoneEndpoint()
         ..initialize(
           server,
           'mapZone',
@@ -353,7 +362,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i14.Category>(),
+              type: _i1.getType<_i15.Category>(),
               nullable: false,
             ),
           },
@@ -372,7 +381,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i14.Category>(),
+              type: _i1.getType<_i15.Category>(),
               nullable: false,
             ),
           },
@@ -469,7 +478,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'layer': _i1.ParameterDescription(
               name: 'layer',
-              type: _i1.getType<_i15.MapLayer>(),
+              type: _i1.getType<_i16.MapLayer>(),
               nullable: false,
             ),
           },
@@ -488,7 +497,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'layer': _i1.ParameterDescription(
               name: 'layer',
-              type: _i1.getType<_i15.MapLayer>(),
+              type: _i1.getType<_i16.MapLayer>(),
               nullable: false,
             ),
           },
@@ -526,7 +535,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'layers': _i1.ParameterDescription(
               name: 'layers',
-              type: _i1.getType<List<_i15.MapLayer>>(),
+              type: _i1.getType<List<_i16.MapLayer>>(),
               nullable: false,
             ),
           },
@@ -604,7 +613,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'archiveBytes': _i1.ParameterDescription(
               name: 'archiveBytes',
-              type: _i1.getType<_i16.ByteData>(),
+              type: _i1.getType<_i17.ByteData>(),
               nullable: false,
             ),
           },
@@ -658,7 +667,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i17.MapMarker>(),
+              type: _i1.getType<_i18.MapMarker>(),
               nullable: false,
             ),
           },
@@ -677,7 +686,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'marker': _i1.ParameterDescription(
               name: 'marker',
-              type: _i1.getType<_i17.MapMarker>(),
+              type: _i1.getType<_i18.MapMarker>(),
               nullable: false,
             ),
           },
@@ -1259,6 +1268,137 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['seasonalOverlay'] = _i1.EndpointConnector(
+      name: 'seasonalOverlay',
+      endpoint: endpoints['seasonalOverlay']!,
+      methodConnectors: {
+        'listOverlays': _i1.MethodConnector(
+          name: 'listOverlays',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .listOverlays(session),
+        ),
+        'getOverlay': _i1.MethodConnector(
+          name: 'getOverlay',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .getOverlay(
+                        session,
+                        params['id'],
+                      ),
+        ),
+        'createOverlay': _i1.MethodConnector(
+          name: 'createOverlay',
+          params: {
+            'overlay': _i1.ParameterDescription(
+              name: 'overlay',
+              type: _i1.getType<_i19.SeasonalOverlay>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .createOverlay(
+                        session,
+                        params['overlay'],
+                      ),
+        ),
+        'updateOverlay': _i1.MethodConnector(
+          name: 'updateOverlay',
+          params: {
+            'overlay': _i1.ParameterDescription(
+              name: 'overlay',
+              type: _i1.getType<_i19.SeasonalOverlay>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .updateOverlay(
+                        session,
+                        params['overlay'],
+                      ),
+        ),
+        'deleteOverlay': _i1.MethodConnector(
+          name: 'deleteOverlay',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .deleteOverlay(
+                        session,
+                        params['id'],
+                      ),
+        ),
+        'reorderOverlays': _i1.MethodConnector(
+          name: 'reorderOverlays',
+          params: {
+            'overlays': _i1.ParameterDescription(
+              name: 'overlays',
+              type: _i1.getType<List<_i19.SeasonalOverlay>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .reorderOverlays(
+                        session,
+                        params['overlays'],
+                      ),
+        ),
+        'overlayChanges': _i1.MethodStreamConnector(
+          name: 'overlayChanges',
+          params: {},
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) =>
+                  (endpoints['seasonalOverlay'] as _i11.SeasonalOverlayEndpoint)
+                      .overlayChanges(session),
+        ),
+      },
+    );
     connectors['appSettings'] = _i1.EndpointConnector(
       name: 'appSettings',
       endpoint: endpoints['appSettings']!,
@@ -1270,7 +1410,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .getSettings(session),
         ),
         'updateHomeLocation': _i1.MethodConnector(
@@ -1296,7 +1436,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .updateHomeLocation(
                     session,
                     params['latitude'],
@@ -1311,7 +1451,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .resetHomeLocation(session),
         ),
         'updatePmtilesStoragePath': _i1.MethodConnector(
@@ -1327,7 +1467,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .updatePmtilesStoragePath(
                     session,
                     params['storagePath'],
@@ -1406,7 +1546,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .updateClientPreferences(
                     session,
                     params['measurementUnits'],
@@ -1431,7 +1571,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .getRestApiKeyStatus(session),
         ),
         'listRestApiKeys': _i1.MethodConnector(
@@ -1441,7 +1581,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .listRestApiKeys(session),
         ),
         'createRestApiKey': _i1.MethodConnector(
@@ -1457,7 +1597,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .createRestApiKey(
                     session,
                     params['name'],
@@ -1476,7 +1616,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .deleteRestApiKey(
                     session,
                     params['id'],
@@ -1489,7 +1629,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['appSettings'] as _i11.AppSettingsEndpoint)
+              ) async => (endpoints['appSettings'] as _i12.AppSettingsEndpoint)
                   .clearRestApiKeys(session),
         ),
       },
@@ -1506,7 +1646,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['tides'] as _i12.TidesEndpoint).listPacks(session),
+                  (endpoints['tides'] as _i13.TidesEndpoint).listPacks(session),
         ),
         'listCoastalRegions': _i1.MethodConnector(
           name: 'listCoastalRegions',
@@ -1515,7 +1655,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['tides'] as _i12.TidesEndpoint)
+              ) async => (endpoints['tides'] as _i13.TidesEndpoint)
                   .listCoastalRegions(session),
         ),
         'importCoastalRegion': _i1.MethodConnector(
@@ -1531,7 +1671,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['tides'] as _i12.TidesEndpoint)
+              ) async => (endpoints['tides'] as _i13.TidesEndpoint)
                   .importCoastalRegion(
                     session,
                     params['regionId'],
@@ -1556,7 +1696,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['tides'] as _i12.TidesEndpoint).setPackActive(
+                  (endpoints['tides'] as _i13.TidesEndpoint).setPackActive(
                     session,
                     params['packId'],
                     params['active'],
@@ -1575,7 +1715,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['tides'] as _i12.TidesEndpoint).deletePack(
+              ) async => (endpoints['tides'] as _i13.TidesEndpoint).deletePack(
                 session,
                 params['packId'],
               ),
@@ -1608,7 +1748,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['tides'] as _i12.TidesEndpoint).queryAt(
+              ) async => (endpoints['tides'] as _i13.TidesEndpoint).queryAt(
                 session,
                 params['lat'],
                 params['lng'],
@@ -1629,7 +1769,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapZone'] as _i13.MapZoneEndpoint)
+              ) async => (endpoints['mapZone'] as _i14.MapZoneEndpoint)
                   .listZones(session),
         ),
         'getZone': _i1.MethodConnector(
@@ -1645,7 +1785,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['mapZone'] as _i13.MapZoneEndpoint).getZone(
+              ) async => (endpoints['mapZone'] as _i14.MapZoneEndpoint).getZone(
                 session,
                 params['id'],
               ),
@@ -1655,7 +1795,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i18.MapZone>(),
+              type: _i1.getType<_i20.MapZone>(),
               nullable: false,
             ),
           },
@@ -1664,7 +1804,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i13.MapZoneEndpoint).createZone(
+                  (endpoints['mapZone'] as _i14.MapZoneEndpoint).createZone(
                     session,
                     params['zone'],
                   ),
@@ -1674,7 +1814,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'zone': _i1.ParameterDescription(
               name: 'zone',
-              type: _i1.getType<_i18.MapZone>(),
+              type: _i1.getType<_i20.MapZone>(),
               nullable: false,
             ),
           },
@@ -1683,7 +1823,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i13.MapZoneEndpoint).updateZone(
+                  (endpoints['mapZone'] as _i14.MapZoneEndpoint).updateZone(
                     session,
                     params['zone'],
                   ),
@@ -1702,7 +1842,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['mapZone'] as _i13.MapZoneEndpoint).deleteZone(
+                  (endpoints['mapZone'] as _i14.MapZoneEndpoint).deleteZone(
                     session,
                     params['id'],
                   ),
@@ -1717,15 +1857,15 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
                 Map<String, Stream> streamParams,
-              ) => (endpoints['mapZone'] as _i13.MapZoneEndpoint).zoneChanges(
+              ) => (endpoints['mapZone'] as _i14.MapZoneEndpoint).zoneChanges(
                 session,
               ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i19.Endpoints()
+    modules['serverpod_auth_idp'] = _i21.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i20.Endpoints()
+    modules['serverpod_auth_core'] = _i22.Endpoints()
       ..initializeEndpoints(server);
   }
 }

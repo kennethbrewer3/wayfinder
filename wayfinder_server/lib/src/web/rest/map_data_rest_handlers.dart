@@ -6,6 +6,7 @@ import '../../map/map_data_backup_archive.dart';
 import '../../map/map_data_service.dart';
 import '../../map/map_marker_change_broadcast.dart';
 import '../../layers/map_layer_change_broadcast.dart';
+import '../../seasonal_overlays/seasonal_overlay_change_broadcast.dart';
 import '../../zones/map_zone_change_broadcast.dart';
 import 'rest_json.dart';
 
@@ -39,6 +40,7 @@ abstract final class MapDataRestHandlers {
       await MapLayerChangeBroadcast.bulk(session);
       await MapMarkerChangeBroadcast.bulk(session);
       await MapZoneChangeBroadcast.bulk(session);
+      await SeasonalOverlayChangeBroadcast.bulk(session);
       return RestJson.ok({
         'restored': summary.toJson(),
       });
@@ -53,6 +55,7 @@ abstract final class MapDataRestHandlers {
       await MapLayerChangeBroadcast.bulk(session);
       await MapMarkerChangeBroadcast.bulk(session);
       await MapZoneChangeBroadcast.bulk(session);
+      await SeasonalOverlayChangeBroadcast.bulk(session);
       return RestJson.ok({
         'restored': summary.toJson(),
       });

@@ -9,11 +9,11 @@ import '../pmtiles/pmtiles_catalog_sync.dart';
 import '../pmtiles/pmtiles_storage.dart';
 import '../web/rest/rest_json.dart';
 
-const mapDataBackupVersion = 3;
+const mapDataBackupVersion = 4;
 
-const supportedMapDataBackupVersions = {1, 2, 3};
+const supportedMapDataBackupVersions = {1, 2, 3, 4};
 
-/// Full map structure export (layers, markers, zones).
+/// Full map structure export (layers, markers, zones, seasonal overlays).
 Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   final layers = await listLayersEnsuringDefault(session);
   final markers = await MapMarker.db.find(
@@ -23,6 +23,10 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   final zones = await MapZone.db.find(
     session,
     orderByList: (t) => [Order(column: t.name), Order(column: t.id)],
+  );
+  final seasonalOverlays = await SeasonalOverlay.db.find(
+    session,
+    orderBy: (t) => t.sortOrder,
   );
 
   final markerIcons = await exportMarkerIconBackup(session);
@@ -35,6 +39,7 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     'layers': RestJson.encodeModels(layers),
     'markers': RestJson.encodeModels(markers),
     'zones': RestJson.encodeModels(zones),
+    'seasonalOverlays': RestJson.encodeModels(seasonalOverlays),
     ...markerIcons,
   };
 }
@@ -44,6 +49,7 @@ class MapDataRestoreCounts {
     required this.layers,
     required this.markers,
     required this.zones,
+    this.seasonalOverlays = 0,
     this.markerIconCategories = 0,
     this.markerIcons = 0,
   });
@@ -51,6 +57,7 @@ class MapDataRestoreCounts {
   final int layers;
   final int markers;
   final int zones;
+  final int seasonalOverlays;
   final int markerIconCategories;
   final int markerIcons;
 
@@ -58,12 +65,13 @@ class MapDataRestoreCounts {
     'layers': layers,
     'markers': markers,
     'zones': zones,
+    'seasonalOverlays': seasonalOverlays,
     'markerIconCategories': markerIconCategories,
     'markerIcons': markerIcons,
   };
 }
 
-/// Replaces all layers, markers, and zones with the backup payload.
+/// Replaces all layers, markers, zones, and seasonal overlays with the backup.
 Future<MapDataRestoreCounts> restoreMapDataBundle(
   Session session,
   Map<String, dynamic> body,
@@ -90,6 +98,13 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
     fieldName: 'zones',
     fromJson: MapZone.fromJson,
   );
+  final seasonalOverlays = version >= 4
+      ? _parseModelList(
+          body['seasonalOverlays'] ?? const <dynamic>[],
+          fieldName: 'seasonalOverlays',
+          fromJson: SeasonalOverlay.fromJson,
+        )
+      : const <SeasonalOverlay>[];
 
   if (layers.isEmpty) {
     final now = DateTime.now().toUtc();
@@ -166,6 +181,18 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
       );
     }
 
+    final existingOverlays = await SeasonalOverlay.db.find(
+      session,
+      transaction: transaction,
+    );
+    if (existingOverlays.isNotEmpty) {
+      await SeasonalOverlay.db.delete(
+        session,
+        existingOverlays,
+        transaction: transaction,
+      );
+    }
+
     final existingLayers = await MapLayer.db.find(
       session,
       transaction: transaction,
@@ -187,11 +214,19 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
     for (final zone in normalizedZones) {
       await MapZone.db.insertRow(session, zone, transaction: transaction);
     }
+    for (final overlay in seasonalOverlays) {
+      await SeasonalOverlay.db.insertRow(
+        session,
+        overlay,
+        transaction: transaction,
+      );
+    }
 
     return MapDataRestoreCounts(
       layers: layers.length,
       markers: normalizedMarkers.length,
       zones: normalizedZones.length,
+      seasonalOverlays: seasonalOverlays.length,
     );
   });
 
@@ -199,6 +234,7 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
     layers: mapCounts.layers,
     markers: mapCounts.markers,
     zones: mapCounts.zones,
+    seasonalOverlays: mapCounts.seasonalOverlays,
     markerIconCategories: iconCounts.categories,
     markerIcons: iconCounts.icons,
   );

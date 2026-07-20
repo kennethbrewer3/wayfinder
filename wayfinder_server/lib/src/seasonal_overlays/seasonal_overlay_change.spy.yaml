@@ -1,0 +1,6 @@
+class: SeasonalOverlayChange
+fields:
+  ### One of: created, updated, deleted, bulk
+  type: String
+  overlay: SeasonalOverlay?
+  overlayId: UuidValue?

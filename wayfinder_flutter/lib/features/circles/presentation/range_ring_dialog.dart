@@ -34,8 +34,8 @@ double litersToFuelVolume(double liters, FuelVolumeUnit unit) {
 FuelVolumeUnit defaultFuelVolumeUnit(MeasurementUnits units) {
   return switch (units) {
     MeasurementUnits.metric => FuelVolumeUnit.liters,
-    MeasurementUnits.imperial || MeasurementUnits.nautical =>
-      FuelVolumeUnit.gallons,
+    MeasurementUnits.imperial ||
+    MeasurementUnits.nautical => FuelVolumeUnit.gallons,
   };
 }
 
@@ -325,7 +325,10 @@ class _RangeRingDialogState extends State<RangeRingDialog> {
                 style: theme.textTheme.bodySmall,
               ),
               const SizedBox(height: 16),
-              Text(l10n.rangeRingCenterLabel, style: theme.textTheme.titleSmall),
+              Text(
+                l10n.rangeRingCenterLabel,
+                style: theme.textTheme.titleSmall,
+              ),
               const SizedBox(height: 8),
               if (anchors.isEmpty)
                 Text(
@@ -541,7 +544,8 @@ class _RangeRingDialogState extends State<RangeRingDialog> {
                       alignment: Alignment.centerLeft,
                       child: TextButton(
                         onPressed: () {
-                          final tank = _assumptionsFromFields().tankLiters ??
+                          final tank =
+                              _assumptionsFromFields().tankLiters ??
                               defaultRangeRingAssumptions(_mode).tankLiters;
                           if (tank == null) {
                             return;

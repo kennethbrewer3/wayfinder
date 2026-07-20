@@ -35,24 +35,28 @@ import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i15;
 import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i16;
-import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay.dart'
     as _i17;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
+import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay_change.dart'
     as _i18;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
+import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
     as _i19;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
     as _i20;
-import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
     as _i21;
-import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
     as _i22;
-import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
     as _i23;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i24;
-import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
+    as _i24;
+import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
     as _i25;
-import 'protocol.dart' as _i26;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i26;
+import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+    as _i27;
+import 'protocol.dart' as _i28;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -742,24 +746,88 @@ class EndpointPmtiles extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointSeasonalOverlay extends _i2.EndpointRef {
+  EndpointSeasonalOverlay(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'seasonalOverlay';
+
+  _i3.Future<List<_i17.SeasonalOverlay>> listOverlays() =>
+      caller.callServerEndpoint<List<_i17.SeasonalOverlay>>(
+        'seasonalOverlay',
+        'listOverlays',
+        {},
+      );
+
+  _i3.Future<_i17.SeasonalOverlay?> getOverlay(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i17.SeasonalOverlay?>(
+        'seasonalOverlay',
+        'getOverlay',
+        {'id': id},
+      );
+
+  _i3.Future<_i17.SeasonalOverlay> createOverlay(
+    _i17.SeasonalOverlay overlay,
+  ) => caller.callServerEndpoint<_i17.SeasonalOverlay>(
+    'seasonalOverlay',
+    'createOverlay',
+    {'overlay': overlay},
+  );
+
+  _i3.Future<_i17.SeasonalOverlay> updateOverlay(
+    _i17.SeasonalOverlay overlay,
+  ) => caller.callServerEndpoint<_i17.SeasonalOverlay>(
+    'seasonalOverlay',
+    'updateOverlay',
+    {'overlay': overlay},
+  );
+
+  _i3.Future<bool> deleteOverlay(_i2.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'seasonalOverlay',
+        'deleteOverlay',
+        {'id': id},
+      );
+
+  _i3.Future<List<_i17.SeasonalOverlay>> reorderOverlays(
+    List<_i17.SeasonalOverlay> overlays,
+  ) => caller.callServerEndpoint<List<_i17.SeasonalOverlay>>(
+    'seasonalOverlay',
+    'reorderOverlays',
+    {'overlays': overlays},
+  );
+
+  _i3.Stream<_i18.SeasonalOverlayChange> overlayChanges() =>
+      caller.callStreamingServerEndpoint<
+        _i3.Stream<_i18.SeasonalOverlayChange>,
+        _i18.SeasonalOverlayChange
+      >(
+        'seasonalOverlay',
+        'overlayChanges',
+        {},
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointAppSettings extends _i2.EndpointRef {
   EndpointAppSettings(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'appSettings';
 
-  _i3.Future<_i17.AppSettings> getSettings() =>
-      caller.callServerEndpoint<_i17.AppSettings>(
+  _i3.Future<_i19.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i19.AppSettings>(
         'appSettings',
         'getSettings',
         {},
       );
 
-  _i3.Future<_i17.AppSettings> updateHomeLocation(
+  _i3.Future<_i19.AppSettings> updateHomeLocation(
     double latitude,
     double longitude,
     double zoom,
-  ) => caller.callServerEndpoint<_i17.AppSettings>(
+  ) => caller.callServerEndpoint<_i19.AppSettings>(
     'appSettings',
     'updateHomeLocation',
     {
@@ -769,21 +837,21 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i17.AppSettings> resetHomeLocation() =>
-      caller.callServerEndpoint<_i17.AppSettings>(
+  _i3.Future<_i19.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i19.AppSettings>(
         'appSettings',
         'resetHomeLocation',
         {},
       );
 
-  _i3.Future<_i17.AppSettings> updatePmtilesStoragePath(String storagePath) =>
-      caller.callServerEndpoint<_i17.AppSettings>(
+  _i3.Future<_i19.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i19.AppSettings>(
         'appSettings',
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
 
-  _i3.Future<_i17.AppSettings> updateClientPreferences(
+  _i3.Future<_i19.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
     String bearingReference,
@@ -797,7 +865,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     bool mapMgrsGridEnabled,
     double mapMinZoom,
     double mapMaxZoom,
-  ) => caller.callServerEndpoint<_i17.AppSettings>(
+  ) => caller.callServerEndpoint<_i19.AppSettings>(
     'appSettings',
     'updateClientPreferences',
     {
@@ -817,22 +885,22 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i18.RestApiKeyInfo> getRestApiKeyStatus() =>
-      caller.callServerEndpoint<_i18.RestApiKeyInfo>(
+  _i3.Future<_i20.RestApiKeyInfo> getRestApiKeyStatus() =>
+      caller.callServerEndpoint<_i20.RestApiKeyInfo>(
         'appSettings',
         'getRestApiKeyStatus',
         {},
       );
 
-  _i3.Future<List<_i19.RestApiKey>> listRestApiKeys() =>
-      caller.callServerEndpoint<List<_i19.RestApiKey>>(
+  _i3.Future<List<_i21.RestApiKey>> listRestApiKeys() =>
+      caller.callServerEndpoint<List<_i21.RestApiKey>>(
         'appSettings',
         'listRestApiKeys',
         {},
       );
 
-  _i3.Future<_i20.RestApiKeyCreated> createRestApiKey(String name) =>
-      caller.callServerEndpoint<_i20.RestApiKeyCreated>(
+  _i3.Future<_i22.RestApiKeyCreated> createRestApiKey(String name) =>
+      caller.callServerEndpoint<_i22.RestApiKeyCreated>(
         'appSettings',
         'createRestApiKey',
         {'name': name},
@@ -845,8 +913,8 @@ class EndpointAppSettings extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<_i18.RestApiKeyInfo> clearRestApiKeys() =>
-      caller.callServerEndpoint<_i18.RestApiKeyInfo>(
+  _i3.Future<_i20.RestApiKeyInfo> clearRestApiKeys() =>
+      caller.callServerEndpoint<_i20.RestApiKeyInfo>(
         'appSettings',
         'clearRestApiKeys',
         {},
@@ -860,31 +928,31 @@ class EndpointTides extends _i2.EndpointRef {
   @override
   String get name => 'tides';
 
-  _i3.Future<List<_i21.TidePackInfo>> listPacks() =>
-      caller.callServerEndpoint<List<_i21.TidePackInfo>>(
+  _i3.Future<List<_i23.TidePackInfo>> listPacks() =>
+      caller.callServerEndpoint<List<_i23.TidePackInfo>>(
         'tides',
         'listPacks',
         {},
       );
 
-  _i3.Future<List<_i22.TideCoastalRegion>> listCoastalRegions() =>
-      caller.callServerEndpoint<List<_i22.TideCoastalRegion>>(
+  _i3.Future<List<_i24.TideCoastalRegion>> listCoastalRegions() =>
+      caller.callServerEndpoint<List<_i24.TideCoastalRegion>>(
         'tides',
         'listCoastalRegions',
         {},
       );
 
-  _i3.Future<_i21.TidePackInfo> importCoastalRegion(String regionId) =>
-      caller.callServerEndpoint<_i21.TidePackInfo>(
+  _i3.Future<_i23.TidePackInfo> importCoastalRegion(String regionId) =>
+      caller.callServerEndpoint<_i23.TidePackInfo>(
         'tides',
         'importCoastalRegion',
         {'regionId': regionId},
       );
 
-  _i3.Future<_i21.TidePackInfo> setPackActive(
+  _i3.Future<_i23.TidePackInfo> setPackActive(
     String packId,
     bool active,
-  ) => caller.callServerEndpoint<_i21.TidePackInfo>(
+  ) => caller.callServerEndpoint<_i23.TidePackInfo>(
     'tides',
     'setPackActive',
     {
@@ -899,12 +967,12 @@ class EndpointTides extends _i2.EndpointRef {
     {'packId': packId},
   );
 
-  _i3.Future<_i23.TideQueryResult> queryAt(
+  _i3.Future<_i25.TideQueryResult> queryAt(
     double lat,
     double lng,
     DateTime date, {
     required int hours,
-  }) => caller.callServerEndpoint<_i23.TideQueryResult>(
+  }) => caller.callServerEndpoint<_i25.TideQueryResult>(
     'tides',
     'queryAt',
     {
@@ -923,29 +991,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i24.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i24.MapZone>>(
+  _i3.Future<List<_i26.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i26.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i24.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i24.MapZone?>(
+  _i3.Future<_i26.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i26.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i24.MapZone> createZone(_i24.MapZone zone) =>
-      caller.callServerEndpoint<_i24.MapZone>(
+  _i3.Future<_i26.MapZone> createZone(_i26.MapZone zone) =>
+      caller.callServerEndpoint<_i26.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i24.MapZone> updateZone(_i24.MapZone zone) =>
-      caller.callServerEndpoint<_i24.MapZone>(
+  _i3.Future<_i26.MapZone> updateZone(_i26.MapZone zone) =>
+      caller.callServerEndpoint<_i26.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -958,10 +1026,10 @@ class EndpointMapZone extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Stream<_i25.MapZoneChange> zoneChanges() =>
+  _i3.Stream<_i27.MapZoneChange> zoneChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i25.MapZoneChange>,
-        _i25.MapZoneChange
+        _i3.Stream<_i27.MapZoneChange>,
+        _i27.MapZoneChange
       >(
         'mapZone',
         'zoneChanges',
@@ -1001,7 +1069,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i26.Protocol(),
+         _i28.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1019,6 +1087,7 @@ class Client extends _i2.ServerpodClientShared {
     mapMarker = EndpointMapMarker(this);
     markerIcon = EndpointMarkerIcon(this);
     pmtiles = EndpointPmtiles(this);
+    seasonalOverlay = EndpointSeasonalOverlay(this);
     appSettings = EndpointAppSettings(this);
     tides = EndpointTides(this);
     mapZone = EndpointMapZone(this);
@@ -1043,6 +1112,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointPmtiles pmtiles;
 
+  late final EndpointSeasonalOverlay seasonalOverlay;
+
   late final EndpointAppSettings appSettings;
 
   late final EndpointTides tides;
@@ -1062,6 +1133,7 @@ class Client extends _i2.ServerpodClientShared {
     'mapMarker': mapMarker,
     'markerIcon': markerIcon,
     'pmtiles': pmtiles,
+    'seasonalOverlay': seasonalOverlay,
     'appSettings': appSettings,
     'tides': tides,
     'mapZone': mapZone,

@@ -394,9 +394,10 @@ From kit details you can:
 
 1. **Select** the kit, then **double-tap** the route you want (primary or alternate), or open details → **Edit route on map** on that route. With multiple routes, use the chips in the edit banner to switch which one you are editing; tapping another route’s line also switches.
 2. **Drag** a numbered **waypoint** to move it. Waypoints are the route stops (often snapped to markers); they keep a numbered order along the route.
-3. **Tap a segment** between points to insert a **control point** (adjust icon) — this shapes the **smooth curve** (same Catmull-Rom style as map lines) without adding a numbered waypoint. Drag control points or waypoints to reshape the curve.
-4. **Tap the last waypoint** to extend the route — then tap the map or markers to append more waypoints. **Done** stops extending (or exits edit).
-5. **Double-tap** a mid-point (waypoint or control point) to remove it (at least two waypoints remain). Endpoints cannot be removed. Removing points until only two remain returns the route to a straight segment.
+3. **Tap a segment** between points to insert a **control point** (adjust icon) — this shapes the **smooth curve** (chordal Catmull-Rom, same as map lines) without adding a numbered waypoint. Drag control points or waypoints to reshape the curve.
+4. **Long-press** a mid-point to convert it between a numbered **waypoint** and a **control point** (and back). Endpoints stay waypoints.
+5. **Tap the last waypoint** to extend the route — then tap the map or markers to append more waypoints. **Done** stops extending (or exits edit).
+6. **Double-tap** a mid-point (waypoint or control point) to remove it (at least two waypoints remain). Endpoints cannot be removed. Removing points until only two remain returns the route to a straight segment.
 
 ETAs use planning speeds (for example on foot ≈ 5 km/h). They are estimates, not live traffic or terrain routing.
 
@@ -644,11 +645,33 @@ After import, the geocoding server builds **trigram search indexes** on startup.
 
 ---
 
+## Seasonal overlays
+
+Dated polygon layers for hunting seasons, freeze/thaw windows, and other seasonal map areas. They are stored on the Wayfinder server (not only on the device) and included in map backups.
+
+### Create a seasonal overlay
+
+1. Long-press the map → **More** → **Season**.
+2. Tap to place polygon vertices (at least three). **Double-tap** or **Finish** when done.
+3. Name the overlay, choose colors, and set **date mode**:
+   - **Absolute** — specific calendar ranges (for example 2026-11-15 → 2026-12-07).
+   - **Recurring** — month/day ranges that repeat every year (may wrap across New Year).
+4. Add one or more date windows, then create.
+
+Active overlays (in season and visible) draw on the map with a name label. Out-of-season overlays stay hidden unless **Show out-of-season overlays** is enabled in Settings → **Seasons** or the sidebar.
+
+### Manage overlays
+
+- **Sidebar** — expand **Seasonal overlays** to show/hide, edit, or zoom.
+- **Settings → Seasons** — full list, out-of-season preview toggle, edit/delete/zoom.
+
+---
+
 ## Settings — Backup
 
 ### Full backup
 
-Backup exports all **layers, markers, zones, and custom marker icons** from the Wayfinder server as a `.zip` archive (legacy `.json` backups can still be restored).
+Backup exports all **layers, markers, zones, seasonal overlays, and custom marker icons** from the Wayfinder server as a `.zip` archive (legacy `.json` backups can still be restored).
 
 #### Export
 

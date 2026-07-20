@@ -193,8 +193,7 @@ String _abbreviationFor({
       sample.timeZone.abbreviation.isNotEmpty) {
     return sample.timeZone.abbreviation;
   }
-  if (auto.timeZoneOffset == offset &&
-      auto.timeZone.abbreviation.isNotEmpty) {
+  if (auto.timeZoneOffset == offset && auto.timeZone.abbreviation.isNotEmpty) {
     return auto.timeZone.abbreviation;
   }
   return formatUtcOffset(offset);

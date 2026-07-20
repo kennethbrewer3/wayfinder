@@ -8,7 +8,9 @@ String formatTideHeightMeters(
   AppLocalizations l10n,
 ) {
   return switch (units) {
-    MeasurementUnits.metric => l10n.tidesHeightMeters(meters.toStringAsFixed(2)),
+    MeasurementUnits.metric => l10n.tidesHeightMeters(
+      meters.toStringAsFixed(2),
+    ),
     MeasurementUnits.imperial || MeasurementUnits.nautical =>
       l10n.tidesHeightFeet((meters / 0.3048).toStringAsFixed(2)),
   };

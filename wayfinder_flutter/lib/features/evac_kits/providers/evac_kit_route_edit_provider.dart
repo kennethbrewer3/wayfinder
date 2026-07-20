@@ -12,5 +12,6 @@ class EvacKitRouteEditIntent {
   final String routeId;
 }
 
-final evacKitRouteEditIntentProvider =
-    StateProvider<EvacKitRouteEditIntent?>((ref) => null);
+final evacKitRouteEditIntentProvider = StateProvider<EvacKitRouteEditIntent?>(
+  (ref) => null,
+);

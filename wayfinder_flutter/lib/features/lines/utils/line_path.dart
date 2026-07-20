@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -7,6 +8,10 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../models/line_geometry.dart';
 import 'bearing_utils.dart';
 import 'line_distance.dart';
+
+/// Chordal Catmull-Rom (α = 1) hugs the control polyline more tightly than
+/// uniform Catmull-Rom, so smooth routes stay closer to the shortest path.
+const _catmullRomAlpha = 1.0;
 
 class LineRenderSegment {
   const LineRenderSegment({
@@ -52,27 +57,27 @@ List<LineRenderSegment> lineRenderSegments(LineGeometry geometry) {
   }
 
   const samplesPerSpan = 12;
-  final extended = [controlPoints.first, ...controlPoints, controlPoints.last];
+  final samples = _catmullRomSpline(controlPoints, samplesPerSpan);
   final segments = <LineRenderSegment>[];
+  if (samples.length < 2) {
+    return const [];
+  }
 
+  // Map each rendered sample back onto the control segment that produced it.
   for (var index = 0; index < controlPoints.length - 1; index++) {
-    final p0 = extended[index];
-    final p1 = extended[index + 1];
-    final p2 = extended[index + 2];
-    final p3 = extended[index + 3];
-    var previous = p1;
-
-    for (var sample = 1; sample <= samplesPerSpan; sample++) {
-      final t = sample / samplesPerSpan;
-      final next = _catmullRomPoint(p0, p1, p2, p3, t);
+    final startSample = index * samplesPerSpan;
+    final endSample = startSample + samplesPerSpan;
+    for (var sample = startSample; sample < endSample; sample++) {
+      if (sample + 1 >= samples.length) {
+        break;
+      }
       segments.add(
         LineRenderSegment(
-          start: previous,
-          end: next,
+          start: samples[sample],
+          end: samples[sample + 1],
           controlSegmentIndex: index,
         ),
       );
-      previous = next;
     }
   }
 
@@ -88,32 +93,54 @@ List<LatLng> _catmullRomSpline(List<LatLng> points, int samplesPerSpan) {
     final p1 = extended[index + 1];
     final p2 = extended[index + 2];
     final p3 = extended[index + 3];
+    final t0 = 0.0;
+    final t1 = _catmullRomKnot(t0, p0, p1);
+    final t2 = _catmullRomKnot(t1, p1, p2);
+    final t3 = _catmullRomKnot(t2, p2, p3);
 
     for (var sample = 0; sample < samplesPerSpan; sample++) {
-      final t = sample / samplesPerSpan;
-      result.add(_catmullRomPoint(p0, p1, p2, p3, t));
+      final t = t1 + (t2 - t1) * (sample / samplesPerSpan);
+      result.add(_catmullRomPoint(p0, p1, p2, p3, t0, t1, t2, t3, t));
     }
   }
   result.add(points.last);
   return result;
 }
 
-LatLng _catmullRomPoint(LatLng p0, LatLng p1, LatLng p2, LatLng p3, double t) {
-  final t2 = t * t;
-  final t3 = t2 * t;
+double _catmullRomKnot(double ti, LatLng pi, LatLng pj) {
+  final distance = lineLengthMeters(pi, pj);
+  // Avoid zero-length knots when consecutive points coincide.
+  return ti + math.pow(math.max(distance, 1e-3), _catmullRomAlpha).toDouble();
+}
 
-  double blend(double v0, double v1, double v2, double v3) {
-    return 0.5 *
-        ((2 * v1) +
-            (-v0 + v2) * t +
-            (2 * v0 - 5 * v1 + 4 * v2 - v3) * t2 +
-            (-v0 + 3 * v1 - 3 * v2 + v3) * t3);
+LatLng _catmullRomPoint(
+  LatLng p0,
+  LatLng p1,
+  LatLng p2,
+  LatLng p3,
+  double t0,
+  double t1,
+  double t2,
+  double t3,
+  double t,
+) {
+  LatLng lerp(LatLng a, LatLng b, double ta, double tb) {
+    if ((tb - ta).abs() < 1e-12) {
+      return a;
+    }
+    final u = (t - ta) / (tb - ta);
+    return LatLng(
+      a.latitude + (b.latitude - a.latitude) * u,
+      a.longitude + (b.longitude - a.longitude) * u,
+    );
   }
 
-  return LatLng(
-    blend(p0.latitude, p1.latitude, p2.latitude, p3.latitude),
-    blend(p0.longitude, p1.longitude, p2.longitude, p3.longitude),
-  );
+  final a1 = lerp(p0, p1, t0, t1);
+  final a2 = lerp(p1, p2, t1, t2);
+  final a3 = lerp(p2, p3, t2, t3);
+  final b1 = lerp(a1, a2, t0, t2);
+  final b2 = lerp(a2, a3, t1, t3);
+  return lerp(b1, b2, t1, t2);
 }
 
 double linePathLengthMeters(LineGeometry geometry) {

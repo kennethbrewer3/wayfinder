@@ -233,8 +233,7 @@ class _InventoryItemCard extends StatelessWidget {
                 ),
                 if (item.expiresAt != null)
                   TextButton(
-                    onPressed: () =>
-                        onChanged(item.copyWith(expiresAt: null)),
+                    onPressed: () => onChanged(item.copyWith(expiresAt: null)),
                     child: Text(l10n.markerInventoryClearExpiry),
                   ),
                 OutlinedButton.icon(

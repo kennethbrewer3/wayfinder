@@ -142,6 +142,12 @@ abstract class AppLocalizations {
   /// **'Tides'**
   String get settingsTabTides;
 
+  /// No description provided for @settingsTabSeasonalOverlays.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasons'**
+  String get settingsTabSeasonalOverlays;
+
   /// No description provided for @settingsTabBackup.
   ///
   /// In en, this message translates to:
@@ -1135,7 +1141,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore all layers, markers, zones, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.'**
+  /// **'Export or restore all layers, markers, zones, seasonal overlays, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -1171,23 +1177,29 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestoreConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'This replaces all layers, markers, zones, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
+  /// **'This replaces all layers, markers, zones, seasonal overlays, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
   String get backupRestoreConfirmMessage;
 
   /// No description provided for @backupRestoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), and {zones} zone(s).'**
-  String backupRestoreSuccess(int layers, int markers, int zones);
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {seasonalOverlays} seasonal overlay(s).'**
+  String backupRestoreSuccess(
+    int layers,
+    int markers,
+    int zones,
+    int seasonalOverlays,
+  );
 
   /// No description provided for @backupRestoreSuccessWithIcons.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {icons} custom icon(s).'**
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {icons} custom icon(s).'**
   String backupRestoreSuccessWithIcons(
     int layers,
     int markers,
     int zones,
+    int seasonalOverlays,
     int icons,
   );
 
@@ -5253,6 +5265,12 @@ abstract class AppLocalizations {
   /// **'Tides'**
   String get mapRadialTides;
 
+  /// No description provided for @mapRadialSeasonalOverlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Season'**
+  String get mapRadialSeasonalOverlay;
+
   /// No description provided for @mapRadialEvacKit.
   ///
   /// In en, this message translates to:
@@ -6820,7 +6838,7 @@ abstract class AppLocalizations {
   /// No description provided for @evacKitEditingHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag a waypoint or control point to move · tap a segment to add a control point · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished'**
+  /// **'Drag a waypoint or control point to move · tap a segment to add a control point · long-press a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished'**
   String get evacKitEditingHint;
 
   /// No description provided for @evacKitExtendingHint.
@@ -8106,6 +8124,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'API key saved on this device.'**
   String get settingsRestApiKeySaved;
+
+  /// No description provided for @seasonalOverlayCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create seasonal overlay'**
+  String get seasonalOverlayCreateTitle;
+
+  /// No description provided for @seasonalOverlayEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit seasonal overlay'**
+  String get seasonalOverlayEditTitle;
+
+  /// No description provided for @seasonalOverlayDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal area'**
+  String get seasonalOverlayDefaultName;
+
+  /// No description provided for @seasonalOverlayVertexCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} vertices'**
+  String seasonalOverlayVertexCount(int count);
+
+  /// No description provided for @seasonalOverlayDrawingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add vertices for this seasonal area. Double-tap or Finish when you have 3+ points.'**
+  String get seasonalOverlayDrawingHint;
+
+  /// No description provided for @seasonalOverlayDateMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Date mode'**
+  String get seasonalOverlayDateMode;
+
+  /// No description provided for @seasonalOverlayDateModeAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Absolute'**
+  String get seasonalOverlayDateModeAbsolute;
+
+  /// No description provided for @seasonalOverlayDateModeRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get seasonalOverlayDateModeRecurring;
+
+  /// No description provided for @seasonalOverlayWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Date windows'**
+  String get seasonalOverlayWindows;
+
+  /// No description provided for @seasonalOverlayAddWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add window'**
+  String get seasonalOverlayAddWindow;
+
+  /// No description provided for @seasonalOverlayEditWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit date window'**
+  String get seasonalOverlayEditWindow;
+
+  /// No description provided for @seasonalOverlayStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get seasonalOverlayStartDate;
+
+  /// No description provided for @seasonalOverlayEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get seasonalOverlayEndDate;
+
+  /// No description provided for @seasonalOverlayStartMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Start month'**
+  String get seasonalOverlayStartMonth;
+
+  /// No description provided for @seasonalOverlayStartDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Start day'**
+  String get seasonalOverlayStartDay;
+
+  /// No description provided for @seasonalOverlayEndMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'End month'**
+  String get seasonalOverlayEndMonth;
+
+  /// No description provided for @seasonalOverlayEndDay.
+  ///
+  /// In en, this message translates to:
+  /// **'End day'**
+  String get seasonalOverlayEndDay;
+
+  /// No description provided for @seasonalOverlayRecurringHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Month/day each year. Ranges may wrap across New Year.'**
+  String get seasonalOverlayRecurringHint;
+
+  /// No description provided for @seasonalOverlayStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'In season'**
+  String get seasonalOverlayStatusActive;
+
+  /// No description provided for @seasonalOverlayStatusInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of season'**
+  String get seasonalOverlayStatusInactive;
+
+  /// No description provided for @seasonalOverlayWindowCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} window(s)'**
+  String seasonalOverlayWindowCount(int count);
+
+  /// No description provided for @seasonalOverlayHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide overlay'**
+  String get seasonalOverlayHide;
+
+  /// No description provided for @seasonalOverlayShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show overlay'**
+  String get seasonalOverlayShow;
+
+  /// No description provided for @seasonalOverlayZoomTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom to overlay'**
+  String get seasonalOverlayZoomTo;
+
+  /// No description provided for @seasonalOverlayDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete seasonal overlay?'**
+  String get seasonalOverlayDeleteTitle;
+
+  /// No description provided for @seasonalOverlayDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”? This cannot be undone.'**
+  String seasonalOverlayDeleteConfirm(String name);
+
+  /// No description provided for @seasonalOverlaysSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal overlays'**
+  String get seasonalOverlaysSettingsTitle;
+
+  /// No description provided for @seasonalOverlaysSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dated polygon layers for hunting seasons, freeze/thaw windows, and other recurring or one-time map seasons. Stored on the server and included in map backups.'**
+  String get seasonalOverlaysSettingsSubtitle;
+
+  /// No description provided for @seasonalOverlaysShowInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Show out-of-season overlays'**
+  String get seasonalOverlaysShowInactive;
+
+  /// No description provided for @seasonalOverlaysShowInactiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When off, overlays outside their date windows stay hidden even if enabled.'**
+  String get seasonalOverlaysShowInactiveHint;
+
+  /// No description provided for @seasonalOverlaysDrawHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press the map → More → Season, then draw a polygon and set date windows.'**
+  String get seasonalOverlaysDrawHint;
+
+  /// No description provided for @seasonalOverlaysInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Overlays'**
+  String get seasonalOverlaysInstalled;
+
+  /// No description provided for @seasonalOverlaysEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No seasonal overlays yet.'**
+  String get seasonalOverlaysEmpty;
+
+  /// No description provided for @seasonalOverlaysLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load seasonal overlays: {error}'**
+  String seasonalOverlaysLoadFailed(String error);
+
+  /// No description provided for @sidebarSeasonalOverlays.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal overlays'**
+  String get sidebarSeasonalOverlays;
+
+  /// No description provided for @sidebarSeasonalOverlaysLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get sidebarSeasonalOverlaysLoading;
+
+  /// No description provided for @sidebarSeasonalOverlaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} overlay(s)'**
+  String sidebarSeasonalOverlaysCount(int count);
 }
 
 class _AppLocalizationsDelegate

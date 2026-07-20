@@ -129,7 +129,8 @@ class RangeRingSpec {
     if (!isRangeRingMode(mode)) {
       return null;
     }
-    final assumptions = RangeRingAssumptions.fromJson(raw['assumptions']) ??
+    final assumptions =
+        RangeRingAssumptions.fromJson(raw['assumptions']) ??
         defaultRangeRingAssumptions(mode);
     final duration = raw['durationHours'];
     final fuel = raw['fuelLiters'];

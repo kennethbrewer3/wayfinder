@@ -9,6 +9,7 @@ import 'map_data_backup_archive.dart';
 import 'map_data_service.dart';
 import 'map_marker_change_broadcast.dart';
 import '../layers/map_layer_change_broadcast.dart';
+import '../seasonal_overlays/seasonal_overlay_change_broadcast.dart';
 import '../zones/map_zone_change_broadcast.dart';
 
 class MapDataEndpoint extends Endpoint with EndpointLogging {
@@ -44,16 +45,19 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         await MapLayerChangeBroadcast.bulk(session);
         await MapMarkerChangeBroadcast.bulk(session);
         await MapZoneChangeBroadcast.bulk(session);
+        await SeasonalOverlayChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,
           zones: counts.zones,
+          seasonalOverlays: counts.seasonalOverlays,
           markerIconCategories: counts.markerIconCategories,
           markerIcons: counts.markerIcons,
         );
       },
       onSuccess: (summary) =>
           'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
+          'seasonalOverlays=${summary.seasonalOverlays} '
           'markerIconCategories=${summary.markerIconCategories} markerIcons=${summary.markerIcons}',
     );
   }
@@ -88,16 +92,19 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         await MapLayerChangeBroadcast.bulk(session);
         await MapMarkerChangeBroadcast.bulk(session);
         await MapZoneChangeBroadcast.bulk(session);
+        await SeasonalOverlayChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,
           zones: counts.zones,
+          seasonalOverlays: counts.seasonalOverlays,
           markerIconCategories: counts.markerIconCategories,
           markerIcons: counts.markerIcons,
         );
       },
       onSuccess: (summary) =>
           'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
+          'seasonalOverlays=${summary.seasonalOverlays} '
           'markerIconCategories=${summary.markerIconCategories} markerIcons=${summary.markerIcons}',
     );
   }

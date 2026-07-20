@@ -129,12 +129,14 @@ class _TideTablesDialogState extends ConsumerState<TideTablesDialog> {
       _error = null;
     });
     try {
-      final result = await ref.read(tidesRepositoryProvider).queryAt(
-        lat: center.latitude,
-        lng: center.longitude,
-        date: _date.toUtc(),
-        hours: 24,
-      );
+      final result = await ref
+          .read(tidesRepositoryProvider)
+          .queryAt(
+            lat: center.latitude,
+            lng: center.longitude,
+            date: _date.toUtc(),
+            hours: 24,
+          );
       if (!mounted) {
         return;
       }
@@ -195,7 +197,10 @@ class _TideTablesDialogState extends ConsumerState<TideTablesDialog> {
               ),
               const SizedBox(height: 16),
               if (anchors.length > 1) ...[
-                Text(l10n.tidesLocationLabel, style: theme.textTheme.titleSmall),
+                Text(
+                  l10n.tidesLocationLabel,
+                  style: theme.textTheme.titleSmall,
+                ),
                 const SizedBox(height: 8),
                 SegmentedButton<TideAnchor>(
                   segments: [

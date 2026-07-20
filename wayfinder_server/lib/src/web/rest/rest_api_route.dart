@@ -10,6 +10,7 @@ import 'marker_icon_categories_rest_handlers.dart';
 import 'marker_icons_rest_handlers.dart';
 import 'pmtiles_rest_handlers.dart';
 import 'rest_json.dart';
+import 'seasonal_overlays_rest_handlers.dart';
 import 'zones_rest_handlers.dart';
 
 /// Public REST API mounted at `/api`.
@@ -46,6 +47,13 @@ class RestApiRoute extends Route {
       ..put('/layers/:id', LayersRestHandlers.update)
       ..patch('/layers/:id', LayersRestHandlers.update)
       ..delete('/layers/:id', LayersRestHandlers.delete)
+      ..get('/seasonal-overlays', SeasonalOverlaysRestHandlers.list)
+      ..post('/seasonal-overlays/reorder', SeasonalOverlaysRestHandlers.reorder)
+      ..get('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.get)
+      ..post('/seasonal-overlays', SeasonalOverlaysRestHandlers.create)
+      ..put('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.update)
+      ..patch('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.update)
+      ..delete('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.delete)
       ..get('/map-data', MapDataRestHandlers.export)
       ..get('/map-data/backup.zip', MapDataRestHandlers.exportArchive)
       ..post('/map-data/restore', MapDataRestHandlers.restore)
@@ -116,6 +124,7 @@ class RestApiRoute extends Route {
         'zones': '/api/zones',
         'categories': '/api/categories',
         'layers': '/api/layers',
+        'seasonalOverlays': '/api/seasonal-overlays',
         'mapData': '/api/map-data',
         'mapDataBackupZip': '/api/map-data/backup.zip',
         'mapDataRestore': '/api/map-data/restore',

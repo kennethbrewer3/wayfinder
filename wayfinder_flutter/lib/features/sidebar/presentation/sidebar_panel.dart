@@ -49,6 +49,8 @@ import '../../markers/utils/effective_marker_icon.dart';
 import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
+import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../utils/map_object_sort.dart';
 
 class SidebarPanel extends ConsumerWidget {
@@ -253,6 +255,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
           ),
         ),
         const _PathProfileSelectionBar(),
+        _SeasonalOverlaysSidebarSection(onZoomTo: onZoomTo),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -2485,4 +2488,121 @@ Color _selectionHighlightColor(ThemeData theme, bool isSelected) {
   return isSelected
       ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
       : Colors.transparent;
+}
+
+class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
+  const _SeasonalOverlaysSidebarSection({required this.onZoomTo});
+
+  final ValueChanged<LatLng> onZoomTo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final overlaysAsync = ref.watch(seasonalOverlaysProvider);
+    final overlays = overlaysAsync.valueOrNull ?? const <SeasonalOverlay>[];
+    final showInactive = ref.watch(showInactiveSeasonalOverlaysProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: ExpansionTile(
+          initiallyExpanded: overlays.isNotEmpty,
+          leading: const Icon(Icons.calendar_month),
+          title: Text(l10n.sidebarSeasonalOverlays),
+          subtitle: Text(
+            overlaysAsync.isLoading
+                ? l10n.sidebarSeasonalOverlaysLoading
+                : l10n.sidebarSeasonalOverlaysCount(overlays.length),
+          ),
+          children: [
+            SwitchListTile(
+              dense: true,
+              title: Text(l10n.seasonalOverlaysShowInactive),
+              value: showInactive,
+              onChanged: (value) {
+                unawaited(
+                  ref
+                      .read(showInactiveSeasonalOverlaysProvider.notifier)
+                      .setEnabled(value),
+                );
+              },
+            ),
+            if (overlays.isEmpty)
+              ListTile(
+                dense: true,
+                title: Text(l10n.seasonalOverlaysEmpty),
+                subtitle: Text(l10n.seasonalOverlaysDrawHint),
+              )
+            else
+              for (final overlay in overlays)
+                ListTile(
+                  dense: true,
+                  leading: Icon(
+                    isSeasonalOverlayCurrentlyActive(overlay)
+                        ? Icons.calendar_month
+                        : Icons.calendar_month_outlined,
+                    size: 20,
+                  ),
+                  title: Text(overlay.name),
+                  subtitle: Text(
+                    isSeasonalOverlayCurrentlyActive(overlay)
+                        ? l10n.seasonalOverlayStatusActive
+                        : l10n.seasonalOverlayStatusInactive,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        tooltip: overlay.visible
+                            ? l10n.seasonalOverlayHide
+                            : l10n.seasonalOverlayShow,
+                        onPressed: () {
+                          unawaited(
+                            ref
+                                .read(seasonalOverlaysProvider.notifier)
+                                .setVisible(overlay.id, !overlay.visible),
+                          );
+                        },
+                        icon: Icon(
+                          overlay.visible
+                              ? Icons.visibility
+                              : Icons.visibility_off_outlined,
+                          size: 20,
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: l10n.actionEdit,
+                        onPressed: () {
+                          unawaited(
+                            updateSeasonalOverlayFromForm(
+                              context: context,
+                              ref: ref,
+                              overlay: overlay,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit_outlined, size: 20),
+                      ),
+                      IconButton(
+                        tooltip: l10n.seasonalOverlayZoomTo,
+                        onPressed: () {
+                          final geometry = PolygonGeometry.fromJsonString(
+                            overlay.geometryJson,
+                          );
+                          if (geometry == null) {
+                            return;
+                          }
+                          onZoomTo(geometry.labelPoint);
+                        },
+                        icon: const Icon(Icons.my_location_outlined, size: 20),
+                      ),
+                    ],
+                  ),
+                ),
+          ],
+        ),
+      ),
+    );
+  }
 }

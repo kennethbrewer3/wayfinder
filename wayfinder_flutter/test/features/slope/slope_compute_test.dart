@@ -88,7 +88,10 @@ void main() {
     final layout = slopeGridLayoutForRange(fiftyMiles);
     expect(layout.size, lessThanOrEqualTo(64));
     expect(layout.size, greaterThanOrEqualTo(8));
-    expect((layout.size - 1) * layout.stepMeters, closeTo(2 * fiftyMiles, 1e-6));
+    expect(
+      (layout.size - 1) * layout.stepMeters,
+      closeTo(2 * fiftyMiles, 1e-6),
+    );
 
     final points = slopeGridSamplePoints(
       center: const LatLng(38.0, -78.0),

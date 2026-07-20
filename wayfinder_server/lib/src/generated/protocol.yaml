@@ -63,6 +63,14 @@ pmtiles:
   - clearActiveFile:
   - disableAllFiles:
   - deleteFile:
+seasonalOverlay:
+  - listOverlays:
+  - getOverlay:
+  - createOverlay:
+  - updateOverlay:
+  - deleteOverlay:
+  - reorderOverlays:
+  - overlayChanges:
 appSettings:
   - getSettings:
   - updateHomeLocation:

@@ -165,7 +165,7 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
         final distanceKm = nearest.distanceMeters / 1000.0;
         final message = distanceKm >= 1
             ? 'Nearest station is ${distanceKm.toStringAsFixed(1)} km away. '
-                'Heights are approximate harmonic predictions.'
+                  'Heights are approximate harmonic predictions.'
             : 'Heights are approximate harmonic predictions.';
 
         return TideQueryResult(

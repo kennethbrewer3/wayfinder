@@ -29,7 +29,8 @@ double predictTideHeightMeters({
 }) {
   final utc = time.toUtc();
   final hours =
-      utc.difference(tidePredictionEpoch).inMicroseconds / Duration.microsecondsPerHour;
+      utc.difference(tidePredictionEpoch).inMicroseconds /
+      Duration.microsecondsPerHour;
   var height = meanLevelMeters;
   for (final c in constituents) {
     // Phase offset is -phaseGmtDeg so NOAA GMT phase lags align with

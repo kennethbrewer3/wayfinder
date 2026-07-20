@@ -360,7 +360,8 @@ class EvacKitGeometry {
       return copyWith(routes: remaining);
     }
 
-    final promoteId = newPrimaryRouteId != null &&
+    final promoteId =
+        newPrimaryRouteId != null &&
             remaining.any((route) => route.id == newPrimaryRouteId)
         ? newPrimaryRouteId
         : remaining.first.id;
@@ -434,7 +435,8 @@ class EvacKitGeometry {
       return null;
     }
     final primaryRouteId = json['primaryRouteId']?.toString();
-    final resolvedPrimary = primaryRouteId != null &&
+    final resolvedPrimary =
+        primaryRouteId != null &&
             routes.any((route) => route.id == primaryRouteId)
         ? primaryRouteId
         : routes.first.id;
@@ -448,7 +450,8 @@ class EvacKitGeometry {
   }
 }
 
-String newEvacRouteId() => 'route_${DateTime.now().toUtc().microsecondsSinceEpoch}';
+String newEvacRouteId() =>
+    'route_${DateTime.now().toUtc().microsecondsSinceEpoch}';
 
 LatLng? evacKitZoneCenter(MapZone zone) {
   return EvacKitGeometry.fromZone(zone)?.labelPoint;

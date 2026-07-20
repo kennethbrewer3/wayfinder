@@ -80,6 +80,29 @@ void main() {
     expect(updated.waypoints[1].point.latitude, 0.2);
   });
 
+  test('toggleEvacPointKind switches control and waypoint', () {
+    final route = EvacRoute(
+      id: 'r1',
+      name: 'Primary',
+      role: EvacRouteRole.primary,
+      pathMode: LinePathMode.smooth,
+      waypoints: const [
+        EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+        EvacWaypoint(kind: EvacWaypointKind.control, point: LatLng(0, 0.5)),
+        EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+      ],
+    );
+    final asWaypoint = toggleEvacPointKind(route: route, waypointIndex: 1);
+    expect(asWaypoint, isNotNull);
+    expect(asWaypoint!.waypoints[1].kind, EvacWaypointKind.point);
+    expect(evacRouteWaypointNumber(asWaypoint, 1), 2);
+
+    final asControl = toggleEvacPointKind(route: asWaypoint, waypointIndex: 1);
+    expect(asControl, isNotNull);
+    expect(asControl!.waypoints[1].kind, EvacWaypointKind.control);
+    expect(toggleEvacPointKind(route: route, waypointIndex: 0), isNull);
+  });
+
   test('evacRouteWaypointNumber skips control points', () {
     final route = EvacRoute(
       id: 'r1',

@@ -1,0 +1,23 @@
+class: SeasonalOverlay
+table: seasonal_overlay
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  color: String
+  borderColor: String
+  fillColor: String
+  visible: bool, defaultModel=true
+  notes: String?
+  ### One of: absolute, recurring
+  dateMode: String
+  ### JSON list of date windows (shape depends on dateMode)
+  dateWindowsJson: String
+  ### Polygon geometry JSON (same shape as MapZone polygon geometryJson)
+  geometryJson: String
+  sortOrder: int
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  seasonal_overlay_sort_order_idx:
+    fields: sortOrder

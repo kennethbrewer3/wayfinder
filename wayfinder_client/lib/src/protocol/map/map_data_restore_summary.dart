@@ -17,6 +17,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
     required this.layers,
     required this.markers,
     required this.zones,
+    required this.seasonalOverlays,
     required this.markerIconCategories,
     required this.markerIcons,
   });
@@ -25,6 +26,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
     required int layers,
     required int markers,
     required int zones,
+    required int seasonalOverlays,
     required int markerIconCategories,
     required int markerIcons,
   }) = _MapDataRestoreSummaryImpl;
@@ -36,6 +38,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
       layers: jsonSerialization['layers'] as int,
       markers: jsonSerialization['markers'] as int,
       zones: jsonSerialization['zones'] as int,
+      seasonalOverlays: jsonSerialization['seasonalOverlays'] as int,
       markerIconCategories: jsonSerialization['markerIconCategories'] as int,
       markerIcons: jsonSerialization['markerIcons'] as int,
     );
@@ -46,6 +49,8 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
   int markers;
 
   int zones;
+
+  int seasonalOverlays;
 
   int markerIconCategories;
 
@@ -58,6 +63,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
     int? layers,
     int? markers,
     int? zones,
+    int? seasonalOverlays,
     int? markerIconCategories,
     int? markerIcons,
   });
@@ -68,6 +74,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
       'layers': layers,
       'markers': markers,
       'zones': zones,
+      'seasonalOverlays': seasonalOverlays,
       'markerIconCategories': markerIconCategories,
       'markerIcons': markerIcons,
     };
@@ -84,12 +91,14 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     required int layers,
     required int markers,
     required int zones,
+    required int seasonalOverlays,
     required int markerIconCategories,
     required int markerIcons,
   }) : super._(
          layers: layers,
          markers: markers,
          zones: zones,
+         seasonalOverlays: seasonalOverlays,
          markerIconCategories: markerIconCategories,
          markerIcons: markerIcons,
        );
@@ -102,6 +111,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     int? layers,
     int? markers,
     int? zones,
+    int? seasonalOverlays,
     int? markerIconCategories,
     int? markerIcons,
   }) {
@@ -109,6 +119,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
       layers: layers ?? this.layers,
       markers: markers ?? this.markers,
       zones: zones ?? this.zones,
+      seasonalOverlays: seasonalOverlays ?? this.seasonalOverlays,
       markerIconCategories: markerIconCategories ?? this.markerIconCategories,
       markerIcons: markerIcons ?? this.markerIcons,
     );

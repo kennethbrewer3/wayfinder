@@ -186,8 +186,9 @@ abstract final class TideNoaaImport {
       if (name == null || amplitude == null || phase == null || speed == null) {
         continue;
       }
-      final amplitudeMeters =
-          convertFeet ? amplitude * _feetToMeters : amplitude;
+      final amplitudeMeters = convertFeet
+          ? amplitude * _feetToMeters
+          : amplitude;
       constituents.add(
         TideConstituent(
           name: name,

@@ -87,8 +87,7 @@ SunMoonResult computeSunMoon({
   final phase = _moonPhaseAt(jd + 0.5);
 
   final polarDay = sun.rise == null && sun.set == null && _sunAlwaysUp(lat, jd);
-  final polarNight =
-      sun.rise == null && sun.set == null && !polarDay;
+  final polarNight = sun.rise == null && sun.set == null && !polarDay;
 
   final nauticalDusk = _ensureAfter(nautical.set, nautical.rise);
   final nightOpsStart = nauticalDusk;
@@ -130,7 +129,11 @@ SunMoonResult computeSunMoon({
 }) {
   final times = rise.times(lat, lon, deltaT, h0, th0, alpha, delta);
   if (times == null) {
-    return (rise: null, transit: _jdToUtc(jd + 0.5 + lon / (2 * math.pi)), set: null);
+    return (
+      rise: null,
+      transit: _jdToUtc(jd + 0.5 + lon / (2 * math.pi)),
+      set: null,
+    );
   }
   return (
     rise: _secondsToUtc(jd, times.rise),
@@ -201,13 +204,11 @@ SunMoonResult computeSunMoon({
 double _moonAgeDays(double jde) {
   final cal = jdToCalendar(jde);
   final day = cal.day.round().clamp(1, 31);
-  final baseYear =
-      cal.year + dayOfYear(cal.year, cal.month, day) / 365.25;
+  final baseYear = cal.year + dayOfYear(cal.year, cal.month, day) / 365.25;
   double? previous;
   for (var step = -4; step <= 4; step++) {
     final newMoonJd = moonphase.newMoon(baseYear + step / 12.0);
-    if (newMoonJd <= jde &&
-        (previous == null || newMoonJd > previous)) {
+    if (newMoonJd <= jde && (previous == null || newMoonJd > previous)) {
       previous = newMoonJd;
     }
   }
@@ -219,7 +220,8 @@ bool _sunAlwaysUp(double latRad, double jd) {
   final eq = solar.apparentEquatorial(jd);
   // Rough: sun never sets when |lat| + dec have the same sign and sum > 90° - h0.
   final h0 = rise.stdh0Solar;
-  final cosH = (math.sin(h0) - math.sin(latRad) * math.sin(eq.dec)) /
+  final cosH =
+      (math.sin(h0) - math.sin(latRad) * math.sin(eq.dec)) /
       (math.cos(latRad) * math.cos(eq.dec));
   return cosH < -1;
 }

@@ -190,6 +190,38 @@ bool canRemoveEvacPoint(EvacRoute route, int waypointIndex) {
   return true;
 }
 
+bool canToggleEvacPointKind(EvacRoute route, int waypointIndex) {
+  if (waypointIndex <= 0 || waypointIndex >= route.waypoints.length - 1) {
+    return false;
+  }
+  return true;
+}
+
+/// Toggles a mid-point between route waypoint ([EvacWaypointKind.point]) and
+/// curve control ([EvacWaypointKind.control]). Endpoints stay waypoints.
+EvacRoute? toggleEvacPointKind({
+  required EvacRoute route,
+  required int waypointIndex,
+}) {
+  if (!canToggleEvacPointKind(route, waypointIndex)) {
+    return null;
+  }
+  final existing = route.waypoints[waypointIndex];
+  final nextKind = existing.kind.isControlPoint
+      ? EvacWaypointKind.point
+      : EvacWaypointKind.control;
+  final updated = [...route.waypoints];
+  updated[waypointIndex] = EvacWaypoint(
+    kind: nextKind,
+    point: existing.point,
+    label: nextKind.isRouteWaypoint ? existing.label : null,
+  );
+  return route.copyWith(
+    waypoints: updated,
+    pathMode: nextKind.isControlPoint ? LinePathMode.smooth : route.pathMode,
+  );
+}
+
 EvacRoute? removeEvacWaypoint({
   required EvacRoute route,
   required int waypointIndex,
@@ -227,7 +259,11 @@ EvacRoute? appendEvacWaypoint({
 }) {
   final waypoints = route.waypoints;
   if (waypoints.isNotEmpty &&
-      areLinePointsTooClose(waypoints.last.point, waypoint.point, minMeters: 1)) {
+      areLinePointsTooClose(
+        waypoints.last.point,
+        waypoint.point,
+        minMeters: 1,
+      )) {
     return null;
   }
   if (waypoints.isNotEmpty &&

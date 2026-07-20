@@ -35,23 +35,27 @@ import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i15;
 import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
     as _i16;
-import 'package:wayfinder_server/src/generated/settings/app_settings.dart'
+import 'package:wayfinder_server/src/generated/seasonal_overlays/seasonal_overlay.dart'
     as _i17;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key_info.dart'
+import 'package:wayfinder_server/src/generated/seasonal_overlays/seasonal_overlay_change.dart'
     as _i18;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+import 'package:wayfinder_server/src/generated/settings/app_settings.dart'
     as _i19;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
+import 'package:wayfinder_server/src/generated/settings/rest_api_key_info.dart'
     as _i20;
-import 'package:wayfinder_server/src/generated/tides/tide_pack_info.dart'
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
     as _i21;
-import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
+import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
     as _i22;
-import 'package:wayfinder_server/src/generated/tides/tide_query_result.dart'
+import 'package:wayfinder_server/src/generated/tides/tide_pack_info.dart'
     as _i23;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i24;
-import 'package:wayfinder_server/src/generated/zones/map_zone_change.dart'
+import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
+    as _i24;
+import 'package:wayfinder_server/src/generated/tides/tide_query_result.dart'
     as _i25;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i26;
+import 'package:wayfinder_server/src/generated/zones/map_zone_change.dart'
+    as _i27;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -184,6 +188,8 @@ class TestEndpoints {
 
   late final _PmtilesEndpoint pmtiles;
 
+  late final _SeasonalOverlayEndpoint seasonalOverlay;
+
   late final _AppSettingsEndpoint appSettings;
 
   late final _TidesEndpoint tides;
@@ -231,6 +237,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     pmtiles = _PmtilesEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    seasonalOverlay = _SeasonalOverlayEndpoint(
       endpoints,
       serializationManager,
     );
@@ -2150,6 +2160,234 @@ class _PmtilesEndpoint {
   }
 }
 
+class _SeasonalOverlayEndpoint {
+  _SeasonalOverlayEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i17.SeasonalOverlay>> listOverlays(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'seasonalOverlay',
+            method: 'listOverlays',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'seasonalOverlay',
+          methodName: 'listOverlays',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i17.SeasonalOverlay>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i17.SeasonalOverlay?> getOverlay(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'seasonalOverlay',
+            method: 'getOverlay',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'seasonalOverlay',
+          methodName: 'getOverlay',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i17.SeasonalOverlay?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i17.SeasonalOverlay> createOverlay(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i17.SeasonalOverlay overlay,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'seasonalOverlay',
+            method: 'createOverlay',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'seasonalOverlay',
+          methodName: 'createOverlay',
+          parameters: _i1.testObjectToJson({'overlay': overlay}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i17.SeasonalOverlay>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i17.SeasonalOverlay> updateOverlay(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i17.SeasonalOverlay overlay,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'seasonalOverlay',
+            method: 'updateOverlay',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'seasonalOverlay',
+          methodName: 'updateOverlay',
+          parameters: _i1.testObjectToJson({'overlay': overlay}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i17.SeasonalOverlay>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteOverlay(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'seasonalOverlay',
+            method: 'deleteOverlay',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'seasonalOverlay',
+          methodName: 'deleteOverlay',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i17.SeasonalOverlay>> reorderOverlays(
+    _i1.TestSessionBuilder sessionBuilder,
+    List<_i17.SeasonalOverlay> overlays,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'seasonalOverlay',
+            method: 'reorderOverlays',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'seasonalOverlay',
+          methodName: 'reorderOverlays',
+          parameters: _i1.testObjectToJson({'overlays': overlays}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i17.SeasonalOverlay>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Stream<_i18.SeasonalOverlayChange> overlayChanges(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) {
+    var _localTestStreamManager =
+        _i1.TestStreamManager<_i18.SeasonalOverlayChange>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'seasonalOverlay',
+              method: 'overlayChanges',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'seasonalOverlay',
+              methodName: 'overlayChanges',
+              arguments: {},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
+  }
+}
+
 class _AppSettingsEndpoint {
   _AppSettingsEndpoint(
     this._endpointDispatch,
@@ -2160,7 +2398,7 @@ class _AppSettingsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i17.AppSettings> getSettings(
+  _i3.Future<_i19.AppSettings> getSettings(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2182,7 +2420,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.AppSettings>);
+                as _i3.Future<_i19.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2190,7 +2428,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i17.AppSettings> updateHomeLocation(
+  _i3.Future<_i19.AppSettings> updateHomeLocation(
     _i1.TestSessionBuilder sessionBuilder,
     double latitude,
     double longitude,
@@ -2219,7 +2457,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.AppSettings>);
+                as _i3.Future<_i19.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2227,7 +2465,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i17.AppSettings> resetHomeLocation(
+  _i3.Future<_i19.AppSettings> resetHomeLocation(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2249,7 +2487,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.AppSettings>);
+                as _i3.Future<_i19.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2257,7 +2495,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i17.AppSettings> updatePmtilesStoragePath(
+  _i3.Future<_i19.AppSettings> updatePmtilesStoragePath(
     _i1.TestSessionBuilder sessionBuilder,
     String storagePath,
   ) async {
@@ -2280,7 +2518,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.AppSettings>);
+                as _i3.Future<_i19.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2288,7 +2526,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i17.AppSettings> updateClientPreferences(
+  _i3.Future<_i19.AppSettings> updateClientPreferences(
     _i1.TestSessionBuilder sessionBuilder,
     String measurementUnits,
     String angleDisplayFormat,
@@ -2337,7 +2575,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.AppSettings>);
+                as _i3.Future<_i19.AppSettings>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2345,7 +2583,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i18.RestApiKeyInfo> getRestApiKeyStatus(
+  _i3.Future<_i20.RestApiKeyInfo> getRestApiKeyStatus(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2367,7 +2605,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.RestApiKeyInfo>);
+                as _i3.Future<_i20.RestApiKeyInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2375,7 +2613,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<List<_i19.RestApiKey>> listRestApiKeys(
+  _i3.Future<List<_i21.RestApiKey>> listRestApiKeys(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2397,7 +2635,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i19.RestApiKey>>);
+                as _i3.Future<List<_i21.RestApiKey>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2405,7 +2643,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i20.RestApiKeyCreated> createRestApiKey(
+  _i3.Future<_i22.RestApiKeyCreated> createRestApiKey(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -2428,7 +2666,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i20.RestApiKeyCreated>);
+                as _i3.Future<_i22.RestApiKeyCreated>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2467,7 +2705,7 @@ class _AppSettingsEndpoint {
     });
   }
 
-  _i3.Future<_i18.RestApiKeyInfo> clearRestApiKeys(
+  _i3.Future<_i20.RestApiKeyInfo> clearRestApiKeys(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2489,7 +2727,7 @@ class _AppSettingsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.RestApiKeyInfo>);
+                as _i3.Future<_i20.RestApiKeyInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2508,7 +2746,7 @@ class _TidesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i21.TidePackInfo>> listPacks(
+  _i3.Future<List<_i23.TidePackInfo>> listPacks(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2530,7 +2768,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i21.TidePackInfo>>);
+                as _i3.Future<List<_i23.TidePackInfo>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2538,7 +2776,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<List<_i22.TideCoastalRegion>> listCoastalRegions(
+  _i3.Future<List<_i24.TideCoastalRegion>> listCoastalRegions(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2560,7 +2798,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i22.TideCoastalRegion>>);
+                as _i3.Future<List<_i24.TideCoastalRegion>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2568,7 +2806,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i21.TidePackInfo> importCoastalRegion(
+  _i3.Future<_i23.TidePackInfo> importCoastalRegion(
     _i1.TestSessionBuilder sessionBuilder,
     String regionId,
   ) async {
@@ -2591,7 +2829,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i21.TidePackInfo>);
+                as _i3.Future<_i23.TidePackInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2599,7 +2837,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i21.TidePackInfo> setPackActive(
+  _i3.Future<_i23.TidePackInfo> setPackActive(
     _i1.TestSessionBuilder sessionBuilder,
     String packId,
     bool active,
@@ -2626,7 +2864,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i21.TidePackInfo>);
+                as _i3.Future<_i23.TidePackInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2665,7 +2903,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i23.TideQueryResult> queryAt(
+  _i3.Future<_i25.TideQueryResult> queryAt(
     _i1.TestSessionBuilder sessionBuilder,
     double lat,
     double lng,
@@ -2696,7 +2934,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i23.TideQueryResult>);
+                as _i3.Future<_i25.TideQueryResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2715,7 +2953,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i24.MapZone>> listZones(
+  _i3.Future<List<_i26.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2737,7 +2975,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i24.MapZone>>);
+                as _i3.Future<List<_i26.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2745,7 +2983,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i24.MapZone?> getZone(
+  _i3.Future<_i26.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -2768,7 +3006,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i24.MapZone?>);
+                as _i3.Future<_i26.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2776,9 +3014,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i24.MapZone> createZone(
+  _i3.Future<_i26.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i24.MapZone zone,
+    _i26.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2799,7 +3037,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i24.MapZone>);
+                as _i3.Future<_i26.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2807,9 +3045,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i24.MapZone> updateZone(
+  _i3.Future<_i26.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i24.MapZone zone,
+    _i26.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2830,7 +3068,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i24.MapZone>);
+                as _i3.Future<_i26.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2869,10 +3107,10 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Stream<_i25.MapZoneChange> zoneChanges(
+  _i3.Stream<_i27.MapZoneChange> zoneChanges(
     _i1.TestSessionBuilder sessionBuilder,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i25.MapZoneChange>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i27.MapZoneChange>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =

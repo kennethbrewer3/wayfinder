@@ -3,5 +3,6 @@ fields:
   layers: int
   markers: int
   zones: int
+  seasonalOverlays: int
   markerIconCategories: int
   markerIcons: int

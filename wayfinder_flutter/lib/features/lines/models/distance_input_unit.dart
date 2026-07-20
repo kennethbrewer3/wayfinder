@@ -41,8 +41,8 @@ List<DistanceInputUnit> distanceInputUnitsFor(MeasurementUnits units) {
 DistanceInputUnit heightInputUnitFor(MeasurementUnits units) {
   return switch (units) {
     MeasurementUnits.metric => DistanceInputUnit.meters,
-    MeasurementUnits.imperial || MeasurementUnits.nautical =>
-      DistanceInputUnit.feet,
+    MeasurementUnits.imperial ||
+    MeasurementUnits.nautical => DistanceInputUnit.feet,
   };
 }
 

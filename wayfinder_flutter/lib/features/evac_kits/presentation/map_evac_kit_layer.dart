@@ -33,9 +33,8 @@ List<Polyline> buildSavedEvacKitPolylines(
         continue;
       }
       final isPrimary = route.id == geometry.primaryRouteId;
-      final isEditing = selected &&
-          editingRouteId != null &&
-          route.id == editingRouteId;
+      final isEditing =
+          selected && editingRouteId != null && route.id == editingRouteId;
       final routeColor = route.color != null
           ? parseMarkerColor(route.color!)
           : (isPrimary
@@ -116,9 +115,7 @@ List<Marker> buildSavedEvacKitWaypointMarkers(
       final isEditing = editingRouteId != null && route.id == editingRouteId;
       final routeColor = route.color != null
           ? parseMarkerColor(route.color!)
-          : (isPrimary
-                ? kitColor
-                : kitColor.withValues(alpha: 0.85));
+          : (isPrimary ? kitColor : kitColor.withValues(alpha: 0.85));
       for (final (index, waypoint) in route.waypoints.indexed) {
         final selected = isEditing && selectedWaypointIndex == index;
         if (waypoint.kind.isControlPoint) {

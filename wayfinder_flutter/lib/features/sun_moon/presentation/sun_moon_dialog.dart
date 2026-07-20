@@ -157,9 +157,8 @@ class _SunMoonDialogState extends State<SunMoonDialog> {
           dstMode: _dstMode,
         );
         final dstLabel = switch (_dstMode) {
-          SunMoonDstMode.auto => converted.isDst
-              ? l10n.sunMoonDstDaylight
-              : l10n.sunMoonDstStandard,
+          SunMoonDstMode.auto =>
+            converted.isDst ? l10n.sunMoonDstDaylight : l10n.sunMoonDstStandard,
           SunMoonDstMode.standard => l10n.sunMoonDstStandard,
           SunMoonDstMode.daylight => l10n.sunMoonDstDaylight,
         };

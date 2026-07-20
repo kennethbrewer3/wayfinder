@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabTides => 'Tides';
 
   @override
+  String get settingsTabSeasonalOverlays => 'Seasons';
+
+  @override
   String get settingsTabBackup => 'Backup';
 
   @override
@@ -576,7 +579,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore all layers, markers, zones, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.';
+      'Export or restore all layers, markers, zones, seasonal overlays, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -597,11 +600,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'This replaces all layers, markers, zones, and custom marker icons on the server with the selected backup file. This cannot be undone.';
+      'This replaces all layers, markers, zones, seasonal overlays, and custom marker icons on the server with the selected backup file. This cannot be undone.';
 
   @override
-  String backupRestoreSuccess(int layers, int markers, int zones) {
-    return 'Restored $layers layer(s), $markers marker(s), and $zones zone(s).';
+  String backupRestoreSuccess(
+    int layers,
+    int markers,
+    int zones,
+    int seasonalOverlays,
+  ) {
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), and $seasonalOverlays seasonal overlay(s).';
   }
 
   @override
@@ -609,9 +617,10 @@ class AppLocalizationsEn extends AppLocalizations {
     int layers,
     int markers,
     int zones,
+    int seasonalOverlays,
     int icons,
   ) {
-    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), and $icons custom icon(s).';
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), and $icons custom icon(s).';
   }
 
   @override
@@ -2994,6 +3003,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialTides => 'Tides';
 
   @override
+  String get mapRadialSeasonalOverlay => 'Season';
+
+  @override
   String get mapRadialEvacKit => 'Evac kit';
 
   @override
@@ -3895,7 +3907,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get evacKitEditingHint =>
-      'Drag a waypoint or control point to move · tap a segment to add a control point · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished';
+      'Drag a waypoint or control point to move · tap a segment to add a control point · long-press a mid-point to convert waypoint ↔ control · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished';
 
   @override
   String get evacKitExtendingHint =>
@@ -4559,4 +4571,130 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsRestApiKeySaved => 'API key saved on this device.';
+
+  @override
+  String get seasonalOverlayCreateTitle => 'Create seasonal overlay';
+
+  @override
+  String get seasonalOverlayEditTitle => 'Edit seasonal overlay';
+
+  @override
+  String get seasonalOverlayDefaultName => 'Seasonal area';
+
+  @override
+  String seasonalOverlayVertexCount(int count) {
+    return '$count vertices';
+  }
+
+  @override
+  String get seasonalOverlayDrawingHint =>
+      'Tap to add vertices for this seasonal area. Double-tap or Finish when you have 3+ points.';
+
+  @override
+  String get seasonalOverlayDateMode => 'Date mode';
+
+  @override
+  String get seasonalOverlayDateModeAbsolute => 'Absolute';
+
+  @override
+  String get seasonalOverlayDateModeRecurring => 'Recurring';
+
+  @override
+  String get seasonalOverlayWindows => 'Date windows';
+
+  @override
+  String get seasonalOverlayAddWindow => 'Add window';
+
+  @override
+  String get seasonalOverlayEditWindow => 'Edit date window';
+
+  @override
+  String get seasonalOverlayStartDate => 'Start date';
+
+  @override
+  String get seasonalOverlayEndDate => 'End date';
+
+  @override
+  String get seasonalOverlayStartMonth => 'Start month';
+
+  @override
+  String get seasonalOverlayStartDay => 'Start day';
+
+  @override
+  String get seasonalOverlayEndMonth => 'End month';
+
+  @override
+  String get seasonalOverlayEndDay => 'End day';
+
+  @override
+  String get seasonalOverlayRecurringHint =>
+      'Month/day each year. Ranges may wrap across New Year.';
+
+  @override
+  String get seasonalOverlayStatusActive => 'In season';
+
+  @override
+  String get seasonalOverlayStatusInactive => 'Out of season';
+
+  @override
+  String seasonalOverlayWindowCount(int count) {
+    return '$count window(s)';
+  }
+
+  @override
+  String get seasonalOverlayHide => 'Hide overlay';
+
+  @override
+  String get seasonalOverlayShow => 'Show overlay';
+
+  @override
+  String get seasonalOverlayZoomTo => 'Zoom to overlay';
+
+  @override
+  String get seasonalOverlayDeleteTitle => 'Delete seasonal overlay?';
+
+  @override
+  String seasonalOverlayDeleteConfirm(String name) {
+    return 'Delete “$name”? This cannot be undone.';
+  }
+
+  @override
+  String get seasonalOverlaysSettingsTitle => 'Seasonal overlays';
+
+  @override
+  String get seasonalOverlaysSettingsSubtitle =>
+      'Dated polygon layers for hunting seasons, freeze/thaw windows, and other recurring or one-time map seasons. Stored on the server and included in map backups.';
+
+  @override
+  String get seasonalOverlaysShowInactive => 'Show out-of-season overlays';
+
+  @override
+  String get seasonalOverlaysShowInactiveHint =>
+      'When off, overlays outside their date windows stay hidden even if enabled.';
+
+  @override
+  String get seasonalOverlaysDrawHint =>
+      'Long-press the map → More → Season, then draw a polygon and set date windows.';
+
+  @override
+  String get seasonalOverlaysInstalled => 'Overlays';
+
+  @override
+  String get seasonalOverlaysEmpty => 'No seasonal overlays yet.';
+
+  @override
+  String seasonalOverlaysLoadFailed(String error) {
+    return 'Could not load seasonal overlays: $error';
+  }
+
+  @override
+  String get sidebarSeasonalOverlays => 'Seasonal overlays';
+
+  @override
+  String get sidebarSeasonalOverlaysLoading => 'Loading…';
+
+  @override
+  String sidebarSeasonalOverlaysCount(int count) {
+    return '$count overlay(s)';
+  }
 }

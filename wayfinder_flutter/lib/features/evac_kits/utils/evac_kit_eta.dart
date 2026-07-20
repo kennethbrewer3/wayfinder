@@ -23,8 +23,7 @@ double evacPlanningSpeedKmh(TrackTransportationMode mode) {
     TrackTransportationMode.fireTruck ||
     TrackTransportationMode.farmVehicle => 90,
     TrackTransportationMode.train => 80,
-    TrackTransportationMode.canoe ||
-    TrackTransportationMode.watercraft => 6,
+    TrackTransportationMode.canoe || TrackTransportationMode.watercraft => 6,
     TrackTransportationMode.sailboat => 10,
     TrackTransportationMode.aircraft => 200,
     TrackTransportationMode.helicopter => 150,

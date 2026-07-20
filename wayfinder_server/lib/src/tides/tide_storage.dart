@@ -165,7 +165,7 @@ class TideStorage {
 
   /// Nearest station among [packs] using haversine distance (meters).
   ({TidePackRecord pack, TideStationRecord station, double distanceMeters})?
-      nearestStation(
+  nearestStation(
     List<TidePackRecord> packs, {
     required double latitude,
     required double longitude,
@@ -209,7 +209,8 @@ class TideStorage {
     const earthRadiusM = 6371000.0;
     final dLat = _toRadians(lat2 - lat1);
     final dLng = _toRadians(lng2 - lng1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_toRadians(lat1)) *
             math.cos(_toRadians(lat2)) *
             math.sin(dLng / 2) *
@@ -329,23 +330,26 @@ class TidePackRecord {
       source: json['source'] as String? ?? 'NOAA CO-OPS',
       datum: json['datum'] as String? ?? 'MLLW',
       units: json['units'] as String? ?? 'meters',
-      stationCount:
-          (json['stationCount'] as num?)?.toInt() ?? stations.length,
+      stationCount: (json['stationCount'] as num?)?.toInt() ?? stations.length,
       sizeBytes: sizeBytes,
       importedAt: DateTime.parse(
         (json['importedAt'] ?? json['addedAt']) as String,
       ).toUtc(),
       isActive: json['isActive'] as bool? ?? false,
-      minLatitude: (json['minLatitude'] as num? ?? bbox?['minLat'] as num?)
+      minLatitude:
+          (json['minLatitude'] as num? ?? bbox?['minLat'] as num?)
               ?.toDouble() ??
           0,
-      minLongitude: (json['minLongitude'] as num? ?? bbox?['minLng'] as num?)
+      minLongitude:
+          (json['minLongitude'] as num? ?? bbox?['minLng'] as num?)
               ?.toDouble() ??
           0,
-      maxLatitude: (json['maxLatitude'] as num? ?? bbox?['maxLat'] as num?)
+      maxLatitude:
+          (json['maxLatitude'] as num? ?? bbox?['maxLat'] as num?)
               ?.toDouble() ??
           0,
-      maxLongitude: (json['maxLongitude'] as num? ?? bbox?['maxLng'] as num?)
+      maxLongitude:
+          (json['maxLongitude'] as num? ?? bbox?['maxLng'] as num?)
               ?.toDouble() ??
           0,
       stations: stations,
@@ -353,31 +357,31 @@ class TidePackRecord {
   }
 
   Map<String, dynamic> toManifestJson() => {
-        'id': id,
-        'name': name,
-        'source': source,
-        'datum': datum,
-        'units': units,
-        'bbox': {
-          'minLat': minLatitude,
-          'minLng': minLongitude,
-          'maxLat': maxLatitude,
-          'maxLng': maxLongitude,
-        },
-        'importedAt': importedAt.toUtc().toIso8601String(),
-        'stationCount': stationCount,
-        'isActive': isActive,
-      };
+    'id': id,
+    'name': name,
+    'source': source,
+    'datum': datum,
+    'units': units,
+    'bbox': {
+      'minLat': minLatitude,
+      'minLng': minLongitude,
+      'maxLat': maxLatitude,
+      'maxLng': maxLongitude,
+    },
+    'importedAt': importedAt.toUtc().toIso8601String(),
+    'stationCount': stationCount,
+    'isActive': isActive,
+  };
 
   Map<String, dynamic> toCatalogJson() => {
-        ...toManifestJson(),
-        'minLatitude': minLatitude,
-        'minLongitude': minLongitude,
-        'maxLatitude': maxLatitude,
-        'maxLongitude': maxLongitude,
-        'sizeBytes': sizeBytes,
-        'addedAt': importedAt.toUtc().toIso8601String(),
-      };
+    ...toManifestJson(),
+    'minLatitude': minLatitude,
+    'minLongitude': minLongitude,
+    'maxLatitude': maxLatitude,
+    'maxLongitude': maxLongitude,
+    'sizeBytes': sizeBytes,
+    'addedAt': importedAt.toUtc().toIso8601String(),
+  };
 }
 
 class TideStationRecord {
@@ -401,7 +405,8 @@ class TideStationRecord {
 
   factory TideStationRecord.fromJson(Map<String, dynamic> json) {
     final constituentsJson =
-        (json['constituents'] as List<dynamic>? ?? const []).cast<Map<String, dynamic>>();
+        (json['constituents'] as List<dynamic>? ?? const [])
+            .cast<Map<String, dynamic>>();
     return TideStationRecord(
       id: json['id'] as String,
       name: json['name'] as String,
@@ -422,20 +427,20 @@ class TideStationRecord {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'lat': lat,
-        'lng': lng,
-        'timezone': timezone,
-        'meanLevelMeters': meanLevelMeters,
-        'constituents': [
-          for (final c in constituents)
-            {
-              'name': c.name,
-              'amplitudeMeters': c.amplitudeMeters,
-              'phaseGmtDeg': c.phaseGmtDeg,
-              'speedDegPerHour': c.speedDegPerHour,
-            },
-        ],
-      };
+    'id': id,
+    'name': name,
+    'lat': lat,
+    'lng': lng,
+    'timezone': timezone,
+    'meanLevelMeters': meanLevelMeters,
+    'constituents': [
+      for (final c in constituents)
+        {
+          'name': c.name,
+          'amplitudeMeters': c.amplitudeMeters,
+          'phaseGmtDeg': c.phaseGmtDeg,
+          'speedDegPerHour': c.speedDegPerHour,
+        },
+    ],
+  };
 }

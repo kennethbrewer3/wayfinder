@@ -3,14 +3,18 @@ import 'package:latlong2/latlong.dart';
 
 import '../../lines/utils/line_snap.dart';
 
+enum PolygonDrawingPurpose { mapZone, seasonalOverlay }
+
 class PolygonDrawingState {
   const PolygonDrawingState({
     this.active = false,
+    this.purpose = PolygonDrawingPurpose.mapZone,
     this.points = const [],
     this.previewPoint,
   });
 
   final bool active;
+  final PolygonDrawingPurpose purpose;
   final List<LatLng> points;
   final LatLng? previewPoint;
 
@@ -18,12 +22,14 @@ class PolygonDrawingState {
 
   PolygonDrawingState copyWith({
     bool? active,
+    PolygonDrawingPurpose? purpose,
     List<LatLng>? points,
     LatLng? previewPoint,
     bool clearPreviewPoint = false,
   }) {
     return PolygonDrawingState(
       active: active ?? this.active,
+      purpose: purpose ?? this.purpose,
       points: points ?? this.points,
       previewPoint: clearPreviewPoint
           ? null
@@ -40,9 +46,13 @@ final polygonDrawingProvider =
 class PolygonDrawingNotifier extends StateNotifier<PolygonDrawingState> {
   PolygonDrawingNotifier() : super(const PolygonDrawingState());
 
-  void begin({LatLng? firstPoint}) {
+  void begin({
+    LatLng? firstPoint,
+    PolygonDrawingPurpose purpose = PolygonDrawingPurpose.mapZone,
+  }) {
     state = PolygonDrawingState(
       active: true,
+      purpose: purpose,
       points: firstPoint == null ? const [] : [firstPoint],
     );
   }

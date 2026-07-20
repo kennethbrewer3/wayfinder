@@ -71,6 +71,9 @@ import '../../polygons/presentation/map_polygon_layer.dart';
 import '../../polygons/providers/polygon_drawing_provider.dart';
 import '../../polygons/utils/polygon_hit_test.dart';
 import '../../polygons/utils/polygon_path.dart';
+import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
+import '../../seasonal_overlays/presentation/map_seasonal_overlay_layer.dart';
+import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
 import '../../rectangles/presentation/map_rectangle_layer.dart';
@@ -303,6 +306,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   EvacKitGeometry? _evacKitEditPreviewGeometry;
   int? _draggingEvacWaypointIndex;
   int? _selectedEvacWaypointIndex;
+  int? _pendingEvacKindToggleIndex;
+  Timer? _evacKindToggleLongPressTimer;
   bool _evacKitExtending = false;
   LatLng? _evacKitExtendPreviewPoint;
   DateTime? _lastEvacKitBodyTapAt;
@@ -324,6 +329,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
     _polygonVertexLongPressTimer?.cancel();
+    _evacKindToggleLongPressTimer?.cancel();
     _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
     super.dispose();
@@ -1203,7 +1209,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
   }
 
-
   MapZone? _selectedPolygonZone() {
     final selected = ref.read(selectedMapObjectProvider);
     if (selected == null || selected.kind != SelectedMapObjectKind.zone) {
@@ -1336,10 +1341,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (zone == null) {
       return;
     }
-    await ref.read(zonesProvider.notifier).updatePolygonGeometry(
-      zoneId: zone.id,
-      geometry: geometry,
-    );
+    await ref
+        .read(zonesProvider.notifier)
+        .updatePolygonGeometry(
+          zoneId: zone.id,
+          geometry: geometry,
+        );
   }
 
   Future<void> _commitPolygonVertexDrag(LatLng point) async {
@@ -1516,7 +1523,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (zone == null) {
       return;
     }
-    _enterEvacKitRouteEditForZone(zone: zone, routeId: routeId, atPoint: atPoint);
+    _enterEvacKitRouteEditForZone(
+      zone: zone,
+      routeId: routeId,
+      atPoint: atPoint,
+    );
   }
 
   void _enterEvacKitRouteEditForZone({
@@ -1572,6 +1583,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _exitEvacKitRouteEdit() {
+    _cancelEvacKindToggleLongPress();
     if (!_evacKitRouteEditActive &&
         _draggingEvacWaypointIndex == null &&
         _evacKitEditPreviewGeometry == null) {
@@ -1593,6 +1605,59 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
   }
 
+  void _cancelEvacKindToggleLongPress() {
+    _evacKindToggleLongPressTimer?.cancel();
+    _evacKindToggleLongPressTimer = null;
+    _pendingEvacKindToggleIndex = null;
+  }
+
+  void _startEvacKindToggleLongPress(int index) {
+    _cancelEvacKindToggleLongPress();
+    final route = _editingEvacRoute();
+    if (route == null || !canToggleEvacPointKind(route, index)) {
+      return;
+    }
+    _pendingEvacKindToggleIndex = index;
+    _evacKindToggleLongPressTimer = Timer(_longPressDuration, () {
+      if (!mounted) {
+        return;
+      }
+      final pending = _pendingEvacKindToggleIndex;
+      _evacKindToggleLongPressTimer = null;
+      _pendingEvacKindToggleIndex = null;
+      if (pending != index) {
+        return;
+      }
+      _longPressTriggered = true;
+      _clearControlPointDoubleTap();
+      unawaited(_toggleEvacPointKindAtIndex(index));
+      _resetEvacEditGestureState(keepEditMode: true);
+    });
+  }
+
+  Future<void> _toggleEvacPointKindAtIndex(int index) async {
+    final geometry = _selectedEvacKitGeometry();
+    final route = _editingEvacRoute();
+    if (geometry == null || route == null) {
+      return;
+    }
+    final updatedRoute = toggleEvacPointKind(
+      route: route,
+      waypointIndex: index,
+    );
+    if (updatedRoute == null) {
+      return;
+    }
+    final updated = geometry.withRoute(updatedRoute);
+    setState(() {
+      _evacKitEditPreviewGeometry = updated;
+      _selectedEvacWaypointIndex = index;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+    });
+    await _persistEvacKitGeometry(updated);
+  }
+
   void _armEvacWaypointEdit(int index) {
     // Freeze map panning immediately so the gesture moves the point instead.
     _cancelPendingLongPress();
@@ -1607,6 +1672,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _evacKitExtendPreviewPoint = null;
       _evacKitEditPreviewGeometry = geometry;
     });
+    _startEvacKindToggleLongPress(index);
   }
 
   void _updateEvacWaypointDrag(LatLng point) {
@@ -1634,10 +1700,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (zone == null) {
       return;
     }
-    await ref.read(zonesProvider.notifier).updateEvacKitGeometry(
-      zoneId: zone.id,
-      geometry: geometry,
-    );
+    await ref
+        .read(zonesProvider.notifier)
+        .updateEvacKitGeometry(
+          zoneId: zone.id,
+          geometry: geometry,
+        );
   }
 
   Future<void> _commitEvacWaypointDrag(LatLng point) async {
@@ -1663,6 +1731,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _resetEvacEditGestureState({required bool keepEditMode}) {
+    _cancelEvacKindToggleLongPress();
     setState(() {
       _draggingEvacWaypointIndex = null;
       if (!keepEditMode) {
@@ -2330,8 +2399,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           (event.localPosition - _tapDownLocal!).distance >
               _longPressMoveTolerance) {
         _clearControlPointDoubleTap();
+        _cancelEvacKindToggleLongPress();
       }
-      _updateEvacWaypointDrag(point);
+      // Skip live drag updates after a long-press kind toggle fired.
+      if (!_longPressTriggered) {
+        _updateEvacWaypointDrag(point);
+      }
     }
 
     if (_evacKitExtending) {
@@ -2491,14 +2564,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (_draggingEvacWaypointIndex != null) {
+      _cancelEvacKindToggleLongPress();
       final index = _draggingEvacWaypointIndex!;
-      if (_isShortPress(event)) {
+      if (_longPressTriggered) {
+        // Kind toggle already handled by the long-press timer.
+        _resetEvacEditGestureState(keepEditMode: true);
+      } else if (_isShortPress(event)) {
         // Tap (not a drag): discard the armed edit and keep tap semantics.
         _resetEvacEditGestureState(keepEditMode: true);
         final route = _editingEvacRoute();
         setState(() => _selectedEvacWaypointIndex = index);
-        final isLast =
-            route != null && index == route.waypoints.length - 1;
+        final isLast = route != null && index == route.waypoints.length - 1;
         if (isLast) {
           _beginEvacKitExtendFromLast();
         } else if (route != null &&
@@ -2598,7 +2674,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _bearingPlotPressActive = false;
     _tapDownLocal = null;
   }
-
 
   Widget _polygonEditingBanner() {
     final theme = Theme.of(context);
@@ -2908,7 +2983,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           if (_polygonVertexEditActive) {
             // Double-click between vertices (on an edge) inserts a point.
             final geometry = _selectedPolygonGeometry();
-            final onEdge = geometry != null &&
+            final onEdge =
+                geometry != null &&
                 _polygonVertexIndexAt(point) == null &&
                 isNearPolygonEdge(
                   geometry: geometry,
@@ -2937,8 +3013,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             final waypointIndex = _evacWaypointIndexAt(point);
             if (waypointIndex != null) {
               final route = _editingEvacRoute();
-              final isLast = route != null &&
-                  waypointIndex == route.waypoints.length - 1;
+              final isLast =
+                  route != null && waypointIndex == route.waypoints.length - 1;
               setState(() => _selectedEvacWaypointIndex = waypointIndex);
               if (isLast) {
                 _beginEvacKitExtendFromLast();
@@ -2946,7 +3022,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               return;
             }
             final route = _editingEvacRoute();
-            final onCurrentRoute = route != null &&
+            final onCurrentRoute =
+                route != null &&
                 isNearEvacRouteSegment(
                   route: route,
                   tap: point,
@@ -3440,7 +3517,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(rectangleDrawingProvider.notifier).reset();
   }
 
-  void _beginPolygonDrawing() {
+  void _beginPolygonDrawing({
+    PolygonDrawingPurpose purpose = PolygonDrawingPurpose.mapZone,
+  }) {
     final point = _selectedMarkerPoint() ?? _radialMenuPoint;
     _closeRadialMenu();
     ref.read(selectedMapObjectProvider.notifier).clear();
@@ -3452,10 +3531,21 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.read(viewshedProvider.notifier).reset();
     ref.read(slopeProvider.notifier).reset();
     ref.read(evacKitDrawingProvider.notifier).reset();
-    ref.read(polygonDrawingProvider.notifier).begin(firstPoint: point);
+    ref
+        .read(polygonDrawingProvider.notifier)
+        .begin(
+          firstPoint: point,
+          purpose: purpose,
+        );
     if (point != null && _cursorLocation != null) {
-      ref.read(polygonDrawingProvider.notifier).setPreviewPoint(_cursorLocation!);
+      ref
+          .read(polygonDrawingProvider.notifier)
+          .setPreviewPoint(_cursorLocation!);
     }
+  }
+
+  void _beginSeasonalOverlayDrawing() {
+    _beginPolygonDrawing(purpose: PolygonDrawingPurpose.seasonalOverlay);
   }
 
   void _cancelPolygonDrawing() {
@@ -3471,9 +3561,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
     final points = List<LatLng>.from(drawing.points);
+    final purpose = drawing.purpose;
     ref.read(polygonDrawingProvider.notifier).reset();
     ref.read(evacKitDrawingProvider.notifier).reset();
     _polygonDrawingPressActive = false;
+    if (purpose == PolygonDrawingPurpose.seasonalOverlay) {
+      await createSeasonalOverlayFromPoints(
+        context: context,
+        ref: ref,
+        points: points,
+      );
+      return;
+    }
     await createPolygonFromPoints(context: context, ref: ref, points: points);
   }
 
@@ -3939,7 +4038,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  l10n.polygonDrawingHint,
+                  polygonDrawing.purpose ==
+                          PolygonDrawingPurpose.seasonalOverlay
+                      ? l10n.seasonalOverlayDrawingHint
+                      : l10n.polygonDrawingHint,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onInverseSurface,
                     fontWeight: FontWeight.w600,
@@ -3948,8 +4050,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
               if (polygonDrawing.points.isNotEmpty)
                 TextButton(
-                  onPressed: () =>
-                      ref.read(polygonDrawingProvider.notifier).undoLastVertex(),
+                  onPressed: () => ref
+                      .read(polygonDrawingProvider.notifier)
+                      .undoLastVertex(),
                   child: Text(
                     l10n.polygonUndoAction,
                     style: TextStyle(color: theme.colorScheme.inversePrimary),
@@ -4068,8 +4171,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           return;
         }
         final current = ref.read(evacKitRouteEditIntentProvider);
-        if (current?.kitId == next.kitId &&
-            current?.routeId == next.routeId) {
+        if (current?.kitId == next.kitId && current?.routeId == next.routeId) {
           ref.read(evacKitRouteEditIntentProvider.notifier).state = null;
         }
       });
@@ -4103,14 +4205,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final selectedZone = selectedLineId == null
         ? null
         : findZoneById(zones, selectedLineId);
-    final selectedLine =
-        selectedZone?.type == lineZoneType ? selectedZone : null;
-    final selectedPolygon =
-        selectedZone?.type == polygonZoneType ? selectedZone : null;
-    final selectedEvacKit =
-        selectedZone?.type == evacKitZoneType ? selectedZone : null;
+    final selectedLine = selectedZone?.type == lineZoneType
+        ? selectedZone
+        : null;
+    final selectedPolygon = selectedZone?.type == polygonZoneType
+        ? selectedZone
+        : null;
+    final selectedEvacKit = selectedZone?.type == evacKitZoneType
+        ? selectedZone
+        : null;
     final lineGeometryOverrides = _lineGeometryOverrides();
-    final polygonGeometryOverride = _polygonEditPreviewGeometry ??
+    final polygonGeometryOverride =
+        _polygonEditPreviewGeometry ??
         (selectedPolygon == null
             ? null
             : PolygonGeometry.fromZone(selectedPolygon));
@@ -4136,6 +4242,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
+    final seasonalOverlays =
+        ref.watch(seasonalOverlaysProvider).valueOrNull ??
+        const <SeasonalOverlay>[];
+    final showInactiveSeasonalOverlays = ref.watch(
+      showInactiveSeasonalOverlaysProvider,
+    );
     final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
@@ -4144,8 +4256,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             zones: zones,
             mapMarkerSizeScale: mapMarkerSizeScale,
             selectedLineId: selectedLine?.id,
-            selectedPolygonId:
-                _polygonVertexEditActive ? selectedPolygon?.id : null,
+            selectedPolygonId: _polygonVertexEditActive
+                ? selectedPolygon?.id
+                : null,
             selectedEvacKitId: selectedEvacKit?.id,
             polygonGeometryOverride: _polygonVertexEditActive
                 ? polygonGeometryOverride
@@ -4153,13 +4266,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             evacKitGeometryOverride: _evacKitRouteEditActive
                 ? _evacKitEditPreviewGeometry
                 : null,
-            evacKitEditingRouteId:
-                _evacKitRouteEditActive ? _evacKitEditingRouteId : null,
+            evacKitEditingRouteId: _evacKitRouteEditActive
+                ? _evacKitEditingRouteId
+                : null,
             evacKitSelectedWaypointIndex: _evacKitRouteEditActive
                 ? _selectedEvacWaypointIndex
                 : null,
-            evacKitExtendPreviewPoint:
-                _evacKitExtending ? _evacKitExtendPreviewPoint : null,
+            evacKitExtendPreviewPoint: _evacKitExtending
+                ? _evacKitExtendPreviewPoint
+                : null,
             selectedMarkerId: selectedMapObject.selectedMarkerId,
             markerSelectionColor: Theme.of(context).colorScheme.primary,
             geometryOverrides: lineGeometryOverrides,
@@ -4364,6 +4479,20 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         },
                       ),
                     ...mapObjectLayerChildren,
+                    if (mapTilesDisplayed && seasonalOverlays.isNotEmpty) ...[
+                      PolygonLayer(
+                        polygons: buildSeasonalOverlayPolygons(
+                          seasonalOverlays,
+                          showInactive: showInactiveSeasonalOverlays,
+                        ),
+                      ),
+                      MarkerLayer(
+                        markers: buildSeasonalOverlayNameMarkers(
+                          seasonalOverlays,
+                          showInactive: showInactiveSeasonalOverlays,
+                        ),
+                      ),
+                    ],
                     if (showMgrsGrid) ...[
                       MapMgrsGridLayer(mapController: _mapController),
                       MapMgrsGridLabelsLayer(mapController: _mapController),
@@ -4885,6 +5014,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           icon: Icons.route,
                           label: l10n.mapRadialEvacKit,
                           onSelected: _beginEvacKit,
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.calendar_month,
+                          label: l10n.mapRadialSeasonalOverlay,
+                          onSelected: _beginSeasonalOverlayDrawing,
                         ),
                         MapRadialMenuAction(
                           icon: Icons.directions_walk,

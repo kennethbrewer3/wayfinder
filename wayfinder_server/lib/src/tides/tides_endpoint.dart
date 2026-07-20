@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:serverpod/serverpod.dart';
 
 import '../core/endpoint_logging.dart';
@@ -6,6 +8,7 @@ import 'tide_coastal_regions.dart';
 import 'tide_extremes.dart';
 import 'tide_harmonic_predict.dart';
 import 'tide_noaa_import.dart';
+import 'tide_pack_archive.dart';
 import 'tide_storage.dart';
 
 class TidesEndpoint extends Endpoint with EndpointLogging {
@@ -95,6 +98,42 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
       () => _storage.deletePack(packId.trim()),
       onSuccess: (deleted) =>
           deleted ? 'deleted id=$packId' : 'not found id=$packId',
+    );
+  }
+
+  /// Downloads one installed pack as a `.wayfinder-tide` zip for offline use.
+  Future<ByteData> exportPack(Session session, String packId) {
+    return loggedCall(
+      session,
+      _tag,
+      'exportPack',
+      () async {
+        final bytes = await exportTidePackArchive(_storage, packId);
+        return ByteData.sublistView(bytes);
+      },
+      onSuccess: (archive) => 'id=$packId bytes=${archive.lengthInBytes}',
+    );
+  }
+
+  /// Installs a pack from a `.wayfinder-tide` / zip archive (no NOAA required).
+  Future<TidePackInfo> importPackArchive(
+    Session session,
+    ByteData archiveBytes,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'importPackArchive',
+      () async {
+        final bytes = archiveBytes.buffer.asUint8List(
+          archiveBytes.offsetInBytes,
+          archiveBytes.lengthInBytes,
+        );
+        final pack = await importTidePackArchive(_storage, bytes);
+        return _toPackInfo(pack);
+      },
+      onSuccess: (pack) =>
+          'id=${pack.id} stations=${pack.stationCount} active=${pack.isActive}',
     );
   }
 

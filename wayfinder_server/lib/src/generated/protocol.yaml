@@ -88,6 +88,8 @@ tides:
   - importCoastalRegion:
   - setPackActive:
   - deletePack:
+  - exportPack:
+  - importPackArchive:
   - queryAt:
 mapZone:
   - listZones:

@@ -967,6 +967,22 @@ class EndpointTides extends _i2.EndpointRef {
     {'packId': packId},
   );
 
+  /// Downloads one installed pack as a `.wayfinder-tide` zip for offline use.
+  _i3.Future<_i10.ByteData> exportPack(String packId) =>
+      caller.callServerEndpoint<_i10.ByteData>(
+        'tides',
+        'exportPack',
+        {'packId': packId},
+      );
+
+  /// Installs a pack from a `.wayfinder-tide` / zip archive (no NOAA required).
+  _i3.Future<_i23.TidePackInfo> importPackArchive(_i10.ByteData archiveBytes) =>
+      caller.callServerEndpoint<_i23.TidePackInfo>(
+        'tides',
+        'importPackArchive',
+        {'archiveBytes': archiveBytes},
+      );
+
   _i3.Future<_i25.TideQueryResult> queryAt(
     double lat,
     double lng,

@@ -579,7 +579,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore all layers, markers, zones, seasonal overlays, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -3112,14 +3112,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tidesSettingsSubtitle =>
-      'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline from NOAA’s perspective (server must reach NOAA once to import).';
+      'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline (server must reach NOAA once to import). Save packs as .wayfinder-tide files to restore later without internet.';
 
   @override
   String get tidesInstalledPacks => 'Installed packs';
 
   @override
+  String get tidesTransferHint =>
+      'Download a pack to your device for offline restore, or upload a .wayfinder-tide file. Tide packs are not part of the map backup zip.';
+
+  @override
+  String get tidesUploadPack => 'Upload pack';
+
+  @override
+  String get tidesExportPack => 'Save pack file';
+
+  @override
+  String tidesExportPackSuccess(String name) {
+    return 'Saved tide pack “$name”.';
+  }
+
+  @override
+  String tidesExportPackFailed(String error) {
+    return 'Could not save tide pack: $error';
+  }
+
+  @override
+  String tidesUploadPackSuccess(String name, int stations) {
+    return 'Restored “$name” with $stations stations.';
+  }
+
+  @override
+  String tidesUploadPackFailed(String error) {
+    return 'Could not upload tide pack: $error';
+  }
+
+  @override
   String get tidesNoPacksInstalled =>
-      'No coastal packs installed yet. Download a region below.';
+      'No coastal packs installed yet. Download a region below or upload a .wayfinder-tide file.';
 
   @override
   String tidesPackMeta(int stations, String size, String date) {

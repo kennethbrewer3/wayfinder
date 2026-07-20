@@ -58,3 +58,8 @@ Future<String?> pickTextFileContents() async {
 Future<BackupPickResult?> pickBackupFile() async {
   return null;
 }
+
+/// Picks a `.wayfinder-tide` or `.zip` tide pack archive from local storage.
+Future<Uint8List?> pickTidePackFile() async {
+  return null;
+}

@@ -266,7 +266,7 @@
   "circleSizeToggleDiameter": "Showing diameter on map · tap for none",
   "circleSizeToggleNone": "Size hidden on map · tap for radius",
   "backupTitle": "Map data backup",
-  "backupDescription": "Export or restore all layers, markers, zones, seasonal overlays, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.",
+  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -1816,9 +1816,47 @@
     }
   },
   "tidesSettingsTitle": "Coastal tide packs",
-  "tidesSettingsSubtitle": "Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline from NOAA’s perspective (server must reach NOAA once to import).",
+  "tidesSettingsSubtitle": "Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline (server must reach NOAA once to import). Save packs as .wayfinder-tide files to restore later without internet.",
   "tidesInstalledPacks": "Installed packs",
-  "tidesNoPacksInstalled": "No coastal packs installed yet. Download a region below.",
+  "tidesTransferHint": "Download a pack to your device for offline restore, or upload a .wayfinder-tide file. Tide packs are not part of the map backup zip.",
+  "tidesUploadPack": "Upload pack",
+  "tidesExportPack": "Save pack file",
+  "tidesExportPackSuccess": "Saved tide pack “{name}”.",
+  "@tidesExportPackSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesExportPackFailed": "Could not save tide pack: {error}",
+  "@tidesExportPackFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesUploadPackSuccess": "Restored “{name}” with {stations} stations.",
+  "@tidesUploadPackSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "stations": {
+        "type": "int"
+      }
+    }
+  },
+  "tidesUploadPackFailed": "Could not upload tide pack: {error}",
+  "@tidesUploadPackFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesNoPacksInstalled": "No coastal packs installed yet. Download a region below or upload a .wayfinder-tide file.",
   "tidesPackMeta": "{stations} stations · {size} · {date}",
   "@tidesPackMeta": {
     "placeholders": {

@@ -449,6 +449,13 @@ Coastal tide packs live on the Wayfinder **server** (NOAA harmonic constituents)
 3. Long-press the map → **More** → **Tides** (or open **Tide tables at route** from a water-mode evac kit). Pick a date to see nearest station highs/lows and a tide curve.
 4. Heights are planning estimates from installed harmonics, not live water-level observations. Confirm locally before committing a crossing.
 
+### Offline pack transfer
+
+Tide packs are **not** included in the map backup zip (keeps backups small and Wayfinder-map-specific). To copy packs between servers or restore when NOAA is unreachable:
+
+1. Next to an installed pack, tap the **download** icon to save a `.wayfinder-tide` file (zip with harmonic station data for that region only).
+2. Later, tap **Upload pack** and choose the `.wayfinder-tide` (or `.zip`) file — no internet required.
+
 ---
 
 ## Sun / moon / twilight
@@ -671,7 +678,7 @@ Active overlays (in season and visible) draw on the map with a name label. Out-o
 
 ### Full backup
 
-Backup exports all **layers, markers, zones, seasonal overlays, and custom marker icons** from the Wayfinder server as a `.zip` archive (legacy `.json` backups can still be restored).
+Backup exports Wayfinder **map data**: layers, markers, zones, seasonal overlays, custom marker icons, and app settings as a `.zip` archive (legacy `.json` backups can still be restored).
 
 #### Export
 
@@ -681,7 +688,7 @@ Tap **Export map data** to download `wayfinder-backup-<timestamp>.zip`. Store it
 
 Tap **Restore from backup**, select a backup file, and confirm. **Restore replaces all existing map objects** on the server with the backup contents.
 
-Backup does **not** include PMTiles files or geocoding database contents — export those separately from their respective settings tabs.
+Backup does **not** include tide packs, PMTiles files, or geocoding database contents — transfer those separately from **Settings → Tides**, **Map tiles**, and **Geocoding**.
 
 ### GPX / KML / GeoJSON
 

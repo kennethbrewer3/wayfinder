@@ -151,6 +151,18 @@ Future<BackupPickResult?> pickBackupFile() async {
   return null;
 }
 
+Future<Uint8List?> pickTidePackFile() async {
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: const ['wayfinder-tide', 'zip'],
+    withData: true,
+  );
+  if (result == null || result.files.isEmpty) {
+    return null;
+  }
+  return _readPickedBytes(result.files.single);
+}
+
 Future<Uint8List?> _readPickedBytes(PlatformFile file) async {
   if (file.bytes != null) {
     return Uint8List.fromList(file.bytes!);

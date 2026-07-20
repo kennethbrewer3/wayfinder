@@ -1720,6 +1720,43 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['packId'],
               ),
         ),
+        'exportPack': _i1.MethodConnector(
+          name: 'exportPack',
+          params: {
+            'packId': _i1.ParameterDescription(
+              name: 'packId',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tides'] as _i13.TidesEndpoint).exportPack(
+                session,
+                params['packId'],
+              ),
+        ),
+        'importPackArchive': _i1.MethodConnector(
+          name: 'importPackArchive',
+          params: {
+            'archiveBytes': _i1.ParameterDescription(
+              name: 'archiveBytes',
+              type: _i1.getType<_i17.ByteData>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tides'] as _i13.TidesEndpoint).importPackArchive(
+                    session,
+                    params['archiveBytes'],
+                  ),
+        ),
         'queryAt': _i1.MethodConnector(
           name: 'queryAt',
           params: {

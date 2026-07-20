@@ -2903,6 +2903,68 @@ class _TidesEndpoint {
     });
   }
 
+  _i3.Future<_i10.ByteData> exportPack(
+    _i1.TestSessionBuilder sessionBuilder,
+    String packId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'tides',
+            method: 'exportPack',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tides',
+          methodName: 'exportPack',
+          parameters: _i1.testObjectToJson({'packId': packId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i10.ByteData>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i23.TidePackInfo> importPackArchive(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i10.ByteData archiveBytes,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'tides',
+            method: 'importPackArchive',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tides',
+          methodName: 'importPackArchive',
+          parameters: _i1.testObjectToJson({'archiveBytes': archiveBytes}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i23.TidePackInfo>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i25.TideQueryResult> queryAt(
     _i1.TestSessionBuilder sessionBuilder,
     double lat,

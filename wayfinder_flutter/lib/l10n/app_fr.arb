@@ -218,7 +218,7 @@
   "circleSizeToggleDiameter": "Diamètre affiché sur la carte · appuyez pour masquer",
   "circleSizeToggleNone": "Taille masquée sur la carte · appuyez pour le rayon",
   "backupTitle": "Sauvegarde des données cartographiques",
-  "backupDescription": "Exporter ou restaurer toutes les couches, marqueurs, zones et icônes personnalisées. Les sauvegardes sont des fichiers .zip contenant backup.json et marker-icons/*.svg. Les anciennes sauvegardes .json restent prises en charge.",
+  "backupDescription": "Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.",
   "backupExportButton": "Exporter les données (.zip)",
   "backupRestoreButton": "Restaurer depuis une sauvegarde",
   "backupExportSuccess": "Sauvegarde des données cartographiques enregistrée.",
@@ -1498,9 +1498,47 @@
     }
   },
   "tidesSettingsTitle": "Packs de marées côtières",
-  "tidesSettingsSubtitle": "Téléchargez des packs harmoniques NOAA sur ce serveur Wayfinder. L'outil Marées interroge ces packs (le serveur doit joindre NOAA à l'import).",
+  "tidesSettingsSubtitle": "Téléchargez des packs harmoniques NOAA sur ce serveur Wayfinder. L'outil Marées interroge ces packs hors ligne (le serveur doit joindre NOAA à l'import). Enregistrez les packs en .wayfinder-tide pour les restaurer sans internet.",
   "tidesInstalledPacks": "Packs installés",
-  "tidesNoPacksInstalled": "Aucun pack. Téléchargez une région ci-dessous.",
+  "tidesTransferHint": "Téléchargez un pack sur l'appareil pour le restaurer hors ligne, ou importez un fichier .wayfinder-tide. Les packs de marées ne font pas partie de la sauvegarde cartographique.",
+  "tidesUploadPack": "Importer un pack",
+  "tidesExportPack": "Enregistrer le fichier du pack",
+  "tidesExportPackSuccess": "Pack de marées « {name} » enregistré.",
+  "@tidesExportPackSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesExportPackFailed": "Impossible d'enregistrer le pack de marées : {error}",
+  "@tidesExportPackFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesUploadPackSuccess": "« {name} » restauré avec {stations} stations.",
+  "@tidesUploadPackSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "stations": {
+        "type": "int"
+      }
+    }
+  },
+  "tidesUploadPackFailed": "Impossible d'importer le pack de marées : {error}",
+  "@tidesUploadPackFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tidesNoPacksInstalled": "Aucun pack. Téléchargez une région ci-dessous ou importez un fichier .wayfinder-tide.",
   "tidesPackMeta": "{stations} stations · {size} · {date}",
   "@tidesPackMeta": {
     "placeholders": {

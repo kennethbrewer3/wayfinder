@@ -1141,7 +1141,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore all layers, markers, zones, seasonal overlays, and custom marker icons. Backups are saved as a .zip file containing backup.json plus marker-icons/*.svg files. Legacy .json backups can still be restored.'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -5442,7 +5442,7 @@ abstract class AppLocalizations {
   /// No description provided for @tidesSettingsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline from NOAA’s perspective (server must reach NOAA once to import).'**
+  /// **'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline (server must reach NOAA once to import). Save packs as .wayfinder-tide files to restore later without internet.'**
   String get tidesSettingsSubtitle;
 
   /// No description provided for @tidesInstalledPacks.
@@ -5451,10 +5451,52 @@ abstract class AppLocalizations {
   /// **'Installed packs'**
   String get tidesInstalledPacks;
 
+  /// No description provided for @tidesTransferHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Download a pack to your device for offline restore, or upload a .wayfinder-tide file. Tide packs are not part of the map backup zip.'**
+  String get tidesTransferHint;
+
+  /// No description provided for @tidesUploadPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload pack'**
+  String get tidesUploadPack;
+
+  /// No description provided for @tidesExportPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Save pack file'**
+  String get tidesExportPack;
+
+  /// No description provided for @tidesExportPackSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved tide pack “{name}”.'**
+  String tidesExportPackSuccess(String name);
+
+  /// No description provided for @tidesExportPackFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save tide pack: {error}'**
+  String tidesExportPackFailed(String error);
+
+  /// No description provided for @tidesUploadPackSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored “{name}” with {stations} stations.'**
+  String tidesUploadPackSuccess(String name, int stations);
+
+  /// No description provided for @tidesUploadPackFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload tide pack: {error}'**
+  String tidesUploadPackFailed(String error);
+
   /// No description provided for @tidesNoPacksInstalled.
   ///
   /// In en, this message translates to:
-  /// **'No coastal packs installed yet. Download a region below.'**
+  /// **'No coastal packs installed yet. Download a region below or upload a .wayfinder-tide file.'**
   String get tidesNoPacksInstalled;
 
   /// No description provided for @tidesPackMeta.

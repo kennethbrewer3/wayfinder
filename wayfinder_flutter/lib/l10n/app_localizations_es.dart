@@ -584,7 +584,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporte o restaure todas las capas, marcadores, zonas e iconos personalizados. Las copias de seguridad se guardan como .zip con backup.json y marker-icons/*.svg. Todavía puede restaurar copias .json antiguas.';
+      'Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.';
 
   @override
   String get backupExportButton => 'Exportar datos del mapa (.zip)';
@@ -3151,14 +3151,44 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tidesSettingsSubtitle =>
-      'Descarga paquetes armónicos NOAA a este servidor Wayfinder. La herramienta Mareas consulta esos paquetes (el servidor debe alcanzar NOAA al importar).';
+      'Descarga paquetes armónicos NOAA a este servidor Wayfinder. La herramienta Mareas consulta esos paquetes sin conexión (el servidor debe alcanzar NOAA al importar). Guarde paquetes como .wayfinder-tide para restaurarlos sin internet.';
 
   @override
   String get tidesInstalledPacks => 'Paquetes instalados';
 
   @override
+  String get tidesTransferHint =>
+      'Descargue un paquete a su dispositivo para restaurarlo sin conexión, o suba un archivo .wayfinder-tide. Los paquetes de mareas no forman parte del zip de copia de seguridad del mapa.';
+
+  @override
+  String get tidesUploadPack => 'Subir paquete';
+
+  @override
+  String get tidesExportPack => 'Guardar archivo del paquete';
+
+  @override
+  String tidesExportPackSuccess(String name) {
+    return 'Paquete de mareas “$name” guardado.';
+  }
+
+  @override
+  String tidesExportPackFailed(String error) {
+    return 'No se pudo guardar el paquete de mareas: $error';
+  }
+
+  @override
+  String tidesUploadPackSuccess(String name, int stations) {
+    return 'Restaurado “$name” con $stations estaciones.';
+  }
+
+  @override
+  String tidesUploadPackFailed(String error) {
+    return 'No se pudo subir el paquete de mareas: $error';
+  }
+
+  @override
   String get tidesNoPacksInstalled =>
-      'Aún no hay paquetes. Descarga una región abajo.';
+      'Aún no hay paquetes. Descarga una región abajo o sube un archivo .wayfinder-tide.';
 
   @override
   String tidesPackMeta(int stations, String size, String date) {

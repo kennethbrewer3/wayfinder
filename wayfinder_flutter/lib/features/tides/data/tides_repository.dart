@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 class TidesRepository {
@@ -17,6 +19,18 @@ class TidesRepository {
       _client.tides.setPackActive(packId, active);
 
   Future<bool> deletePack(String packId) => _client.tides.deletePack(packId);
+
+  Future<Uint8List> exportPackArchive(String packId) async {
+    final archive = await _client.tides.exportPack(packId);
+    return archive.buffer.asUint8List(
+      archive.offsetInBytes,
+      archive.lengthInBytes,
+    );
+  }
+
+  Future<TidePackInfo> importPackArchive(Uint8List archiveBytes) {
+    return _client.tides.importPackArchive(ByteData.sublistView(archiveBytes));
+  }
 
   Future<TideQueryResult> queryAt({
     required double lat,

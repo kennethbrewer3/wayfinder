@@ -5,6 +5,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
+import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
@@ -136,6 +137,42 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
     } catch (error, stackTrace) {
       AppLogger.logZones.error(
         '📡 Failed to update polygon geometry',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      state = previousState;
+    }
+  }
+
+  Future<void> updateEvacKitGeometry({
+    required UuidValue zoneId,
+    required EvacKitGeometry geometry,
+  }) async {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+
+    final index = current.indexWhere((zone) => zone.id == zoneId);
+    if (index < 0) {
+      return;
+    }
+
+    final zone = current[index];
+    final updatedZone = updateZoneEvacKitGeometry(zone, geometry);
+    final previousState = state;
+
+    state = AsyncData([
+      for (var i = 0; i < current.length; i++)
+        if (i == index) updatedZone else current[i],
+    ]);
+
+    try {
+      final client = ref.read(serverClientProvider);
+      await client.mapZone.updateZone(updatedZone);
+    } catch (error, stackTrace) {
+      AppLogger.logZones.error(
+        '📡 Failed to update evac kit geometry',
         error: error,
         stackTrace: stackTrace,
       );

@@ -6111,6 +6111,24 @@ abstract class AppLocalizations {
   /// **'Remove this alternate route from the kit?'**
   String get evacKitRemoveAlternateConfirm;
 
+  /// No description provided for @evacKitEditRouteOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit route on map'**
+  String get evacKitEditRouteOnMap;
+
+  /// No description provided for @evacKitEditingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a waypoint to move · tap a segment to insert · tap the last waypoint to extend · long-press a waypoint to remove (keep 2+) · Done when finished'**
+  String get evacKitEditingHint;
+
+  /// No description provided for @evacKitExtendingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the map or markers to append waypoints after the end. Done stops extending.'**
+  String get evacKitExtendingHint;
+
   /// No description provided for @sidebarEditEvacKit.
   ///
   /// In en, this message translates to:

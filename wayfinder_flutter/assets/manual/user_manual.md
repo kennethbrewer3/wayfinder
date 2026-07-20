@@ -384,6 +384,14 @@ Evac route kits store a primary escape route plus optional alternates, with plan
 
 Open kit details → **Add alternate route**. Drawing starts at the same origin as the primary (waypoint **1**); tap additional waypoints for the alternate path. Alternates appear dashed on the map. Remove an alternate from the details dialog (the primary route cannot be removed this way).
 
+### Edit a route on the map
+
+1. **Select** the kit, then **double-tap** it (or open details → **Edit route on map** for a specific primary/alternate).
+2. **Drag** a numbered waypoint to move it.
+3. **Tap a segment** between waypoints to insert a new point.
+4. **Tap the last waypoint** to extend the route — then tap the map or markers to append more points. **Done** stops extending (or exits edit).
+5. **Long-press** a waypoint to remove it (at least two waypoints remain).
+
 ETAs use planning speeds (for example on foot ≈ 5 km/h). They are estimates, not live traffic or terrain routing.
 
 ---

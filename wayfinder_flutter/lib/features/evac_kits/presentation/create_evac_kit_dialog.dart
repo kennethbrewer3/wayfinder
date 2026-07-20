@@ -19,8 +19,39 @@ import '../../slope/providers/slope_provider.dart';
 import '../../viewshed/providers/viewshed_provider.dart';
 import '../models/evac_kit_geometry.dart';
 import '../providers/evac_kit_drawing_provider.dart';
+import '../providers/evac_kit_route_edit_provider.dart';
 import '../utils/evac_kit_eta.dart';
 import 'evac_kit_form_dialog.dart';
+
+/// Selects [zone] and asks the map canvas to enter route waypoint editing.
+void beginEvacKitRouteEditing({
+  required WidgetRef ref,
+  required MapZone zone,
+  String? routeId,
+}) {
+  final geometry = EvacKitGeometry.fromZone(zone);
+  if (geometry == null || !geometry.isValid) {
+    return;
+  }
+  final targetRouteId = routeId ?? geometry.primaryRouteId;
+  if (!geometry.routes.any((route) => route.id == targetRouteId)) {
+    return;
+  }
+  ref.read(lineDrawingProvider.notifier).reset();
+  ref.read(circleDrawingProvider.notifier).reset();
+  ref.read(rectangleDrawingProvider.notifier).reset();
+  ref.read(polygonDrawingProvider.notifier).reset();
+  ref.read(bearingPlotProvider.notifier).reset();
+  ref.read(deadReckoningProvider.notifier).reset();
+  ref.read(viewshedProvider.notifier).reset();
+  ref.read(slopeProvider.notifier).reset();
+  ref.read(evacKitDrawingProvider.notifier).reset();
+  ref
+      .read(selectedMapObjectProvider.notifier)
+      .selectZone(zone.id, openDetails: false);
+  ref.read(evacKitRouteEditIntentProvider.notifier).state =
+      EvacKitRouteEditIntent(kitId: zone.id, routeId: targetRouteId);
+}
 
 /// Resets other map tools and starts alternate-route drawing for [zone].
 ///

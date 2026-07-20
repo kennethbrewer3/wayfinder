@@ -798,6 +798,14 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
             defaultMode: geometry.defaultMode,
             measurementUnits: measurementUnits,
             l10n: l10n,
+            onEditOnMap: () {
+              Navigator.of(context).pop();
+              beginEvacKitRouteEditing(
+                ref: ref,
+                zone: zone,
+                routeId: route.id,
+              );
+            },
             onRemove: route.id == geometry.primaryRouteId
                 ? null
                 : () => unawaited(
@@ -1173,6 +1181,7 @@ class _EvacKitRouteSection extends StatelessWidget {
     required this.defaultMode,
     required this.measurementUnits,
     required this.l10n,
+    required this.onEditOnMap,
     this.onRemove,
   });
 
@@ -1181,6 +1190,7 @@ class _EvacKitRouteSection extends StatelessWidget {
   final TrackTransportationMode defaultMode;
   final MeasurementUnits measurementUnits;
   final AppLocalizations l10n;
+  final VoidCallback onEditOnMap;
   final VoidCallback? onRemove;
 
   @override
@@ -1265,6 +1275,15 @@ class _EvacKitRouteSection extends StatelessWidget {
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
               ],
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: onEditOnMap,
+                icon: const Icon(Icons.edit_road),
+                label: Text(l10n.evacKitEditRouteOnMap),
+              ),
             ),
           ],
         ),

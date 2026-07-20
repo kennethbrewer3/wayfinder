@@ -3476,6 +3476,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Remove this alternate route from the kit?';
 
   @override
+  String get evacKitEditRouteOnMap => 'Edit route on map';
+
+  @override
+  String get evacKitEditingHint =>
+      'Drag a waypoint to move · tap a segment to insert · tap the last waypoint to extend · long-press a waypoint to remove (keep 2+) · Done when finished';
+
+  @override
+  String get evacKitExtendingHint =>
+      'Tap the map or markers to append waypoints after the end. Done stops extending.';
+
+  @override
   String get sidebarEditEvacKit => 'Edit evac kit';
 
   @override

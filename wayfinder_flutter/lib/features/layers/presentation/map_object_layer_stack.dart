@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../circles/presentation/map_circle_layer.dart';
+import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../evac_kits/presentation/map_evac_kit_layer.dart';
 import '../../tracks/presentation/map_track_layer.dart';
 import '../../lines/models/line_geometry.dart';
@@ -31,6 +32,10 @@ List<Widget> buildStackedMapLayerChildren({
   UuidValue? selectedPolygonId,
   UuidValue? selectedEvacKitId,
   PolygonGeometry? polygonGeometryOverride,
+  EvacKitGeometry? evacKitGeometryOverride,
+  String? evacKitEditingRouteId,
+  int? evacKitSelectedWaypointIndex,
+  LatLng? evacKitExtendPreviewPoint,
   Color? markerSelectionColor,
   Map<UuidValue, LineGeometry>? geometryOverrides,
 }) {
@@ -145,6 +150,9 @@ List<Widget> buildStackedMapLayerChildren({
         polylines: buildSavedEvacKitPolylines(
           layerZones,
           selectedKitId: selectedEvacKitId,
+          geometryOverride: evacKitGeometryOverride,
+          editingRouteId: evacKitEditingRouteId,
+          extendPreviewPoint: evacKitExtendPreviewPoint,
         ),
       ),
     );
@@ -154,6 +162,9 @@ List<Widget> buildStackedMapLayerChildren({
           markers: buildSavedEvacKitWaypointMarkers(
             layerZones,
             selectedKitId: selectedEvacKitId,
+            geometryOverride: evacKitGeometryOverride,
+            editingRouteId: evacKitEditingRouteId,
+            selectedWaypointIndex: evacKitSelectedWaypointIndex,
           ),
         ),
       );

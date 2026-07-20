@@ -23,7 +23,9 @@ import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
 import '../../evac_kits/presentation/map_evac_kit_layer.dart';
 import '../../evac_kits/providers/evac_kit_drawing_provider.dart';
+import '../../evac_kits/providers/evac_kit_route_edit_provider.dart';
 import '../../evac_kits/utils/evac_kit_hit_test.dart';
+import '../../evac_kits/utils/evac_kit_path.dart';
 import '../../geocoding/presentation/submit_geocoding_contribution.dart';
 import '../../geocoding/providers/geocoding_server_provider.dart';
 import '../../layers/presentation/map_object_layer_stack.dart';
@@ -294,6 +296,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Timer? _polygonVertexLongPressTimer;
   DateTime? _lastPolygonBodyTapAt;
   Offset? _lastPolygonBodyTapLocal;
+  bool _evacKitRouteEditActive = false;
+  String? _evacKitEditingRouteId;
+  EvacKitGeometry? _evacKitEditPreviewGeometry;
+  int? _pendingEvacWaypointIndex;
+  int? _draggingEvacWaypointIndex;
+  int? _selectedEvacWaypointIndex;
+  bool _evacKitExtending = false;
+  LatLng? _evacKitExtendPreviewPoint;
+  Timer? _evacWaypointLongPressTimer;
+  DateTime? _lastEvacKitBodyTapAt;
+  Offset? _lastEvacKitBodyTapLocal;
   int _radialMenuPage = 0;
 
   @override
@@ -311,6 +324,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
     _polygonVertexLongPressTimer?.cancel();
+    _evacWaypointLongPressTimer?.cancel();
     _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
     super.dispose();
@@ -805,7 +819,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
     if (_controlPointIndexAt(point) != null ||
-        _polygonVertexIndexAt(point) != null) {
+        _polygonVertexIndexAt(point) != null ||
+        _evacWaypointIndexAt(point) != null) {
       return;
     }
     _pendingSelectionTapOnUp = true;
@@ -882,6 +897,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     setState(() {
       _cursorLocation = point;
       _cursorScreenPosition = local;
+      if (_evacKitExtending) {
+        _evacKitExtendPreviewPoint = point;
+      }
     });
 
     _updateLinePreviewEnd(point);
@@ -1417,6 +1435,354 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return false;
   }
 
+  MapZone? _selectedEvacKitZone() {
+    final selected = ref.read(selectedMapObjectProvider);
+    if (selected == null || selected.kind != SelectedMapObjectKind.zone) {
+      return null;
+    }
+    final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
+    final zone = findZoneById(zones, selected.id);
+    if (zone == null || zone.type != evacKitZoneType) {
+      return null;
+    }
+    return zone;
+  }
+
+  EvacKitGeometry? _selectedEvacKitGeometry() {
+    final preview = _evacKitEditPreviewGeometry;
+    if (preview != null) {
+      return preview;
+    }
+    final zone = _selectedEvacKitZone();
+    if (zone == null) {
+      return null;
+    }
+    return EvacKitGeometry.fromZone(zone);
+  }
+
+  EvacRoute? _editingEvacRoute() {
+    final geometry = _selectedEvacKitGeometry();
+    if (geometry == null) {
+      return null;
+    }
+    final routeId = _evacKitEditingRouteId ?? geometry.primaryRouteId;
+    for (final route in geometry.routes) {
+      if (route.id == routeId) {
+        return route;
+      }
+    }
+    return geometry.primaryRoute;
+  }
+
+  int? _evacWaypointIndexAt(LatLng point) {
+    if (!_evacKitRouteEditActive) {
+      return null;
+    }
+    final route = _editingEvacRoute();
+    if (route == null) {
+      return null;
+    }
+    return hitTestEvacWaypointIndex(
+      waypoints: route.waypoints,
+      tap: point,
+      camera: _mapController.camera,
+    );
+  }
+
+  void _clearEvacKitBodyDoubleTap() {
+    _lastEvacKitBodyTapAt = null;
+    _lastEvacKitBodyTapLocal = null;
+  }
+
+  bool _registerEvacKitBodyDoubleTap(Offset local) {
+    final now = DateTime.now();
+    final previousAt = _lastEvacKitBodyTapAt;
+    final previousLocal = _lastEvacKitBodyTapLocal;
+    final isDoubleTap =
+        previousAt != null &&
+        previousLocal != null &&
+        now.difference(previousAt) <= _controlPointDoubleTapTimeout &&
+        (local - previousLocal).distance <= _controlPointDoubleTapSlop;
+    if (isDoubleTap) {
+      _clearEvacKitBodyDoubleTap();
+      return true;
+    }
+    _lastEvacKitBodyTapAt = now;
+    _lastEvacKitBodyTapLocal = local;
+    return false;
+  }
+
+  void _enterEvacKitRouteEdit({String? routeId}) {
+    final zone = _selectedEvacKitZone();
+    if (zone == null) {
+      return;
+    }
+    final geometry = EvacKitGeometry.fromZone(zone);
+    if (geometry == null || !geometry.isValid) {
+      return;
+    }
+    final targetRouteId = routeId ?? geometry.primaryRouteId;
+    _exitPolygonVertexEdit();
+    setState(() {
+      _evacKitRouteEditActive = true;
+      _evacKitEditingRouteId = targetRouteId;
+      _evacKitEditPreviewGeometry = geometry;
+      _selectedEvacWaypointIndex = null;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+    });
+  }
+
+  void _exitEvacKitRouteEdit() {
+    _cancelEvacWaypointLongPress();
+    if (!_evacKitRouteEditActive &&
+        _pendingEvacWaypointIndex == null &&
+        _draggingEvacWaypointIndex == null &&
+        _evacKitEditPreviewGeometry == null) {
+      return;
+    }
+    setState(() {
+      _evacKitRouteEditActive = false;
+      _evacKitEditingRouteId = null;
+      _evacKitEditPreviewGeometry = null;
+      _pendingEvacWaypointIndex = null;
+      _draggingEvacWaypointIndex = null;
+      _selectedEvacWaypointIndex = null;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+      if (_draggingLineControlIndex == null &&
+          _draggingPolygonVertexIndex == null) {
+        _frozenMapCenterDuringVertexEdit = null;
+        _frozenMapZoomDuringVertexEdit = null;
+      }
+    });
+  }
+
+  void _cancelEvacWaypointLongPress() {
+    _evacWaypointLongPressTimer?.cancel();
+    _evacWaypointLongPressTimer = null;
+    _pendingEvacWaypointIndex = null;
+  }
+
+  void _startEvacWaypointLongPressRemove(int index) {
+    _cancelEvacWaypointLongPress();
+    _cancelPendingLongPress();
+    _pendingEvacWaypointIndex = index;
+    _evacWaypointLongPressTimer = Timer(_longPressDuration, () {
+      if (!mounted) {
+        return;
+      }
+      final pending = _pendingEvacWaypointIndex;
+      _evacWaypointLongPressTimer = null;
+      if (pending != index) {
+        return;
+      }
+      _longPressTriggered = true;
+      _removeEvacWaypointAtIndex(index);
+      _resetEvacEditGestureState(keepEditMode: true);
+    });
+  }
+
+  void _armEvacWaypointEdit(int index) {
+    _cancelPendingLongPress();
+    final camera = _mapController.camera;
+    _frozenMapCenterDuringVertexEdit = camera.center;
+    _frozenMapZoomDuringVertexEdit = camera.zoom;
+    final geometry = _selectedEvacKitGeometry();
+    setState(() {
+      _pendingEvacWaypointIndex = null;
+      _draggingEvacWaypointIndex = index;
+      _selectedEvacWaypointIndex = index;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+      _evacKitEditPreviewGeometry = geometry;
+    });
+  }
+
+  void _updateEvacWaypointDrag(LatLng point) {
+    final index = _draggingEvacWaypointIndex;
+    final geometry = _selectedEvacKitGeometry();
+    final route = _editingEvacRoute();
+    if (index == null || geometry == null || route == null) {
+      return;
+    }
+    final updatedRoute = moveEvacWaypoint(
+      route: route,
+      waypointIndex: index,
+      point: point,
+    );
+    if (updatedRoute == null) {
+      return;
+    }
+    setState(() {
+      _evacKitEditPreviewGeometry = geometry.withRoute(updatedRoute);
+    });
+  }
+
+  Future<void> _persistEvacKitGeometry(EvacKitGeometry geometry) async {
+    final zone = _selectedEvacKitZone();
+    if (zone == null) {
+      return;
+    }
+    await ref.read(zonesProvider.notifier).updateEvacKitGeometry(
+      zoneId: zone.id,
+      geometry: geometry,
+    );
+  }
+
+  Future<void> _commitEvacWaypointDrag(LatLng point) async {
+    final index = _draggingEvacWaypointIndex;
+    final geometry = _selectedEvacKitGeometry();
+    final route = _editingEvacRoute();
+    if (index == null || geometry == null || route == null) {
+      _resetEvacEditGestureState(keepEditMode: true);
+      return;
+    }
+    final updatedRoute = moveEvacWaypoint(
+      route: route,
+      waypointIndex: index,
+      point: point,
+    );
+    _resetEvacEditGestureState(keepEditMode: true);
+    if (updatedRoute == null) {
+      return;
+    }
+    final updated = geometry.withRoute(updatedRoute);
+    setState(() => _evacKitEditPreviewGeometry = updated);
+    await _persistEvacKitGeometry(updated);
+  }
+
+  void _resetEvacEditGestureState({required bool keepEditMode}) {
+    _cancelEvacWaypointLongPress();
+    setState(() {
+      _draggingEvacWaypointIndex = null;
+      if (!keepEditMode) {
+        _evacKitRouteEditActive = false;
+        _evacKitEditingRouteId = null;
+        _evacKitEditPreviewGeometry = null;
+        _selectedEvacWaypointIndex = null;
+        _evacKitExtending = false;
+        _evacKitExtendPreviewPoint = null;
+      }
+      if (_draggingLineControlIndex == null &&
+          _draggingPolygonVertexIndex == null) {
+        _frozenMapCenterDuringVertexEdit = null;
+        _frozenMapZoomDuringVertexEdit = null;
+      }
+    });
+  }
+
+  Future<void> _insertEvacWaypointAt(LatLng point) async {
+    final geometry = _selectedEvacKitGeometry();
+    final route = _editingEvacRoute();
+    if (geometry == null || route == null || !_evacKitRouteEditActive) {
+      return;
+    }
+    final updatedRoute = insertEvacWaypoint(
+      route: route,
+      tap: point,
+      camera: _mapController.camera,
+    );
+    if (updatedRoute == null) {
+      return;
+    }
+    final updated = geometry.withRoute(updatedRoute);
+    setState(() {
+      _evacKitEditPreviewGeometry = updated;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+      _selectedEvacWaypointIndex = null;
+    });
+    await _persistEvacKitGeometry(updated);
+  }
+
+  bool _removeEvacWaypointAtIndex(int index) {
+    final geometry = _selectedEvacKitGeometry();
+    final route = _editingEvacRoute();
+    if (geometry == null || route == null) {
+      return false;
+    }
+    final updatedRoute = removeEvacWaypoint(
+      route: route,
+      waypointIndex: index,
+    );
+    if (updatedRoute == null) {
+      return false;
+    }
+    final updated = geometry.withRoute(updatedRoute);
+    setState(() {
+      _evacKitEditPreviewGeometry = updated;
+      _selectedEvacWaypointIndex = null;
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+    });
+    unawaited(_persistEvacKitGeometry(updated));
+    return true;
+  }
+
+  void _beginEvacKitExtendFromLast() {
+    final route = _editingEvacRoute();
+    if (route == null || route.waypoints.isEmpty) {
+      return;
+    }
+    setState(() {
+      _selectedEvacWaypointIndex = route.waypoints.length - 1;
+      _evacKitExtending = true;
+      _evacKitExtendPreviewPoint = _cursorLocation;
+    });
+  }
+
+  void _stopEvacKitExtending() {
+    setState(() {
+      _evacKitExtending = false;
+      _evacKitExtendPreviewPoint = null;
+    });
+  }
+
+  Future<void> _appendEvacWaypoint(EvacWaypoint waypoint) async {
+    final geometry = _selectedEvacKitGeometry();
+    final route = _editingEvacRoute();
+    if (geometry == null || route == null || !_evacKitExtending) {
+      return;
+    }
+    final updatedRoute = appendEvacWaypoint(route: route, waypoint: waypoint);
+    if (updatedRoute == null) {
+      return;
+    }
+    final updated = geometry.withRoute(updatedRoute);
+    setState(() {
+      _evacKitEditPreviewGeometry = updated;
+      _selectedEvacWaypointIndex = updatedRoute.waypoints.length - 1;
+      _evacKitExtendPreviewPoint = _cursorLocation;
+    });
+    await _persistEvacKitGeometry(updated);
+  }
+
+  Future<void> _appendEvacPointAt(LatLng point) async {
+    await _appendEvacWaypoint(
+      EvacWaypoint(kind: EvacWaypointKind.point, point: point),
+    );
+  }
+
+  Future<void> _appendEvacMarkerWaypoint(MapMarker marker) async {
+    await _appendEvacWaypoint(
+      EvacWaypoint(
+        kind: EvacWaypointKind.marker,
+        point: LatLng(marker.latitude, marker.longitude),
+        markerId: marker.id.toString(),
+        label: marker.name,
+      ),
+    );
+  }
+
+  void _handleEvacKitEditDone() {
+    if (_evacKitExtending) {
+      _stopEvacKitExtending();
+      return;
+    }
+    _exitEvacKitRouteEdit();
+  }
+
   List<LatLng> _lineSnapCandidates() {
     return collectLineEndpointSnapCandidates(_zonesOnMap);
   }
@@ -1844,6 +2210,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    final evacWaypointIndex = _evacWaypointIndexAt(point);
+    if (evacWaypointIndex != null) {
+      _armEvacWaypointEdit(evacWaypointIndex);
+      _startEvacWaypointLongPressRemove(evacWaypointIndex);
+      return;
+    }
+
     final controlPointIndex = _controlPointIndexAt(point);
     if (controlPointIndex != null) {
       // Arm edit immediately so InteractiveFlag.drag turns off before the map
@@ -1933,6 +2306,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _cancelPolygonVertexLongPress();
     }
 
+    if (_pendingEvacWaypointIndex != null &&
+        _tapDownLocal != null &&
+        (event.localPosition - _tapDownLocal!).distance >
+            _longPressMoveTolerance) {
+      _cancelEvacWaypointLongPress();
+    }
+
     if (_draggingPolygonVertexIndex != null) {
       if (_tapDownLocal != null &&
           (event.localPosition - _tapDownLocal!).distance >
@@ -1940,6 +2320,19 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         _clearControlPointDoubleTap();
       }
       _updatePolygonVertexDrag(point);
+    }
+
+    if (_draggingEvacWaypointIndex != null) {
+      if (_tapDownLocal != null &&
+          (event.localPosition - _tapDownLocal!).distance >
+              _longPressMoveTolerance) {
+        _clearControlPointDoubleTap();
+      }
+      _updateEvacWaypointDrag(point);
+    }
+
+    if (_evacKitExtending) {
+      setState(() => _evacKitExtendPreviewPoint = point);
     }
 
     if (_draggingLineControlIndex != null) {
@@ -2094,9 +2487,40 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    if (_draggingEvacWaypointIndex != null) {
+      _cancelEvacWaypointLongPress();
+      final index = _draggingEvacWaypointIndex!;
+      if (_isShortPress(event)) {
+        _resetEvacEditGestureState(keepEditMode: true);
+        final route = _editingEvacRoute();
+        final isLast =
+            route != null && index == route.waypoints.length - 1;
+        setState(() => _selectedEvacWaypointIndex = index);
+        if (isLast) {
+          _beginEvacKitExtendFromLast();
+        }
+      } else {
+        unawaited(_commitEvacWaypointDrag(point));
+      }
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
     if (_pendingPolygonVertexIndex != null) {
       // Long-press remove already handled in the timer, or was cancelled.
       _cancelPolygonVertexLongPress();
+      _primaryPointerGestureHandled = true;
+      _clearPointerDownSelectionState();
+      _resetLineDrawGestureState();
+      _cancelPendingLongPress();
+      return;
+    }
+
+    if (_pendingEvacWaypointIndex != null) {
+      _cancelEvacWaypointLongPress();
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
@@ -2203,6 +2627,48 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
               TextButton(
                 onPressed: _exitPolygonVertexEdit,
+                child: Text(
+                  l10n.actionDone,
+                  style: TextStyle(color: theme.colorScheme.inversePrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _evacKitEditingBanner() {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    return Material(
+      elevation: 2,
+      color: theme.colorScheme.inverseSurface,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.route,
+                color: theme.colorScheme.onInverseSurface,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _evacKitExtending
+                      ? l10n.evacKitExtendingHint
+                      : l10n.evacKitEditingHint,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _handleEvacKitEditDone,
                 child: Text(
                   l10n.actionDone,
                   style: TextStyle(color: theme.colorScheme.inversePrimary),
@@ -2369,8 +2835,17 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             }
             return;
           }
+          if (zone?.type == evacKitZoneType) {
+            final local = _selectionPointerDownLocal ?? Offset.zero;
+            _selectMapObject(hit);
+            if (_registerEvacKitBodyDoubleTap(local)) {
+              _enterEvacKitRouteEdit();
+            }
+            return;
+          }
         }
         _clearPolygonBodyDoubleTap();
+        _clearEvacKitBodyDoubleTap();
         _selectMapObject(hit);
       }
       return;
@@ -2378,6 +2853,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     if (hit == null) {
       _exitPolygonVertexEdit();
+      _exitEvacKitRouteEdit();
       notifier.clear();
       return;
     }
@@ -2414,13 +2890,51 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           // Keep selection; waiting for possible second tap to enter edit.
           return;
         }
+        if (zone?.type == evacKitZoneType) {
+          final local = _selectionPointerDownLocal ?? Offset.zero;
+          if (_evacKitRouteEditActive) {
+            if (_evacKitExtending) {
+              unawaited(_appendEvacPointAt(point));
+              return;
+            }
+            final waypointIndex = _evacWaypointIndexAt(point);
+            if (waypointIndex != null) {
+              final route = _editingEvacRoute();
+              final isLast = route != null &&
+                  waypointIndex == route.waypoints.length - 1;
+              setState(() => _selectedEvacWaypointIndex = waypointIndex);
+              if (isLast) {
+                _beginEvacKitExtendFromLast();
+              }
+              return;
+            }
+            final route = _editingEvacRoute();
+            if (route != null &&
+                isNearEvacRouteSegment(
+                  waypoints: route.waypoints,
+                  tap: point,
+                  camera: _mapController.camera,
+                )) {
+              unawaited(_insertEvacWaypointAt(point));
+              return;
+            }
+            return;
+          }
+          if (_registerEvacKitBodyDoubleTap(local)) {
+            _enterEvacKitRouteEdit();
+            return;
+          }
+          return;
+        }
       }
       _exitPolygonVertexEdit();
+      _exitEvacKitRouteEdit();
       notifier.clear();
       return;
     }
 
     _exitPolygonVertexEdit();
+    _exitEvacKitRouteEdit();
     _selectMapObject(hit);
   }
 
@@ -3433,6 +3947,25 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     ref.watch(markerIconRevisionProvider);
     ref.watch(markerIconCatalogProvider);
+    ref.listen<EvacKitRouteEditIntent?>(evacKitRouteEditIntentProvider, (
+      previous,
+      next,
+    ) {
+      if (next == null) {
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        final selected = ref.read(selectedMapObjectProvider);
+        if (selected?.kind == SelectedMapObjectKind.zone &&
+            selected?.id == next.kitId) {
+          _enterEvacKitRouteEdit(routeId: next.routeId);
+        }
+        ref.read(evacKitRouteEditIntentProvider.notifier).state = null;
+      });
+    });
     final mapLayers = _visibleMapLayers;
     final enabledEntries = widget.enabledEntries;
     final mapZoomRange = ref.watch(mapZoomRangeProvider);
@@ -3509,6 +4042,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             polygonGeometryOverride: _polygonVertexEditActive
                 ? polygonGeometryOverride
                 : null,
+            evacKitGeometryOverride: _evacKitRouteEditActive
+                ? _evacKitEditPreviewGeometry
+                : null,
+            evacKitEditingRouteId:
+                _evacKitRouteEditActive ? _evacKitEditingRouteId : null,
+            evacKitSelectedWaypointIndex: _evacKitRouteEditActive
+                ? _selectedEvacWaypointIndex
+                : null,
+            evacKitExtendPreviewPoint:
+                _evacKitExtending ? _evacKitExtendPreviewPoint : null,
             selectedMarkerId: selectedMapObject.selectedMarkerId,
             markerSelectionColor: Theme.of(context).colorScheme.primary,
             geometryOverrides: lineGeometryOverrides,
@@ -3517,6 +4060,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 ref
                     .read(evacKitDrawingProvider.notifier)
                     .addMarkerWaypoint(marker);
+                return;
+              }
+              if (_evacKitExtending) {
+                unawaited(_appendEvacMarkerWaypoint(marker));
                 return;
               }
               _selectMapObject(
@@ -3617,11 +4164,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             deadReckoning.active ||
                             _draggingLineControlIndex != null ||
                             _draggingPolygonVertexIndex != null ||
-                            _pendingPolygonVertexIndex != null) {
+                            _pendingPolygonVertexIndex != null ||
+                            _draggingEvacWaypointIndex != null ||
+                            _pendingEvacWaypointIndex != null) {
                           flags &= ~InteractiveFlag.drag;
                         }
                         // Free double-tap for vertex removal while editing.
-                        if (selectedLine != null || _polygonVertexEditActive) {
+                        if (selectedLine != null ||
+                            _polygonVertexEditActive ||
+                            _evacKitRouteEditActive) {
                           flags &= ~InteractiveFlag.doubleTapZoom;
                         }
                         return flags;
@@ -3629,7 +4180,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     ),
                     onPositionChanged: (position, hasGesture) {
                       if (_draggingLineControlIndex != null ||
-                          _draggingPolygonVertexIndex != null) {
+                          _draggingPolygonVertexIndex != null ||
+                          _draggingEvacWaypointIndex != null) {
                         _holdMapStillDuringVertexEdit();
                         return;
                       }
@@ -4348,6 +4900,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 right: 0,
                 top: 0,
                 child: _rectangleDrawingBanner(rectangleDrawing),
+              ),
+            if (_evacKitRouteEditActive)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _evacKitEditingBanner(),
               ),
             if (polygonDrawing.active)
               Positioned(

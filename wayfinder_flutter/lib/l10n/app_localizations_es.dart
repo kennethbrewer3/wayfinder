@@ -3517,6 +3517,17 @@ class AppLocalizationsEs extends AppLocalizations {
       '¿Quitar esta ruta alternativa del kit?';
 
   @override
+  String get evacKitEditRouteOnMap => 'Editar ruta en el mapa';
+
+  @override
+  String get evacKitEditingHint =>
+      'Arrastra un punto para mover · toca un segmento para insertar · toca el último punto para alargar · mantén pulsado un punto para quitar (mín. 2) · Listo al terminar';
+
+  @override
+  String get evacKitExtendingHint =>
+      'Toca el mapa o marcadores para añadir puntos al final. Listo deja de alargar.';
+
+  @override
   String get sidebarEditEvacKit => 'Editar kit de evacuación';
 
   @override

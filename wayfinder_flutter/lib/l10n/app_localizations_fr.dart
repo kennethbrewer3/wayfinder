@@ -3528,6 +3528,17 @@ class AppLocalizationsFr extends AppLocalizations {
       'Supprimer cette route alternative du kit ?';
 
   @override
+  String get evacKitEditRouteOnMap => 'Modifier la route sur la carte';
+
+  @override
+  String get evacKitEditingHint =>
+      'Glisser un point pour déplacer · toucher un segment pour insérer · toucher le dernier point pour prolonger · appui long pour retirer (min. 2) · Terminé quand fini';
+
+  @override
+  String get evacKitExtendingHint =>
+      'Touchez la carte ou des marqueurs pour ajouter des points à la fin. Terminé arrête le prolongement.';
+
+  @override
   String get sidebarEditEvacKit => 'Modifier le kit d\'évacuation';
 
   @override

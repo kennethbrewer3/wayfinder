@@ -24,17 +24,29 @@ enum EvacRouteRole {
 }
 
 enum EvacWaypointKind {
+  /// Named/stop waypoint (often snapped to a marker).
   marker,
-  point;
+
+  /// Free route waypoint placed while drawing or extending.
+  point,
+
+  /// Curve-shaping handle (not a numbered route waypoint).
+  control;
 
   String toJson() => name;
 
   static EvacWaypointKind fromJson(Object? raw) {
     return switch (raw) {
       'marker' => EvacWaypointKind.marker,
+      'control' => EvacWaypointKind.control,
       _ => EvacWaypointKind.point,
     };
   }
+
+  bool get isRouteWaypoint =>
+      this == EvacWaypointKind.marker || this == EvacWaypointKind.point;
+
+  bool get isControlPoint => this == EvacWaypointKind.control;
 }
 
 class EvacWaypoint {

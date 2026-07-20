@@ -2329,7 +2329,7 @@
   },
   "evacKitCannotRemoveLastRoute": "A kit must keep at least one route.",
   "evacKitEditRouteOnMap": "Edit route on map",
-  "evacKitEditingHint": "Drag a waypoint to move · tap a segment to insert · tap the last waypoint to extend · long-press a waypoint to remove (keep 2+) · Done when finished",
+  "evacKitEditingHint": "Drag a waypoint or control point to move · tap a segment to add a control point · tap the last waypoint to extend · double-tap a mid-point to remove (keep 2+ waypoints) · Done when finished",
   "evacKitExtendingHint": "Tap the map or markers to append waypoints after the end. Done stops extending.",
   "sidebarEditEvacKit": "Edit evac kit",
   "sidebarDeleteEvacKit": "Delete evac kit",

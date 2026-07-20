@@ -130,7 +130,8 @@ bool isNearEvacRouteSegment({
       null;
 }
 
-EvacRoute? insertEvacWaypoint({
+/// Inserts a curve [EvacWaypointKind.control] on the closest render segment.
+EvacRoute? insertEvacControlPoint({
   required EvacRoute route,
   required LatLng tap,
   required MapCamera camera,
@@ -147,7 +148,7 @@ EvacRoute? insertEvacWaypoint({
     ..insert(
       hit.segmentIndex + 1,
       EvacWaypoint(
-        kind: EvacWaypointKind.point,
+        kind: EvacWaypointKind.control,
         point: hit.projected,
       ),
     );
@@ -167,22 +168,33 @@ EvacRoute? moveEvacWaypoint({
   }
   final existing = route.waypoints[waypointIndex];
   final updated = [...route.waypoints];
-  // Dragging a marker-linked waypoint converts it to a free point.
-  updated[waypointIndex] = EvacWaypoint(
-    kind: EvacWaypointKind.point,
-    point: point,
-    label: existing.label,
-  );
+  if (existing.kind.isControlPoint) {
+    updated[waypointIndex] = existing.copyWith(point: point);
+  } else {
+    // Dragging a marker-linked waypoint converts it to a free waypoint.
+    updated[waypointIndex] = EvacWaypoint(
+      kind: EvacWaypointKind.point,
+      point: point,
+      label: existing.label,
+    );
+  }
   return route.copyWith(waypoints: updated);
+}
+
+bool canRemoveEvacPoint(EvacRoute route, int waypointIndex) {
+  if (waypointIndex <= 0 ||
+      waypointIndex >= route.waypoints.length - 1 ||
+      route.waypoints.length <= 2) {
+    return false;
+  }
+  return true;
 }
 
 EvacRoute? removeEvacWaypoint({
   required EvacRoute route,
   required int waypointIndex,
 }) {
-  if (waypointIndex < 0 ||
-      waypointIndex >= route.waypoints.length ||
-      route.waypoints.length <= 2) {
+  if (!canRemoveEvacPoint(route, waypointIndex)) {
     return null;
   }
   final updated = [...route.waypoints]..removeAt(waypointIndex);
@@ -190,6 +202,23 @@ EvacRoute? removeEvacWaypoint({
     waypoints: updated,
     pathMode: updated.length > 2 ? route.pathMode : LinePathMode.straight,
   );
+}
+
+/// 1-based route waypoint number for display, or null for control points.
+int? evacRouteWaypointNumber(EvacRoute route, int index) {
+  if (index < 0 || index >= route.waypoints.length) {
+    return null;
+  }
+  if (!route.waypoints[index].kind.isRouteWaypoint) {
+    return null;
+  }
+  var number = 0;
+  for (var i = 0; i <= index; i++) {
+    if (route.waypoints[i].kind.isRouteWaypoint) {
+      number++;
+    }
+  }
+  return number;
 }
 
 EvacRoute? appendEvacWaypoint({

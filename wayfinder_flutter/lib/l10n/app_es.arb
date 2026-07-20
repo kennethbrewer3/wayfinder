@@ -2018,7 +2018,7 @@
   },
   "evacKitCannotRemoveLastRoute": "Un kit debe conservar al menos una ruta.",
   "evacKitEditRouteOnMap": "Editar ruta en el mapa",
-  "evacKitEditingHint": "Arrastra un punto para mover · toca un segmento para insertar · toca el último punto para alargar · mantén pulsado un punto para quitar (mín. 2) · Listo al terminar",
+  "evacKitEditingHint": "Arrastra un waypoint o punto de control para mover · toca un segmento para añadir un punto de control · toca el último waypoint para alargar · doble toque en un punto intermedio para quitar (mín. 2 waypoints) · Listo al terminar",
   "evacKitExtendingHint": "Toca el mapa o marcadores para añadir puntos al final. Listo deja de alargar.",
   "sidebarEditEvacKit": "Editar kit de evacuación",
   "sidebarDeleteEvacKit": "Eliminar kit de evacuación",

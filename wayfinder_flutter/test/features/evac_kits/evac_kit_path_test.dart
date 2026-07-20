@@ -34,7 +34,7 @@ void main() {
     expect(updated.waypoints[1].point.longitude, 0.5);
   });
 
-  test('removeEvacWaypoint keeps at least two points and resets smooth', () {
+  test('removeEvacWaypoint keeps endpoints and at least two points', () {
     final short = routeWith(const [LatLng(0, 0), LatLng(0, 1)]);
     expect(
       removeEvacWaypoint(route: short, waypointIndex: 0),
@@ -49,10 +49,52 @@ void main() {
       ],
       pathMode: LinePathMode.smooth,
     );
+    expect(removeEvacWaypoint(route: longer, waypointIndex: 0), isNull);
+    expect(removeEvacWaypoint(route: longer, waypointIndex: 2), isNull);
+
     final updated = removeEvacWaypoint(route: longer, waypointIndex: 1);
     expect(updated, isNotNull);
     expect(updated!.waypoints.length, 2);
     expect(updated.pathMode, LinePathMode.straight);
+  });
+
+  test('moveEvacWaypoint preserves control kind', () {
+    final route = EvacRoute(
+      id: 'r1',
+      name: 'Primary',
+      role: EvacRouteRole.primary,
+      pathMode: LinePathMode.smooth,
+      waypoints: const [
+        EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+        EvacWaypoint(kind: EvacWaypointKind.control, point: LatLng(0, 0.5)),
+        EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 1)),
+      ],
+    );
+    final updated = moveEvacWaypoint(
+      route: route,
+      waypointIndex: 1,
+      point: const LatLng(0.2, 0.5),
+    );
+    expect(updated, isNotNull);
+    expect(updated!.waypoints[1].kind, EvacWaypointKind.control);
+    expect(updated.waypoints[1].point.latitude, 0.2);
+  });
+
+  test('evacRouteWaypointNumber skips control points', () {
+    final route = EvacRoute(
+      id: 'r1',
+      name: 'Primary',
+      role: EvacRouteRole.primary,
+      pathMode: LinePathMode.smooth,
+      waypoints: const [
+        EvacWaypoint(kind: EvacWaypointKind.point, point: LatLng(0, 0)),
+        EvacWaypoint(kind: EvacWaypointKind.control, point: LatLng(0, 0.5)),
+        EvacWaypoint(kind: EvacWaypointKind.marker, point: LatLng(0, 1)),
+      ],
+    );
+    expect(evacRouteWaypointNumber(route, 0), 1);
+    expect(evacRouteWaypointNumber(route, 1), isNull);
+    expect(evacRouteWaypointNumber(route, 2), 2);
   });
 
   test('smooth routes sample more render points than waypoints', () {

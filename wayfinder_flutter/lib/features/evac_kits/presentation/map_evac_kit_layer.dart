@@ -121,6 +121,21 @@ List<Marker> buildSavedEvacKitWaypointMarkers(
                 : kitColor.withValues(alpha: 0.85));
       for (final (index, waypoint) in route.waypoints.indexed) {
         final selected = isEditing && selectedWaypointIndex == index;
+        if (waypoint.kind.isControlPoint) {
+          if (!isEditing) {
+            continue;
+          }
+          markers.add(
+            _evacControlPointMarker(
+              point: waypoint.point,
+              color: routeColor,
+              selected: selected,
+            ),
+          );
+          continue;
+        }
+
+        final number = evacRouteWaypointNumber(route, index) ?? (index + 1);
         final size = selected ? 28.0 : (isPrimary || isEditing ? 22.0 : 18.0);
         markers.add(
           Marker(
@@ -143,7 +158,7 @@ List<Marker> buildSavedEvacKitWaypointMarkers(
               ),
               child: Center(
                 child: Text(
-                  '${index + 1}',
+                  '$number',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: selected ? 12 : (isPrimary || isEditing ? 11 : 9),
@@ -158,6 +173,44 @@ List<Marker> buildSavedEvacKitWaypointMarkers(
     }
   }
   return markers;
+}
+
+Marker _evacControlPointMarker({
+  required LatLng point,
+  required Color color,
+  required bool selected,
+}) {
+  final size = selected ? 26.0 : 24.0;
+  return Marker(
+    point: point,
+    width: size,
+    height: size,
+    alignment: Alignment.center,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(
+          color: selected ? Colors.amber : Colors.white,
+          width: selected ? 3 : 2,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x44000000),
+            blurRadius: 4,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: Icon(
+          Icons.adjust,
+          size: 12,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
 }
 
 List<LatLng> evacKitDrawingPreviewPoints({

@@ -2018,7 +2018,7 @@
   },
   "evacKitCannotRemoveLastRoute": "Un kit doit conserver au moins une route.",
   "evacKitEditRouteOnMap": "Modifier la route sur la carte",
-  "evacKitEditingHint": "Glisser un point pour déplacer · toucher un segment pour insérer · toucher le dernier point pour prolonger · appui long pour retirer (min. 2) · Terminé quand fini",
+  "evacKitEditingHint": "Glisser un waypoint ou un point de contrôle pour déplacer · toucher un segment pour ajouter un point de contrôle · toucher le dernier waypoint pour prolonger · double-tapper un point intermédiaire pour retirer (min. 2 waypoints) · Terminé quand fini",
   "evacKitExtendingHint": "Touchez la carte ou des marqueurs pour ajouter des points à la fin. Terminé arrête le prolongement.",
   "sidebarEditEvacKit": "Modifier le kit d'évacuation",
   "sidebarDeleteEvacKit": "Supprimer le kit d'évacuation",

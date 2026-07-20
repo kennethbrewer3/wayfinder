@@ -393,10 +393,10 @@ From kit details you can:
 ### Edit a route on the map
 
 1. **Select** the kit, then **double-tap** the route you want (primary or alternate), or open details → **Edit route on map** on that route. With multiple routes, use the chips in the edit banner to switch which one you are editing; tapping another route’s line also switches.
-2. **Drag** a numbered waypoint to move it.
-3. **Tap a segment** between waypoints to insert a new point — this also turns the route into a **smooth curve** (same Catmull-Rom style as map lines). Drag interior waypoints to reshape the curve.
-4. **Tap the last waypoint** to extend the route — then tap the map or markers to append more points. **Done** stops extending (or exits edit).
-5. **Long-press** a waypoint to remove it (at least two waypoints remain). Removing mid-points until only two remain returns the route to a straight segment.
+2. **Drag** a numbered **waypoint** to move it. Waypoints are the route stops (often snapped to markers); they keep a numbered order along the route.
+3. **Tap a segment** between points to insert a **control point** (adjust icon) — this shapes the **smooth curve** (same Catmull-Rom style as map lines) without adding a numbered waypoint. Drag control points or waypoints to reshape the curve.
+4. **Tap the last waypoint** to extend the route — then tap the map or markers to append more waypoints. **Done** stops extending (or exits edit).
+5. **Double-tap** a mid-point (waypoint or control point) to remove it (at least two waypoints remain). Endpoints cannot be removed. Removing points until only two remain returns the route to a straight segment.
 
 ETAs use planning speeds (for example on foot ≈ 5 km/h). They are estimates, not live traffic or terrain routing.
 

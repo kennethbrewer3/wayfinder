@@ -24,6 +24,10 @@ void main() {
               point: LatLng(38.1, -78.5),
             ),
             EvacWaypoint(
+              kind: EvacWaypointKind.control,
+              point: LatLng(38.15, -78.45),
+            ),
+            EvacWaypoint(
               kind: EvacWaypointKind.marker,
               point: LatLng(38.2, -78.4),
               markerId: 'marker-1',
@@ -41,8 +45,9 @@ void main() {
     expect(decoded.notes, 'bug-out');
     expect(decoded.showNameLabel, isTrue);
     expect(decoded.routes.length, 1);
-    expect(decoded.primaryRoute!.waypoints.length, 2);
-    expect(decoded.primaryRoute!.waypoints[1].markerId, 'marker-1');
+    expect(decoded.primaryRoute!.waypoints.length, 3);
+    expect(decoded.primaryRoute!.waypoints[1].kind, EvacWaypointKind.control);
+    expect(decoded.primaryRoute!.waypoints[2].markerId, 'marker-1');
   });
 
   test('route length is geodesic path length', () {

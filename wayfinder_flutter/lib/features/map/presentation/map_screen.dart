@@ -185,11 +185,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _zoomTo(LatLng location) {
+    final currentZoom =
+        ref.read(mapViewportProvider).valueOrNull?.zoom ??
+        AppConstants.defaultZoom;
     return ref
         .read(mapViewportProvider.notifier)
         .moveTo(
           center: location,
-          zoom: 14,
+          zoom: currentZoom,
         );
   }
 

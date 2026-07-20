@@ -153,6 +153,7 @@ class SidebarState {
     this.selectedLayerId,
     this.expandedLayerIds,
     this.layerSettings = const {},
+    this.filterFoodExpiring90Days = false,
   });
 
   final String searchQuery;
@@ -164,6 +165,9 @@ class SidebarState {
   final Set<UuidValue>? expandedLayerIds;
   final Map<UuidValue, LayerSidebarSettings> layerSettings;
 
+  /// When true, marker lists only include caches with food expiring within 90 days.
+  final bool filterFoodExpiring90Days;
+
   LayerSidebarSettings settingsForLayer(UuidValue layerId) {
     return layerSettings[layerId] ?? const LayerSidebarSettings();
   }
@@ -174,6 +178,7 @@ class SidebarState {
     UuidValue? selectedLayerId,
     Set<UuidValue>? expandedLayerIds,
     Map<UuidValue, LayerSidebarSettings>? layerSettings,
+    bool? filterFoodExpiring90Days,
   }) {
     return SidebarState(
       searchQuery: searchQuery ?? this.searchQuery,
@@ -181,6 +186,8 @@ class SidebarState {
       selectedLayerId: selectedLayerId ?? this.selectedLayerId,
       expandedLayerIds: expandedLayerIds ?? this.expandedLayerIds,
       layerSettings: layerSettings ?? this.layerSettings,
+      filterFoodExpiring90Days:
+          filterFoodExpiring90Days ?? this.filterFoodExpiring90Days,
     );
   }
 }
@@ -231,6 +238,10 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
 
   void setSearchQuery(String query) {
     state = state.copyWith(searchQuery: query);
+  }
+
+  void setFilterFoodExpiring90Days(bool enabled) {
+    state = state.copyWith(filterFoodExpiring90Days: enabled);
   }
 
   void setExpanded(bool expanded) {

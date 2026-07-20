@@ -144,7 +144,7 @@ For each marker or zone you can typically:
 - **Edit** — open the form dialog
 - **Delete** — remove permanently
 
-Use the sidebar search filter (linked to the main search bar) to narrow a long list.
+Use the sidebar search filter (linked to the main search bar) to narrow a long list. Markers can also be filtered with **Food expiring in 90 days** when you track cache inventory.
 
 ---
 
@@ -171,6 +171,13 @@ In the marker form:
 - **Transportation** — when tracking is enabled, choose how the marker moves. Options align with common APRS mobile symbols. Each mode renders a distinct **trail style** on the map (footprints, tread, road lane, railroad, wake, flight path, or balloon drift).
 - **Elevation** — optional height in your chosen units.
 - **Notes** — rich text stored as Markdown (links, lists, and basic formatting supported).
+- **Cache inventory** — optional supply list for caches: item name, quantity, unit, category (food, water, medical, ammo, other), expiry date, and last audited date.
+
+### Cache inventory
+
+Use inventory on markers that represent supply caches. Expand **Cache inventory** in the create/edit form to add line items. Marker details show the same fields when inventory is present.
+
+In the **Map Objects** sidebar, use the **Food expiring in 90 days** filter chip to list only markers that have at least one **food** item whose expiry is within the next 90 days (including already expired food).
 
 ### Edit or view a marker
 
@@ -302,7 +309,7 @@ From a line endpoint you can start a **bearing plot**: specify a bearing (absolu
 When GPS is denied or unreliable, estimate a new position from a known start using heading and distance (or paces).
 
 1. Optionally **select a marker** (or enable GPS so the last fix can be used).
-2. Long-press the map → **Pace count**.
+2. Long-press the map → **More** → **Pace count**.
 3. Enter **bearing** (°T or °M per Settings → Bearings), then either:
    - **Paces** — pace count × pace length (meters per pace; remembered on this device), or
    - **Distance** — direct ground distance in your measurement units.
@@ -316,7 +323,7 @@ Start point priority: selected marker → current GPS fix → long-press locatio
 Estimate terrain-masked visibility from a lookout, repeater, mesh node, or any map point using DEM elevation (elevation-angle occlusion; no Fresnel clearance).
 
 1. Optionally **select a marker** (lookouts / radio markers get a sensible default antenna height).
-2. Long-press the map → **Viewshed**.
+2. Long-press the map → **More** → **Viewshed**.
 3. Adjust **antenna height** (observer AGL — building + mast), optional **target height** (receiver/eye AGL; 0 = ground), and **range**, then **Compute** (first run starts automatically). Heights use your measurement units (feet when Imperial is selected in Settings).
 4. The map shows a filled visible footprint and a dotted max-range ring. Cancel clears the overlay (it is not saved as a zone).
 
@@ -326,7 +333,7 @@ Requires DEM elevation data for the area. Observer ground and eye height are sho
 
 Rough “can we walk/drive this?” shading from DEM slope around a point.
 
-1. Long-press the map → **Slope / cost** (uses a selected marker’s location when one is selected).
+1. Long-press the map → **More** → **Slope / cost** (uses a selected marker’s location when one is selected).
 2. Adjust **range** (up to about 50 miles / 80 km), opacity, and mode (**Cost** or raw **Slope** degrees).
 3. In **Cost** mode, pick **Walk**, **Bike**, or **Drive** — each uses a different grade curve (the same hill can be green for driving and yellow/red on foot or bike).
 4. Tap **Compute** (first run starts automatically). Green is gentler / cheaper; red is steeper / costlier. Large ranges use a coarser grid so the full circle still paints.
@@ -370,7 +377,7 @@ Freeform polygons for property lines, patrol sectors, no-go zones, and other are
 
 ### Draw a polygon
 
-1. Long-press → **Polygon AOI** (first vertex is the long-press point, or a **selected marker** if one is selected).
+1. Long-press → **Polygon** (first vertex is the long-press point, or a **selected marker** if one is selected).
 2. **Tap** to add more vertices. A dashed preview follows the cursor.
 3. **Double-tap** or tap **Finish** when you have at least three vertices (banner **Undo** removes the last point).
 4. Complete the form with name, border/fill colors, layer, and notes.
@@ -380,8 +387,8 @@ Polygons are saved as map zones like circles and rectangles. Toggle the name lab
 ### Edit polygon vertices
 
 1. **Double-tap** a polygon to enter vertex edit mode (vertices appear on the corners).
-2. **Long-press** a vertex, then drag to move it.
-3. **Tap** near an edge to insert a vertex; **double-tap** a vertex to remove it (at least three vertices remain).
+2. **Drag** a vertex to move it.
+3. **Double-click** between two vertices (on an edge) to insert a vertex; **long-press** a vertex to remove it (at least three vertices remain).
 4. Tap **Done** in the banner when finished.
 
 ---
@@ -394,13 +401,11 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 |--------|--------|
 | Add marker | New marker at this location |
 | Draw line | Start line drawing (from selected marker when one is selected) |
-| Pace count | Dead reckoning / pace-count helper |
 | Draw circle | Start circle drawing (from selected marker when one is selected) |
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
-| Polygon AOI | Draw a freeform polygon (property line, patrol sector, no-go…) |
-| Copy coordinates | Copy lat/lng to clipboard |
-| More | Opens analysis tools (Viewshed, Slope / cost) |
+| Polygon | Draw a freeform polygon (property line, patrol sector, no-go…) |
+| More | Opens overflow tools (Viewshed, Slope / cost, Pace count, Copy coordinates) |
 | Back | Returns from the More menu to the main radial actions |
 
 Cancel by tapping outside the menu or pressing Escape where supported.

@@ -180,6 +180,34 @@ curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d
 
 `PUT` works the same way.
 
+### Cache inventory
+
+Any marker can store a supply list in `inventoryJson` (a JSON **string**). This is useful for caches and resupply points.
+
+```json
+{
+  "items": [
+    {
+      "id": "inv_1",
+      "name": "Rice",
+      "quantity": 25,
+      "unit": "lb",
+      "category": "food",
+      "expiresAt": "2026-10-01T00:00:00.000Z",
+      "lastAuditedAt": "2026-07-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+Supported `category` values: `food`, `water`, `medical`, `ammo`, `other`. `expiresAt` and `lastAuditedAt` are optional ISO-8601 timestamps.
+
+```bash
+curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d82da6 \
+  -H "Content-Type: application/json" \
+  -d '{"inventoryJson":"{\"items\":[{\"id\":\"inv_1\",\"name\":\"Rice\",\"quantity\":25,\"unit\":\"lb\",\"category\":\"food\",\"expiresAt\":\"2026-10-01T00:00:00.000Z\"}]}"}'
+```
+
 ### Weather station readings
 
 Weather station markers (`icon: "weather_station"`) can store local weather readings on the server in `weatherJson`. This field is intended for data ingested from APRS or other offline/local integrations — Wayfinder does not fetch weather from the public internet.

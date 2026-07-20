@@ -26,6 +26,7 @@ abstract class MapMarker implements _i1.SerializableModel {
     bool? isTracking,
     this.trackZoneId,
     this.weatherJson,
+    this.inventoryJson,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
@@ -46,6 +47,7 @@ abstract class MapMarker implements _i1.SerializableModel {
     bool? isTracking,
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
+    String? inventoryJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -73,6 +75,7 @@ abstract class MapMarker implements _i1.SerializableModel {
               jsonSerialization['trackZoneId'],
             ),
       weatherJson: jsonSerialization['weatherJson'] as String?,
+      inventoryJson: jsonSerialization['inventoryJson'] as String?,
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -110,6 +113,8 @@ abstract class MapMarker implements _i1.SerializableModel {
 
   String? weatherJson;
 
+  String? inventoryJson;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -132,6 +137,7 @@ abstract class MapMarker implements _i1.SerializableModel {
     bool? isTracking,
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
+    String? inventoryJson,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -152,6 +158,7 @@ abstract class MapMarker implements _i1.SerializableModel {
       'isTracking': isTracking,
       if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (weatherJson != null) 'weatherJson': weatherJson,
+      if (inventoryJson != null) 'inventoryJson': inventoryJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -180,6 +187,7 @@ class _MapMarkerImpl extends MapMarker {
     bool? isTracking,
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
+    String? inventoryJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -196,6 +204,7 @@ class _MapMarkerImpl extends MapMarker {
          isTracking: isTracking,
          trackZoneId: trackZoneId,
          weatherJson: weatherJson,
+         inventoryJson: inventoryJson,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -218,6 +227,7 @@ class _MapMarkerImpl extends MapMarker {
     bool? isTracking,
     Object? trackZoneId = _Undefined,
     Object? weatherJson = _Undefined,
+    Object? inventoryJson = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -237,6 +247,9 @@ class _MapMarkerImpl extends MapMarker {
           ? trackZoneId
           : this.trackZoneId,
       weatherJson: weatherJson is String? ? weatherJson : this.weatherJson,
+      inventoryJson: inventoryJson is String?
+          ? inventoryJson
+          : this.inventoryJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

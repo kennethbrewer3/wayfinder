@@ -13,6 +13,7 @@ fields:
   isTracking: bool, defaultModel=false, defaultPersist=false
   trackZoneId: UuidValue?
   weatherJson: String?
+  inventoryJson: String?
   layerId: UuidValue?
   createdAt: DateTime
   updatedAt: DateTime

@@ -695,6 +695,87 @@
   "markerCreateTitle": "Crear marcador",
   "markerEditTitle": "Editar marcador",
   "markerDefaultName": "Nuevo marcador",
+  "markerInventoryTitle": "Inventario del alijo",
+  "markerInventoryEmptyHelp": "Registre suministros en este marcador: cantidad, unidad, caducidad y última auditoría.",
+  "markerInventoryItemCount": "{count, plural, =1{1 artículo} other{{count} artículos}}",
+  "@markerInventoryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerInventoryAddItem": "Añadir artículo",
+  "markerInventoryRemoveItem": "Eliminar artículo",
+  "markerInventoryItemHeading": "Artículo de inventario",
+  "markerInventoryNameLabel": "Nombre del artículo",
+  "markerInventoryQuantityLabel": "Cantidad",
+  "markerInventoryUnitLabel": "Unidad",
+  "markerInventoryCategoryLabel": "Categoría",
+  "markerInventoryCategoryFood": "Comida",
+  "markerInventoryCategoryWater": "Agua",
+  "markerInventoryCategoryMedical": "Médico",
+  "markerInventoryCategoryAmmo": "Munición",
+  "markerInventoryCategoryOther": "Otro",
+  "markerInventoryExpiryLabel": "Fecha de caducidad",
+  "markerInventorySetExpiry": "Establecer caducidad",
+  "markerInventoryExpiryValue": "Caduca {date}",
+  "@markerInventoryExpiryValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryClearExpiry": "Borrar caducidad",
+  "markerInventoryLastAuditedLabel": "Última auditoría",
+  "markerInventorySetLastAudited": "Establecer última auditoría",
+  "markerInventoryLastAuditedValue": "Auditado {date}",
+  "@markerInventoryLastAuditedValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryMarkAuditedNow": "Marcar auditado ahora",
+  "markerInventoryDetailQuantity": "{quantity} {unit}",
+  "@markerInventoryDetailQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailCategory": "Categoría: {category}",
+  "@markerInventoryDetailCategory": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailNoExpiry": "Sin fecha de caducidad",
+  "markerInventoryDetailExpiry": "Caduca {date}",
+  "@markerInventoryDetailExpiry": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailNeverAudited": "Nunca auditado",
+  "markerInventoryDetailLastAudited": "Última auditoría {date}",
+  "@markerInventoryDetailLastAudited": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "markerCoordinatesHelp": "Edite la latitud y la longitud para mover el marcador en el mapa.",
   "markerTrackingLabel": "Marcador de seguimiento",
   "markerTrackingHelp": "Registre el historial de movimiento como un rastro en el mapa.",
@@ -909,6 +990,7 @@
   "sidebarTabZones": "Zonas",
   "sidebarViewList": "Lista",
   "sidebarViewTree": "Árbol",
+  "sidebarFilterFoodExpiring90Days": "Comida que caduca en 90 días",
   "sidebarNoMatchingMarkers": "No hay marcadores coincidentes",
   "sidebarNoMatchingZones": "No hay zonas coincidentes",
   "sidebarTryDifferentSearch": "Pruebe con otro término de búsqueda.",
@@ -1305,12 +1387,12 @@
   "mapRadialCircle": "Círculo",
   "mapRadialRectCenter": "Rect. centro",
   "mapRadialRectCorners": "Rect. esquinas",
-  "mapRadialPolygon": "Polígono AOI",
+  "mapRadialPolygon": "Polígono",
   "mapRadialMore": "Más",
   "mapRadialBack": "Atrás",
   "mapRadialCopyCoordinates": "Copiar coordenadas",
   "actionDone": "Listo",
-  "polygonEditingHint": "Mantén un vértice para arrastrar · toca un borde para añadir · doble toque para quitar (mín. 3) · Listo al terminar",
+  "polygonEditingHint": "Arrastra un vértice para mover · doble clic en un borde para añadir · mantén un vértice para quitar (mín. 3) · Listo al terminar",
   "mapRadialDeadReckoning": "Pasos",
   "mapRadialViewshed": "Cuenca visual",
   "mapRadialSlope": "Pendiente / coste",

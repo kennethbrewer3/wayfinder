@@ -9,7 +9,9 @@ import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/presentation/track_transportation_mode_field.dart';
 import '../models/marker_color.dart';
 import '../models/marker_icon_registry.dart';
+import '../models/marker_inventory.dart';
 import 'marker_form_fields.dart';
+import 'marker_inventory_editor.dart';
 import 'marker_notes_editor.dart';
 
 class MarkerFormData {
@@ -24,6 +26,7 @@ class MarkerFormData {
     this.longitude,
     this.isTracking = false,
     this.transportationMode = TrackTransportationMode.onFoot,
+    this.inventoryItems = const [],
   });
 
   final String name;
@@ -36,6 +39,10 @@ class MarkerFormData {
   final double? longitude;
   final bool isTracking;
   final TrackTransportationMode transportationMode;
+  final List<MarkerInventoryItem> inventoryItems;
+
+  String? get inventoryJson =>
+      MarkerInventory(items: inventoryItems).toStorageJson();
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -55,6 +62,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
   bool initialIsTracking = false,
   TrackTransportationMode initialTransportationMode =
       TrackTransportationMode.onFoot,
+  List<MarkerInventoryItem> initialInventoryItems = const [],
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -75,6 +83,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
         allowTrackingToggle: allowTrackingToggle,
         initialIsTracking: initialIsTracking,
         initialTransportationMode: initialTransportationMode,
+        initialInventoryItems: initialInventoryItems,
       );
     },
   );
@@ -103,6 +112,9 @@ Future<MarkerFormData?> showEditMarkerDialog({
     allowTrackingToggle: true,
     initialIsTracking: marker.isTracking,
     initialTransportationMode: initialTransportationMode,
+    initialInventoryItems: MarkerInventory.fromMarkerInventoryJson(
+      marker.inventoryJson,
+    ).items,
   );
 }
 
@@ -123,6 +135,7 @@ class MarkerFormDialog extends StatefulWidget {
     this.allowTrackingToggle = false,
     this.initialIsTracking = false,
     this.initialTransportationMode = TrackTransportationMode.onFoot,
+    this.initialInventoryItems = const [],
   });
 
   final String title;
@@ -139,6 +152,7 @@ class MarkerFormDialog extends StatefulWidget {
   final bool allowTrackingToggle;
   final bool initialIsTracking;
   final TrackTransportationMode initialTransportationMode;
+  final List<MarkerInventoryItem> initialInventoryItems;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -155,6 +169,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late bool _isTracking;
   late TrackTransportationMode _transportationMode;
   UuidValue? _selectedLayerId;
+  late List<MarkerInventoryItem> _inventoryItems;
 
   @override
   void initState() {
@@ -185,6 +200,9 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     _isTracking = widget.initialIsTracking;
     _transportationMode = widget.initialTransportationMode;
     _selectedLayerId = widget.initialLayerId;
+    _inventoryItems = List<MarkerInventoryItem>.from(
+      widget.initialInventoryItems,
+    );
   }
 
   void _maybeSuggestIconFromName() {
@@ -265,6 +283,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         longitude: coordinates?.longitude,
         isTracking: widget.allowTrackingToggle ? _isTracking : false,
         transportationMode: _transportationMode,
+        inventoryItems: sanitizeMarkerInventoryItems(_inventoryItems),
       ),
     );
   }
@@ -355,6 +374,11 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
               ),
               const SizedBox(height: 16),
               MarkerNotesEditor(controller: _notesController),
+              const SizedBox(height: 8),
+              MarkerInventoryEditor(
+                items: _inventoryItems,
+                onChanged: (items) => setState(() => _inventoryItems = items),
+              ),
             ],
           ),
         ),

@@ -1388,6 +1388,114 @@ class AppLocalizationsEn extends AppLocalizations {
       'Edit latitude and longitude to move the marker on the map.';
 
   @override
+  String get markerInventoryTitle => 'Cache inventory';
+
+  @override
+  String get markerInventoryEmptyHelp =>
+      'Track supplies at this marker — quantity, unit, expiry, and last audit.';
+
+  @override
+  String markerInventoryItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get markerInventoryAddItem => 'Add item';
+
+  @override
+  String get markerInventoryRemoveItem => 'Remove item';
+
+  @override
+  String get markerInventoryItemHeading => 'Inventory item';
+
+  @override
+  String get markerInventoryNameLabel => 'Item name';
+
+  @override
+  String get markerInventoryQuantityLabel => 'Quantity';
+
+  @override
+  String get markerInventoryUnitLabel => 'Unit';
+
+  @override
+  String get markerInventoryCategoryLabel => 'Category';
+
+  @override
+  String get markerInventoryCategoryFood => 'Food';
+
+  @override
+  String get markerInventoryCategoryWater => 'Water';
+
+  @override
+  String get markerInventoryCategoryMedical => 'Medical';
+
+  @override
+  String get markerInventoryCategoryAmmo => 'Ammo';
+
+  @override
+  String get markerInventoryCategoryOther => 'Other';
+
+  @override
+  String get markerInventoryExpiryLabel => 'Expiry date';
+
+  @override
+  String get markerInventorySetExpiry => 'Set expiry';
+
+  @override
+  String markerInventoryExpiryValue(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get markerInventoryClearExpiry => 'Clear expiry';
+
+  @override
+  String get markerInventoryLastAuditedLabel => 'Last audited';
+
+  @override
+  String get markerInventorySetLastAudited => 'Set last audited';
+
+  @override
+  String markerInventoryLastAuditedValue(String date) {
+    return 'Audited $date';
+  }
+
+  @override
+  String get markerInventoryMarkAuditedNow => 'Mark audited now';
+
+  @override
+  String markerInventoryDetailQuantity(String quantity, String unit) {
+    return '$quantity $unit';
+  }
+
+  @override
+  String markerInventoryDetailCategory(String category) {
+    return 'Category: $category';
+  }
+
+  @override
+  String get markerInventoryDetailNoExpiry => 'No expiry date';
+
+  @override
+  String markerInventoryDetailExpiry(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get markerInventoryDetailNeverAudited => 'Never audited';
+
+  @override
+  String markerInventoryDetailLastAudited(String date) {
+    return 'Last audited $date';
+  }
+
+  @override
   String get markerTrackingLabel => 'Tracking marker';
 
   @override
@@ -1969,6 +2077,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sidebarViewTree => 'Tree';
+
+  @override
+  String get sidebarFilterFoodExpiring90Days => 'Food expiring in 90 days';
 
   @override
   String get sidebarNoMatchingMarkers => 'No matching markers';
@@ -2840,7 +2951,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect corners';
 
   @override
-  String get mapRadialPolygon => 'Polygon AOI';
+  String get mapRadialPolygon => 'Polygon';
 
   @override
   String get mapRadialMore => 'More';
@@ -2856,7 +2967,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get polygonEditingHint =>
-      'Long-press a vertex to drag · tap an edge to add · double-tap a vertex to remove (keep 3+) · Done when finished';
+      'Drag a vertex to move · double-click an edge to add · long-press a vertex to remove (keep 3+) · Done when finished';
 
   @override
   String get mapRadialDeadReckoning => 'Pace count';

@@ -1408,6 +1408,114 @@ class AppLocalizationsFr extends AppLocalizations {
       'Modifiez la latitude et la longitude pour déplacer le marqueur sur la carte.';
 
   @override
+  String get markerInventoryTitle => 'Inventaire de cache';
+
+  @override
+  String get markerInventoryEmptyHelp =>
+      'Suivez les provisions de ce marqueur — quantité, unité, expiration et dernier inventaire.';
+
+  @override
+  String markerInventoryItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles',
+      one: '1 article',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get markerInventoryAddItem => 'Ajouter un article';
+
+  @override
+  String get markerInventoryRemoveItem => 'Supprimer l’article';
+
+  @override
+  String get markerInventoryItemHeading => 'Article d’inventaire';
+
+  @override
+  String get markerInventoryNameLabel => 'Nom de l’article';
+
+  @override
+  String get markerInventoryQuantityLabel => 'Quantité';
+
+  @override
+  String get markerInventoryUnitLabel => 'Unité';
+
+  @override
+  String get markerInventoryCategoryLabel => 'Catégorie';
+
+  @override
+  String get markerInventoryCategoryFood => 'Nourriture';
+
+  @override
+  String get markerInventoryCategoryWater => 'Eau';
+
+  @override
+  String get markerInventoryCategoryMedical => 'Médical';
+
+  @override
+  String get markerInventoryCategoryAmmo => 'Munitions';
+
+  @override
+  String get markerInventoryCategoryOther => 'Autre';
+
+  @override
+  String get markerInventoryExpiryLabel => 'Date d’expiration';
+
+  @override
+  String get markerInventorySetExpiry => 'Définir l’expiration';
+
+  @override
+  String markerInventoryExpiryValue(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String get markerInventoryClearExpiry => 'Effacer l’expiration';
+
+  @override
+  String get markerInventoryLastAuditedLabel => 'Dernier inventaire';
+
+  @override
+  String get markerInventorySetLastAudited => 'Définir le dernier inventaire';
+
+  @override
+  String markerInventoryLastAuditedValue(String date) {
+    return 'Inventorié le $date';
+  }
+
+  @override
+  String get markerInventoryMarkAuditedNow => 'Marquer inventorié maintenant';
+
+  @override
+  String markerInventoryDetailQuantity(String quantity, String unit) {
+    return '$quantity $unit';
+  }
+
+  @override
+  String markerInventoryDetailCategory(String category) {
+    return 'Catégorie : $category';
+  }
+
+  @override
+  String get markerInventoryDetailNoExpiry => 'Pas de date d’expiration';
+
+  @override
+  String markerInventoryDetailExpiry(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String get markerInventoryDetailNeverAudited => 'Jamais inventorié';
+
+  @override
+  String markerInventoryDetailLastAudited(String date) {
+    return 'Dernier inventaire le $date';
+  }
+
+  @override
   String get markerTrackingLabel => 'Marqueur de suivi';
 
   @override
@@ -1994,6 +2102,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get sidebarViewTree => 'Arbre';
+
+  @override
+  String get sidebarFilterFoodExpiring90Days =>
+      'Nourriture expirant sous 90 jours';
 
   @override
   String get sidebarNoMatchingMarkers => 'Aucun marqueur correspondant';
@@ -2885,7 +2997,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapRadialRectCorners => 'Rect. coins';
 
   @override
-  String get mapRadialPolygon => 'Polygone AOI';
+  String get mapRadialPolygon => 'Polygone';
 
   @override
   String get mapRadialMore => 'Plus';
@@ -2901,7 +3013,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get polygonEditingHint =>
-      'Appui long sur un sommet pour déplacer · touchez un bord pour ajouter · double-touche pour retirer (min. 3) · Terminé pour quitter';
+      'Glissez un sommet pour déplacer · double-clic sur un bord pour ajouter · appui long pour retirer (min. 3) · Terminé pour quitter';
 
   @override
   String get mapRadialDeadReckoning => 'Pas';

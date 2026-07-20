@@ -44,6 +44,7 @@ import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../weather/presentation/weather_station_details_section.dart';
 import '../../../core/l10n/localized_labels.dart';
+import 'marker_inventory_details_section.dart';
 import 'marker_qr_dialog.dart';
 import 'marker_tracking_details_section.dart';
 import '../utils/effective_marker_icon.dart';
@@ -234,6 +235,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       children: [
         if (isWeatherStationMarker(marker))
           WeatherStationDetailsSection(marker: marker),
+        MarkerInventoryDetailsSection(marker: marker),
         MarkerTrackingDetailsSection(marker: marker),
         _DetailRow(
           label: l10n.mapObjectDetailType,

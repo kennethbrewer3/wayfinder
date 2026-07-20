@@ -889,6 +889,87 @@
   "markerEditTitle": "Edit marker",
   "markerDefaultName": "New marker",
   "markerCoordinatesHelp": "Edit latitude and longitude to move the marker on the map.",
+  "markerInventoryTitle": "Cache inventory",
+  "markerInventoryEmptyHelp": "Track supplies at this marker — quantity, unit, expiry, and last audit.",
+  "markerInventoryItemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@markerInventoryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerInventoryAddItem": "Add item",
+  "markerInventoryRemoveItem": "Remove item",
+  "markerInventoryItemHeading": "Inventory item",
+  "markerInventoryNameLabel": "Item name",
+  "markerInventoryQuantityLabel": "Quantity",
+  "markerInventoryUnitLabel": "Unit",
+  "markerInventoryCategoryLabel": "Category",
+  "markerInventoryCategoryFood": "Food",
+  "markerInventoryCategoryWater": "Water",
+  "markerInventoryCategoryMedical": "Medical",
+  "markerInventoryCategoryAmmo": "Ammo",
+  "markerInventoryCategoryOther": "Other",
+  "markerInventoryExpiryLabel": "Expiry date",
+  "markerInventorySetExpiry": "Set expiry",
+  "markerInventoryExpiryValue": "Expires {date}",
+  "@markerInventoryExpiryValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryClearExpiry": "Clear expiry",
+  "markerInventoryLastAuditedLabel": "Last audited",
+  "markerInventorySetLastAudited": "Set last audited",
+  "markerInventoryLastAuditedValue": "Audited {date}",
+  "@markerInventoryLastAuditedValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryMarkAuditedNow": "Mark audited now",
+  "markerInventoryDetailQuantity": "{quantity} {unit}",
+  "@markerInventoryDetailQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailCategory": "Category: {category}",
+  "@markerInventoryDetailCategory": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailNoExpiry": "No expiry date",
+  "markerInventoryDetailExpiry": "Expires {date}",
+  "@markerInventoryDetailExpiry": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailNeverAudited": "Never audited",
+  "markerInventoryDetailLastAudited": "Last audited {date}",
+  "@markerInventoryDetailLastAudited": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "markerTrackingLabel": "Tracking marker",
   "markerTrackingHelp": "Record movement history as a trail on the map.",
   "markerTrackingStatusActive": "Active",
@@ -1114,6 +1195,7 @@
   "sidebarTabZones": "Zones",
   "sidebarViewList": "List",
   "sidebarViewTree": "Tree",
+  "sidebarFilterFoodExpiring90Days": "Food expiring in 90 days",
   "sidebarNoMatchingMarkers": "No matching markers",
   "sidebarNoMatchingZones": "No matching zones",
   "sidebarTryDifferentSearch": "Try a different search term.",
@@ -1615,12 +1697,12 @@
   "mapRadialCircle": "Circle",
   "mapRadialRectCenter": "Rect center",
   "mapRadialRectCorners": "Rect corners",
-  "mapRadialPolygon": "Polygon AOI",
+  "mapRadialPolygon": "Polygon",
   "mapRadialMore": "More",
   "mapRadialBack": "Back",
   "mapRadialCopyCoordinates": "Copy coordinates",
   "actionDone": "Done",
-  "polygonEditingHint": "Long-press a vertex to drag · tap an edge to add · double-tap a vertex to remove (keep 3+) · Done when finished",
+  "polygonEditingHint": "Drag a vertex to move · double-click an edge to add · long-press a vertex to remove (keep 3+) · Done when finished",
   "mapRadialDeadReckoning": "Pace count",
   "mapRadialViewshed": "Viewshed",
   "mapRadialSlope": "Slope / cost",

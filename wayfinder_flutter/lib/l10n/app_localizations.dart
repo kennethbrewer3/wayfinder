@@ -2439,6 +2439,180 @@ abstract class AppLocalizations {
   /// **'Edit latitude and longitude to move the marker on the map.'**
   String get markerCoordinatesHelp;
 
+  /// No description provided for @markerInventoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache inventory'**
+  String get markerInventoryTitle;
+
+  /// No description provided for @markerInventoryEmptyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Track supplies at this marker — quantity, unit, expiry, and last audit.'**
+  String get markerInventoryEmptyHelp;
+
+  /// No description provided for @markerInventoryItemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String markerInventoryItemCount(int count);
+
+  /// No description provided for @markerInventoryAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get markerInventoryAddItem;
+
+  /// No description provided for @markerInventoryRemoveItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove item'**
+  String get markerInventoryRemoveItem;
+
+  /// No description provided for @markerInventoryItemHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory item'**
+  String get markerInventoryItemHeading;
+
+  /// No description provided for @markerInventoryNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Item name'**
+  String get markerInventoryNameLabel;
+
+  /// No description provided for @markerInventoryQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get markerInventoryQuantityLabel;
+
+  /// No description provided for @markerInventoryUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get markerInventoryUnitLabel;
+
+  /// No description provided for @markerInventoryCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get markerInventoryCategoryLabel;
+
+  /// No description provided for @markerInventoryCategoryFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get markerInventoryCategoryFood;
+
+  /// No description provided for @markerInventoryCategoryWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get markerInventoryCategoryWater;
+
+  /// No description provided for @markerInventoryCategoryMedical.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical'**
+  String get markerInventoryCategoryMedical;
+
+  /// No description provided for @markerInventoryCategoryAmmo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ammo'**
+  String get markerInventoryCategoryAmmo;
+
+  /// No description provided for @markerInventoryCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get markerInventoryCategoryOther;
+
+  /// No description provided for @markerInventoryExpiryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry date'**
+  String get markerInventoryExpiryLabel;
+
+  /// No description provided for @markerInventorySetExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Set expiry'**
+  String get markerInventorySetExpiry;
+
+  /// No description provided for @markerInventoryExpiryValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String markerInventoryExpiryValue(String date);
+
+  /// No description provided for @markerInventoryClearExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear expiry'**
+  String get markerInventoryClearExpiry;
+
+  /// No description provided for @markerInventoryLastAuditedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last audited'**
+  String get markerInventoryLastAuditedLabel;
+
+  /// No description provided for @markerInventorySetLastAudited.
+  ///
+  /// In en, this message translates to:
+  /// **'Set last audited'**
+  String get markerInventorySetLastAudited;
+
+  /// No description provided for @markerInventoryLastAuditedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Audited {date}'**
+  String markerInventoryLastAuditedValue(String date);
+
+  /// No description provided for @markerInventoryMarkAuditedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark audited now'**
+  String get markerInventoryMarkAuditedNow;
+
+  /// No description provided for @markerInventoryDetailQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'{quantity} {unit}'**
+  String markerInventoryDetailQuantity(String quantity, String unit);
+
+  /// No description provided for @markerInventoryDetailCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category: {category}'**
+  String markerInventoryDetailCategory(String category);
+
+  /// No description provided for @markerInventoryDetailNoExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'No expiry date'**
+  String get markerInventoryDetailNoExpiry;
+
+  /// No description provided for @markerInventoryDetailExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String markerInventoryDetailExpiry(String date);
+
+  /// No description provided for @markerInventoryDetailNeverAudited.
+  ///
+  /// In en, this message translates to:
+  /// **'Never audited'**
+  String get markerInventoryDetailNeverAudited;
+
+  /// No description provided for @markerInventoryDetailLastAudited.
+  ///
+  /// In en, this message translates to:
+  /// **'Last audited {date}'**
+  String markerInventoryDetailLastAudited(String date);
+
   /// No description provided for @markerTrackingLabel.
   ///
   /// In en, this message translates to:
@@ -3518,6 +3692,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tree'**
   String get sidebarViewTree;
+
+  /// No description provided for @sidebarFilterFoodExpiring90Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Food expiring in 90 days'**
+  String get sidebarFilterFoodExpiring90Days;
 
   /// No description provided for @sidebarNoMatchingMarkers.
   ///
@@ -4992,7 +5172,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapRadialPolygon.
   ///
   /// In en, this message translates to:
-  /// **'Polygon AOI'**
+  /// **'Polygon'**
   String get mapRadialPolygon;
 
   /// No description provided for @mapRadialMore.
@@ -5022,7 +5202,7 @@ abstract class AppLocalizations {
   /// No description provided for @polygonEditingHint.
   ///
   /// In en, this message translates to:
-  /// **'Long-press a vertex to drag · tap an edge to add · double-tap a vertex to remove (keep 3+) · Done when finished'**
+  /// **'Drag a vertex to move · double-click an edge to add · long-press a vertex to remove (keep 3+) · Done when finished'**
   String get polygonEditingHint;
 
   /// No description provided for @mapRadialDeadReckoning.

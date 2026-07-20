@@ -695,6 +695,87 @@
   "markerCreateTitle": "Créer un marqueur",
   "markerEditTitle": "Modifier le marqueur",
   "markerDefaultName": "Nouveau marqueur",
+  "markerInventoryTitle": "Inventaire de cache",
+  "markerInventoryEmptyHelp": "Suivez les provisions de ce marqueur — quantité, unité, expiration et dernier inventaire.",
+  "markerInventoryItemCount": "{count, plural, =1{1 article} other{{count} articles}}",
+  "@markerInventoryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerInventoryAddItem": "Ajouter un article",
+  "markerInventoryRemoveItem": "Supprimer l’article",
+  "markerInventoryItemHeading": "Article d’inventaire",
+  "markerInventoryNameLabel": "Nom de l’article",
+  "markerInventoryQuantityLabel": "Quantité",
+  "markerInventoryUnitLabel": "Unité",
+  "markerInventoryCategoryLabel": "Catégorie",
+  "markerInventoryCategoryFood": "Nourriture",
+  "markerInventoryCategoryWater": "Eau",
+  "markerInventoryCategoryMedical": "Médical",
+  "markerInventoryCategoryAmmo": "Munitions",
+  "markerInventoryCategoryOther": "Autre",
+  "markerInventoryExpiryLabel": "Date d’expiration",
+  "markerInventorySetExpiry": "Définir l’expiration",
+  "markerInventoryExpiryValue": "Expire le {date}",
+  "@markerInventoryExpiryValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryClearExpiry": "Effacer l’expiration",
+  "markerInventoryLastAuditedLabel": "Dernier inventaire",
+  "markerInventorySetLastAudited": "Définir le dernier inventaire",
+  "markerInventoryLastAuditedValue": "Inventorié le {date}",
+  "@markerInventoryLastAuditedValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryMarkAuditedNow": "Marquer inventorié maintenant",
+  "markerInventoryDetailQuantity": "{quantity} {unit}",
+  "@markerInventoryDetailQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailCategory": "Catégorie : {category}",
+  "@markerInventoryDetailCategory": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailNoExpiry": "Pas de date d’expiration",
+  "markerInventoryDetailExpiry": "Expire le {date}",
+  "@markerInventoryDetailExpiry": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerInventoryDetailNeverAudited": "Jamais inventorié",
+  "markerInventoryDetailLastAudited": "Dernier inventaire le {date}",
+  "@markerInventoryDetailLastAudited": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "markerCoordinatesHelp": "Modifiez la latitude et la longitude pour déplacer le marqueur sur la carte.",
   "markerTrackingLabel": "Marqueur de suivi",
   "markerTrackingHelp": "Enregistrez l'historique des déplacements sous forme de trace sur la carte.",
@@ -909,6 +990,7 @@
   "sidebarTabZones": "Zones",
   "sidebarViewList": "Liste",
   "sidebarViewTree": "Arbre",
+  "sidebarFilterFoodExpiring90Days": "Nourriture expirant sous 90 jours",
   "sidebarNoMatchingMarkers": "Aucun marqueur correspondant",
   "sidebarNoMatchingZones": "Aucune zone correspondante",
   "sidebarTryDifferentSearch": "Essayez un autre terme de recherche.",
@@ -1305,12 +1387,12 @@
   "mapRadialCircle": "Cercle",
   "mapRadialRectCenter": "Rect. centre",
   "mapRadialRectCorners": "Rect. coins",
-  "mapRadialPolygon": "Polygone AOI",
+  "mapRadialPolygon": "Polygone",
   "mapRadialMore": "Plus",
   "mapRadialBack": "Retour",
   "mapRadialCopyCoordinates": "Copier les coordonnées",
   "actionDone": "Terminé",
-  "polygonEditingHint": "Appui long sur un sommet pour déplacer · touchez un bord pour ajouter · double-touche pour retirer (min. 3) · Terminé pour quitter",
+  "polygonEditingHint": "Glissez un sommet pour déplacer · double-clic sur un bord pour ajouter · appui long pour retirer (min. 3) · Terminé pour quitter",
   "mapRadialDeadReckoning": "Pas",
   "mapRadialViewshed": "Bassin de vue",
   "mapRadialSlope": "Pente / coût",

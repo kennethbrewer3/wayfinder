@@ -39,6 +39,7 @@ import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../tracks/presentation/map_track_layer.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
+import '../../markers/models/marker_inventory.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/utils/effective_marker_icon.dart';
@@ -188,9 +189,21 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     final markers = markersAsync.value ?? const <MapMarker>[];
     final zones = zonesAsync.value ?? const <MapZone>[];
     final query = sidebar.searchQuery.trim().toLowerCase();
+    final filterFoodExpiring = sidebar.filterFoodExpiring90Days;
 
     bool matchesSearch(String name) =>
         query.isEmpty || name.toLowerCase().contains(query);
+
+    bool matchesMarkerFilters(MapMarker marker) {
+      if (!matchesSearch(marker.name)) {
+        return false;
+      }
+      if (filterFoodExpiring &&
+          !markerHasFoodExpiringWithin(marker.inventoryJson)) {
+        return false;
+      }
+      return true;
+    }
 
     final orderedLayers = mapLayersForSidebar(layers);
     final selectedLayerId = resolveSelectedLayerId(
@@ -214,6 +227,28 @@ class _LayerOrganizedPanel extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FilterChip(
+              avatar: Icon(
+                Icons.kitchen_outlined,
+                size: 18,
+                color: filterFoodExpiring
+                    ? Theme.of(context).colorScheme.onSecondaryContainer
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              label: Text(l10n.sidebarFilterFoodExpiring90Days),
+              selected: filterFoodExpiring,
+              onSelected: (selected) {
+                ref
+                    .read(sidebarProvider.notifier)
+                    .setFilterFoodExpiring90Days(selected);
+              },
+            ),
+          ),
+        ),
         const _PathProfileSelectionBar(),
         Expanded(
           child: ListView.builder(
@@ -225,7 +260,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
               final filteredLayerMarkers = markersForLayer(
                 markers,
                 layer.id,
-              ).where((marker) => matchesSearch(marker.name)).toList();
+              ).where(matchesMarkerFilters).toList();
               final filteredLayerZones = zonesForLayer(
                 zones,
                 layer.id,
@@ -306,7 +341,8 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                           settings: layerSettings,
                           layerMarkers: layerMarkers,
                           layerZones: layerZones,
-                          hasSearchQuery: query.isNotEmpty,
+                          hasSearchQuery:
+                              query.isNotEmpty || filterFoodExpiring,
                           onZoomTo: onZoomTo,
                         ),
                     ],

@@ -147,6 +147,7 @@ abstract final class MarkersRestHandlers {
         label: 'trackZoneId',
       ),
       weatherJson: body['weatherJson'] as String?,
+      inventoryJson: body['inventoryJson'] as String?,
       layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdAt: now,
       updatedAt: now,
@@ -192,6 +193,9 @@ abstract final class MarkersRestHandlers {
               body['weatherJson'] as String?,
             )
           : existing.weatherJson,
+      inventoryJson: body.containsKey('inventoryJson')
+          ? body['inventoryJson'] as String?
+          : existing.inventoryJson,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
           : existing.layerId,

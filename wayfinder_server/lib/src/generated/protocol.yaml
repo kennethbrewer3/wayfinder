@@ -91,6 +91,13 @@ tides:
   - exportPack:
   - importPackArchive:
   - queryAt:
+watchLog:
+  - listEntries:
+  - getEntry:
+  - createEntry:
+  - updateEntry:
+  - deleteEntry:
+  - entryChanges:
 mapZone:
   - listZones:
   - getZone:

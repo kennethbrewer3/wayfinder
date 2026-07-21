@@ -16,6 +16,7 @@ import '../../markers/providers/map_marker_size_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
+import '../../watch_log/providers/watch_log_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/pmtiles_providers.dart';
@@ -30,6 +31,7 @@ void refreshMapData(WidgetRef ref) {
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();
   ref.invalidate(seasonalOverlaysProvider);
+  ref.invalidate(watchLogEntriesProvider);
   refreshMarkerIcons(ref);
   refreshUserSettings(ref);
 }

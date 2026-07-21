@@ -11,6 +11,7 @@ import 'marker_icons_rest_handlers.dart';
 import 'pmtiles_rest_handlers.dart';
 import 'rest_json.dart';
 import 'seasonal_overlays_rest_handlers.dart';
+import 'watch_log_rest_handlers.dart';
 import 'zones_rest_handlers.dart';
 
 /// Public REST API mounted at `/api`.
@@ -54,6 +55,12 @@ class RestApiRoute extends Route {
       ..put('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.update)
       ..patch('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.update)
       ..delete('/seasonal-overlays/:id', SeasonalOverlaysRestHandlers.delete)
+      ..get('/watch-log', WatchLogRestHandlers.list)
+      ..get('/watch-log/:id', WatchLogRestHandlers.get)
+      ..post('/watch-log', WatchLogRestHandlers.create)
+      ..put('/watch-log/:id', WatchLogRestHandlers.update)
+      ..patch('/watch-log/:id', WatchLogRestHandlers.update)
+      ..delete('/watch-log/:id', WatchLogRestHandlers.delete)
       ..get('/map-data', MapDataRestHandlers.export)
       ..get('/map-data/backup.zip', MapDataRestHandlers.exportArchive)
       ..post('/map-data/restore', MapDataRestHandlers.restore)
@@ -125,6 +132,7 @@ class RestApiRoute extends Route {
         'categories': '/api/categories',
         'layers': '/api/layers',
         'seasonalOverlays': '/api/seasonal-overlays',
+        'watchLog': '/api/watch-log',
         'mapData': '/api/map-data',
         'mapDataBackupZip': '/api/map-data/backup.zip',
         'mapDataRestore': '/api/map-data/restore',

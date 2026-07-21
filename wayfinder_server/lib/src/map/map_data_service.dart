@@ -9,11 +9,11 @@ import '../pmtiles/pmtiles_catalog_sync.dart';
 import '../pmtiles/pmtiles_storage.dart';
 import '../web/rest/rest_json.dart';
 
-const mapDataBackupVersion = 4;
+const mapDataBackupVersion = 5;
 
-const supportedMapDataBackupVersions = {1, 2, 3, 4};
+const supportedMapDataBackupVersions = {1, 2, 3, 4, 5};
 
-/// Full map structure export (layers, markers, zones, seasonal overlays).
+/// Full map structure export (layers, markers, zones, seasonal overlays, watch log).
 Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   final layers = await listLayersEnsuringDefault(session);
   final markers = await MapMarker.db.find(
@@ -28,6 +28,11 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     session,
     orderBy: (t) => t.sortOrder,
   );
+  final watchLogEntries = await WatchLogEntry.db.find(
+    session,
+    orderBy: (t) => t.occurredAt,
+    orderDescending: true,
+  );
 
   final markerIcons = await exportMarkerIconBackup(session);
   final settings = await AppSettingsStore.getOrCreate(session);
@@ -40,6 +45,7 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     'markers': RestJson.encodeModels(markers),
     'zones': RestJson.encodeModels(zones),
     'seasonalOverlays': RestJson.encodeModels(seasonalOverlays),
+    'watchLogEntries': RestJson.encodeModels(watchLogEntries),
     ...markerIcons,
   };
 }
@@ -50,6 +56,7 @@ class MapDataRestoreCounts {
     required this.markers,
     required this.zones,
     this.seasonalOverlays = 0,
+    this.watchLogEntries = 0,
     this.markerIconCategories = 0,
     this.markerIcons = 0,
   });
@@ -58,6 +65,7 @@ class MapDataRestoreCounts {
   final int markers;
   final int zones;
   final int seasonalOverlays;
+  final int watchLogEntries;
   final int markerIconCategories;
   final int markerIcons;
 
@@ -66,12 +74,13 @@ class MapDataRestoreCounts {
     'markers': markers,
     'zones': zones,
     'seasonalOverlays': seasonalOverlays,
+    'watchLogEntries': watchLogEntries,
     'markerIconCategories': markerIconCategories,
     'markerIcons': markerIcons,
   };
 }
 
-/// Replaces all layers, markers, zones, and seasonal overlays with the backup.
+/// Replaces all layers, markers, zones, seasonal overlays, and watch log.
 Future<MapDataRestoreCounts> restoreMapDataBundle(
   Session session,
   Map<String, dynamic> body,
@@ -105,6 +114,13 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
           fromJson: SeasonalOverlay.fromJson,
         )
       : const <SeasonalOverlay>[];
+  final watchLogEntries = version >= 5
+      ? _parseModelList(
+          body['watchLogEntries'] ?? const <dynamic>[],
+          fieldName: 'watchLogEntries',
+          fromJson: WatchLogEntry.fromJson,
+        )
+      : const <WatchLogEntry>[];
 
   if (layers.isEmpty) {
     final now = DateTime.now().toUtc();
@@ -193,6 +209,18 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
       );
     }
 
+    final existingWatchLog = await WatchLogEntry.db.find(
+      session,
+      transaction: transaction,
+    );
+    if (existingWatchLog.isNotEmpty) {
+      await WatchLogEntry.db.delete(
+        session,
+        existingWatchLog,
+        transaction: transaction,
+      );
+    }
+
     final existingLayers = await MapLayer.db.find(
       session,
       transaction: transaction,
@@ -221,12 +249,20 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
         transaction: transaction,
       );
     }
+    for (final entry in watchLogEntries) {
+      await WatchLogEntry.db.insertRow(
+        session,
+        entry,
+        transaction: transaction,
+      );
+    }
 
     return MapDataRestoreCounts(
       layers: layers.length,
       markers: normalizedMarkers.length,
       zones: normalizedZones.length,
       seasonalOverlays: seasonalOverlays.length,
+      watchLogEntries: watchLogEntries.length,
     );
   });
 
@@ -235,6 +271,7 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
     markers: mapCounts.markers,
     zones: mapCounts.zones,
     seasonalOverlays: mapCounts.seasonalOverlays,
+    watchLogEntries: mapCounts.watchLogEntries,
     markerIconCategories: iconCounts.categories,
     markerIcons: iconCounts.icons,
   );

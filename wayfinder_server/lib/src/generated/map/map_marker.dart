@@ -28,6 +28,7 @@ abstract class MapMarker
     this.trackZoneId,
     this.weatherJson,
     this.inventoryJson,
+    this.radioJson,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
@@ -49,6 +50,7 @@ abstract class MapMarker
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
     String? inventoryJson,
+    String? radioJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -77,6 +79,7 @@ abstract class MapMarker
             ),
       weatherJson: jsonSerialization['weatherJson'] as String?,
       inventoryJson: jsonSerialization['inventoryJson'] as String?,
+      radioJson: jsonSerialization['radioJson'] as String?,
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -120,6 +123,8 @@ abstract class MapMarker
 
   String? inventoryJson;
 
+  String? radioJson;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -146,6 +151,7 @@ abstract class MapMarker
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
     String? inventoryJson,
+    String? radioJson,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -167,6 +173,7 @@ abstract class MapMarker
       if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (weatherJson != null) 'weatherJson': weatherJson,
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
+      if (radioJson != null) 'radioJson': radioJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -190,6 +197,7 @@ abstract class MapMarker
       if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (weatherJson != null) 'weatherJson': weatherJson,
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
+      if (radioJson != null) 'radioJson': radioJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -243,6 +251,7 @@ class _MapMarkerImpl extends MapMarker {
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
     String? inventoryJson,
+    String? radioJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -260,6 +269,7 @@ class _MapMarkerImpl extends MapMarker {
          trackZoneId: trackZoneId,
          weatherJson: weatherJson,
          inventoryJson: inventoryJson,
+         radioJson: radioJson,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -283,6 +293,7 @@ class _MapMarkerImpl extends MapMarker {
     Object? trackZoneId = _Undefined,
     Object? weatherJson = _Undefined,
     Object? inventoryJson = _Undefined,
+    Object? radioJson = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -305,6 +316,7 @@ class _MapMarkerImpl extends MapMarker {
       inventoryJson: inventoryJson is String?
           ? inventoryJson
           : this.inventoryJson,
+      radioJson: radioJson is String? ? radioJson : this.radioJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -378,6 +390,11 @@ class MapMarkerUpdateTable extends _i1.UpdateTable<MapMarkerTable> {
         value,
       );
 
+  _i1.ColumnValue<String, String> radioJson(String? value) => _i1.ColumnValue(
+    table.radioJson,
+    value,
+  );
+
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> layerId(_i1.UuidValue? value) =>
       _i1.ColumnValue(
         table.layerId,
@@ -450,6 +467,10 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
       'inventoryJson',
       this,
     );
+    radioJson = _i1.ColumnString(
+      'radioJson',
+      this,
+    );
     layerId = _i1.ColumnUuid(
       'layerId',
       this,
@@ -490,6 +511,8 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnString inventoryJson;
 
+  late final _i1.ColumnString radioJson;
+
   late final _i1.ColumnUuid layerId;
 
   late final _i1.ColumnDateTime createdAt;
@@ -511,6 +534,7 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
     trackZoneId,
     weatherJson,
     inventoryJson,
+    radioJson,
     layerId,
     createdAt,
     updatedAt,

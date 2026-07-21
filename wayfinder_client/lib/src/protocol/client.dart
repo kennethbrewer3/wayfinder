@@ -53,10 +53,14 @@ import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
     as _i24;
 import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
     as _i25;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i26;
-import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
+    as _i26;
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
     as _i27;
-import 'protocol.dart' as _i28;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i28;
+import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+    as _i29;
+import 'protocol.dart' as _i30;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -1001,35 +1005,89 @@ class EndpointTides extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointWatchLog extends _i2.EndpointRef {
+  EndpointWatchLog(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'watchLog';
+
+  _i3.Future<List<_i26.WatchLogEntry>> listEntries() =>
+      caller.callServerEndpoint<List<_i26.WatchLogEntry>>(
+        'watchLog',
+        'listEntries',
+        {},
+      );
+
+  _i3.Future<_i26.WatchLogEntry?> getEntry(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i26.WatchLogEntry?>(
+        'watchLog',
+        'getEntry',
+        {'id': id},
+      );
+
+  _i3.Future<_i26.WatchLogEntry> createEntry(_i26.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i26.WatchLogEntry>(
+        'watchLog',
+        'createEntry',
+        {'entry': entry},
+      );
+
+  _i3.Future<_i26.WatchLogEntry> updateEntry(_i26.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i26.WatchLogEntry>(
+        'watchLog',
+        'updateEntry',
+        {'entry': entry},
+      );
+
+  _i3.Future<bool> deleteEntry(_i2.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'watchLog',
+        'deleteEntry',
+        {'id': id},
+      );
+
+  _i3.Stream<_i27.WatchLogEntryChange> entryChanges() =>
+      caller.callStreamingServerEndpoint<
+        _i3.Stream<_i27.WatchLogEntryChange>,
+        _i27.WatchLogEntryChange
+      >(
+        'watchLog',
+        'entryChanges',
+        {},
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointMapZone extends _i2.EndpointRef {
   EndpointMapZone(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i26.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i26.MapZone>>(
+  _i3.Future<List<_i28.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i28.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i26.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i26.MapZone?>(
+  _i3.Future<_i28.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i28.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i26.MapZone> createZone(_i26.MapZone zone) =>
-      caller.callServerEndpoint<_i26.MapZone>(
+  _i3.Future<_i28.MapZone> createZone(_i28.MapZone zone) =>
+      caller.callServerEndpoint<_i28.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i26.MapZone> updateZone(_i26.MapZone zone) =>
-      caller.callServerEndpoint<_i26.MapZone>(
+  _i3.Future<_i28.MapZone> updateZone(_i28.MapZone zone) =>
+      caller.callServerEndpoint<_i28.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -1042,10 +1100,10 @@ class EndpointMapZone extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Stream<_i27.MapZoneChange> zoneChanges() =>
+  _i3.Stream<_i29.MapZoneChange> zoneChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i27.MapZoneChange>,
-        _i27.MapZoneChange
+        _i3.Stream<_i29.MapZoneChange>,
+        _i29.MapZoneChange
       >(
         'mapZone',
         'zoneChanges',
@@ -1085,7 +1143,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i28.Protocol(),
+         _i30.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1106,6 +1164,7 @@ class Client extends _i2.ServerpodClientShared {
     seasonalOverlay = EndpointSeasonalOverlay(this);
     appSettings = EndpointAppSettings(this);
     tides = EndpointTides(this);
+    watchLog = EndpointWatchLog(this);
     mapZone = EndpointMapZone(this);
     modules = Modules(this);
   }
@@ -1134,6 +1193,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointTides tides;
 
+  late final EndpointWatchLog watchLog;
+
   late final EndpointMapZone mapZone;
 
   late final Modules modules;
@@ -1152,6 +1213,7 @@ class Client extends _i2.ServerpodClientShared {
     'seasonalOverlay': seasonalOverlay,
     'appSettings': appSettings,
     'tides': tides,
+    'watchLog': watchLog,
     'mapZone': mapZone,
   };
 

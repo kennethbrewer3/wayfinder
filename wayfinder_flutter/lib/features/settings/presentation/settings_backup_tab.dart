@@ -117,6 +117,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                     result.markers,
                     result.zones,
                     result.seasonalOverlays,
+                    result.watchLogEntries,
                     result.markerIcons,
                   )
                 : l10n.backupRestoreSuccess(
@@ -124,6 +125,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                     result.markers,
                     result.zones,
                     result.seasonalOverlays,
+                    result.watchLogEntries,
                   ),
           ),
         ),

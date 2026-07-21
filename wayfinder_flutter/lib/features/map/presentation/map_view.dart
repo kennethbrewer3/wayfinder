@@ -16,6 +16,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/presentation/copy_coordinates.dart';
 import '../../circles/presentation/create_circle_dialog.dart';
 import '../../circles/presentation/create_range_ring.dart';
+import '../../coverage_planning/presentation/create_coverage_plan.dart';
 import '../../sun_moon/presentation/create_sun_moon.dart';
 import '../../tides/presentation/create_tide_tables.dart';
 import '../../circles/presentation/map_circle_layer.dart';
@@ -3340,6 +3341,48 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     );
   }
 
+  Future<void> _beginCoveragePlan() async {
+    final selectedMarker = _selectedMarker();
+    final mapPoint = _radialMenuPoint;
+    _closeRadialMenu();
+    if (selectedMarker == null && mapPoint == null) {
+      return;
+    }
+
+    ref.read(lineDrawingProvider.notifier).reset();
+    ref.read(circleDrawingProvider.notifier).reset();
+    ref.read(rectangleDrawingProvider.notifier).reset();
+    ref.read(polygonDrawingProvider.notifier).reset();
+    ref.read(evacKitDrawingProvider.notifier).reset();
+    ref.read(bearingPlotProvider.notifier).reset();
+    ref.read(deadReckoningProvider.notifier).reset();
+    ref.read(viewshedProvider.notifier).reset();
+    ref.read(slopeProvider.notifier).reset();
+
+    final result = await createCoveragePlan(
+      context: context,
+      ref: ref,
+      selectedMarker: selectedMarker,
+      mapPoint: mapPoint,
+    );
+    if (!mounted || result == null) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n.coveragePlanCreatedSnack(
+            result.markerCount,
+            result.circleCount,
+          ),
+        ),
+      ),
+    );
+    await maybeBeginCoverageViewshed(ref: ref, result: result);
+  }
+
   Future<void> _beginSunMoon() async {
     final selectedMarker = _selectedMarker();
     final mapPoint = _radialMenuPoint;
@@ -4947,103 +4990,119 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               MapRadialMenu(
                 center: center,
                 onDismiss: _closeRadialMenu,
-                actions: _radialMenuPage == 0
-                    ? [
-                        MapRadialMenuAction(
-                          icon: Icons.add_location_alt,
-                          label: l10n.mapRadialMarker,
-                          onSelected: _createMarkerFromRadialMenu,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.timeline,
-                          label: l10n.mapRadialLine,
-                          onSelected: _beginLineDrawing,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.radio_button_unchecked,
-                          label: l10n.mapRadialCircle,
-                          onSelected: _beginCircleDrawing,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.crop_square,
-                          label: l10n.mapRadialRectCenter,
-                          onSelected: _beginCenterRectDrawing,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.select_all,
-                          label: l10n.mapRadialRectCorners,
-                          onSelected: _beginCornersRectDrawing,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.polyline,
-                          label: l10n.mapRadialPolygon,
-                          onSelected: _beginPolygonDrawing,
-                        ),
-                      ]
-                    : [
-                        MapRadialMenuAction(
-                          icon: Icons.visibility,
-                          label: l10n.mapRadialViewshed,
-                          onSelected: _beginViewshed,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.terrain,
-                          label: l10n.mapRadialSlope,
-                          onSelected: _beginSlope,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.radar,
-                          label: l10n.mapRadialRangeRing,
-                          onSelected: () {
-                            unawaited(_beginRangeRing());
-                          },
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.wb_twilight,
-                          label: l10n.mapRadialSunMoon,
-                          onSelected: () {
-                            unawaited(_beginSunMoon());
-                          },
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.waves,
-                          label: l10n.mapRadialTides,
-                          onSelected: () {
-                            unawaited(_beginTideTables());
-                          },
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.route,
-                          label: l10n.mapRadialEvacKit,
-                          onSelected: _beginEvacKit,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.calendar_month,
-                          label: l10n.mapRadialSeasonalOverlay,
-                          onSelected: _beginSeasonalOverlayDrawing,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.directions_walk,
-                          label: l10n.mapRadialDeadReckoning,
-                          onSelected: _beginDeadReckoning,
-                        ),
-                        MapRadialMenuAction(
-                          icon: Icons.copy,
-                          label: l10n.mapRadialCopyCoordinates,
-                          onSelected: _copyRadialMenuCoordinates,
-                        ),
-                      ],
-                footerAction: _radialMenuPage == 0
-                    ? MapRadialMenuAction(
-                        icon: Icons.more_horiz,
-                        label: l10n.mapRadialMore,
-                        onSelected: () => setState(() => _radialMenuPage = 1),
-                      )
-                    : MapRadialMenuAction(
-                        icon: Icons.arrow_back,
-                        label: l10n.mapRadialBack,
-                        onSelected: () => setState(() => _radialMenuPage = 0),
-                      ),
+                actions: switch (_radialMenuPage) {
+                  0 => [
+                    MapRadialMenuAction(
+                      icon: Icons.add_location_alt,
+                      label: l10n.mapRadialMarker,
+                      onSelected: _createMarkerFromRadialMenu,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.timeline,
+                      label: l10n.mapRadialLine,
+                      onSelected: _beginLineDrawing,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.radio_button_unchecked,
+                      label: l10n.mapRadialCircle,
+                      onSelected: _beginCircleDrawing,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.crop_square,
+                      label: l10n.mapRadialRectCenter,
+                      onSelected: _beginCenterRectDrawing,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.select_all,
+                      label: l10n.mapRadialRectCorners,
+                      onSelected: _beginCornersRectDrawing,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.polyline,
+                      label: l10n.mapRadialPolygon,
+                      onSelected: _beginPolygonDrawing,
+                    ),
+                  ],
+                  1 => [
+                    MapRadialMenuAction(
+                      icon: Icons.visibility,
+                      label: l10n.mapRadialViewshed,
+                      onSelected: _beginViewshed,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.terrain,
+                      label: l10n.mapRadialSlope,
+                      onSelected: _beginSlope,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.radar,
+                      label: l10n.mapRadialRangeRing,
+                      onSelected: () {
+                        unawaited(_beginRangeRing());
+                      },
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.cell_tower,
+                      label: l10n.mapRadialCoveragePlan,
+                      onSelected: () {
+                        unawaited(_beginCoveragePlan());
+                      },
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.wb_twilight,
+                      label: l10n.mapRadialSunMoon,
+                      onSelected: () {
+                        unawaited(_beginSunMoon());
+                      },
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.waves,
+                      label: l10n.mapRadialTides,
+                      onSelected: () {
+                        unawaited(_beginTideTables());
+                      },
+                    ),
+                  ],
+                  _ => [
+                    MapRadialMenuAction(
+                      icon: Icons.route,
+                      label: l10n.mapRadialEvacKit,
+                      onSelected: _beginEvacKit,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.calendar_month,
+                      label: l10n.mapRadialSeasonalOverlay,
+                      onSelected: _beginSeasonalOverlayDrawing,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.directions_walk,
+                      label: l10n.mapRadialDeadReckoning,
+                      onSelected: _beginDeadReckoning,
+                    ),
+                    MapRadialMenuAction(
+                      icon: Icons.copy,
+                      label: l10n.mapRadialCopyCoordinates,
+                      onSelected: _copyRadialMenuCoordinates,
+                    ),
+                  ],
+                },
+                footerAction: switch (_radialMenuPage) {
+                  0 => MapRadialMenuAction(
+                    icon: Icons.more_horiz,
+                    label: l10n.mapRadialMore,
+                    onSelected: () => setState(() => _radialMenuPage = 1),
+                  ),
+                  1 => MapRadialMenuAction(
+                    icon: Icons.more_horiz,
+                    label: l10n.mapRadialMore,
+                    onSelected: () => setState(() => _radialMenuPage = 2),
+                  ),
+                  _ => MapRadialMenuAction(
+                    icon: Icons.arrow_back,
+                    label: l10n.mapRadialBack,
+                    onSelected: () => setState(() => _radialMenuPage = 0),
+                  ),
+                },
               ),
             if (_searchCoordinateRadialCenter case final center?
                 when _searchCoordinateRadialMarker != null)

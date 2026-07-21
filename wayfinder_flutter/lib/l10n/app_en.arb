@@ -265,8 +265,44 @@
   "circleSizeToggleRadius": "Showing radius on map · tap for diameter",
   "circleSizeToggleDiameter": "Showing diameter on map · tap for none",
   "circleSizeToggleNone": "Size hidden on map · tap for radius",
+  "watchLogTitle": "Incident / watch log",
+  "watchLogSubtitle": "Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.",
+  "watchLogObjectHint": "Entries linked to this map object.",
+  "watchLogSidebarHint": "Newest first across all map objects",
+  "watchLogAddEntry": "Add entry",
+  "watchLogAddEntryTitle": "Add watch log entry",
+  "watchLogEditEntryTitle": "Edit watch log entry",
+  "watchLogEmpty": "No watch log entries yet.",
+  "watchLogEmptyForObject": "No entries linked to this object yet.",
+  "watchLogMoreEntries": "{count} more…",
+  "@watchLogMoreEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "watchLogLoadFailed": "Could not load watch log: {error}",
+  "@watchLogLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "watchLogOccurredAtLabel": "Occurred at",
+  "watchLogAuthorLabel": "Operator / callsign",
+  "watchLogAuthorHint": "Optional",
+  "watchLogSeverityLabel": "Severity",
+  "watchLogSeverityInfo": "Info",
+  "watchLogSeverityNotice": "Notice",
+  "watchLogSeverityWarning": "Warning",
+  "watchLogSeverityCritical": "Critical",
+  "watchLogTextLabel": "Event",
+  "watchLogTextHint": "What happened?",
+  "watchLogTextRequired": "Enter event text.",
   "backupTitle": "Map data backup",
-  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.",
+  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -279,9 +315,9 @@
     }
   },
   "backupRestoreConfirmTitle": "Restore map data?",
-  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, seasonal overlays, and custom marker icons on the server with the selected backup file. This cannot be undone.",
-  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {seasonalOverlays} seasonal overlay(s).",
-  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {icons} custom icon(s).",
+  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, seasonal overlays, watch log entries, and custom marker icons on the server with the selected backup file. This cannot be undone.",
+  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {watchLogEntries} watch log entr(y/ies).",
+  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), and {icons} custom icon(s).",
   "@backupRestoreSuccessWithIcons": {
     "placeholders": {
       "layers": {
@@ -294,6 +330,9 @@
         "type": "int"
       },
       "seasonalOverlays": {
+        "type": "int"
+      },
+      "watchLogEntries": {
         "type": "int"
       },
       "icons": {
@@ -313,6 +352,9 @@
         "type": "int"
       },
       "seasonalOverlays": {
+        "type": "int"
+      },
+      "watchLogEntries": {
         "type": "int"
       }
     }
@@ -897,6 +939,42 @@
   "markerEditTitle": "Edit marker",
   "markerDefaultName": "New marker",
   "markerCoordinatesHelp": "Edit latitude and longitude to move the marker on the map.",
+  "markerRadioTitle": "Radio net / contact card",
+  "markerRadioEmptyHelp": "Optional callsign, frequency, and mode for ham shack / repeater planning (not live radio).",
+  "markerRadioStructuredHint": "Structured contact data only — Wayfinder does not transmit or tune radios.",
+  "markerRadioSummary": "{callsign}",
+  "@markerRadioSummary": {
+    "placeholders": {
+      "callsign": {
+        "type": "String"
+      }
+    }
+  },
+  "markerRadioNoCallsign": "Contact card",
+  "markerRadioCallsignLabel": "Callsign",
+  "markerRadioRoleLabel": "Role",
+  "markerRadioRoleShack": "Ham shack",
+  "markerRadioRoleRepeater": "Repeater",
+  "markerRadioRoleStation": "Station",
+  "markerRadioRoleNet": "Net",
+  "markerRadioRoleOther": "Other",
+  "markerRadioNetNameLabel": "Net / group",
+  "markerRadioNetNameHint": "e.g. County ARES",
+  "markerRadioFrequencyLabel": "Frequency",
+  "markerRadioModeLabel": "Mode",
+  "markerRadioModeFm": "FM",
+  "markerRadioModeAm": "AM",
+  "markerRadioModeSsb": "SSB",
+  "markerRadioModeCw": "CW",
+  "markerRadioModeDigi": "Digital",
+  "markerRadioModeDmr": "DMR",
+  "markerRadioModeOther": "Other",
+  "markerRadioToneLabel": "Tone / CTCSS",
+  "markerRadioOffsetLabel": "Offset",
+  "markerRadioNotesLabel": "Radio notes",
+  "markerRadioNotesHint": "Net time, coverage, PL tip — short planning notes",
+  "markerRadioClear": "Clear contact card",
+  "sidebarFilterRadioContacts": "Radio contacts",
   "markerInventoryTitle": "Cache inventory",
   "markerInventoryEmptyHelp": "Track supplies at this marker — quantity, unit, expiry, and last audit.",
   "markerInventoryItemCount": "{count, plural, =1{1 item} other{{count} items}}",
@@ -1716,6 +1794,7 @@
   "mapRadialViewshed": "Viewshed",
   "mapRadialSlope": "Slope / cost",
   "mapRadialRangeRing": "Range ring",
+  "mapRadialCoveragePlan": "Coverage plan",
   "mapRadialSunMoon": "Sun / moon",
   "mapRadialTides": "Tides",
   "mapRadialSeasonalOverlay": "Season",
@@ -2048,6 +2127,86 @@
   "sunMoonMoonrise": "Moonrise",
   "sunMoonMoonset": "Moonset",
   "rangeRingTitle": "Range ring",
+  "coveragePlanTitle": "Coverage plan",
+  "coveragePlanSubtitle": "Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only — not live RF.",
+  "coveragePlanTemplateLabel": "Template",
+  "coveragePlanTemplateMesh": "Mesh / LoRa",
+  "coveragePlanTemplateRepeater": "VHF/UHF repeater",
+  "coveragePlanTemplateShack": "Ham shack",
+  "coveragePlanLayoutLabel": "Layout",
+  "coveragePlanLayoutSingle": "Single site",
+  "coveragePlanLayoutHexRing": "Hex ring (7)",
+  "coveragePlanAnchorLabel": "Seed center",
+  "coveragePlanAnchorMarker": "Marker",
+  "coveragePlanAnchorMarkerNamed": "Marker: {name}",
+  "@coveragePlanAnchorMarkerNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanAnchorHome": "Home",
+  "coveragePlanAnchorMapPoint": "Map point",
+  "coveragePlanRadiusLabel": "Coverage radius",
+  "coveragePlanRadiusHelp": "Range circle drawn around each site.",
+  "coveragePlanSpacingLabel": "Site spacing",
+  "coveragePlanSpacingHelp": "Center-to-center distance for the hex ring (defaults to ~1.7× radius for light overlap).",
+  "coveragePlanCreateMarkers": "Create markers",
+  "coveragePlanCreateCircles": "Create range circles",
+  "coveragePlanRunViewshed": "Run viewshed on seed",
+  "coveragePlanRunViewshedHelp": "Compute terrain LOS from the seed using the template antenna height and coverage radius.",
+  "coveragePlanSiteCount": "{count, plural, =1{Creates 1 site} other{Creates {count} sites}}",
+  "@coveragePlanSiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coveragePlanCreateAction": "Create plan",
+  "coveragePlanMissingCenter": "Choose a seed center (marker, home, or map point).",
+  "coveragePlanInvalidRadius": "Enter a coverage radius between 50 m and 100 km.",
+  "coveragePlanInvalidSpacing": "Enter a site spacing between 50 m and 100 km.",
+  "coveragePlanNeedOutput": "Enable markers and/or range circles.",
+  "coveragePlanSiteName": "{template} {label}",
+  "@coveragePlanSiteName": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanCircleNotes": "Coverage plan range circle ({template})",
+  "@coveragePlanCircleNotes": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanRadioNotes": "Placed by coverage plan ({template})",
+  "@coveragePlanRadioNotes": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanCreatedSnack": "Coverage plan: {markers} marker(s), {circles} circle(s).",
+  "@coveragePlanCreatedSnack": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "circles": {
+        "type": "int"
+      }
+    }
+  },
   "rangeRingHelp": "Compute a travel or fuel radius from home, a selected marker (rally point), or the map point, then save it as a circle.",
   "rangeRingCenterLabel": "Center",
   "rangeRingCenterMarker": "Marker",
@@ -2683,7 +2842,7 @@
   "seasonalOverlaysSettingsSubtitle": "Dated polygon layers for hunting seasons, freeze/thaw windows, and other recurring or one-time map seasons. Stored on the server and included in map backups.",
   "seasonalOverlaysShowInactive": "Show out-of-season overlays",
   "seasonalOverlaysShowInactiveHint": "When off, overlays outside their date windows stay hidden even if enabled.",
-  "seasonalOverlaysDrawHint": "Long-press the map → More → Season, then draw a polygon and set date windows.",
+  "seasonalOverlaysDrawHint": "Long-press the map → More → More → Season, then draw a polygon and set date windows.",
   "seasonalOverlaysInstalled": "Overlays",
   "seasonalOverlaysEmpty": "No seasonal overlays yet.",
   "seasonalOverlaysLoadFailed": "Could not load seasonal overlays: {error}",

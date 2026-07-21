@@ -4,5 +4,6 @@ fields:
   markers: int
   zones: int
   seasonalOverlays: int
+  watchLogEntries: int
   markerIconCategories: int
   markerIcons: int

@@ -1,0 +1,25 @@
+class: WatchLogEntry
+table: watch_log_entry
+fields:
+  id: UuidValue, defaultModel=random
+  ### Event time (operator-editable; UTC)
+  occurredAt: DateTime
+  ### Optional freeform operator / callsign
+  author: String?
+  ### One of: info, notice, warning, critical
+  severity: String
+  text: String
+  ### Soft link to a marker (optional)
+  markerId: UuidValue?
+  ### Soft link to a zone (optional)
+  zoneId: UuidValue?
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  watch_log_occurred_at_idx:
+    fields: occurredAt
+  watch_log_marker_id_idx:
+    fields: markerId
+  watch_log_zone_id_idx:
+    fields: zoneId

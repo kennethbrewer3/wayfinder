@@ -171,7 +171,14 @@ In the marker form:
 - **Transportation** — when tracking is enabled, choose how the marker moves. Options align with common APRS mobile symbols. Each mode renders a distinct **trail style** on the map (footprints, tread, road lane, railroad, wake, flight path, or balloon drift).
 - **Elevation** — optional height in your chosen units.
 - **Notes** — rich text stored as Markdown (links, lists, and basic formatting supported).
+- **Radio net / contact card** — optional structured ham/radio planning data (callsign, frequency, mode, tone, offset, net name). Not live radio.
 - **Cache inventory** — optional supply list for caches: item name, quantity, unit, category (food, water, medical, ammo, other), expiry date, and last audited date.
+
+### Radio net / contact card
+
+Attach contact cards to markers that represent a **ham shack**, **repeater**, or **radio station** (or any marker). Expand **Radio net / contact card** in the create/edit form to record callsign, role, net/group name, frequency (MHz), mode (FM/AM/SSB/CW/digital/DMR), CTCSS tone, repeater offset, and short radio notes.
+
+This is planning metadata only — Wayfinder does not transmit, scan, or tune radios. Marker details show the card when present. In the **Map Objects** sidebar, callsign/frequency appear under the marker, search matches callsigns, and the **Radio contacts** filter lists only markers that have a card.
 
 ### Cache inventory
 
@@ -182,6 +189,16 @@ In the **Map Objects** sidebar, use the **Food expiring in 90 days** filter chip
 ### Edit or view a marker
 
 **Tap** a marker or zone on the map to select it. Selected markers grow slightly and show a colored ring so the choice is obvious; the selected marker also drives GPS distance/bearing in the location HUD. **Long-press** a marker or zone to open its details dialog (or use the sidebar edit control).
+
+### Incident / watch log
+
+Timestamped events for after-action review, optionally linked to a marker or zone.
+
+1. Open any map object’s **details** dialog — the **Incident / watch log** section lists linked entries and **Add entry**.
+2. Or use the **Map Objects** sidebar expansion **Incident / watch log** for a newest-first feed across all objects (tap an entry to select/zoom its linked object).
+3. Each entry has occurred-at time, optional operator/callsign, severity (info / notice / warning / critical), and event text.
+
+Watch log entries are included in map backups (v5+). They are soft links — deleting a marker does not auto-delete its log history.
 
 ### Connect markers with a line (waypoints)
 
@@ -309,7 +326,7 @@ From a line endpoint you can start a **bearing plot**: specify a bearing (absolu
 When GPS is denied or unreliable, estimate a new position from a known start using heading and distance (or paces).
 
 1. Optionally **select a marker** (or enable GPS so the last fix can be used).
-2. Long-press the map → **More** → **Pace count**.
+2. Long-press the map → **More** → **More** → **Pace count**.
 3. Enter **bearing** (°T or °M per Settings → Bearings), then either:
    - **Paces** — pace count × pace length (meters per pace; remembered on this device), or
    - **Distance** — direct ground distance in your measurement units.
@@ -367,6 +384,18 @@ Estimate how far you can travel from **home**, a **selected marker** (for exampl
 
 Range rings are stored as circles; details show the mode and duration or fuel used to compute them. Defaults are rough planning estimates, not vehicle specifications.
 
+### Coverage planning templates
+
+Suggested **repeater / mesh spacing** using range circles plus optional terrain viewshed (LOS). Geometric planning only — not live RF propagation.
+
+1. Optionally **select a seed marker**, or long-press a map point.
+2. Long-press → **More** → **Coverage plan**.
+3. Pick a template (**Mesh / LoRa**, **VHF/UHF repeater**, or **Ham shack**), layout (**Single site** or **Hex ring** of seed + 6 neighbors), coverage radius, and spacing.
+4. Choose whether to create markers, range circles, and whether to run **viewshed** on the seed (template antenna height + coverage radius).
+5. Tap **Create plan** — sites appear on the active layer with matching icons and a starter radio contact card.
+
+Edit or delete individual markers/circles afterward like any other map object. Run viewshed again from any placed marker via **More → Viewshed**.
+
 ---
 
 ## Evac route kits
@@ -375,7 +404,7 @@ Evac route kits store a primary escape route plus optional alternates, with plan
 
 ### Draw an evac kit
 
-1. Optionally **select a marker** on the map or in the sidebar (it stays selected). Long-press → **More** → **Evac kit**. The selected marker becomes waypoint **1**; otherwise the long-press point is used.
+1. Optionally **select a marker** on the map or in the sidebar (it stays selected). Long-press → **More** → **More** → **Evac kit**. The selected marker becomes waypoint **1**; otherwise the long-press point is used.
 2. **Tap** the map to add free waypoints, or **tap markers** to snap waypoints to them. A dashed preview follows the cursor.
 3. **Double-tap** or tap **Finish** when you have at least two waypoints (banner **Undo** removes the last point).
 4. Complete the form with name, primary route name, default travel mode, color, layer, and notes.
@@ -484,8 +513,12 @@ Long-press (hold) on empty map space to open the radial menu. Available actions 
 | Rectangle (center) | Start center-based rectangle (from selected marker when one is selected) |
 | Rectangle (corners) | Start corner-based rectangle |
 | Polygon | Draw a freeform polygon (property line, patrol sector, no-go…) |
-| More | Opens overflow tools (Viewshed, Slope / cost, Range ring, Sun / moon, Tides, Evac kit, Pace count, Copy coordinates) |
-| Back | Returns from the More menu to the main radial actions |
+| More | Opens the next overflow page (analysis tools, then planning tools) |
+| Back | From the last overflow page, returns to the main draw actions |
+
+Overflow page 1: Viewshed, Slope / cost, Range ring, Coverage plan, Sun / moon, Tides.
+
+Overflow page 2: Evac kit, Season, Pace count, Copy coordinates.
 
 Cancel by tapping outside the menu or pressing Escape where supported.
 
@@ -658,7 +691,7 @@ Dated polygon layers for hunting seasons, freeze/thaw windows, and other seasona
 
 ### Create a seasonal overlay
 
-1. Long-press the map → **More** → **Season**.
+1. Long-press the map → **More** → **More** → **Season**.
 2. Tap to place polygon vertices (at least three). **Double-tap** or **Finish** when done.
 3. Name the overlay, choose colors, and set **date mode**:
    - **Absolute** — specific calendar ranges (for example 2026-11-15 → 2026-12-07).
@@ -678,7 +711,7 @@ Active overlays (in season and visible) draw on the map with a name label. Out-o
 
 ### Full backup
 
-Backup exports Wayfinder **map data**: layers, markers, zones, seasonal overlays, custom marker icons, and app settings as a `.zip` archive (legacy `.json` backups can still be restored).
+Backup exports Wayfinder **map data**: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings as a `.zip` archive (legacy `.json` backups can still be restored).
 
 #### Export
 

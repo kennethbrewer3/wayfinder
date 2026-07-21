@@ -1132,6 +1132,138 @@ abstract class AppLocalizations {
   /// **'Size hidden on map · tap for radius'**
   String get circleSizeToggleNone;
 
+  /// No description provided for @watchLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident / watch log'**
+  String get watchLogTitle;
+
+  /// No description provided for @watchLogSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.'**
+  String get watchLogSubtitle;
+
+  /// No description provided for @watchLogObjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries linked to this map object.'**
+  String get watchLogObjectHint;
+
+  /// No description provided for @watchLogSidebarHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first across all map objects'**
+  String get watchLogSidebarHint;
+
+  /// No description provided for @watchLogAddEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add entry'**
+  String get watchLogAddEntry;
+
+  /// No description provided for @watchLogAddEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add watch log entry'**
+  String get watchLogAddEntryTitle;
+
+  /// No description provided for @watchLogEditEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit watch log entry'**
+  String get watchLogEditEntryTitle;
+
+  /// No description provided for @watchLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No watch log entries yet.'**
+  String get watchLogEmpty;
+
+  /// No description provided for @watchLogEmptyForObject.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries linked to this object yet.'**
+  String get watchLogEmptyForObject;
+
+  /// No description provided for @watchLogMoreEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more…'**
+  String watchLogMoreEntries(int count);
+
+  /// No description provided for @watchLogLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load watch log: {error}'**
+  String watchLogLoadFailed(String error);
+
+  /// No description provided for @watchLogOccurredAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Occurred at'**
+  String get watchLogOccurredAtLabel;
+
+  /// No description provided for @watchLogAuthorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Operator / callsign'**
+  String get watchLogAuthorLabel;
+
+  /// No description provided for @watchLogAuthorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get watchLogAuthorHint;
+
+  /// No description provided for @watchLogSeverityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Severity'**
+  String get watchLogSeverityLabel;
+
+  /// No description provided for @watchLogSeverityInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get watchLogSeverityInfo;
+
+  /// No description provided for @watchLogSeverityNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice'**
+  String get watchLogSeverityNotice;
+
+  /// No description provided for @watchLogSeverityWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get watchLogSeverityWarning;
+
+  /// No description provided for @watchLogSeverityCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical'**
+  String get watchLogSeverityCritical;
+
+  /// No description provided for @watchLogTextLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get watchLogTextLabel;
+
+  /// No description provided for @watchLogTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened?'**
+  String get watchLogTextHint;
+
+  /// No description provided for @watchLogTextRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter event text.'**
+  String get watchLogTextRequired;
+
   /// No description provided for @backupTitle.
   ///
   /// In en, this message translates to:
@@ -1141,7 +1273,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -1177,29 +1309,31 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestoreConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'This replaces all layers, markers, zones, seasonal overlays, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
+  /// **'This replaces all layers, markers, zones, seasonal overlays, watch log entries, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
   String get backupRestoreConfirmMessage;
 
   /// No description provided for @backupRestoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), and {seasonalOverlays} seasonal overlay(s).'**
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {watchLogEntries} watch log entr(y/ies).'**
   String backupRestoreSuccess(
     int layers,
     int markers,
     int zones,
     int seasonalOverlays,
+    int watchLogEntries,
   );
 
   /// No description provided for @backupRestoreSuccessWithIcons.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {icons} custom icon(s).'**
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), and {icons} custom icon(s).'**
   String backupRestoreSuccessWithIcons(
     int layers,
     int markers,
     int zones,
     int seasonalOverlays,
+    int watchLogEntries,
     int icons,
   );
 
@@ -2456,6 +2590,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit latitude and longitude to move the marker on the map.'**
   String get markerCoordinatesHelp;
+
+  /// No description provided for @markerRadioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio net / contact card'**
+  String get markerRadioTitle;
+
+  /// No description provided for @markerRadioEmptyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional callsign, frequency, and mode for ham shack / repeater planning (not live radio).'**
+  String get markerRadioEmptyHelp;
+
+  /// No description provided for @markerRadioStructuredHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Structured contact data only — Wayfinder does not transmit or tune radios.'**
+  String get markerRadioStructuredHint;
+
+  /// No description provided for @markerRadioSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{callsign}'**
+  String markerRadioSummary(String callsign);
+
+  /// No description provided for @markerRadioNoCallsign.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact card'**
+  String get markerRadioNoCallsign;
+
+  /// No description provided for @markerRadioCallsignLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Callsign'**
+  String get markerRadioCallsignLabel;
+
+  /// No description provided for @markerRadioRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get markerRadioRoleLabel;
+
+  /// No description provided for @markerRadioRoleShack.
+  ///
+  /// In en, this message translates to:
+  /// **'Ham shack'**
+  String get markerRadioRoleShack;
+
+  /// No description provided for @markerRadioRoleRepeater.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater'**
+  String get markerRadioRoleRepeater;
+
+  /// No description provided for @markerRadioRoleStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Station'**
+  String get markerRadioRoleStation;
+
+  /// No description provided for @markerRadioRoleNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get markerRadioRoleNet;
+
+  /// No description provided for @markerRadioRoleOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get markerRadioRoleOther;
+
+  /// No description provided for @markerRadioNetNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Net / group'**
+  String get markerRadioNetNameLabel;
+
+  /// No description provided for @markerRadioNetNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. County ARES'**
+  String get markerRadioNetNameHint;
+
+  /// No description provided for @markerRadioFrequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get markerRadioFrequencyLabel;
+
+  /// No description provided for @markerRadioModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get markerRadioModeLabel;
+
+  /// No description provided for @markerRadioModeFm.
+  ///
+  /// In en, this message translates to:
+  /// **'FM'**
+  String get markerRadioModeFm;
+
+  /// No description provided for @markerRadioModeAm.
+  ///
+  /// In en, this message translates to:
+  /// **'AM'**
+  String get markerRadioModeAm;
+
+  /// No description provided for @markerRadioModeSsb.
+  ///
+  /// In en, this message translates to:
+  /// **'SSB'**
+  String get markerRadioModeSsb;
+
+  /// No description provided for @markerRadioModeCw.
+  ///
+  /// In en, this message translates to:
+  /// **'CW'**
+  String get markerRadioModeCw;
+
+  /// No description provided for @markerRadioModeDigi.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital'**
+  String get markerRadioModeDigi;
+
+  /// No description provided for @markerRadioModeDmr.
+  ///
+  /// In en, this message translates to:
+  /// **'DMR'**
+  String get markerRadioModeDmr;
+
+  /// No description provided for @markerRadioModeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get markerRadioModeOther;
+
+  /// No description provided for @markerRadioToneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone / CTCSS'**
+  String get markerRadioToneLabel;
+
+  /// No description provided for @markerRadioOffsetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Offset'**
+  String get markerRadioOffsetLabel;
+
+  /// No description provided for @markerRadioNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio notes'**
+  String get markerRadioNotesLabel;
+
+  /// No description provided for @markerRadioNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Net time, coverage, PL tip — short planning notes'**
+  String get markerRadioNotesHint;
+
+  /// No description provided for @markerRadioClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear contact card'**
+  String get markerRadioClear;
+
+  /// No description provided for @sidebarFilterRadioContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio contacts'**
+  String get sidebarFilterRadioContacts;
 
   /// No description provided for @markerInventoryTitle.
   ///
@@ -5253,6 +5561,12 @@ abstract class AppLocalizations {
   /// **'Range ring'**
   String get mapRadialRangeRing;
 
+  /// No description provided for @mapRadialCoveragePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage plan'**
+  String get mapRadialCoveragePlan;
+
   /// No description provided for @mapRadialSunMoon.
   ///
   /// In en, this message translates to:
@@ -5964,6 +6278,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Range ring'**
   String get rangeRingTitle;
+
+  /// No description provided for @coveragePlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage plan'**
+  String get coveragePlanTitle;
+
+  /// No description provided for @coveragePlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only — not live RF.'**
+  String get coveragePlanSubtitle;
+
+  /// No description provided for @coveragePlanTemplateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Template'**
+  String get coveragePlanTemplateLabel;
+
+  /// No description provided for @coveragePlanTemplateMesh.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh / LoRa'**
+  String get coveragePlanTemplateMesh;
+
+  /// No description provided for @coveragePlanTemplateRepeater.
+  ///
+  /// In en, this message translates to:
+  /// **'VHF/UHF repeater'**
+  String get coveragePlanTemplateRepeater;
+
+  /// No description provided for @coveragePlanTemplateShack.
+  ///
+  /// In en, this message translates to:
+  /// **'Ham shack'**
+  String get coveragePlanTemplateShack;
+
+  /// No description provided for @coveragePlanLayoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Layout'**
+  String get coveragePlanLayoutLabel;
+
+  /// No description provided for @coveragePlanLayoutSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'Single site'**
+  String get coveragePlanLayoutSingle;
+
+  /// No description provided for @coveragePlanLayoutHexRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Hex ring (7)'**
+  String get coveragePlanLayoutHexRing;
+
+  /// No description provided for @coveragePlanAnchorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Seed center'**
+  String get coveragePlanAnchorLabel;
+
+  /// No description provided for @coveragePlanAnchorMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker'**
+  String get coveragePlanAnchorMarker;
+
+  /// No description provided for @coveragePlanAnchorMarkerNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Marker: {name}'**
+  String coveragePlanAnchorMarkerNamed(String name);
+
+  /// No description provided for @coveragePlanAnchorHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get coveragePlanAnchorHome;
+
+  /// No description provided for @coveragePlanAnchorMapPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Map point'**
+  String get coveragePlanAnchorMapPoint;
+
+  /// No description provided for @coveragePlanRadiusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage radius'**
+  String get coveragePlanRadiusLabel;
+
+  /// No description provided for @coveragePlanRadiusHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Range circle drawn around each site.'**
+  String get coveragePlanRadiusHelp;
+
+  /// No description provided for @coveragePlanSpacingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Site spacing'**
+  String get coveragePlanSpacingLabel;
+
+  /// No description provided for @coveragePlanSpacingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Center-to-center distance for the hex ring (defaults to ~1.7× radius for light overlap).'**
+  String get coveragePlanSpacingHelp;
+
+  /// No description provided for @coveragePlanCreateMarkers.
+  ///
+  /// In en, this message translates to:
+  /// **'Create markers'**
+  String get coveragePlanCreateMarkers;
+
+  /// No description provided for @coveragePlanCreateCircles.
+  ///
+  /// In en, this message translates to:
+  /// **'Create range circles'**
+  String get coveragePlanCreateCircles;
+
+  /// No description provided for @coveragePlanRunViewshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Run viewshed on seed'**
+  String get coveragePlanRunViewshed;
+
+  /// No description provided for @coveragePlanRunViewshedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute terrain LOS from the seed using the template antenna height and coverage radius.'**
+  String get coveragePlanRunViewshedHelp;
+
+  /// No description provided for @coveragePlanSiteCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Creates 1 site} other{Creates {count} sites}}'**
+  String coveragePlanSiteCount(int count);
+
+  /// No description provided for @coveragePlanCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create plan'**
+  String get coveragePlanCreateAction;
+
+  /// No description provided for @coveragePlanMissingCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a seed center (marker, home, or map point).'**
+  String get coveragePlanMissingCenter;
+
+  /// No description provided for @coveragePlanInvalidRadius.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a coverage radius between 50 m and 100 km.'**
+  String get coveragePlanInvalidRadius;
+
+  /// No description provided for @coveragePlanInvalidSpacing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a site spacing between 50 m and 100 km.'**
+  String get coveragePlanInvalidSpacing;
+
+  /// No description provided for @coveragePlanNeedOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable markers and/or range circles.'**
+  String get coveragePlanNeedOutput;
+
+  /// No description provided for @coveragePlanSiteName.
+  ///
+  /// In en, this message translates to:
+  /// **'{template} {label}'**
+  String coveragePlanSiteName(String template, String label);
+
+  /// No description provided for @coveragePlanCircleNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage plan range circle ({template})'**
+  String coveragePlanCircleNotes(String template);
+
+  /// No description provided for @coveragePlanRadioNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Placed by coverage plan ({template})'**
+  String coveragePlanRadioNotes(String template);
+
+  /// No description provided for @coveragePlanCreatedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage plan: {markers} marker(s), {circles} circle(s).'**
+  String coveragePlanCreatedSnack(int markers, int circles);
 
   /// No description provided for @rangeRingHelp.
   ///
@@ -8350,7 +8856,7 @@ abstract class AppLocalizations {
   /// No description provided for @seasonalOverlaysDrawHint.
   ///
   /// In en, this message translates to:
-  /// **'Long-press the map → More → Season, then draw a polygon and set date windows.'**
+  /// **'Long-press the map → More → More → Season, then draw a polygon and set date windows.'**
   String get seasonalOverlaysDrawHint;
 
   /// No description provided for @seasonalOverlaysInstalled.

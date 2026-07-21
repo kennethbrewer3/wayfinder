@@ -40,11 +40,14 @@ import '../../tracks/models/track_geometry.dart';
 import '../../tracks/presentation/create_track_dialog.dart';
 import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../tracks/presentation/map_track_layer.dart';
+import '../../watch_log/presentation/watch_log_sidebar_section.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_inventory.dart';
+import '../../markers/models/marker_radio.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
+import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/utils/effective_marker_icon.dart';
 import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
@@ -195,16 +198,24 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     final zones = zonesAsync.value ?? const <MapZone>[];
     final query = sidebar.searchQuery.trim().toLowerCase();
     final filterFoodExpiring = sidebar.filterFoodExpiring90Days;
+    final filterRadioContacts = sidebar.filterRadioContacts;
 
     bool matchesSearch(String name) =>
         query.isEmpty || name.toLowerCase().contains(query);
 
     bool matchesMarkerFilters(MapMarker marker) {
-      if (!matchesSearch(marker.name)) {
+      final radio = MarkerRadioContact.fromMarkerRadioJson(marker.radioJson);
+      final matchesNameOrCallsign =
+          matchesSearch(marker.name) ||
+          (query.isNotEmpty && radio.callsign.toLowerCase().contains(query));
+      if (!matchesNameOrCallsign) {
         return false;
       }
       if (filterFoodExpiring &&
           !markerHasFoodExpiringWithin(marker.inventoryJson)) {
+        return false;
+      }
+      if (filterRadioContacts && radio.isEmpty) {
         return false;
       }
       return true;
@@ -234,27 +245,47 @@ class _LayerOrganizedPanel extends ConsumerWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: FilterChip(
-              avatar: Icon(
-                Icons.kitchen_outlined,
-                size: 18,
-                color: filterFoodExpiring
-                    ? Theme.of(context).colorScheme.onSecondaryContainer
-                    : Theme.of(context).colorScheme.onSurfaceVariant,
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilterChip(
+                avatar: Icon(
+                  Icons.kitchen_outlined,
+                  size: 18,
+                  color: filterFoodExpiring
+                      ? Theme.of(context).colorScheme.onSecondaryContainer
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                label: Text(l10n.sidebarFilterFoodExpiring90Days),
+                selected: filterFoodExpiring,
+                onSelected: (selected) {
+                  ref
+                      .read(sidebarProvider.notifier)
+                      .setFilterFoodExpiring90Days(selected);
+                },
               ),
-              label: Text(l10n.sidebarFilterFoodExpiring90Days),
-              selected: filterFoodExpiring,
-              onSelected: (selected) {
-                ref
-                    .read(sidebarProvider.notifier)
-                    .setFilterFoodExpiring90Days(selected);
-              },
-            ),
+              FilterChip(
+                avatar: Icon(
+                  Icons.cell_tower_outlined,
+                  size: 18,
+                  color: filterRadioContacts
+                      ? Theme.of(context).colorScheme.onSecondaryContainer
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                label: Text(l10n.sidebarFilterRadioContacts),
+                selected: filterRadioContacts,
+                onSelected: (selected) {
+                  ref
+                      .read(sidebarProvider.notifier)
+                      .setFilterRadioContacts(selected);
+                },
+              ),
+            ],
           ),
         ),
         const _PathProfileSelectionBar(),
+        WatchLogSidebarSection(onZoomTo: onZoomTo),
         _SeasonalOverlaysSidebarSection(onZoomTo: onZoomTo),
         Expanded(
           child: ListView.builder(
@@ -348,7 +379,9 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                           layerMarkers: layerMarkers,
                           layerZones: layerZones,
                           hasSearchQuery:
-                              query.isNotEmpty || filterFoodExpiring,
+                              query.isNotEmpty ||
+                              filterFoodExpiring ||
+                              filterRadioContacts,
                           onZoomTo: onZoomTo,
                         ),
                     ],
@@ -1085,6 +1118,7 @@ class _MarkerListTile extends ConsumerWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final notesPreview = marker.notes?.trim();
+    final radio = MarkerRadioContact.fromMarkerRadioJson(marker.radioJson);
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.marker &&
@@ -1092,6 +1126,15 @@ class _MarkerListTile extends ConsumerWidget {
     final trackZones = trackZonesById(
       ref.watch(zonesProvider).valueOrNull ?? const [],
     );
+    final radioSummary = radio.isEmpty
+        ? null
+        : [
+            if (radio.callsign.isNotEmpty) radio.callsign,
+            if (radio.frequencyMHz != null)
+              '${formatRadioFrequencyMHz(radio.frequencyMHz)} MHz',
+            if (radio.mode != MarkerRadioMode.other)
+              markerRadioModeLabel(l10n, radio.mode),
+          ].join(' · ');
 
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
@@ -1138,6 +1181,17 @@ class _MarkerListTile extends ConsumerWidget {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
+                        if (radioSummary != null &&
+                            radioSummary.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            radioSummary,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                         if (notesPreview != null &&
                             notesPreview.isNotEmpty) ...[
                           const SizedBox(height: 4),

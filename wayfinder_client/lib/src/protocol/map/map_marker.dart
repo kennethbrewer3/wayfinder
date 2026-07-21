@@ -27,6 +27,7 @@ abstract class MapMarker implements _i1.SerializableModel {
     this.trackZoneId,
     this.weatherJson,
     this.inventoryJson,
+    this.radioJson,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
@@ -48,6 +49,7 @@ abstract class MapMarker implements _i1.SerializableModel {
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
     String? inventoryJson,
+    String? radioJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -76,6 +78,7 @@ abstract class MapMarker implements _i1.SerializableModel {
             ),
       weatherJson: jsonSerialization['weatherJson'] as String?,
       inventoryJson: jsonSerialization['inventoryJson'] as String?,
+      radioJson: jsonSerialization['radioJson'] as String?,
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -115,6 +118,8 @@ abstract class MapMarker implements _i1.SerializableModel {
 
   String? inventoryJson;
 
+  String? radioJson;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -138,6 +143,7 @@ abstract class MapMarker implements _i1.SerializableModel {
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
     String? inventoryJson,
+    String? radioJson,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -159,6 +165,7 @@ abstract class MapMarker implements _i1.SerializableModel {
       if (trackZoneId != null) 'trackZoneId': trackZoneId?.toJson(),
       if (weatherJson != null) 'weatherJson': weatherJson,
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
+      if (radioJson != null) 'radioJson': radioJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -188,6 +195,7 @@ class _MapMarkerImpl extends MapMarker {
     _i1.UuidValue? trackZoneId,
     String? weatherJson,
     String? inventoryJson,
+    String? radioJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -205,6 +213,7 @@ class _MapMarkerImpl extends MapMarker {
          trackZoneId: trackZoneId,
          weatherJson: weatherJson,
          inventoryJson: inventoryJson,
+         radioJson: radioJson,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -228,6 +237,7 @@ class _MapMarkerImpl extends MapMarker {
     Object? trackZoneId = _Undefined,
     Object? weatherJson = _Undefined,
     Object? inventoryJson = _Undefined,
+    Object? radioJson = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -250,6 +260,7 @@ class _MapMarkerImpl extends MapMarker {
       inventoryJson: inventoryJson is String?
           ? inventoryJson
           : this.inventoryJson,
+      radioJson: radioJson is String? ? radioJson : this.radioJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

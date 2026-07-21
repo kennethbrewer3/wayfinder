@@ -575,11 +575,82 @@ class AppLocalizationsEn extends AppLocalizations {
   String get circleSizeToggleNone => 'Size hidden on map · tap for radius';
 
   @override
+  String get watchLogTitle => 'Incident / watch log';
+
+  @override
+  String get watchLogSubtitle =>
+      'Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.';
+
+  @override
+  String get watchLogObjectHint => 'Entries linked to this map object.';
+
+  @override
+  String get watchLogSidebarHint => 'Newest first across all map objects';
+
+  @override
+  String get watchLogAddEntry => 'Add entry';
+
+  @override
+  String get watchLogAddEntryTitle => 'Add watch log entry';
+
+  @override
+  String get watchLogEditEntryTitle => 'Edit watch log entry';
+
+  @override
+  String get watchLogEmpty => 'No watch log entries yet.';
+
+  @override
+  String get watchLogEmptyForObject => 'No entries linked to this object yet.';
+
+  @override
+  String watchLogMoreEntries(int count) {
+    return '$count more…';
+  }
+
+  @override
+  String watchLogLoadFailed(String error) {
+    return 'Could not load watch log: $error';
+  }
+
+  @override
+  String get watchLogOccurredAtLabel => 'Occurred at';
+
+  @override
+  String get watchLogAuthorLabel => 'Operator / callsign';
+
+  @override
+  String get watchLogAuthorHint => 'Optional';
+
+  @override
+  String get watchLogSeverityLabel => 'Severity';
+
+  @override
+  String get watchLogSeverityInfo => 'Info';
+
+  @override
+  String get watchLogSeverityNotice => 'Notice';
+
+  @override
+  String get watchLogSeverityWarning => 'Warning';
+
+  @override
+  String get watchLogSeverityCritical => 'Critical';
+
+  @override
+  String get watchLogTextLabel => 'Event';
+
+  @override
+  String get watchLogTextHint => 'What happened?';
+
+  @override
+  String get watchLogTextRequired => 'Enter event text.';
+
+  @override
   String get backupTitle => 'Map data backup';
 
   @override
   String get backupDescription =>
-      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -600,7 +671,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'This replaces all layers, markers, zones, seasonal overlays, and custom marker icons on the server with the selected backup file. This cannot be undone.';
+      'This replaces all layers, markers, zones, seasonal overlays, watch log entries, and custom marker icons on the server with the selected backup file. This cannot be undone.';
 
   @override
   String backupRestoreSuccess(
@@ -608,8 +679,9 @@ class AppLocalizationsEn extends AppLocalizations {
     int markers,
     int zones,
     int seasonalOverlays,
+    int watchLogEntries,
   ) {
-    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), and $seasonalOverlays seasonal overlay(s).';
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), and $watchLogEntries watch log entr(y/ies).';
   }
 
   @override
@@ -618,9 +690,10 @@ class AppLocalizationsEn extends AppLocalizations {
     int markers,
     int zones,
     int seasonalOverlays,
+    int watchLogEntries,
     int icons,
   ) {
-    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), and $icons custom icon(s).';
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), and $icons custom icon(s).';
   }
 
   @override
@@ -1398,6 +1471,98 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get markerCoordinatesHelp =>
       'Edit latitude and longitude to move the marker on the map.';
+
+  @override
+  String get markerRadioTitle => 'Radio net / contact card';
+
+  @override
+  String get markerRadioEmptyHelp =>
+      'Optional callsign, frequency, and mode for ham shack / repeater planning (not live radio).';
+
+  @override
+  String get markerRadioStructuredHint =>
+      'Structured contact data only — Wayfinder does not transmit or tune radios.';
+
+  @override
+  String markerRadioSummary(String callsign) {
+    return '$callsign';
+  }
+
+  @override
+  String get markerRadioNoCallsign => 'Contact card';
+
+  @override
+  String get markerRadioCallsignLabel => 'Callsign';
+
+  @override
+  String get markerRadioRoleLabel => 'Role';
+
+  @override
+  String get markerRadioRoleShack => 'Ham shack';
+
+  @override
+  String get markerRadioRoleRepeater => 'Repeater';
+
+  @override
+  String get markerRadioRoleStation => 'Station';
+
+  @override
+  String get markerRadioRoleNet => 'Net';
+
+  @override
+  String get markerRadioRoleOther => 'Other';
+
+  @override
+  String get markerRadioNetNameLabel => 'Net / group';
+
+  @override
+  String get markerRadioNetNameHint => 'e.g. County ARES';
+
+  @override
+  String get markerRadioFrequencyLabel => 'Frequency';
+
+  @override
+  String get markerRadioModeLabel => 'Mode';
+
+  @override
+  String get markerRadioModeFm => 'FM';
+
+  @override
+  String get markerRadioModeAm => 'AM';
+
+  @override
+  String get markerRadioModeSsb => 'SSB';
+
+  @override
+  String get markerRadioModeCw => 'CW';
+
+  @override
+  String get markerRadioModeDigi => 'Digital';
+
+  @override
+  String get markerRadioModeDmr => 'DMR';
+
+  @override
+  String get markerRadioModeOther => 'Other';
+
+  @override
+  String get markerRadioToneLabel => 'Tone / CTCSS';
+
+  @override
+  String get markerRadioOffsetLabel => 'Offset';
+
+  @override
+  String get markerRadioNotesLabel => 'Radio notes';
+
+  @override
+  String get markerRadioNotesHint =>
+      'Net time, coverage, PL tip — short planning notes';
+
+  @override
+  String get markerRadioClear => 'Clear contact card';
+
+  @override
+  String get sidebarFilterRadioContacts => 'Radio contacts';
 
   @override
   String get markerInventoryTitle => 'Cache inventory';
@@ -2997,6 +3162,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRadialRangeRing => 'Range ring';
 
   @override
+  String get mapRadialCoveragePlan => 'Coverage plan';
+
+  @override
   String get mapRadialSunMoon => 'Sun / moon';
 
   @override
@@ -3419,6 +3587,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rangeRingTitle => 'Range ring';
+
+  @override
+  String get coveragePlanTitle => 'Coverage plan';
+
+  @override
+  String get coveragePlanSubtitle =>
+      'Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only — not live RF.';
+
+  @override
+  String get coveragePlanTemplateLabel => 'Template';
+
+  @override
+  String get coveragePlanTemplateMesh => 'Mesh / LoRa';
+
+  @override
+  String get coveragePlanTemplateRepeater => 'VHF/UHF repeater';
+
+  @override
+  String get coveragePlanTemplateShack => 'Ham shack';
+
+  @override
+  String get coveragePlanLayoutLabel => 'Layout';
+
+  @override
+  String get coveragePlanLayoutSingle => 'Single site';
+
+  @override
+  String get coveragePlanLayoutHexRing => 'Hex ring (7)';
+
+  @override
+  String get coveragePlanAnchorLabel => 'Seed center';
+
+  @override
+  String get coveragePlanAnchorMarker => 'Marker';
+
+  @override
+  String coveragePlanAnchorMarkerNamed(String name) {
+    return 'Marker: $name';
+  }
+
+  @override
+  String get coveragePlanAnchorHome => 'Home';
+
+  @override
+  String get coveragePlanAnchorMapPoint => 'Map point';
+
+  @override
+  String get coveragePlanRadiusLabel => 'Coverage radius';
+
+  @override
+  String get coveragePlanRadiusHelp => 'Range circle drawn around each site.';
+
+  @override
+  String get coveragePlanSpacingLabel => 'Site spacing';
+
+  @override
+  String get coveragePlanSpacingHelp =>
+      'Center-to-center distance for the hex ring (defaults to ~1.7× radius for light overlap).';
+
+  @override
+  String get coveragePlanCreateMarkers => 'Create markers';
+
+  @override
+  String get coveragePlanCreateCircles => 'Create range circles';
+
+  @override
+  String get coveragePlanRunViewshed => 'Run viewshed on seed';
+
+  @override
+  String get coveragePlanRunViewshedHelp =>
+      'Compute terrain LOS from the seed using the template antenna height and coverage radius.';
+
+  @override
+  String coveragePlanSiteCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Creates $count sites',
+      one: 'Creates 1 site',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get coveragePlanCreateAction => 'Create plan';
+
+  @override
+  String get coveragePlanMissingCenter =>
+      'Choose a seed center (marker, home, or map point).';
+
+  @override
+  String get coveragePlanInvalidRadius =>
+      'Enter a coverage radius between 50 m and 100 km.';
+
+  @override
+  String get coveragePlanInvalidSpacing =>
+      'Enter a site spacing between 50 m and 100 km.';
+
+  @override
+  String get coveragePlanNeedOutput => 'Enable markers and/or range circles.';
+
+  @override
+  String coveragePlanSiteName(String template, String label) {
+    return '$template $label';
+  }
+
+  @override
+  String coveragePlanCircleNotes(String template) {
+    return 'Coverage plan range circle ($template)';
+  }
+
+  @override
+  String coveragePlanRadioNotes(String template) {
+    return 'Placed by coverage plan ($template)';
+  }
+
+  @override
+  String coveragePlanCreatedSnack(int markers, int circles) {
+    return 'Coverage plan: $markers marker(s), $circles circle(s).';
+  }
 
   @override
   String get rangeRingHelp =>
@@ -4704,7 +4992,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seasonalOverlaysDrawHint =>
-      'Long-press the map → More → Season, then draw a polygon and set date windows.';
+      'Long-press the map → More → More → Season, then draw a polygon and set date windows.';
 
   @override
   String get seasonalOverlaysInstalled => 'Overlays';

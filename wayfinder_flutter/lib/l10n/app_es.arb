@@ -217,6 +217,42 @@
   "circleSizeToggleRadius": "Radio visible en el mapa · toque para diámetro",
   "circleSizeToggleDiameter": "Diámetro visible en el mapa · toque para ocultar",
   "circleSizeToggleNone": "Tamaño oculto en el mapa · toque para radio",
+  "watchLogTitle": "Registro de incidentes / guardia",
+  "watchLogSubtitle": "Eventos con marca de tiempo para revisión posterior. Solo notas de planificación.",
+  "watchLogObjectHint": "Entradas vinculadas a este objeto del mapa.",
+  "watchLogSidebarHint": "Más recientes primero en todos los objetos",
+  "watchLogAddEntry": "Añadir entrada",
+  "watchLogAddEntryTitle": "Añadir entrada al registro",
+  "watchLogEditEntryTitle": "Editar entrada del registro",
+  "watchLogEmpty": "Aún no hay entradas en el registro.",
+  "watchLogEmptyForObject": "Aún no hay entradas vinculadas a este objeto.",
+  "watchLogMoreEntries": "{count} más…",
+  "@watchLogMoreEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "watchLogLoadFailed": "No se pudo cargar el registro: {error}",
+  "@watchLogLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "watchLogOccurredAtLabel": "Ocurrió a las",
+  "watchLogAuthorLabel": "Operador / indicativo",
+  "watchLogAuthorHint": "Opcional",
+  "watchLogSeverityLabel": "Severidad",
+  "watchLogSeverityInfo": "Info",
+  "watchLogSeverityNotice": "Aviso",
+  "watchLogSeverityWarning": "Advertencia",
+  "watchLogSeverityCritical": "Crítico",
+  "watchLogTextLabel": "Evento",
+  "watchLogTextHint": "¿Qué ocurrió?",
+  "watchLogTextRequired": "Introduzca el texto del evento.",
   "backupTitle": "Copia de seguridad de datos del mapa",
   "backupDescription": "Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.",
   "backupExportButton": "Exportar datos del mapa (.zip)",
@@ -231,36 +267,26 @@
     }
   },
   "backupRestoreConfirmTitle": "¿Restaurar datos del mapa?",
-  "backupRestoreConfirmMessage": "Esto reemplaza todas las capas, marcadores, zonas e iconos personalizados en el servidor con el archivo seleccionado. Esta acción no se puede deshacer.",
-  "backupRestoreSuccess": "Restauradas {layers} capa(s), {markers} marcador(es) y {zones} zona(s).",
-  "backupRestoreSuccessWithIcons": "Restauradas {layers} capa(s), {markers} marcador(es), {zones} zona(s) y {icons} icono(s) personalizado(s).",
+  "backupRestoreConfirmMessage": "Esto reemplaza todas las capas, marcadores, zonas, capas estacionales, entradas del registro de guardia e iconos personalizados en el servidor con el archivo seleccionado. Esta acción no se puede deshacer.",
+  "backupRestoreSuccess": "Restauradas {layers} capa(s), {markers} marcador(es), {zones} zona(s), {seasonalOverlays} capa(s) estacional(es) y {watchLogEntries} entrada(s) del registro.",
+  "backupRestoreSuccessWithIcons": "Restauradas {layers} capa(s), {markers} marcador(es), {zones} zona(s), {seasonalOverlays} capa(s) estacional(es), {watchLogEntries} entrada(s) del registro y {icons} icono(s) personalizado(s).",
   "@backupRestoreSuccessWithIcons": {
     "placeholders": {
-      "layers": {
-        "type": "int"
-      },
-      "markers": {
-        "type": "int"
-      },
-      "zones": {
-        "type": "int"
-      },
-      "icons": {
-        "type": "int"
-      }
+      "layers": { "type": "int" },
+      "markers": { "type": "int" },
+      "zones": { "type": "int" },
+      "seasonalOverlays": { "type": "int" },
+      "watchLogEntries": { "type": "int" },
+      "icons": { "type": "int" }
     }
   },
   "@backupRestoreSuccess": {
     "placeholders": {
-      "layers": {
-        "type": "int"
-      },
-      "markers": {
-        "type": "int"
-      },
-      "zones": {
-        "type": "int"
-      }
+      "layers": { "type": "int" },
+      "markers": { "type": "int" },
+      "zones": { "type": "int" },
+      "seasonalOverlays": { "type": "int" },
+      "watchLogEntries": { "type": "int" }
     }
   },
   "backupRestoreFailed": "Error al restaurar: {error}",
@@ -696,6 +722,42 @@
   "markerCreateTitle": "Crear marcador",
   "markerEditTitle": "Editar marcador",
   "markerDefaultName": "Nuevo marcador",
+  "markerRadioTitle": "Red de radio / ficha de contacto",
+  "markerRadioEmptyHelp": "Indicativo, frecuencia y modo opcionales para shack / repetidor (no es radio en vivo).",
+  "markerRadioStructuredHint": "Solo datos estructurados — Wayfinder no transmite ni sintoniza radios.",
+  "markerRadioSummary": "{callsign}",
+  "@markerRadioSummary": {
+    "placeholders": {
+      "callsign": {
+        "type": "String"
+      }
+    }
+  },
+  "markerRadioNoCallsign": "Ficha de contacto",
+  "markerRadioCallsignLabel": "Indicativo",
+  "markerRadioRoleLabel": "Rol",
+  "markerRadioRoleShack": "Ham shack",
+  "markerRadioRoleRepeater": "Repetidor",
+  "markerRadioRoleStation": "Estación",
+  "markerRadioRoleNet": "Red",
+  "markerRadioRoleOther": "Otro",
+  "markerRadioNetNameLabel": "Red / grupo",
+  "markerRadioNetNameHint": "p. ej. ARES del condado",
+  "markerRadioFrequencyLabel": "Frecuencia",
+  "markerRadioModeLabel": "Modo",
+  "markerRadioModeFm": "FM",
+  "markerRadioModeAm": "AM",
+  "markerRadioModeSsb": "SSB",
+  "markerRadioModeCw": "CW",
+  "markerRadioModeDigi": "Digital",
+  "markerRadioModeDmr": "DMR",
+  "markerRadioModeOther": "Otro",
+  "markerRadioToneLabel": "Tono / CTCSS",
+  "markerRadioOffsetLabel": "Desplazamiento",
+  "markerRadioNotesLabel": "Notas de radio",
+  "markerRadioNotesHint": "Hora de red, cobertura, tip PL — notas breves",
+  "markerRadioClear": "Borrar ficha de contacto",
+  "sidebarFilterRadioContacts": "Contactos de radio",
   "markerInventoryTitle": "Inventario del alijo",
   "markerInventoryEmptyHelp": "Registre suministros en este marcador: cantidad, unidad, caducidad y última auditoría.",
   "markerInventoryItemCount": "{count, plural, =1{1 artículo} other{{count} artículos}}",
@@ -1399,6 +1461,7 @@
   "mapRadialViewshed": "Cuenca visual",
   "mapRadialSlope": "Pendiente / coste",
   "mapRadialRangeRing": "Anillo de alcance",
+  "mapRadialCoveragePlan": "Plan de cobertura",
   "mapRadialSunMoon": "Sol / luna",
   "mapRadialTides": "Mareas",
   "mapRadialEvacKit": "Kit de evacuación",
@@ -1728,6 +1791,86 @@
   },
   "sunMoonMoonrise": "Salida de la luna",
   "sunMoonMoonset": "Puesta de la luna",
+  "coveragePlanTitle": "Plan de cobertura",
+  "coveragePlanSubtitle": "Coloque sitios sugeridos de repetidor o malla con círculos de alcance. Opcionalmente calcule la cuenca visual (LOS) en la semilla. Solo geometría de planificación — no es RF en vivo.",
+  "coveragePlanTemplateLabel": "Plantilla",
+  "coveragePlanTemplateMesh": "Malla / LoRa",
+  "coveragePlanTemplateRepeater": "Repetidor VHF/UHF",
+  "coveragePlanTemplateShack": "Ham shack",
+  "coveragePlanLayoutLabel": "Disposición",
+  "coveragePlanLayoutSingle": "Un sitio",
+  "coveragePlanLayoutHexRing": "Anillo hexagonal (7)",
+  "coveragePlanAnchorLabel": "Centro semilla",
+  "coveragePlanAnchorMarker": "Marcador",
+  "coveragePlanAnchorMarkerNamed": "Marcador: {name}",
+  "@coveragePlanAnchorMarkerNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanAnchorHome": "Inicio",
+  "coveragePlanAnchorMapPoint": "Punto del mapa",
+  "coveragePlanRadiusLabel": "Radio de cobertura",
+  "coveragePlanRadiusHelp": "Círculo de alcance alrededor de cada sitio.",
+  "coveragePlanSpacingLabel": "Separación entre sitios",
+  "coveragePlanSpacingHelp": "Distancia centro a centro del anillo hexagonal (por defecto ~1,7× el radio para solape ligero).",
+  "coveragePlanCreateMarkers": "Crear marcadores",
+  "coveragePlanCreateCircles": "Crear círculos de alcance",
+  "coveragePlanRunViewshed": "Calcular cuenca visual en la semilla",
+  "coveragePlanRunViewshedHelp": "Calcula LOS por terreno desde la semilla con la antena y el radio de la plantilla.",
+  "coveragePlanSiteCount": "{count, plural, =1{Crea 1 sitio} other{Crea {count} sitios}}",
+  "@coveragePlanSiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coveragePlanCreateAction": "Crear plan",
+  "coveragePlanMissingCenter": "Elija un centro semilla (marcador, inicio o punto del mapa).",
+  "coveragePlanInvalidRadius": "Introduzca un radio entre 50 m y 100 km.",
+  "coveragePlanInvalidSpacing": "Introduzca una separación entre 50 m y 100 km.",
+  "coveragePlanNeedOutput": "Active marcadores y/o círculos de alcance.",
+  "coveragePlanSiteName": "{template} {label}",
+  "@coveragePlanSiteName": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanCircleNotes": "Círculo de cobertura del plan ({template})",
+  "@coveragePlanCircleNotes": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanRadioNotes": "Colocado por el plan de cobertura ({template})",
+  "@coveragePlanRadioNotes": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      }
+    }
+  },
+  "coveragePlanCreatedSnack": "Plan de cobertura: {markers} marcador(es), {circles} círculo(s).",
+  "@coveragePlanCreatedSnack": {
+    "placeholders": {
+      "markers": {
+        "type": "int"
+      },
+      "circles": {
+        "type": "int"
+      }
+    }
+  },
   "rangeRingTitle": "Anillo de alcance",
   "rangeRingHelp": "Calcule un radio de viaje o combustible desde el hogar, un marcador seleccionado (punto de reunión) o el punto del mapa, y guárdelo como círculo.",
   "rangeRingCenterLabel": "Centro",

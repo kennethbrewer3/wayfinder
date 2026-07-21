@@ -108,17 +108,22 @@ class ViewshedNotifier extends StateNotifier<ViewshedState> {
   Future<void> begin({
     required LatLng observer,
     double? antennaHeightMeters,
+    double? rangeMeters,
   }) async {
     _computeGeneration += 1;
+    final effectiveRange = (rangeMeters ?? state.rangeMeters).clamp(
+      50.0,
+      50000.0,
+    );
     final rangeRing = circleBoundaryPoints(
       center: observer,
-      radiusMeters: state.rangeMeters,
+      radiusMeters: effectiveRange,
     );
     state = ViewshedState(
       active: true,
       observer: observer,
       antennaHeightMeters: antennaHeightMeters ?? state.antennaHeightMeters,
-      rangeMeters: state.rangeMeters,
+      rangeMeters: effectiveRange,
       targetHeightAglMeters: state.targetHeightAglMeters,
       rangeRing: rangeRing,
       status: ViewshedStatus.readyToCompute,

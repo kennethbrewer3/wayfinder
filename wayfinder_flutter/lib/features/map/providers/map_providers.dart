@@ -154,6 +154,7 @@ class SidebarState {
     this.expandedLayerIds,
     this.layerSettings = const {},
     this.filterFoodExpiring90Days = false,
+    this.filterRadioContacts = false,
   });
 
   final String searchQuery;
@@ -168,6 +169,9 @@ class SidebarState {
   /// When true, marker lists only include caches with food expiring within 90 days.
   final bool filterFoodExpiring90Days;
 
+  /// When true, marker lists only include markers with a radio contact card.
+  final bool filterRadioContacts;
+
   LayerSidebarSettings settingsForLayer(UuidValue layerId) {
     return layerSettings[layerId] ?? const LayerSidebarSettings();
   }
@@ -179,6 +183,7 @@ class SidebarState {
     Set<UuidValue>? expandedLayerIds,
     Map<UuidValue, LayerSidebarSettings>? layerSettings,
     bool? filterFoodExpiring90Days,
+    bool? filterRadioContacts,
   }) {
     return SidebarState(
       searchQuery: searchQuery ?? this.searchQuery,
@@ -188,6 +193,7 @@ class SidebarState {
       layerSettings: layerSettings ?? this.layerSettings,
       filterFoodExpiring90Days:
           filterFoodExpiring90Days ?? this.filterFoodExpiring90Days,
+      filterRadioContacts: filterRadioContacts ?? this.filterRadioContacts,
     );
   }
 }
@@ -242,6 +248,10 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
 
   void setFilterFoodExpiring90Days(bool enabled) {
     state = state.copyWith(filterFoodExpiring90Days: enabled);
+  }
+
+  void setFilterRadioContacts(bool enabled) {
+    state = state.copyWith(filterRadioContacts: enabled);
   }
 
   void setExpanded(bool expanded) {

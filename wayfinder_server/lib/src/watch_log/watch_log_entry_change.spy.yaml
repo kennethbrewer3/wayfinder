@@ -1,0 +1,6 @@
+class: WatchLogEntryChange
+fields:
+  ### One of: created, updated, deleted, bulk
+  type: String
+  entry: WatchLogEntry?
+  entryId: UuidValue?

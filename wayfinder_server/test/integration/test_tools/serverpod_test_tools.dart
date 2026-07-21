@@ -53,9 +53,13 @@ import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
     as _i24;
 import 'package:wayfinder_server/src/generated/tides/tide_query_result.dart'
     as _i25;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i26;
-import 'package:wayfinder_server/src/generated/zones/map_zone_change.dart'
+import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry.dart'
+    as _i26;
+import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry_change.dart'
     as _i27;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i28;
+import 'package:wayfinder_server/src/generated/zones/map_zone_change.dart'
+    as _i29;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -194,6 +198,8 @@ class TestEndpoints {
 
   late final _TidesEndpoint tides;
 
+  late final _WatchLogEndpoint watchLog;
+
   late final _MapZoneEndpoint mapZone;
 }
 
@@ -249,6 +255,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     tides = _TidesEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    watchLog = _WatchLogEndpoint(
       endpoints,
       serializationManager,
     );
@@ -3005,6 +3015,203 @@ class _TidesEndpoint {
   }
 }
 
+class _WatchLogEndpoint {
+  _WatchLogEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i26.WatchLogEntry>> listEntries(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'watchLog',
+            method: 'listEntries',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'watchLog',
+          methodName: 'listEntries',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i26.WatchLogEntry>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i26.WatchLogEntry?> getEntry(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'watchLog',
+            method: 'getEntry',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'watchLog',
+          methodName: 'getEntry',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i26.WatchLogEntry?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i26.WatchLogEntry> createEntry(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i26.WatchLogEntry entry,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'watchLog',
+            method: 'createEntry',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'watchLog',
+          methodName: 'createEntry',
+          parameters: _i1.testObjectToJson({'entry': entry}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i26.WatchLogEntry>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i26.WatchLogEntry> updateEntry(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i26.WatchLogEntry entry,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'watchLog',
+            method: 'updateEntry',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'watchLog',
+          methodName: 'updateEntry',
+          parameters: _i1.testObjectToJson({'entry': entry}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i26.WatchLogEntry>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteEntry(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'watchLog',
+            method: 'deleteEntry',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'watchLog',
+          methodName: 'deleteEntry',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Stream<_i27.WatchLogEntryChange> entryChanges(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) {
+    var _localTestStreamManager =
+        _i1.TestStreamManager<_i27.WatchLogEntryChange>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'watchLog',
+              method: 'entryChanges',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'watchLog',
+              methodName: 'entryChanges',
+              arguments: {},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
+  }
+}
+
 class _MapZoneEndpoint {
   _MapZoneEndpoint(
     this._endpointDispatch,
@@ -3015,7 +3222,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i26.MapZone>> listZones(
+  _i3.Future<List<_i28.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -3037,7 +3244,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i26.MapZone>>);
+                as _i3.Future<List<_i28.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3045,7 +3252,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i26.MapZone?> getZone(
+  _i3.Future<_i28.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -3068,7 +3275,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i26.MapZone?>);
+                as _i3.Future<_i28.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3076,9 +3283,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i26.MapZone> createZone(
+  _i3.Future<_i28.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i26.MapZone zone,
+    _i28.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3099,7 +3306,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i26.MapZone>);
+                as _i3.Future<_i28.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3107,9 +3314,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i26.MapZone> updateZone(
+  _i3.Future<_i28.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i26.MapZone zone,
+    _i28.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3130,7 +3337,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i26.MapZone>);
+                as _i3.Future<_i28.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3169,10 +3376,10 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Stream<_i27.MapZoneChange> zoneChanges(
+  _i3.Stream<_i29.MapZoneChange> zoneChanges(
     _i1.TestSessionBuilder sessionBuilder,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i27.MapZoneChange>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i29.MapZoneChange>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =

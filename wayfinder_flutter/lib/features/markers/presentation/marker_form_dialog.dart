@@ -10,9 +10,11 @@ import '../../tracks/presentation/track_transportation_mode_field.dart';
 import '../models/marker_color.dart';
 import '../models/marker_icon_registry.dart';
 import '../models/marker_inventory.dart';
+import '../models/marker_radio.dart';
 import 'marker_form_fields.dart';
 import 'marker_inventory_editor.dart';
 import 'marker_notes_editor.dart';
+import 'marker_radio_editor.dart';
 
 class MarkerFormData {
   const MarkerFormData({
@@ -27,6 +29,7 @@ class MarkerFormData {
     this.isTracking = false,
     this.transportationMode = TrackTransportationMode.onFoot,
     this.inventoryItems = const [],
+    this.radioContact = const MarkerRadioContact(),
   });
 
   final String name;
@@ -40,9 +43,12 @@ class MarkerFormData {
   final bool isTracking;
   final TrackTransportationMode transportationMode;
   final List<MarkerInventoryItem> inventoryItems;
+  final MarkerRadioContact radioContact;
 
   String? get inventoryJson =>
       MarkerInventory(items: inventoryItems).toStorageJson();
+
+  String? get radioJson => radioContact.toStorageJson();
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -63,6 +69,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
   TrackTransportationMode initialTransportationMode =
       TrackTransportationMode.onFoot,
   List<MarkerInventoryItem> initialInventoryItems = const [],
+  MarkerRadioContact initialRadioContact = const MarkerRadioContact(),
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -84,6 +91,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
         initialIsTracking: initialIsTracking,
         initialTransportationMode: initialTransportationMode,
         initialInventoryItems: initialInventoryItems,
+        initialRadioContact: initialRadioContact,
       );
     },
   );
@@ -115,6 +123,9 @@ Future<MarkerFormData?> showEditMarkerDialog({
     initialInventoryItems: MarkerInventory.fromMarkerInventoryJson(
       marker.inventoryJson,
     ).items,
+    initialRadioContact: MarkerRadioContact.fromMarkerRadioJson(
+      marker.radioJson,
+    ),
   );
 }
 
@@ -136,6 +147,7 @@ class MarkerFormDialog extends StatefulWidget {
     this.initialIsTracking = false,
     this.initialTransportationMode = TrackTransportationMode.onFoot,
     this.initialInventoryItems = const [],
+    this.initialRadioContact = const MarkerRadioContact(),
   });
 
   final String title;
@@ -153,6 +165,7 @@ class MarkerFormDialog extends StatefulWidget {
   final bool initialIsTracking;
   final TrackTransportationMode initialTransportationMode;
   final List<MarkerInventoryItem> initialInventoryItems;
+  final MarkerRadioContact initialRadioContact;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -170,6 +183,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late TrackTransportationMode _transportationMode;
   UuidValue? _selectedLayerId;
   late List<MarkerInventoryItem> _inventoryItems;
+  late MarkerRadioContact _radioContact;
 
   @override
   void initState() {
@@ -203,6 +217,12 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     _inventoryItems = List<MarkerInventoryItem>.from(
       widget.initialInventoryItems,
     );
+    _radioContact = widget.initialRadioContact;
+    if (_radioContact.isEmpty && isRadioContactMarkerIcon(_selectedIcon)) {
+      _radioContact = _radioContact.copyWith(
+        role: suggestedRadioRoleForIcon(_selectedIcon),
+      );
+    }
   }
 
   void _maybeSuggestIconFromName() {
@@ -284,6 +304,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         isTracking: widget.allowTrackingToggle ? _isTracking : false,
         transportationMode: _transportationMode,
         inventoryItems: sanitizeMarkerInventoryItems(_inventoryItems),
+        radioContact: _radioContact,
       ),
     );
   }
@@ -360,7 +381,17 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
               MarkerIconPicker(
                 selectedIcon: _selectedIcon,
                 color: _selectedColor,
-                onChanged: (icon) => setState(() => _selectedIcon = icon),
+                onChanged: (icon) {
+                  setState(() {
+                    _selectedIcon = icon;
+                    if (_radioContact.isEmpty &&
+                        isRadioContactMarkerIcon(icon)) {
+                      _radioContact = _radioContact.copyWith(
+                        role: suggestedRadioRoleForIcon(icon),
+                      );
+                    }
+                  });
+                },
               ),
               const SizedBox(height: 16),
               MarkerColorPickerField(
@@ -374,6 +405,12 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
               ),
               const SizedBox(height: 16),
               MarkerNotesEditor(controller: _notesController),
+              const SizedBox(height: 8),
+              MarkerRadioEditor(
+                contact: _radioContact,
+                markerIcon: _selectedIcon,
+                onChanged: (contact) => setState(() => _radioContact = contact),
+              ),
               const SizedBox(height: 8),
               MarkerInventoryEditor(
                 items: _inventoryItems,

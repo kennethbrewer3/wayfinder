@@ -18,6 +18,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
     required this.markers,
     required this.zones,
     required this.seasonalOverlays,
+    required this.watchLogEntries,
     required this.markerIconCategories,
     required this.markerIcons,
   });
@@ -27,6 +28,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
     required int markers,
     required int zones,
     required int seasonalOverlays,
+    required int watchLogEntries,
     required int markerIconCategories,
     required int markerIcons,
   }) = _MapDataRestoreSummaryImpl;
@@ -39,6 +41,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
       markers: jsonSerialization['markers'] as int,
       zones: jsonSerialization['zones'] as int,
       seasonalOverlays: jsonSerialization['seasonalOverlays'] as int,
+      watchLogEntries: jsonSerialization['watchLogEntries'] as int,
       markerIconCategories: jsonSerialization['markerIconCategories'] as int,
       markerIcons: jsonSerialization['markerIcons'] as int,
     );
@@ -52,6 +55,8 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
 
   int seasonalOverlays;
 
+  int watchLogEntries;
+
   int markerIconCategories;
 
   int markerIcons;
@@ -64,6 +69,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
     int? markers,
     int? zones,
     int? seasonalOverlays,
+    int? watchLogEntries,
     int? markerIconCategories,
     int? markerIcons,
   });
@@ -75,6 +81,7 @@ abstract class MapDataRestoreSummary implements _i1.SerializableModel {
       'markers': markers,
       'zones': zones,
       'seasonalOverlays': seasonalOverlays,
+      'watchLogEntries': watchLogEntries,
       'markerIconCategories': markerIconCategories,
       'markerIcons': markerIcons,
     };
@@ -92,6 +99,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     required int markers,
     required int zones,
     required int seasonalOverlays,
+    required int watchLogEntries,
     required int markerIconCategories,
     required int markerIcons,
   }) : super._(
@@ -99,6 +107,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
          markers: markers,
          zones: zones,
          seasonalOverlays: seasonalOverlays,
+         watchLogEntries: watchLogEntries,
          markerIconCategories: markerIconCategories,
          markerIcons: markerIcons,
        );
@@ -112,6 +121,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     int? markers,
     int? zones,
     int? seasonalOverlays,
+    int? watchLogEntries,
     int? markerIconCategories,
     int? markerIcons,
   }) {
@@ -120,6 +130,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
       markers: markers ?? this.markers,
       zones: zones ?? this.zones,
       seasonalOverlays: seasonalOverlays ?? this.seasonalOverlays,
+      watchLogEntries: watchLogEntries ?? this.watchLogEntries,
       markerIconCategories: markerIconCategories ?? this.markerIconCategories,
       markerIcons: markerIcons ?? this.markerIcons,
     );

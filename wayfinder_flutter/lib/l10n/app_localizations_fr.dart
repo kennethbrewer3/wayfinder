@@ -3194,7 +3194,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get polygonEditingHint =>
-      'Glissez un sommet pour déplacer · double-clic sur un bord pour ajouter · appui long pour retirer (min. 3) · Terminé pour quitter';
+      'Glissez un sommet pour déplacer · double-clic sur un bord pour ajouter · double-clic sur un sommet pour retirer (min. 3) · Terminé pour quitter';
 
   @override
   String get mapRadialDeadReckoning => 'Pas';

@@ -3147,7 +3147,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get polygonEditingHint =>
-      'Drag a vertex to move · double-click an edge to add · long-press a vertex to remove (keep 3+) · Done when finished';
+      'Drag a vertex to move · double-click an edge to add · double-click a vertex to remove (keep 3+) · Done when finished';
 
   @override
   String get mapRadialDeadReckoning => 'Pace count';

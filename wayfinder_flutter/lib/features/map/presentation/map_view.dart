@@ -297,10 +297,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   int? _lastControlPointTapIndex;
   Offset? _lastControlPointTapLocal;
   bool _polygonVertexEditActive = false;
-  int? _pendingPolygonVertexIndex;
   int? _draggingPolygonVertexIndex;
   PolygonGeometry? _polygonEditPreviewGeometry;
-  Timer? _polygonVertexLongPressTimer;
   DateTime? _lastPolygonBodyTapAt;
   Offset? _lastPolygonBodyTapLocal;
   bool _evacKitRouteEditActive = false;
@@ -330,7 +328,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   void dispose() {
     _viewportLayerUpdateTimer?.cancel();
     _longPressTimer?.cancel();
-    _polygonVertexLongPressTimer?.cancel();
     _evacRemoveLongPressTimer?.cancel();
     _releaseAllLayerArchives();
     setBrowserContextMenuEnabled(true);
@@ -1287,48 +1284,19 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _exitPolygonVertexEdit() {
-    _cancelPolygonVertexLongPress();
     if (!_polygonVertexEditActive &&
-        _pendingPolygonVertexIndex == null &&
         _draggingPolygonVertexIndex == null &&
         _polygonEditPreviewGeometry == null) {
       return;
     }
     setState(() {
       _polygonVertexEditActive = false;
-      _pendingPolygonVertexIndex = null;
       _draggingPolygonVertexIndex = null;
       _polygonEditPreviewGeometry = null;
       if (_draggingLineControlIndex == null) {
         _frozenMapCenterDuringVertexEdit = null;
         _frozenMapZoomDuringVertexEdit = null;
       }
-    });
-  }
-
-  void _cancelPolygonVertexLongPress() {
-    _polygonVertexLongPressTimer?.cancel();
-    _polygonVertexLongPressTimer = null;
-    _pendingPolygonVertexIndex = null;
-  }
-
-  void _startPolygonVertexLongPressRemove(int index) {
-    _cancelPolygonVertexLongPress();
-    _cancelPendingLongPress();
-    _pendingPolygonVertexIndex = index;
-    _polygonVertexLongPressTimer = Timer(_longPressDuration, () {
-      if (!mounted) {
-        return;
-      }
-      final pending = _pendingPolygonVertexIndex;
-      _polygonVertexLongPressTimer = null;
-      if (pending != index) {
-        return;
-      }
-      // Held still long enough — remove instead of dragging.
-      _longPressTriggered = true;
-      _removePolygonVertexAtIndex(index);
-      _resetPolygonEditGestureState(keepEditMode: true);
     });
   }
 
@@ -1339,7 +1307,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     _frozenMapZoomDuringVertexEdit = camera.zoom;
     final geometry = _selectedPolygonGeometry();
     setState(() {
-      _pendingPolygonVertexIndex = null;
       _draggingPolygonVertexIndex = index;
       _polygonEditPreviewGeometry = geometry;
     });
@@ -1406,7 +1373,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _resetPolygonEditGestureState({required bool keepEditMode}) {
-    _cancelPolygonVertexLongPress();
     setState(() {
       _draggingPolygonVertexIndex = null;
       if (!keepEditMode) {
@@ -2342,9 +2308,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
     final polygonVertexIndex = _polygonVertexIndexAt(point);
     if (polygonVertexIndex != null) {
-      // Drag immediately (like line vertices); long-hold still removes.
+      // Arm edit immediately so InteractiveFlag.drag turns off before the map
+      // can pan. Short-press vs drag is decided on pointer-up (same as lines).
       _armPolygonVertexEdit(polygonVertexIndex);
-      _startPolygonVertexLongPressRemove(polygonVertexIndex);
       return;
     }
 
@@ -2436,13 +2402,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               _controlPointDoubleTapSlop) {
         _clearDrawingCompleteDoubleTap();
       }
-    }
-
-    if (_pendingPolygonVertexIndex != null &&
-        _tapDownLocal != null &&
-        (event.localPosition - _tapDownLocal!).distance >
-            _longPressMoveTolerance) {
-      _cancelPolygonVertexLongPress();
     }
 
     if (_draggingPolygonVertexIndex != null) {
@@ -2609,11 +2568,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (_draggingPolygonVertexIndex != null) {
-      _cancelPolygonVertexLongPress();
+      final vertexIndex = _draggingPolygonVertexIndex!;
       if (_isShortPress(event)) {
-        // Quick tap — do not move or remove.
+        // Tap (not a drag): discard the armed edit; double-tap removes.
         _resetPolygonEditGestureState(keepEditMode: true);
+        if (_registerControlPointTap(
+          index: vertexIndex,
+          local: event.localPosition,
+        )) {
+          _removePolygonVertexAtIndex(vertexIndex);
+        }
       } else {
+        _clearControlPointDoubleTap();
         unawaited(_commitPolygonVertexDrag(point));
       }
       _primaryPointerGestureHandled = true;
@@ -2648,16 +2614,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         _clearControlPointDoubleTap();
         unawaited(_commitEvacWaypointDrag(point));
       }
-      _primaryPointerGestureHandled = true;
-      _clearPointerDownSelectionState();
-      _resetLineDrawGestureState();
-      _cancelPendingLongPress();
-      return;
-    }
-
-    if (_pendingPolygonVertexIndex != null) {
-      // Long-press remove already handled in the timer, or was cancelled.
-      _cancelPolygonVertexLongPress();
       _primaryPointerGestureHandled = true;
       _clearPointerDownSelectionState();
       _resetLineDrawGestureState();
@@ -4537,7 +4493,6 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             deadReckoning.active ||
                             _draggingLineControlIndex != null ||
                             _draggingPolygonVertexIndex != null ||
-                            _pendingPolygonVertexIndex != null ||
                             _draggingEvacWaypointIndex != null) {
                           flags &= ~InteractiveFlag.drag;
                         }

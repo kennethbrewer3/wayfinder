@@ -3188,7 +3188,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get polygonEditingHint =>
-      'Arrastra un vértice para mover · doble clic en un borde para añadir · mantén un vértice para quitar (mín. 3) · Listo al terminar';
+      'Arrastra un vértice para mover · doble clic en un borde para añadir · doble clic en un vértice para quitar (mín. 3) · Listo al terminar';
 
   @override
   String get mapRadialDeadReckoning => 'Pasos';

@@ -464,7 +464,7 @@ Polygons are saved as map zones like circles and rectangles. Toggle the name lab
 
 1. **Double-tap** a polygon to enter vertex edit mode (vertices appear on the corners).
 2. **Drag** a vertex to move it.
-3. **Double-click** between two vertices (on an edge) to insert a vertex; **long-press** a vertex to remove it (at least three vertices remain).
+3. **Double-click** between two vertices (on an edge) to insert a vertex; **double-click** a vertex to remove it (at least three vertices remain).
 4. Tap **Done** in the banner when finished.
 
 ---
@@ -704,7 +704,7 @@ Active overlays (in season and visible) draw on the map with a name label. Out-o
 
 - **Sidebar** — expand **Seasonal overlays** to show/hide, edit, or zoom. Tap an overlay to select it on the map.
 - **Settings → Seasons** — full list, out-of-season preview toggle, edit/delete/zoom.
-- **Edit shape** — same as AOI polygons: **double-tap** the overlay to enter vertex edit, **drag** vertices, **double-click** an edge to insert, **long-press** a vertex to remove (at least three remain). Tap **Done** when finished.
+- **Edit shape** — same as AOI polygons: **double-tap** the overlay to enter vertex edit, **drag** vertices, **double-click** an edge to insert, **double-click** a vertex to remove (at least three remain). Tap **Done** when finished.
 
 ---
 

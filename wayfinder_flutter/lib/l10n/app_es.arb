@@ -1456,7 +1456,7 @@
   "mapRadialBack": "Atrás",
   "mapRadialCopyCoordinates": "Copiar coordenadas",
   "actionDone": "Listo",
-  "polygonEditingHint": "Arrastra un vértice para mover · doble clic en un borde para añadir · mantén un vértice para quitar (mín. 3) · Listo al terminar",
+  "polygonEditingHint": "Arrastra un vértice para mover · doble clic en un borde para añadir · doble clic en un vértice para quitar (mín. 3) · Listo al terminar",
   "mapRadialDeadReckoning": "Pasos",
   "mapRadialViewshed": "Cuenca visual",
   "mapRadialSlope": "Pendiente / coste",

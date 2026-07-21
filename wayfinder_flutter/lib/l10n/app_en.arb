@@ -1789,7 +1789,7 @@
   "mapRadialBack": "Back",
   "mapRadialCopyCoordinates": "Copy coordinates",
   "actionDone": "Done",
-  "polygonEditingHint": "Drag a vertex to move · double-click an edge to add · long-press a vertex to remove (keep 3+) · Done when finished",
+  "polygonEditingHint": "Drag a vertex to move · double-click an edge to add · double-click a vertex to remove (keep 3+) · Done when finished",
   "mapRadialDeadReckoning": "Pace count",
   "mapRadialViewshed": "Viewshed",
   "mapRadialSlope": "Slope / cost",

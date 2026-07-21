@@ -5534,7 +5534,7 @@ abstract class AppLocalizations {
   /// No description provided for @polygonEditingHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag a vertex to move · double-click an edge to add · long-press a vertex to remove (keep 3+) · Done when finished'**
+  /// **'Drag a vertex to move · double-click an edge to add · double-click a vertex to remove (keep 3+) · Done when finished'**
   String get polygonEditingHint;
 
   /// No description provided for @mapRadialDeadReckoning.

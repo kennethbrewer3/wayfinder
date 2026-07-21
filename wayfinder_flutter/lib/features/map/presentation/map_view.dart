@@ -2946,6 +2946,36 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
+    // Edge taps often fall just outside the fill (point-in-polygon miss). While
+    // vertex editing, treat near-edge / near-vertex hits as edit gestures so a
+    // double-click to insert does not clear selection and exit edit mode.
+    if (_polygonVertexEditActive) {
+      final geometry = _selectedPolygonGeometry();
+      if (geometry != null) {
+        final local = _selectionPointerDownLocal ?? Offset.zero;
+        final onVertex =
+            hitTestPolygonVertexIndex(
+              geometry: geometry,
+              tap: point,
+              camera: _mapController.camera,
+            ) !=
+            null;
+        if (onVertex) {
+          return;
+        }
+        if (isNearPolygonEdge(
+          geometry: geometry,
+          tap: point,
+          camera: _mapController.camera,
+        )) {
+          if (_registerPolygonBodyDoubleTap(local)) {
+            unawaited(_insertPolygonVertexAt(point));
+          }
+          return;
+        }
+      }
+    }
+
     final hit = _hitMapObjectAtPoint(point);
     final current = ref.read(selectedMapObjectProvider);
     final notifier = ref.read(selectedMapObjectProvider.notifier);
@@ -2998,18 +3028,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       if (current.kind == SelectedMapObjectKind.seasonalOverlay) {
         final local = _selectionPointerDownLocal ?? Offset.zero;
         if (_polygonVertexEditActive) {
-          final geometry = _selectedPolygonGeometry();
-          final onEdge =
-              geometry != null &&
-              _polygonVertexIndexAt(point) == null &&
-              isNearPolygonEdge(
-                geometry: geometry,
-                tap: point,
-                camera: _mapController.camera,
-              );
-          if (onEdge && _registerPolygonBodyDoubleTap(local)) {
-            unawaited(_insertPolygonVertexAt(point));
-          }
+          // Edge insert is handled above; body taps keep edit mode.
           return;
         }
         if (_registerPolygonBodyDoubleTap(local)) {
@@ -3028,19 +3047,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         if (zone?.type == polygonZoneType) {
           final local = _selectionPointerDownLocal ?? Offset.zero;
           if (_polygonVertexEditActive) {
-            // Double-click between vertices (on an edge) inserts a point.
-            final geometry = _selectedPolygonGeometry();
-            final onEdge =
-                geometry != null &&
-                _polygonVertexIndexAt(point) == null &&
-                isNearPolygonEdge(
-                  geometry: geometry,
-                  tap: point,
-                  camera: _mapController.camera,
-                );
-            if (onEdge && _registerPolygonBodyDoubleTap(local)) {
-              unawaited(_insertPolygonVertexAt(point));
-            }
+            // Edge insert is handled above; body taps keep edit mode.
             return;
           }
           if (_registerPolygonBodyDoubleTap(local)) {

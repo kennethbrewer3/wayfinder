@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../polygons/models/polygon_geometry.dart';
 import '../data/seasonal_overlays_repository.dart';
 import '../models/seasonal_date_window.dart';
 
@@ -78,6 +79,44 @@ class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
         updatedAt: DateTime.now().toUtc(),
       ),
     );
+  }
+
+  Future<void> updatePolygonGeometry({
+    required UuidValue id,
+    required PolygonGeometry geometry,
+  }) async {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+
+    final index = current.indexWhere((overlay) => overlay.id == id);
+    if (index < 0) {
+      return;
+    }
+
+    final overlay = current[index];
+    final updated = overlay.copyWith(
+      geometryJson: geometry.encode(),
+      updatedAt: DateTime.now().toUtc(),
+    );
+    final previousState = state;
+
+    state = AsyncData([
+      for (var i = 0; i < current.length; i++)
+        if (i == index) updated else current[i],
+    ]);
+
+    try {
+      await ref.read(seasonalOverlaysRepositoryProvider).updateOverlay(updated);
+    } catch (error, stackTrace) {
+      AppLogger.logMap.error(
+        '📡 Failed to update seasonal overlay geometry',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      state = previousState;
+    }
   }
 }
 

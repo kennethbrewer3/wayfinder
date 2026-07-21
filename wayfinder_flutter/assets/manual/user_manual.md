@@ -702,8 +702,9 @@ Active overlays (in season and visible) draw on the map with a name label. Out-o
 
 ### Manage overlays
 
-- **Sidebar** — expand **Seasonal overlays** to show/hide, edit, or zoom.
+- **Sidebar** — expand **Seasonal overlays** to show/hide, edit, or zoom. Tap an overlay to select it on the map.
 - **Settings → Seasons** — full list, out-of-season preview toggle, edit/delete/zoom.
+- **Edit shape** — same as AOI polygons: **double-tap** the overlay to enter vertex edit, **drag** vertices, **double-click** an edge to insert, **long-press** a vertex to remove (at least three remain). Tap **Done** when finished.
 
 ---
 

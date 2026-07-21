@@ -2555,6 +2555,7 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
     final overlaysAsync = ref.watch(seasonalOverlaysProvider);
     final overlays = overlaysAsync.valueOrNull ?? const <SeasonalOverlay>[];
     final showInactive = ref.watch(showInactiveSeasonalOverlaysProvider);
+    final selected = ref.watch(selectedMapObjectProvider);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -2592,6 +2593,9 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
               for (final overlay in overlays)
                 ListTile(
                   dense: true,
+                  selected:
+                      selected?.kind == SelectedMapObjectKind.seasonalOverlay &&
+                      selected?.id == overlay.id,
                   leading: Icon(
                     isSeasonalOverlayCurrentlyActive(overlay)
                         ? Icons.calendar_month
@@ -2604,6 +2608,14 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
                         ? l10n.seasonalOverlayStatusActive
                         : l10n.seasonalOverlayStatusInactive,
                   ),
+                  onTap: () {
+                    ref
+                        .read(selectedMapObjectProvider.notifier)
+                        .selectSeasonalOverlay(
+                          overlay.id,
+                          openDetails: false,
+                        );
+                  },
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

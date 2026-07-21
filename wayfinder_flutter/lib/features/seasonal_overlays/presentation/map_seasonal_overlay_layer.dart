@@ -10,6 +10,7 @@ List<Polygon> buildSeasonalOverlayPolygons(
   List<SeasonalOverlay> overlays, {
   required bool showInactive,
   UuidValue? selectedOverlayId,
+  PolygonGeometry? geometryOverride,
   DateTime? on,
 }) {
   final polygons = <Polygon>[];
@@ -21,7 +22,10 @@ List<Polygon> buildSeasonalOverlayPolygons(
     )) {
       continue;
     }
-    final geometry = PolygonGeometry.fromJsonString(overlay.geometryJson);
+    final geometry =
+        (overlay.id == selectedOverlayId && geometryOverride != null)
+        ? geometryOverride
+        : PolygonGeometry.fromJsonString(overlay.geometryJson);
     if (geometry == null || !geometry.isValid) {
       continue;
     }

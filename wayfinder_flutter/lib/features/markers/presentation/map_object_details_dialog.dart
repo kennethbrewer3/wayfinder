@@ -50,6 +50,8 @@ import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../weather/presentation/weather_station_details_section.dart';
 import '../../../core/l10n/localized_labels.dart';
 import '../../../core/serverpod_client.dart';
+import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
+import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../../watch_log/presentation/watch_log_details_section.dart';
 import 'marker_inventory_details_section.dart';
 import 'marker_radio_details_section.dart';
@@ -132,6 +134,19 @@ Future<void> _editSelectedObject({
         default:
           return;
       }
+    case SelectedMapObjectKind.seasonalOverlay:
+      final overlays = ref.read(seasonalOverlaysProvider).valueOrNull;
+      final overlay = overlays == null
+          ? null
+          : _findSeasonalOverlayById(overlays, selection.id);
+      if (overlay == null) {
+        return;
+      }
+      await updateSeasonalOverlayFromForm(
+        context: context,
+        ref: ref,
+        overlay: overlay,
+      );
   }
 }
 
@@ -139,6 +154,18 @@ MapMarker? _findMarkerById(List<MapMarker> markers, UuidValue id) {
   for (final marker in markers) {
     if (marker.id == id) {
       return marker;
+    }
+  }
+  return null;
+}
+
+SeasonalOverlay? _findSeasonalOverlayById(
+  List<SeasonalOverlay> overlays,
+  UuidValue id,
+) {
+  for (final overlay in overlays) {
+    if (overlay.id == id) {
+      return overlay;
     }
   }
   return null;
@@ -173,7 +200,79 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         l10n,
         measurementUnits,
       ),
+      SelectedMapObjectKind.seasonalOverlay => _buildSeasonalOverlayDialog(
+        context,
+        ref,
+        theme,
+        l10n,
+      ),
     };
+  }
+
+  Widget _buildSeasonalOverlayDialog(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    AppLocalizations l10n,
+  ) {
+    final overlays = ref.watch(seasonalOverlaysProvider).valueOrNull;
+    final overlay = overlays == null
+        ? null
+        : _findSeasonalOverlayById(overlays, selection.id);
+    if (overlay == null) {
+      return AlertDialog(
+        title: Text(l10n.seasonalOverlayEditTitle),
+        content: Text(l10n.seasonalOverlaysEmpty),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.actionClose),
+          ),
+        ],
+      );
+    }
+
+    final geometry = PolygonGeometry.fromJsonString(overlay.geometryJson);
+    final active = isSeasonalOverlayCurrentlyActive(overlay);
+    final notes = overlay.notes?.trim();
+    return _DetailsDialogShell(
+      title: overlay.name,
+      leading: _ZoneTypeAvatar(
+        color: parseMarkerColor(overlay.borderColor),
+        icon: Icons.calendar_month,
+      ),
+      onEdit: onEdit,
+      l10n: l10n,
+      children: [
+        _DetailRow(
+          label: l10n.mapObjectDetailType,
+          value: l10n.sidebarSeasonalOverlays,
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailVertices,
+          value: geometry == null ? '—' : '${geometry.points.length}',
+        ),
+        if (geometry != null)
+          _DetailRow(
+            label: l10n.mapObjectDetailCenter,
+            value: _formatLatLng(geometry.labelPoint),
+          ),
+        _DetailRow(
+          label: l10n.seasonalOverlayDateMode,
+          value: overlay.dateMode == 'recurring'
+              ? l10n.seasonalOverlayDateModeRecurring
+              : l10n.seasonalOverlayDateModeAbsolute,
+        ),
+        _DetailRow(
+          label: l10n.mapObjectDetailVisibility,
+          value: active
+              ? l10n.seasonalOverlayStatusActive
+              : l10n.seasonalOverlayStatusInactive,
+        ),
+        if (notes != null && notes.isNotEmpty)
+          _NotesSection(l10n: l10n, markdown: notes),
+      ],
+    );
   }
 
   Widget _buildMarkerDialog(

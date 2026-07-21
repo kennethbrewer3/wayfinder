@@ -75,6 +75,7 @@ import '../../polygons/utils/polygon_path.dart';
 import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
 import '../../seasonal_overlays/presentation/map_seasonal_overlay_layer.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
+import '../../seasonal_overlays/utils/seasonal_overlay_hit_test.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/presentation/create_rectangle_dialog.dart';
 import '../../rectangles/presentation/map_rectangle_layer.dart';
@@ -1223,16 +1224,37 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     return zone;
   }
 
+  SeasonalOverlay? _selectedSeasonalOverlay() {
+    final selected = ref.read(selectedMapObjectProvider);
+    if (selected == null ||
+        selected.kind != SelectedMapObjectKind.seasonalOverlay) {
+      return null;
+    }
+    final overlays =
+        ref.read(seasonalOverlaysProvider).valueOrNull ??
+        const <SeasonalOverlay>[];
+    for (final overlay in overlays) {
+      if (overlay.id == selected.id) {
+        return overlay;
+      }
+    }
+    return null;
+  }
+
   PolygonGeometry? _selectedPolygonGeometry() {
     final preview = _polygonEditPreviewGeometry;
     if (preview != null) {
       return preview;
     }
     final zone = _selectedPolygonZone();
-    if (zone == null) {
+    if (zone != null) {
+      return PolygonGeometry.fromZone(zone);
+    }
+    final overlay = _selectedSeasonalOverlay();
+    if (overlay == null) {
       return null;
     }
-    return PolygonGeometry.fromZone(zone);
+    return PolygonGeometry.fromJsonString(overlay.geometryJson);
   }
 
   int? _polygonVertexIndexAt(LatLng point) {
@@ -1251,13 +1273,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   }
 
   void _enterPolygonVertexEdit() {
-    final zone = _selectedPolygonZone();
-    if (zone == null) {
+    final geometry = _selectedPolygonGeometry();
+    if (geometry == null || !geometry.isValid) {
+      return;
+    }
+    if (_selectedPolygonZone() == null && _selectedSeasonalOverlay() == null) {
       return;
     }
     setState(() {
       _polygonVertexEditActive = true;
-      _polygonEditPreviewGeometry = PolygonGeometry.fromZone(zone);
+      _polygonEditPreviewGeometry = geometry;
     });
   }
 
@@ -1339,13 +1364,23 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
 
   Future<void> _persistPolygonGeometry(PolygonGeometry geometry) async {
     final zone = _selectedPolygonZone();
-    if (zone == null) {
+    if (zone != null) {
+      await ref
+          .read(zonesProvider.notifier)
+          .updatePolygonGeometry(
+            zoneId: zone.id,
+            geometry: geometry,
+          );
+      return;
+    }
+    final overlay = _selectedSeasonalOverlay();
+    if (overlay == null) {
       return;
     }
     await ref
-        .read(zonesProvider.notifier)
+        .read(seasonalOverlaysProvider.notifier)
         .updatePolygonGeometry(
-          zoneId: zone.id,
+          id: overlay.id,
           geometry: geometry,
         );
   }
@@ -2107,60 +2142,81 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     final zones = widget.zonesAsync.valueOrNull;
-    if (zones == null) {
-      return null;
+    final visibleZones = zones == null
+        ? const <MapZone>[]
+        : filterZonesForMap(zones, layersById);
+
+    if (zones != null) {
+      final lineId = hitTestLineAtPoint(
+        point: point,
+        zones: visibleZones,
+        camera: _mapController.camera,
+      );
+      if (lineId != null) {
+        return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: lineId);
+      }
+
+      final circleId = hitTestCircleAtPoint(point: point, zones: visibleZones);
+      if (circleId != null) {
+        return SelectedMapObject(
+          kind: SelectedMapObjectKind.zone,
+          id: circleId,
+        );
+      }
+
+      final rectangleId = hitTestRectangleAtPoint(
+        point: point,
+        zones: zones,
+        camera: _mapController.camera,
+      );
+      if (rectangleId != null) {
+        return SelectedMapObject(
+          kind: SelectedMapObjectKind.zone,
+          id: rectangleId,
+        );
+      }
     }
 
-    final visibleZones = filterZonesForMap(zones, layersById);
-
-    final lineId = hitTestLineAtPoint(
+    final seasonalOverlays =
+        ref.read(seasonalOverlaysProvider).valueOrNull ??
+        const <SeasonalOverlay>[];
+    final seasonalId = hitTestSeasonalOverlayAtPoint(
       point: point,
-      zones: visibleZones,
+      overlays: seasonalOverlays,
       camera: _mapController.camera,
+      showInactive: ref.read(showInactiveSeasonalOverlaysProvider),
     );
-    if (lineId != null) {
-      return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: lineId);
-    }
-
-    final circleId = hitTestCircleAtPoint(point: point, zones: visibleZones);
-    if (circleId != null) {
-      return SelectedMapObject(kind: SelectedMapObjectKind.zone, id: circleId);
-    }
-
-    final rectangleId = hitTestRectangleAtPoint(
-      point: point,
-      zones: zones,
-      camera: _mapController.camera,
-    );
-    if (rectangleId != null) {
+    if (seasonalId != null) {
       return SelectedMapObject(
-        kind: SelectedMapObjectKind.zone,
-        id: rectangleId,
+        kind: SelectedMapObjectKind.seasonalOverlay,
+        id: seasonalId,
       );
     }
 
-    final polygonId = hitTestPolygonAtPoint(
-      point: point,
-      zones: visibleZones,
-      camera: _mapController.camera,
-    );
-    if (polygonId != null) {
-      return SelectedMapObject(
-        kind: SelectedMapObjectKind.zone,
-        id: polygonId,
+    if (zones != null) {
+      final polygonId = hitTestPolygonAtPoint(
+        point: point,
+        zones: visibleZones,
+        camera: _mapController.camera,
       );
-    }
+      if (polygonId != null) {
+        return SelectedMapObject(
+          kind: SelectedMapObjectKind.zone,
+          id: polygonId,
+        );
+      }
 
-    final evacKit = findEvacKitAtPoint(
-      zones: visibleZones,
-      tap: point,
-      camera: _mapController.camera,
-    );
-    if (evacKit != null) {
-      return SelectedMapObject(
-        kind: SelectedMapObjectKind.zone,
-        id: evacKit.id,
+      final evacKit = findEvacKitAtPoint(
+        zones: visibleZones,
+        tap: point,
+        camera: _mapController.camera,
       );
+      if (evacKit != null) {
+        return SelectedMapObject(
+          kind: SelectedMapObjectKind.zone,
+          id: evacKit.id,
+        );
+      }
     }
 
     return null;
@@ -2178,6 +2234,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             ?.where((zone) => zone.id == selection.id)
             .map((zone) => zone.layerId)
             .firstOrNull,
+      SelectedMapObjectKind.seasonalOverlay => null,
     };
 
     ref
@@ -2959,6 +3016,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             return;
           }
         }
+        if (hit.kind == SelectedMapObjectKind.seasonalOverlay) {
+          final local = _selectionPointerDownLocal ?? Offset.zero;
+          _selectMapObject(hit);
+          if (_registerPolygonBodyDoubleTap(local)) {
+            _enterPolygonVertexEdit();
+          }
+          return;
+        }
         _clearPolygonBodyDoubleTap();
         _clearEvacKitBodyDoubleTap();
         _selectMapObject(hit);
@@ -2974,6 +3039,29 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (hit == current) {
+      if (current.kind == SelectedMapObjectKind.seasonalOverlay) {
+        final local = _selectionPointerDownLocal ?? Offset.zero;
+        if (_polygonVertexEditActive) {
+          final geometry = _selectedPolygonGeometry();
+          final onEdge =
+              geometry != null &&
+              _polygonVertexIndexAt(point) == null &&
+              isNearPolygonEdge(
+                geometry: geometry,
+                tap: point,
+                camera: _mapController.camera,
+              );
+          if (onEdge && _registerPolygonBodyDoubleTap(local)) {
+            unawaited(_insertPolygonVertexAt(point));
+          }
+          return;
+        }
+        if (_registerPolygonBodyDoubleTap(local)) {
+          _enterPolygonVertexEdit();
+          return;
+        }
+        return;
+      }
       if (current.kind == SelectedMapObjectKind.zone) {
         final zones = widget.zonesAsync.valueOrNull ?? const <MapZone>[];
         final zone = findZoneById(zones, current.id);
@@ -4259,12 +4347,29 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final selectedEvacKit = selectedZone?.type == evacKitZoneType
         ? selectedZone
         : null;
+    final selectedSeasonalOverlayId =
+        selectedMapObject.selectedSeasonalOverlayId;
+    SeasonalOverlay? selectedSeasonalOverlay;
+    if (selectedSeasonalOverlayId != null) {
+      for (final overlay
+          in ref.watch(seasonalOverlaysProvider).valueOrNull ??
+              const <SeasonalOverlay>[]) {
+        if (overlay.id == selectedSeasonalOverlayId) {
+          selectedSeasonalOverlay = overlay;
+          break;
+        }
+      }
+    }
     final lineGeometryOverrides = _lineGeometryOverrides();
     final polygonGeometryOverride =
         _polygonEditPreviewGeometry ??
-        (selectedPolygon == null
+        (selectedPolygon != null
+            ? PolygonGeometry.fromZone(selectedPolygon)
+            : selectedSeasonalOverlay == null
             ? null
-            : PolygonGeometry.fromZone(selectedPolygon));
+            : PolygonGeometry.fromJsonString(
+                selectedSeasonalOverlay.geometryJson,
+              ));
     final mapTilesDisplayed =
         !widget.metadataLoading &&
         widget.enabledEntries.isNotEmpty &&
@@ -4529,6 +4634,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         polygons: buildSeasonalOverlayPolygons(
                           seasonalOverlays,
                           showInactive: showInactiveSeasonalOverlays,
+                          selectedOverlayId: selectedSeasonalOverlayId,
+                          geometryOverride:
+                              _polygonVertexEditActive &&
+                                  selectedSeasonalOverlay != null
+                              ? polygonGeometryOverride
+                              : null,
                         ),
                       ),
                       MarkerLayer(
@@ -4595,8 +4706,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         ),
                     if (mapTilesDisplayed &&
                         _polygonVertexEditActive &&
-                        selectedPolygon != null &&
-                        polygonGeometryOverride != null)
+                        polygonGeometryOverride != null &&
+                        (selectedPolygon != null ||
+                            selectedSeasonalOverlay != null))
                       MarkerLayer(
                         markers: buildEditablePolygonVertexMarkers(
                           points: polygonGeometryOverride.points,
@@ -5192,7 +5304,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 child: _lineEditingBanner(),
               ),
             if (_polygonVertexEditActive &&
-                selectedPolygon != null &&
+                (selectedPolygon != null || selectedSeasonalOverlay != null) &&
                 !polygonDrawing.active &&
                 !evacKitDrawing.active &&
                 !viewshed.active &&

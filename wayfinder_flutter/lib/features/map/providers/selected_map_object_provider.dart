@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-enum SelectedMapObjectKind { marker, zone }
+enum SelectedMapObjectKind { marker, zone, seasonalOverlay }
 
 class SelectedMapObject {
   const SelectedMapObject({
@@ -33,6 +33,14 @@ extension SelectedMapObjectSelection on SelectedMapObject? {
   UuidValue? get selectedMarkerId {
     final value = this;
     if (value == null || value.kind != SelectedMapObjectKind.marker) {
+      return null;
+    }
+    return value.id;
+  }
+
+  UuidValue? get selectedSeasonalOverlayId {
+    final value = this;
+    if (value == null || value.kind != SelectedMapObjectKind.seasonalOverlay) {
       return null;
     }
     return value.id;
@@ -70,6 +78,13 @@ class SelectedMapObjectNotifier extends StateNotifier<SelectedMapObject?> {
   void selectZone(UuidValue id, {bool openDetails = true}) {
     select(
       SelectedMapObject(kind: SelectedMapObjectKind.zone, id: id),
+      openDetails: openDetails,
+    );
+  }
+
+  void selectSeasonalOverlay(UuidValue id, {bool openDetails = true}) {
+    select(
+      SelectedMapObject(kind: SelectedMapObjectKind.seasonalOverlay, id: id),
       openDetails: openDetails,
     );
   }

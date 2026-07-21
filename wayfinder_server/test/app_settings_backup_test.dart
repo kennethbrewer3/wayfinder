@@ -46,6 +46,8 @@ void main() {
         'mapTileBorderDebug': false,
         'mapCompassRoseEnabled': true,
         'mapMgrsGridEnabled': false,
+        'polygonSnapRightAngles': true,
+        'polygonSnap45Angles': false,
         'mapMinZoom': 2.0,
         'mapMaxZoom': 18.0,
       });

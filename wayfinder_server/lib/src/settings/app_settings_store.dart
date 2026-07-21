@@ -168,6 +168,8 @@ abstract final class AppSettingsStore {
     required bool mapTileBorderDebug,
     required bool mapCompassRoseEnabled,
     required bool mapMgrsGridEnabled,
+    required bool polygonSnapRightAngles,
+    required bool polygonSnap45Angles,
     required double mapMinZoom,
     required double mapMaxZoom,
   }) {

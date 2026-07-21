@@ -113,6 +113,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
     bool mapMgrsGridEnabled,
+    bool polygonSnapRightAngles,
+    bool polygonSnap45Angles,
     double mapMinZoom,
     double mapMaxZoom,
   ) {
@@ -133,6 +135,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
           mapMgrsGridEnabled: mapMgrsGridEnabled,
+          polygonSnapRightAngles: polygonSnapRightAngles,
+          polygonSnap45Angles: polygonSnap45Angles,
           mapMinZoom: mapMinZoom,
           mapMaxZoom: mapMaxZoom,
         );
@@ -152,6 +156,8 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
             mapTileBorderDebug: mapTileBorderDebug,
             mapCompassRoseEnabled: mapCompassRoseEnabled,
             mapMgrsGridEnabled: mapMgrsGridEnabled,
+            polygonSnapRightAngles: polygonSnapRightAngles,
+            polygonSnap45Angles: polygonSnap45Angles,
             mapMinZoom: mapMinZoom,
             mapMaxZoom: mapMaxZoom,
           ),

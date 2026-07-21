@@ -31,6 +31,8 @@ abstract class AppSettings
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? polygonSnapRightAngles,
+    bool? polygonSnap45Angles,
     double? mapMinZoom,
     double? mapMaxZoom,
     this.restApiKeyHash,
@@ -46,6 +48,8 @@ abstract class AppSettings
        mapTileBorderDebug = mapTileBorderDebug ?? false,
        mapCompassRoseEnabled = mapCompassRoseEnabled ?? true,
        mapMgrsGridEnabled = mapMgrsGridEnabled ?? false,
+       polygonSnapRightAngles = polygonSnapRightAngles ?? true,
+       polygonSnap45Angles = polygonSnap45Angles ?? false,
        mapMinZoom = mapMinZoom ?? 2.0,
        mapMaxZoom = mapMaxZoom ?? 18.0;
 
@@ -66,6 +70,8 @@ abstract class AppSettings
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? polygonSnapRightAngles,
+    bool? polygonSnap45Angles,
     double? mapMinZoom,
     double? mapMaxZoom,
     String? restApiKeyHash,
@@ -107,6 +113,17 @@ abstract class AppSettings
           ? null
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapMgrsGridEnabled'],
+            ),
+      polygonSnapRightAngles:
+          jsonSerialization['polygonSnapRightAngles'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['polygonSnapRightAngles'],
+            ),
+      polygonSnap45Angles: jsonSerialization['polygonSnap45Angles'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['polygonSnap45Angles'],
             ),
       mapMinZoom: (jsonSerialization['mapMinZoom'] as num?)?.toDouble(),
       mapMaxZoom: (jsonSerialization['mapMaxZoom'] as num?)?.toDouble(),
@@ -154,6 +171,10 @@ abstract class AppSettings
 
   bool mapMgrsGridEnabled;
 
+  bool polygonSnapRightAngles;
+
+  bool polygonSnap45Angles;
+
   double mapMinZoom;
 
   double mapMaxZoom;
@@ -185,6 +206,8 @@ abstract class AppSettings
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? polygonSnapRightAngles,
+    bool? polygonSnap45Angles,
     double? mapMinZoom,
     double? mapMaxZoom,
     String? restApiKeyHash,
@@ -210,6 +233,8 @@ abstract class AppSettings
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'polygonSnapRightAngles': polygonSnapRightAngles,
+      'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
@@ -237,6 +262,8 @@ abstract class AppSettings
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'polygonSnapRightAngles': polygonSnapRightAngles,
+      'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
       if (restApiKeyHash != null) 'restApiKeyHash': restApiKeyHash,
@@ -294,6 +321,8 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? polygonSnapRightAngles,
+    bool? polygonSnap45Angles,
     double? mapMinZoom,
     double? mapMaxZoom,
     String? restApiKeyHash,
@@ -315,6 +344,8 @@ class _AppSettingsImpl extends AppSettings {
          mapTileBorderDebug: mapTileBorderDebug,
          mapCompassRoseEnabled: mapCompassRoseEnabled,
          mapMgrsGridEnabled: mapMgrsGridEnabled,
+         polygonSnapRightAngles: polygonSnapRightAngles,
+         polygonSnap45Angles: polygonSnap45Angles,
          mapMinZoom: mapMinZoom,
          mapMaxZoom: mapMaxZoom,
          restApiKeyHash: restApiKeyHash,
@@ -342,6 +373,8 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? polygonSnapRightAngles,
+    bool? polygonSnap45Angles,
     double? mapMinZoom,
     double? mapMaxZoom,
     Object? restApiKeyHash = _Undefined,
@@ -366,6 +399,9 @@ class _AppSettingsImpl extends AppSettings {
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
+      polygonSnapRightAngles:
+          polygonSnapRightAngles ?? this.polygonSnapRightAngles,
+      polygonSnap45Angles: polygonSnap45Angles ?? this.polygonSnap45Angles,
       mapMinZoom: mapMinZoom ?? this.mapMinZoom,
       mapMaxZoom: mapMaxZoom ?? this.mapMaxZoom,
       restApiKeyHash: restApiKeyHash is String?
@@ -462,6 +498,18 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
     table.mapMgrsGridEnabled,
     value,
   );
+
+  _i1.ColumnValue<bool, bool> polygonSnapRightAngles(bool value) =>
+      _i1.ColumnValue(
+        table.polygonSnapRightAngles,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> polygonSnap45Angles(bool value) =>
+      _i1.ColumnValue(
+        table.polygonSnap45Angles,
+        value,
+      );
 
   _i1.ColumnValue<double, double> mapMinZoom(double value) => _i1.ColumnValue(
     table.mapMinZoom,
@@ -560,6 +608,16 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    polygonSnapRightAngles = _i1.ColumnBool(
+      'polygonSnapRightAngles',
+      this,
+      hasDefault: true,
+    );
+    polygonSnap45Angles = _i1.ColumnBool(
+      'polygonSnap45Angles',
+      this,
+      hasDefault: true,
+    );
     mapMinZoom = _i1.ColumnDouble(
       'mapMinZoom',
       this,
@@ -612,6 +670,10 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool mapMgrsGridEnabled;
 
+  late final _i1.ColumnBool polygonSnapRightAngles;
+
+  late final _i1.ColumnBool polygonSnap45Angles;
+
   late final _i1.ColumnDouble mapMinZoom;
 
   late final _i1.ColumnDouble mapMaxZoom;
@@ -638,6 +700,8 @@ class AppSettingsTable extends _i1.Table<int?> {
     mapTileBorderDebug,
     mapCompassRoseEnabled,
     mapMgrsGridEnabled,
+    polygonSnapRightAngles,
+    polygonSnap45Angles,
     mapMinZoom,
     mapMaxZoom,
     restApiKeyHash,

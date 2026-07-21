@@ -32,6 +32,7 @@ import '../../markers/models/map_marker_size.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
+import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
@@ -316,6 +317,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final showMapMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
+    final polygonSnapRightAngles = ref.watch(polygonSnapRightAnglesProvider);
+    final polygonSnap45Angles = ref.watch(polygonSnap45AnglesProvider);
     final mapZoomRange = ref.watch(mapZoomRangeProvider);
     ref.listen<MapZoomRange>(mapZoomRangeProvider, (previous, next) {
       if (previous != next) {
@@ -645,6 +648,37 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             ref
                 .read(circleSizeDisplayProvider.notifier)
                 .setDisplay(selection.first);
+          },
+        ),
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsMapEditingTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsMapEditingDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsPolygonSnapRightAnglesTitle),
+          subtitle: Text(l10n.settingsPolygonSnapRightAnglesDescription),
+          value: polygonSnapRightAngles,
+          onChanged: (enabled) {
+            ref
+                .read(polygonSnapRightAnglesProvider.notifier)
+                .setEnabled(enabled);
+          },
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsPolygonSnap45AnglesTitle),
+          subtitle: Text(l10n.settingsPolygonSnap45AnglesDescription),
+          value: polygonSnap45Angles,
+          onChanged: (enabled) {
+            ref.read(polygonSnap45AnglesProvider.notifier).setEnabled(enabled);
           },
         ),
         const SizedBox(height: 32),

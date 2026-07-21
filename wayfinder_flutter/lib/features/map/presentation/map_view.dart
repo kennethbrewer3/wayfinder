@@ -69,7 +69,9 @@ import '../../markers/utils/marker_share_url.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../polygons/presentation/create_polygon_dialog.dart';
 import '../../polygons/presentation/map_polygon_layer.dart';
+import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../../polygons/providers/polygon_drawing_provider.dart';
+import '../../polygons/utils/polygon_angle_snap.dart';
 import '../../polygons/utils/polygon_hit_test.dart';
 import '../../polygons/utils/polygon_path.dart';
 import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
@@ -1318,15 +1320,40 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (index == null || geometry == null) {
       return;
     }
-    final updated = movePolygonVertex(
+    final snapped = _snapPolygonVertexDragPoint(
       geometry: geometry,
       vertexIndex: index,
       point: point,
+    );
+    final updated = movePolygonVertex(
+      geometry: geometry,
+      vertexIndex: index,
+      point: snapped,
     );
     if (updated == null) {
       return;
     }
     setState(() => _polygonEditPreviewGeometry = updated);
+  }
+
+  LatLng _snapPolygonVertexDragPoint({
+    required PolygonGeometry geometry,
+    required int vertexIndex,
+    required LatLng point,
+  }) {
+    final snapRight = ref.read(polygonSnapRightAnglesProvider);
+    final snap45 = ref.read(polygonSnap45AnglesProvider);
+    if (!snapRight && !snap45) {
+      return point;
+    }
+    return snapPolygonVertexAngle(
+      points: geometry.points,
+      vertexIndex: vertexIndex,
+      proposed: point,
+      camera: _mapController.camera,
+      snapRightAngles: snapRight,
+      snapFortyFiveAngles: snap45,
+    );
   }
 
   Future<void> _persistPolygonGeometry(PolygonGeometry geometry) async {
@@ -1359,10 +1386,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       _resetPolygonEditGestureState(keepEditMode: true);
       return;
     }
-    final updated = movePolygonVertex(
+    final snapped = _snapPolygonVertexDragPoint(
       geometry: geometry,
       vertexIndex: index,
       point: point,
+    );
+    final updated = movePolygonVertex(
+      geometry: geometry,
+      vertexIndex: index,
+      point: snapped,
     );
     _resetPolygonEditGestureState(keepEditMode: true);
     if (updated == null) {

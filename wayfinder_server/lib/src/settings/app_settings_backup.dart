@@ -25,6 +25,8 @@ Map<String, dynamic> exportAppSettingsBackup(AppSettings settings) {
     'mapTileBorderDebug': settings.mapTileBorderDebug,
     'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
     'mapMgrsGridEnabled': settings.mapMgrsGridEnabled,
+    'polygonSnapRightAngles': settings.polygonSnapRightAngles,
+    'polygonSnap45Angles': settings.polygonSnap45Angles,
     'mapMinZoom': settings.mapMinZoom,
     'mapMaxZoom': settings.mapMaxZoom,
   };
@@ -51,6 +53,9 @@ Future<void> restoreAppSettingsBackup(
   final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
   final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
   final mapMgrsGridEnabled = _readBool(body['mapMgrsGridEnabled']) ?? false;
+  final polygonSnapRightAngles =
+      _readBool(body['polygonSnapRightAngles']) ?? true;
+  final polygonSnap45Angles = _readBool(body['polygonSnap45Angles']) ?? false;
   final mapMinZoom = _readDouble(body['mapMinZoom']);
   final mapMaxZoom = _readDouble(body['mapMaxZoom']);
 
@@ -90,6 +95,8 @@ Future<void> restoreAppSettingsBackup(
     mapTileBorderDebug: mapTileBorderDebug,
     mapCompassRoseEnabled: mapCompassRoseEnabled,
     mapMgrsGridEnabled: mapMgrsGridEnabled,
+    polygonSnapRightAngles: polygonSnapRightAngles,
+    polygonSnap45Angles: polygonSnap45Angles,
     mapMinZoom: mapMinZoom,
     mapMaxZoom: mapMaxZoom,
   );
@@ -113,6 +120,8 @@ Future<void> restoreAppSettingsBackup(
       mapTileBorderDebug: mapTileBorderDebug,
       mapCompassRoseEnabled: mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled,
+      polygonSnapRightAngles: polygonSnapRightAngles,
+      polygonSnap45Angles: polygonSnap45Angles,
       mapMinZoom: mapMinZoom,
       mapMaxZoom: mapMaxZoom,
     ),

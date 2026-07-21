@@ -742,6 +742,42 @@ abstract class AppLocalizations {
   /// **'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.'**
   String get settingsCirclesDescription;
 
+  /// No description provided for @settingsMapEditingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map editing'**
+  String get settingsMapEditingTitle;
+
+  /// No description provided for @settingsMapEditingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapping while editing polygon and seasonal overlay vertices. Soft snaps unlock if you keep dragging past the magnet.'**
+  String get settingsMapEditingDescription;
+
+  /// No description provided for @settingsPolygonSnapRightAnglesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap to right angles (90°)'**
+  String get settingsPolygonSnapRightAnglesTitle;
+
+  /// No description provided for @settingsPolygonSnapRightAnglesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'While dragging a vertex, soft-snap to square corners — including making adjacent corners 90° for cleaner rectangles.'**
+  String get settingsPolygonSnapRightAnglesDescription;
+
+  /// No description provided for @settingsPolygonSnap45AnglesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap to 45° angles'**
+  String get settingsPolygonSnap45AnglesTitle;
+
+  /// No description provided for @settingsPolygonSnap45AnglesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Also soft-snap the dragged corner toward 45° and 135° angles.'**
+  String get settingsPolygonSnap45AnglesDescription;
+
   /// No description provided for @settingsMapDisplayTitle.
   ///
   /// In en, this message translates to:

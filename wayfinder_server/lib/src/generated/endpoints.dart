@@ -1540,6 +1540,16 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<bool>(),
               nullable: false,
             ),
+            'polygonSnapRightAngles': _i1.ParameterDescription(
+              name: 'polygonSnapRightAngles',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'polygonSnap45Angles': _i1.ParameterDescription(
+              name: 'polygonSnap45Angles',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
             'mapMinZoom': _i1.ParameterDescription(
               name: 'mapMinZoom',
               type: _i1.getType<double>(),
@@ -1569,6 +1579,8 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['mapTileBorderDebug'],
                     params['mapCompassRoseEnabled'],
                     params['mapMgrsGridEnabled'],
+                    params['polygonSnapRightAngles'],
+                    params['polygonSnap45Angles'],
                     params['mapMinZoom'],
                     params['mapMaxZoom'],
                   ),

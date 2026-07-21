@@ -354,6 +354,28 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.';
 
   @override
+  String get settingsMapEditingTitle => 'Map editing';
+
+  @override
+  String get settingsMapEditingDescription =>
+      'Snapping while editing polygon and seasonal overlay vertices. Soft snaps unlock if you keep dragging past the magnet.';
+
+  @override
+  String get settingsPolygonSnapRightAnglesTitle =>
+      'Snap to right angles (90°)';
+
+  @override
+  String get settingsPolygonSnapRightAnglesDescription =>
+      'While dragging a vertex, soft-snap to square corners — including making adjacent corners 90° for cleaner rectangles.';
+
+  @override
+  String get settingsPolygonSnap45AnglesTitle => 'Snap to 45° angles';
+
+  @override
+  String get settingsPolygonSnap45AnglesDescription =>
+      'Also soft-snap the dragged corner toward 45° and 135° angles.';
+
+  @override
   String get settingsMapDisplayTitle => 'Map display';
 
   @override

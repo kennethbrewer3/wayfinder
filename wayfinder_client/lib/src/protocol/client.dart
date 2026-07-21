@@ -867,6 +867,8 @@ class EndpointAppSettings extends _i2.EndpointRef {
     bool mapTileBorderDebug,
     bool mapCompassRoseEnabled,
     bool mapMgrsGridEnabled,
+    bool polygonSnapRightAngles,
+    bool polygonSnap45Angles,
     double mapMinZoom,
     double mapMaxZoom,
   ) => caller.callServerEndpoint<_i19.AppSettings>(
@@ -884,6 +886,8 @@ class EndpointAppSettings extends _i2.EndpointRef {
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'polygonSnapRightAngles': polygonSnapRightAngles,
+      'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
     },

@@ -15,6 +15,7 @@ import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/providers/marker_icon_providers.dart';
+import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../../watch_log/providers/watch_log_provider.dart';
 import '../providers/app_locale_provider.dart';
@@ -49,6 +50,8 @@ void refreshUserSettings(WidgetRef ref) {
   ref.read(mapTileBorderDebugProvider.notifier).reload();
   ref.read(mapCompassRoseEnabledProvider.notifier).reload();
   ref.read(mapMgrsGridEnabledProvider.notifier).reload();
+  ref.read(polygonSnapRightAnglesProvider.notifier).reload();
+  ref.read(polygonSnap45AnglesProvider.notifier).reload();
   ref.read(mapZoomRangeProvider.notifier).reload();
   refreshPmtiles(ref);
 }

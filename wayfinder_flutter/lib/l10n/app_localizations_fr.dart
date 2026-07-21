@@ -355,6 +355,28 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisissez l\'étiquette de taille par défaut affichée sur les nouvelles zones circulaires. Enregistré sur le serveur pour que chaque navigateur utilise la même valeur par défaut.';
 
   @override
+  String get settingsMapEditingTitle => 'Édition de la carte';
+
+  @override
+  String get settingsMapEditingDescription =>
+      'Accrochage lors de l\'édition des sommets de polygones et de calques saisonniers. L\'aimant se libère si vous continuez à glisser au-delà.';
+
+  @override
+  String get settingsPolygonSnapRightAnglesTitle =>
+      'Accrocher aux angles droits (90°)';
+
+  @override
+  String get settingsPolygonSnapRightAnglesDescription =>
+      'En faisant glisser un sommet, accroche doucement aux coins carrés — y compris pour rendre les coins adjacents à 90° pour de meilleurs rectangles.';
+
+  @override
+  String get settingsPolygonSnap45AnglesTitle => 'Accrocher aux angles de 45°';
+
+  @override
+  String get settingsPolygonSnap45AnglesDescription =>
+      'Accroche aussi le coin déplacé vers des angles de 45° et 135°.';
+
+  @override
   String get settingsMapDisplayTitle => 'Affichage de la carte';
 
   @override

@@ -22,6 +22,8 @@ class ClientPreferences {
     required this.mapTileBorderDebug,
     required this.mapCompassRoseEnabled,
     required this.mapMgrsGridEnabled,
+    required this.polygonSnapRightAngles,
+    required this.polygonSnap45Angles,
     required this.mapMinZoom,
     required this.mapMaxZoom,
   });
@@ -37,6 +39,8 @@ class ClientPreferences {
   final bool mapTileBorderDebug;
   final bool mapCompassRoseEnabled;
   final bool mapMgrsGridEnabled;
+  final bool polygonSnapRightAngles;
+  final bool polygonSnap45Angles;
   final double mapMinZoom;
   final double mapMaxZoom;
 
@@ -52,6 +56,8 @@ class ClientPreferences {
     mapTileBorderDebug: false,
     mapCompassRoseEnabled: true,
     mapMgrsGridEnabled: false,
+    polygonSnapRightAngles: true,
+    polygonSnap45Angles: false,
     mapMinZoom: MapZoomRange.defaults.min,
     mapMaxZoom: MapZoomRange.defaults.max,
   );
@@ -77,6 +83,8 @@ class ClientPreferences {
       mapTileBorderDebug: settings.mapTileBorderDebug,
       mapCompassRoseEnabled: settings.mapCompassRoseEnabled,
       mapMgrsGridEnabled: settings.mapMgrsGridEnabled,
+      polygonSnapRightAngles: settings.polygonSnapRightAngles,
+      polygonSnap45Angles: settings.polygonSnap45Angles,
       mapMinZoom: zoomRange.min,
       mapMaxZoom: zoomRange.max,
     );
@@ -110,6 +118,8 @@ class ClientPreferences {
       mapTileBorderDebug: json['mapTileBorderDebug'] as bool? ?? false,
       mapCompassRoseEnabled: json['mapCompassRoseEnabled'] as bool? ?? true,
       mapMgrsGridEnabled: json['mapMgrsGridEnabled'] as bool? ?? false,
+      polygonSnapRightAngles: json['polygonSnapRightAngles'] as bool? ?? true,
+      polygonSnap45Angles: json['polygonSnap45Angles'] as bool? ?? false,
       mapMinZoom: zoomRange.min,
       mapMaxZoom: zoomRange.max,
     );
@@ -127,6 +137,8 @@ class ClientPreferences {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? polygonSnapRightAngles,
+    bool? polygonSnap45Angles,
     double? mapMinZoom,
     double? mapMaxZoom,
   }) {
@@ -144,6 +156,9 @@ class ClientPreferences {
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
+      polygonSnapRightAngles:
+          polygonSnapRightAngles ?? this.polygonSnapRightAngles,
+      polygonSnap45Angles: polygonSnap45Angles ?? this.polygonSnap45Angles,
       mapMinZoom: mapMinZoom ?? this.mapMinZoom,
       mapMaxZoom: mapMaxZoom ?? this.mapMaxZoom,
     );
@@ -162,6 +177,8 @@ class ClientPreferences {
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'polygonSnapRightAngles': polygonSnapRightAngles,
+      'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
     };

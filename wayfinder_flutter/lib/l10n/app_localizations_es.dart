@@ -354,6 +354,28 @@ class AppLocalizationsEs extends AppLocalizations {
       'Elija la etiqueta de tamaño predeterminada mostrada en las nuevas zonas circulares.';
 
   @override
+  String get settingsMapEditingTitle => 'Edición del mapa';
+
+  @override
+  String get settingsMapEditingDescription =>
+      'Ajuste al editar vértices de polígonos y capas estacionales. El imán se suelta si sigue arrastrando más allá del punto de ajuste.';
+
+  @override
+  String get settingsPolygonSnapRightAnglesTitle =>
+      'Ajustar a ángulos rectos (90°)';
+
+  @override
+  String get settingsPolygonSnapRightAnglesDescription =>
+      'Al arrastrar un vértice, ajusta suavemente a esquinas cuadradas — también puede cuadrar las esquinas adyacentes para rectángulos más limpios.';
+
+  @override
+  String get settingsPolygonSnap45AnglesTitle => 'Ajustar a ángulos de 45°';
+
+  @override
+  String get settingsPolygonSnap45AnglesDescription =>
+      'También ajusta la esquina arrastrada hacia ángulos de 45° y 135°.';
+
+  @override
   String get settingsMapDisplayTitle => 'Visualización del mapa';
 
   @override

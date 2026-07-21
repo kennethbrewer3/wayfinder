@@ -17,6 +17,8 @@ fields:
   mapTileBorderDebug: bool, default=false
   mapCompassRoseEnabled: bool, default=true
   mapMgrsGridEnabled: bool, default=false
+  polygonSnapRightAngles: bool, default=true
+  polygonSnap45Angles: bool, default=false
   mapMinZoom: double, default=2.0
   mapMaxZoom: double, default=18.0
   restApiKeyHash: String?

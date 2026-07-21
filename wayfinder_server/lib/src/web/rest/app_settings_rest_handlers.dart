@@ -121,6 +121,10 @@ abstract final class AppSettingsRestHandlers {
       final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
       final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
       final mapMgrsGridEnabled = _readBool(body['mapMgrsGridEnabled']) ?? false;
+      final polygonSnapRightAngles =
+          _readBool(body['polygonSnapRightAngles']) ?? true;
+      final polygonSnap45Angles =
+          _readBool(body['polygonSnap45Angles']) ?? false;
       final mapMinZoom = _readDouble(body['mapMinZoom']);
       final mapMaxZoom = _readDouble(body['mapMaxZoom']);
       if (measurementUnits == null ||
@@ -155,6 +159,8 @@ abstract final class AppSettingsRestHandlers {
         mapTileBorderDebug: mapTileBorderDebug,
         mapCompassRoseEnabled: mapCompassRoseEnabled,
         mapMgrsGridEnabled: mapMgrsGridEnabled,
+        polygonSnapRightAngles: polygonSnapRightAngles,
+        polygonSnap45Angles: polygonSnap45Angles,
         mapMinZoom: mapMinZoom,
         mapMaxZoom: mapMaxZoom,
       );
@@ -174,6 +180,8 @@ abstract final class AppSettingsRestHandlers {
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
           mapMgrsGridEnabled: mapMgrsGridEnabled,
+          polygonSnapRightAngles: polygonSnapRightAngles,
+          polygonSnap45Angles: polygonSnap45Angles,
           mapMinZoom: mapMinZoom,
           mapMaxZoom: mapMaxZoom,
         ),
@@ -195,6 +203,8 @@ abstract final class AppSettingsRestHandlers {
       'mapTileBorderDebug': settings.mapTileBorderDebug,
       'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
       'mapMgrsGridEnabled': settings.mapMgrsGridEnabled,
+      'polygonSnapRightAngles': settings.polygonSnapRightAngles,
+      'polygonSnap45Angles': settings.polygonSnap45Angles,
       'mapMinZoom': settings.mapMinZoom,
       'mapMaxZoom': settings.mapMaxZoom,
       'updatedAt': settings.updatedAt.toIso8601String(),

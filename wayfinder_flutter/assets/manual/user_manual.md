@@ -465,6 +465,7 @@ Polygons are saved as map zones like circles and rectangles. Toggle the name lab
 1. **Double-tap** a polygon to enter vertex edit mode (vertices appear on the corners).
 2. **Drag** a vertex to move it.
 3. **Double-click** between two vertices (on an edge) to insert a vertex; **double-click** a vertex to remove it (at least three vertices remain).
+4. With **Settings → General → Map editing** snaps enabled, dragged corners soft-snap to **90°** (and optionally **45°/135°**). Keep dragging past the snap to place freely.
 4. Tap **Done** in the banner when finished.
 
 ---

@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/serverpod_client.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../models/marker_checklists.dart';

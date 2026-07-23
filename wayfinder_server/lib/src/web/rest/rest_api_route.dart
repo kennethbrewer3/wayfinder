@@ -34,7 +34,7 @@ class RestApiRoute extends Route {
       ..patch('/markers/:id', MarkersRestHandlers.update)
       ..delete('/markers/:id', MarkersRestHandlers.delete)
       ..get(
-        '/markers/:markerId/attachments',
+        '/markers/:id/attachments',
         MarkerAttachmentsRestHandlers.listForMarker,
       )
       ..delete(
@@ -143,7 +143,7 @@ class RestApiRoute extends Route {
         'health': '/api/health',
         'status': '/api/status',
         'markers': '/api/markers',
-        'markerAttachments': '/api/markers/<markerId>/attachments',
+        'markerAttachments': '/api/markers/<id>/attachments',
         'markerAttachmentDelete': '/api/marker-attachments/<id>',
         'markerAttachmentUpload':
             '/marker-attachments/upload?markerId=<uuid>&fileName=<name>',

@@ -750,7 +750,7 @@ Photo files are stored on disk (default `storage/marker-attachments/{uuid}`, ove
 
 ```bash
 # List attachments for a marker
-curl http://localhost:18082/api/markers/<markerId>/attachments
+curl http://localhost:18082/api/markers/<id>/attachments
 
 # Upload a photo (raw body)
 curl -X POST \
@@ -935,7 +935,7 @@ curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 | DELETE | `/api/pmtiles/active` | Clear active file |
 | DELETE | `/api/pmtiles/:id` | Delete catalog entry and file |
 | GET | `/pmtiles/files/:id` | Download PMTiles bytes |
-| GET | `/api/markers/:markerId/attachments` | List photos for a marker |
+| GET | `/api/markers/:id/attachments` | List photos for a marker |
 | DELETE | `/api/marker-attachments/:id` | Delete a marker photo |
 | POST | `/marker-attachments/upload` | Upload marker photo (raw body) |
 | GET | `/marker-attachments/files/:storageId` | Download marker photo |

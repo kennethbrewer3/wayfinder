@@ -112,10 +112,9 @@ class WayfinderEnv {
     return false;
   }
 
-  /// Force authentication even before any membership rows exist.
-  ///
-  /// Auth is also required automatically once at least one user membership
-  /// exists. Set `WAYFINDER_AUTH_REQUIRED=1` to require login from first boot.
+  /// Legacy env flag. Auth lockout is driven by membership count only; this
+  /// getter remains for deploy docs / diagnostics and is not used to deny the
+  /// first-user bootstrap window.
   static bool get authRequired {
     for (final key in ['WAYFINDER_AUTH_REQUIRED']) {
       final value = Platform.environment[key]?.trim();

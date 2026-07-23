@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../../core/app_globals.dart';
 import '../../../core/serverpod_client.dart';
 import '../../access/providers/access_session_provider.dart';
 
@@ -35,7 +37,12 @@ class SettingsUsersTab extends ConsumerWidget {
     final canRoles = ref.watch(canManageRolesProvider);
 
     if (session != null && session.authRequired && !session.authenticated) {
-      return Center(child: Text(l10n.accessSignInRequired));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(l10n.accessSignInRequired),
+        ),
+      );
     }
 
     if (!canUsers && !canRoles) {
@@ -406,17 +413,37 @@ Future<void> _showCreateUserDialog(BuildContext context, WidgetRef ref) async {
   }
 
   try {
+    final username = emailController.text.trim();
+    final password = passwordController.text;
+    final sessionBefore = ref.read(accessSessionProvider).valueOrNull;
+    final wasAuthenticated = sessionBefore?.authenticated ?? false;
+
     await ref
         .read(serverClientProvider)
         .accessControl
         .createUser(
-          emailController.text.trim(),
-          passwordController.text,
+          username,
+          password,
           roleId,
           nameController.text.trim().isEmpty
               ? null
               : nameController.text.trim(),
         );
+
+    // After the first user is created, the server requires sign-in. Log in as
+    // that account when the creator was not already authenticated.
+    if (!wasAuthenticated) {
+      try {
+        final authSuccess = await client.emailIdp.login(
+          email: username,
+          password: password,
+        );
+        await client.auth.updateSignedInUser(authSuccess);
+      } catch (_) {
+        // User was created; they can sign in manually if auto-login fails.
+      }
+    }
+    await ref.read(accessSessionProvider.notifier).refresh();
     ref.invalidate(_accessUsersProvider);
     ref.invalidate(_accessRolesProvider);
   } catch (error) {

@@ -2,18 +2,24 @@ import 'dart:convert';
 
 import 'package:serverpod/serverpod.dart';
 
-import '../core/wayfinder_env.dart';
 import '../generated/protocol.dart';
 import 'wayfinder_permissions.dart';
 
 /// Server-side authentication and permission checks for TOC roles.
 abstract final class AccessControl {
+  /// Auth is required once at least one membership exists.
+  ///
+  /// An empty user table always stays open so the first administrator can be
+  /// created from Settings (or via bootstrap env). `WAYFINDER_AUTH_REQUIRED`
+  /// cannot lock out a server with zero users.
   static Future<bool> isAuthRequired(Session session) async {
-    if (WayfinderEnv.authRequired) {
-      return true;
-    }
     final count = await UserMembership.db.count(session);
     return count > 0;
+  }
+
+  /// True when no TOC users exist yet (first-admin bootstrap window).
+  static Future<bool> isBootstrapOpen(Session session) async {
+    return UserMembership.db.count(session).then((count) => count == 0);
   }
 
   static Future<AccessSessionInfo> sessionInfo(Session session) async {

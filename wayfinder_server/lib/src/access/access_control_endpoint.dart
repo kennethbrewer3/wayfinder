@@ -43,9 +43,18 @@ class AccessControlEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'listUsers',
-      () => AccessAdminService.listUsers(session),
+      () async {
+        if (await AccessControl.isBootstrapOpen(session)) {
+          return AccessAdminService.listUsers(session);
+        }
+        await AccessControl.assertPermission(
+          session,
+          WayfinderPermission.manageUsers,
+        );
+        return AccessAdminService.listUsers(session);
+      },
       requiresWrite: false,
-      requiredPermission: WayfinderPermission.manageUsers,
+      skipAccessCheck: true,
     );
   }
 
@@ -60,14 +69,22 @@ class AccessControlEndpoint extends Endpoint with EndpointLogging {
       session,
       _tag,
       'createUser',
-      () => AccessAdminService.createUser(
-        session,
-        email: email,
-        password: password,
-        roleId: roleId,
-        displayName: displayName,
-      ),
-      requiredPermission: WayfinderPermission.manageUsers,
+      () async {
+        if (!await AccessControl.isBootstrapOpen(session)) {
+          await AccessControl.assertPermission(
+            session,
+            WayfinderPermission.manageUsers,
+          );
+        }
+        return AccessAdminService.createUser(
+          session,
+          email: email,
+          password: password,
+          roleId: roleId,
+          displayName: displayName,
+        );
+      },
+      skipAccessCheck: true,
     );
   }
 
@@ -132,6 +149,9 @@ class AccessControlEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'listRoles',
       () async {
+        if (await AccessControl.isBootstrapOpen(session)) {
+          return AccessAdminService.listRoles(session);
+        }
         final canManageUsers = await AccessControl.hasPermission(
           session,
           WayfinderPermission.manageUsers,
@@ -141,7 +161,6 @@ class AccessControlEndpoint extends Endpoint with EndpointLogging {
           WayfinderPermission.manageRoles,
         );
         if (!canManageUsers && !canManageRoles) {
-          // When auth is off, assertPermission no-ops; otherwise require one.
           await AccessControl.assertPermission(
             session,
             WayfinderPermission.manageUsers,

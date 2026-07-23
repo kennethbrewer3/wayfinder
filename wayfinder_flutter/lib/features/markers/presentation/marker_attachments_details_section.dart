@@ -5,6 +5,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../data/marker_attachment_repository.dart';
@@ -172,7 +173,8 @@ class _MarkerAttachmentsDetailsSectionState
     final theme = Theme.of(context);
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
-    final canEdit = !offline && !kiosk;
+    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
+    final canEdit = !offline && !kiosk && !roleLocked;
     final attachmentsAsync = ref.watch(
       markerAttachmentsProvider(widget.marker.id.uuid),
     );

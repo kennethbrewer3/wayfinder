@@ -1,8 +1,20 @@
+accessControl:
+  - getSessionInfo:
+  - listKnownPermissions:
+  - listUsers:
+  - createUser:
+  - updateUserRole:
+  - setUserBlocked:
+  - deleteUser:
+  - listRoles:
+  - createRole:
+  - updateRole:
+  - deleteRole:
 emailIdp:
-  - login:
   - startRegistration:
   - verifyRegistrationCode:
   - finishRegistration:
+  - login:
   - startPasswordReset:
   - verifyPasswordResetCode:
   - finishPasswordReset:

@@ -1,0 +1,16 @@
+class: AccessSessionInfo
+fields:
+  authRequired: bool
+  authenticated: bool
+  authUserId: UuidValue?
+  email: String?
+  displayName: String?
+  roleKey: String?
+  roleName: String?
+  isAdmin: bool
+  permissions: List<String>
+  canEditMap: bool
+  canManageUsers: bool
+  canManageRoles: bool
+  canManageSettings: bool
+  canManageBackups: bool

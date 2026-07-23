@@ -6,6 +6,7 @@ enum SettingsTab {
   geocoding('geocoding'),
   tides('tides'),
   seasonalOverlays('seasonal-overlays'),
+  users('users'),
   backup('backup'),
   about('about');
 

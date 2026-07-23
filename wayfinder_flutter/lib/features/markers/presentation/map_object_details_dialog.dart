@@ -38,6 +38,7 @@ import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
@@ -223,7 +224,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
   ) {
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
-    final editLocked = offline || kiosk;
+    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
+    final editLocked = offline || kiosk || roleLocked;
     final overlays = ref.watch(seasonalOverlaysProvider).valueOrNull;
     final overlay = overlays == null
         ? null
@@ -322,7 +324,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
-    final editLocked = offline || kiosk;
+    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
+    final editLocked = offline || kiosk || roleLocked;
     final pendingCreates =
         ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
         const <String>{};

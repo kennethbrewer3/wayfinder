@@ -85,6 +85,7 @@ import '../../rectangles/providers/rectangle_drawing_provider.dart';
 import '../../rectangles/utils/rectangle_bounds.dart';
 import '../../rectangles/utils/rectangle_hit_test.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../kiosk/presentation/kiosk_mode_banner.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/data/offline_tile_cache.dart';
@@ -5131,7 +5132,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               MapRadialMenu(
                 center: center,
                 onDismiss: _closeRadialMenu,
-                actions: ref.watch(kioskModeActiveProvider)
+                actions:
+                    (ref.watch(kioskModeActiveProvider) ||
+                        ref.watch(mapEditsLockedByRoleProvider))
                     ? [
                         MapRadialMenuAction(
                           icon: Icons.copy,
@@ -5250,6 +5253,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       },
                 footerAction:
                     ref.watch(kioskModeActiveProvider) ||
+                        ref.watch(mapEditsLockedByRoleProvider) ||
                         ref.watch(offlineModeActiveProvider)
                     ? null
                     : switch (_radialMenuPage) {
@@ -5272,7 +5276,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
             if (_searchCoordinateRadialCenter case final center?
                 when _searchCoordinateRadialMarker != null &&
-                    !ref.watch(kioskModeActiveProvider))
+                    !ref.watch(kioskModeActiveProvider) &&
+                    !ref.watch(mapEditsLockedByRoleProvider))
               MapRadialMenu(
                 center: center,
                 onDismiss: _closeRadialMenu,

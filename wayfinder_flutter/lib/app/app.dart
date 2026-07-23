@@ -7,6 +7,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../features/markers/providers/map_marker_updates_listener.dart';
 import '../features/settings/providers/app_locale_provider.dart';
 import '../features/settings/providers/app_theme_provider.dart';
+import '../screens/sign_in_screen.dart';
 import 'app_locale_choice.dart';
 import 'router.dart';
 import 'theme.dart';
@@ -26,6 +27,9 @@ class WayfinderApp extends ConsumerWidget {
       theme: AppTheme.forChoice(themeChoice),
       locale: appLocaleChoiceToLocale(localeChoice),
       routerConfig: appRouter,
+      builder: (context, child) {
+        return AuthGate(child: child ?? const SizedBox.shrink());
+      },
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

@@ -6,6 +6,7 @@ import 'package:serverpod_auth_idp_server/providers/email.dart';
 
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
+import 'src/access/access_bootstrap.dart';
 import 'src/core/wayfinder_log.dart';
 import 'src/core/wayfinder_env.dart';
 import 'src/settings/app_settings_store.dart';
@@ -215,6 +216,7 @@ void run(List<String> args) async {
     }
 
     await MarkerIconCategoryService.seedDefaultsIfEmpty(syncSession);
+    await AccessBootstrap.ensureReady(syncSession);
 
     final markerIconReady = await MarkerIconStorage().ensureReady();
     if (markerIconReady) {

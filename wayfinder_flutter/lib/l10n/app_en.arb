@@ -11,8 +11,81 @@
   "settingsTabGeocoding": "Geocoding",
   "settingsTabTides": "Tides",
   "settingsTabSeasonalOverlays": "Seasons",
+  "settingsTabUsers": "Users & roles",
   "settingsTabBackup": "Backup",
   "settingsTabAbout": "About",
+  "accessSignInSubtitle": "Sign in with the account your TOC administrator created for you.",
+  "accessSignInRequired": "Sign in to manage users and roles.",
+  "accessSessionLoadFailed": "Could not load access session: {error}",
+  "@accessSessionLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "accessRetry": "Retry",
+  "accessSignOut": "Sign out",
+  "accessSignedIn": "Signed in",
+  "accessUnknownRole": "No role",
+  "accessUsersTitle": "Users",
+  "accessUsersHelp": "Create TOC accounts and assign roles. Public self-registration is disabled.",
+  "accessUsersPermissionDenied": "You do not have permission to manage users or roles.",
+  "accessUsersEmpty": "No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD.",
+  "accessUsersLoadFailed": "Could not load users: {error}",
+  "@accessUsersLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "accessCreateUser": "Create user",
+  "accessEmailLabel": "Email",
+  "accessPasswordLabel": "Password",
+  "accessDisplayNameLabel": "Display name (optional)",
+  "accessRoleLabel": "Role",
+  "accessChangeRole": "Change role",
+  "accessBlockUser": "Block user",
+  "accessUnblockUser": "Unblock user",
+  "accessDeleteUser": "Delete user",
+  "accessDeleteUserTitle": "Delete user?",
+  "accessDeleteUserConfirm": "Delete {email}? This cannot be undone.",
+  "@accessDeleteUserConfirm": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accessUserBlocked": "Blocked",
+  "accessRolesTitle": "Roles",
+  "accessRolesHelp": "Built-in Administrator, Editor, and Viewer roles are seeded automatically. Create custom roles and choose permissions.",
+  "accessRolesEmpty": "No roles found.",
+  "accessRolesLoadFailed": "Could not load roles: {error}",
+  "@accessRolesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "accessCreateRole": "Create role",
+  "accessEditRole": "Edit role",
+  "accessDeleteRole": "Delete role",
+  "accessRoleKeyLabel": "Role key",
+  "accessRoleKeyHelp": "Lowercase letters, numbers, and underscores.",
+  "accessRoleNameLabel": "Display name",
+  "accessRoleDescriptionLabel": "Description",
+  "accessPermissionsLabel": "Permissions",
+  "accessRoleMemberCount": "{count, plural, =0{No members} =1{1 member} other{{count} members}}",
+  "@accessRoleMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "settingsAboutTitle": "About Wayfinder",
   "settingsAboutDescription": "Read-only build and connection details for this client. Use the git commit to confirm whether the latest build is running.",
   "settingsAboutOpenManual": "Open user manual",

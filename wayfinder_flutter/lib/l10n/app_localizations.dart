@@ -148,6 +148,12 @@ abstract class AppLocalizations {
   /// **'Seasons'**
   String get settingsTabSeasonalOverlays;
 
+  /// No description provided for @settingsTabUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Users & roles'**
+  String get settingsTabUsers;
+
   /// No description provided for @settingsTabBackup.
   ///
   /// In en, this message translates to:
@@ -159,6 +165,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About'**
   String get settingsTabAbout;
+
+  /// No description provided for @accessSignInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with the account your TOC administrator created for you.'**
+  String get accessSignInSubtitle;
+
+  /// No description provided for @accessSignInRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to manage users and roles.'**
+  String get accessSignInRequired;
+
+  /// No description provided for @accessSessionLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load access session: {error}'**
+  String accessSessionLoadFailed(String error);
+
+  /// No description provided for @accessRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get accessRetry;
+
+  /// No description provided for @accessSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accessSignOut;
+
+  /// No description provided for @accessSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in'**
+  String get accessSignedIn;
+
+  /// No description provided for @accessUnknownRole.
+  ///
+  /// In en, this message translates to:
+  /// **'No role'**
+  String get accessUnknownRole;
+
+  /// No description provided for @accessUsersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get accessUsersTitle;
+
+  /// No description provided for @accessUsersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Create TOC accounts and assign roles. Public self-registration is disabled.'**
+  String get accessUsersHelp;
+
+  /// No description provided for @accessUsersPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to manage users or roles.'**
+  String get accessUsersPermissionDenied;
+
+  /// No description provided for @accessUsersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD.'**
+  String get accessUsersEmpty;
+
+  /// No description provided for @accessUsersLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load users: {error}'**
+  String accessUsersLoadFailed(String error);
+
+  /// No description provided for @accessCreateUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Create user'**
+  String get accessCreateUser;
+
+  /// No description provided for @accessEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get accessEmailLabel;
+
+  /// No description provided for @accessPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get accessPasswordLabel;
+
+  /// No description provided for @accessDisplayNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name (optional)'**
+  String get accessDisplayNameLabel;
+
+  /// No description provided for @accessRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get accessRoleLabel;
+
+  /// No description provided for @accessChangeRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Change role'**
+  String get accessChangeRole;
+
+  /// No description provided for @accessBlockUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Block user'**
+  String get accessBlockUser;
+
+  /// No description provided for @accessUnblockUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock user'**
+  String get accessUnblockUser;
+
+  /// No description provided for @accessDeleteUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete user'**
+  String get accessDeleteUser;
+
+  /// No description provided for @accessDeleteUserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete user?'**
+  String get accessDeleteUserTitle;
+
+  /// No description provided for @accessDeleteUserConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {email}? This cannot be undone.'**
+  String accessDeleteUserConfirm(String email);
+
+  /// No description provided for @accessUserBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get accessUserBlocked;
+
+  /// No description provided for @accessRolesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get accessRolesTitle;
+
+  /// No description provided for @accessRolesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in Administrator, Editor, and Viewer roles are seeded automatically. Create custom roles and choose permissions.'**
+  String get accessRolesHelp;
+
+  /// No description provided for @accessRolesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No roles found.'**
+  String get accessRolesEmpty;
+
+  /// No description provided for @accessRolesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load roles: {error}'**
+  String accessRolesLoadFailed(String error);
+
+  /// No description provided for @accessCreateRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Create role'**
+  String get accessCreateRole;
+
+  /// No description provided for @accessEditRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit role'**
+  String get accessEditRole;
+
+  /// No description provided for @accessDeleteRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete role'**
+  String get accessDeleteRole;
+
+  /// No description provided for @accessRoleKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role key'**
+  String get accessRoleKeyLabel;
+
+  /// No description provided for @accessRoleKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowercase letters, numbers, and underscores.'**
+  String get accessRoleKeyHelp;
+
+  /// No description provided for @accessRoleNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name'**
+  String get accessRoleNameLabel;
+
+  /// No description provided for @accessRoleDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get accessRoleDescriptionLabel;
+
+  /// No description provided for @accessPermissionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get accessPermissionsLabel;
+
+  /// No description provided for @accessRoleMemberCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No members} =1{1 member} other{{count} members}}'**
+  String accessRoleMemberCount(int count);
 
   /// No description provided for @settingsAboutTitle.
   ///

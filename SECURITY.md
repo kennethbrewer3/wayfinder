@@ -6,10 +6,12 @@ infrastructure, not a multi-tenant SaaS.
 
 ## Defaults
 
-- The map UI has **no end-user login screen**. Access control is your
-  responsibility (firewall, VPN, reverse proxy, network isolation).
+- Optional **multi-user TOC login** (admin / editor / viewer + custom roles).
+  Until the first user exists the UI can stay open on a trusted LAN; after
+  that, sign-in is required. Still combine with firewall / VPN / reverse proxy.
 - The REST API is **open** until you generate a key in **Settings → About →
-  REST API access** or set `WAYFINDER_REST_API_KEY` on the server.
+  REST API access** or set `WAYFINDER_REST_API_KEY` on the server (API keys
+  act as full machine credentials when user auth is enabled).
 - Docker images do **not** include map tiles or geocoding database contents.
 
 ## Recommendations

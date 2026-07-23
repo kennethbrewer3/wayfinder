@@ -1,0 +1,18 @@
+class: AccessRole
+table: access_role
+fields:
+  id: UuidValue, defaultModel=random
+  ### Stable slug: admin, editor, viewer, or custom
+  key: String
+  name: String
+  description: String?
+  isSystem: bool
+  ### JSON array of permission keys
+  permissionsJson: String
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  access_role_key_idx:
+    fields: key
+    unique: true

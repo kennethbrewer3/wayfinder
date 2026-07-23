@@ -14,6 +14,7 @@ import 'settings_map_tiles_tab.dart';
 import 'settings_marker_icons_tab.dart';
 import 'settings_seasonal_overlays_tab.dart';
 import 'settings_tides_tab.dart';
+import 'settings_users_tab.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key, required this.tab});
@@ -149,6 +150,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             Tab(text: l10n.settingsTabGeocoding),
             Tab(text: l10n.settingsTabTides),
             Tab(text: l10n.settingsTabSeasonalOverlays),
+            Tab(text: l10n.settingsTabUsers),
             Tab(text: l10n.settingsTabBackup),
             Tab(text: l10n.settingsTabAbout),
           ],
@@ -163,6 +165,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsGeocodingTab(),
           SettingsTidesTab(),
           SettingsSeasonalOverlaysTab(),
+          SettingsUsersTab(),
           SettingsBackupTab(),
           SettingsAboutTab(),
         ],

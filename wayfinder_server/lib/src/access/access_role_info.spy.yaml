@@ -1,0 +1,11 @@
+class: AccessRoleInfo
+fields:
+  id: UuidValue
+  key: String
+  name: String
+  description: String?
+  isSystem: bool
+  permissions: List<String>
+  memberCount: int
+  createdAt: DateTime
+  updatedAt: DateTime

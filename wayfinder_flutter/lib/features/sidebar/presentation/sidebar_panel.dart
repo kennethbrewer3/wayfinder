@@ -48,6 +48,7 @@ import '../../markers/models/marker_radio.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
@@ -1141,7 +1142,8 @@ class _MarkerListTile extends ConsumerWidget {
           ].join(' · ');
     final kiosk = ref.watch(kioskModeActiveProvider);
     final offline = ref.watch(offlineModeActiveProvider);
-    final mutationsLocked = kiosk || offline;
+    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
+    final mutationsLocked = kiosk || offline || roleLocked;
     final pendingCreates =
         ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
         const <String>{};
@@ -2592,7 +2594,8 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
-    final mutationsLocked = kiosk || offline;
+    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
+    final mutationsLocked = kiosk || offline || roleLocked;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),

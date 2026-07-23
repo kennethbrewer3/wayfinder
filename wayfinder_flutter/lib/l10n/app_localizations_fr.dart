@@ -33,10 +33,147 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabSeasonalOverlays => 'Seasons';
 
   @override
+  String get settingsTabUsers => 'Utilisateurs et rôles';
+
+  @override
   String get settingsTabBackup => 'Sauvegarde';
 
   @override
   String get settingsTabAbout => 'À propos';
+
+  @override
+  String get accessSignInSubtitle =>
+      'Sign in with the account your TOC administrator created for you.';
+
+  @override
+  String get accessSignInRequired => 'Sign in to manage users and roles.';
+
+  @override
+  String accessSessionLoadFailed(String error) {
+    return 'Could not load access session: $error';
+  }
+
+  @override
+  String get accessRetry => 'Retry';
+
+  @override
+  String get accessSignOut => 'Sign out';
+
+  @override
+  String get accessSignedIn => 'Signed in';
+
+  @override
+  String get accessUnknownRole => 'No role';
+
+  @override
+  String get accessUsersTitle => 'Users';
+
+  @override
+  String get accessUsersHelp =>
+      'Create TOC accounts and assign roles. Public self-registration is disabled.';
+
+  @override
+  String get accessUsersPermissionDenied =>
+      'You do not have permission to manage users or roles.';
+
+  @override
+  String get accessUsersEmpty =>
+      'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD.';
+
+  @override
+  String accessUsersLoadFailed(String error) {
+    return 'Could not load users: $error';
+  }
+
+  @override
+  String get accessCreateUser => 'Create user';
+
+  @override
+  String get accessEmailLabel => 'Email';
+
+  @override
+  String get accessPasswordLabel => 'Password';
+
+  @override
+  String get accessDisplayNameLabel => 'Display name (optional)';
+
+  @override
+  String get accessRoleLabel => 'Role';
+
+  @override
+  String get accessChangeRole => 'Change role';
+
+  @override
+  String get accessBlockUser => 'Block user';
+
+  @override
+  String get accessUnblockUser => 'Unblock user';
+
+  @override
+  String get accessDeleteUser => 'Delete user';
+
+  @override
+  String get accessDeleteUserTitle => 'Delete user?';
+
+  @override
+  String accessDeleteUserConfirm(String email) {
+    return 'Delete $email? This cannot be undone.';
+  }
+
+  @override
+  String get accessUserBlocked => 'Blocked';
+
+  @override
+  String get accessRolesTitle => 'Roles';
+
+  @override
+  String get accessRolesHelp =>
+      'Built-in Administrator, Editor, and Viewer roles are seeded automatically. Create custom roles and choose permissions.';
+
+  @override
+  String get accessRolesEmpty => 'No roles found.';
+
+  @override
+  String accessRolesLoadFailed(String error) {
+    return 'Could not load roles: $error';
+  }
+
+  @override
+  String get accessCreateRole => 'Create role';
+
+  @override
+  String get accessEditRole => 'Edit role';
+
+  @override
+  String get accessDeleteRole => 'Delete role';
+
+  @override
+  String get accessRoleKeyLabel => 'Role key';
+
+  @override
+  String get accessRoleKeyHelp =>
+      'Lowercase letters, numbers, and underscores.';
+
+  @override
+  String get accessRoleNameLabel => 'Display name';
+
+  @override
+  String get accessRoleDescriptionLabel => 'Description';
+
+  @override
+  String get accessPermissionsLabel => 'Permissions';
+
+  @override
+  String accessRoleMemberCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count members',
+      one: '1 member',
+      zero: 'No members',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get settingsAboutTitle => 'À propos de Wayfinder';

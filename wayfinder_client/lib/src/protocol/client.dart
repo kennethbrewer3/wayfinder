@@ -10,69 +10,232 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i1;
-import 'package:serverpod_client/serverpod_client.dart' as _i2;
-import 'dart:async' as _i3;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'dart:async' as _i2;
+import 'package:wayfinder_client/src/protocol/access/access_session_info.dart'
+    as _i3;
+import 'package:wayfinder_client/src/protocol/access/access_user_info.dart'
     as _i4;
-import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i5;
-import 'package:wayfinder_client/src/protocol/greetings/greeting.dart' as _i6;
-import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i7;
+import 'package:wayfinder_client/src/protocol/access/access_role_info.dart'
+    as _i5;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _i6;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i7;
+import 'package:wayfinder_client/src/protocol/categories/category.dart' as _i8;
+import 'package:wayfinder_client/src/protocol/greetings/greeting.dart' as _i9;
+import 'package:wayfinder_client/src/protocol/layers/map_layer.dart' as _i10;
 import 'package:wayfinder_client/src/protocol/layers/map_layer_change.dart'
-    as _i8;
+    as _i11;
 import 'package:wayfinder_client/src/protocol/map/map_data_restore_summary.dart'
-    as _i9;
-import 'dart:typed_data' as _i10;
-import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i11;
-import 'package:wayfinder_client/src/protocol/map/map_marker_change.dart'
     as _i12;
-import 'package:wayfinder_client/src/protocol/markers/marker_attachment.dart'
-    as _i13;
-import 'package:wayfinder_client/src/protocol/markers/marker_icon_catalog_entry.dart'
-    as _i14;
-import 'package:wayfinder_client/src/protocol/markers/marker_icon_category_definition.dart'
+import 'dart:typed_data' as _i13;
+import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i14;
+import 'package:wayfinder_client/src/protocol/map/map_marker_change.dart'
     as _i15;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_attachment.dart'
     as _i16;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_icon_catalog_entry.dart'
     as _i17;
-import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_icon_category_definition.dart'
     as _i18;
-import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay_change.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i19;
-import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i20;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
+import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay.dart'
     as _i21;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
+import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay_change.dart'
     as _i22;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
+import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
     as _i23;
-import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
     as _i24;
-import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
     as _i25;
-import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
     as _i26;
-import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
     as _i27;
-import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
     as _i28;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i29;
-import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
+    as _i29;
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
     as _i30;
-import 'protocol.dart' as _i31;
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
+    as _i31;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i32;
+import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
+    as _i33;
+import 'protocol.dart' as _i34;
 
-/// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
-/// are made available on the server and enable the corresponding sign-in widget
-/// on the client.
 /// {@category Endpoint}
-class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
-  EndpointEmailIdp(_i2.EndpointCaller caller) : super(caller);
+class EndpointAccessControl extends _i1.EndpointRef {
+  EndpointAccessControl(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'accessControl';
+
+  /// Public: whether login is required and the caller's effective permissions.
+  _i2.Future<_i3.AccessSessionInfo> getSessionInfo() =>
+      caller.callServerEndpoint<_i3.AccessSessionInfo>(
+        'accessControl',
+        'getSessionInfo',
+        {},
+      );
+
+  _i2.Future<List<String>> listKnownPermissions() =>
+      caller.callServerEndpoint<List<String>>(
+        'accessControl',
+        'listKnownPermissions',
+        {},
+      );
+
+  _i2.Future<List<_i4.AccessUserInfo>> listUsers() =>
+      caller.callServerEndpoint<List<_i4.AccessUserInfo>>(
+        'accessControl',
+        'listUsers',
+        {},
+      );
+
+  _i2.Future<_i4.AccessUserInfo> createUser(
+    String email,
+    String password,
+    _i1.UuidValue roleId,
+    String? displayName,
+  ) => caller.callServerEndpoint<_i4.AccessUserInfo>(
+    'accessControl',
+    'createUser',
+    {
+      'email': email,
+      'password': password,
+      'roleId': roleId,
+      'displayName': displayName,
+    },
+  );
+
+  _i2.Future<_i4.AccessUserInfo> updateUserRole(
+    _i1.UuidValue membershipId,
+    _i1.UuidValue roleId,
+  ) => caller.callServerEndpoint<_i4.AccessUserInfo>(
+    'accessControl',
+    'updateUserRole',
+    {
+      'membershipId': membershipId,
+      'roleId': roleId,
+    },
+  );
+
+  _i2.Future<bool> setUserBlocked(
+    _i1.UuidValue membershipId,
+    bool blocked,
+  ) => caller.callServerEndpoint<bool>(
+    'accessControl',
+    'setUserBlocked',
+    {
+      'membershipId': membershipId,
+      'blocked': blocked,
+    },
+  );
+
+  _i2.Future<bool> deleteUser(_i1.UuidValue membershipId) =>
+      caller.callServerEndpoint<bool>(
+        'accessControl',
+        'deleteUser',
+        {'membershipId': membershipId},
+      );
+
+  _i2.Future<List<_i5.AccessRoleInfo>> listRoles() =>
+      caller.callServerEndpoint<List<_i5.AccessRoleInfo>>(
+        'accessControl',
+        'listRoles',
+        {},
+      );
+
+  _i2.Future<_i5.AccessRoleInfo> createRole(
+    String key,
+    String name,
+    String? description,
+    List<String> permissions,
+  ) => caller.callServerEndpoint<_i5.AccessRoleInfo>(
+    'accessControl',
+    'createRole',
+    {
+      'key': key,
+      'name': name,
+      'description': description,
+      'permissions': permissions,
+    },
+  );
+
+  _i2.Future<_i5.AccessRoleInfo> updateRole(
+    _i1.UuidValue roleId,
+    String? name,
+    String? description,
+    List<String>? permissions,
+  ) => caller.callServerEndpoint<_i5.AccessRoleInfo>(
+    'accessControl',
+    'updateRole',
+    {
+      'roleId': roleId,
+      'name': name,
+      'description': description,
+      'permissions': permissions,
+    },
+  );
+
+  _i2.Future<bool> deleteRole(_i1.UuidValue roleId) =>
+      caller.callServerEndpoint<bool>(
+        'accessControl',
+        'deleteRole',
+        {'roleId': roleId},
+      );
+}
+
+/// Email identity provider endpoints.
+///
+/// Public self-registration is disabled — TOC admins create accounts.
+/// {@category Endpoint}
+class EndpointEmailIdp extends _i6.EndpointEmailIdpBase {
+  EndpointEmailIdp(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'emailIdp';
+
+  @override
+  _i2.Future<_i1.UuidValue> startRegistration({required String email}) =>
+      caller.callServerEndpoint<_i1.UuidValue>(
+        'emailIdp',
+        'startRegistration',
+        {'email': email},
+      );
+
+  @override
+  _i2.Future<String> verifyRegistrationCode({
+    required _i1.UuidValue accountRequestId,
+    required String verificationCode,
+  }) => caller.callServerEndpoint<String>(
+    'emailIdp',
+    'verifyRegistrationCode',
+    {
+      'accountRequestId': accountRequestId,
+      'verificationCode': verificationCode,
+    },
+  );
+
+  @override
+  _i2.Future<_i7.AuthSuccess> finishRegistration({
+    required String registrationToken,
+    required String password,
+  }) => caller.callServerEndpoint<_i7.AuthSuccess>(
+    'emailIdp',
+    'finishRegistration',
+    {
+      'registrationToken': registrationToken,
+      'password': password,
+    },
+  );
 
   /// Logs in the user and returns a new session.
   ///
@@ -84,82 +247,14 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   ///
   /// Throws an [AuthUserBlockedException] if the auth user is blocked.
   @override
-  _i3.Future<_i4.AuthSuccess> login({
+  _i2.Future<_i7.AuthSuccess> login({
     required String email,
     required String password,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
+  }) => caller.callServerEndpoint<_i7.AuthSuccess>(
     'emailIdp',
     'login',
     {
       'email': email,
-      'password': password,
-    },
-  );
-
-  /// Starts the registration for a new user account with an email-based login
-  /// associated to it.
-  ///
-  /// Upon successful completion of this method, an email will have been
-  /// sent to [email] with a verification link, which the user must open to
-  /// complete the registration.
-  ///
-  /// Always returns a account request ID, which can be used to complete the
-  /// registration. If the email is already registered, the returned ID will not
-  /// be valid.
-  @override
-  _i3.Future<_i2.UuidValue> startRegistration({required String email}) =>
-      caller.callServerEndpoint<_i2.UuidValue>(
-        'emailIdp',
-        'startRegistration',
-        {'email': email},
-      );
-
-  /// Verifies an account request code and returns a token
-  /// that can be used to complete the account creation.
-  ///
-  /// Throws an [EmailAccountRequestException] in case of errors, with reason:
-  /// - [EmailAccountRequestExceptionReason.expired] if the account request has
-  ///   already expired.
-  /// - [EmailAccountRequestExceptionReason.policyViolation] if the password
-  ///   does not comply with the password policy.
-  /// - [EmailAccountRequestExceptionReason.invalid] if no request exists
-  ///   for the given [accountRequestId] or [verificationCode] is invalid.
-  @override
-  _i3.Future<String> verifyRegistrationCode({
-    required _i2.UuidValue accountRequestId,
-    required String verificationCode,
-  }) => caller.callServerEndpoint<String>(
-    'emailIdp',
-    'verifyRegistrationCode',
-    {
-      'accountRequestId': accountRequestId,
-      'verificationCode': verificationCode,
-    },
-  );
-
-  /// Completes a new account registration, creating a new auth user with a
-  /// profile and attaching the given email account to it.
-  ///
-  /// Throws an [EmailAccountRequestException] in case of errors, with reason:
-  /// - [EmailAccountRequestExceptionReason.expired] if the account request has
-  ///   already expired.
-  /// - [EmailAccountRequestExceptionReason.policyViolation] if the password
-  ///   does not comply with the password policy.
-  /// - [EmailAccountRequestExceptionReason.invalid] if the [registrationToken]
-  ///   is invalid.
-  ///
-  /// Throws an [AuthUserBlockedException] if the auth user is blocked.
-  ///
-  /// Returns a session for the newly created user.
-  @override
-  _i3.Future<_i4.AuthSuccess> finishRegistration({
-    required String registrationToken,
-    required String password,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
-    'emailIdp',
-    'finishRegistration',
-    {
-      'registrationToken': registrationToken,
       'password': password,
     },
   );
@@ -178,8 +273,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   ///   made too many attempts trying to request a password reset.
   ///
   @override
-  _i3.Future<_i2.UuidValue> startPasswordReset({required String email}) =>
-      caller.callServerEndpoint<_i2.UuidValue>(
+  _i2.Future<_i1.UuidValue> startPasswordReset({required String email}) =>
+      caller.callServerEndpoint<_i1.UuidValue>(
         'emailIdp',
         'startPasswordReset',
         {'email': email},
@@ -200,8 +295,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   /// should be overridden to return credentials for the next step instead
   /// of the credentials for setting the password.
   @override
-  _i3.Future<String> verifyPasswordResetCode({
-    required _i2.UuidValue passwordResetRequestId,
+  _i2.Future<String> verifyPasswordResetCode({
+    required _i1.UuidValue passwordResetRequestId,
     required String verificationCode,
   }) => caller.callServerEndpoint<String>(
     'emailIdp',
@@ -227,7 +322,7 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   ///
   /// Throws an [AuthUserBlockedException] if the auth user is blocked.
   @override
-  _i3.Future<void> finishPasswordReset({
+  _i2.Future<void> finishPasswordReset({
     required String finishPasswordResetToken,
     required String newPassword,
   }) => caller.callServerEndpoint<void>(
@@ -240,7 +335,7 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   );
 
   @override
-  _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
+  _i2.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
     'emailIdp',
     'hasAccount',
     {},
@@ -250,8 +345,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
 /// By extending [RefreshJwtTokensEndpoint], the JWT token refresh endpoint
 /// is made available on the server and enables automatic token refresh on the client.
 /// {@category Endpoint}
-class EndpointJwtRefresh extends _i4.EndpointRefreshJwtTokens {
-  EndpointJwtRefresh(_i2.EndpointCaller caller) : super(caller);
+class EndpointJwtRefresh extends _i7.EndpointRefreshJwtTokens {
+  EndpointJwtRefresh(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'jwtRefresh';
@@ -275,9 +370,9 @@ class EndpointJwtRefresh extends _i4.EndpointRefreshJwtTokens {
   /// This endpoint is unauthenticated, meaning the client won't include any
   /// authentication information with the call.
   @override
-  _i3.Future<_i4.AuthSuccess> refreshAccessToken({
+  _i2.Future<_i7.AuthSuccess> refreshAccessToken({
     required String refreshToken,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
+  }) => caller.callServerEndpoint<_i7.AuthSuccess>(
     'jwtRefresh',
     'refreshAccessToken',
     {'refreshToken': refreshToken},
@@ -286,41 +381,41 @@ class EndpointJwtRefresh extends _i4.EndpointRefreshJwtTokens {
 }
 
 /// {@category Endpoint}
-class EndpointCategory extends _i2.EndpointRef {
-  EndpointCategory(_i2.EndpointCaller caller) : super(caller);
+class EndpointCategory extends _i1.EndpointRef {
+  EndpointCategory(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'category';
 
-  _i3.Future<List<_i5.Category>> listCategories() =>
-      caller.callServerEndpoint<List<_i5.Category>>(
+  _i2.Future<List<_i8.Category>> listCategories() =>
+      caller.callServerEndpoint<List<_i8.Category>>(
         'category',
         'listCategories',
         {},
       );
 
-  _i3.Future<_i5.Category?> getCategory(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i5.Category?>(
+  _i2.Future<_i8.Category?> getCategory(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i8.Category?>(
         'category',
         'getCategory',
         {'id': id},
       );
 
-  _i3.Future<_i5.Category> createCategory(_i5.Category category) =>
-      caller.callServerEndpoint<_i5.Category>(
+  _i2.Future<_i8.Category> createCategory(_i8.Category category) =>
+      caller.callServerEndpoint<_i8.Category>(
         'category',
         'createCategory',
         {'category': category},
       );
 
-  _i3.Future<_i5.Category> updateCategory(_i5.Category category) =>
-      caller.callServerEndpoint<_i5.Category>(
+  _i2.Future<_i8.Category> updateCategory(_i8.Category category) =>
+      caller.callServerEndpoint<_i8.Category>(
         'category',
         'updateCategory',
         {'category': category},
       );
 
-  _i3.Future<bool> deleteCategory(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteCategory(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'category',
         'deleteCategory',
@@ -331,15 +426,15 @@ class EndpointCategory extends _i2.EndpointRef {
 /// This is an example endpoint that returns a greeting message through
 /// its [hello] method.
 /// {@category Endpoint}
-class EndpointGreeting extends _i2.EndpointRef {
-  EndpointGreeting(_i2.EndpointCaller caller) : super(caller);
+class EndpointGreeting extends _i1.EndpointRef {
+  EndpointGreeting(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i3.Future<_i6.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i6.Greeting>(
+  _i2.Future<_i9.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i9.Greeting>(
         'greeting',
         'hello',
         {'name': name},
@@ -347,58 +442,58 @@ class EndpointGreeting extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointMapLayer extends _i2.EndpointRef {
-  EndpointMapLayer(_i2.EndpointCaller caller) : super(caller);
+class EndpointMapLayer extends _i1.EndpointRef {
+  EndpointMapLayer(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapLayer';
 
-  _i3.Future<List<_i7.MapLayer>> listLayers() =>
-      caller.callServerEndpoint<List<_i7.MapLayer>>(
+  _i2.Future<List<_i10.MapLayer>> listLayers() =>
+      caller.callServerEndpoint<List<_i10.MapLayer>>(
         'mapLayer',
         'listLayers',
         {},
       );
 
-  _i3.Future<_i7.MapLayer?> getLayer(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i7.MapLayer?>(
+  _i2.Future<_i10.MapLayer?> getLayer(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i10.MapLayer?>(
         'mapLayer',
         'getLayer',
         {'id': id},
       );
 
-  _i3.Future<_i7.MapLayer> createLayer(_i7.MapLayer layer) =>
-      caller.callServerEndpoint<_i7.MapLayer>(
+  _i2.Future<_i10.MapLayer> createLayer(_i10.MapLayer layer) =>
+      caller.callServerEndpoint<_i10.MapLayer>(
         'mapLayer',
         'createLayer',
         {'layer': layer},
       );
 
-  _i3.Future<_i7.MapLayer> updateLayer(_i7.MapLayer layer) =>
-      caller.callServerEndpoint<_i7.MapLayer>(
+  _i2.Future<_i10.MapLayer> updateLayer(_i10.MapLayer layer) =>
+      caller.callServerEndpoint<_i10.MapLayer>(
         'mapLayer',
         'updateLayer',
         {'layer': layer},
       );
 
-  _i3.Future<bool> deleteLayer(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteLayer(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'mapLayer',
         'deleteLayer',
         {'id': id},
       );
 
-  _i3.Future<List<_i7.MapLayer>> reorderLayers(List<_i7.MapLayer> layers) =>
-      caller.callServerEndpoint<List<_i7.MapLayer>>(
+  _i2.Future<List<_i10.MapLayer>> reorderLayers(List<_i10.MapLayer> layers) =>
+      caller.callServerEndpoint<List<_i10.MapLayer>>(
         'mapLayer',
         'reorderLayers',
         {'layers': layers},
       );
 
-  _i3.Stream<_i8.MapLayerChange> layerChanges() =>
+  _i2.Stream<_i11.MapLayerChange> layerChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i8.MapLayerChange>,
-        _i8.MapLayerChange
+        _i2.Stream<_i11.MapLayerChange>,
+        _i11.MapLayerChange
       >(
         'mapLayer',
         'layerChanges',
@@ -408,35 +503,35 @@ class EndpointMapLayer extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointMapData extends _i2.EndpointRef {
-  EndpointMapData(_i2.EndpointCaller caller) : super(caller);
+class EndpointMapData extends _i1.EndpointRef {
+  EndpointMapData(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapData';
 
-  _i3.Future<String> exportMapData() => caller.callServerEndpoint<String>(
+  _i2.Future<String> exportMapData() => caller.callServerEndpoint<String>(
     'mapData',
     'exportMapData',
     {},
   );
 
-  _i3.Future<_i9.MapDataRestoreSummary> restoreMapData(String backupJson) =>
-      caller.callServerEndpoint<_i9.MapDataRestoreSummary>(
+  _i2.Future<_i12.MapDataRestoreSummary> restoreMapData(String backupJson) =>
+      caller.callServerEndpoint<_i12.MapDataRestoreSummary>(
         'mapData',
         'restoreMapData',
         {'backupJson': backupJson},
       );
 
-  _i3.Future<_i10.ByteData> exportMapDataArchive() =>
-      caller.callServerEndpoint<_i10.ByteData>(
+  _i2.Future<_i13.ByteData> exportMapDataArchive() =>
+      caller.callServerEndpoint<_i13.ByteData>(
         'mapData',
         'exportMapDataArchive',
         {},
       );
 
-  _i3.Future<_i9.MapDataRestoreSummary> restoreMapDataArchive(
-    _i10.ByteData archiveBytes,
-  ) => caller.callServerEndpoint<_i9.MapDataRestoreSummary>(
+  _i2.Future<_i12.MapDataRestoreSummary> restoreMapDataArchive(
+    _i13.ByteData archiveBytes,
+  ) => caller.callServerEndpoint<_i12.MapDataRestoreSummary>(
     'mapData',
     'restoreMapDataArchive',
     {'archiveBytes': archiveBytes},
@@ -444,51 +539,51 @@ class EndpointMapData extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointMapMarker extends _i2.EndpointRef {
-  EndpointMapMarker(_i2.EndpointCaller caller) : super(caller);
+class EndpointMapMarker extends _i1.EndpointRef {
+  EndpointMapMarker(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapMarker';
 
-  _i3.Future<List<_i11.MapMarker>> listMarkers() =>
-      caller.callServerEndpoint<List<_i11.MapMarker>>(
+  _i2.Future<List<_i14.MapMarker>> listMarkers() =>
+      caller.callServerEndpoint<List<_i14.MapMarker>>(
         'mapMarker',
         'listMarkers',
         {},
       );
 
-  _i3.Future<_i11.MapMarker?> getMarker(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i11.MapMarker?>(
+  _i2.Future<_i14.MapMarker?> getMarker(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i14.MapMarker?>(
         'mapMarker',
         'getMarker',
         {'id': id},
       );
 
-  _i3.Future<_i11.MapMarker> createMarker(_i11.MapMarker marker) =>
-      caller.callServerEndpoint<_i11.MapMarker>(
+  _i2.Future<_i14.MapMarker> createMarker(_i14.MapMarker marker) =>
+      caller.callServerEndpoint<_i14.MapMarker>(
         'mapMarker',
         'createMarker',
         {'marker': marker},
       );
 
-  _i3.Future<_i11.MapMarker> updateMarker(_i11.MapMarker marker) =>
-      caller.callServerEndpoint<_i11.MapMarker>(
+  _i2.Future<_i14.MapMarker> updateMarker(_i14.MapMarker marker) =>
+      caller.callServerEndpoint<_i14.MapMarker>(
         'mapMarker',
         'updateMarker',
         {'marker': marker},
       );
 
-  _i3.Future<bool> deleteMarker(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteMarker(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'mapMarker',
         'deleteMarker',
         {'id': id},
       );
 
-  _i3.Stream<_i12.MapMarkerChange> markerChanges() =>
+  _i2.Stream<_i15.MapMarkerChange> markerChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i12.MapMarkerChange>,
-        _i12.MapMarkerChange
+        _i2.Stream<_i15.MapMarkerChange>,
+        _i15.MapMarkerChange
       >(
         'mapMarker',
         'markerChanges',
@@ -498,21 +593,21 @@ class EndpointMapMarker extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointMarkerAttachment extends _i2.EndpointRef {
-  EndpointMarkerAttachment(_i2.EndpointCaller caller) : super(caller);
+class EndpointMarkerAttachment extends _i1.EndpointRef {
+  EndpointMarkerAttachment(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'markerAttachment';
 
-  _i3.Future<List<_i13.MarkerAttachment>> listForMarker(
-    _i2.UuidValue markerId,
-  ) => caller.callServerEndpoint<List<_i13.MarkerAttachment>>(
+  _i2.Future<List<_i16.MarkerAttachment>> listForMarker(
+    _i1.UuidValue markerId,
+  ) => caller.callServerEndpoint<List<_i16.MarkerAttachment>>(
     'markerAttachment',
     'listForMarker',
     {'markerId': markerId},
   );
 
-  _i3.Future<bool> deleteAttachment(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteAttachment(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'markerAttachment',
         'deleteAttachment',
@@ -521,20 +616,20 @@ class EndpointMarkerAttachment extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointMarkerIcon extends _i2.EndpointRef {
-  EndpointMarkerIcon(_i2.EndpointCaller caller) : super(caller);
+class EndpointMarkerIcon extends _i1.EndpointRef {
+  EndpointMarkerIcon(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'markerIcon';
 
-  _i3.Future<List<_i14.MarkerIconCatalogEntry>> listCatalog() =>
-      caller.callServerEndpoint<List<_i14.MarkerIconCatalogEntry>>(
+  _i2.Future<List<_i17.MarkerIconCatalogEntry>> listCatalog() =>
+      caller.callServerEndpoint<List<_i17.MarkerIconCatalogEntry>>(
         'markerIcon',
         'listCatalog',
         {},
       );
 
-  _i3.Future<_i14.MarkerIconCatalogEntry> createIcon(
+  _i2.Future<_i17.MarkerIconCatalogEntry> createIcon(
     String key,
     String label, {
     String? category,
@@ -543,7 +638,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     required bool coloredAsset,
     required double glyphScale,
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i14.MarkerIconCatalogEntry>(
+  }) => caller.callServerEndpoint<_i17.MarkerIconCatalogEntry>(
     'markerIcon',
     'createIcon',
     {
@@ -558,7 +653,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i14.MarkerIconCatalogEntry> updateIcon(
+  _i2.Future<_i17.MarkerIconCatalogEntry> updateIcon(
     String key,
     String label, {
     String? category,
@@ -567,7 +662,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     bool? coloredAsset,
     double? glyphScale,
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i14.MarkerIconCatalogEntry>(
+  }) => caller.callServerEndpoint<_i17.MarkerIconCatalogEntry>(
     'markerIcon',
     'updateIcon',
     {
@@ -582,24 +677,24 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<bool> deleteIcon(String key) => caller.callServerEndpoint<bool>(
+  _i2.Future<bool> deleteIcon(String key) => caller.callServerEndpoint<bool>(
     'markerIcon',
     'deleteIcon',
     {'key': key},
   );
 
-  _i3.Future<List<_i15.MarkerIconCategoryDefinition>> listCategories() =>
-      caller.callServerEndpoint<List<_i15.MarkerIconCategoryDefinition>>(
+  _i2.Future<List<_i18.MarkerIconCategoryDefinition>> listCategories() =>
+      caller.callServerEndpoint<List<_i18.MarkerIconCategoryDefinition>>(
         'markerIcon',
         'listCategories',
         {},
       );
 
-  _i3.Future<_i15.MarkerIconCategoryDefinition> createCategory(
+  _i2.Future<_i18.MarkerIconCategoryDefinition> createCategory(
     String key,
     String label, {
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i15.MarkerIconCategoryDefinition>(
+  }) => caller.callServerEndpoint<_i18.MarkerIconCategoryDefinition>(
     'markerIcon',
     'createCategory',
     {
@@ -609,11 +704,11 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i15.MarkerIconCategoryDefinition> updateCategory(
+  _i2.Future<_i18.MarkerIconCategoryDefinition> updateCategory(
     String key,
     String label, {
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i15.MarkerIconCategoryDefinition>(
+  }) => caller.callServerEndpoint<_i18.MarkerIconCategoryDefinition>(
     'markerIcon',
     'updateCategory',
     {
@@ -623,7 +718,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<bool> deleteCategory(String key) =>
+  _i2.Future<bool> deleteCategory(String key) =>
       caller.callServerEndpoint<bool>(
         'markerIcon',
         'deleteCategory',
@@ -632,37 +727,37 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointPmtiles extends _i2.EndpointRef {
-  EndpointPmtiles(_i2.EndpointCaller caller) : super(caller);
+class EndpointPmtiles extends _i1.EndpointRef {
+  EndpointPmtiles(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'pmtiles';
 
-  _i3.Future<List<_i16.PmtilesFile>> listFiles() =>
-      caller.callServerEndpoint<List<_i16.PmtilesFile>>(
+  _i2.Future<List<_i19.PmtilesFile>> listFiles() =>
+      caller.callServerEndpoint<List<_i19.PmtilesFile>>(
         'pmtiles',
         'listFiles',
         {},
       );
 
-  _i3.Future<List<_i17.PmtilesGroup>> listGroups() =>
-      caller.callServerEndpoint<List<_i17.PmtilesGroup>>(
+  _i2.Future<List<_i20.PmtilesGroup>> listGroups() =>
+      caller.callServerEndpoint<List<_i20.PmtilesGroup>>(
         'pmtiles',
         'listGroups',
         {},
       );
 
-  _i3.Future<_i17.PmtilesGroup> createGroup(String name) =>
-      caller.callServerEndpoint<_i17.PmtilesGroup>(
+  _i2.Future<_i20.PmtilesGroup> createGroup(String name) =>
+      caller.callServerEndpoint<_i20.PmtilesGroup>(
         'pmtiles',
         'createGroup',
         {'name': name},
       );
 
-  _i3.Future<_i17.PmtilesGroup> renameGroup(
-    _i2.UuidValue id,
+  _i2.Future<_i20.PmtilesGroup> renameGroup(
+    _i1.UuidValue id,
     String name,
-  ) => caller.callServerEndpoint<_i17.PmtilesGroup>(
+  ) => caller.callServerEndpoint<_i20.PmtilesGroup>(
     'pmtiles',
     'renameGroup',
     {
@@ -671,16 +766,16 @@ class EndpointPmtiles extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<bool> deleteGroup(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteGroup(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'pmtiles',
         'deleteGroup',
         {'id': id},
       );
 
-  _i3.Future<void> addFileToGroup(
-    _i2.UuidValue fileId,
-    _i2.UuidValue groupId,
+  _i2.Future<void> addFileToGroup(
+    _i1.UuidValue fileId,
+    _i1.UuidValue groupId,
   ) => caller.callServerEndpoint<void>(
     'pmtiles',
     'addFileToGroup',
@@ -690,9 +785,9 @@ class EndpointPmtiles extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<void> removeFileFromGroup(
-    _i2.UuidValue fileId,
-    _i2.UuidValue groupId,
+  _i2.Future<void> removeFileFromGroup(
+    _i1.UuidValue fileId,
+    _i1.UuidValue groupId,
   ) => caller.callServerEndpoint<void>(
     'pmtiles',
     'removeFileFromGroup',
@@ -702,8 +797,8 @@ class EndpointPmtiles extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<void> setGroupEnabled(
-    _i2.UuidValue groupId, {
+  _i2.Future<void> setGroupEnabled(
+    _i1.UuidValue groupId, {
     required bool enabled,
   }) => caller.callServerEndpoint<void>(
     'pmtiles',
@@ -714,30 +809,30 @@ class EndpointPmtiles extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<void> setUngroupedEnabled({required bool enabled}) =>
+  _i2.Future<void> setUngroupedEnabled({required bool enabled}) =>
       caller.callServerEndpoint<void>(
         'pmtiles',
         'setUngroupedEnabled',
         {'enabled': enabled},
       );
 
-  _i3.Future<_i2.UuidValue?> activeFileId() =>
-      caller.callServerEndpoint<_i2.UuidValue?>(
+  _i2.Future<_i1.UuidValue?> activeFileId() =>
+      caller.callServerEndpoint<_i1.UuidValue?>(
         'pmtiles',
         'activeFileId',
         {},
       );
 
   /// Enables a file on the map without disabling others.
-  _i3.Future<void> setActiveFile(_i2.UuidValue id) =>
+  _i2.Future<void> setActiveFile(_i1.UuidValue id) =>
       caller.callServerEndpoint<void>(
         'pmtiles',
         'setActiveFile',
         {'id': id},
       );
 
-  _i3.Future<void> setFileEnabled(
-    _i2.UuidValue id, {
+  _i2.Future<void> setFileEnabled(
+    _i1.UuidValue id, {
     required bool enabled,
   }) => caller.callServerEndpoint<void>(
     'pmtiles',
@@ -748,25 +843,25 @@ class EndpointPmtiles extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<void> enableAllFiles() => caller.callServerEndpoint<void>(
+  _i2.Future<void> enableAllFiles() => caller.callServerEndpoint<void>(
     'pmtiles',
     'enableAllFiles',
     {},
   );
 
-  _i3.Future<void> clearActiveFile() => caller.callServerEndpoint<void>(
+  _i2.Future<void> clearActiveFile() => caller.callServerEndpoint<void>(
     'pmtiles',
     'clearActiveFile',
     {},
   );
 
-  _i3.Future<void> disableAllFiles() => caller.callServerEndpoint<void>(
+  _i2.Future<void> disableAllFiles() => caller.callServerEndpoint<void>(
     'pmtiles',
     'disableAllFiles',
     {},
   );
 
-  _i3.Future<bool> deleteFile(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteFile(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'pmtiles',
         'deleteFile',
@@ -775,61 +870,61 @@ class EndpointPmtiles extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointSeasonalOverlay extends _i2.EndpointRef {
-  EndpointSeasonalOverlay(_i2.EndpointCaller caller) : super(caller);
+class EndpointSeasonalOverlay extends _i1.EndpointRef {
+  EndpointSeasonalOverlay(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'seasonalOverlay';
 
-  _i3.Future<List<_i18.SeasonalOverlay>> listOverlays() =>
-      caller.callServerEndpoint<List<_i18.SeasonalOverlay>>(
+  _i2.Future<List<_i21.SeasonalOverlay>> listOverlays() =>
+      caller.callServerEndpoint<List<_i21.SeasonalOverlay>>(
         'seasonalOverlay',
         'listOverlays',
         {},
       );
 
-  _i3.Future<_i18.SeasonalOverlay?> getOverlay(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i18.SeasonalOverlay?>(
+  _i2.Future<_i21.SeasonalOverlay?> getOverlay(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i21.SeasonalOverlay?>(
         'seasonalOverlay',
         'getOverlay',
         {'id': id},
       );
 
-  _i3.Future<_i18.SeasonalOverlay> createOverlay(
-    _i18.SeasonalOverlay overlay,
-  ) => caller.callServerEndpoint<_i18.SeasonalOverlay>(
+  _i2.Future<_i21.SeasonalOverlay> createOverlay(
+    _i21.SeasonalOverlay overlay,
+  ) => caller.callServerEndpoint<_i21.SeasonalOverlay>(
     'seasonalOverlay',
     'createOverlay',
     {'overlay': overlay},
   );
 
-  _i3.Future<_i18.SeasonalOverlay> updateOverlay(
-    _i18.SeasonalOverlay overlay,
-  ) => caller.callServerEndpoint<_i18.SeasonalOverlay>(
+  _i2.Future<_i21.SeasonalOverlay> updateOverlay(
+    _i21.SeasonalOverlay overlay,
+  ) => caller.callServerEndpoint<_i21.SeasonalOverlay>(
     'seasonalOverlay',
     'updateOverlay',
     {'overlay': overlay},
   );
 
-  _i3.Future<bool> deleteOverlay(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteOverlay(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'seasonalOverlay',
         'deleteOverlay',
         {'id': id},
       );
 
-  _i3.Future<List<_i18.SeasonalOverlay>> reorderOverlays(
-    List<_i18.SeasonalOverlay> overlays,
-  ) => caller.callServerEndpoint<List<_i18.SeasonalOverlay>>(
+  _i2.Future<List<_i21.SeasonalOverlay>> reorderOverlays(
+    List<_i21.SeasonalOverlay> overlays,
+  ) => caller.callServerEndpoint<List<_i21.SeasonalOverlay>>(
     'seasonalOverlay',
     'reorderOverlays',
     {'overlays': overlays},
   );
 
-  _i3.Stream<_i19.SeasonalOverlayChange> overlayChanges() =>
+  _i2.Stream<_i22.SeasonalOverlayChange> overlayChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i19.SeasonalOverlayChange>,
-        _i19.SeasonalOverlayChange
+        _i2.Stream<_i22.SeasonalOverlayChange>,
+        _i22.SeasonalOverlayChange
       >(
         'seasonalOverlay',
         'overlayChanges',
@@ -839,24 +934,24 @@ class EndpointSeasonalOverlay extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointAppSettings extends _i2.EndpointRef {
-  EndpointAppSettings(_i2.EndpointCaller caller) : super(caller);
+class EndpointAppSettings extends _i1.EndpointRef {
+  EndpointAppSettings(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'appSettings';
 
-  _i3.Future<_i20.AppSettings> getSettings() =>
-      caller.callServerEndpoint<_i20.AppSettings>(
+  _i2.Future<_i23.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i23.AppSettings>(
         'appSettings',
         'getSettings',
         {},
       );
 
-  _i3.Future<_i20.AppSettings> updateHomeLocation(
+  _i2.Future<_i23.AppSettings> updateHomeLocation(
     double latitude,
     double longitude,
     double zoom,
-  ) => caller.callServerEndpoint<_i20.AppSettings>(
+  ) => caller.callServerEndpoint<_i23.AppSettings>(
     'appSettings',
     'updateHomeLocation',
     {
@@ -866,21 +961,21 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i20.AppSettings> resetHomeLocation() =>
-      caller.callServerEndpoint<_i20.AppSettings>(
+  _i2.Future<_i23.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i23.AppSettings>(
         'appSettings',
         'resetHomeLocation',
         {},
       );
 
-  _i3.Future<_i20.AppSettings> updatePmtilesStoragePath(String storagePath) =>
-      caller.callServerEndpoint<_i20.AppSettings>(
+  _i2.Future<_i23.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i23.AppSettings>(
         'appSettings',
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
 
-  _i3.Future<_i20.AppSettings> updateClientPreferences(
+  _i2.Future<_i23.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
     String bearingReference,
@@ -896,7 +991,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     bool polygonSnap45Angles,
     double mapMinZoom,
     double mapMaxZoom,
-  ) => caller.callServerEndpoint<_i20.AppSettings>(
+  ) => caller.callServerEndpoint<_i23.AppSettings>(
     'appSettings',
     'updateClientPreferences',
     {
@@ -918,36 +1013,36 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i21.RestApiKeyInfo> getRestApiKeyStatus() =>
-      caller.callServerEndpoint<_i21.RestApiKeyInfo>(
+  _i2.Future<_i24.RestApiKeyInfo> getRestApiKeyStatus() =>
+      caller.callServerEndpoint<_i24.RestApiKeyInfo>(
         'appSettings',
         'getRestApiKeyStatus',
         {},
       );
 
-  _i3.Future<List<_i22.RestApiKey>> listRestApiKeys() =>
-      caller.callServerEndpoint<List<_i22.RestApiKey>>(
+  _i2.Future<List<_i25.RestApiKey>> listRestApiKeys() =>
+      caller.callServerEndpoint<List<_i25.RestApiKey>>(
         'appSettings',
         'listRestApiKeys',
         {},
       );
 
-  _i3.Future<_i23.RestApiKeyCreated> createRestApiKey(String name) =>
-      caller.callServerEndpoint<_i23.RestApiKeyCreated>(
+  _i2.Future<_i26.RestApiKeyCreated> createRestApiKey(String name) =>
+      caller.callServerEndpoint<_i26.RestApiKeyCreated>(
         'appSettings',
         'createRestApiKey',
         {'name': name},
       );
 
-  _i3.Future<bool> deleteRestApiKey(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteRestApiKey(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'appSettings',
         'deleteRestApiKey',
         {'id': id},
       );
 
-  _i3.Future<_i21.RestApiKeyInfo> clearRestApiKeys() =>
-      caller.callServerEndpoint<_i21.RestApiKeyInfo>(
+  _i2.Future<_i24.RestApiKeyInfo> clearRestApiKeys() =>
+      caller.callServerEndpoint<_i24.RestApiKeyInfo>(
         'appSettings',
         'clearRestApiKeys',
         {},
@@ -955,37 +1050,37 @@ class EndpointAppSettings extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointTides extends _i2.EndpointRef {
-  EndpointTides(_i2.EndpointCaller caller) : super(caller);
+class EndpointTides extends _i1.EndpointRef {
+  EndpointTides(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'tides';
 
-  _i3.Future<List<_i24.TidePackInfo>> listPacks() =>
-      caller.callServerEndpoint<List<_i24.TidePackInfo>>(
+  _i2.Future<List<_i27.TidePackInfo>> listPacks() =>
+      caller.callServerEndpoint<List<_i27.TidePackInfo>>(
         'tides',
         'listPacks',
         {},
       );
 
-  _i3.Future<List<_i25.TideCoastalRegion>> listCoastalRegions() =>
-      caller.callServerEndpoint<List<_i25.TideCoastalRegion>>(
+  _i2.Future<List<_i28.TideCoastalRegion>> listCoastalRegions() =>
+      caller.callServerEndpoint<List<_i28.TideCoastalRegion>>(
         'tides',
         'listCoastalRegions',
         {},
       );
 
-  _i3.Future<_i24.TidePackInfo> importCoastalRegion(String regionId) =>
-      caller.callServerEndpoint<_i24.TidePackInfo>(
+  _i2.Future<_i27.TidePackInfo> importCoastalRegion(String regionId) =>
+      caller.callServerEndpoint<_i27.TidePackInfo>(
         'tides',
         'importCoastalRegion',
         {'regionId': regionId},
       );
 
-  _i3.Future<_i24.TidePackInfo> setPackActive(
+  _i2.Future<_i27.TidePackInfo> setPackActive(
     String packId,
     bool active,
-  ) => caller.callServerEndpoint<_i24.TidePackInfo>(
+  ) => caller.callServerEndpoint<_i27.TidePackInfo>(
     'tides',
     'setPackActive',
     {
@@ -994,34 +1089,34 @@ class EndpointTides extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<bool> deletePack(String packId) => caller.callServerEndpoint<bool>(
+  _i2.Future<bool> deletePack(String packId) => caller.callServerEndpoint<bool>(
     'tides',
     'deletePack',
     {'packId': packId},
   );
 
   /// Downloads one installed pack as a `.wayfinder-tide` zip for offline use.
-  _i3.Future<_i10.ByteData> exportPack(String packId) =>
-      caller.callServerEndpoint<_i10.ByteData>(
+  _i2.Future<_i13.ByteData> exportPack(String packId) =>
+      caller.callServerEndpoint<_i13.ByteData>(
         'tides',
         'exportPack',
         {'packId': packId},
       );
 
   /// Installs a pack from a `.wayfinder-tide` / zip archive (no NOAA required).
-  _i3.Future<_i24.TidePackInfo> importPackArchive(_i10.ByteData archiveBytes) =>
-      caller.callServerEndpoint<_i24.TidePackInfo>(
+  _i2.Future<_i27.TidePackInfo> importPackArchive(_i13.ByteData archiveBytes) =>
+      caller.callServerEndpoint<_i27.TidePackInfo>(
         'tides',
         'importPackArchive',
         {'archiveBytes': archiveBytes},
       );
 
-  _i3.Future<_i26.TideQueryResult> queryAt(
+  _i2.Future<_i29.TideQueryResult> queryAt(
     double lat,
     double lng,
     DateTime date, {
     required int hours,
-  }) => caller.callServerEndpoint<_i26.TideQueryResult>(
+  }) => caller.callServerEndpoint<_i29.TideQueryResult>(
     'tides',
     'queryAt',
     {
@@ -1034,51 +1129,51 @@ class EndpointTides extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointWatchLog extends _i2.EndpointRef {
-  EndpointWatchLog(_i2.EndpointCaller caller) : super(caller);
+class EndpointWatchLog extends _i1.EndpointRef {
+  EndpointWatchLog(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'watchLog';
 
-  _i3.Future<List<_i27.WatchLogEntry>> listEntries() =>
-      caller.callServerEndpoint<List<_i27.WatchLogEntry>>(
+  _i2.Future<List<_i30.WatchLogEntry>> listEntries() =>
+      caller.callServerEndpoint<List<_i30.WatchLogEntry>>(
         'watchLog',
         'listEntries',
         {},
       );
 
-  _i3.Future<_i27.WatchLogEntry?> getEntry(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i27.WatchLogEntry?>(
+  _i2.Future<_i30.WatchLogEntry?> getEntry(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i30.WatchLogEntry?>(
         'watchLog',
         'getEntry',
         {'id': id},
       );
 
-  _i3.Future<_i27.WatchLogEntry> createEntry(_i27.WatchLogEntry entry) =>
-      caller.callServerEndpoint<_i27.WatchLogEntry>(
+  _i2.Future<_i30.WatchLogEntry> createEntry(_i30.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i30.WatchLogEntry>(
         'watchLog',
         'createEntry',
         {'entry': entry},
       );
 
-  _i3.Future<_i27.WatchLogEntry> updateEntry(_i27.WatchLogEntry entry) =>
-      caller.callServerEndpoint<_i27.WatchLogEntry>(
+  _i2.Future<_i30.WatchLogEntry> updateEntry(_i30.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i30.WatchLogEntry>(
         'watchLog',
         'updateEntry',
         {'entry': entry},
       );
 
-  _i3.Future<bool> deleteEntry(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteEntry(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'watchLog',
         'deleteEntry',
         {'id': id},
       );
 
-  _i3.Stream<_i28.WatchLogEntryChange> entryChanges() =>
+  _i2.Stream<_i31.WatchLogEntryChange> entryChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i28.WatchLogEntryChange>,
-        _i28.WatchLogEntryChange
+        _i2.Stream<_i31.WatchLogEntryChange>,
+        _i31.WatchLogEntryChange
       >(
         'watchLog',
         'entryChanges',
@@ -1088,51 +1183,51 @@ class EndpointWatchLog extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointMapZone extends _i2.EndpointRef {
-  EndpointMapZone(_i2.EndpointCaller caller) : super(caller);
+class EndpointMapZone extends _i1.EndpointRef {
+  EndpointMapZone(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i29.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i29.MapZone>>(
+  _i2.Future<List<_i32.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i32.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i29.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i29.MapZone?>(
+  _i2.Future<_i32.MapZone?> getZone(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i32.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i29.MapZone> createZone(_i29.MapZone zone) =>
-      caller.callServerEndpoint<_i29.MapZone>(
+  _i2.Future<_i32.MapZone> createZone(_i32.MapZone zone) =>
+      caller.callServerEndpoint<_i32.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i29.MapZone> updateZone(_i29.MapZone zone) =>
-      caller.callServerEndpoint<_i29.MapZone>(
+  _i2.Future<_i32.MapZone> updateZone(_i32.MapZone zone) =>
+      caller.callServerEndpoint<_i32.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
       );
 
-  _i3.Future<bool> deleteZone(_i2.UuidValue id) =>
+  _i2.Future<bool> deleteZone(_i1.UuidValue id) =>
       caller.callServerEndpoint<bool>(
         'mapZone',
         'deleteZone',
         {'id': id},
       );
 
-  _i3.Stream<_i30.MapZoneChange> zoneChanges() =>
+  _i2.Stream<_i33.MapZoneChange> zoneChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i30.MapZoneChange>,
-        _i30.MapZoneChange
+        _i2.Stream<_i33.MapZoneChange>,
+        _i33.MapZoneChange
       >(
         'mapZone',
         'zoneChanges',
@@ -1143,16 +1238,16 @@ class EndpointMapZone extends _i2.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    serverpod_auth_idp = _i1.Caller(client);
-    serverpod_auth_core = _i4.Caller(client);
+    serverpod_auth_idp = _i6.Caller(client);
+    serverpod_auth_core = _i7.Caller(client);
   }
 
-  late final _i1.Caller serverpod_auth_idp;
+  late final _i6.Caller serverpod_auth_idp;
 
-  late final _i4.Caller serverpod_auth_core;
+  late final _i7.Caller serverpod_auth_core;
 }
 
-class Client extends _i2.ServerpodClientShared {
+class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
@@ -1163,16 +1258,16 @@ class Client extends _i2.ServerpodClientShared {
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
     Function(
-      _i2.MethodCallContext,
+      _i1.MethodCallContext,
       Object,
       StackTrace,
     )?
     onFailedCall,
-    Function(_i2.MethodCallContext)? onSucceededCall,
+    Function(_i1.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i31.Protocol(),
+         _i34.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1181,6 +1276,7 @@ class Client extends _i2.ServerpodClientShared {
          disconnectStreamsOnLostInternetConnection:
              disconnectStreamsOnLostInternetConnection,
        ) {
+    accessControl = EndpointAccessControl(this);
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     category = EndpointCategory(this);
@@ -1198,6 +1294,8 @@ class Client extends _i2.ServerpodClientShared {
     mapZone = EndpointMapZone(this);
     modules = Modules(this);
   }
+
+  late final EndpointAccessControl accessControl;
 
   late final EndpointEmailIdp emailIdp;
 
@@ -1232,7 +1330,8 @@ class Client extends _i2.ServerpodClientShared {
   late final Modules modules;
 
   @override
-  Map<String, _i2.EndpointRef> get endpointRefLookup => {
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+    'accessControl': accessControl,
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'category': category,
@@ -1251,7 +1350,7 @@ class Client extends _i2.ServerpodClientShared {
   };
 
   @override
-  Map<String, _i2.ModuleEndpointCaller> get moduleLookup => {
+  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
     'serverpod_auth_idp': modules.serverpod_auth_idp,
     'serverpod_auth_core': modules.serverpod_auth_core,
   };

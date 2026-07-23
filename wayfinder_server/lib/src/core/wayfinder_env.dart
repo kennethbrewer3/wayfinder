@@ -112,6 +112,46 @@ class WayfinderEnv {
     return false;
   }
 
+  /// Force authentication even before any membership rows exist.
+  ///
+  /// Auth is also required automatically once at least one user membership
+  /// exists. Set `WAYFINDER_AUTH_REQUIRED=1` to require login from first boot.
+  static bool get authRequired {
+    for (final key in ['WAYFINDER_AUTH_REQUIRED']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return _parseBool(value);
+      }
+    }
+    final fromFile = _readDotEnv('WAYFINDER_AUTH_REQUIRED');
+    if (fromFile != null && fromFile.isNotEmpty) {
+      return _parseBool(fromFile);
+    }
+    return false;
+  }
+
+  /// Optional bootstrap admin email (paired with [bootstrapAdminPassword]).
+  static String? get bootstrapAdminEmail {
+    for (final key in ['WAYFINDER_BOOTSTRAP_ADMIN_EMAIL']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+    return _readDotEnv('WAYFINDER_BOOTSTRAP_ADMIN_EMAIL')?.trim();
+  }
+
+  /// Optional bootstrap admin password (paired with [bootstrapAdminEmail]).
+  static String? get bootstrapAdminPassword {
+    for (final key in ['WAYFINDER_BOOTSTRAP_ADMIN_PASSWORD']) {
+      final value = Platform.environment[key];
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+    return _readDotEnv('WAYFINDER_BOOTSTRAP_ADMIN_PASSWORD');
+  }
+
   static bool _parseBool(String raw) {
     final value = raw.trim().toLowerCase();
     return value == '1' || value == 'true' || value == 'yes' || value == 'on';

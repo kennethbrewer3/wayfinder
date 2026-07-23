@@ -1,5 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../../access/access_control.dart';
+import '../../access/wayfinder_permissions.dart';
 import '../../core/read_only_mode.dart';
 import '../rest/rest_api_auth.dart';
 import '../rest/rest_json.dart';
@@ -34,12 +36,40 @@ class RestAuthMiddleware extends MiddlewareObject {
       if (!await RestApiAuth.authorize(request, session)) {
         return RestJson.error(
           401,
-          'REST API authentication required. Send the configured API key in '
-          'the X-API-Key header or as Authorization: Bearer <key>.',
+          'REST API authentication required. Send an API key in '
+          'the X-API-Key header, or Authorization: Bearer <JWT>.',
         );
+      }
+
+      if (_mutatingMethods.contains(request.method) &&
+          RestApiAuth.usedJwt(request) &&
+          !RestApiAuth.usedApiKey(request)) {
+        final path = request.url.path;
+        final permission = _permissionForPath(path);
+        try {
+          await AccessControl.assertPermission(session, permission);
+        } on AccessDeniedException catch (error) {
+          return RestJson.error(403, error.message);
+        }
       }
 
       return next(request);
     };
+  }
+
+  static String _permissionForPath(String path) {
+    if (path.contains('/settings')) {
+      return WayfinderPermission.manageSettings;
+    }
+    if (path.contains('/map-data') || path.contains('/field-pack')) {
+      return WayfinderPermission.manageBackups;
+    }
+    if (path.contains('/pmtiles') || path.contains('/marker-icons')) {
+      return WayfinderPermission.managePmtiles;
+    }
+    if (path.contains('/layers') || path.contains('/seasonal-overlays')) {
+      return WayfinderPermission.manageLayers;
+    }
+    return WayfinderPermission.editMapObjects;
   }
 }

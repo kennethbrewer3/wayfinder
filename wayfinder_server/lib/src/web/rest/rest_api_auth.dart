@@ -1,10 +1,13 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../../access/access_control.dart';
 import '../../settings/rest_api_key_service.dart';
 
 /// REST API credential extracted from [Request] headers.
 abstract final class RestApiAuth {
   static const apiKeyHeader = 'X-API-Key';
+  static final _apiKeyAuthenticated = Expando<bool>();
+  static final _jwtAuthenticated = Expando<bool>();
 
   static bool isPublicRequest(Request request) {
     if (request.method == Method.options) {
@@ -37,8 +40,16 @@ abstract final class RestApiAuth {
     return null;
   }
 
+  static bool usedApiKey(Request request) =>
+      _apiKeyAuthenticated[request] == true;
+
+  static bool usedJwt(Request request) => _jwtAuthenticated[request] == true;
+
   static Future<bool> authorize(Request request, Session session) async {
-    if (!await RestApiKeyService.isAuthEnabled(session)) {
+    final membershipAuthRequired = await AccessControl.isAuthRequired(session);
+    final apiKeyAuthEnabled = await RestApiKeyService.isAuthEnabled(session);
+
+    if (!membershipAuthRequired && !apiKeyAuthEnabled) {
       return true;
     }
 
@@ -48,14 +59,26 @@ abstract final class RestApiAuth {
     }
 
     if (credential.startsWith(RestApiKeyService.keyPrefix)) {
-      return RestApiKeyService.matchesConfiguredKey(session, credential);
+      final ok = await RestApiKeyService.matchesConfiguredKey(
+        session,
+        credential,
+      );
+      if (ok) {
+        _apiKeyAuthenticated[request] = true;
+      }
+      return ok;
     }
 
     final authInfo = await session.server.authenticationHandler(
       session,
       credential,
     );
-    return authInfo != null;
+    if (authInfo != null) {
+      session.updateAuthenticated(authInfo);
+      _jwtAuthenticated[request] = true;
+      return true;
+    }
+    return false;
   }
 
   static String _normalizedPath(Request request) {

@@ -1,0 +1,18 @@
+class: UserMembership
+table: user_membership
+fields:
+  id: UuidValue, defaultModel=random
+  authUserId: UuidValue
+  roleId: UuidValue
+  email: String
+  displayName: String?
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  user_membership_auth_user_idx:
+    fields: authUserId
+    unique: true
+  user_membership_email_idx:
+    fields: email
+    unique: true

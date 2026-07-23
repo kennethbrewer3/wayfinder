@@ -60,7 +60,8 @@ class MarkerChecklistsDetailsSection extends ConsumerWidget {
 
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
-    final canEdit = !offline && !kiosk;
+    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
+    final canEdit = !offline && !kiosk && !roleLocked;
     final dateFormat = DateFormat.yMMMd();
 
     return Padding(

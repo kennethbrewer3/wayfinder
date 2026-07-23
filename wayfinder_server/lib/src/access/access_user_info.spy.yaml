@@ -1,0 +1,12 @@
+class: AccessUserInfo
+fields:
+  membershipId: UuidValue
+  authUserId: UuidValue
+  email: String
+  displayName: String?
+  roleId: UuidValue
+  roleKey: String
+  roleName: String
+  blocked: bool
+  createdAt: DateTime
+  updatedAt: DateTime

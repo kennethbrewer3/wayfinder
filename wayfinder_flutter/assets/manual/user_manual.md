@@ -193,6 +193,17 @@ Attach checklists to any marker for location SOPs and audits. Expand **Checklist
 
 Marker details show progress and let you tick items or mark a checklist audited without opening the full editor (disabled in offline and kiosk modes). Evacuation-route waypoints that reference a marker share that marker’s checklists.
 
+### Users, roles, and permissions
+
+Wayfinder can run open on a trusted LAN (default until the first user exists) or as a multi-user TOC with **Administrator**, **Editor**, and **Viewer** roles.
+
+1. Set `WAYFINDER_BOOTSTRAP_ADMIN_EMAIL` and `WAYFINDER_BOOTSTRAP_ADMIN_PASSWORD` in the server `.env`, then restart once to create the first admin.
+2. Sign in with that account. Settings → **Users & roles** lets admins create users, assign roles, and define custom roles with permissions.
+3. Once any user exists, the app requires sign-in. Viewers can browse the map; editors can change map data; admins manage users/roles/settings.
+4. Public self-registration is disabled — only admins create accounts.
+
+Device **kiosk mode** and server `WAYFINDER_READ_ONLY` remain available for spare viewer laptops and still override writes.
+
 ### Edit or view a marker
 
 **Tap** a marker or zone on the map to select it. Selected markers grow slightly and show a colored ring so the choice is obvious; the selected marker also drives GPS distance/bearing in the location HUD. **Long-press** a marker or zone to open its details dialog (or use the sidebar edit control).

@@ -66,8 +66,18 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final Listenable _fieldsListenable;
   var _submitting = false;
   var _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fieldsListenable = Listenable.merge([
+      _usernameController,
+      _passwordController,
+    ]);
+  }
 
   @override
   void dispose() {
@@ -75,6 +85,11 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  bool get _canSubmit =>
+      !_submitting &&
+      _usernameController.text.trim().isNotEmpty &&
+      _passwordController.text.isNotEmpty;
 
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context)!;
@@ -123,10 +138,6 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final canSubmit =
-        !_submitting &&
-        _usernameController.text.trim().isNotEmpty &&
-        _passwordController.text.isNotEmpty;
 
     return Scaffold(
       body: SafeArea(
@@ -159,7 +170,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     labelText: l10n.accessUsernameLabel,
                     helperText: l10n.accessUsernameHelp,
                   ),
-                  onChanged: (_) => setState(() {}),
                   onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                 ),
                 const SizedBox(height: 12),
@@ -182,23 +192,28 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                   ),
-                  onChanged: (_) => setState(() {}),
                   onSubmitted: (_) {
-                    if (canSubmit) {
+                    if (_canSubmit) {
                       _submit();
                     }
                   },
                 ),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: canSubmit ? _submit : null,
-                  child: _submitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(l10n.accessSignInAction),
+                ListenableBuilder(
+                  listenable: _fieldsListenable,
+                  builder: (context, _) {
+                    final canSubmit = _canSubmit;
+                    return FilledButton(
+                      onPressed: canSubmit ? _submit : null,
+                      child: _submitting
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(l10n.accessSignInAction),
+                    );
+                  },
                 ),
               ],
             ),

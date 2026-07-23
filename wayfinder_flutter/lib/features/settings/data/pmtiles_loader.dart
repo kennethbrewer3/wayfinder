@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_pmtiles/flutter_map_pmtiles.dart';
 import 'package:pmtiles/pmtiles.dart';
 import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
@@ -65,7 +66,7 @@ Future<void> releasePmtilesArchive(PmtilesSource source) {
   return PmtilesArchivePool.instance.release(source);
 }
 
-Future<PmTilesTileProvider> openPmtilesTileProvider(
+Future<TileProvider> openPmtilesTileProvider(
   PmtilesSource source, {
   required String catalogId,
 }) async {

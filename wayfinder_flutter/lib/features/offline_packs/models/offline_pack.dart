@@ -106,9 +106,11 @@ class OfflinePackMeta {
     required this.preparedAt,
     required this.name,
     this.basemaps = const [],
+    this.includeSeasonalOverlays = false,
     this.tileCount = 0,
     this.markerCount = 0,
     this.zoneCount = 0,
+    this.seasonalOverlayCount = 0,
   });
 
   final String name;
@@ -116,9 +118,11 @@ class OfflinePackMeta {
   final OfflinePackRegion region;
   final DateTime preparedAt;
   final List<OfflinePackBasemap> basemaps;
+  final bool includeSeasonalOverlays;
   final int tileCount;
   final int markerCount;
   final int zoneCount;
+  final int seasonalOverlayCount;
 
   Set<String> get layerIdKeys => {
     for (final id in layerIds) id.uuid,
@@ -139,9 +143,11 @@ class OfflinePackMeta {
     'region': region.toJson(),
     'preparedAt': preparedAt.toIso8601String(),
     'basemaps': [for (final b in basemaps) b.toJson()],
+    'includeSeasonalOverlays': includeSeasonalOverlays,
     'tileCount': tileCount,
     'markerCount': markerCount,
     'zoneCount': zoneCount,
+    'seasonalOverlayCount': seasonalOverlayCount,
   };
 
   factory OfflinePackMeta.fromJson(Map<String, dynamic> json) {
@@ -159,9 +165,13 @@ class OfflinePackMeta {
         for (final raw in json['basemaps'] as List? ?? const [])
           OfflinePackBasemap.fromJson(raw as Map<String, dynamic>),
       ],
+      includeSeasonalOverlays:
+          json['includeSeasonalOverlays'] as bool? ?? false,
       tileCount: (json['tileCount'] as num?)?.toInt() ?? 0,
       markerCount: (json['markerCount'] as num?)?.toInt() ?? 0,
       zoneCount: (json['zoneCount'] as num?)?.toInt() ?? 0,
+      seasonalOverlayCount:
+          (json['seasonalOverlayCount'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -171,9 +181,11 @@ class OfflinePackMeta {
     OfflinePackRegion? region,
     DateTime? preparedAt,
     List<OfflinePackBasemap>? basemaps,
+    bool? includeSeasonalOverlays,
     int? tileCount,
     int? markerCount,
     int? zoneCount,
+    int? seasonalOverlayCount,
   }) {
     return OfflinePackMeta(
       name: name ?? this.name,
@@ -181,9 +193,12 @@ class OfflinePackMeta {
       region: region ?? this.region,
       preparedAt: preparedAt ?? this.preparedAt,
       basemaps: basemaps ?? this.basemaps,
+      includeSeasonalOverlays:
+          includeSeasonalOverlays ?? this.includeSeasonalOverlays,
       tileCount: tileCount ?? this.tileCount,
       markerCount: markerCount ?? this.markerCount,
       zoneCount: zoneCount ?? this.zoneCount,
+      seasonalOverlayCount: seasonalOverlayCount ?? this.seasonalOverlayCount,
     );
   }
 }

@@ -1715,6 +1715,24 @@ abstract class AppLocalizations {
   /// **'Layers to include'**
   String get offlinePackLayersLabel;
 
+  /// No description provided for @offlinePackIncludeSeasonalOverlays.
+  ///
+  /// In en, this message translates to:
+  /// **'Include seasonal overlays'**
+  String get offlinePackIncludeSeasonalOverlays;
+
+  /// No description provided for @offlinePackIncludeSeasonalOverlaysHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack all seasonal overlays for read-only viewing offline (separate from map layers).'**
+  String get offlinePackIncludeSeasonalOverlaysHint;
+
+  /// No description provided for @offlinePackSeasonalOverlaysNotIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'No seasonal overlays in this offline pack. Re-prepare with “Include seasonal overlays” while online.'**
+  String get offlinePackSeasonalOverlaysNotIncluded;
+
   /// No description provided for @offlinePackNoLayers.
   ///
   /// In en, this message translates to:
@@ -1782,8 +1800,20 @@ abstract class AppLocalizations {
   /// No description provided for @offlineModeBannerReadWriteHint.
   ///
   /// In en, this message translates to:
-  /// **'Showing packed layers. You can add markers, GPS tracks, and watch-log entries.'**
+  /// **'Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.'**
   String get offlineModeBannerReadWriteHint;
+
+  /// No description provided for @offlineDeleteUnsyncedMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete unsynced marker'**
+  String get offlineDeleteUnsyncedMarker;
+
+  /// No description provided for @offlineDeleteSyncedMarkerDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Only unsynced offline markers can be deleted until the server returns'**
+  String get offlineDeleteSyncedMarkerDisabled;
 
   /// No description provided for @offlineModeBannerPending.
   ///

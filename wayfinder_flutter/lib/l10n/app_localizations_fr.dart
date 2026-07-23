@@ -930,6 +930,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get offlinePackLayersLabel => 'Calques à inclure';
 
   @override
+  String get offlinePackIncludeSeasonalOverlays =>
+      'Inclure les superpositions saisonnières';
+
+  @override
+  String get offlinePackIncludeSeasonalOverlaysHint =>
+      'Inclure toutes les superpositions saisonnières en lecture seule hors ligne (séparées des calques de carte).';
+
+  @override
+  String get offlinePackSeasonalOverlaysNotIncluded =>
+      'Aucune superposition saisonnière dans ce pack. Repréparez-le avec « Inclure les superpositions saisonnières » en ligne.';
+
+  @override
   String get offlinePackNoLayers => 'Aucun calque de carte disponible.';
 
   @override
@@ -977,7 +989,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get offlineModeBannerReadWriteHint =>
-      'Affichage des calques du pack. Vous pouvez ajouter des marqueurs, des traces GPS et des entrées du journal de veille.';
+      'Affichage des calques du pack. Vous pouvez ajouter des marqueurs, changer leur calque, supprimer les marqueurs non synchronisés, enregistrer des traces GPS et ajouter des entrées du journal de veille.';
+
+  @override
+  String get offlineDeleteUnsyncedMarker =>
+      'Supprimer le marqueur non synchronisé';
+
+  @override
+  String get offlineDeleteSyncedMarkerDisabled =>
+      'Seuls les marqueurs hors ligne non synchronisés peuvent être supprimés tant que le serveur est absent';
 
   @override
   String offlineModeBannerPending(int count) {

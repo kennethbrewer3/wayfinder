@@ -6,6 +6,7 @@ import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../watch_log/providers/watch_log_provider.dart';
@@ -15,7 +16,6 @@ import '../data/offline_tile_cache.dart';
 import '../data/prepare_offline_pack.dart';
 import '../models/offline_outbox.dart';
 import '../models/offline_pack.dart';
-import '../models/offline_snapshot.dart';
 import 'offline_snapshot_provider.dart';
 import 'server_reachability_provider.dart';
 
@@ -34,6 +34,7 @@ class OfflinePackController {
     required String name,
     required List<UuidValue> layerIds,
     required OfflinePackRegion region,
+    bool includeSeasonalOverlays = false,
     OfflinePrepareProgress? onProgress,
   }) {
     return prepareOfflinePack(
@@ -44,10 +45,12 @@ class OfflinePackController {
       name: name,
       layerIds: layerIds,
       region: region,
+      includeSeasonalOverlays: includeSeasonalOverlays,
       onProgress: onProgress,
     ).then((meta) async {
       _ref.invalidate(offlinePackMetaProvider);
       _ref.invalidate(offlineSnapshotProvider);
+      _ref.invalidate(seasonalOverlaysProvider);
       return meta;
     });
   }
@@ -58,6 +61,7 @@ class OfflinePackController {
     _ref.invalidate(offlinePackMetaProvider);
     _ref.invalidate(offlineSnapshotProvider);
     _ref.invalidate(offlineOutboxCountProvider);
+    _ref.invalidate(seasonalOverlaysProvider);
   }
 
   Future<void> enqueueMarker(MapMarker marker) async {
@@ -66,18 +70,140 @@ class OfflinePackController {
     final snapshot = await store.loadSnapshot();
     if (snapshot != null) {
       await store.saveSnapshot(
-        OfflineSnapshot(
-          layers: snapshot.layers,
-          markers: [...snapshot.markers, marker],
-          zones: snapshot.zones,
-          watchLogEntries: snapshot.watchLogEntries,
-          capturedAt: snapshot.capturedAt,
-        ),
+        snapshot.copyWith(markers: [...snapshot.markers, marker]),
       );
       _ref.invalidate(offlineSnapshotProvider);
       _ref.invalidate(markersProvider);
     }
     _ref.invalidate(offlineOutboxCountProvider);
+  }
+
+  Future<bool> isPendingCreateMarker(UuidValue markerId) async {
+    final ops = await _ref.read(offlinePackStoreProvider).loadOutbox();
+    return ops.any(
+      (op) =>
+          op.type == OfflineOutboxOpType.createMarker &&
+          offlinePayloadEntityId(op.payload) == markerId.uuid,
+    );
+  }
+
+  /// Updates a marker in the offline snapshot and outbox (layer changes, etc.).
+  Future<void> updateMarkerOffline(MapMarker marker) async {
+    final store = _ref.read(offlinePackStoreProvider);
+    final ops = [...await store.loadOutbox()];
+    final createIndex = ops.indexWhere(
+      (op) =>
+          op.type == OfflineOutboxOpType.createMarker &&
+          offlinePayloadEntityId(op.payload) == marker.id.uuid,
+    );
+    if (createIndex >= 0) {
+      ops[createIndex] = OfflineOutboxOp(
+        id: ops[createIndex].id,
+        type: OfflineOutboxOpType.createMarker,
+        payload: marker.toJson(),
+        createdAt: ops[createIndex].createdAt,
+      );
+      await store.saveOutbox(ops);
+    } else {
+      await store.enqueue(OfflineOutboxOp.updateMarker(marker));
+    }
+
+    final snapshot = await store.loadSnapshot();
+    if (snapshot != null) {
+      var zones = snapshot.zones;
+      final trackZoneId = marker.trackZoneId;
+      if (trackZoneId != null) {
+        final zoneIndex = zones.indexWhere((zone) => zone.id == trackZoneId);
+        if (zoneIndex >= 0) {
+          final updatedZone = zones[zoneIndex].copyWith(
+            layerId: marker.layerId,
+            updatedAt: marker.updatedAt,
+          );
+          zones = [
+            for (var i = 0; i < zones.length; i++)
+              if (i == zoneIndex) updatedZone else zones[i],
+          ];
+          await store.enqueue(OfflineOutboxOp.upsertTrackZone(updatedZone));
+        }
+      }
+      await store.saveSnapshot(
+        snapshot.copyWith(
+          markers: [
+            for (final existing in snapshot.markers)
+              if (existing.id == marker.id) marker else existing,
+          ],
+          zones: zones,
+        ),
+      );
+      _ref.invalidate(offlineSnapshotProvider);
+      _ref.invalidate(markersProvider);
+      _ref.invalidate(zonesProvider);
+    }
+    _ref.invalidate(offlineOutboxCountProvider);
+  }
+
+  /// Drops a marker that was created offline and has not been synced yet.
+  ///
+  /// Returns false if the marker is not a pending create (server-origin markers
+  /// cannot be deleted while offline).
+  Future<bool> deleteUnsyncedMarker(UuidValue markerId) async {
+    final store = _ref.read(offlinePackStoreProvider);
+    final ops = await store.loadOutbox();
+    final hasCreate = ops.any(
+      (op) =>
+          op.type == OfflineOutboxOpType.createMarker &&
+          offlinePayloadEntityId(op.payload) == markerId.uuid,
+    );
+    if (!hasCreate) {
+      return false;
+    }
+
+    final snapshot = await store.loadSnapshot();
+    MapMarker? marker;
+    if (snapshot != null) {
+      for (final candidate in snapshot.markers) {
+        if (candidate.id == markerId) {
+          marker = candidate;
+          break;
+        }
+      }
+    }
+    final trackZoneId = marker?.trackZoneId;
+
+    final remaining = [
+      for (final op in ops)
+        if (!offlineOpTargetsMarker(op, markerId) &&
+            !(op.type == OfflineOutboxOpType.upsertTrackZone &&
+                trackZoneId != null &&
+                offlinePayloadEntityId(op.payload) == trackZoneId.uuid))
+          op,
+    ];
+    await store.saveOutbox(remaining);
+
+    if (snapshot != null) {
+      await store.saveSnapshot(
+        snapshot.copyWith(
+          markers: [
+            for (final existing in snapshot.markers)
+              if (existing.id != markerId) existing,
+          ],
+          zones: [
+            for (final zone in snapshot.zones)
+              if (trackZoneId == null || zone.id != trackZoneId) zone,
+          ],
+          watchLogEntries: [
+            for (final entry in snapshot.watchLogEntries)
+              if (entry.markerId != markerId) entry,
+          ],
+        ),
+      );
+      _ref.invalidate(offlineSnapshotProvider);
+      _ref.invalidate(markersProvider);
+      _ref.invalidate(zonesProvider);
+      _ref.invalidate(watchLogEntriesProvider);
+    }
+    _ref.invalidate(offlineOutboxCountProvider);
+    return true;
   }
 
   Future<void> enqueueWatchLog(WatchLogEntry entry) async {
@@ -86,12 +212,8 @@ class OfflinePackController {
     final snapshot = await store.loadSnapshot();
     if (snapshot != null) {
       await store.saveSnapshot(
-        OfflineSnapshot(
-          layers: snapshot.layers,
-          markers: snapshot.markers,
-          zones: snapshot.zones,
+        snapshot.copyWith(
           watchLogEntries: [...snapshot.watchLogEntries, entry],
-          capturedAt: snapshot.capturedAt,
         ),
       );
       _ref.invalidate(offlineSnapshotProvider);
@@ -105,18 +227,13 @@ class OfflinePackController {
     await store.enqueue(OfflineOutboxOp.upsertTrackZone(zone));
     final snapshot = await store.loadSnapshot();
     if (snapshot != null) {
-      final zones = [
-        for (final existing in snapshot.zones)
-          if (existing.id != zone.id) existing,
-        zone,
-      ];
       await store.saveSnapshot(
-        OfflineSnapshot(
-          layers: snapshot.layers,
-          markers: snapshot.markers,
-          zones: zones,
-          watchLogEntries: snapshot.watchLogEntries,
-          capturedAt: snapshot.capturedAt,
+        snapshot.copyWith(
+          zones: [
+            for (final existing in snapshot.zones)
+              if (existing.id != zone.id) existing,
+            zone,
+          ],
         ),
       );
       _ref.invalidate(offlineSnapshotProvider);
@@ -233,13 +350,7 @@ class OfflinePackController {
       return;
     }
     await store.saveSnapshot(
-      OfflineSnapshot(
-        layers: snapshot.layers,
-        markers: markers,
-        zones: zones,
-        watchLogEntries: snapshot.watchLogEntries,
-        capturedAt: snapshot.capturedAt,
-      ),
+      snapshot.copyWith(markers: markers, zones: zones),
     );
     _ref.invalidate(offlineSnapshotProvider);
     _ref.invalidate(markersProvider);

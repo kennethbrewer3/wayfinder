@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../data/seasonal_overlays_repository.dart';
@@ -19,13 +20,19 @@ class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
   @override
   Future<List<SeasonalOverlay>> build() {
     ref.watch(offlineModeActiveProvider);
+    ref.watch(offlineSnapshotProvider);
     return _load();
   }
 
   Future<List<SeasonalOverlay>> _load() async {
     if (ref.read(offlineModeActiveProvider)) {
-      AppLogger.logMap.info('📡 Seasonal overlays unavailable offline');
-      return const [];
+      final snapshot = await ref.read(offlineSnapshotProvider.future);
+      final overlays = snapshot?.seasonalOverlays ?? const <SeasonalOverlay>[];
+      AppLogger.logMap.info(
+        '📡 Seasonal overlays from offline pack',
+        data: 'count=${overlays.length}',
+      );
+      return overlays;
     }
     AppLogger.logMap.debug('📡 Fetching seasonal overlays');
     final overlays = await ref
@@ -44,6 +51,9 @@ class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
   }
 
   Future<SeasonalOverlay> create(SeasonalOverlay overlay) async {
+    if (ref.read(offlineModeActiveProvider)) {
+      throw StateError('Seasonal overlays are read-only offline.');
+    }
     final created = await ref
         .read(seasonalOverlaysRepositoryProvider)
         .createOverlay(overlay);
@@ -52,6 +62,9 @@ class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
   }
 
   Future<SeasonalOverlay> updateOverlay(SeasonalOverlay overlay) async {
+    if (ref.read(offlineModeActiveProvider)) {
+      throw StateError('Seasonal overlays are read-only offline.');
+    }
     final updated = await ref
         .read(seasonalOverlaysRepositoryProvider)
         .updateOverlay(overlay);
@@ -60,11 +73,17 @@ class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
   }
 
   Future<void> delete(UuidValue id) async {
+    if (ref.read(offlineModeActiveProvider)) {
+      throw StateError('Seasonal overlays are read-only offline.');
+    }
     await ref.read(seasonalOverlaysRepositoryProvider).deleteOverlay(id);
     await reload();
   }
 
   Future<void> setVisible(UuidValue id, bool visible) async {
+    if (ref.read(offlineModeActiveProvider)) {
+      return;
+    }
     final current = state.valueOrNull;
     if (current == null) {
       return;
@@ -91,6 +110,9 @@ class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
     required UuidValue id,
     required PolygonGeometry geometry,
   }) async {
+    if (ref.read(offlineModeActiveProvider)) {
+      return;
+    }
     final current = state.valueOrNull;
     if (current == null) {
       return;

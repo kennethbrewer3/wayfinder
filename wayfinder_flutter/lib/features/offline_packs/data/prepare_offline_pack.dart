@@ -58,6 +58,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
   required String name,
   required List<UuidValue> layerIds,
   required OfflinePackRegion region,
+  bool includeSeasonalOverlays = false,
   OfflinePrepareProgress? onProgress,
 }) async {
   final log = AppLogger.logMap;
@@ -72,6 +73,14 @@ Future<OfflinePackMeta> prepareOfflinePack({
     watchLog = await client.watchLog.listEntries();
   } catch (_) {
     // Watch log optional if endpoint unavailable.
+  }
+  List<SeasonalOverlay> seasonalOverlays = const [];
+  if (includeSeasonalOverlays) {
+    try {
+      seasonalOverlays = await client.seasonalOverlay.listOverlays();
+    } catch (_) {
+      // Optional if endpoint unavailable.
+    }
   }
 
   final packLayers = [
@@ -102,6 +111,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
     markers: packMarkers,
     zones: packZones,
     watchLogEntries: packWatchLog,
+    seasonalOverlays: seasonalOverlays,
     capturedAt: DateTime.now().toUtc(),
   );
   await store.saveSnapshot(snapshot);
@@ -193,16 +203,19 @@ Future<OfflinePackMeta> prepareOfflinePack({
     region: region,
     preparedAt: DateTime.now().toUtc(),
     basemaps: basemaps,
+    includeSeasonalOverlays: includeSeasonalOverlays,
     tileCount: tilesCached,
     markerCount: packMarkers.length,
     zoneCount: packZones.length,
+    seasonalOverlayCount: seasonalOverlays.length,
   );
   await store.saveMeta(meta);
   log.success(
     'Offline pack prepared',
     data:
         'layers=${layerIds.length} markers=${packMarkers.length} '
-        'zones=${packZones.length} tiles=$tilesCached',
+        'zones=${packZones.length} seasonal=${seasonalOverlays.length} '
+        'tiles=$tilesCached',
   );
   onProgress?.call('Offline pack ready', 1);
   return meta;

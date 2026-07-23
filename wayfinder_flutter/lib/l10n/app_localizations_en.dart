@@ -916,6 +916,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlinePackLayersLabel => 'Layers to include';
 
   @override
+  String get offlinePackIncludeSeasonalOverlays => 'Include seasonal overlays';
+
+  @override
+  String get offlinePackIncludeSeasonalOverlaysHint =>
+      'Pack all seasonal overlays for read-only viewing offline (separate from map layers).';
+
+  @override
+  String get offlinePackSeasonalOverlaysNotIncluded =>
+      'No seasonal overlays in this offline pack. Re-prepare with “Include seasonal overlays” while online.';
+
+  @override
   String get offlinePackNoLayers => 'No map layers available.';
 
   @override
@@ -962,7 +973,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineModeBannerReadWriteHint =>
-      'Showing packed layers. You can add markers, GPS tracks, and watch-log entries.';
+      'Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.';
+
+  @override
+  String get offlineDeleteUnsyncedMarker => 'Delete unsynced marker';
+
+  @override
+  String get offlineDeleteSyncedMarkerDisabled =>
+      'Only unsynced offline markers can be deleted until the server returns';
 
   @override
   String offlineModeBannerPending(int count) {

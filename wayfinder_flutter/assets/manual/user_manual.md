@@ -509,12 +509,15 @@ When the Wayfinder appliance may go down, prepare a local **offline pack** on ea
 1. Pan the map to your operating area.
 2. Tap the **offline pack** button in the map app bar (or **Settings → Map tiles → Prepare offline pack**).
 3. Choose **layers** to mirror and a **tile zoom** range for the current view.
-4. Wait for object mirror + basemap tile download to finish.
+4. Optionally enable **Include seasonal overlays** (read-only offline; they are packed separately from map layers).
+5. Wait for object mirror + basemap tile download to finish.
 
 If the server becomes unreachable and a pack exists:
 
 - The map shows an **Offline** banner and draws from the pack (selected layers + cached tiles).
-- You can still **add markers**, create **GPS tracking** markers (breadcrumbs), and add **watch / incident log** entries.
+- Packed **seasonal overlays** display if you opted in; they stay **read-only** until the server returns.
+- You can still **add markers**, **change a marker’s layer**, create **GPS tracking** markers (breadcrumbs), and add **watch / incident log** entries.
+- Markers you created offline (still waiting to sync) can be **deleted** if you placed one in the wrong spot. Markers that came from the server pack cannot be deleted until the server returns.
 - Other create/edit tools are hidden until the server returns.
 - Pending changes flush automatically when the appliance is reachable again.
 

@@ -484,6 +484,9 @@
   "offlinePackNameLabel": "Pack name",
   "offlinePackDefaultName": "Offline pack",
   "offlinePackLayersLabel": "Layers to include",
+  "offlinePackIncludeSeasonalOverlays": "Include seasonal overlays",
+  "offlinePackIncludeSeasonalOverlaysHint": "Pack all seasonal overlays for read-only viewing offline (separate from map layers).",
+  "offlinePackSeasonalOverlaysNotIncluded": "No seasonal overlays in this offline pack. Re-prepare with “Include seasonal overlays” while online.",
   "offlinePackNoLayers": "No map layers available.",
   "offlinePackSelectLayersRequired": "Select at least one layer.",
   "offlinePackZoomLabel": "Tile detail (z{minZoom}–z{maxZoom})",
@@ -523,7 +526,9 @@
       "packName": { "type": "String" }
     }
   },
-  "offlineModeBannerReadWriteHint": "Showing packed layers. You can add markers, GPS tracks, and watch-log entries.",
+  "offlineModeBannerReadWriteHint": "Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.",
+  "offlineDeleteUnsyncedMarker": "Delete unsynced marker",
+  "offlineDeleteSyncedMarkerDisabled": "Only unsynced offline markers can be deleted until the server returns",
   "offlineModeBannerPending": "{count} change(s) waiting to sync.",
   "@offlineModeBannerPending": {
     "placeholders": {

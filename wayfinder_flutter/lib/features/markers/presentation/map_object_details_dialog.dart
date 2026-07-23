@@ -38,6 +38,9 @@ import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../polygons/presentation/create_polygon_dialog.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
@@ -215,6 +218,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     ThemeData theme,
     AppLocalizations l10n,
   ) {
+    final offline = ref.watch(offlineModeActiveProvider);
     final overlays = ref.watch(seasonalOverlaysProvider).valueOrNull;
     final overlay = overlays == null
         ? null
@@ -241,7 +245,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(overlay.borderColor),
         icon: Icons.calendar_month,
       ),
-      onEdit: onEdit,
+      onEdit: offline ? null : onEdit,
       l10n: l10n,
       children: [
         _DetailRow(
@@ -311,6 +315,11 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     );
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
+    final offline = ref.watch(offlineModeActiveProvider);
+    final pendingCreates =
+        ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
+        const <String>{};
+    final unsyncedOffline = offline && pendingCreates.contains(marker.id.uuid);
 
     return _DetailsDialogShell(
       title: marker.name,
@@ -321,31 +330,45 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         ),
         color: parseMarkerColor(marker.color),
       ),
-      onEdit: onEdit,
+      onEdit: offline ? null : onEdit,
       l10n: l10n,
       linkedMarkerId: marker.id,
       shareUrl: shareUrl,
       onCopyShareUrl: copyShareUrl,
       onShowQrCode: () => showMarkerQrDialog(context: context, marker: marker),
       contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
-      additionalActions: geocodingReachable
-          ? [
-              TextButton.icon(
-                onPressed: () async {
-                  await submitGeocodingContribution(
-                    context: context,
-                    ref: ref,
-                    name: marker.name,
-                    latitude: marker.latitude,
-                    longitude: marker.longitude,
-                    notes: marker.notes,
-                  );
-                },
-                icon: const Icon(Icons.public),
-                label: Text(l10n.mapAddToGeocodingSearch),
-              ),
-            ]
-          : const [],
+      additionalActions: [
+        if (geocodingReachable)
+          TextButton.icon(
+            onPressed: () async {
+              await submitGeocodingContribution(
+                context: context,
+                ref: ref,
+                name: marker.name,
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+                notes: marker.notes,
+              );
+            },
+            icon: const Icon(Icons.public),
+            label: Text(l10n.mapAddToGeocodingSearch),
+          ),
+        if (unsyncedOffline)
+          TextButton.icon(
+            onPressed: () async {
+              final deleted = await ref
+                  .read(offlinePackControllerProvider)
+                  .deleteUnsyncedMarker(marker.id);
+              if (!context.mounted || !deleted) {
+                return;
+              }
+              ref.read(selectedMapObjectProvider.notifier).clear();
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.delete_outline),
+            label: Text(l10n.offlineDeleteUnsyncedMarker),
+          ),
+      ],
       children: [
         if (isWeatherStationMarker(marker))
           WeatherStationDetailsSection(marker: marker),
@@ -1025,9 +1048,9 @@ class _DetailsDialogShell extends StatelessWidget {
   const _DetailsDialogShell({
     required this.title,
     required this.leading,
-    required this.onEdit,
     required this.l10n,
     required this.children,
+    this.onEdit,
     this.linkedMarkerId,
     this.linkedZoneId,
     this.shareUrl,
@@ -1039,7 +1062,7 @@ class _DetailsDialogShell extends StatelessWidget {
 
   final String title;
   final Widget leading;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
   final AppLocalizations l10n;
   final List<Widget> children;
   final UuidValue? linkedMarkerId;
@@ -1097,10 +1120,11 @@ class _DetailsDialogShell extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.actionClose),
         ),
-        FilledButton(
-          onPressed: onEdit,
-          child: Text(l10n.actionEdit),
-        ),
+        if (onEdit != null)
+          FilledButton(
+            onPressed: onEdit,
+            child: Text(l10n.actionEdit),
+          ),
       ],
     );
   }

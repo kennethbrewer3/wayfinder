@@ -927,6 +927,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get offlinePackLayersLabel => 'Capas a incluir';
 
   @override
+  String get offlinePackIncludeSeasonalOverlays =>
+      'Incluir superposiciones estacionales';
+
+  @override
+  String get offlinePackIncludeSeasonalOverlaysHint =>
+      'Empaquete todas las superposiciones estacionales solo para verlas sin conexión (aparte de las capas del mapa).';
+
+  @override
+  String get offlinePackSeasonalOverlaysNotIncluded =>
+      'No hay superposiciones estacionales en este paquete. Vuelva a prepararlo con “Incluir superposiciones estacionales” estando en línea.';
+
+  @override
   String get offlinePackNoLayers => 'No hay capas de mapa disponibles.';
 
   @override
@@ -973,7 +985,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get offlineModeBannerReadWriteHint =>
-      'Mostrando capas del paquete. Puede añadir marcadores, tracks GPS y entradas del registro de guardia.';
+      'Mostrando capas del paquete. Puede añadir marcadores, cambiar su capa, borrar marcadores sin sincronizar, grabar tracks GPS y añadir entradas del registro de guardia.';
+
+  @override
+  String get offlineDeleteUnsyncedMarker => 'Borrar marcador sin sincronizar';
+
+  @override
+  String get offlineDeleteSyncedMarkerDisabled =>
+      'Solo se pueden borrar marcadores sin sincronizar hasta que vuelva el servidor';
 
   @override
   String offlineModeBannerPending(int count) {

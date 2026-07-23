@@ -1297,6 +1297,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (_selectedPolygonZone() == null && _selectedSeasonalOverlay() == null) {
       return;
     }
+    // Seasonal overlays stay read-only while the appliance is down.
+    if (ref.read(offlineModeActiveProvider) &&
+        _selectedSeasonalOverlay() != null) {
+      return;
+    }
     setState(() {
       _polygonVertexEditActive = true;
       _polygonEditPreviewGeometry = geometry;

@@ -8,6 +8,8 @@ import '../../layers/providers/layers_provider.dart';
 import '../../layers/utils/map_layer_utils.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 
 class LayerAssignmentRow extends ConsumerWidget {
   const LayerAssignmentRow({
@@ -74,13 +76,16 @@ Future<void> updateMarkerLayer(
   required MapMarker marker,
   required UuidValue? layerId,
 }) async {
-  final client = ref.read(serverClientProvider);
-  await client.mapMarker.updateMarker(
-    marker.copyWith(
-      layerId: layerId,
-      updatedAt: DateTime.now().toUtc(),
-    ),
+  final updated = marker.copyWith(
+    layerId: layerId,
+    updatedAt: DateTime.now().toUtc(),
   );
+  if (ref.read(offlineModeActiveProvider)) {
+    await ref.read(offlinePackControllerProvider).updateMarkerOffline(updated);
+    return;
+  }
+  final client = ref.read(serverClientProvider);
+  await client.mapMarker.updateMarker(updated);
   ref.invalidate(markersProvider);
 }
 

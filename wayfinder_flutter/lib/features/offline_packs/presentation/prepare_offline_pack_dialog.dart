@@ -35,6 +35,8 @@ class _PrepareOfflinePackDialogState
     extends ConsumerState<PrepareOfflinePackDialog> {
   final _nameController = TextEditingController(text: 'Field pack');
   final _selectedLayerIds = <UuidValue>{};
+  var _includeSeasonalOverlays = false;
+  var _seededFromExisting = false;
   var _minZoom = 10;
   var _maxZoom = 15;
   var _preparing = false;
@@ -95,6 +97,7 @@ class _PrepareOfflinePackDialogState
                 : _nameController.text.trim(),
             layerIds: _selectedLayerIds.toList(),
             region: region,
+            includeSeasonalOverlays: _includeSeasonalOverlays,
             onProgress: (message, fraction) {
               if (!mounted) {
                 return;
@@ -143,20 +146,25 @@ class _PrepareOfflinePackDialogState
       archiveCount: enabledCount.clamp(1, 99),
     );
 
-    // Seed selection once layers load.
+    // Seed selection once layers / existing pack meta load.
     layersAsync.whenData((layers) {
-      if (_selectedLayerIds.isEmpty && layers.isNotEmpty && !_preparing) {
+      if (!_seededFromExisting && layers.isNotEmpty && !_preparing) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted || _selectedLayerIds.isNotEmpty) {
+          if (!mounted || _seededFromExisting) {
             return;
           }
           setState(() {
-            _selectedLayerIds.addAll(
-              existing?.layerIds ??
-                  [
-                    for (final layer in layers) layer.id,
-                  ],
-            );
+            _seededFromExisting = true;
+            if (_selectedLayerIds.isEmpty) {
+              _selectedLayerIds.addAll(
+                existing?.layerIds ??
+                    [
+                      for (final layer in layers) layer.id,
+                    ],
+              );
+            }
+            _includeSeasonalOverlays =
+                existing?.includeSeasonalOverlays ?? false;
           });
         });
       }
@@ -217,6 +225,20 @@ class _PrepareOfflinePackDialogState
                     ],
                   );
                 },
+              ),
+              CheckboxListTile(
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                value: _includeSeasonalOverlays,
+                title: Text(l10n.offlinePackIncludeSeasonalOverlays),
+                subtitle: Text(l10n.offlinePackIncludeSeasonalOverlaysHint),
+                onChanged: _preparing
+                    ? null
+                    : (value) {
+                        setState(() {
+                          _includeSeasonalOverlays = value ?? false;
+                        });
+                      },
               ),
               const SizedBox(height: 8),
               Text(

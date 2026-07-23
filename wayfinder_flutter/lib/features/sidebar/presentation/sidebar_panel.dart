@@ -48,6 +48,9 @@ import '../../markers/models/marker_radio.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
+import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../markers/utils/effective_marker_icon.dart';
 import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
@@ -1135,6 +1138,11 @@ class _MarkerListTile extends ConsumerWidget {
             if (radio.mode != MarkerRadioMode.other)
               markerRadioModeLabel(l10n, radio.mode),
           ].join(' · ');
+    final offline = ref.watch(offlineModeActiveProvider);
+    final pendingCreates =
+        ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
+        const <String>{};
+    final unsyncedOffline = offline && pendingCreates.contains(marker.id.uuid);
 
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
@@ -1213,31 +1221,53 @@ class _MarkerListTile extends ConsumerWidget {
                 icon: marker.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: marker.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapMarker.updateMarker(
-                    marker.copyWith(visible: !marker.visible),
-                  );
-                  ref.invalidate(markersProvider);
-                },
+                onPressed: offline
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapMarker.updateMarker(
+                          marker.copyWith(visible: !marker.visible),
+                        );
+                        ref.invalidate(markersProvider);
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditMarker,
                 icon: Icons.edit_outlined,
-                onPressed: () => updateMarkerFromForm(
-                  context: context,
-                  ref: ref,
-                  marker: marker,
-                ),
+                onPressed: offline
+                    ? null
+                    : () => updateMarkerFromForm(
+                        context: context,
+                        ref: ref,
+                        marker: marker,
+                      ),
               ),
               _MapObjectIconAction(
-                tooltip: l10n.sidebarDeleteMarker,
+                tooltip: offline
+                    ? (unsyncedOffline
+                          ? l10n.offlineDeleteUnsyncedMarker
+                          : l10n.offlineDeleteSyncedMarkerDisabled)
+                    : l10n.sidebarDeleteMarker,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapMarker.deleteMarker(marker.id);
-                  ref.invalidate(markersProvider);
-                },
+                onPressed: offline
+                    ? (unsyncedOffline
+                          ? () async {
+                              final deleted = await ref
+                                  .read(offlinePackControllerProvider)
+                                  .deleteUnsyncedMarker(marker.id);
+                              if (!deleted) {
+                                return;
+                              }
+                              ref
+                                  .read(selectedMapObjectProvider.notifier)
+                                  .clear();
+                            }
+                          : null)
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapMarker.deleteMarker(marker.id);
+                        ref.invalidate(markersProvider);
+                      },
               ),
             ],
           ),
@@ -2370,7 +2400,7 @@ class _MapObjectIconAction extends StatelessWidget {
 
   final String tooltip;
   final IconData icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool toggled;
   final bool isToggle;
 
@@ -2556,6 +2586,7 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
     final overlays = overlaysAsync.valueOrNull ?? const <SeasonalOverlay>[];
     final showInactive = ref.watch(showInactiveSeasonalOverlaysProvider);
     final selected = ref.watch(selectedMapObjectProvider);
+    final offline = ref.watch(offlineModeActiveProvider);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -2587,7 +2618,11 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
               ListTile(
                 dense: true,
                 title: Text(l10n.seasonalOverlaysEmpty),
-                subtitle: Text(l10n.seasonalOverlaysDrawHint),
+                subtitle: Text(
+                  offline
+                      ? l10n.offlinePackSeasonalOverlaysNotIncluded
+                      : l10n.seasonalOverlaysDrawHint,
+                ),
               )
             else
               for (final overlay in overlays)
@@ -2623,13 +2658,15 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
                         tooltip: overlay.visible
                             ? l10n.seasonalOverlayHide
                             : l10n.seasonalOverlayShow,
-                        onPressed: () {
-                          unawaited(
-                            ref
-                                .read(seasonalOverlaysProvider.notifier)
-                                .setVisible(overlay.id, !overlay.visible),
-                          );
-                        },
+                        onPressed: offline
+                            ? null
+                            : () {
+                                unawaited(
+                                  ref
+                                      .read(seasonalOverlaysProvider.notifier)
+                                      .setVisible(overlay.id, !overlay.visible),
+                                );
+                              },
                         icon: Icon(
                           overlay.visible
                               ? Icons.visibility
@@ -2639,15 +2676,17 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
                       ),
                       IconButton(
                         tooltip: l10n.actionEdit,
-                        onPressed: () {
-                          unawaited(
-                            updateSeasonalOverlayFromForm(
-                              context: context,
-                              ref: ref,
-                              overlay: overlay,
-                            ),
-                          );
-                        },
+                        onPressed: offline
+                            ? null
+                            : () {
+                                unawaited(
+                                  updateSeasonalOverlayFromForm(
+                                    context: context,
+                                    ref: ref,
+                                    overlay: overlay,
+                                  ),
+                                );
+                              },
                         icon: const Icon(Icons.edit_outlined, size: 20),
                       ),
                       IconButton(

@@ -1,6 +1,6 @@
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-/// Cached map objects for an offline pack (selected layers only).
+/// Cached map objects for an offline pack (selected layers + optional seasonal).
 class OfflineSnapshot {
   const OfflineSnapshot({
     required this.layers,
@@ -8,12 +8,14 @@ class OfflineSnapshot {
     required this.zones,
     required this.watchLogEntries,
     required this.capturedAt,
+    this.seasonalOverlays = const [],
   });
 
   final List<MapLayer> layers;
   final List<MapMarker> markers;
   final List<MapZone> zones;
   final List<WatchLogEntry> watchLogEntries;
+  final List<SeasonalOverlay> seasonalOverlays;
   final DateTime capturedAt;
 
   Map<String, dynamic> toJson() => {
@@ -23,6 +25,9 @@ class OfflineSnapshot {
     'zones': [for (final zone in zones) zone.toJson()],
     'watchLogEntries': [
       for (final entry in watchLogEntries) entry.toJson(),
+    ],
+    'seasonalOverlays': [
+      for (final overlay in seasonalOverlays) overlay.toJson(),
     ],
   };
 
@@ -45,6 +50,28 @@ class OfflineSnapshot {
         for (final raw in json['watchLogEntries'] as List? ?? const [])
           WatchLogEntry.fromJson(raw as Map<String, dynamic>),
       ],
+      seasonalOverlays: [
+        for (final raw in json['seasonalOverlays'] as List? ?? const [])
+          SeasonalOverlay.fromJson(raw as Map<String, dynamic>),
+      ],
+    );
+  }
+
+  OfflineSnapshot copyWith({
+    List<MapLayer>? layers,
+    List<MapMarker>? markers,
+    List<MapZone>? zones,
+    List<WatchLogEntry>? watchLogEntries,
+    List<SeasonalOverlay>? seasonalOverlays,
+    DateTime? capturedAt,
+  }) {
+    return OfflineSnapshot(
+      layers: layers ?? this.layers,
+      markers: markers ?? this.markers,
+      zones: zones ?? this.zones,
+      watchLogEntries: watchLogEntries ?? this.watchLogEntries,
+      seasonalOverlays: seasonalOverlays ?? this.seasonalOverlays,
+      capturedAt: capturedAt ?? this.capturedAt,
     );
   }
 }

@@ -7,6 +7,31 @@ enum OfflineOutboxOpType {
   upsertTrackZone,
 }
 
+/// Normalizes Serverpod JSON id fields (`String` or nested) for outbox matching.
+String? offlinePayloadEntityId(
+  Map<String, dynamic> payload, [
+  String key = 'id',
+]) {
+  final raw = payload[key];
+  if (raw == null) {
+    return null;
+  }
+  return raw.toString();
+}
+
+bool offlineOpTargetsMarker(OfflineOutboxOp op, UuidValue markerId) {
+  final id = markerId.uuid;
+  switch (op.type) {
+    case OfflineOutboxOpType.createMarker:
+    case OfflineOutboxOpType.updateMarker:
+      return offlinePayloadEntityId(op.payload) == id;
+    case OfflineOutboxOpType.createWatchLogEntry:
+      return offlinePayloadEntityId(op.payload, 'markerId') == id;
+    case OfflineOutboxOpType.upsertTrackZone:
+      return false;
+  }
+}
+
 /// Queued mutation to flush when the server returns.
 class OfflineOutboxOp {
   const OfflineOutboxOp({

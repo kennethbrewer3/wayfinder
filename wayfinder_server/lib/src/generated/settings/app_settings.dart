@@ -31,6 +31,7 @@ abstract class AppSettings
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -48,6 +49,7 @@ abstract class AppSettings
        mapTileBorderDebug = mapTileBorderDebug ?? false,
        mapCompassRoseEnabled = mapCompassRoseEnabled ?? true,
        mapMgrsGridEnabled = mapMgrsGridEnabled ?? false,
+       darkMapTilesInDarkMode = darkMapTilesInDarkMode ?? true,
        polygonSnapRightAngles = polygonSnapRightAngles ?? true,
        polygonSnap45Angles = polygonSnap45Angles ?? false,
        mapMinZoom = mapMinZoom ?? 2.0,
@@ -70,6 +72,7 @@ abstract class AppSettings
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -113,6 +116,12 @@ abstract class AppSettings
           ? null
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapMgrsGridEnabled'],
+            ),
+      darkMapTilesInDarkMode:
+          jsonSerialization['darkMapTilesInDarkMode'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['darkMapTilesInDarkMode'],
             ),
       polygonSnapRightAngles:
           jsonSerialization['polygonSnapRightAngles'] == null
@@ -171,6 +180,8 @@ abstract class AppSettings
 
   bool mapMgrsGridEnabled;
 
+  bool darkMapTilesInDarkMode;
+
   bool polygonSnapRightAngles;
 
   bool polygonSnap45Angles;
@@ -206,6 +217,7 @@ abstract class AppSettings
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -233,6 +245,7 @@ abstract class AppSettings
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': darkMapTilesInDarkMode,
       'polygonSnapRightAngles': polygonSnapRightAngles,
       'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
@@ -262,6 +275,7 @@ abstract class AppSettings
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': darkMapTilesInDarkMode,
       'polygonSnapRightAngles': polygonSnapRightAngles,
       'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
@@ -321,6 +335,7 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -344,6 +359,7 @@ class _AppSettingsImpl extends AppSettings {
          mapTileBorderDebug: mapTileBorderDebug,
          mapCompassRoseEnabled: mapCompassRoseEnabled,
          mapMgrsGridEnabled: mapMgrsGridEnabled,
+         darkMapTilesInDarkMode: darkMapTilesInDarkMode,
          polygonSnapRightAngles: polygonSnapRightAngles,
          polygonSnap45Angles: polygonSnap45Angles,
          mapMinZoom: mapMinZoom,
@@ -373,6 +389,7 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -399,6 +416,8 @@ class _AppSettingsImpl extends AppSettings {
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
+      darkMapTilesInDarkMode:
+          darkMapTilesInDarkMode ?? this.darkMapTilesInDarkMode,
       polygonSnapRightAngles:
           polygonSnapRightAngles ?? this.polygonSnapRightAngles,
       polygonSnap45Angles: polygonSnap45Angles ?? this.polygonSnap45Angles,
@@ -498,6 +517,12 @@ class AppSettingsUpdateTable extends _i1.UpdateTable<AppSettingsTable> {
     table.mapMgrsGridEnabled,
     value,
   );
+
+  _i1.ColumnValue<bool, bool> darkMapTilesInDarkMode(bool value) =>
+      _i1.ColumnValue(
+        table.darkMapTilesInDarkMode,
+        value,
+      );
 
   _i1.ColumnValue<bool, bool> polygonSnapRightAngles(bool value) =>
       _i1.ColumnValue(
@@ -608,6 +633,11 @@ class AppSettingsTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    darkMapTilesInDarkMode = _i1.ColumnBool(
+      'darkMapTilesInDarkMode',
+      this,
+      hasDefault: true,
+    );
     polygonSnapRightAngles = _i1.ColumnBool(
       'polygonSnapRightAngles',
       this,
@@ -670,6 +700,8 @@ class AppSettingsTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool mapMgrsGridEnabled;
 
+  late final _i1.ColumnBool darkMapTilesInDarkMode;
+
   late final _i1.ColumnBool polygonSnapRightAngles;
 
   late final _i1.ColumnBool polygonSnap45Angles;
@@ -700,6 +732,7 @@ class AppSettingsTable extends _i1.Table<int?> {
     mapTileBorderDebug,
     mapCompassRoseEnabled,
     mapMgrsGridEnabled,
+    darkMapTilesInDarkMode,
     polygonSnapRightAngles,
     polygonSnap45Angles,
     mapMinZoom,

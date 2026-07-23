@@ -125,6 +125,7 @@ class AppSettingsRepository {
         payload['mapTileBorderDebug'] as bool,
         payload['mapCompassRoseEnabled'] as bool,
         payload['mapMgrsGridEnabled'] as bool,
+        payload['darkMapTilesInDarkMode'] as bool,
         payload['polygonSnapRightAngles'] as bool,
         payload['polygonSnap45Angles'] as bool,
         payload['mapMinZoom'] as double,

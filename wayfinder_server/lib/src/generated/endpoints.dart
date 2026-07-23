@@ -1908,6 +1908,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<bool>(),
               nullable: false,
             ),
+            'darkMapTilesInDarkMode': _i1.ParameterDescription(
+              name: 'darkMapTilesInDarkMode',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
             'polygonSnapRightAngles': _i1.ParameterDescription(
               name: 'polygonSnapRightAngles',
               type: _i1.getType<bool>(),
@@ -1937,6 +1942,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['mapTileBorderDebug'],
                     params['mapCompassRoseEnabled'],
                     params['mapMgrsGridEnabled'],
+                    params['darkMapTilesInDarkMode'],
                     params['polygonSnapRightAngles'],
                     params['polygonSnap45Angles'],
                   ),
@@ -2084,6 +2090,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<bool>(),
               nullable: false,
             ),
+            'darkMapTilesInDarkMode': _i1.ParameterDescription(
+              name: 'darkMapTilesInDarkMode',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
             'polygonSnapRightAngles': _i1.ParameterDescription(
               name: 'polygonSnapRightAngles',
               type: _i1.getType<bool>(),
@@ -2123,6 +2134,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['mapTileBorderDebug'],
                     params['mapCompassRoseEnabled'],
                     params['mapMgrsGridEnabled'],
+                    params['darkMapTilesInDarkMode'],
                     params['polygonSnapRightAngles'],
                     params['polygonSnap45Angles'],
                     params['mapMinZoom'],

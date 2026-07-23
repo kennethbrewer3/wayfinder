@@ -164,6 +164,8 @@ abstract final class AppSettingsRestHandlers {
       final mapTileBorderDebug = _readBool(body['mapTileBorderDebug']);
       final mapCompassRoseEnabled = _readBool(body['mapCompassRoseEnabled']);
       final mapMgrsGridEnabled = _readBool(body['mapMgrsGridEnabled']) ?? false;
+      final darkMapTilesInDarkMode =
+          _readBool(body['darkMapTilesInDarkMode']) ?? true;
       final polygonSnapRightAngles =
           _readBool(body['polygonSnapRightAngles']) ?? true;
       final polygonSnap45Angles =
@@ -211,6 +213,7 @@ abstract final class AppSettingsRestHandlers {
           mapTileBorderDebug: mapTileBorderDebug,
           mapCompassRoseEnabled: mapCompassRoseEnabled,
           mapMgrsGridEnabled: mapMgrsGridEnabled,
+          darkMapTilesInDarkMode: darkMapTilesInDarkMode,
           polygonSnapRightAngles: polygonSnapRightAngles,
           polygonSnap45Angles: polygonSnap45Angles,
         ),
@@ -232,6 +235,7 @@ abstract final class AppSettingsRestHandlers {
       'mapTileBorderDebug': settings.mapTileBorderDebug,
       'mapCompassRoseEnabled': settings.mapCompassRoseEnabled,
       'mapMgrsGridEnabled': settings.mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': settings.darkMapTilesInDarkMode,
       'polygonSnapRightAngles': settings.polygonSnapRightAngles,
       'polygonSnap45Angles': settings.polygonSnap45Angles,
       'mapMinZoom': settings.mapMinZoom,

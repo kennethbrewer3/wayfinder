@@ -674,7 +674,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapDisplayDescription =>
-      'Rosa de los vientos y cuadrícula MGRS de tu cuenta. Se guarda en tu cuenta para seguirte en cualquier estación de trabajo.';
+      'Rosa de los vientos, cuadrícula MGRS y teselas oscuras en modo oscuro de tu cuenta. Se guarda en tu cuenta para seguirte en cualquier estación de trabajo.';
 
   @override
   String get settingsMapCompassRoseTitle => 'Mostrar rosa de los vientos';
@@ -689,6 +689,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsMapMgrsGridDescription =>
       'Superpone una cuadrícula MGRS real (basada en UTM). El espaciado sigue el zoom. Las uniones entre zonas y una ligera curvatura en el mapa Web Mercator son normales: los cuadrados MGRS no son rectángulos de lat/lng.';
+
+  @override
+  String get settingsDarkMapTilesTitle =>
+      'Oscurecer teselas del mapa en modo oscuro';
+
+  @override
+  String get settingsDarkMapTilesDescription =>
+      'Cuando la app está en modo oscuro, aplica un filtro de color a las teselas del mapa base para que se vean más oscuras. Es un estilo oscuro simulado sobre las teselas existentes, no una cartografía oscura aparte. Desactívalo para dejar las teselas como de costumbre mientras el resto de la interfaz sigue en oscuro. Los PDF del atlas imprimible siempre usan teselas normales para que se lean bien en papel.';
 
   @override
   String get settingsMapZoomRangeTitle => 'Rango de zoom del mapa';

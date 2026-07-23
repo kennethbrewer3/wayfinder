@@ -28,6 +28,7 @@ abstract class UserClientPreferences
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     required this.updatedAt,
@@ -43,6 +44,7 @@ abstract class UserClientPreferences
        mapTileBorderDebug = mapTileBorderDebug ?? false,
        mapCompassRoseEnabled = mapCompassRoseEnabled ?? true,
        mapMgrsGridEnabled = mapMgrsGridEnabled ?? false,
+       darkMapTilesInDarkMode = darkMapTilesInDarkMode ?? true,
        polygonSnapRightAngles = polygonSnapRightAngles ?? true,
        polygonSnap45Angles = polygonSnap45Angles ?? false;
 
@@ -60,6 +62,7 @@ abstract class UserClientPreferences
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     required DateTime updatedAt,
@@ -103,6 +106,12 @@ abstract class UserClientPreferences
           ? null
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapMgrsGridEnabled'],
+            ),
+      darkMapTilesInDarkMode:
+          jsonSerialization['darkMapTilesInDarkMode'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['darkMapTilesInDarkMode'],
             ),
       polygonSnapRightAngles:
           jsonSerialization['polygonSnapRightAngles'] == null
@@ -152,6 +161,8 @@ abstract class UserClientPreferences
 
   bool mapMgrsGridEnabled;
 
+  bool darkMapTilesInDarkMode;
+
   bool polygonSnapRightAngles;
 
   bool polygonSnap45Angles;
@@ -178,6 +189,7 @@ abstract class UserClientPreferences
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     DateTime? updatedAt,
@@ -199,6 +211,7 @@ abstract class UserClientPreferences
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': darkMapTilesInDarkMode,
       'polygonSnapRightAngles': polygonSnapRightAngles,
       'polygonSnap45Angles': polygonSnap45Angles,
       'updatedAt': updatedAt.toJson(),
@@ -222,6 +235,7 @@ abstract class UserClientPreferences
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': darkMapTilesInDarkMode,
       'polygonSnapRightAngles': polygonSnapRightAngles,
       'polygonSnap45Angles': polygonSnap45Angles,
       'updatedAt': updatedAt.toJson(),
@@ -273,6 +287,7 @@ class _UserClientPreferencesImpl extends UserClientPreferences {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     required DateTime updatedAt,
@@ -290,6 +305,7 @@ class _UserClientPreferencesImpl extends UserClientPreferences {
          mapTileBorderDebug: mapTileBorderDebug,
          mapCompassRoseEnabled: mapCompassRoseEnabled,
          mapMgrsGridEnabled: mapMgrsGridEnabled,
+         darkMapTilesInDarkMode: darkMapTilesInDarkMode,
          polygonSnapRightAngles: polygonSnapRightAngles,
          polygonSnap45Angles: polygonSnap45Angles,
          updatedAt: updatedAt,
@@ -313,6 +329,7 @@ class _UserClientPreferencesImpl extends UserClientPreferences {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     DateTime? updatedAt,
@@ -333,6 +350,8 @@ class _UserClientPreferencesImpl extends UserClientPreferences {
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
+      darkMapTilesInDarkMode:
+          darkMapTilesInDarkMode ?? this.darkMapTilesInDarkMode,
       polygonSnapRightAngles:
           polygonSnapRightAngles ?? this.polygonSnapRightAngles,
       polygonSnap45Angles: polygonSnap45Angles ?? this.polygonSnap45Angles,
@@ -413,6 +432,12 @@ class UserClientPreferencesUpdateTable
     table.mapMgrsGridEnabled,
     value,
   );
+
+  _i1.ColumnValue<bool, bool> darkMapTilesInDarkMode(bool value) =>
+      _i1.ColumnValue(
+        table.darkMapTilesInDarkMode,
+        value,
+      );
 
   _i1.ColumnValue<bool, bool> polygonSnapRightAngles(bool value) =>
       _i1.ColumnValue(
@@ -496,6 +521,11 @@ class UserClientPreferencesTable extends _i1.Table<_i1.UuidValue> {
       this,
       hasDefault: true,
     );
+    darkMapTilesInDarkMode = _i1.ColumnBool(
+      'darkMapTilesInDarkMode',
+      this,
+      hasDefault: true,
+    );
     polygonSnapRightAngles = _i1.ColumnBool(
       'polygonSnapRightAngles',
       this,
@@ -538,6 +568,8 @@ class UserClientPreferencesTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnBool mapMgrsGridEnabled;
 
+  late final _i1.ColumnBool darkMapTilesInDarkMode;
+
   late final _i1.ColumnBool polygonSnapRightAngles;
 
   late final _i1.ColumnBool polygonSnap45Angles;
@@ -559,6 +591,7 @@ class UserClientPreferencesTable extends _i1.Table<_i1.UuidValue> {
     mapTileBorderDebug,
     mapCompassRoseEnabled,
     mapMgrsGridEnabled,
+    darkMapTilesInDarkMode,
     polygonSnapRightAngles,
     polygonSnap45Angles,
     updatedAt,

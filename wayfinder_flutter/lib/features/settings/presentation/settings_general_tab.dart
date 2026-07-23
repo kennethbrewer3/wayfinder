@@ -25,6 +25,7 @@ import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/models/map_zoom_limits.dart';
 import '../../map/providers/map_zoom_range_provider.dart';
+import '../../map/providers/dark_map_tiles_provider.dart';
 import '../../map/providers/map_compass_rose_provider.dart';
 import '../../map/providers/map_mgrs_grid_provider.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
@@ -320,6 +321,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final showMapMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
+    final darkMapTilesInDarkMode = ref.watch(darkMapTilesInDarkModeProvider);
     final polygonSnapRightAngles = ref.watch(polygonSnapRightAnglesProvider);
     final polygonSnap45Angles = ref.watch(polygonSnap45AnglesProvider);
     final mapZoomRange = ref.watch(mapZoomRangeProvider);
@@ -857,6 +859,17 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           value: showMapMgrsGrid,
           onChanged: (enabled) {
             ref.read(mapMgrsGridEnabledProvider.notifier).setEnabled(enabled);
+          },
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsDarkMapTilesTitle),
+          subtitle: Text(l10n.settingsDarkMapTilesDescription),
+          value: darkMapTilesInDarkMode,
+          onChanged: (enabled) {
+            ref
+                .read(darkMapTilesInDarkModeProvider.notifier)
+                .setEnabled(enabled);
           },
         ),
         Visibility(

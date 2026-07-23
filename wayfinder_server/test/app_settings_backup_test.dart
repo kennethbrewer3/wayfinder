@@ -46,6 +46,7 @@ void main() {
         'mapTileBorderDebug': false,
         'mapCompassRoseEnabled': true,
         'mapMgrsGridEnabled': false,
+        'darkMapTilesInDarkMode': true,
         'polygonSnapRightAngles': true,
         'polygonSnap45Angles': false,
         'mapMinZoom': 2.0,

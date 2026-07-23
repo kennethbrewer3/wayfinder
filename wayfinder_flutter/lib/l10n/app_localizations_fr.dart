@@ -675,7 +675,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapDisplayDescription =>
-      'Rose des vents et grille MGRS pour votre compte. Enregistré sur votre compte pour vous suivre sur tout poste de travail.';
+      'Rose des vents, grille MGRS et tuiles assombries en mode sombre pour votre compte. Enregistré sur votre compte pour vous suivre sur tout poste de travail.';
 
   @override
   String get settingsMapCompassRoseTitle => 'Afficher la rose des vents';
@@ -690,6 +690,13 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsMapMgrsGridDescription =>
       'Superpose une vraie grille MGRS (basée sur l\'UTM). L\'espacement suit le zoom. Les joints de zone et une légère courbure sur la carte Web Mercator sont attendus — les carrés MGRS ne sont pas des rectangles lat/lng.';
+
+  @override
+  String get settingsDarkMapTilesTitle => 'Assombrir les tuiles en mode sombre';
+
+  @override
+  String get settingsDarkMapTilesDescription =>
+      'Lorsque l\'application est en mode sombre, applique un filtre de couleur aux tuiles du fond de carte pour les assombrir. C\'est un style sombre simulé sur les tuiles existantes — pas une cartographie sombre distincte. Désactivez pour conserver l\'apparence habituelle des tuiles pendant que le reste de l\'interface reste sombre. Les PDF d\'atlas imprimable utilisent toujours des tuiles normales pour rester lisibles sur papier.';
 
   @override
   String get settingsMapZoomRangeTitle => 'Plage de zoom de la carte';

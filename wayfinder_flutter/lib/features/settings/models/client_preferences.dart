@@ -22,6 +22,7 @@ class ClientPreferences {
     required this.mapTileBorderDebug,
     required this.mapCompassRoseEnabled,
     required this.mapMgrsGridEnabled,
+    required this.darkMapTilesInDarkMode,
     required this.polygonSnapRightAngles,
     required this.polygonSnap45Angles,
     required this.mapMinZoom,
@@ -39,6 +40,7 @@ class ClientPreferences {
   final bool mapTileBorderDebug;
   final bool mapCompassRoseEnabled;
   final bool mapMgrsGridEnabled;
+  final bool darkMapTilesInDarkMode;
   final bool polygonSnapRightAngles;
   final bool polygonSnap45Angles;
   final double mapMinZoom;
@@ -56,6 +58,7 @@ class ClientPreferences {
     mapTileBorderDebug: false,
     mapCompassRoseEnabled: true,
     mapMgrsGridEnabled: false,
+    darkMapTilesInDarkMode: true,
     polygonSnapRightAngles: true,
     polygonSnap45Angles: false,
     mapMinZoom: MapZoomRange.defaults.min,
@@ -83,6 +86,7 @@ class ClientPreferences {
       mapTileBorderDebug: settings.mapTileBorderDebug,
       mapCompassRoseEnabled: settings.mapCompassRoseEnabled,
       mapMgrsGridEnabled: settings.mapMgrsGridEnabled,
+      darkMapTilesInDarkMode: settings.darkMapTilesInDarkMode,
       polygonSnapRightAngles: settings.polygonSnapRightAngles,
       polygonSnap45Angles: settings.polygonSnap45Angles,
       mapMinZoom: zoomRange.min,
@@ -107,6 +111,7 @@ class ClientPreferences {
       mapTileBorderDebug: prefs.mapTileBorderDebug,
       mapCompassRoseEnabled: prefs.mapCompassRoseEnabled,
       mapMgrsGridEnabled: prefs.mapMgrsGridEnabled,
+      darkMapTilesInDarkMode: prefs.darkMapTilesInDarkMode,
       polygonSnapRightAngles: prefs.polygonSnapRightAngles,
       polygonSnap45Angles: prefs.polygonSnap45Angles,
       mapMinZoom: MapZoomRange.defaults.min,
@@ -142,6 +147,7 @@ class ClientPreferences {
       mapTileBorderDebug: json['mapTileBorderDebug'] as bool? ?? false,
       mapCompassRoseEnabled: json['mapCompassRoseEnabled'] as bool? ?? true,
       mapMgrsGridEnabled: json['mapMgrsGridEnabled'] as bool? ?? false,
+      darkMapTilesInDarkMode: json['darkMapTilesInDarkMode'] as bool? ?? true,
       polygonSnapRightAngles: json['polygonSnapRightAngles'] as bool? ?? true,
       polygonSnap45Angles: json['polygonSnap45Angles'] as bool? ?? false,
       mapMinZoom: zoomRange.min,
@@ -161,6 +167,7 @@ class ClientPreferences {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -180,6 +187,8 @@ class ClientPreferences {
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
+      darkMapTilesInDarkMode:
+          darkMapTilesInDarkMode ?? this.darkMapTilesInDarkMode,
       polygonSnapRightAngles:
           polygonSnapRightAngles ?? this.polygonSnapRightAngles,
       polygonSnap45Angles: polygonSnap45Angles ?? this.polygonSnap45Angles,
@@ -201,6 +210,7 @@ class ClientPreferences {
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': darkMapTilesInDarkMode,
       'polygonSnapRightAngles': polygonSnapRightAngles,
       'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,

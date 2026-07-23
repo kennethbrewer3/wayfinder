@@ -30,6 +30,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -47,6 +48,7 @@ abstract class AppSettings implements _i1.SerializableModel {
        mapTileBorderDebug = mapTileBorderDebug ?? false,
        mapCompassRoseEnabled = mapCompassRoseEnabled ?? true,
        mapMgrsGridEnabled = mapMgrsGridEnabled ?? false,
+       darkMapTilesInDarkMode = darkMapTilesInDarkMode ?? true,
        polygonSnapRightAngles = polygonSnapRightAngles ?? true,
        polygonSnap45Angles = polygonSnap45Angles ?? false,
        mapMinZoom = mapMinZoom ?? 2.0,
@@ -69,6 +71,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -112,6 +115,12 @@ abstract class AppSettings implements _i1.SerializableModel {
           ? null
           : _i1.BoolJsonExtension.fromJson(
               jsonSerialization['mapMgrsGridEnabled'],
+            ),
+      darkMapTilesInDarkMode:
+          jsonSerialization['darkMapTilesInDarkMode'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['darkMapTilesInDarkMode'],
             ),
       polygonSnapRightAngles:
           jsonSerialization['polygonSnapRightAngles'] == null
@@ -168,6 +177,8 @@ abstract class AppSettings implements _i1.SerializableModel {
 
   bool mapMgrsGridEnabled;
 
+  bool darkMapTilesInDarkMode;
+
   bool polygonSnapRightAngles;
 
   bool polygonSnap45Angles;
@@ -200,6 +211,7 @@ abstract class AppSettings implements _i1.SerializableModel {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -227,6 +239,7 @@ abstract class AppSettings implements _i1.SerializableModel {
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
       'mapMgrsGridEnabled': mapMgrsGridEnabled,
+      'darkMapTilesInDarkMode': darkMapTilesInDarkMode,
       'polygonSnapRightAngles': polygonSnapRightAngles,
       'polygonSnap45Angles': polygonSnap45Angles,
       'mapMinZoom': mapMinZoom,
@@ -262,6 +275,7 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -285,6 +299,7 @@ class _AppSettingsImpl extends AppSettings {
          mapTileBorderDebug: mapTileBorderDebug,
          mapCompassRoseEnabled: mapCompassRoseEnabled,
          mapMgrsGridEnabled: mapMgrsGridEnabled,
+         darkMapTilesInDarkMode: darkMapTilesInDarkMode,
          polygonSnapRightAngles: polygonSnapRightAngles,
          polygonSnap45Angles: polygonSnap45Angles,
          mapMinZoom: mapMinZoom,
@@ -314,6 +329,7 @@ class _AppSettingsImpl extends AppSettings {
     bool? mapTileBorderDebug,
     bool? mapCompassRoseEnabled,
     bool? mapMgrsGridEnabled,
+    bool? darkMapTilesInDarkMode,
     bool? polygonSnapRightAngles,
     bool? polygonSnap45Angles,
     double? mapMinZoom,
@@ -340,6 +356,8 @@ class _AppSettingsImpl extends AppSettings {
       mapCompassRoseEnabled:
           mapCompassRoseEnabled ?? this.mapCompassRoseEnabled,
       mapMgrsGridEnabled: mapMgrsGridEnabled ?? this.mapMgrsGridEnabled,
+      darkMapTilesInDarkMode:
+          darkMapTilesInDarkMode ?? this.darkMapTilesInDarkMode,
       polygonSnapRightAngles:
           polygonSnapRightAngles ?? this.polygonSnapRightAngles,
       polygonSnap45Angles: polygonSnap45Angles ?? this.polygonSnap45Angles,

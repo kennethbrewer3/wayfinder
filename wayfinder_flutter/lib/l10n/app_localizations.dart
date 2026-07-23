@@ -1273,7 +1273,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapDisplayDescription.
   ///
   /// In en, this message translates to:
-  /// **'Compass rose and MGRS grid for your account. Saved to your account so it follows you on any workstation.'**
+  /// **'Compass rose, MGRS grid, and dark-mode map tiles for your account. Saved to your account so it follows you on any workstation.'**
   String get settingsMapDisplayDescription;
 
   /// No description provided for @settingsMapCompassRoseTitle.
@@ -1299,6 +1299,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.'**
   String get settingsMapMgrsGridDescription;
+
+  /// No description provided for @settingsDarkMapTilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Darken map tiles in dark mode'**
+  String get settingsDarkMapTilesTitle;
+
+  /// No description provided for @settingsDarkMapTilesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When the app is in dark mode, apply a color filter to basemap tiles so they look darker. This is a simulated dark style on the existing tiles — not a separate dark cartography design. Turn off to keep map tiles looking as usual while the rest of the UI stays dark. Printable atlas PDFs always use normal tiles for paper readability.'**
+  String get settingsDarkMapTilesDescription;
 
   /// No description provided for @settingsMapZoomRangeTitle.
   ///

@@ -14,6 +14,7 @@ fields:
   mapTileBorderDebug: bool, default=false
   mapCompassRoseEnabled: bool, default=true
   mapMgrsGridEnabled: bool, default=false
+  darkMapTilesInDarkMode: bool, default=true
   polygonSnapRightAngles: bool, default=true
   polygonSnap45Angles: bool, default=false
   updatedAt: DateTime

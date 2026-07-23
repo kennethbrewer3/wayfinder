@@ -620,7 +620,7 @@ Choose **English**, **Spanish**, or **French** for the app interface. Some map d
 ### Appearance
 
 - **Theme family** — color palette variants.
-- **Brightness** — light, dark, or follow system.
+- **Brightness** — light, dark, or follow system. Dark mode darkens the app chrome and panels; map basemap tiles stay as authored unless you also enable **Darken map tiles in dark mode** under [Map display](#map-display).
 
 Changing language may prompt an app restart.
 
@@ -641,10 +641,13 @@ Set latitude, longitude, and zoom for the **Home** button on the map. If no mark
 
 ### Map display
 
+These options (except shared zoom range) are **per user** and available to any role that can open General, including viewers.
+
 - **Bearings** — display absolute bearings as **true north (°T)** or **magnetic north (°M)** using WMM2025 declination at GPS position or map center.
 - **Compass rose** — show or hide the compass overlay (bottom-left, above the GPS status bar when shown). **±5°** buttons rotate the map; **double-tap** the rose to reset rotation; **long-press** toggles true north (red **N**) vs magnetic north (blue **MN**). Variation uses WMM2025.
 - **Show MGRS grid** — overlay true Military Grid Reference System lines (see [MGRS grid](#mgrs-grid) under **The map**). Spacing follows zoom; zone seams and slight curvature on Web Mercator are expected for correct MGRS.
-- **Map zoom range** — optional min/max zoom limits for the map interaction range.
+- **Darken map tiles in dark mode** — when Brightness is dark (or the system is dark and you follow system), apply a color filter to basemap tiles so they look darker with the rest of the UI. This is a **simulated** dark look on the existing light-oriented tiles — colors are inverted/shifted, not a separate dark map design. Turn the toggle **off** to keep map tiles looking as usual while panels and chrome stay dark. Default is on. **Printable atlas PDFs always use normal (unfiltered) tiles** so paper sheets stay readable.
+- **Map zoom range** — optional min/max zoom limits for the map interaction range (requires permission to change; shared for all clients).
 
 ### Map debug (advanced)
 
@@ -832,7 +835,7 @@ Use this when you need paper sheets if the phone dies. From the map, tap the **P
 - **Page size** — US Letter or A4 landscape
 - Optional marker list on each sheet
 
-The PDF includes an index overview plus one page per sheet with the **enabled PMTiles basemap** (rasterized from the same archives used on the map), markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. Sheets use a lat/lng grid by default; if the **MGRS grid** is enabled on the map when you export, the MGRS grid (and its labels) is drawn instead. Export can take a moment while tiles are rendered.
+The PDF includes an index overview plus one page per sheet with the **enabled PMTiles basemap** (rasterized from the same archives used on the map), markers, lines/tracks/circles/rectangles, scale bar, north arrow, and an approximate MGRS label for the sheet center. Sheets use a lat/lng grid by default; if the **MGRS grid** is enabled on the map when you export, the MGRS grid (and its labels) is drawn instead. Basemap tiles are always rendered in their normal (light) appearance for print — the on-screen **Darken map tiles in dark mode** filter is not applied. Export can take a moment while tiles are rendered.
 
 ---
 

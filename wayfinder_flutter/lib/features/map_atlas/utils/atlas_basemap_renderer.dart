@@ -21,6 +21,10 @@ const _renderScale = 2; // 512px rendered tiles for sharper print
 
 /// Renders a Web Mercator basemap mosaic for [bounds] as PNG bytes.
 ///
+/// Always uses the normal (light) basemap style with **no** dark-mode tile
+/// color filter. Printable atlas sheets must stay readable on paper even when
+/// the on-screen map is darkened in dark mode.
+///
 /// Returns `null` when no enabled archive covers the area or rendering fails.
 Future<Uint8List?> renderAtlasBasemapPng({
   required AtlasBounds bounds,
@@ -73,6 +77,7 @@ Future<Uint8List?> renderAtlasBasemapPng({
     final renderedTiles = <_RenderedTile>[];
     try {
       if (archive.tileType == TileType.mvt) {
+        // Light theme only — never apply the on-screen dark-tile filter.
         final style = await ProtomapsOfflineAssets.loadLightV4();
         final spriteBytes = await style.sprites.atlasProvider();
         final spriteAtlas = await _decodeImage(spriteBytes);

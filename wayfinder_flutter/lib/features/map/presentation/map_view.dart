@@ -109,9 +109,11 @@ import '../../viewshed/utils/viewshed_compute.dart';
 import '../models/map_viewport.dart';
 import '../models/pmtiles_load_status.dart';
 import '../providers/device_location_provider.dart';
+import '../providers/dark_map_tiles_provider.dart';
 import '../providers/map_compass_rose_provider.dart';
 import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/map_viewport_debug_provider.dart';
+import '../utils/dark_map_tiles.dart';
 import '../providers/map_zoom_range_provider.dart';
 import '../providers/pmtiles_load_status_provider.dart';
 import '../utils/device_location_readout.dart';
@@ -4408,6 +4410,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final showCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final showMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
+    final darkenMapTiles =
+        Theme.of(context).brightness == Brightness.dark &&
+        ref.watch(darkMapTilesInDarkModeProvider);
     final deviceLocation = ref.watch(deviceLocationProvider);
     final deviceLocationTarget = selectedMarkerTarget(
       selection: selectedMapObject,
@@ -4625,22 +4630,25 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             :final sprites,
                           ) =>
                             [
-                              VectorTileLayer(
-                                key: ValueKey('pmtiles-$catalogId'),
-                                layerMode: VectorTileLayerMode.vector,
-                                theme: theme,
-                                backgroundTheme: backgroundTheme,
-                                sprites: sprites,
-                                concurrency: 6,
-                                maximumTileSubstitutionDifference: 3,
-                                memoryTileDataCacheMaxSize: 99,
-                                memoryTileCacheMaxSize: 32 * 1024 * 1024,
-                                showTileDebugInfo:
-                                    showViewportDebugBorder &&
-                                    showTileBorderDebug,
-                                tileProviders: TileProviders({
-                                  'protomaps': tileProvider,
-                                }),
+                              maybeDarkenMapLayer(
+                                enabled: darkenMapTiles,
+                                child: VectorTileLayer(
+                                  key: ValueKey('pmtiles-$catalogId'),
+                                  layerMode: VectorTileLayerMode.vector,
+                                  theme: theme,
+                                  backgroundTheme: backgroundTheme,
+                                  sprites: sprites,
+                                  concurrency: 6,
+                                  maximumTileSubstitutionDifference: 3,
+                                  memoryTileDataCacheMaxSize: 99,
+                                  memoryTileCacheMaxSize: 32 * 1024 * 1024,
+                                  showTileDebugInfo:
+                                      showViewportDebugBorder &&
+                                      showTileBorderDebug,
+                                  tileProviders: TileProviders({
+                                    'protomaps': tileProvider,
+                                  }),
+                                ),
                               ),
                             ],
                           PmtilesRasterMapLayerConfig(
@@ -4649,11 +4657,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             :final maxZoom,
                           ) =>
                             [
-                              TileLayer(
-                                key: ValueKey('pmtiles-$catalogId'),
-                                maxNativeZoom: maxZoom,
-                                maxZoom: interactionMaxZoom,
-                                tileProvider: tileProvider,
+                              maybeDarkenMapLayer(
+                                enabled: darkenMapTiles,
+                                child: TileLayer(
+                                  key: ValueKey('pmtiles-$catalogId'),
+                                  maxNativeZoom: maxZoom,
+                                  maxZoom: interactionMaxZoom,
+                                  tileProvider: tileProvider,
+                                ),
                               ),
                             ],
                         },

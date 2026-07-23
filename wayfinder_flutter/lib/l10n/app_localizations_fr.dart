@@ -143,6 +143,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'You do not have permission to manage users or roles.';
 
   @override
+  String get manageLayersPermissionDenied =>
+      'You do not have permission to manage map layers or seasonal overlays.';
+
+  @override
   String get accessUsersEmpty =>
       'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD (username + password).';
 
@@ -888,6 +892,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupTitle => 'Sauvegarde des données cartographiques';
+
+  @override
+  String get backupPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation d\'exporter ou de restaurer les sauvegardes cartographiques.';
 
   @override
   String get backupDescription =>
@@ -5396,6 +5404,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsRestApiTitle => 'Accès à l\'API REST';
+
+  @override
+  String get settingsRestApiPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de gérer les clés d\'API REST.';
 
   @override
   String get settingsRestApiDescription =>

@@ -6,6 +6,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/clipboard_copy.dart';
 import '../../../core/rest_api_key_storage.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../data/app_settings_repository.dart';
 
 final restApiKeyStatusProvider = FutureProvider<RestApiKeyInfo>((ref) async {
@@ -269,6 +270,54 @@ class _SettingsRestApiSectionState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final canManageKeys = ref.watch(canManageApiKeysProvider);
+
+    if (!canManageKeys) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.settingsRestApiTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.settingsRestApiPermissionDenied,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.settingsRestApiClientKeyTitle,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.settingsRestApiClientKeyDescription,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _localKeyController,
+            decoration: InputDecoration(
+              labelText: l10n.settingsRestApiClientKeyLabel,
+              border: const OutlineInputBorder(),
+            ),
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton(
+              onPressed: _busy ? null : _saveLocalKey,
+              child: Text(l10n.settingsRestApiSaveClientKeyAction),
+            ),
+          ),
+        ],
+      );
+    }
+
     final statusAsync = ref.watch(restApiKeyStatusProvider);
     final keysAsync = ref.watch(restApiKeysProvider);
 

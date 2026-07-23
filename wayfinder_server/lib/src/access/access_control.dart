@@ -36,6 +36,8 @@ abstract final class AccessControl {
         canManageRoles: !authRequired,
         canManageSettings: !authRequired,
         canManageBackups: !authRequired,
+        canManageApiKeys: !authRequired,
+        canManageLayers: !authRequired,
       );
     }
 
@@ -56,6 +58,8 @@ abstract final class AccessControl {
         canManageRoles: false,
         canManageSettings: false,
         canManageBackups: false,
+        canManageApiKeys: false,
+        canManageLayers: false,
       );
     }
 
@@ -85,6 +89,10 @@ abstract final class AccessControl {
           isAdmin || permissions.contains(WayfinderPermission.manageSettings),
       canManageBackups:
           isAdmin || permissions.contains(WayfinderPermission.manageBackups),
+      canManageApiKeys:
+          isAdmin || permissions.contains(WayfinderPermission.manageApiKeys),
+      canManageLayers:
+          isAdmin || permissions.contains(WayfinderPermission.manageLayers),
     );
   }
 

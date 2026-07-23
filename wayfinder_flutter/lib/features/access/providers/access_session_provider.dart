@@ -81,6 +81,39 @@ final canManageRolesProvider = Provider<bool>((ref) {
   return session.canManageRoles;
 });
 
+final canManageApiKeysProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageApiKeys;
+});
+
+final canManageBackupsProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageBackups;
+});
+
+final canManageLayersProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageLayers;
+});
+
 @visibleForTesting
 AccessSessionInfo openAccessSessionForTests() {
   return AccessSessionInfo(
@@ -93,5 +126,7 @@ AccessSessionInfo openAccessSessionForTests() {
     canManageRoles: true,
     canManageSettings: true,
     canManageBackups: true,
+    canManageApiKeys: true,
+    canManageLayers: true,
   );
 }

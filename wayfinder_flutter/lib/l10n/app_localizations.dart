@@ -340,6 +340,12 @@ abstract class AppLocalizations {
   /// **'You do not have permission to manage users or roles.'**
   String get accessUsersPermissionDenied;
 
+  /// No description provided for @manageLayersPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to manage map layers or seasonal overlays.'**
+  String get manageLayersPermissionDenied;
+
   /// No description provided for @accessUsersEmpty.
   ///
   /// In en, this message translates to:
@@ -1659,6 +1665,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Map data backup'**
   String get backupTitle;
+
+  /// No description provided for @backupPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to export or restore map backups.'**
+  String get backupPermissionDenied;
 
   /// No description provided for @backupDescription.
   ///
@@ -9386,6 +9398,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'REST API access'**
   String get settingsRestApiTitle;
+
+  /// No description provided for @settingsRestApiPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to manage REST API keys.'**
+  String get settingsRestApiPermissionDenied;
 
   /// No description provided for @settingsRestApiDescription.
   ///

@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'seasonal_overlay_change_broadcast.dart';
@@ -52,6 +53,7 @@ class SeasonalOverlayEndpoint extends Endpoint with EndpointLogging {
         return created;
       },
       onSuccess: (created) => 'id=${created.id} name="${created.name}"',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 
@@ -73,6 +75,7 @@ class SeasonalOverlayEndpoint extends Endpoint with EndpointLogging {
       },
       onSuccess: (updated) =>
           'id=${updated.id} sortOrder=${updated.sortOrder} visible=${updated.visible}',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 
@@ -92,6 +95,7 @@ class SeasonalOverlayEndpoint extends Endpoint with EndpointLogging {
         return deleted.isNotEmpty;
       },
       onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 
@@ -115,6 +119,7 @@ class SeasonalOverlayEndpoint extends Endpoint with EndpointLogging {
         return result;
       },
       onSuccess: (result) => 'count=${result.length}',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 

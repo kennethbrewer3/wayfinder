@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
+import '../access/wayfinder_permissions.dart';
 import '../pmtiles/pmtiles_catalog_sync.dart';
 import '../pmtiles/pmtiles_storage.dart';
 import 'app_settings_constants.dart';
@@ -181,6 +182,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       'getRestApiKeyStatus',
       () => RestApiKeyService.readStatus(session),
       onSuccess: (info) => 'enabled=${info.enabled}',
+      requiredPermission: WayfinderPermission.manageApiKeys,
     );
   }
 
@@ -191,6 +193,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       'listRestApiKeys',
       () => RestApiKeyService.listKeys(session),
       onSuccess: (keys) => 'count=${keys.length}',
+      requiredPermission: WayfinderPermission.manageApiKeys,
     );
   }
 
@@ -201,6 +204,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       'createRestApiKey',
       () => RestApiKeyService.createKey(session, name),
       onSuccess: (created) => 'name="${created.key.name}"',
+      requiredPermission: WayfinderPermission.manageApiKeys,
     );
   }
 
@@ -211,6 +215,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       'deleteRestApiKey',
       () => RestApiKeyService.deleteKey(session, id),
       onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
+      requiredPermission: WayfinderPermission.manageApiKeys,
     );
   }
 
@@ -224,6 +229,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
         return RestApiKeyService.readStatus(session);
       },
       onSuccess: (info) => 'enabled=${info.enabled}',
+      requiredPermission: WayfinderPermission.manageApiKeys,
     );
   }
 }

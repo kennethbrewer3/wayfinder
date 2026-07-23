@@ -168,6 +168,11 @@ class _LayerOrganizedPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final layersAsync = ref.watch(layersProvider);
     final l10n = AppLocalizations.of(context)!;
+    final canManageLayers = ref.watch(canManageLayersProvider);
+    final layersMutationsLocked =
+        ref.watch(kioskModeActiveProvider) ||
+        ref.watch(offlineModeActiveProvider) ||
+        !canManageLayers;
 
     if (layersAsync.isLoading ||
         markersAsync.isLoading ||
@@ -356,27 +361,36 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                                 allLayerIds: orderedLayers.map((l) => l.id),
                               );
                         },
-                        onToggleVisible: () {
-                          updateMapLayer(
-                            ref,
-                            layer.copyWith(visible: !layer.visible),
-                          );
-                        },
-                        onMoveUp: () {
-                          reorderMapLayers(
-                            ref,
-                            applyLayerOrder(layers, index, index - 1),
-                          );
-                        },
-                        onMoveDown: () {
-                          reorderMapLayers(
-                            ref,
-                            applyLayerOrder(layers, index, index + 1),
-                          );
-                        },
-                        onRename: () => _renameLayer(context, ref, layer),
-                        onDelete: () =>
-                            _deleteLayer(context, ref, layer, layers),
+                        onToggleVisible: layersMutationsLocked
+                            ? null
+                            : () {
+                                updateMapLayer(
+                                  ref,
+                                  layer.copyWith(visible: !layer.visible),
+                                );
+                              },
+                        onMoveUp: layersMutationsLocked
+                            ? null
+                            : () {
+                                reorderMapLayers(
+                                  ref,
+                                  applyLayerOrder(layers, index, index - 1),
+                                );
+                              },
+                        onMoveDown: layersMutationsLocked
+                            ? null
+                            : () {
+                                reorderMapLayers(
+                                  ref,
+                                  applyLayerOrder(layers, index, index + 1),
+                                );
+                              },
+                        onRename: layersMutationsLocked
+                            ? null
+                            : () => _renameLayer(context, ref, layer),
+                        onDelete: layersMutationsLocked
+                            ? null
+                            : () => _deleteLayer(context, ref, layer, layers),
                       ),
                       if (isExpanded)
                         _LayerObjectPanel(
@@ -400,7 +414,9 @@ class _LayerOrganizedPanel extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(16),
           child: FilledButton.icon(
-            onPressed: () => _createLayer(context, ref),
+            onPressed: layersMutationsLocked
+                ? null
+                : () => _createLayer(context, ref),
             icon: const Icon(Icons.add),
             label: Text(l10n.sidebarAddLayer),
           ),
@@ -561,11 +577,11 @@ class _LayerHeader extends StatelessWidget {
     required this.objectCount,
     required this.onSelect,
     required this.onToggleExpanded,
-    required this.onToggleVisible,
-    required this.onMoveUp,
-    required this.onMoveDown,
-    required this.onRename,
-    required this.onDelete,
+    this.onToggleVisible,
+    this.onMoveUp,
+    this.onMoveDown,
+    this.onRename,
+    this.onDelete,
   });
 
   final MapLayer layer;
@@ -576,11 +592,11 @@ class _LayerHeader extends StatelessWidget {
   final int objectCount;
   final VoidCallback onSelect;
   final VoidCallback onToggleExpanded;
-  final VoidCallback onToggleVisible;
-  final VoidCallback onMoveUp;
-  final VoidCallback onMoveDown;
-  final VoidCallback onRename;
-  final VoidCallback onDelete;
+  final VoidCallback? onToggleVisible;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
+  final VoidCallback? onRename;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -634,34 +650,37 @@ class _LayerHeader extends StatelessWidget {
             ),
             IconButton(
               tooltip: l10n.sidebarMoveUp,
-              onPressed: isTop ? null : onMoveUp,
+              onPressed: (isTop || onMoveUp == null) ? null : onMoveUp,
               icon: const Icon(Icons.arrow_upward),
             ),
             IconButton(
               tooltip: l10n.sidebarMoveDown,
-              onPressed: isBottom ? null : onMoveDown,
+              onPressed: (isBottom || onMoveDown == null) ? null : onMoveDown,
               icon: const Icon(Icons.arrow_downward),
             ),
-            PopupMenuButton<_LayerMenuAction>(
-              onSelected: (action) {
-                switch (action) {
-                  case _LayerMenuAction.rename:
-                    onRename();
-                  case _LayerMenuAction.delete:
-                    onDelete();
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: _LayerMenuAction.rename,
-                  child: Text(l10n.actionRename),
-                ),
-                PopupMenuItem(
-                  value: _LayerMenuAction.delete,
-                  child: Text(l10n.actionDelete),
-                ),
-              ],
-            ),
+            if (onRename != null || onDelete != null)
+              PopupMenuButton<_LayerMenuAction>(
+                onSelected: (action) {
+                  switch (action) {
+                    case _LayerMenuAction.rename:
+                      onRename?.call();
+                    case _LayerMenuAction.delete:
+                      onDelete?.call();
+                  }
+                },
+                itemBuilder: (context) => [
+                  if (onRename != null)
+                    PopupMenuItem(
+                      value: _LayerMenuAction.rename,
+                      child: Text(l10n.actionRename),
+                    ),
+                  if (onDelete != null)
+                    PopupMenuItem(
+                      value: _LayerMenuAction.delete,
+                      child: Text(l10n.actionDelete),
+                    ),
+                ],
+              ),
           ],
         ),
       ),
@@ -1369,6 +1388,7 @@ class _LineZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final zoneId = zone.id;
     final geometry = LineGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1472,7 +1492,9 @@ class _LineZoneListTile extends ConsumerWidget {
                 icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
                 toggled: geometry.showNameLabel,
                 isToggle: true,
-                onPressed: () => toggleLineNameLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => toggleLineNameLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: geometry.showDistanceLabel
@@ -1483,8 +1505,9 @@ class _LineZoneListTile extends ConsumerWidget {
                     : Icons.straighten_outlined,
                 toggled: geometry.showDistanceLabel,
                 isToggle: true,
-                onPressed: () =>
-                    toggleLineDistanceLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => toggleLineDistanceLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: zone.visible
@@ -1493,34 +1516,40 @@ class _LineZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditLine,
                 icon: Icons.edit_outlined,
-                onPressed: () => updateLineFromForm(
-                  context: context,
-                  ref: ref,
-                  zone: zone,
-                ),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => updateLineFromForm(
+                        context: context,
+                        ref: ref,
+                        zone: zone,
+                      ),
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteLine,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zoneId,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zoneId,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -1544,6 +1573,7 @@ class _TrackZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final zoneId = zone.id;
     final geometry = TrackGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1643,34 +1673,40 @@ class _TrackZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditTrack,
                 icon: Icons.edit_outlined,
-                onPressed: () => updateTrackFromForm(
-                  context: context,
-                  ref: ref,
-                  zone: zone,
-                ),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => updateTrackFromForm(
+                        context: context,
+                        ref: ref,
+                        zone: zone,
+                      ),
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteTrack,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zoneId,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zoneId,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -1694,6 +1730,7 @@ class _CircleZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final zoneId = zone.id;
     final geometry = CircleGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1785,8 +1822,9 @@ class _CircleZoneListTile extends ConsumerWidget {
                 icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
                 toggled: geometry.showNameLabel,
                 isToggle: true,
-                onPressed: () =>
-                    toggleCircleNameLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => toggleCircleNameLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: geometry.sizeDisplay.localizedToggleTooltip(l10n),
@@ -1795,8 +1833,9 @@ class _CircleZoneListTile extends ConsumerWidget {
                     : Icons.straighten,
                 toggled: geometry.sizeDisplay != CircleSizeDisplay.none,
                 isToggle: true,
-                onPressed: () =>
-                    toggleCircleSizeLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => toggleCircleSizeLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: zone.visible
@@ -1805,34 +1844,40 @@ class _CircleZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditCircle,
                 icon: Icons.edit_outlined,
-                onPressed: () => updateCircleFromForm(
-                  context: context,
-                  ref: ref,
-                  zone: zone,
-                ),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => updateCircleFromForm(
+                        context: context,
+                        ref: ref,
+                        zone: zone,
+                      ),
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteCircle,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zoneId,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zoneId,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -1856,6 +1901,7 @@ class _RectangleZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final zoneId = zone.id;
     final geometry = RectangleGeometry.fromZone(zone);
     final measurementUnits = ref.watch(measurementUnitsProvider);
@@ -1946,8 +1992,9 @@ class _RectangleZoneListTile extends ConsumerWidget {
                 icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
                 toggled: geometry.showNameLabel,
                 isToggle: true,
-                onPressed: () =>
-                    toggleRectangleNameLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => toggleRectangleNameLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: rectangleSizeDisplayToggleTooltip(
@@ -1958,8 +2005,9 @@ class _RectangleZoneListTile extends ConsumerWidget {
                     : Icons.straighten,
                 toggled: geometry.sizeDisplay != RectangleSizeDisplay.none,
                 isToggle: true,
-                onPressed: () =>
-                    toggleRectangleSizeLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => toggleRectangleSizeLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: zone.visible
@@ -1968,34 +2016,40 @@ class _RectangleZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditRectangle,
                 icon: Icons.edit_outlined,
-                onPressed: () => updateRectangleFromForm(
-                  context: context,
-                  ref: ref,
-                  zone: zone,
-                ),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => updateRectangleFromForm(
+                        context: context,
+                        ref: ref,
+                        zone: zone,
+                      ),
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteRectangle,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zoneId,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zoneId,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -2019,6 +2073,7 @@ class _PolygonZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final zoneId = zone.id;
     final geometry = PolygonGeometry.fromZone(zone);
     final selected = ref.watch(selectedMapObjectProvider);
@@ -2096,8 +2151,9 @@ class _PolygonZoneListTile extends ConsumerWidget {
                 icon: geometry.showNameLabel ? Icons.label : Icons.label_off,
                 toggled: geometry.showNameLabel,
                 isToggle: true,
-                onPressed: () =>
-                    togglePolygonNameLabel(ref: ref, zoneId: zoneId),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => togglePolygonNameLabel(ref: ref, zoneId: zoneId),
               ),
               _MapObjectIconAction(
                 tooltip: zone.visible
@@ -2106,34 +2162,40 @@ class _PolygonZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditPolygon,
                 icon: Icons.edit_outlined,
-                onPressed: () => updatePolygonFromForm(
-                  context: context,
-                  ref: ref,
-                  zone: zone,
-                ),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => updatePolygonFromForm(
+                        context: context,
+                        ref: ref,
+                        zone: zone,
+                      ),
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeletePolygon,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zoneId,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zoneId,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -2157,6 +2219,7 @@ class _EvacKitZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final zoneId = zone.id;
     final geometry = EvacKitGeometry.fromZone(zone);
     final selected = ref.watch(selectedMapObjectProvider);
@@ -2248,34 +2311,40 @@ class _EvacKitZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditEvacKit,
                 icon: Icons.edit_outlined,
-                onPressed: () => updateEvacKitFromForm(
-                  context: context,
-                  ref: ref,
-                  zone: zone,
-                ),
+                onPressed: mutationsLocked
+                    ? null
+                    : () => updateEvacKitFromForm(
+                        context: context,
+                        ref: ref,
+                        zone: zone,
+                      ),
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteEvacKit,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zoneId,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zoneId,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -2299,6 +2368,7 @@ class _GenericZoneListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked = _sidebarMutationsLocked(ref);
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
@@ -2369,25 +2439,29 @@ class _GenericZoneListTile extends ConsumerWidget {
                 icon: zone.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: zone.visible,
                 isToggle: true,
-                onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.updateZone(
-                    zone.copyWith(visible: !zone.visible),
-                  );
-                  ref.read(zonesProvider.notifier).reload();
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        final client = ref.read(serverClientProvider);
+                        await client.mapZone.updateZone(
+                          zone.copyWith(visible: !zone.visible),
+                        );
+                        ref.read(zonesProvider.notifier).reload();
+                      },
               ),
               _MapObjectIconAction(
                 tooltip: l10n.sidebarDeleteZone,
                 icon: Icons.delete_outline,
-                onPressed: () async {
-                  await softDeleteZoneWithUndo(
-                    context: context,
-                    ref: ref,
-                    zoneId: zone.id,
-                    zoneName: zone.name,
-                  );
-                },
+                onPressed: mutationsLocked
+                    ? null
+                    : () async {
+                        await softDeleteZoneWithUndo(
+                          context: context,
+                          ref: ref,
+                          zoneId: zone.id,
+                          zoneName: zone.name,
+                        );
+                      },
               ),
             ],
           ),
@@ -2597,6 +2671,12 @@ Future<void> _mergeSelectedLines({
   }
 }
 
+bool _sidebarMutationsLocked(WidgetRef ref) {
+  return ref.watch(kioskModeActiveProvider) ||
+      ref.watch(offlineModeActiveProvider) ||
+      ref.watch(mapEditsLockedByRoleProvider);
+}
+
 Color _parseColor(String value) => parseMarkerColor(value);
 
 Color _selectionHighlightColor(ThemeData theme, bool isSelected) {
@@ -2619,8 +2699,8 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
-    final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
-    final mutationsLocked = kiosk || offline || roleLocked;
+    final canManageLayers = ref.watch(canManageLayersProvider);
+    final mutationsLocked = kiosk || offline || !canManageLayers;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),

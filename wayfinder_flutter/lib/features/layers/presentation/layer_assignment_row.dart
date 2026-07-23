@@ -4,6 +4,8 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/serverpod_client.dart';
+import '../../access/providers/access_session_provider.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../layers/utils/map_layer_utils.dart';
 import '../../lines/providers/zones_provider.dart';
@@ -25,6 +27,10 @@ class LayerAssignmentRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final layersAsync = ref.watch(layersProvider);
     final l10n = AppLocalizations.of(context)!;
+    final mutationsLocked =
+        ref.watch(kioskModeActiveProvider) ||
+        ref.watch(offlineModeActiveProvider) ||
+        ref.watch(mapEditsLockedByRoleProvider);
 
     return layersAsync.when(
       loading: () => ListTile(
@@ -63,7 +69,7 @@ class LayerAssignmentRow extends ConsumerWidget {
                   child: Text(layer.name),
                 ),
             ],
-            onChanged: (value) => onChanged(value),
+            onChanged: mutationsLocked ? null : (value) => onChanged(value),
           ),
         );
       },

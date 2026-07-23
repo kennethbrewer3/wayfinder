@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../access/providers/access_session_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../seasonal_overlays/models/seasonal_date_window.dart';
@@ -20,6 +21,7 @@ class SettingsSeasonalOverlaysTab extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final overlaysAsync = ref.watch(seasonalOverlaysProvider);
     final showInactive = ref.watch(showInactiveSeasonalOverlaysProvider);
+    final canManageLayers = ref.watch(canManageLayersProvider);
 
     return ListView(
       padding: const EdgeInsets.all(24),
@@ -30,7 +32,9 @@ class SettingsSeasonalOverlaysTab extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.seasonalOverlaysSettingsSubtitle,
+          canManageLayers
+              ? l10n.seasonalOverlaysSettingsSubtitle
+              : l10n.manageLayersPermissionDenied,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -49,13 +53,15 @@ class SettingsSeasonalOverlaysTab extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.seasonalOverlaysDrawHint,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+        if (canManageLayers) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.seasonalOverlaysDrawHint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
-        ),
+        ],
         const SizedBox(height: 16),
         Text(
           l10n.seasonalOverlaysInstalled,
@@ -74,7 +80,10 @@ class SettingsSeasonalOverlaysTab extends ConsumerWidget {
             return Column(
               children: [
                 for (final overlay in overlays)
-                  _SeasonalOverlaySettingsTile(overlay: overlay),
+                  _SeasonalOverlaySettingsTile(
+                    overlay: overlay,
+                    canManage: canManageLayers,
+                  ),
               ],
             );
           },
@@ -85,9 +94,13 @@ class SettingsSeasonalOverlaysTab extends ConsumerWidget {
 }
 
 class _SeasonalOverlaySettingsTile extends ConsumerWidget {
-  const _SeasonalOverlaySettingsTile({required this.overlay});
+  const _SeasonalOverlaySettingsTile({
+    required this.overlay,
+    required this.canManage,
+  });
 
   final SeasonalOverlay overlay;
+  final bool canManage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -123,36 +136,38 @@ class _SeasonalOverlaySettingsTile extends ConsumerWidget {
         trailing: Wrap(
           spacing: 4,
           children: [
-            IconButton(
-              tooltip: overlay.visible
-                  ? l10n.seasonalOverlayHide
-                  : l10n.seasonalOverlayShow,
-              onPressed: () {
-                unawaited(
-                  ref
-                      .read(seasonalOverlaysProvider.notifier)
-                      .setVisible(overlay.id, !overlay.visible),
-                );
-              },
-              icon: Icon(
-                overlay.visible
-                    ? Icons.visibility
-                    : Icons.visibility_off_outlined,
+            if (canManage)
+              IconButton(
+                tooltip: overlay.visible
+                    ? l10n.seasonalOverlayHide
+                    : l10n.seasonalOverlayShow,
+                onPressed: () {
+                  unawaited(
+                    ref
+                        .read(seasonalOverlaysProvider.notifier)
+                        .setVisible(overlay.id, !overlay.visible),
+                  );
+                },
+                icon: Icon(
+                  overlay.visible
+                      ? Icons.visibility
+                      : Icons.visibility_off_outlined,
+                ),
               ),
-            ),
-            IconButton(
-              tooltip: l10n.actionEdit,
-              onPressed: () {
-                unawaited(
-                  updateSeasonalOverlayFromForm(
-                    context: context,
-                    ref: ref,
-                    overlay: overlay,
-                  ),
-                );
-              },
-              icon: const Icon(Icons.edit_outlined),
-            ),
+            if (canManage)
+              IconButton(
+                tooltip: l10n.actionEdit,
+                onPressed: () {
+                  unawaited(
+                    updateSeasonalOverlayFromForm(
+                      context: context,
+                      ref: ref,
+                      overlay: overlay,
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.edit_outlined),
+              ),
             if (geometry != null)
               IconButton(
                 tooltip: l10n.seasonalOverlayZoomTo,
@@ -170,36 +185,37 @@ class _SeasonalOverlaySettingsTile extends ConsumerWidget {
                 },
                 icon: const Icon(Icons.my_location_outlined),
               ),
-            IconButton(
-              tooltip: l10n.actionDelete,
-              onPressed: () async {
-                final confirmed = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(l10n.seasonalOverlayDeleteTitle),
-                    content: Text(
-                      l10n.seasonalOverlayDeleteConfirm(overlay.name),
+            if (canManage)
+              IconButton(
+                tooltip: l10n.actionDelete,
+                onPressed: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(l10n.seasonalOverlayDeleteTitle),
+                      content: Text(
+                        l10n.seasonalOverlayDeleteConfirm(overlay.name),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text(l10n.actionCancel),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: Text(l10n.actionDelete),
+                        ),
+                      ],
                     ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text(l10n.actionCancel),
-                      ),
-                      FilledButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text(l10n.actionDelete),
-                      ),
-                    ],
-                  ),
-                );
-                if (confirmed == true) {
-                  await ref
-                      .read(seasonalOverlaysProvider.notifier)
-                      .delete(overlay.id);
-                }
-              },
-              icon: const Icon(Icons.delete_outline),
-            ),
+                  );
+                  if (confirmed == true) {
+                    await ref
+                        .read(seasonalOverlaysProvider.notifier)
+                        .delete(overlay.id);
+                  }
+                },
+                icon: const Icon(Icons.delete_outline),
+              ),
           ],
         ),
       ),

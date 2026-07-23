@@ -3,15 +3,16 @@ import 'dart:typed_data';
 
 import 'package:serverpod/serverpod.dart';
 
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
-import 'map_data_backup_archive.dart';
-import 'map_data_service.dart';
-import 'map_marker_change_broadcast.dart';
 import '../layers/map_layer_change_broadcast.dart';
 import '../seasonal_overlays/seasonal_overlay_change_broadcast.dart';
 import '../watch_log/watch_log_entry_change_broadcast.dart';
 import '../zones/map_zone_change_broadcast.dart';
+import 'map_data_backup_archive.dart';
+import 'map_data_service.dart';
+import 'map_marker_change_broadcast.dart';
 
 class MapDataEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapData';
@@ -26,6 +27,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         return jsonEncode(data);
       },
       onSuccess: (json) => 'bytes=${json.length}',
+      requiredPermission: WayfinderPermission.manageBackups,
     );
   }
 
@@ -66,6 +68,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           'markerIconCategories=${summary.markerIconCategories} '
           'markerIcons=${summary.markerIcons} '
           'markerAttachments=${summary.markerAttachments}',
+      requiredPermission: WayfinderPermission.manageBackups,
     );
   }
 
@@ -79,6 +82,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         return ByteData.sublistView(bytes);
       },
       onSuccess: (archive) => 'bytes=${archive.lengthInBytes}',
+      requiredPermission: WayfinderPermission.manageBackups,
     );
   }
 
@@ -119,6 +123,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           'markerIconCategories=${summary.markerIconCategories} '
           'markerIcons=${summary.markerIcons} '
           'markerAttachments=${summary.markerAttachments}',
+      requiredPermission: WayfinderPermission.manageBackups,
     );
   }
 }

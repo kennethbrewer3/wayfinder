@@ -1,11 +1,12 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
-import 'map_layer_bootstrap.dart';
-import 'map_layer_change_broadcast.dart';
 import '../map/map_marker_change_broadcast.dart';
 import '../zones/map_zone_change_broadcast.dart';
+import 'map_layer_bootstrap.dart';
+import 'map_layer_change_broadcast.dart';
 
 class MapLayerEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapLayer';
@@ -41,6 +42,7 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
         return created;
       },
       onSuccess: (created) => 'id=${created.id} name="${created.name}"',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 
@@ -56,6 +58,7 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
       },
       onSuccess: (updated) =>
           'id=${updated.id} sortOrder=${updated.sortOrder} visible=${updated.visible}',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 
@@ -101,6 +104,7 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
         return deleted.isNotEmpty;
       },
       onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 
@@ -125,6 +129,7 @@ class MapLayerEndpoint extends Endpoint with EndpointLogging {
         return result;
       },
       onSuccess: (result) => 'count=${result.length}',
+      requiredPermission: WayfinderPermission.manageLayers,
     );
   }
 

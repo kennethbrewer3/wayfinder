@@ -216,6 +216,12 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     };
   }
 
+  bool _detailsEditLocked(WidgetRef ref) {
+    return ref.watch(offlineModeActiveProvider) ||
+        ref.watch(kioskModeActiveProvider) ||
+        ref.watch(mapEditsLockedByRoleProvider);
+  }
+
   Widget _buildSeasonalOverlayDialog(
     BuildContext context,
     WidgetRef ref,
@@ -303,7 +309,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         theme: theme,
         l10n: l10n,
         loading: markersAsync.isLoading,
-        onEdit: onEdit,
+        onEdit: _detailsEditLocked(ref) ? null : onEdit,
       );
     }
 
@@ -481,7 +487,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         theme: theme,
         l10n: l10n,
         loading: zonesAsync.isLoading,
-        onEdit: onEdit,
+        onEdit: _detailsEditLocked(ref) ? null : onEdit,
       );
     }
 
@@ -563,7 +569,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.color),
         icon: Icons.timeline,
       ),
-      onEdit: onEdit,
+      onEdit: _detailsEditLocked(ref) ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -638,7 +644,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.color),
         transportationMode: geometry.transportationMode,
       ),
-      onEdit: onEdit,
+      onEdit: _detailsEditLocked(ref) ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -722,7 +728,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.borderColor),
         icon: Icons.radio_button_unchecked,
       ),
-      onEdit: onEdit,
+      onEdit: _detailsEditLocked(ref) ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -815,7 +821,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.borderColor),
         icon: Icons.crop_square,
       ),
-      onEdit: onEdit,
+      onEdit: _detailsEditLocked(ref) ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -870,7 +876,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.borderColor),
         icon: Icons.polyline,
       ),
-      onEdit: onEdit,
+      onEdit: _detailsEditLocked(ref) ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -917,6 +923,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
 
     final notes = geometry.notes?.trim();
     final theme = Theme.of(context);
+    final editLocked = _detailsEditLocked(ref);
 
     return _DetailsDialogShell(
       title: zone.name,
@@ -924,7 +931,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.color),
         icon: Icons.route,
       ),
-      onEdit: onEdit,
+      onEdit: editLocked ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -932,14 +939,15 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       createdAt: zone.createdAt,
       updatedAt: zone.updatedAt,
       additionalActions: [
-        TextButton.icon(
-          onPressed: () {
-            Navigator.of(context).pop();
-            beginEvacKitAlternateDrawing(ref: ref, zone: zone);
-          },
-          icon: const Icon(Icons.alt_route),
-          label: Text(l10n.evacKitAddAlternate),
-        ),
+        if (!editLocked)
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              beginEvacKitAlternateDrawing(ref: ref, zone: zone);
+            },
+            icon: const Icon(Icons.alt_route),
+            label: Text(l10n.evacKitAddAlternate),
+          ),
         if (_isWaterEvacMode(geometry.defaultMode))
           TextButton.icon(
             onPressed: () {
@@ -988,19 +996,21 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           _EvacKitRouteSection(
             route: route,
             isPrimary: route.id == geometry.primaryRouteId,
-            canRemove: geometry.routes.length > 1,
+            canRemove: !editLocked && geometry.routes.length > 1,
             defaultMode: geometry.defaultMode,
             measurementUnits: measurementUnits,
             l10n: l10n,
-            onEditOnMap: () {
-              Navigator.of(context).pop();
-              beginEvacKitRouteEditing(
-                ref: ref,
-                zone: zone,
-                routeId: route.id,
-              );
-            },
-            onMakePrimary: route.id == geometry.primaryRouteId
+            onEditOnMap: editLocked
+                ? null
+                : () {
+                    Navigator.of(context).pop();
+                    beginEvacKitRouteEditing(
+                      ref: ref,
+                      zone: zone,
+                      routeId: route.id,
+                    );
+                  },
+            onMakePrimary: editLocked || route.id == geometry.primaryRouteId
                 ? null
                 : () => unawaited(
                     _makeEvacKitPrimary(
@@ -1011,7 +1021,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
                       routeId: route.id,
                     ),
                   ),
-            onRemove: geometry.routes.length <= 1
+            onRemove: editLocked || geometry.routes.length <= 1
                 ? null
                 : () => unawaited(
                     _removeEvacKitRoute(
@@ -1042,7 +1052,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(zone.color),
         icon: Icons.layers,
       ),
-      onEdit: onEdit,
+      onEdit: _detailsEditLocked(ref) ? null : onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
       createdByUsername: zone.createdByUsername,
@@ -1067,7 +1077,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     required ThemeData theme,
     required AppLocalizations l10n,
     required bool loading,
-    required VoidCallback onEdit,
+    VoidCallback? onEdit,
   }) {
     return AlertDialog(
       title: Text(l10n.mapObjectDetailsTitle),
@@ -1079,7 +1089,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.actionClose),
         ),
-        if (!loading)
+        if (!loading && onEdit != null)
           TextButton(
             onPressed: onEdit,
             child: Text(l10n.actionEdit),
@@ -1447,7 +1457,7 @@ class _EvacKitRouteSection extends StatelessWidget {
     required this.defaultMode,
     required this.measurementUnits,
     required this.l10n,
-    required this.onEditOnMap,
+    this.onEditOnMap,
     this.onMakePrimary,
     this.onRemove,
   });
@@ -1458,7 +1468,7 @@ class _EvacKitRouteSection extends StatelessWidget {
   final TrackTransportationMode defaultMode;
   final MeasurementUnits measurementUnits;
   final AppLocalizations l10n;
-  final VoidCallback onEditOnMap;
+  final VoidCallback? onEditOnMap;
   final VoidCallback? onMakePrimary;
   final VoidCallback? onRemove;
 
@@ -1552,11 +1562,12 @@ class _EvacKitRouteSection extends StatelessWidget {
               spacing: 8,
               runSpacing: 4,
               children: [
-                TextButton.icon(
-                  onPressed: onEditOnMap,
-                  icon: const Icon(Icons.edit_road),
-                  label: Text(l10n.evacKitEditRouteOnMap),
-                ),
+                if (onEditOnMap != null)
+                  TextButton.icon(
+                    onPressed: onEditOnMap,
+                    icon: const Icon(Icons.edit_road),
+                    label: Text(l10n.evacKitEditRouteOnMap),
+                  ),
                 if (onMakePrimary != null)
                   TextButton.icon(
                     onPressed: onMakePrimary,

@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../geo_exchange/data/geo_exchange_service.dart';
 import '../../geo_exchange/models/geo_exchange_models.dart';
 import '../../geo_exchange/utils/geo_exchange_codec.dart';
@@ -488,6 +489,8 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final canManageBackups = ref.watch(canManageBackupsProvider);
+    final mapEditsLocked = ref.watch(mapEditsLockedByRoleProvider);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -498,83 +501,87 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.backupDescription,
+          canManageBackups
+              ? l10n.backupDescription
+              : l10n.backupPermissionDenied,
           style: theme.textTheme.bodyMedium,
         ),
-        const SizedBox(height: 16),
-        FilledButton.icon(
-          onPressed: _isExportingMapData ? null : _exportMapData,
-          icon: _isExportingMapData
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.download),
-          label: Text(
-            _isExportingMapData
-                ? l10n.actionExporting
-                : l10n.backupExportButton,
+        if (canManageBackups) ...[
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: _isExportingMapData ? null : _exportMapData,
+            icon: _isExportingMapData
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.download),
+            label: Text(
+              _isExportingMapData
+                  ? l10n.actionExporting
+                  : l10n.backupExportButton,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        OutlinedButton.icon(
-          onPressed: _isRestoringMapData ? null : _restoreMapData,
-          icon: _isRestoringMapData
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.upload_file),
-          label: Text(
-            _isRestoringMapData
-                ? l10n.actionRestoring
-                : l10n.backupRestoreButton,
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: _isRestoringMapData ? null : _restoreMapData,
+            icon: _isRestoringMapData
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.upload_file),
+            label: Text(
+              _isRestoringMapData
+                  ? l10n.actionRestoring
+                  : l10n.backupRestoreButton,
+            ),
           ),
-        ),
-        const SizedBox(height: 32),
-        Text(
-          l10n.fieldPackTitle,
-          style: theme.textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.fieldPackDescription,
-          style: theme.textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 16),
-        FilledButton.icon(
-          onPressed: _isExportingFieldPack ? null : _exportFieldPack,
-          icon: _isExportingFieldPack
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.inventory_2_outlined),
-          label: Text(
-            _isExportingFieldPack
-                ? l10n.actionExporting
-                : l10n.fieldPackExportButton,
+          const SizedBox(height: 32),
+          Text(
+            l10n.fieldPackTitle,
+            style: theme.textTheme.titleLarge,
           ),
-        ),
-        const SizedBox(height: 12),
-        OutlinedButton.icon(
-          onPressed: _isRestoringFieldPack ? null : _restoreFieldPack,
-          icon: _isRestoringFieldPack
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.unarchive_outlined),
-          label: Text(
-            _isRestoringFieldPack
-                ? l10n.actionRestoring
-                : l10n.fieldPackRestoreButton,
+          const SizedBox(height: 8),
+          Text(
+            l10n.fieldPackDescription,
+            style: theme.textTheme.bodyMedium,
           ),
-        ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: _isExportingFieldPack ? null : _exportFieldPack,
+            icon: _isExportingFieldPack
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.inventory_2_outlined),
+            label: Text(
+              _isExportingFieldPack
+                  ? l10n.actionExporting
+                  : l10n.fieldPackExportButton,
+            ),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: _isRestoringFieldPack ? null : _restoreFieldPack,
+            icon: _isRestoringFieldPack
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.unarchive_outlined),
+            label: Text(
+              _isRestoringFieldPack
+                  ? l10n.actionRestoring
+                  : l10n.fieldPackRestoreButton,
+            ),
+          ),
+        ],
         const SizedBox(height: 32),
         Text(
           l10n.geoExchangeTitle,
@@ -587,7 +594,9 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         ),
         const SizedBox(height: 16),
         FilledButton.tonalIcon(
-          onPressed: _isImportingGeo ? null : _importGeoExchange,
+          onPressed: mapEditsLocked || _isImportingGeo
+              ? null
+              : _importGeoExchange,
           icon: _isImportingGeo
               ? const SizedBox(
                   width: 18,

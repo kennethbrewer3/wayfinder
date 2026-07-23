@@ -41,15 +41,18 @@ class RestAuthMiddleware extends MiddlewareObject {
         );
       }
 
-      if (_mutatingMethods.contains(request.method) &&
-          RestApiAuth.usedJwt(request) &&
-          !RestApiAuth.usedApiKey(request)) {
+      if (RestApiAuth.usedJwt(request) && !RestApiAuth.usedApiKey(request)) {
         final path = request.url.path;
         final permission = _permissionForPath(path);
-        try {
-          await AccessControl.assertPermission(session, permission);
-        } on AccessDeniedException catch (error) {
-          return RestJson.error(403, error.message);
+        final isBackupPath =
+            path.contains('/map-data') || path.contains('/field-pack');
+        // Backup export is a GET but still requires manage_backups.
+        if (_mutatingMethods.contains(request.method) || isBackupPath) {
+          try {
+            await AccessControl.assertPermission(session, permission);
+          } on AccessDeniedException catch (error) {
+            return RestJson.error(403, error.message);
+          }
         }
       }
 

@@ -29,6 +29,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     required this.canManageRoles,
     required this.canManageSettings,
     required this.canManageBackups,
+    required this.canManageApiKeys,
+    required this.canManageLayers,
   });
 
   factory AccessSessionInfo({
@@ -46,6 +48,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     required bool canManageRoles,
     required bool canManageSettings,
     required bool canManageBackups,
+    required bool canManageApiKeys,
+    required bool canManageLayers,
   }) = _AccessSessionInfoImpl;
 
   factory AccessSessionInfo.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -84,6 +88,12 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
       canManageBackups: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['canManageBackups'],
       ),
+      canManageApiKeys: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageApiKeys'],
+      ),
+      canManageLayers: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageLayers'],
+      ),
     );
   }
 
@@ -115,6 +125,10 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
 
   bool canManageBackups;
 
+  bool canManageApiKeys;
+
+  bool canManageLayers;
+
   /// Returns a shallow copy of this [AccessSessionInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -133,6 +147,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     bool? canManageRoles,
     bool? canManageSettings,
     bool? canManageBackups,
+    bool? canManageApiKeys,
+    bool? canManageLayers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -152,6 +168,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
       'canManageRoles': canManageRoles,
       'canManageSettings': canManageSettings,
       'canManageBackups': canManageBackups,
+      'canManageApiKeys': canManageApiKeys,
+      'canManageLayers': canManageLayers,
     };
   }
 
@@ -179,6 +197,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     required bool canManageRoles,
     required bool canManageSettings,
     required bool canManageBackups,
+    required bool canManageApiKeys,
+    required bool canManageLayers,
   }) : super._(
          authRequired: authRequired,
          authenticated: authenticated,
@@ -194,6 +214,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
          canManageRoles: canManageRoles,
          canManageSettings: canManageSettings,
          canManageBackups: canManageBackups,
+         canManageApiKeys: canManageApiKeys,
+         canManageLayers: canManageLayers,
        );
 
   /// Returns a shallow copy of this [AccessSessionInfo]
@@ -215,6 +237,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     bool? canManageRoles,
     bool? canManageSettings,
     bool? canManageBackups,
+    bool? canManageApiKeys,
+    bool? canManageLayers,
   }) {
     return AccessSessionInfo(
       authRequired: authRequired ?? this.authRequired,
@@ -231,6 +255,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
       canManageRoles: canManageRoles ?? this.canManageRoles,
       canManageSettings: canManageSettings ?? this.canManageSettings,
       canManageBackups: canManageBackups ?? this.canManageBackups,
+      canManageApiKeys: canManageApiKeys ?? this.canManageApiKeys,
+      canManageLayers: canManageLayers ?? this.canManageLayers,
     );
   }
 }

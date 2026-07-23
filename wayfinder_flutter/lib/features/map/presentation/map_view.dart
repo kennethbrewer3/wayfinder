@@ -5234,11 +5234,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                             label: l10n.mapRadialEvacKit,
                             onSelected: _beginEvacKit,
                           ),
-                          MapRadialMenuAction(
-                            icon: Icons.calendar_month,
-                            label: l10n.mapRadialSeasonalOverlay,
-                            onSelected: _beginSeasonalOverlayDrawing,
-                          ),
+                          if (ref.watch(canManageLayersProvider))
+                            MapRadialMenuAction(
+                              icon: Icons.calendar_month,
+                              label: l10n.mapRadialSeasonalOverlay,
+                              onSelected: _beginSeasonalOverlayDrawing,
+                            ),
                           MapRadialMenuAction(
                             icon: Icons.directions_walk,
                             label: l10n.mapRadialDeadReckoning,

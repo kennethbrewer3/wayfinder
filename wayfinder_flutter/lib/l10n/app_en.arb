@@ -78,6 +78,7 @@
   "accessUsersTitle": "Users",
   "accessUsersHelp": "Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.",
   "accessUsersPermissionDenied": "You do not have permission to manage users or roles.",
+  "manageLayersPermissionDenied": "You do not have permission to manage map layers or seasonal overlays.",
   "accessUsersEmpty": "No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD (username + password).",
   "accessUsersLoadFailed": "Could not load users: {error}",
   "@accessUsersLoadFailed": {
@@ -430,6 +431,7 @@
   "watchLogTextHint": "What happened?",
   "watchLogTextRequired": "Enter event text.",
   "backupTitle": "Map data backup",
+  "backupPermissionDenied": "You do not have permission to export or restore map backups.",
   "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
@@ -3075,6 +3077,7 @@
   "markerIconPowerOutage": "Power outage",
   "markerIconWeatherStation": "Weather station",
   "settingsRestApiTitle": "REST API access",
+  "settingsRestApiPermissionDenied": "You do not have permission to manage REST API keys.",
   "settingsRestApiDescription": "Protect the /api REST endpoints with named API keys. Create a separate key for each app or device so you can remove one without affecting the others.",
   "settingsRestApiStatusLabel": "Protection",
   "settingsRestApiStatusEnabled": "Enabled",

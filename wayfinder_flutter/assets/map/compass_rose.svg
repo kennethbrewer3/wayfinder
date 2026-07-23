@@ -1,36 +1,56 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;">
-    <g transform="matrix(1.01667,0,0,1.01667,-0.541784,-0.556713)">
-        <circle cx="32" cy="32" r="30" style="fill:none;stroke:black;stroke-width:2px;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.24892,4.22554)">
-        <circle cx="32" cy="32" r="17" style="fill:none;stroke:black;stroke-opacity:0.6;stroke-width:1.5px;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.30181,4.22554)">
-        <path d="M32,8L32,13M32,51L32,56M8,32L13,32M51,32L56,32" style="fill-rule:nonzero;stroke:black;stroke-width:2px;stroke-linecap:round;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.24892,5.0925)">
-        <g transform="matrix(1.15346,-0,-0,1.15346,-4.90096,-5.87399)">
-            <use xlink:href="#_Image1" x="15.705" y="16.549" width="33px" height="33px"/>
-        </g>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.764183,4.24892,6.53134)">
-        <path d="M32,14L37,30L32,26L27,30L32,14Z" style="fill-rule:nonzero;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.30181,3.15238)">
-        <path d="M32,50L27,36L32,40L37,36L32,50Z" style="fill-opacity:0.45;fill-rule:nonzero;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.24892,4.25737)">
-        <path d="M50,32L36,27L40,32L36,37L50,32Z" style="fill-opacity:0.45;fill-rule:nonzero;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.24892,4.22554)">
-        <path d="M14,32L28,37L24,32L28,27L14,32Z" style="fill-opacity:0.45;fill-rule:nonzero;"/>
-    </g>
-    <g transform="matrix(0.866957,0,0,0.866957,4.30181,4.22554)">
-        <circle cx="32" cy="32" r="3"/>
-    </g>
-    <defs>
-        <image id="_Image1" width="33px" height="33px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAwklEQVRYhe3XMUoDQRhH8R+MxBhCUtnaWnmQ5AYpArlDTmQd8A62HsAbrFoqKVYkkBS7C0Pcdqb6Xjsf/B/TvYQtbvGhLlNscE69wBotmooCWyzwmnQ/0GJVSWQQmOEZP6l/aDKRIz4LCSTsMoFvuMkO3nDqD0ox6YcPg0AQBEEQBEEQBDVJuCu8MR8bHZjqwuQB7wUF9q5Kb5DI0+wFv4Uk/owkZ/K/DUuXUZ6cLZqky/NFJYExkS94wrLS+DWPuL8AgzssATrOlB8AAAAASUVORK5CYII="/>
-    </defs>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 72 72"
+     width="72"
+     height="72"
+     role="img"
+     aria-label="Compass rose">
+
+  <!-- Large outer ring; top band (y≈2–16) reserved for N / MN -->
+  <circle cx="36" cy="36" r="34"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"/>
+
+  <!-- Inner ring -->
+  <circle cx="36" cy="36" r="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          opacity="0.55"/>
+
+  <!-- Cardinal ticks (below the label band) -->
+  <path d="M36 16 V21 M36 51 V56 M16 36 H21 M51 36 H56"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <!-- Intercardinal ticks -->
+  <path d="M20 20 L24 24 M52 20 L48 24 M20 52 L24 48 M52 52 L48 48"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        opacity="0.5"/>
+
+  <!-- North pointer: tip starts below the N/MN label band -->
+  <path d="M36 20 L42 36 L36 31 L30 36 Z"
+        fill="currentColor"/>
+
+  <!-- South pointer -->
+  <path d="M36 52 L30 40 L36 44 L42 40 Z"
+        fill="currentColor"
+        opacity="0.45"/>
+
+  <!-- East pointer -->
+  <path d="M52 36 L40 30 L44 36 L40 42 Z"
+        fill="currentColor"
+        opacity="0.45"/>
+
+  <!-- West pointer -->
+  <path d="M20 36 L32 42 L28 36 L32 30 Z"
+        fill="currentColor"
+        opacity="0.45"/>
+
+  <!-- Center hub -->
+  <circle cx="36" cy="36" r="3.25"
+          fill="currentColor"/>
 </svg>

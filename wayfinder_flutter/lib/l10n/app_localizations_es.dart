@@ -509,7 +509,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Elija un tema integrado o personalizado del TOC. Los temas personalizados se gestionan en Ajustes → Temas (manage_themes). Se guarda en tu cuenta para seguirte en cualquier estación.';
+      'Elija un tema y active el modo oscuro. Los temas personalizados generan paletas claras y oscuras a partir de la misma semilla. Se gestionan en Ajustes → Temas (manage_themes). Se guarda en tu cuenta para seguirte en cualquier estación.';
+
+  @override
+  String get settingsAppearanceTheme => 'Tema';
+
+  @override
+  String get settingsDarkMode => 'Modo oscuro';
+
+  @override
+  String get settingsDarkModeDescription =>
+      'Usa la paleta oscura del tema seleccionado. Los temas integrados y personalizados admiten claro y oscuro.';
 
   @override
   String get settingsThemesTitle => 'Temas';
@@ -534,6 +544,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsThemesCustomEmpty =>
       'Aún no hay temas personalizados. Cree uno o importe un archivo JSON.';
+
+  @override
+  String get settingsThemesCustomSubtitle => 'Claro y oscuro desde la semilla';
 
   @override
   String get settingsThemesUseBuiltInHint => 'Usando un tema integrado';
@@ -576,14 +589,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsThemesSeedColorHint =>
-      'Material genera la paleta a partir de este color. Las anulaciones siguientes sustituyen roles concretos.';
+      'Material genera las paletas clara y oscura a partir de este color. Las anulaciones siguientes solo se aplican al brillo de edición.';
+
+  @override
+  String get settingsThemesAuthoringBrightness => 'Brillo de edición';
+
+  @override
+  String get settingsThemesAuthoringBrightnessHint =>
+      'Edite anulaciones para este brillo. El modo contrario se genera automáticamente desde la semilla al usar Modo oscuro en Apariencia.';
 
   @override
   String get settingsThemesOverridesTitle => 'Anulaciones de color';
 
   @override
   String get settingsThemesOverridesHint =>
-      'Opcional. Déjelo vacío para conservar el color generado por la semilla.';
+      'Opcional. Solo en el brillo de edición; el otro modo usa la paleta generada por la semilla.';
 
   @override
   String get settingsThemesOverrideFromSeed => 'Desde semilla';

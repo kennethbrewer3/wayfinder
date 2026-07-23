@@ -122,13 +122,26 @@ Brightness themeBrightnessFromStorage(String value) {
       : Brightness.light;
 }
 
-ColorScheme colorSchemeFromThemeDefinition(AppThemeDefinition theme) {
+/// Builds a [ColorScheme] from a custom theme seed.
+///
+/// [brightness] selects light or dark generation from the same seed. Absolute
+/// color overrides apply only when they match the theme's authored brightness,
+/// so the opposite mode stays a clean seed-generated palette.
+ColorScheme colorSchemeFromThemeDefinition(
+  AppThemeDefinition theme, {
+  Brightness? brightness,
+}) {
   final seed = parseThemeHexColor(theme.seedColor) ?? const Color(0xFF1B4965);
+  final authored = themeBrightnessFromStorage(theme.brightness);
+  final resolved = brightness ?? authored;
   final overrides = decodeThemeOverrides(theme.overridesJson);
   var scheme = ColorScheme.fromSeed(
     seedColor: seed,
-    brightness: themeBrightnessFromStorage(theme.brightness),
+    brightness: resolved,
   );
+  if (resolved != authored) {
+    return scheme;
+  }
   return scheme.copyWith(
     primary: parseThemeHexColor(overrides['primary']),
     onPrimary: parseThemeHexColor(overrides['onPrimary']),

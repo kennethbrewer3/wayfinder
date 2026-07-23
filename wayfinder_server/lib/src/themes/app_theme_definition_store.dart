@@ -116,11 +116,12 @@ abstract final class AppThemeDefinitionStore {
       return false;
     }
 
-    final storageId = AppThemeIds.forCustom(id);
+    final lightId = AppThemeIds.forCustom(id);
+    final darkId = AppThemeIds.forCustom(id, dark: true);
     final fallback = AppSettingsConstants.defaultAppTheme;
 
     final settings = await AppSettingsStore.getOrCreate(session);
-    if (settings.appTheme == storageId) {
+    if (settings.appTheme == lightId || settings.appTheme == darkId) {
       await AppSettingsStore.update(
         session,
         settings.copyWith(appTheme: fallback),
@@ -129,7 +130,7 @@ abstract final class AppThemeDefinitionStore {
 
     final prefs = await UserClientPreferences.db.find(
       session,
-      where: (t) => t.appTheme.equals(storageId),
+      where: (t) => t.appTheme.equals(lightId) | t.appTheme.equals(darkId),
     );
     for (final pref in prefs) {
       await UserClientPreferences.db.updateRow(

@@ -510,7 +510,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Choisissez un thème intégré ou personnalisé du TOC. Les thèmes personnalisés se gèrent dans Paramètres → Thèmes (manage_themes). Enregistré sur votre compte pour vous suivre sur n\'importe quel poste.';
+      'Choisissez un thème et activez le mode sombre. Les thèmes personnalisés génèrent des palettes claire et sombre à partir de la même couleur de base. Gérés dans Paramètres → Thèmes (manage_themes). Enregistré sur votre compte pour vous suivre sur n\'importe quel poste.';
+
+  @override
+  String get settingsAppearanceTheme => 'Thème';
+
+  @override
+  String get settingsDarkMode => 'Mode sombre';
+
+  @override
+  String get settingsDarkModeDescription =>
+      'Utilise la palette sombre du thème sélectionné. Les thèmes intégrés et personnalisés prennent en charge clair et sombre.';
 
   @override
   String get settingsThemesTitle => 'Thèmes';
@@ -535,6 +545,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsThemesCustomEmpty =>
       'Aucun thème personnalisé pour l\'instant. Créez-en un ou importez un fichier JSON.';
+
+  @override
+  String get settingsThemesCustomSubtitle =>
+      'Clair et sombre depuis la couleur de base';
 
   @override
   String get settingsThemesUseBuiltInHint => 'Thème intégré en cours';
@@ -577,14 +591,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsThemesSeedColorHint =>
-      'Material génère la palette à partir de cette couleur. Les remplacements ci-dessous modifient des rôles précis.';
+      'Material génère les palettes claire et sombre à partir de cette couleur. Les remplacements ci-dessous s\'appliquent uniquement à la luminosité d\'édition.';
+
+  @override
+  String get settingsThemesAuthoringBrightness => 'Luminosité d\'édition';
+
+  @override
+  String get settingsThemesAuthoringBrightnessHint =>
+      'Modifiez les remplacements pour cette luminosité. L\'autre mode est généré automatiquement à partir de la couleur de base via Mode sombre dans Apparence.';
 
   @override
   String get settingsThemesOverridesTitle => 'Remplacements de couleur';
 
   @override
   String get settingsThemesOverridesHint =>
-      'Facultatif. Laissez vide pour conserver la couleur générée.';
+      'Facultatif. Uniquement pour la luminosité d\'édition ; l\'autre mode utilise la palette générée.';
 
   @override
   String get settingsThemesOverrideFromSeed => 'Depuis la base';

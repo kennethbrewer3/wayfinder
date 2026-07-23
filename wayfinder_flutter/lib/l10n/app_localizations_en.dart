@@ -509,7 +509,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Choose a built-in or custom TOC theme. Custom themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.';
+      'Choose a theme and toggle dark mode. Custom themes generate light and dark palettes from the same seed. Custom TOC themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.';
+
+  @override
+  String get settingsAppearanceTheme => 'Theme';
+
+  @override
+  String get settingsDarkMode => 'Dark mode';
+
+  @override
+  String get settingsDarkModeDescription =>
+      'Use the dark palette for the selected theme. Built-in and custom themes both support light and dark.';
 
   @override
   String get settingsThemesTitle => 'Themes';
@@ -534,6 +544,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsThemesCustomEmpty =>
       'No custom themes yet. Create one or import a JSON file.';
+
+  @override
+  String get settingsThemesCustomSubtitle => 'Light and dark from seed';
 
   @override
   String get settingsThemesUseBuiltInHint => 'Using a built-in theme';
@@ -576,14 +589,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsThemesSeedColorHint =>
-      'Material generates the palette from this color. Overrides below replace specific roles.';
+      'Material generates both light and dark palettes from this color. Overrides below apply to the authoring brightness only.';
+
+  @override
+  String get settingsThemesAuthoringBrightness => 'Authoring brightness';
+
+  @override
+  String get settingsThemesAuthoringBrightnessHint =>
+      'Edit overrides for this brightness. The opposite mode is generated automatically from the seed when you use Dark mode in Appearance.';
 
   @override
   String get settingsThemesOverridesTitle => 'Color overrides';
 
   @override
   String get settingsThemesOverridesHint =>
-      'Optional. Leave unset to keep the seed-generated color for that role.';
+      'Optional. Applied only in the authoring brightness; the other mode uses the seed-generated palette.';
 
   @override
   String get settingsThemesOverrideFromSeed => 'From seed';

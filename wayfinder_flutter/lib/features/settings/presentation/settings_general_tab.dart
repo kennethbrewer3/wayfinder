@@ -458,77 +458,74 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
-        if (customThemes.isNotEmpty) ...[
-          Text(
-            l10n.settingsThemesCustomTitle,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            key: ValueKey('custom-theme-$themeId'),
-            initialValue: AppThemeIds.isCustom(themeId) ? themeId : null,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              hintText: l10n.settingsThemesUseBuiltInHint,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: DropdownButtonFormField<String>(
+                key: ValueKey(
+                  'appearance-theme-${_appearanceDropdownValue(themeId, customThemes)}',
+                ),
+                initialValue: _appearanceDropdownValue(themeId, customThemes),
+                decoration: InputDecoration(
+                  labelText: l10n.settingsAppearanceTheme,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: AppThemeFamily.standard.name,
+                    child: Text(AppThemeFamily.standard.localizedLabel(l10n)),
+                  ),
+                  DropdownMenuItem(
+                    value: AppThemeFamily.military.name,
+                    child: Text(AppThemeFamily.military.localizedLabel(l10n)),
+                  ),
+                  for (final theme in customThemes)
+                    DropdownMenuItem(
+                      value: AppThemeIds.forCustom(theme.id),
+                      child: Text(theme.name),
+                    ),
+                ],
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  final notifier = ref.read(appThemeProvider.notifier);
+                  if (value == AppThemeFamily.standard.name) {
+                    notifier.setFamily(AppThemeFamily.standard);
+                    return;
+                  }
+                  if (value == AppThemeFamily.military.name) {
+                    notifier.setFamily(AppThemeFamily.military);
+                    return;
+                  }
+                  final customId = AppThemeIds.tryParseCustomId(value);
+                  if (customId == null) {
+                    return;
+                  }
+                  notifier.setCustomTheme(customId);
+                },
+              ),
             ),
-            items: [
-              for (final theme in customThemes)
-                DropdownMenuItem(
-                  value: AppThemeIds.forCustom(theme.id),
-                  child: Text(theme.name),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.settingsDarkMode),
+                subtitle: Text(l10n.settingsDarkModeDescription),
+                value: _appearanceIsDark(
+                  themeId: themeId,
+                  customThemes: customThemes,
+                  builtInChoice: builtInChoice,
                 ),
-            ],
-            onChanged: (value) {
-              if (value == null) {
-                return;
-              }
-              ref.read(appThemeProvider.notifier).setThemeId(value);
-            },
-          ),
-          const SizedBox(height: 16),
-        ],
-        Text(
-          l10n.settingsThemeStyle,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-        const SizedBox(height: 8),
-        SegmentedButton<AppThemeFamily>(
-          segments: AppThemeFamily.values
-              .map(
-                (family) => ButtonSegment(
-                  value: family,
-                  label: Text(family.localizedLabel(l10n)),
-                ),
-              )
-              .toList(),
-          selected: {
-            builtInChoice?.family ?? AppThemeFamily.standard,
-          },
-          onSelectionChanged: (selection) {
-            ref.read(appThemeProvider.notifier).setFamily(selection.first);
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          l10n.settingsBrightness,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-        const SizedBox(height: 8),
-        SegmentedButton<AppThemeBrightness>(
-          segments: AppThemeBrightness.values
-              .map(
-                (brightness) => ButtonSegment(
-                  value: brightness,
-                  label: Text(brightness.localizedLabel(l10n)),
-                ),
-              )
-              .toList(),
-          selected: {
-            builtInChoice?.brightness ?? AppThemeBrightness.light,
-          },
-          onSelectionChanged: (selection) {
-            ref.read(appThemeProvider.notifier).setBrightness(selection.first);
-          },
+                onChanged: (enabled) {
+                  ref.read(appThemeProvider.notifier).setDarkMode(enabled);
+                },
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         _ThemePreview(
@@ -1048,6 +1045,38 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
   }
 }
 
+String _appearanceDropdownValue(
+  String themeId,
+  List<AppThemeDefinition> customThemes,
+) {
+  final customId = AppThemeIds.tryParseCustomId(themeId);
+  if (customId != null) {
+    final exists = customThemes.any((theme) => theme.id == customId);
+    if (exists) {
+      return AppThemeIds.forCustom(customId);
+    }
+    return AppThemeFamily.standard.name;
+  }
+  final builtIn = AppThemeChoice.values
+      .where((choice) => choice.name == themeId)
+      .firstOrNull;
+  return (builtIn?.family ?? AppThemeFamily.standard).name;
+}
+
+bool _appearanceIsDark({
+  required String themeId,
+  required List<AppThemeDefinition> customThemes,
+  required AppThemeChoice? builtInChoice,
+}) {
+  if (builtInChoice != null) {
+    return builtInChoice.brightness == AppThemeBrightness.dark;
+  }
+  if (AppThemeIds.isCustom(themeId)) {
+    return AppThemeIds.isCustomDark(themeId);
+  }
+  return false;
+}
+
 class _ThemePreview extends StatelessWidget {
   const _ThemePreview({
     required this.themeId,
@@ -1072,7 +1101,7 @@ class _ThemePreview extends StatelessWidget {
         }
       }
       for (final theme in customThemes) {
-        if (AppThemeIds.forCustom(theme.id) == themeId) {
+        if (AppThemeIds.matchesCustom(themeId, theme.id)) {
           return theme.name;
         }
       }

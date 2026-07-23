@@ -189,8 +189,13 @@ class _AppThemeEditorDialogState extends ConsumerState<AppThemeEditorDialog> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.settingsBrightness,
+                      l10n.settingsThemesAuthoringBrightness,
                       style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.settingsThemesAuthoringBrightnessHint,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 8),
                     SegmentedButton<String>(
@@ -267,60 +272,12 @@ class _AppThemeEditorDialogState extends ConsumerState<AppThemeEditorDialog> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Theme(
-                      data: previewTheme,
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.settingsThemesPreview,
-                                style: previewTheme.textTheme.titleSmall,
-                              ),
-                              const SizedBox(height: 12),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  _PreviewSwatch(
-                                    label: l10n.themePreviewPrimary,
-                                    color: colors.primary,
-                                  ),
-                                  _PreviewSwatch(
-                                    label: l10n.themePreviewSecondary,
-                                    color: colors.secondary,
-                                  ),
-                                  _PreviewSwatch(
-                                    label: l10n.themePreviewSurface,
-                                    color: colors.surface,
-                                  ),
-                                  _PreviewSwatch(
-                                    label: l10n.themePreviewAccent,
-                                    color: colors.tertiary,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  FilledButton(
-                                    onPressed: () {},
-                                    child: Text(l10n.themePreviewButton),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(l10n.themePreviewOutline),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    Text(
+                      l10n.settingsThemesPreview,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
+                    const SizedBox(height: 8),
+                    _DualThemePreview(definition: _previewDefinition),
                     if (_error != null) ...[
                       const SizedBox(height: 12),
                       Text(
@@ -355,6 +312,94 @@ class _AppThemeEditorDialogState extends ConsumerState<AppThemeEditorDialog> {
                         : Text(l10n.actionSave),
                   ),
                 ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DualThemePreview extends StatelessWidget {
+  const _DualThemePreview({required this.definition});
+
+  final AppThemeDefinition definition;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Row(
+      children: [
+        Expanded(
+          child: _BrightnessPreviewCard(
+            label: l10n.themeBrightnessLight,
+            theme: AppTheme.fromDefinition(
+              definition,
+              brightness: Brightness.light,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _BrightnessPreviewCard(
+            label: l10n.themeBrightnessDark,
+            theme: AppTheme.fromDefinition(
+              definition,
+              brightness: Brightness.dark,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BrightnessPreviewCard extends StatelessWidget {
+  const _BrightnessPreviewCard({
+    required this.label,
+    required this.theme,
+  });
+
+  final String label;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = theme.colorScheme;
+    return Theme(
+      data: theme,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: theme.textTheme.titleSmall),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  _PreviewSwatch(
+                    label: l10n.themePreviewPrimary,
+                    color: colors.primary,
+                  ),
+                  _PreviewSwatch(
+                    label: l10n.themePreviewSecondary,
+                    color: colors.secondary,
+                  ),
+                  _PreviewSwatch(
+                    label: l10n.themePreviewSurface,
+                    color: colors.surface,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              FilledButton(
+                onPressed: () {},
+                child: Text(l10n.themePreviewButton),
               ),
             ],
           ),

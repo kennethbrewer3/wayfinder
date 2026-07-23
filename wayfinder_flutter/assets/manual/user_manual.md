@@ -619,9 +619,8 @@ Choose **English**, **Spanish**, or **French** for the app interface. Some map d
 
 ### Appearance
 
-- **Theme family** — Standard or Military built-in palettes.
-- **Brightness** — light or dark for the selected built-in family. Dark app chrome uses the dark Material palette; map basemap tiles stay as authored unless you also enable **Darken map tiles in dark mode** under [Map display](#map-display).
-- **Custom TOC themes** — if any exist, pick one from the dropdown (managed under **Settings → Themes**). Selecting a built-in style clears the custom selection.
+- **Theme** — one dropdown lists **Standard**, **Military**, and any custom TOC themes (managed under **Settings → Themes**).
+- **Dark mode** — toggle beside the theme dropdown. For every theme (built-in or custom), this selects the light or dark palette. Custom themes generate both from the same seed color via Material 3. Dark app chrome uses the dark Material palette; map basemap tiles stay as authored unless you also enable **Darken map tiles in dark mode** under [Map display](#map-display).
 
 Changing language may prompt an app restart.
 
@@ -675,9 +674,9 @@ Standard and Military light/dark palettes ship with Wayfinder and cannot be edit
 Each custom theme has:
 
 - **Name**
-- **Brightness** — light or dark
-- **Seed color** — Material 3 generates the rest of the palette from this color
-- **Optional color overrides** — replace specific ColorScheme roles (primary, surface, error, …)
+- **Authoring brightness** — light or dark; color overrides apply to this brightness only
+- **Seed color** — Material 3 generates **both** light and dark palettes from this color (Appearance → Dark mode switches between them)
+- **Optional color overrides** — replace specific ColorScheme roles for the authoring brightness; the opposite mode stays seed-generated
 
 Actions:
 

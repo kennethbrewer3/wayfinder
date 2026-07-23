@@ -3,6 +3,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../features/themes/models/app_theme_palette.dart';
 import 'app_theme_choice.dart';
+import 'app_theme_ids.dart';
 
 class AppTheme {
   AppTheme._();
@@ -16,7 +17,8 @@ class AppTheme {
     };
   }
 
-  /// Resolves a stored theme id (`light`, `militaryDark`, `custom:<uuid>`, …).
+  /// Resolves a stored theme id (`light`, `militaryDark`, `custom:<uuid>`,
+  /// `custom:<uuid>:dark`, …).
   static ThemeData resolve(
     String themeId, {
     List<AppThemeDefinition> customThemes = const [],
@@ -26,20 +28,29 @@ class AppTheme {
         return forChoice(choice);
       }
     }
-    const customPrefix = 'custom:';
-    if (themeId.startsWith(customPrefix)) {
-      final uuid = themeId.substring(customPrefix.length);
+    final customId = AppThemeIds.tryParseCustomId(themeId);
+    if (customId != null) {
       for (final theme in customThemes) {
-        if (theme.id.uuid == uuid) {
-          return fromDefinition(theme);
+        if (theme.id == customId) {
+          return fromDefinition(
+            theme,
+            brightness: AppThemeIds.isCustomDark(themeId)
+                ? Brightness.dark
+                : Brightness.light,
+          );
         }
       }
     }
     return forChoice(AppThemeChoice.light);
   }
 
-  static ThemeData fromDefinition(AppThemeDefinition theme) {
-    return _buildTheme(colorSchemeFromThemeDefinition(theme));
+  static ThemeData fromDefinition(
+    AppThemeDefinition theme, {
+    Brightness? brightness,
+  }) {
+    return _buildTheme(
+      colorSchemeFromThemeDefinition(theme, brightness: brightness),
+    );
   }
 
   static ThemeData _standardLight() {

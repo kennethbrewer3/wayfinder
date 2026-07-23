@@ -99,8 +99,10 @@ class SettingsThemesTab extends ConsumerWidget {
                 for (final theme in themes)
                   _CustomThemeCard(
                     theme: theme,
-                    selected:
-                        selectedThemeId == AppThemeIds.forCustom(theme.id),
+                    selected: AppThemeIds.matchesCustom(
+                      selectedThemeId,
+                      theme.id,
+                    ),
                     canManage: canManage,
                   ),
               ],
@@ -214,11 +216,7 @@ class _CustomThemeCard extends ConsumerWidget {
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               leading: _ThemeSwatches(colors: colors),
               title: Text(theme.name),
-              subtitle: Text(
-                theme.brightness == 'dark'
-                    ? l10n.themeBrightnessDark
-                    : l10n.themeBrightnessLight,
-              ),
+              subtitle: Text(l10n.settingsThemesCustomSubtitle),
               trailing: selected
                   ? Icon(
                       Icons.check_circle,
@@ -229,7 +227,7 @@ class _CustomThemeCard extends ConsumerWidget {
                         unawaited(
                           ref
                               .read(appThemeProvider.notifier)
-                              .setThemeId(AppThemeIds.forCustom(id)),
+                              .setCustomTheme(id),
                         );
                       },
                       child: Text(l10n.settingsThemesUse),
@@ -370,11 +368,10 @@ class _CustomThemeCard extends ConsumerWidget {
       return;
     }
     final selectedId = ref.read(appThemeProvider);
-    final storageId = AppThemeIds.forCustom(theme.id);
     try {
       await ref.read(appThemeDefinitionsRepositoryProvider).delete(theme.id);
       await ref.read(appThemeDefinitionsProvider.notifier).reload();
-      if (selectedId == storageId) {
+      if (AppThemeIds.matchesCustom(selectedId, theme.id)) {
         await ref
             .read(appThemeProvider.notifier)
             .setThemeId(AppThemeIds.defaultId);

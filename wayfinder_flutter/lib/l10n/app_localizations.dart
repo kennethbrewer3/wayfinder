@@ -979,8 +979,26 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAppearanceDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose a built-in or custom TOC theme. Custom themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.'**
+  /// **'Choose a theme and toggle dark mode. Custom themes generate light and dark palettes from the same seed. Custom TOC themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.'**
   String get settingsAppearanceDescription;
+
+  /// No description provided for @settingsAppearanceTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsAppearanceTheme;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the dark palette for the selected theme. Built-in and custom themes both support light and dark.'**
+  String get settingsDarkModeDescription;
 
   /// No description provided for @settingsThemesTitle.
   ///
@@ -1023,6 +1041,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No custom themes yet. Create one or import a JSON file.'**
   String get settingsThemesCustomEmpty;
+
+  /// No description provided for @settingsThemesCustomSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Light and dark from seed'**
+  String get settingsThemesCustomSubtitle;
 
   /// No description provided for @settingsThemesUseBuiltInHint.
   ///
@@ -1105,8 +1129,20 @@ abstract class AppLocalizations {
   /// No description provided for @settingsThemesSeedColorHint.
   ///
   /// In en, this message translates to:
-  /// **'Material generates the palette from this color. Overrides below replace specific roles.'**
+  /// **'Material generates both light and dark palettes from this color. Overrides below apply to the authoring brightness only.'**
   String get settingsThemesSeedColorHint;
+
+  /// No description provided for @settingsThemesAuthoringBrightness.
+  ///
+  /// In en, this message translates to:
+  /// **'Authoring brightness'**
+  String get settingsThemesAuthoringBrightness;
+
+  /// No description provided for @settingsThemesAuthoringBrightnessHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit overrides for this brightness. The opposite mode is generated automatically from the seed when you use Dark mode in Appearance.'**
+  String get settingsThemesAuthoringBrightnessHint;
 
   /// No description provided for @settingsThemesOverridesTitle.
   ///
@@ -1117,7 +1153,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsThemesOverridesHint.
   ///
   /// In en, this message translates to:
-  /// **'Optional. Leave unset to keep the seed-generated color for that role.'**
+  /// **'Optional. Applied only in the authoring brightness; the other mode uses the seed-generated palette.'**
   String get settingsThemesOverridesHint;
 
   /// No description provided for @settingsThemesOverrideFromSeed.

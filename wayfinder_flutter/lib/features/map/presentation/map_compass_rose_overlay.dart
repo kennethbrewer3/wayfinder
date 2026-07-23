@@ -12,7 +12,7 @@ import '../../lines/utils/bearing_utils.dart';
 import '../utils/magnetic_declination.dart';
 
 const _compassAssetPath = 'assets/map/compass_rose.svg';
-const _compassSize = 56.0;
+const _compassSize = 72.0;
 const _rotationStepDegrees = 5.0;
 
 /// Compass rose with map rotation controls (bottom-left of the map stack).
@@ -100,6 +100,7 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
       BearingReference.trueNorth => colors.error,
       BearingReference.magnetic => colors.primary,
     };
+    final roseColor = colors.onSurface;
     final northLabel = switch (bearingReference) {
       BearingReference.trueNorth => 'N',
       BearingReference.magnetic => 'MN',
@@ -111,19 +112,20 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
     final declinationLabel = formatMagneticDeclination(declination);
 
     return Material(
-      color: colors.surfaceContainerHighest.withValues(alpha: 0.92),
+      color: colors.surface.withValues(alpha: 0.94),
       elevation: 2,
+      shadowColor: colors.shadow,
       borderRadius: BorderRadius.circular(10),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: northColor.withValues(alpha: 0.55),
+            color: northColor.withValues(alpha: 0.65),
             width: 1.5,
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -141,26 +143,31 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
                     child: Transform.rotate(
                       angle: displayAngle,
                       child: Stack(
+                        clipBehavior: Clip.none,
                         alignment: Alignment.center,
                         children: [
                           SvgPicture.asset(
                             _compassAssetPath,
+                            key: ValueKey(
+                              'compass-rose-${roseColor.toARGB32()}-'
+                              '${northColor.toARGB32()}',
+                            ),
                             width: _compassSize,
                             height: _compassSize,
                             colorFilter: ColorFilter.mode(
-                              colors.onSurface,
+                              roseColor,
                               BlendMode.srcIn,
                             ),
                           ),
-                          Positioned(
-                            top: 1,
+                          Align(
+                            alignment: const Alignment(0, -0.78),
                             child: Text(
                               northLabel,
                               style: theme.textTheme.labelSmall?.copyWith(
                                 color: northColor,
                                 fontWeight: FontWeight.w800,
                                 height: 1,
-                                fontSize: northLabel.length > 1 ? 10 : 12,
+                                fontSize: northLabel.length > 1 ? 11 : 13,
                               ),
                             ),
                           ),
@@ -189,11 +196,13 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
                     _RotateButton(
                       tooltip: 'Rotate left 5°',
                       icon: Icons.rotate_left,
+                      color: colors.onSurface,
                       onPressed: () => _rotateBy(-_rotationStepDegrees),
                     ),
                     _RotateButton(
                       tooltip: 'Rotate right 5°',
                       icon: Icons.rotate_right,
+                      color: colors.onSurface,
                       onPressed: () => _rotateBy(_rotationStepDegrees),
                     ),
                   ],
@@ -211,11 +220,13 @@ class _RotateButton extends StatelessWidget {
   const _RotateButton({
     required this.tooltip,
     required this.icon,
+    required this.color,
     required this.onPressed,
   });
 
   final String tooltip;
   final IconData icon;
+  final Color color;
   final VoidCallback onPressed;
 
   @override
@@ -223,12 +234,13 @@ class _RotateButton extends StatelessWidget {
     return IconButton(
       tooltip: tooltip,
       onPressed: onPressed,
-      icon: Icon(icon, size: 20),
+      icon: Icon(icon, size: 20, color: color),
       visualDensity: VisualDensity.compact,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints.tightFor(width: 28, height: 28),
       style: IconButton.styleFrom(
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        foregroundColor: color,
       ),
     );
   }

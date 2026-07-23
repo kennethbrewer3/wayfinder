@@ -11,3 +11,6 @@ devtools_options.yaml
 **/.env
 !.env.example
 !**/.env.example
+
+# Local theme import samples (not shipped)
+wayfinder_flutter/assets/themes/samples/

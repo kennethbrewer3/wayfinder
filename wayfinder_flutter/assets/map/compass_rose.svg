@@ -5,48 +5,48 @@
      role="img"
      aria-label="Compass rose">
 
-  <!-- Outer ring -->
-  <circle cx="32" cy="32" r="27"
+  <!-- Outer ring (room for N inside the rim) -->
+  <circle cx="32" cy="32" r="30"
           fill="none"
           stroke="currentColor"
           stroke-width="2"/>
 
   <!-- Inner ring -->
-  <circle cx="32" cy="32" r="18"
+  <circle cx="32" cy="32" r="17"
           fill="none"
           stroke="currentColor"
           stroke-width="1.5"
           opacity="0.6"/>
 
-  <!-- Cardinal ticks -->
-  <path d="M32 5 V11 M32 53 V59 M5 32 H11 M53 32 H59"
+  <!-- Cardinal ticks (inset so they clear the N band) -->
+  <path d="M32 8 V13 M32 51 V56 M8 32 H13 M51 32 H56"
         stroke="currentColor"
         stroke-width="2"
         stroke-linecap="round"/>
 
   <!-- Intercardinal ticks -->
-  <path d="M12 12 L16 16 M48 12 L44 16 M12 52 L16 48 M48 52 L44 48"
+  <path d="M14 14 L18 18 M50 14 L46 18 M14 50 L18 46 M50 50 L46 46"
         stroke="currentColor"
         stroke-width="1.5"
         stroke-linecap="round"
         opacity="0.5"/>
 
-  <!-- North pointer -->
-  <path d="M32 10 L37 30 L32 25 L27 30 Z"
+  <!-- North pointer (tip below the N label band) -->
+  <path d="M32 14 L37 30 L32 26 L27 30 Z"
         fill="currentColor"/>
 
   <!-- South pointer -->
-  <path d="M32 54 L27 38 L32 42 L37 38 Z"
+  <path d="M32 50 L27 36 L32 40 L37 36 Z"
         fill="currentColor"
         opacity="0.45"/>
 
   <!-- East pointer -->
-  <path d="M54 32 L38 27 L42 32 L38 37 Z"
+  <path d="M50 32 L36 27 L40 32 L36 37 Z"
         fill="currentColor"
         opacity="0.45"/>
 
   <!-- West pointer -->
-  <path d="M10 32 L26 37 L22 32 L26 27 Z"
+  <path d="M14 32 L28 37 L24 32 L28 27 Z"
         fill="currentColor"
         opacity="0.45"/>
 

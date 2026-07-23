@@ -114,6 +114,50 @@ final canManageLayersProvider = Provider<bool>((ref) {
   return session.canManageLayers;
 });
 
+final canManageTidesProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageTides;
+});
+
+final canManageGeocodingProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageGeocoding;
+});
+
+final canManageMarkerIconsProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageMarkerIcons;
+});
+
+final canManagePmtilesProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManagePmtiles;
+});
+
 @visibleForTesting
 AccessSessionInfo openAccessSessionForTests() {
   return AccessSessionInfo(
@@ -128,5 +172,9 @@ AccessSessionInfo openAccessSessionForTests() {
     canManageBackups: true,
     canManageApiKeys: true,
     canManageLayers: true,
+    canManageTides: true,
+    canManageGeocoding: true,
+    canManageMarkerIcons: true,
+    canManagePmtiles: true,
   );
 }

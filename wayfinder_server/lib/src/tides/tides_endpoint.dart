@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:serverpod/serverpod.dart';
 
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'tide_coastal_regions.dart';
@@ -70,6 +71,7 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
       },
       onSuccess: (pack) =>
           'id=${pack.id} stations=${pack.stationCount} active=${pack.isActive}',
+      requiredPermission: WayfinderPermission.manageTides,
     );
   }
 
@@ -87,6 +89,7 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
         return _toPackInfo(pack);
       },
       onSuccess: (pack) => 'id=${pack.id} active=${pack.isActive}',
+      requiredPermission: WayfinderPermission.manageTides,
     );
   }
 
@@ -98,6 +101,7 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
       () => _storage.deletePack(packId.trim()),
       onSuccess: (deleted) =>
           deleted ? 'deleted id=$packId' : 'not found id=$packId',
+      requiredPermission: WayfinderPermission.manageTides,
     );
   }
 
@@ -112,6 +116,7 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
         return ByteData.sublistView(bytes);
       },
       onSuccess: (archive) => 'id=$packId bytes=${archive.lengthInBytes}',
+      requiredPermission: WayfinderPermission.manageTides,
     );
   }
 
@@ -134,6 +139,7 @@ class TidesEndpoint extends Endpoint with EndpointLogging {
       },
       onSuccess: (pack) =>
           'id=${pack.id} stations=${pack.stationCount} active=${pack.isActive}',
+      requiredPermission: WayfinderPermission.manageTides,
     );
   }
 

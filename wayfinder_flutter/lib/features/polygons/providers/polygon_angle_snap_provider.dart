@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
-import '../../settings/data/app_settings_repository.dart';
+import '../../settings/data/client_ui_preferences_repository.dart';
 
 final polygonSnapRightAnglesProvider =
     StateNotifierProvider<PolygonSnapRightAnglesNotifier, bool>(
       (ref) => PolygonSnapRightAnglesNotifier(
-        ref.watch(appSettingsRepositoryProvider),
+        ref.watch(clientUiPreferencesRepositoryProvider),
       ),
     );
 
@@ -15,18 +15,18 @@ class PolygonSnapRightAnglesNotifier extends StateNotifier<bool> {
     _load();
   }
 
-  final AppSettingsRepository _repository;
+  final ClientUiPreferencesRepository _repository;
   static final _log = AppLogger.logSettings;
 
   Future<void> reload() => _load();
 
   Future<void> _load() async {
     try {
-      final preferences = await _repository.getClientPreferences();
+      final preferences = await _repository.get();
       state = preferences.polygonSnapRightAngles;
     } catch (error, _) {
       _log.warn(
-        '📐 Failed to load polygon 90° snap setting from server',
+        '📐 Failed to load polygon 90° snap setting from device preferences',
         error: error,
       );
       state = true;
@@ -36,12 +36,12 @@ class PolygonSnapRightAnglesNotifier extends StateNotifier<bool> {
   Future<void> setEnabled(bool enabled) async {
     state = enabled;
     try {
-      await _repository.patchClientPreferences(
+      await _repository.patch(
         (current) => current.copyWith(polygonSnapRightAngles: enabled),
       );
     } catch (error, _) {
       _log.warn(
-        '📐 Failed to save polygon 90° snap setting to server',
+        '📐 Failed to save polygon 90° snap setting to device preferences',
         error: error,
       );
     }
@@ -51,7 +51,7 @@ class PolygonSnapRightAnglesNotifier extends StateNotifier<bool> {
 final polygonSnap45AnglesProvider =
     StateNotifierProvider<PolygonSnap45AnglesNotifier, bool>(
       (ref) => PolygonSnap45AnglesNotifier(
-        ref.watch(appSettingsRepositoryProvider),
+        ref.watch(clientUiPreferencesRepositoryProvider),
       ),
     );
 
@@ -60,18 +60,18 @@ class PolygonSnap45AnglesNotifier extends StateNotifier<bool> {
     _load();
   }
 
-  final AppSettingsRepository _repository;
+  final ClientUiPreferencesRepository _repository;
   static final _log = AppLogger.logSettings;
 
   Future<void> reload() => _load();
 
   Future<void> _load() async {
     try {
-      final preferences = await _repository.getClientPreferences();
+      final preferences = await _repository.get();
       state = preferences.polygonSnap45Angles;
     } catch (error, _) {
       _log.warn(
-        '📐 Failed to load polygon 45° snap setting from server',
+        '📐 Failed to load polygon 45° snap setting from device preferences',
         error: error,
       );
       state = false;
@@ -81,12 +81,12 @@ class PolygonSnap45AnglesNotifier extends StateNotifier<bool> {
   Future<void> setEnabled(bool enabled) async {
     state = enabled;
     try {
-      await _repository.patchClientPreferences(
+      await _repository.patch(
         (current) => current.copyWith(polygonSnap45Angles: enabled),
       );
     } catch (error, _) {
       _log.warn(
-        '📐 Failed to save polygon 45° snap setting to server',
+        '📐 Failed to save polygon 45° snap setting to device preferences',
         error: error,
       );
     }

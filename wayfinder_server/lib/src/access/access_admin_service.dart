@@ -3,6 +3,7 @@ import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 
 import '../generated/protocol.dart';
+import '../settings/user_client_preferences_store.dart';
 import 'access_control.dart';
 import 'wayfinder_permissions.dart';
 
@@ -190,6 +191,10 @@ abstract final class AccessAdminService {
       throw StateError('User not found.');
     }
     await _ensureNotLastAdminRemoval(session, membership);
+    await UserClientPreferencesStore.deleteForAuthUser(
+      session,
+      membership.authUserId,
+    );
     await UserMembership.db.deleteRow(session, membership);
     await AuthServices.instance.authUsers.delete(
       session,

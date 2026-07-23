@@ -32,7 +32,7 @@ class SettingsTrashTab extends ConsumerWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(l10n.accessUsersPermissionDenied),
+          child: Text(l10n.mapObjectTrashPermissionDenied),
         ),
       );
     }

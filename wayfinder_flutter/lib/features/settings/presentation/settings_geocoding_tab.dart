@@ -15,6 +15,7 @@ import '../../geocoding/models/geocoding_datasets.dart';
 import '../../geocoding/models/geocoding_models.dart';
 import '../../geocoding/presentation/geocoding_import_progress_panel.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
+import '../../access/providers/access_session_provider.dart';
 import 'settings_geocoding_contributions_section.dart';
 
 class SettingsGeocodingTab extends ConsumerStatefulWidget {
@@ -802,6 +803,24 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final canManageGeocoding = ref.watch(canManageGeocodingProvider);
+    if (!canManageGeocoding) {
+      return ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            l10n.geocodingTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.geocodingPermissionDenied,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      );
+    }
+
     final repository = ref.watch(geocodingRepositoryProvider);
     final configured = repository.isConfigured;
     final catalogAsync = configured

@@ -16,3 +16,7 @@ fields:
   canManageBackups: bool
   canManageApiKeys: bool
   canManageLayers: bool
+  canManageTides: bool
+  canManageGeocoding: bool
+  canManageMarkerIcons: bool
+  canManagePmtiles: bool

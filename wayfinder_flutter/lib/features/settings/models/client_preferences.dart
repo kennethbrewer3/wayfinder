@@ -90,6 +90,30 @@ class ClientPreferences {
     );
   }
 
+  factory ClientPreferences.fromUserClientPreferences(
+    wf.UserClientPreferences prefs,
+  ) {
+    return ClientPreferences(
+      measurementUnits: measurementUnitsFromStorage(prefs.measurementUnits),
+      angleDisplayFormat: angleDisplayFormatFromStorage(
+        prefs.angleDisplayFormat,
+      ),
+      bearingReference: bearingReferenceFromStorage(prefs.bearingReference),
+      circleSizeDisplay: circleSizeDisplayFromStorage(prefs.circleSizeDisplay),
+      appTheme: appThemeChoiceFromStorage(prefs.appTheme),
+      appLocale: appLocaleChoiceFromStorage(prefs.appLocale),
+      mapMarkerSizeScale: clampMapMarkerSizeScale(prefs.mapMarkerSizeScale),
+      mapViewportDebugBorder: prefs.mapViewportDebugBorder,
+      mapTileBorderDebug: prefs.mapTileBorderDebug,
+      mapCompassRoseEnabled: prefs.mapCompassRoseEnabled,
+      mapMgrsGridEnabled: prefs.mapMgrsGridEnabled,
+      polygonSnapRightAngles: prefs.polygonSnapRightAngles,
+      polygonSnap45Angles: prefs.polygonSnap45Angles,
+      mapMinZoom: MapZoomRange.defaults.min,
+      mapMaxZoom: MapZoomRange.defaults.max,
+    );
+  }
+
   factory ClientPreferences.fromJson(Map<String, dynamic> json) {
     final zoomRange = normalizeMapZoomRange(
       min: (json['mapMinZoom'] as num?)?.toDouble(),
@@ -182,5 +206,13 @@ class ClientPreferences {
       'mapMinZoom': mapMinZoom,
       'mapMaxZoom': mapMaxZoom,
     };
+  }
+
+  /// Device-local prefs omit shared map zoom limits (those stay on the server).
+  Map<String, dynamic> toLocalJson() {
+    final json = toJson();
+    json.remove('mapMinZoom');
+    json.remove('mapMaxZoom');
+    return json;
   }
 }

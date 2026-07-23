@@ -8,6 +8,7 @@ import '../pmtiles/pmtiles_storage.dart';
 import 'app_settings_constants.dart';
 import 'app_settings_store.dart';
 import 'rest_api_key_service.dart';
+import 'user_client_preferences_store.dart';
 
 class AppSettingsEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'appSettings';
@@ -18,6 +19,61 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'getSettings',
       () => AppSettingsStore.getOrCreate(session),
+    );
+  }
+
+  /// Personal UI prefs for the signed-in user (or shared TOC defaults when open).
+  Future<UserClientPreferences> getMyClientPreferences(Session session) {
+    return loggedCall(
+      session,
+      _tag,
+      'getMyClientPreferences',
+      () => UserClientPreferencesStore.getForCaller(session),
+      requiredPermission: WayfinderPermission.viewMap,
+    );
+  }
+
+  /// Saves personal UI prefs for the signed-in user (any role with view_map).
+  Future<UserClientPreferences> updateMyClientPreferences(
+    Session session,
+    String measurementUnits,
+    String angleDisplayFormat,
+    String bearingReference,
+    String circleSizeDisplay,
+    String appTheme,
+    String appLocale,
+    double mapMarkerSizeScale,
+    bool mapViewportDebugBorder,
+    bool mapTileBorderDebug,
+    bool mapCompassRoseEnabled,
+    bool mapMgrsGridEnabled,
+    bool polygonSnapRightAngles,
+    bool polygonSnap45Angles,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'updateMyClientPreferences',
+      () => UserClientPreferencesStore.updateForCaller(
+        session,
+        measurementUnits: measurementUnits,
+        angleDisplayFormat: angleDisplayFormat,
+        bearingReference: bearingReference,
+        circleSizeDisplay: circleSizeDisplay,
+        appTheme: appTheme,
+        appLocale: appLocale,
+        mapMarkerSizeScale: mapMarkerSizeScale,
+        mapViewportDebugBorder: mapViewportDebugBorder,
+        mapTileBorderDebug: mapTileBorderDebug,
+        mapCompassRoseEnabled: mapCompassRoseEnabled,
+        mapMgrsGridEnabled: mapMgrsGridEnabled,
+        polygonSnapRightAngles: polygonSnapRightAngles,
+        polygonSnap45Angles: polygonSnap45Angles,
+      ),
+      onSuccess: (prefs) =>
+          'units=${prefs.measurementUnits} theme=${prefs.appTheme} '
+          'locale=${prefs.appLocale}',
+      requiredPermission: WayfinderPermission.viewMap,
     );
   }
 

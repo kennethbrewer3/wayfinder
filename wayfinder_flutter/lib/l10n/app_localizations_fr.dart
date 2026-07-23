@@ -105,6 +105,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get mapObjectTrashPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de restaurer ou de supprimer définitivement des éléments de la corbeille.';
+
+  @override
   String get accessSignInSubtitle =>
       'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.';
 
@@ -435,14 +439,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Choisissez un thème de couleur pour l\'application. Les thèmes militaires utilisent des tons olive, sable et vert forêt. Enregistré sur le serveur pour que chaque navigateur utilise le même thème.';
+      'Choisissez un thème de couleur pour l\'application. Les thèmes militaires utilisent des tons olive, sable et vert forêt. Enregistré sur votre compte pour vous suivre sur n\'importe quel poste.';
 
   @override
   String get settingsLanguageTitle => 'Langue';
 
   @override
   String get settingsLanguageDescription =>
-      'Choisissez la langue utilisée dans l\'application. Enregistrée sur le serveur pour que chaque navigateur utilise la même langue.';
+      'Choisissez la langue utilisée dans l\'application. Enregistrée sur votre compte pour vous suivre sur n\'importe quel poste.';
 
   @override
   String get languageSystem => 'Langue du système';
@@ -1263,6 +1267,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d\'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils — activez-les ici, mais ils ne sont pas dessinés comme fond de carte.';
 
   @override
+  String get mapTilesPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation d\'ajouter, de mettre à jour ou d\'organiser les tuiles cartographiques.';
+
+  @override
   String get mapTilesDemBadge => 'DEM d\'élévation';
 
   @override
@@ -1646,6 +1654,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get markerIconsDescription =>
       'Téléversez des icônes SVG de marqueurs sur le serveur. Les clients les chargent à l\'exécution pour ajouter ou mettre à jour des icônes sans redéployer l\'application. L\'authentification REST peut être requise — configurez une clé dans Paramètres → À propos.';
+
+  @override
+  String get markerIconsPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de gérer les catégories d\'icônes ni les icônes de marqueurs personnalisées.';
 
   @override
   String get markerIconsAddButton => 'Ajouter une icône personnalisée';
@@ -3159,6 +3171,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Téléchargez les données OSMNames sur le serveur de géocodage pour la recherche hors ligne. Les noms de lieux et les adresses postales sont importés séparément.';
 
   @override
+  String get geocodingPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de configurer le serveur de géocodage ni de gérer les emplacements personnalisés.';
+
+  @override
   String get geocodingServerConnectionTitle => 'Serveur de géocodage';
 
   @override
@@ -3885,6 +3901,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get tidesSettingsSubtitle =>
       'Téléchargez des packs harmoniques NOAA sur ce serveur Wayfinder. L\'outil Marées interroge ces packs hors ligne (le serveur doit joindre NOAA à l\'import). Enregistrez les packs en .wayfinder-tide pour les restaurer sans internet.';
+
+  @override
+  String get tidesPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de télécharger, importer ou supprimer des packs de marées côtières.';
 
   @override
   String get tidesInstalledPacks => 'Packs installés';

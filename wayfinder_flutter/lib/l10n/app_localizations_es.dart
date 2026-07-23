@@ -105,6 +105,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get mapObjectTrashPermissionDenied =>
+      'No tienes permiso para restaurar o eliminar definitivamente elementos de la papelera.';
+
+  @override
   String get accessSignInSubtitle =>
       'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.';
 
@@ -434,14 +438,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Elija un tema de color para la aplicación. Los temas militares usan tonos oliva, arena y verde bosque. Se guarda en el servidor para que cada navegador use el mismo tema.';
+      'Elija un tema de color para la aplicación. Los temas militares usan tonos oliva, arena y verde bosque. Se guarda en tu cuenta para seguirte en cualquier estación.';
 
   @override
   String get settingsLanguageTitle => 'Idioma';
 
   @override
   String get settingsLanguageDescription =>
-      'Elija el idioma de la aplicación. Se guarda en el servidor para que cada navegador use el mismo idioma.';
+      'Elija el idioma de la aplicación. Se guarda en tu cuenta para seguirte en cualquier estación.';
 
   @override
   String get languageSystem => 'Predeterminado del sistema';
@@ -1260,6 +1264,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles — actívelos aquí, pero no se dibujan como basemap.';
 
   @override
+  String get mapTilesPermissionDenied =>
+      'No tienes permiso para añadir, actualizar u organizar teselas del mapa.';
+
+  @override
   String get mapTilesDemBadge => 'DEM de elevación';
 
   @override
@@ -1637,6 +1645,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get markerIconsDescription =>
       'Sube iconos SVG de marcadores al servidor. Los clientes los cargan en tiempo de ejecución para poder añadir o actualizar iconos sin volver a desplegar la app. Las subidas pueden requerir autenticación REST — configure una clave en Configuración → Acerca de.';
+
+  @override
+  String get markerIconsPermissionDenied =>
+      'No tienes permiso para gestionar categorías de iconos ni iconos de marcadores personalizados.';
 
   @override
   String get markerIconsAddButton => 'Añadir icono personalizado';
@@ -3149,6 +3161,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Descargue datos OSMNames al servidor de geocodificación para búsqueda sin conexión. Los nombres de lugares y las direcciones se importan por separado.';
 
   @override
+  String get geocodingPermissionDenied =>
+      'No tienes permiso para configurar el servidor de geocodificación ni gestionar ubicaciones personalizadas.';
+
+  @override
   String get geocodingServerConnectionTitle => 'Servidor de geocodificación';
 
   @override
@@ -3877,6 +3893,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tidesSettingsSubtitle =>
       'Descarga paquetes armónicos NOAA a este servidor Wayfinder. La herramienta Mareas consulta esos paquetes sin conexión (el servidor debe alcanzar NOAA al importar). Guarde paquetes como .wayfinder-tide para restaurarlos sin internet.';
+
+  @override
+  String get tidesPermissionDenied =>
+      'No tienes permiso para descargar, subir o eliminar paquetes de mareas costeras.';
 
   @override
   String get tidesInstalledPacks => 'Paquetes instalados';

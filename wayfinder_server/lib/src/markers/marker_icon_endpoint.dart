@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'marker_icon_catalog_sanitizer.dart';
@@ -53,6 +54,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
         sortOrder: sortOrder,
       ),
       onSuccess: (entry) => 'key=${entry.key}',
+      requiredPermission: WayfinderPermission.manageMarkerIcons,
     );
   }
 
@@ -83,6 +85,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
         sortOrder: sortOrder,
       ),
       onSuccess: (entry) => 'key=${entry.key}',
+      requiredPermission: WayfinderPermission.manageMarkerIcons,
     );
   }
 
@@ -97,6 +100,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
       ),
       onSuccess: (deleted) =>
           deleted ? 'deleted key=$key' : 'not found key=$key',
+      requiredPermission: WayfinderPermission.manageMarkerIcons,
     );
   }
 
@@ -130,6 +134,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
         sortOrder: sortOrder,
       ),
       onSuccess: (category) => 'key=${category.key}',
+      requiredPermission: WayfinderPermission.manageMarkerIcons,
     );
   }
 
@@ -150,6 +155,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
         sortOrder: sortOrder,
       ),
       onSuccess: (category) => 'key=${category.key}',
+      requiredPermission: WayfinderPermission.manageMarkerIcons,
     );
   }
 
@@ -161,6 +167,7 @@ class MarkerIconEndpoint extends Endpoint with EndpointLogging {
       () => MarkerIconCategoryService.deleteCategory(session, key),
       onSuccess: (deleted) =>
           deleted ? 'deleted key=$key' : 'not found key=$key',
+      requiredPermission: WayfinderPermission.manageMarkerIcons,
     );
   }
 }

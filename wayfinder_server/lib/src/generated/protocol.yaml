@@ -91,6 +91,8 @@ seasonalOverlay:
   - overlayChanges:
 appSettings:
   - getSettings:
+  - getMyClientPreferences:
+  - updateMyClientPreferences:
   - updateHomeLocation:
   - resetHomeLocation:
   - updatePmtilesStoragePath:

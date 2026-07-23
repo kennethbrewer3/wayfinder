@@ -8,6 +8,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../tides/providers/tides_providers.dart';
 
 class SettingsTidesTab extends ConsumerStatefulWidget {
@@ -229,6 +230,7 @@ class _SettingsTidesTabState extends ConsumerState<SettingsTidesTab> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final canManageTides = ref.watch(canManageTidesProvider);
     final packsAsync = ref.watch(tidePacksProvider);
     final regionsAsync = ref.watch(tideCoastalRegionsProvider);
 
@@ -238,154 +240,161 @@ class _SettingsTidesTabState extends ConsumerState<SettingsTidesTab> {
         Text(l10n.tidesSettingsTitle, style: theme.textTheme.titleLarge),
         const SizedBox(height: 8),
         Text(
-          l10n.tidesSettingsSubtitle,
+          canManageTides
+              ? l10n.tidesSettingsSubtitle
+              : l10n.tidesPermissionDenied,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+            color: canManageTides ? theme.colorScheme.onSurfaceVariant : null,
           ),
         ),
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                l10n.tidesInstalledPacks,
-                style: theme.textTheme.titleMedium,
+        if (canManageTides) ...[
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.tidesInstalledPacks,
+                  style: theme.textTheme.titleMedium,
+                ),
               ),
-            ),
-            FilledButton.tonalIcon(
-              onPressed: _busy ? null : () => unawaited(_uploadPackArchive()),
-              icon: const Icon(Icons.upload_file_outlined),
-              label: Text(l10n.tidesUploadPack),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          l10n.tidesTransferHint,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+              FilledButton.tonalIcon(
+                onPressed: _busy ? null : () => unawaited(_uploadPackArchive()),
+                icon: const Icon(Icons.upload_file_outlined),
+                label: Text(l10n.tidesUploadPack),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 8),
-        packsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => Text(l10n.tidesActionFailed(error.toString())),
-          data: (packs) {
-            if (packs.isEmpty) {
-              return Text(l10n.tidesNoPacksInstalled);
-            }
-            return Column(
-              children: [
-                for (final pack in packs)
-                  Card(
-                    child: ListTile(
-                      title: Text(pack.name),
-                      subtitle: Text(
-                        l10n.tidesPackMeta(
-                          pack.stationCount,
-                          _formatBytes(pack.sizeBytes),
-                          DateFormat.yMMMd().format(pack.addedAt.toLocal()),
+          const SizedBox(height: 4),
+          Text(
+            l10n.tidesTransferHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          packsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => Text(l10n.tidesActionFailed(error.toString())),
+            data: (packs) {
+              if (packs.isEmpty) {
+                return Text(l10n.tidesNoPacksInstalled);
+              }
+              return Column(
+                children: [
+                  for (final pack in packs)
+                    Card(
+                      child: ListTile(
+                        title: Text(pack.name),
+                        subtitle: Text(
+                          l10n.tidesPackMeta(
+                            pack.stationCount,
+                            _formatBytes(pack.sizeBytes),
+                            DateFormat.yMMMd().format(pack.addedAt.toLocal()),
+                          ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Switch(
+                              value: pack.isActive,
+                              onChanged: _busy
+                                  ? null
+                                  : (value) =>
+                                        unawaited(_setActive(pack, value)),
+                            ),
+                            IconButton(
+                              tooltip: l10n.tidesExportPack,
+                              onPressed: _busy
+                                  ? null
+                                  : () => unawaited(_exportPack(pack)),
+                              icon: _exportingPackId == pack.id
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.download_outlined),
+                            ),
+                            IconButton(
+                              tooltip: l10n.tidesDeletePack,
+                              onPressed: _busy
+                                  ? null
+                                  : () => unawaited(_deletePack(pack)),
+                              icon: const Icon(Icons.delete_outline),
+                            ),
+                          ],
                         ),
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Switch(
-                            value: pack.isActive,
-                            onChanged: _busy
-                                ? null
-                                : (value) => unawaited(_setActive(pack, value)),
-                          ),
-                          IconButton(
-                            tooltip: l10n.tidesExportPack,
-                            onPressed: _busy
-                                ? null
-                                : () => unawaited(_exportPack(pack)),
-                            icon: _exportingPackId == pack.id
-                                ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Icon(Icons.download_outlined),
-                          ),
-                          IconButton(
-                            tooltip: l10n.tidesDeletePack,
-                            onPressed: _busy
-                                ? null
-                                : () => unawaited(_deletePack(pack)),
-                            icon: const Icon(Icons.delete_outline),
-                          ),
-                        ],
-                      ),
                     ),
-                  ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: 24),
-        Text(l10n.tidesGetCoastalPacks, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 4),
-        Text(
-          l10n.tidesGetCoastalPacksHint,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+                ],
+              );
+            },
           ),
-        ),
-        const SizedBox(height: 8),
-        if (_busy && _importingRegionId != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-                const SizedBox(width: 12),
-                Expanded(child: Text(l10n.tidesImportInProgress)),
-              ],
+          const SizedBox(height: 24),
+          Text(l10n.tidesGetCoastalPacks, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            l10n.tidesGetCoastalPacksHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-        regionsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => Text(l10n.tidesActionFailed(error.toString())),
-          data: (regions) {
-            return Column(
-              children: [
-                for (final region in regions)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(region.name),
-                    subtitle: Text(
-                      l10n.tidesRegionBbox(
-                        region.minLatitude.toStringAsFixed(1),
-                        region.minLongitude.toStringAsFixed(1),
-                        region.maxLatitude.toStringAsFixed(1),
-                        region.maxLongitude.toStringAsFixed(1),
+          const SizedBox(height: 8),
+          if (_busy && _importingRegionId != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(l10n.tidesImportInProgress)),
+                ],
+              ),
+            ),
+          regionsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => Text(l10n.tidesActionFailed(error.toString())),
+            data: (regions) {
+              return Column(
+                children: [
+                  for (final region in regions)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(region.name),
+                      subtitle: Text(
+                        l10n.tidesRegionBbox(
+                          region.minLatitude.toStringAsFixed(1),
+                          region.minLongitude.toStringAsFixed(1),
+                          region.maxLatitude.toStringAsFixed(1),
+                          region.maxLongitude.toStringAsFixed(1),
+                        ),
+                      ),
+                      trailing: FilledButton.tonal(
+                        onPressed: _busy
+                            ? null
+                            : () => unawaited(_importRegion(region)),
+                        child: _importingRegionId == region.id
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(l10n.tidesDownloadPack),
                       ),
                     ),
-                    trailing: FilledButton.tonal(
-                      onPressed: _busy
-                          ? null
-                          : () => unawaited(_importRegion(region)),
-                      child: _importingRegionId == region.id
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(l10n.tidesDownloadPack),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+                ],
+              );
+            },
+          ),
+        ],
       ],
     );
   }

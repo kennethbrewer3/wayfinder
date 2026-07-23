@@ -173,6 +173,27 @@ abstract final class AppSettingsStore {
     required double mapMinZoom,
     required double mapMaxZoom,
   }) {
+    validatePersonalClientPreferences(
+      measurementUnits: measurementUnits,
+      angleDisplayFormat: angleDisplayFormat,
+      bearingReference: bearingReference,
+      circleSizeDisplay: circleSizeDisplay,
+      appTheme: appTheme,
+      appLocale: appLocale,
+      mapMarkerSizeScale: mapMarkerSizeScale,
+    );
+    validateMapZoomRange(mapMinZoom: mapMinZoom, mapMaxZoom: mapMaxZoom);
+  }
+
+  static void validatePersonalClientPreferences({
+    required String measurementUnits,
+    required String angleDisplayFormat,
+    required String bearingReference,
+    required String circleSizeDisplay,
+    required String appTheme,
+    required String appLocale,
+    required double mapMarkerSizeScale,
+  }) {
     validateMeasurementUnits(measurementUnits);
     validateAngleDisplayFormat(angleDisplayFormat);
     validateBearingReference(bearingReference);
@@ -180,6 +201,5 @@ abstract final class AppSettingsStore {
     validateAppTheme(appTheme);
     validateAppLocale(appLocale);
     validateMapMarkerSizeScale(mapMarkerSizeScale);
-    validateMapZoomRange(mapMinZoom: mapMinZoom, mapMaxZoom: mapMaxZoom);
   }
 }

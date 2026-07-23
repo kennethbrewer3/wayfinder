@@ -6,6 +6,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/l10n/localized_labels.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_icon_categories.dart';
 import '../../markers/models/marker_icon_category_catalog.dart';
@@ -411,6 +412,24 @@ class _SettingsMarkerIconsTabState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final canManageMarkerIcons = ref.watch(canManageMarkerIconsProvider);
+    if (!canManageMarkerIcons) {
+      return ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            l10n.markerIconsTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.markerIconsPermissionDenied,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      );
+    }
+
     final entriesAsync = ref.watch(markerIconRemoteEntriesProvider);
     final categoryCatalogAsync = ref.watch(markerIconCategoryCatalogProvider);
     final categoryCatalog =

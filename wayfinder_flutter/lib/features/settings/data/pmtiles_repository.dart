@@ -9,6 +9,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../../core/rest_api_headers.dart';
 import '../../elevation/utils/elevation_dem_detect.dart';
 import '../models/pmtiles_archive_entry.dart';
 import '../models/pmtiles_file.dart' as local;
@@ -229,7 +230,10 @@ class PmtilesRepository {
     );
 
     final initResponse = await http
-        .post(initUri)
+        .post(
+          initUri,
+          headers: await RestApiHeaders.readOnly(),
+        )
         .timeout(const Duration(minutes: 2));
     if (initResponse.statusCode != 200) {
       throw StateError(_uploadErrorMessage(initResponse));
@@ -258,7 +262,9 @@ class PmtilesRepository {
       final chunkResponse = await http
           .post(
             chunkUri,
-            headers: const {'Content-Type': 'application/octet-stream'},
+            headers: await RestApiHeaders.readOnly(
+              extra: const {'Content-Type': 'application/octet-stream'},
+            ),
             body: bytes,
           )
           .timeout(const Duration(minutes: 30));
@@ -292,7 +298,12 @@ class PmtilesRepository {
           queryParameters: {'uploadId': uploadId},
         );
     _log.info('📤 Chunked upload finalize', data: 'uploadId=$uploadId');
-    return http.post(completeUri).timeout(const Duration(minutes: 10));
+    return http
+        .post(
+          completeUri,
+          headers: await RestApiHeaders.readOnly(),
+        )
+        .timeout(const Duration(minutes: 10));
   }
 
   Future<http.Response> _postFileStream(
@@ -304,7 +315,11 @@ class PmtilesRepository {
     );
     final stream = _openUploadStream(file);
     final request = http.StreamedRequest('POST', uri);
-    request.headers['Content-Type'] = 'application/octet-stream';
+    request.headers.addAll(
+      await RestApiHeaders.readOnly(
+        extra: const {'Content-Type': 'application/octet-stream'},
+      ),
+    );
     if (file.size > 0) {
       request.contentLength = file.size;
     }
@@ -498,12 +513,11 @@ class PmtilesRepository {
       '📥 Remote import requested',
       data: 'name=${pack.name} url=${pack.url}',
     );
-    // Same unauthenticated web path as local uploads (/pmtiles/…).
     final uri = Uri.parse('$_webServerUrl/pmtiles/import-url');
     final response = await http
         .post(
           uri,
-          headers: const {'Content-Type': 'application/json'},
+          headers: await RestApiHeaders.json(),
           body: jsonEncode({
             'url': pack.url,
             'name': pack.name,
@@ -539,7 +553,7 @@ class PmtilesRepository {
     final response = await http
         .post(
           uri,
-          headers: const {'Content-Type': 'application/json'},
+          headers: await RestApiHeaders.json(),
           body: jsonEncode({
             'name': pack.name,
             'bbox': bbox,

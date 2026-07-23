@@ -9,6 +9,9 @@ abstract final class WayfinderPermission {
   static const manageBackups = 'manage_backups';
   static const managePmtiles = 'manage_pmtiles';
   static const manageApiKeys = 'manage_api_keys';
+  static const manageTides = 'manage_tides';
+  static const manageGeocoding = 'manage_geocoding';
+  static const manageMarkerIcons = 'manage_marker_icons';
 
   static const all = <String>{
     viewMap,
@@ -20,6 +23,9 @@ abstract final class WayfinderPermission {
     manageBackups,
     managePmtiles,
     manageApiKeys,
+    manageTides,
+    manageGeocoding,
+    manageMarkerIcons,
   };
 
   static const editorDefaults = <String>{
@@ -27,6 +33,10 @@ abstract final class WayfinderPermission {
     editMapObjects,
     manageLayers,
     manageBackups,
+    manageTides,
+    manageGeocoding,
+    manageMarkerIcons,
+    managePmtiles,
   };
 
   static const viewerDefaults = <String>{viewMap};
@@ -46,8 +56,10 @@ abstract final class WayfinderPermission {
       'accessControl' => manageUsers,
       'appSettings' => manageSettings,
       'mapData' || 'fieldPack' => manageBackups,
-      'pmtiles' || 'markerIcon' => managePmtiles,
+      'pmtiles' => managePmtiles,
+      'markerIcons' || 'markerIcon' => manageMarkerIcons,
       'mapLayer' || 'seasonalOverlay' => manageLayers,
+      'tides' => manageTides,
       'mapMarker' ||
       'mapZone' ||
       'watchLog' ||

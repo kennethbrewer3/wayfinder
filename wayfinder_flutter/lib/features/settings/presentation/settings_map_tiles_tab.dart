@@ -7,6 +7,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../elevation/utils/elevation_dem_detect.dart';
 import '../../offline_packs/presentation/prepare_offline_pack_dialog.dart';
 import '../data/app_settings_repository.dart';
@@ -441,6 +442,24 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final canManagePmtiles = ref.watch(canManagePmtilesProvider);
+    if (!canManagePmtiles) {
+      return ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            l10n.mapTilesMapsTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.mapTilesPermissionDenied,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      );
+    }
+
     final filesAsync = ref.watch(pmtilesCatalogProvider);
     final groupsAsync = ref.watch(pmtilesGroupsProvider);
 

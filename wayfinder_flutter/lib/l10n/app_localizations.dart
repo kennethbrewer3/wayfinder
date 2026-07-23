@@ -274,6 +274,12 @@ abstract class AppLocalizations {
   /// **'“{name}” will be removed forever, including attachments.'**
   String mapObjectTrashPurgeConfirmBody(String name);
 
+  /// No description provided for @mapObjectTrashPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to restore or permanently delete items from trash.'**
+  String get mapObjectTrashPermissionDenied;
+
   /// No description provided for @accessSignInSubtitle.
   ///
   /// In en, this message translates to:
@@ -859,7 +865,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAppearanceDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Stored on the server so every browser uses the same theme.'**
+  /// **'Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Saved to your account so it follows you on any workstation.'**
   String get settingsAppearanceDescription;
 
   /// No description provided for @settingsLanguageTitle.
@@ -871,7 +877,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsLanguageDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose the language used throughout the app. Stored on the server so every browser uses the same language.'**
+  /// **'Choose the language used throughout the app. Saved to your account so it follows you on any workstation.'**
   String get settingsLanguageDescription;
 
   /// No description provided for @languageSystem.
@@ -1003,7 +1009,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMeasurementsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose how line distances are displayed on the map. Stored on the server so every browser uses the same units.'**
+  /// **'Choose how line distances are displayed on the map. Saved to your account so it follows you on any workstation.'**
   String get settingsMeasurementsDescription;
 
   /// No description provided for @settingsAnglesTitle.
@@ -1015,7 +1021,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAnglesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.'**
+  /// **'Choose how relative angles are displayed on the map and in bearing plots. Saved to your account so it follows you on any workstation.'**
   String get settingsAnglesDescription;
 
   /// No description provided for @settingsBearingsTitle.
@@ -1099,7 +1105,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCirclesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.'**
+  /// **'Choose the default size label shown on new circular zones. Saved to your account so it follows you on any workstation.'**
   String get settingsCirclesDescription;
 
   /// No description provided for @settingsMapEditingTitle.
@@ -2257,6 +2263,12 @@ abstract class AppLocalizations {
   /// **'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.'**
   String get mapTilesMapsDescription;
 
+  /// No description provided for @mapTilesPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to add, update, or organize map tiles.'**
+  String get mapTilesPermissionDenied;
+
   /// No description provided for @mapTilesDemBadge.
   ///
   /// In en, this message translates to:
@@ -2848,6 +2860,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.'**
   String get markerIconsDescription;
+
+  /// No description provided for @markerIconsPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to manage marker icon categories or custom marker icons.'**
+  String get markerIconsPermissionDenied;
 
   /// No description provided for @markerIconsAddButton.
   ///
@@ -5465,6 +5483,12 @@ abstract class AppLocalizations {
   /// **'Download OSMNames data to the geocoding server for offline search. Place names and street addresses are imported separately.'**
   String get geocodingDescription;
 
+  /// No description provided for @geocodingPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to configure the geocoding server or manage custom locations.'**
+  String get geocodingPermissionDenied;
+
   /// No description provided for @geocodingServerConnectionTitle.
   ///
   /// In en, this message translates to:
@@ -6658,6 +6682,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline (server must reach NOAA once to import). Save packs as .wayfinder-tide files to restore later without internet.'**
   String get tidesSettingsSubtitle;
+
+  /// No description provided for @tidesPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to download, upload, or remove coastal tide packs.'**
+  String get tidesPermissionDenied;
 
   /// No description provided for @tidesInstalledPacks.
   ///

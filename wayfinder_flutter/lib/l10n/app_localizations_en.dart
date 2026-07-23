@@ -105,6 +105,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get mapObjectTrashPermissionDenied =>
+      'You do not have permission to restore or permanently delete items from trash.';
+
+  @override
   String get accessSignInSubtitle =>
       'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.';
 
@@ -434,14 +438,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Stored on the server so every browser uses the same theme.';
+      'Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Saved to your account so it follows you on any workstation.';
 
   @override
   String get settingsLanguageTitle => 'Language';
 
   @override
   String get settingsLanguageDescription =>
-      'Choose the language used throughout the app. Stored on the server so every browser uses the same language.';
+      'Choose the language used throughout the app. Saved to your account so it follows you on any workstation.';
 
   @override
   String get languageSystem => 'System default';
@@ -514,14 +518,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMeasurementsDescription =>
-      'Choose how line distances are displayed on the map. Stored on the server so every browser uses the same units.';
+      'Choose how line distances are displayed on the map. Saved to your account so it follows you on any workstation.';
 
   @override
   String get settingsAnglesTitle => 'Angles';
 
   @override
   String get settingsAnglesDescription =>
-      'Choose how relative angles are displayed on the map and in bearing plots. Stored on the server so every browser uses the same format.';
+      'Choose how relative angles are displayed on the map and in bearing plots. Saved to your account so it follows you on any workstation.';
 
   @override
   String get settingsBearingsTitle => 'Bearings';
@@ -565,7 +569,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsCirclesDescription =>
-      'Choose the default size label shown on new circular zones. Stored on the server so every browser uses the same default.';
+      'Choose the default size label shown on new circular zones. Saved to your account so it follows you on any workstation.';
 
   @override
   String get settingsMapEditingTitle => 'Map editing';
@@ -1248,6 +1252,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.';
 
   @override
+  String get mapTilesPermissionDenied =>
+      'You do not have permission to add, update, or organize map tiles.';
+
+  @override
   String get mapTilesDemBadge => 'Elevation DEM';
 
   @override
@@ -1624,6 +1632,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get markerIconsDescription =>
       'Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.';
+
+  @override
+  String get markerIconsPermissionDenied =>
+      'You do not have permission to manage marker icon categories or custom marker icons.';
 
   @override
   String get markerIconsAddButton => 'Add custom icon';
@@ -3119,6 +3131,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Download OSMNames data to the geocoding server for offline search. Place names and street addresses are imported separately.';
 
   @override
+  String get geocodingPermissionDenied =>
+      'You do not have permission to configure the geocoding server or manage custom locations.';
+
+  @override
   String get geocodingServerConnectionTitle => 'Geocoding server';
 
   @override
@@ -3833,6 +3849,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tidesSettingsSubtitle =>
       'Download NOAA harmonic packs to this Wayfinder server. The map Tide tool queries those packs offline (server must reach NOAA once to import). Save packs as .wayfinder-tide files to restore later without internet.';
+
+  @override
+  String get tidesPermissionDenied =>
+      'You do not have permission to download, upload, or remove coastal tide packs.';
 
   @override
   String get tidesInstalledPacks => 'Installed packs';

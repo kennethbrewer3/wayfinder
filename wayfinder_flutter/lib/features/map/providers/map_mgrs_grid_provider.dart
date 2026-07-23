@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
-import '../../settings/data/app_settings_repository.dart';
+import '../../settings/data/client_ui_preferences_repository.dart';
 
 final mapMgrsGridEnabledProvider =
     StateNotifierProvider<MapMgrsGridEnabledNotifier, bool>(
       (ref) => MapMgrsGridEnabledNotifier(
-        ref.watch(appSettingsRepositoryProvider),
+        ref.watch(clientUiPreferencesRepositoryProvider),
       ),
     );
 
@@ -15,18 +15,18 @@ class MapMgrsGridEnabledNotifier extends StateNotifier<bool> {
     _load();
   }
 
-  final AppSettingsRepository _repository;
+  final ClientUiPreferencesRepository _repository;
   static final _log = AppLogger.logSettings;
 
   Future<void> reload() => _load();
 
   Future<void> _load() async {
     try {
-      final preferences = await _repository.getClientPreferences();
+      final preferences = await _repository.get();
       state = preferences.mapMgrsGridEnabled;
     } catch (error, _) {
       _log.warn(
-        '🗺️ Failed to load MGRS grid setting from server',
+        '🗺️ Failed to load MGRS grid setting from device preferences',
         error: error,
       );
       state = false;
@@ -36,12 +36,12 @@ class MapMgrsGridEnabledNotifier extends StateNotifier<bool> {
   Future<void> setEnabled(bool enabled) async {
     state = enabled;
     try {
-      await _repository.patchClientPreferences(
+      await _repository.patch(
         (current) => current.copyWith(mapMgrsGridEnabled: enabled),
       );
     } catch (error, _) {
       _log.warn(
-        '🗺️ Failed to save MGRS grid setting to server',
+        '🗺️ Failed to save MGRS grid setting to device preferences',
         error: error,
       );
     }

@@ -336,7 +336,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
         const <String>{};
     final unsyncedOffline = offline && pendingCreates.contains(marker.id.uuid);
-    final canAddToGeocoding = !editLocked && geocodingReachable;
+    final canAddToGeocoding =
+        !editLocked &&
+        geocodingReachable &&
+        ref.watch(canManageGeocodingProvider);
 
     return _DetailsDialogShell(
       title: marker.name,

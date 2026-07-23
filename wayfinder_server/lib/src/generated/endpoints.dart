@@ -1788,6 +1788,107 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['appSettings'] as _i14.AppSettingsEndpoint)
                   .getSettings(session),
         ),
+        'getMyClientPreferences': _i1.MethodConnector(
+          name: 'getMyClientPreferences',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i14.AppSettingsEndpoint)
+                  .getMyClientPreferences(session),
+        ),
+        'updateMyClientPreferences': _i1.MethodConnector(
+          name: 'updateMyClientPreferences',
+          params: {
+            'measurementUnits': _i1.ParameterDescription(
+              name: 'measurementUnits',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'angleDisplayFormat': _i1.ParameterDescription(
+              name: 'angleDisplayFormat',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'bearingReference': _i1.ParameterDescription(
+              name: 'bearingReference',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'circleSizeDisplay': _i1.ParameterDescription(
+              name: 'circleSizeDisplay',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'appTheme': _i1.ParameterDescription(
+              name: 'appTheme',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'appLocale': _i1.ParameterDescription(
+              name: 'appLocale',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'mapMarkerSizeScale': _i1.ParameterDescription(
+              name: 'mapMarkerSizeScale',
+              type: _i1.getType<double>(),
+              nullable: false,
+            ),
+            'mapViewportDebugBorder': _i1.ParameterDescription(
+              name: 'mapViewportDebugBorder',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'mapTileBorderDebug': _i1.ParameterDescription(
+              name: 'mapTileBorderDebug',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'mapCompassRoseEnabled': _i1.ParameterDescription(
+              name: 'mapCompassRoseEnabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'mapMgrsGridEnabled': _i1.ParameterDescription(
+              name: 'mapMgrsGridEnabled',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'polygonSnapRightAngles': _i1.ParameterDescription(
+              name: 'polygonSnapRightAngles',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'polygonSnap45Angles': _i1.ParameterDescription(
+              name: 'polygonSnap45Angles',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i14.AppSettingsEndpoint)
+                  .updateMyClientPreferences(
+                    session,
+                    params['measurementUnits'],
+                    params['angleDisplayFormat'],
+                    params['bearingReference'],
+                    params['circleSizeDisplay'],
+                    params['appTheme'],
+                    params['appLocale'],
+                    params['mapMarkerSizeScale'],
+                    params['mapViewportDebugBorder'],
+                    params['mapTileBorderDebug'],
+                    params['mapCompassRoseEnabled'],
+                    params['mapMgrsGridEnabled'],
+                    params['polygonSnapRightAngles'],
+                    params['polygonSnap45Angles'],
+                  ),
+        ),
         'updateHomeLocation': _i1.MethodConnector(
           name: 'updateHomeLocation',
           params: {

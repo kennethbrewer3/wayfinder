@@ -67,8 +67,12 @@ class RestAuthMiddleware extends MiddlewareObject {
     if (path.contains('/map-data') || path.contains('/field-pack')) {
       return WayfinderPermission.manageBackups;
     }
-    if (path.contains('/pmtiles') || path.contains('/marker-icons')) {
+    if (path.contains('/pmtiles')) {
       return WayfinderPermission.managePmtiles;
+    }
+    if (path.contains('/marker-icons') ||
+        path.contains('/marker-icon-categories')) {
+      return WayfinderPermission.manageMarkerIcons;
     }
     if (path.contains('/layers') || path.contains('/seasonal-overlays')) {
       return WayfinderPermission.manageLayers;

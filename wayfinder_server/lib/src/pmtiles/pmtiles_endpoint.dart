@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'pmtiles_catalog_sync.dart';
@@ -79,6 +80,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         );
       },
       onSuccess: (group) => 'id=${group.id.uuid} name="${group.name}"',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -108,6 +110,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         );
       },
       onSuccess: (group) => 'id=${group.id.uuid} name="${group.name}"',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -128,6 +131,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
       },
       onSuccess: (deleted) =>
           deleted ? 'deleted id=${id.uuid}' : 'not found id=${id.uuid}',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -155,6 +159,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         await PmtilesFileGroups.syncFileActiveFromGroups(session, fileId);
       },
       onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId.uuid}',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -182,6 +187,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         await PmtilesFileGroups.syncFileActiveFromGroups(session, fileId);
       },
       onSuccess: (_) => 'fileId=${fileId.uuid} groupId=${groupId.uuid}',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -221,6 +227,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         );
       },
       onSuccess: (_) => 'groupId=${groupId.uuid} enabled=$enabled',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -260,6 +267,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         }
       },
       onSuccess: (_) => 'enabled=$enabled',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -311,6 +319,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         );
       },
       onSuccess: (_) => 'id=${id.uuid} enabled=$enabled',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -341,6 +350,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         }
       },
       onSuccess: (_) => 'enabled all',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -366,6 +376,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
         );
       },
       onSuccess: (_) => 'disabled all',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 
@@ -387,6 +398,7 @@ class PmtilesEndpoint extends Endpoint with EndpointLogging {
       },
       onSuccess: (deleted) =>
           deleted ? 'deleted id=${id.uuid}' : 'not found id=${id.uuid}',
+      requiredPermission: WayfinderPermission.managePmtiles,
     );
   }
 }

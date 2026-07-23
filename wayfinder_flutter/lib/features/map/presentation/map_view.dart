@@ -5288,7 +5288,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     label: l10n.markerSaveSearchedCoordinatesConfirm,
                     onSelected: _saveSearchCoordinateMarkerFromRadialMenu,
                   ),
-                  if (geocodingReachable)
+                  if (geocodingReachable &&
+                      ref.watch(canManageGeocodingProvider))
                     MapRadialMenuAction(
                       icon: Icons.public,
                       label: l10n.mapRadialAddToGeocoding,

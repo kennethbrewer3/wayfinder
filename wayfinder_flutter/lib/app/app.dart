@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../features/markers/providers/map_marker_updates_listener.dart';
+import '../features/settings/data/client_ui_preferences_repository.dart';
 import '../features/settings/providers/app_locale_provider.dart';
 import '../features/settings/providers/app_theme_provider.dart';
 import '../screens/sign_in_screen.dart';
@@ -18,6 +19,7 @@ class WayfinderApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(mapMarkerUpdatesListenerProvider);
+    ref.watch(clientUiPreferencesAuthListenerProvider);
     final themeChoice = ref.watch(appThemeProvider);
     final localeChoice = ref.watch(appLocaleProvider);
 

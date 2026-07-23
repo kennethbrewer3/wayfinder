@@ -32,6 +32,10 @@ abstract class AccessSessionInfo
     required this.canManageBackups,
     required this.canManageApiKeys,
     required this.canManageLayers,
+    required this.canManageTides,
+    required this.canManageGeocoding,
+    required this.canManageMarkerIcons,
+    required this.canManagePmtiles,
   });
 
   factory AccessSessionInfo({
@@ -51,6 +55,10 @@ abstract class AccessSessionInfo
     required bool canManageBackups,
     required bool canManageApiKeys,
     required bool canManageLayers,
+    required bool canManageTides,
+    required bool canManageGeocoding,
+    required bool canManageMarkerIcons,
+    required bool canManagePmtiles,
   }) = _AccessSessionInfoImpl;
 
   factory AccessSessionInfo.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -95,6 +103,18 @@ abstract class AccessSessionInfo
       canManageLayers: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['canManageLayers'],
       ),
+      canManageTides: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageTides'],
+      ),
+      canManageGeocoding: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageGeocoding'],
+      ),
+      canManageMarkerIcons: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageMarkerIcons'],
+      ),
+      canManagePmtiles: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManagePmtiles'],
+      ),
     );
   }
 
@@ -130,6 +150,14 @@ abstract class AccessSessionInfo
 
   bool canManageLayers;
 
+  bool canManageTides;
+
+  bool canManageGeocoding;
+
+  bool canManageMarkerIcons;
+
+  bool canManagePmtiles;
+
   /// Returns a shallow copy of this [AccessSessionInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -150,6 +178,10 @@ abstract class AccessSessionInfo
     bool? canManageBackups,
     bool? canManageApiKeys,
     bool? canManageLayers,
+    bool? canManageTides,
+    bool? canManageGeocoding,
+    bool? canManageMarkerIcons,
+    bool? canManagePmtiles,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -171,6 +203,10 @@ abstract class AccessSessionInfo
       'canManageBackups': canManageBackups,
       'canManageApiKeys': canManageApiKeys,
       'canManageLayers': canManageLayers,
+      'canManageTides': canManageTides,
+      'canManageGeocoding': canManageGeocoding,
+      'canManageMarkerIcons': canManageMarkerIcons,
+      'canManagePmtiles': canManagePmtiles,
     };
   }
 
@@ -194,6 +230,10 @@ abstract class AccessSessionInfo
       'canManageBackups': canManageBackups,
       'canManageApiKeys': canManageApiKeys,
       'canManageLayers': canManageLayers,
+      'canManageTides': canManageTides,
+      'canManageGeocoding': canManageGeocoding,
+      'canManageMarkerIcons': canManageMarkerIcons,
+      'canManagePmtiles': canManagePmtiles,
     };
   }
 
@@ -223,6 +263,10 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     required bool canManageBackups,
     required bool canManageApiKeys,
     required bool canManageLayers,
+    required bool canManageTides,
+    required bool canManageGeocoding,
+    required bool canManageMarkerIcons,
+    required bool canManagePmtiles,
   }) : super._(
          authRequired: authRequired,
          authenticated: authenticated,
@@ -240,6 +284,10 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
          canManageBackups: canManageBackups,
          canManageApiKeys: canManageApiKeys,
          canManageLayers: canManageLayers,
+         canManageTides: canManageTides,
+         canManageGeocoding: canManageGeocoding,
+         canManageMarkerIcons: canManageMarkerIcons,
+         canManagePmtiles: canManagePmtiles,
        );
 
   /// Returns a shallow copy of this [AccessSessionInfo]
@@ -263,6 +311,10 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     bool? canManageBackups,
     bool? canManageApiKeys,
     bool? canManageLayers,
+    bool? canManageTides,
+    bool? canManageGeocoding,
+    bool? canManageMarkerIcons,
+    bool? canManagePmtiles,
   }) {
     return AccessSessionInfo(
       authRequired: authRequired ?? this.authRequired,
@@ -281,6 +333,10 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
       canManageBackups: canManageBackups ?? this.canManageBackups,
       canManageApiKeys: canManageApiKeys ?? this.canManageApiKeys,
       canManageLayers: canManageLayers ?? this.canManageLayers,
+      canManageTides: canManageTides ?? this.canManageTides,
+      canManageGeocoding: canManageGeocoding ?? this.canManageGeocoding,
+      canManageMarkerIcons: canManageMarkerIcons ?? this.canManageMarkerIcons,
+      canManagePmtiles: canManagePmtiles ?? this.canManagePmtiles,
     );
   }
 }

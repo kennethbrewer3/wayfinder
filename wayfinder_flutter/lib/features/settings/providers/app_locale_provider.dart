@@ -2,11 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app_locale_choice.dart';
 import '../../../core/logging/app_logger.dart';
-import '../data/app_settings_repository.dart';
+import '../data/client_ui_preferences_repository.dart';
 
 final appLocaleProvider =
     StateNotifierProvider<AppLocaleNotifier, AppLocaleChoice>(
-      (ref) => AppLocaleNotifier(ref.watch(appSettingsRepositoryProvider)),
+      (ref) => AppLocaleNotifier(
+        ref.watch(clientUiPreferencesRepositoryProvider),
+      ),
     );
 
 class AppLocaleNotifier extends StateNotifier<AppLocaleChoice> {
@@ -14,18 +16,18 @@ class AppLocaleNotifier extends StateNotifier<AppLocaleChoice> {
     _load();
   }
 
-  final AppSettingsRepository _repository;
+  final ClientUiPreferencesRepository _repository;
   static final _log = AppLogger.logSettings;
 
   Future<void> reload() => _load();
 
   Future<void> _load() async {
     try {
-      final preferences = await _repository.getClientPreferences();
+      final preferences = await _repository.get();
       state = preferences.appLocale;
     } catch (error, _) {
       _log.warn(
-        '🌐 Failed to load app locale from server',
+        '🌐 Failed to load app locale from device preferences',
         error: error,
       );
       state = AppLocaleChoice.system;
@@ -35,12 +37,12 @@ class AppLocaleNotifier extends StateNotifier<AppLocaleChoice> {
   Future<void> setLocale(AppLocaleChoice choice) async {
     state = choice;
     try {
-      await _repository.patchClientPreferences(
+      await _repository.patch(
         (current) => current.copyWith(appLocale: choice),
       );
     } catch (error, _) {
       _log.warn(
-        '🌐 Failed to save app locale to server',
+        '🌐 Failed to save app locale to device preferences',
         error: error,
       );
     }

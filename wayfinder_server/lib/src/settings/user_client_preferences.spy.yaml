@@ -1,0 +1,24 @@
+class: UserClientPreferences
+table: user_client_preferences
+fields:
+  id: UuidValue, defaultModel=random
+  authUserId: UuidValue
+  measurementUnits: String, default="metric"
+  angleDisplayFormat: String, default="decimal"
+  bearingReference: String, default="true"
+  circleSizeDisplay: String, default="radius"
+  appTheme: String, default="light"
+  appLocale: String, default="system"
+  mapMarkerSizeScale: double, default=1.0
+  mapViewportDebugBorder: bool, default=false
+  mapTileBorderDebug: bool, default=false
+  mapCompassRoseEnabled: bool, default=true
+  mapMgrsGridEnabled: bool, default=false
+  polygonSnapRightAngles: bool, default=true
+  polygonSnap45Angles: bool, default=false
+  updatedAt: DateTime
+
+indexes:
+  user_client_preferences_auth_user_idx:
+    fields: authUserId
+    unique: true

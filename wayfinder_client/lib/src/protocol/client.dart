@@ -27,40 +27,42 @@ import 'dart:typed_data' as _i10;
 import 'package:wayfinder_client/src/protocol/map/map_marker.dart' as _i11;
 import 'package:wayfinder_client/src/protocol/map/map_marker_change.dart'
     as _i12;
-import 'package:wayfinder_client/src/protocol/markers/marker_icon_catalog_entry.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_attachment.dart'
     as _i13;
-import 'package:wayfinder_client/src/protocol/markers/marker_icon_category_definition.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_icon_catalog_entry.dart'
     as _i14;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_client/src/protocol/markers/marker_icon_category_definition.dart'
     as _i15;
-import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_file.dart'
     as _i16;
-import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay.dart'
+import 'package:wayfinder_client/src/protocol/pmtiles/pmtiles_group.dart'
     as _i17;
-import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay_change.dart'
+import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay.dart'
     as _i18;
-import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
+import 'package:wayfinder_client/src/protocol/seasonal_overlays/seasonal_overlay_change.dart'
     as _i19;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
+import 'package:wayfinder_client/src/protocol/settings/app_settings.dart'
     as _i20;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_info.dart'
     as _i21;
-import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
     as _i22;
-import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
+import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
     as _i23;
-import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
     as _i24;
-import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
     as _i25;
-import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
     as _i26;
-import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
     as _i27;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i28;
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
+    as _i28;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i29;
 import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
-    as _i29;
-import 'protocol.dart' as _i30;
+    as _i30;
+import 'protocol.dart' as _i31;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -496,20 +498,43 @@ class EndpointMapMarker extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointMarkerAttachment extends _i2.EndpointRef {
+  EndpointMarkerAttachment(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'markerAttachment';
+
+  _i3.Future<List<_i13.MarkerAttachment>> listForMarker(
+    _i2.UuidValue markerId,
+  ) => caller.callServerEndpoint<List<_i13.MarkerAttachment>>(
+    'markerAttachment',
+    'listForMarker',
+    {'markerId': markerId},
+  );
+
+  _i3.Future<bool> deleteAttachment(_i2.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'markerAttachment',
+        'deleteAttachment',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointMarkerIcon extends _i2.EndpointRef {
   EndpointMarkerIcon(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'markerIcon';
 
-  _i3.Future<List<_i13.MarkerIconCatalogEntry>> listCatalog() =>
-      caller.callServerEndpoint<List<_i13.MarkerIconCatalogEntry>>(
+  _i3.Future<List<_i14.MarkerIconCatalogEntry>> listCatalog() =>
+      caller.callServerEndpoint<List<_i14.MarkerIconCatalogEntry>>(
         'markerIcon',
         'listCatalog',
         {},
       );
 
-  _i3.Future<_i13.MarkerIconCatalogEntry> createIcon(
+  _i3.Future<_i14.MarkerIconCatalogEntry> createIcon(
     String key,
     String label, {
     String? category,
@@ -518,7 +543,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     required bool coloredAsset,
     required double glyphScale,
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i13.MarkerIconCatalogEntry>(
+  }) => caller.callServerEndpoint<_i14.MarkerIconCatalogEntry>(
     'markerIcon',
     'createIcon',
     {
@@ -533,7 +558,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i13.MarkerIconCatalogEntry> updateIcon(
+  _i3.Future<_i14.MarkerIconCatalogEntry> updateIcon(
     String key,
     String label, {
     String? category,
@@ -542,7 +567,7 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     bool? coloredAsset,
     double? glyphScale,
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i13.MarkerIconCatalogEntry>(
+  }) => caller.callServerEndpoint<_i14.MarkerIconCatalogEntry>(
     'markerIcon',
     'updateIcon',
     {
@@ -563,18 +588,18 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     {'key': key},
   );
 
-  _i3.Future<List<_i14.MarkerIconCategoryDefinition>> listCategories() =>
-      caller.callServerEndpoint<List<_i14.MarkerIconCategoryDefinition>>(
+  _i3.Future<List<_i15.MarkerIconCategoryDefinition>> listCategories() =>
+      caller.callServerEndpoint<List<_i15.MarkerIconCategoryDefinition>>(
         'markerIcon',
         'listCategories',
         {},
       );
 
-  _i3.Future<_i14.MarkerIconCategoryDefinition> createCategory(
+  _i3.Future<_i15.MarkerIconCategoryDefinition> createCategory(
     String key,
     String label, {
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i14.MarkerIconCategoryDefinition>(
+  }) => caller.callServerEndpoint<_i15.MarkerIconCategoryDefinition>(
     'markerIcon',
     'createCategory',
     {
@@ -584,11 +609,11 @@ class EndpointMarkerIcon extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i14.MarkerIconCategoryDefinition> updateCategory(
+  _i3.Future<_i15.MarkerIconCategoryDefinition> updateCategory(
     String key,
     String label, {
     int? sortOrder,
-  }) => caller.callServerEndpoint<_i14.MarkerIconCategoryDefinition>(
+  }) => caller.callServerEndpoint<_i15.MarkerIconCategoryDefinition>(
     'markerIcon',
     'updateCategory',
     {
@@ -613,31 +638,31 @@ class EndpointPmtiles extends _i2.EndpointRef {
   @override
   String get name => 'pmtiles';
 
-  _i3.Future<List<_i15.PmtilesFile>> listFiles() =>
-      caller.callServerEndpoint<List<_i15.PmtilesFile>>(
+  _i3.Future<List<_i16.PmtilesFile>> listFiles() =>
+      caller.callServerEndpoint<List<_i16.PmtilesFile>>(
         'pmtiles',
         'listFiles',
         {},
       );
 
-  _i3.Future<List<_i16.PmtilesGroup>> listGroups() =>
-      caller.callServerEndpoint<List<_i16.PmtilesGroup>>(
+  _i3.Future<List<_i17.PmtilesGroup>> listGroups() =>
+      caller.callServerEndpoint<List<_i17.PmtilesGroup>>(
         'pmtiles',
         'listGroups',
         {},
       );
 
-  _i3.Future<_i16.PmtilesGroup> createGroup(String name) =>
-      caller.callServerEndpoint<_i16.PmtilesGroup>(
+  _i3.Future<_i17.PmtilesGroup> createGroup(String name) =>
+      caller.callServerEndpoint<_i17.PmtilesGroup>(
         'pmtiles',
         'createGroup',
         {'name': name},
       );
 
-  _i3.Future<_i16.PmtilesGroup> renameGroup(
+  _i3.Future<_i17.PmtilesGroup> renameGroup(
     _i2.UuidValue id,
     String name,
-  ) => caller.callServerEndpoint<_i16.PmtilesGroup>(
+  ) => caller.callServerEndpoint<_i17.PmtilesGroup>(
     'pmtiles',
     'renameGroup',
     {
@@ -756,31 +781,31 @@ class EndpointSeasonalOverlay extends _i2.EndpointRef {
   @override
   String get name => 'seasonalOverlay';
 
-  _i3.Future<List<_i17.SeasonalOverlay>> listOverlays() =>
-      caller.callServerEndpoint<List<_i17.SeasonalOverlay>>(
+  _i3.Future<List<_i18.SeasonalOverlay>> listOverlays() =>
+      caller.callServerEndpoint<List<_i18.SeasonalOverlay>>(
         'seasonalOverlay',
         'listOverlays',
         {},
       );
 
-  _i3.Future<_i17.SeasonalOverlay?> getOverlay(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i17.SeasonalOverlay?>(
+  _i3.Future<_i18.SeasonalOverlay?> getOverlay(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i18.SeasonalOverlay?>(
         'seasonalOverlay',
         'getOverlay',
         {'id': id},
       );
 
-  _i3.Future<_i17.SeasonalOverlay> createOverlay(
-    _i17.SeasonalOverlay overlay,
-  ) => caller.callServerEndpoint<_i17.SeasonalOverlay>(
+  _i3.Future<_i18.SeasonalOverlay> createOverlay(
+    _i18.SeasonalOverlay overlay,
+  ) => caller.callServerEndpoint<_i18.SeasonalOverlay>(
     'seasonalOverlay',
     'createOverlay',
     {'overlay': overlay},
   );
 
-  _i3.Future<_i17.SeasonalOverlay> updateOverlay(
-    _i17.SeasonalOverlay overlay,
-  ) => caller.callServerEndpoint<_i17.SeasonalOverlay>(
+  _i3.Future<_i18.SeasonalOverlay> updateOverlay(
+    _i18.SeasonalOverlay overlay,
+  ) => caller.callServerEndpoint<_i18.SeasonalOverlay>(
     'seasonalOverlay',
     'updateOverlay',
     {'overlay': overlay},
@@ -793,18 +818,18 @@ class EndpointSeasonalOverlay extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<List<_i17.SeasonalOverlay>> reorderOverlays(
-    List<_i17.SeasonalOverlay> overlays,
-  ) => caller.callServerEndpoint<List<_i17.SeasonalOverlay>>(
+  _i3.Future<List<_i18.SeasonalOverlay>> reorderOverlays(
+    List<_i18.SeasonalOverlay> overlays,
+  ) => caller.callServerEndpoint<List<_i18.SeasonalOverlay>>(
     'seasonalOverlay',
     'reorderOverlays',
     {'overlays': overlays},
   );
 
-  _i3.Stream<_i18.SeasonalOverlayChange> overlayChanges() =>
+  _i3.Stream<_i19.SeasonalOverlayChange> overlayChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i18.SeasonalOverlayChange>,
-        _i18.SeasonalOverlayChange
+        _i3.Stream<_i19.SeasonalOverlayChange>,
+        _i19.SeasonalOverlayChange
       >(
         'seasonalOverlay',
         'overlayChanges',
@@ -820,18 +845,18 @@ class EndpointAppSettings extends _i2.EndpointRef {
   @override
   String get name => 'appSettings';
 
-  _i3.Future<_i19.AppSettings> getSettings() =>
-      caller.callServerEndpoint<_i19.AppSettings>(
+  _i3.Future<_i20.AppSettings> getSettings() =>
+      caller.callServerEndpoint<_i20.AppSettings>(
         'appSettings',
         'getSettings',
         {},
       );
 
-  _i3.Future<_i19.AppSettings> updateHomeLocation(
+  _i3.Future<_i20.AppSettings> updateHomeLocation(
     double latitude,
     double longitude,
     double zoom,
-  ) => caller.callServerEndpoint<_i19.AppSettings>(
+  ) => caller.callServerEndpoint<_i20.AppSettings>(
     'appSettings',
     'updateHomeLocation',
     {
@@ -841,21 +866,21 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i19.AppSettings> resetHomeLocation() =>
-      caller.callServerEndpoint<_i19.AppSettings>(
+  _i3.Future<_i20.AppSettings> resetHomeLocation() =>
+      caller.callServerEndpoint<_i20.AppSettings>(
         'appSettings',
         'resetHomeLocation',
         {},
       );
 
-  _i3.Future<_i19.AppSettings> updatePmtilesStoragePath(String storagePath) =>
-      caller.callServerEndpoint<_i19.AppSettings>(
+  _i3.Future<_i20.AppSettings> updatePmtilesStoragePath(String storagePath) =>
+      caller.callServerEndpoint<_i20.AppSettings>(
         'appSettings',
         'updatePmtilesStoragePath',
         {'storagePath': storagePath},
       );
 
-  _i3.Future<_i19.AppSettings> updateClientPreferences(
+  _i3.Future<_i20.AppSettings> updateClientPreferences(
     String measurementUnits,
     String angleDisplayFormat,
     String bearingReference,
@@ -871,7 +896,7 @@ class EndpointAppSettings extends _i2.EndpointRef {
     bool polygonSnap45Angles,
     double mapMinZoom,
     double mapMaxZoom,
-  ) => caller.callServerEndpoint<_i19.AppSettings>(
+  ) => caller.callServerEndpoint<_i20.AppSettings>(
     'appSettings',
     'updateClientPreferences',
     {
@@ -893,22 +918,22 @@ class EndpointAppSettings extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i20.RestApiKeyInfo> getRestApiKeyStatus() =>
-      caller.callServerEndpoint<_i20.RestApiKeyInfo>(
+  _i3.Future<_i21.RestApiKeyInfo> getRestApiKeyStatus() =>
+      caller.callServerEndpoint<_i21.RestApiKeyInfo>(
         'appSettings',
         'getRestApiKeyStatus',
         {},
       );
 
-  _i3.Future<List<_i21.RestApiKey>> listRestApiKeys() =>
-      caller.callServerEndpoint<List<_i21.RestApiKey>>(
+  _i3.Future<List<_i22.RestApiKey>> listRestApiKeys() =>
+      caller.callServerEndpoint<List<_i22.RestApiKey>>(
         'appSettings',
         'listRestApiKeys',
         {},
       );
 
-  _i3.Future<_i22.RestApiKeyCreated> createRestApiKey(String name) =>
-      caller.callServerEndpoint<_i22.RestApiKeyCreated>(
+  _i3.Future<_i23.RestApiKeyCreated> createRestApiKey(String name) =>
+      caller.callServerEndpoint<_i23.RestApiKeyCreated>(
         'appSettings',
         'createRestApiKey',
         {'name': name},
@@ -921,8 +946,8 @@ class EndpointAppSettings extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<_i20.RestApiKeyInfo> clearRestApiKeys() =>
-      caller.callServerEndpoint<_i20.RestApiKeyInfo>(
+  _i3.Future<_i21.RestApiKeyInfo> clearRestApiKeys() =>
+      caller.callServerEndpoint<_i21.RestApiKeyInfo>(
         'appSettings',
         'clearRestApiKeys',
         {},
@@ -936,31 +961,31 @@ class EndpointTides extends _i2.EndpointRef {
   @override
   String get name => 'tides';
 
-  _i3.Future<List<_i23.TidePackInfo>> listPacks() =>
-      caller.callServerEndpoint<List<_i23.TidePackInfo>>(
+  _i3.Future<List<_i24.TidePackInfo>> listPacks() =>
+      caller.callServerEndpoint<List<_i24.TidePackInfo>>(
         'tides',
         'listPacks',
         {},
       );
 
-  _i3.Future<List<_i24.TideCoastalRegion>> listCoastalRegions() =>
-      caller.callServerEndpoint<List<_i24.TideCoastalRegion>>(
+  _i3.Future<List<_i25.TideCoastalRegion>> listCoastalRegions() =>
+      caller.callServerEndpoint<List<_i25.TideCoastalRegion>>(
         'tides',
         'listCoastalRegions',
         {},
       );
 
-  _i3.Future<_i23.TidePackInfo> importCoastalRegion(String regionId) =>
-      caller.callServerEndpoint<_i23.TidePackInfo>(
+  _i3.Future<_i24.TidePackInfo> importCoastalRegion(String regionId) =>
+      caller.callServerEndpoint<_i24.TidePackInfo>(
         'tides',
         'importCoastalRegion',
         {'regionId': regionId},
       );
 
-  _i3.Future<_i23.TidePackInfo> setPackActive(
+  _i3.Future<_i24.TidePackInfo> setPackActive(
     String packId,
     bool active,
-  ) => caller.callServerEndpoint<_i23.TidePackInfo>(
+  ) => caller.callServerEndpoint<_i24.TidePackInfo>(
     'tides',
     'setPackActive',
     {
@@ -984,19 +1009,19 @@ class EndpointTides extends _i2.EndpointRef {
       );
 
   /// Installs a pack from a `.wayfinder-tide` / zip archive (no NOAA required).
-  _i3.Future<_i23.TidePackInfo> importPackArchive(_i10.ByteData archiveBytes) =>
-      caller.callServerEndpoint<_i23.TidePackInfo>(
+  _i3.Future<_i24.TidePackInfo> importPackArchive(_i10.ByteData archiveBytes) =>
+      caller.callServerEndpoint<_i24.TidePackInfo>(
         'tides',
         'importPackArchive',
         {'archiveBytes': archiveBytes},
       );
 
-  _i3.Future<_i25.TideQueryResult> queryAt(
+  _i3.Future<_i26.TideQueryResult> queryAt(
     double lat,
     double lng,
     DateTime date, {
     required int hours,
-  }) => caller.callServerEndpoint<_i25.TideQueryResult>(
+  }) => caller.callServerEndpoint<_i26.TideQueryResult>(
     'tides',
     'queryAt',
     {
@@ -1015,29 +1040,29 @@ class EndpointWatchLog extends _i2.EndpointRef {
   @override
   String get name => 'watchLog';
 
-  _i3.Future<List<_i26.WatchLogEntry>> listEntries() =>
-      caller.callServerEndpoint<List<_i26.WatchLogEntry>>(
+  _i3.Future<List<_i27.WatchLogEntry>> listEntries() =>
+      caller.callServerEndpoint<List<_i27.WatchLogEntry>>(
         'watchLog',
         'listEntries',
         {},
       );
 
-  _i3.Future<_i26.WatchLogEntry?> getEntry(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i26.WatchLogEntry?>(
+  _i3.Future<_i27.WatchLogEntry?> getEntry(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i27.WatchLogEntry?>(
         'watchLog',
         'getEntry',
         {'id': id},
       );
 
-  _i3.Future<_i26.WatchLogEntry> createEntry(_i26.WatchLogEntry entry) =>
-      caller.callServerEndpoint<_i26.WatchLogEntry>(
+  _i3.Future<_i27.WatchLogEntry> createEntry(_i27.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i27.WatchLogEntry>(
         'watchLog',
         'createEntry',
         {'entry': entry},
       );
 
-  _i3.Future<_i26.WatchLogEntry> updateEntry(_i26.WatchLogEntry entry) =>
-      caller.callServerEndpoint<_i26.WatchLogEntry>(
+  _i3.Future<_i27.WatchLogEntry> updateEntry(_i27.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i27.WatchLogEntry>(
         'watchLog',
         'updateEntry',
         {'entry': entry},
@@ -1050,10 +1075,10 @@ class EndpointWatchLog extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Stream<_i27.WatchLogEntryChange> entryChanges() =>
+  _i3.Stream<_i28.WatchLogEntryChange> entryChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i27.WatchLogEntryChange>,
-        _i27.WatchLogEntryChange
+        _i3.Stream<_i28.WatchLogEntryChange>,
+        _i28.WatchLogEntryChange
       >(
         'watchLog',
         'entryChanges',
@@ -1069,29 +1094,29 @@ class EndpointMapZone extends _i2.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i3.Future<List<_i28.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i28.MapZone>>(
+  _i3.Future<List<_i29.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i29.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i3.Future<_i28.MapZone?> getZone(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i28.MapZone?>(
+  _i3.Future<_i29.MapZone?> getZone(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i29.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i3.Future<_i28.MapZone> createZone(_i28.MapZone zone) =>
-      caller.callServerEndpoint<_i28.MapZone>(
+  _i3.Future<_i29.MapZone> createZone(_i29.MapZone zone) =>
+      caller.callServerEndpoint<_i29.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i3.Future<_i28.MapZone> updateZone(_i28.MapZone zone) =>
-      caller.callServerEndpoint<_i28.MapZone>(
+  _i3.Future<_i29.MapZone> updateZone(_i29.MapZone zone) =>
+      caller.callServerEndpoint<_i29.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -1104,10 +1129,10 @@ class EndpointMapZone extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Stream<_i29.MapZoneChange> zoneChanges() =>
+  _i3.Stream<_i30.MapZoneChange> zoneChanges() =>
       caller.callStreamingServerEndpoint<
-        _i3.Stream<_i29.MapZoneChange>,
-        _i29.MapZoneChange
+        _i3.Stream<_i30.MapZoneChange>,
+        _i30.MapZoneChange
       >(
         'mapZone',
         'zoneChanges',
@@ -1147,7 +1172,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i30.Protocol(),
+         _i31.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1163,6 +1188,7 @@ class Client extends _i2.ServerpodClientShared {
     mapLayer = EndpointMapLayer(this);
     mapData = EndpointMapData(this);
     mapMarker = EndpointMapMarker(this);
+    markerAttachment = EndpointMarkerAttachment(this);
     markerIcon = EndpointMarkerIcon(this);
     pmtiles = EndpointPmtiles(this);
     seasonalOverlay = EndpointSeasonalOverlay(this);
@@ -1186,6 +1212,8 @@ class Client extends _i2.ServerpodClientShared {
   late final EndpointMapData mapData;
 
   late final EndpointMapMarker mapMarker;
+
+  late final EndpointMarkerAttachment markerAttachment;
 
   late final EndpointMarkerIcon markerIcon;
 
@@ -1212,6 +1240,7 @@ class Client extends _i2.ServerpodClientShared {
     'mapLayer': mapLayer,
     'mapData': mapData,
     'mapMarker': mapMarker,
+    'markerAttachment': markerAttachment,
     'markerIcon': markerIcon,
     'pmtiles': pmtiles,
     'seasonalOverlay': seasonalOverlay,

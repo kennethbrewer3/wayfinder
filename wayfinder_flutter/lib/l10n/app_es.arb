@@ -303,6 +303,45 @@
       }
     }
   },
+  "markerAttachmentsTitle": "Fotos",
+  "markerAttachmentsEmpty": "Aún no hay fotos. Añade una imagen JPEG, PNG o WebP.",
+  "markerAttachmentsEmptyReadOnly": "No hay fotos en este marcador.",
+  "markerAttachmentAdd": "Añadir foto",
+  "markerAttachmentUploading": "Subiendo…",
+  "markerAttachmentUploadSuccess": "Foto añadida.",
+  "markerAttachmentUploadFailed": "Error al subir la foto: {error}",
+  "@markerAttachmentUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentLoadFailed": "No se pudieron cargar las fotos: {error}",
+  "@markerAttachmentLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentDeleteConfirmTitle": "¿Eliminar foto?",
+  "markerAttachmentDeleteConfirmMessage": "¿Quitar \"{fileName}\" de este marcador?",
+  "@markerAttachmentDeleteConfirmMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentDeleteFailed": "No se pudo eliminar la foto: {error}",
+  "@markerAttachmentDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "kioskModeTitle": "Modo kiosco / visor",
   "kioskModeDescription": "Convierte este portátil en un visor TOC: oculta Ajustes y herramientas de creación, bloquea ediciones y usa un sondeo más suave para la batería. Úsalo en portátiles de reserva apuntando a tu servidor Wayfinder. Para un servidor de reserva que deba rechazar todas las escrituras, configura WAYFINDER_READ_ONLY=1 en el servidor.",
   "kioskModeEnter": "Entrar en modo kiosco",
@@ -935,6 +974,46 @@
     "placeholders": {
       "date": {
         "type": "String"
+      }
+    }
+  },
+  "markerChecklistsTitle": "Listas de verificación / SOP",
+  "markerChecklistsEmptyHelp": "SOP y auditorías del lugar — p. ej. revisión de la mochila de emergencia en el refugio.",
+  "markerChecklistsCount": "{count, plural, =1{1 lista} other{{count} listas}}",
+  "@markerChecklistsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerChecklistsAddChecklist": "Añadir lista",
+  "markerChecklistsRemoveChecklist": "Eliminar lista",
+  "markerChecklistsChecklistHeading": "Lista de verificación",
+  "markerChecklistsNameLabel": "Nombre de la lista",
+  "markerChecklistsNotesLabel": "Notas",
+  "markerChecklistsLastAuditedNever": "Nunca auditada",
+  "markerChecklistsLastAudited": "Última auditoría {date}",
+  "@markerChecklistsLastAudited": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerChecklistsMarkAudited": "Marcar auditada ahora",
+  "markerChecklistsAddItem": "Añadir elemento",
+  "markerChecklistsRemoveItem": "Eliminar elemento",
+  "markerChecklistsItemLabel": "Elemento",
+  "markerChecklistsItemNotesLabel": "Notas del elemento",
+  "markerChecklistsProgress": "{done} de {total} hechos",
+  "@markerChecklistsProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
       }
     }
   },

@@ -1,0 +1,20 @@
+class: MarkerAttachment
+table: marker_attachment
+fields:
+  id: UuidValue, defaultModel=random
+  ### Soft link to the owning marker
+  markerId: UuidValue
+  fileName: String
+  contentType: String
+  sizeBytes: int
+  ### Basename under marker-attachment storage (same as id for new uploads)
+  storageId: String
+  addedAt: DateTime
+  sortOrder: int
+
+indexes:
+  marker_attachment_marker_id_idx:
+    fields: markerId
+  marker_attachment_storage_id_idx:
+    fields: storageId
+    unique: true

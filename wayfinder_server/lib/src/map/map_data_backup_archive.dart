@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 import 'package:serverpod/serverpod.dart';
 
+import '../markers/marker_attachment_backup.dart';
 import '../markers/marker_icon_backup.dart';
 import '../markers/marker_icon_storage.dart';
 import 'map_data_service.dart';
@@ -35,6 +36,10 @@ Future<Uint8List> buildMapDataBackupArchive(Session session) async {
 
   _syncHasCustomSvgFlags(jsonBundle, svgFiles.keys);
 
+  final attachmentFiles = await resolveMarkerAttachmentFilesForArchive(
+    session,
+  );
+
   final jsonText = const JsonEncoder.withIndent('  ').convert(jsonBundle);
   final jsonBytes = utf8.encode(jsonText);
   archive.addFile(
@@ -43,6 +48,12 @@ Future<Uint8List> buildMapDataBackupArchive(Session session) async {
 
   for (final entry in svgFiles.entries) {
     final archivePath = '$mapDataBackupMarkerIconsDirectory/${entry.key}.svg';
+    final bytes = entry.value;
+    archive.addFile(ArchiveFile(archivePath, bytes.length, bytes));
+  }
+
+  for (final entry in attachmentFiles.entries) {
+    final archivePath = '$mapDataBackupMarkerAttachmentsDirectory/${entry.key}';
     final bytes = entry.value;
     archive.addFile(ArchiveFile(archivePath, bytes.length, bytes));
   }
@@ -73,7 +84,26 @@ Future<MapDataRestoreCounts> restoreMapDataFromArchive(
   }
 
   _mergeArchiveSvgFiles(archive, decoded);
-  return restoreMapDataBundle(session, decoded);
+  final counts = await restoreMapDataBundle(session, decoded);
+  if ((decoded['version'] as int?) != null &&
+      (decoded['version'] as int) >= 6) {
+    final attachmentCounts = await restoreMarkerAttachmentBackup(
+      session,
+      decoded,
+      archive: archive,
+    );
+    return MapDataRestoreCounts(
+      layers: counts.layers,
+      markers: counts.markers,
+      zones: counts.zones,
+      seasonalOverlays: counts.seasonalOverlays,
+      watchLogEntries: counts.watchLogEntries,
+      markerIconCategories: counts.markerIconCategories,
+      markerIcons: counts.markerIcons,
+      markerAttachments: attachmentCounts.attachments,
+    );
+  }
+  return counts;
 }
 
 /// Merges `marker-icons/*.svg` files from [archive] into [bundle] for restore.

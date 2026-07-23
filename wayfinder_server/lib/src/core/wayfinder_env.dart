@@ -53,6 +53,21 @@ class WayfinderEnv {
         'storage/marker-icons';
   }
 
+  /// Directory containing marker photo / attachment blobs.
+  static String get markerAttachmentStoragePath =>
+      resolveInitialMarkerAttachmentStoragePath();
+
+  static String resolveInitialMarkerAttachmentStoragePath() {
+    for (final key in ['WAYFINDER_MARKER_ATTACHMENT_STORAGE']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+    return _readDotEnv('WAYFINDER_MARKER_ATTACHMENT_STORAGE') ??
+        'storage/marker-attachments';
+  }
+
   /// Directory containing coastal tide packs (`catalog.json` + pack folders).
   static String get tidesStoragePath => resolveInitialTidesStoragePath();
 

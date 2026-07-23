@@ -37,6 +37,9 @@ mapMarker:
   - updateMarker:
   - deleteMarker:
   - markerChanges:
+markerAttachment:
+  - listForMarker:
+  - deleteAttachment:
 markerIcon:
   - listCatalog:
   - createIcon:

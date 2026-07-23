@@ -22,7 +22,8 @@ abstract class MapDataRestoreSummary
     required this.watchLogEntries,
     required this.markerIconCategories,
     required this.markerIcons,
-  });
+    int? markerAttachments,
+  }) : markerAttachments = markerAttachments ?? 0;
 
   factory MapDataRestoreSummary({
     required int layers,
@@ -32,6 +33,7 @@ abstract class MapDataRestoreSummary
     required int watchLogEntries,
     required int markerIconCategories,
     required int markerIcons,
+    int? markerAttachments,
   }) = _MapDataRestoreSummaryImpl;
 
   factory MapDataRestoreSummary.fromJson(
@@ -45,6 +47,7 @@ abstract class MapDataRestoreSummary
       watchLogEntries: jsonSerialization['watchLogEntries'] as int,
       markerIconCategories: jsonSerialization['markerIconCategories'] as int,
       markerIcons: jsonSerialization['markerIcons'] as int,
+      markerAttachments: jsonSerialization['markerAttachments'] as int?,
     );
   }
 
@@ -62,6 +65,8 @@ abstract class MapDataRestoreSummary
 
   int markerIcons;
 
+  int markerAttachments;
+
   /// Returns a shallow copy of this [MapDataRestoreSummary]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -73,6 +78,7 @@ abstract class MapDataRestoreSummary
     int? watchLogEntries,
     int? markerIconCategories,
     int? markerIcons,
+    int? markerAttachments,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -85,6 +91,7 @@ abstract class MapDataRestoreSummary
       'watchLogEntries': watchLogEntries,
       'markerIconCategories': markerIconCategories,
       'markerIcons': markerIcons,
+      'markerAttachments': markerAttachments,
     };
   }
 
@@ -99,6 +106,7 @@ abstract class MapDataRestoreSummary
       'watchLogEntries': watchLogEntries,
       'markerIconCategories': markerIconCategories,
       'markerIcons': markerIcons,
+      'markerAttachments': markerAttachments,
     };
   }
 
@@ -117,6 +125,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     required int watchLogEntries,
     required int markerIconCategories,
     required int markerIcons,
+    int? markerAttachments,
   }) : super._(
          layers: layers,
          markers: markers,
@@ -125,6 +134,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
          watchLogEntries: watchLogEntries,
          markerIconCategories: markerIconCategories,
          markerIcons: markerIcons,
+         markerAttachments: markerAttachments,
        );
 
   /// Returns a shallow copy of this [MapDataRestoreSummary]
@@ -139,6 +149,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     int? watchLogEntries,
     int? markerIconCategories,
     int? markerIcons,
+    int? markerAttachments,
   }) {
     return MapDataRestoreSummary(
       layers: layers ?? this.layers,
@@ -148,6 +159,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
       watchLogEntries: watchLogEntries ?? this.watchLogEntries,
       markerIconCategories: markerIconCategories ?? this.markerIconCategories,
       markerIcons: markerIcons ?? this.markerIcons,
+      markerAttachments: markerAttachments ?? this.markerAttachments,
     );
   }
 }

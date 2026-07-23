@@ -56,13 +56,16 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           watchLogEntries: counts.watchLogEntries,
           markerIconCategories: counts.markerIconCategories,
           markerIcons: counts.markerIcons,
+          markerAttachments: counts.markerAttachments,
         );
       },
       onSuccess: (summary) =>
           'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
           'seasonalOverlays=${summary.seasonalOverlays} '
           'watchLogEntries=${summary.watchLogEntries} '
-          'markerIconCategories=${summary.markerIconCategories} markerIcons=${summary.markerIcons}',
+          'markerIconCategories=${summary.markerIconCategories} '
+          'markerIcons=${summary.markerIcons} '
+          'markerAttachments=${summary.markerAttachments}',
     );
   }
 
@@ -106,13 +109,16 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           watchLogEntries: counts.watchLogEntries,
           markerIconCategories: counts.markerIconCategories,
           markerIcons: counts.markerIcons,
+          markerAttachments: counts.markerAttachments,
         );
       },
       onSuccess: (summary) =>
           'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
           'seasonalOverlays=${summary.seasonalOverlays} '
           'watchLogEntries=${summary.watchLogEntries} '
-          'markerIconCategories=${summary.markerIconCategories} markerIcons=${summary.markerIcons}',
+          'markerIconCategories=${summary.markerIconCategories} '
+          'markerIcons=${summary.markerIcons} '
+          'markerAttachments=${summary.markerAttachments}',
     );
   }
 }

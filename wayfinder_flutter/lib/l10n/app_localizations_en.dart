@@ -672,7 +672,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -721,6 +721,48 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String backupRestoreFailed(String error) {
     return 'Restore failed: $error';
+  }
+
+  @override
+  String get markerAttachmentsTitle => 'Photos';
+
+  @override
+  String get markerAttachmentsEmpty =>
+      'No photos yet. Add a JPEG, PNG, or WebP image.';
+
+  @override
+  String get markerAttachmentsEmptyReadOnly => 'No photos on this marker.';
+
+  @override
+  String get markerAttachmentAdd => 'Add photo';
+
+  @override
+  String get markerAttachmentUploading => 'Uploading…';
+
+  @override
+  String get markerAttachmentUploadSuccess => 'Photo added.';
+
+  @override
+  String markerAttachmentUploadFailed(String error) {
+    return 'Photo upload failed: $error';
+  }
+
+  @override
+  String markerAttachmentLoadFailed(String error) {
+    return 'Could not load photos: $error';
+  }
+
+  @override
+  String get markerAttachmentDeleteConfirmTitle => 'Delete photo?';
+
+  @override
+  String markerAttachmentDeleteConfirmMessage(String fileName) {
+    return 'Remove \"$fileName\" from this marker?';
+  }
+
+  @override
+  String markerAttachmentDeleteFailed(String error) {
+    return 'Could not delete photo: $error';
   }
 
   @override
@@ -1901,6 +1943,67 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String markerInventoryDetailLastAudited(String date) {
     return 'Last audited $date';
+  }
+
+  @override
+  String get markerChecklistsTitle => 'Checklists / SOPs';
+
+  @override
+  String get markerChecklistsEmptyHelp =>
+      'Location SOPs and audits — e.g. bug-out bag check at a retreat.';
+
+  @override
+  String markerChecklistsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count checklists',
+      one: '1 checklist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get markerChecklistsAddChecklist => 'Add checklist';
+
+  @override
+  String get markerChecklistsRemoveChecklist => 'Remove checklist';
+
+  @override
+  String get markerChecklistsChecklistHeading => 'Checklist';
+
+  @override
+  String get markerChecklistsNameLabel => 'Checklist name';
+
+  @override
+  String get markerChecklistsNotesLabel => 'Notes';
+
+  @override
+  String get markerChecklistsLastAuditedNever => 'Never audited';
+
+  @override
+  String markerChecklistsLastAudited(String date) {
+    return 'Last audited $date';
+  }
+
+  @override
+  String get markerChecklistsMarkAudited => 'Mark audited now';
+
+  @override
+  String get markerChecklistsAddItem => 'Add item';
+
+  @override
+  String get markerChecklistsRemoveItem => 'Remove item';
+
+  @override
+  String get markerChecklistsItemLabel => 'Item';
+
+  @override
+  String get markerChecklistsItemNotesLabel => 'Item notes';
+
+  @override
+  String markerChecklistsProgress(int done, int total) {
+    return '$done of $total done';
   }
 
   @override

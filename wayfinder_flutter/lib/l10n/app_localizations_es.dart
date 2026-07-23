@@ -733,6 +733,48 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get markerAttachmentsTitle => 'Fotos';
+
+  @override
+  String get markerAttachmentsEmpty =>
+      'Aún no hay fotos. Añade una imagen JPEG, PNG o WebP.';
+
+  @override
+  String get markerAttachmentsEmptyReadOnly => 'No hay fotos en este marcador.';
+
+  @override
+  String get markerAttachmentAdd => 'Añadir foto';
+
+  @override
+  String get markerAttachmentUploading => 'Subiendo…';
+
+  @override
+  String get markerAttachmentUploadSuccess => 'Foto añadida.';
+
+  @override
+  String markerAttachmentUploadFailed(String error) {
+    return 'Error al subir la foto: $error';
+  }
+
+  @override
+  String markerAttachmentLoadFailed(String error) {
+    return 'No se pudieron cargar las fotos: $error';
+  }
+
+  @override
+  String get markerAttachmentDeleteConfirmTitle => '¿Eliminar foto?';
+
+  @override
+  String markerAttachmentDeleteConfirmMessage(String fileName) {
+    return '¿Quitar \"$fileName\" de este marcador?';
+  }
+
+  @override
+  String markerAttachmentDeleteFailed(String error) {
+    return 'No se pudo eliminar la foto: $error';
+  }
+
+  @override
   String get kioskModeTitle => 'Modo kiosco / visor';
 
   @override
@@ -1917,6 +1959,67 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String markerInventoryDetailLastAudited(String date) {
     return 'Última auditoría $date';
+  }
+
+  @override
+  String get markerChecklistsTitle => 'Listas de verificación / SOP';
+
+  @override
+  String get markerChecklistsEmptyHelp =>
+      'SOP y auditorías del lugar — p. ej. revisión de la mochila de emergencia en el refugio.';
+
+  @override
+  String markerChecklistsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count listas',
+      one: '1 lista',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get markerChecklistsAddChecklist => 'Añadir lista';
+
+  @override
+  String get markerChecklistsRemoveChecklist => 'Eliminar lista';
+
+  @override
+  String get markerChecklistsChecklistHeading => 'Lista de verificación';
+
+  @override
+  String get markerChecklistsNameLabel => 'Nombre de la lista';
+
+  @override
+  String get markerChecklistsNotesLabel => 'Notas';
+
+  @override
+  String get markerChecklistsLastAuditedNever => 'Nunca auditada';
+
+  @override
+  String markerChecklistsLastAudited(String date) {
+    return 'Última auditoría $date';
+  }
+
+  @override
+  String get markerChecklistsMarkAudited => 'Marcar auditada ahora';
+
+  @override
+  String get markerChecklistsAddItem => 'Añadir elemento';
+
+  @override
+  String get markerChecklistsRemoveItem => 'Eliminar elemento';
+
+  @override
+  String get markerChecklistsItemLabel => 'Elemento';
+
+  @override
+  String get markerChecklistsItemNotesLabel => 'Notas del elemento';
+
+  @override
+  String markerChecklistsProgress(int done, int total) {
+    return '$done de $total hechos';
   }
 
   @override

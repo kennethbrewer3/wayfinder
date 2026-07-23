@@ -173,6 +173,7 @@ In the marker form:
 - **Notes** — rich text stored as Markdown (links, lists, and basic formatting supported).
 - **Radio net / contact card** — optional structured ham/radio planning data (callsign, frequency, mode, tone, offset, net name). Not live radio.
 - **Cache inventory** — optional supply list for caches: item name, quantity, unit, category (food, water, medical, ammo, other), expiry date, and last audited date.
+- **Checklists / SOPs** — optional named checklists with checkable items for location procedures (for example a bug-out bag audit at a retreat). EvacKit route waypoints that are markers use the same marker checklists.
 
 ### Radio net / contact card
 
@@ -185,6 +186,12 @@ This is planning metadata only — Wayfinder does not transmit, scan, or tune ra
 Use inventory on markers that represent supply caches. Expand **Cache inventory** in the create/edit form to add line items. Marker details show the same fields when inventory is present.
 
 In the **Map Objects** sidebar, use the **Food expiring in 90 days** filter chip to list only markers that have at least one **food** item whose expiry is within the next 90 days (including already expired food).
+
+### Checklists / SOPs
+
+Attach checklists to any marker for location SOPs and audits. Expand **Checklists / SOPs** in the create/edit form to add named lists (for example “Bug-out bag audit”) with checkable items, optional notes, and a last-audited date.
+
+Marker details show progress and let you tick items or mark a checklist audited without opening the full editor (disabled in offline and kiosk modes). Evacuation-route waypoints that reference a marker share that marker’s checklists.
 
 ### Edit or view a marker
 
@@ -502,6 +509,12 @@ Times are planning estimates from standard astronomical algorithms, not a live a
 
 ---
 
+## Marker photos
+
+Open a marker’s details to attach photos (JPEG, PNG, or WebP, up to 15 MB each, max 20 per marker). Files are stored on the Wayfinder server disk and are included in **map data / field pack** zip backups. Photos are not available in offline packs yet; add them while the appliance is reachable. Kiosk / read-only mode hides add and delete.
+
+---
+
 ## Offline packs (client)
 
 When the Wayfinder appliance may go down, prepare a local **offline pack** on each client while the server is still reachable.
@@ -758,7 +771,7 @@ Active overlays (in season and visible) draw on the map with a name label. Out-o
 
 ### Full backup
 
-Backup exports Wayfinder **map data**: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings as a `.zip` archive (legacy `.json` backups can still be restored).
+Backup exports Wayfinder **map data**: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings as a `.zip` archive (legacy `.json` backups can still be restored; photos require the `.zip`).
 
 #### Export
 

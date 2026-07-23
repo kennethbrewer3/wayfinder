@@ -8,6 +8,7 @@ import 'status_rest_handlers.dart';
 import 'layers_rest_handlers.dart';
 import 'map_data_rest_handlers.dart';
 import 'markers_rest_handlers.dart';
+import 'marker_attachments_rest_handlers.dart';
 import 'marker_icon_categories_rest_handlers.dart';
 import 'marker_icons_rest_handlers.dart';
 import 'pmtiles_rest_handlers.dart';
@@ -32,6 +33,14 @@ class RestApiRoute extends Route {
       ..put('/markers/:id', MarkersRestHandlers.update)
       ..patch('/markers/:id', MarkersRestHandlers.update)
       ..delete('/markers/:id', MarkersRestHandlers.delete)
+      ..get(
+        '/markers/:markerId/attachments',
+        MarkerAttachmentsRestHandlers.listForMarker,
+      )
+      ..delete(
+        '/marker-attachments/:id',
+        MarkerAttachmentsRestHandlers.delete,
+      )
       ..get('/zones', ZonesRestHandlers.list)
       ..get('/zones/:id', ZonesRestHandlers.get)
       ..post('/zones', ZonesRestHandlers.create)
@@ -134,6 +143,11 @@ class RestApiRoute extends Route {
         'health': '/api/health',
         'status': '/api/status',
         'markers': '/api/markers',
+        'markerAttachments': '/api/markers/<markerId>/attachments',
+        'markerAttachmentDelete': '/api/marker-attachments/<id>',
+        'markerAttachmentUpload':
+            '/marker-attachments/upload?markerId=<uuid>&fileName=<name>',
+        'markerAttachmentDownload': '/marker-attachments/files/<storageId>',
         'zones': '/api/zones',
         'categories': '/api/categories',
         'layers': '/api/layers',

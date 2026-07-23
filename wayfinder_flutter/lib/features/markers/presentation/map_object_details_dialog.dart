@@ -57,6 +57,8 @@ import '../../../core/serverpod_client.dart';
 import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../../watch_log/presentation/watch_log_details_section.dart';
+import 'marker_attachments_details_section.dart';
+import 'marker_checklists_details_section.dart';
 import 'marker_inventory_details_section.dart';
 import 'marker_radio_details_section.dart';
 import 'marker_qr_dialog.dart';
@@ -380,6 +382,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
           WeatherStationDetailsSection(marker: marker),
         MarkerRadioDetailsSection(marker: marker),
         MarkerInventoryDetailsSection(marker: marker),
+        MarkerChecklistsDetailsSection(marker: marker),
+        MarkerAttachmentsDetailsSection(marker: marker),
         MarkerTrackingDetailsSection(marker: marker),
         _DetailRow(
           label: l10n.mapObjectDetailType,

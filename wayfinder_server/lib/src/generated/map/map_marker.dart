@@ -29,6 +29,7 @@ abstract class MapMarker
     this.weatherJson,
     this.inventoryJson,
     this.radioJson,
+    this.checklistsJson,
     this.layerId,
     required this.createdAt,
     required this.updatedAt,
@@ -51,6 +52,7 @@ abstract class MapMarker
     String? weatherJson,
     String? inventoryJson,
     String? radioJson,
+    String? checklistsJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -80,6 +82,7 @@ abstract class MapMarker
       weatherJson: jsonSerialization['weatherJson'] as String?,
       inventoryJson: jsonSerialization['inventoryJson'] as String?,
       radioJson: jsonSerialization['radioJson'] as String?,
+      checklistsJson: jsonSerialization['checklistsJson'] as String?,
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -125,6 +128,9 @@ abstract class MapMarker
 
   String? radioJson;
 
+  /// Named checklists / SOPs with checkable items (JSON)
+  String? checklistsJson;
+
   _i1.UuidValue? layerId;
 
   DateTime createdAt;
@@ -152,6 +158,7 @@ abstract class MapMarker
     String? weatherJson,
     String? inventoryJson,
     String? radioJson,
+    String? checklistsJson,
     _i1.UuidValue? layerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -174,6 +181,7 @@ abstract class MapMarker
       if (weatherJson != null) 'weatherJson': weatherJson,
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
       if (radioJson != null) 'radioJson': radioJson,
+      if (checklistsJson != null) 'checklistsJson': checklistsJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -198,6 +206,7 @@ abstract class MapMarker
       if (weatherJson != null) 'weatherJson': weatherJson,
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
       if (radioJson != null) 'radioJson': radioJson,
+      if (checklistsJson != null) 'checklistsJson': checklistsJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -252,6 +261,7 @@ class _MapMarkerImpl extends MapMarker {
     String? weatherJson,
     String? inventoryJson,
     String? radioJson,
+    String? checklistsJson,
     _i1.UuidValue? layerId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -270,6 +280,7 @@ class _MapMarkerImpl extends MapMarker {
          weatherJson: weatherJson,
          inventoryJson: inventoryJson,
          radioJson: radioJson,
+         checklistsJson: checklistsJson,
          layerId: layerId,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -294,6 +305,7 @@ class _MapMarkerImpl extends MapMarker {
     Object? weatherJson = _Undefined,
     Object? inventoryJson = _Undefined,
     Object? radioJson = _Undefined,
+    Object? checklistsJson = _Undefined,
     Object? layerId = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -317,6 +329,9 @@ class _MapMarkerImpl extends MapMarker {
           ? inventoryJson
           : this.inventoryJson,
       radioJson: radioJson is String? ? radioJson : this.radioJson,
+      checklistsJson: checklistsJson is String?
+          ? checklistsJson
+          : this.checklistsJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -395,6 +410,12 @@ class MapMarkerUpdateTable extends _i1.UpdateTable<MapMarkerTable> {
     value,
   );
 
+  _i1.ColumnValue<String, String> checklistsJson(String? value) =>
+      _i1.ColumnValue(
+        table.checklistsJson,
+        value,
+      );
+
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> layerId(_i1.UuidValue? value) =>
       _i1.ColumnValue(
         table.layerId,
@@ -471,6 +492,10 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
       'radioJson',
       this,
     );
+    checklistsJson = _i1.ColumnString(
+      'checklistsJson',
+      this,
+    );
     layerId = _i1.ColumnUuid(
       'layerId',
       this,
@@ -513,6 +538,9 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnString radioJson;
 
+  /// Named checklists / SOPs with checkable items (JSON)
+  late final _i1.ColumnString checklistsJson;
+
   late final _i1.ColumnUuid layerId;
 
   late final _i1.ColumnDateTime createdAt;
@@ -535,6 +563,7 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
     weatherJson,
     inventoryJson,
     radioJson,
+    checklistsJson,
     layerId,
     createdAt,
     updatedAt,

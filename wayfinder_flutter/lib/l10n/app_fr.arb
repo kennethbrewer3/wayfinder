@@ -303,6 +303,45 @@
       }
     }
   },
+  "markerAttachmentsTitle": "Photos",
+  "markerAttachmentsEmpty": "Pas encore de photos. Ajoutez une image JPEG, PNG ou WebP.",
+  "markerAttachmentsEmptyReadOnly": "Aucune photo sur ce marqueur.",
+  "markerAttachmentAdd": "Ajouter une photo",
+  "markerAttachmentUploading": "Téléversement…",
+  "markerAttachmentUploadSuccess": "Photo ajoutée.",
+  "markerAttachmentUploadFailed": "Échec du téléversement de la photo : {error}",
+  "@markerAttachmentUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentLoadFailed": "Impossible de charger les photos : {error}",
+  "@markerAttachmentLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentDeleteConfirmTitle": "Supprimer la photo ?",
+  "markerAttachmentDeleteConfirmMessage": "Retirer « {fileName} » de ce marqueur ?",
+  "@markerAttachmentDeleteConfirmMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentDeleteFailed": "Impossible de supprimer la photo : {error}",
+  "@markerAttachmentDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "kioskModeTitle": "Mode kiosque / visionneuse",
   "kioskModeDescription": "Transformez ce portable en visionneuse TOC : masquez Réglages et outils de création, bloquez les modifications et utilisez une interrogation plus douce pour la batterie. À utiliser sur les portables de secours pointés vers votre serveur Wayfinder. Pour un serveur de secours qui doit refuser toutes les écritures, définissez WAYFINDER_READ_ONLY=1 sur le serveur.",
   "kioskModeEnter": "Entrer en mode kiosque",
@@ -935,6 +974,46 @@
     "placeholders": {
       "date": {
         "type": "String"
+      }
+    }
+  },
+  "markerChecklistsTitle": "Listes de contrôle / SOP",
+  "markerChecklistsEmptyHelp": "SOP et audits du lieu — p. ex. vérification du sac d'évacuation au refuge.",
+  "markerChecklistsCount": "{count, plural, =1{1 liste} other{{count} listes}}",
+  "@markerChecklistsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerChecklistsAddChecklist": "Ajouter une liste",
+  "markerChecklistsRemoveChecklist": "Supprimer la liste",
+  "markerChecklistsChecklistHeading": "Liste de contrôle",
+  "markerChecklistsNameLabel": "Nom de la liste",
+  "markerChecklistsNotesLabel": "Notes",
+  "markerChecklistsLastAuditedNever": "Jamais audité",
+  "markerChecklistsLastAudited": "Dernier audit le {date}",
+  "@markerChecklistsLastAudited": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerChecklistsMarkAudited": "Marquer audité maintenant",
+  "markerChecklistsAddItem": "Ajouter un élément",
+  "markerChecklistsRemoveItem": "Supprimer l'élément",
+  "markerChecklistsItemLabel": "Élément",
+  "markerChecklistsItemNotesLabel": "Notes de l'élément",
+  "markerChecklistsProgress": "{done} sur {total} faits",
+  "@markerChecklistsProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
       }
     }
   },

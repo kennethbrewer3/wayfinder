@@ -4,6 +4,7 @@ import '../../generated/protocol.dart';
 import '../../map/map_marker_change_broadcast.dart';
 import '../../map/marker_tracking_service.dart';
 import '../../map/marker_weather_json.dart';
+import '../../markers/marker_attachment_service.dart';
 import 'rest_json.dart';
 
 abstract final class MarkersRestHandlers {
@@ -99,6 +100,7 @@ abstract final class MarkersRestHandlers {
         session,
         where: (t) => t.id.equals(id),
       );
+      await MarkerAttachmentService.deleteAllForMarker(session, id);
       await MapMarkerChangeBroadcast.deleted(session, id);
       return RestJson.noContent();
     });
@@ -149,6 +151,7 @@ abstract final class MarkersRestHandlers {
       weatherJson: body['weatherJson'] as String?,
       inventoryJson: body['inventoryJson'] as String?,
       radioJson: body['radioJson'] as String?,
+      checklistsJson: body['checklistsJson'] as String?,
       layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdAt: now,
       updatedAt: now,
@@ -200,6 +203,9 @@ abstract final class MarkersRestHandlers {
       radioJson: body.containsKey('radioJson')
           ? body['radioJson'] as String?
           : existing.radioJson,
+      checklistsJson: body.containsKey('checklistsJson')
+          ? body['checklistsJson'] as String?
+          : existing.checklistsJson,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
           : existing.layerId,

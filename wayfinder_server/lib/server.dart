@@ -11,6 +11,7 @@ import 'src/core/wayfinder_env.dart';
 import 'src/settings/app_settings_store.dart';
 import 'src/pmtiles/pmtiles_catalog_sync.dart';
 import 'src/pmtiles/pmtiles_storage.dart';
+import 'src/markers/marker_attachment_storage.dart';
 import 'src/markers/marker_icon_category_service.dart';
 import 'src/markers/marker_icon_storage.dart';
 import 'src/tides/tide_storage.dart';
@@ -18,6 +19,8 @@ import 'src/web/middleware/cors_middleware.dart';
 import 'src/web/middleware/rest_auth_middleware.dart';
 import 'src/web/middleware/rest_cors_middleware.dart';
 import 'src/web/routes/app_config_route.dart';
+import 'src/web/routes/marker_attachment_file_route.dart';
+import 'src/web/routes/marker_attachment_upload_route.dart';
 import 'src/web/routes/marker_icon_file_route.dart';
 import 'src/web/routes/marker_icon_upload_route.dart';
 import 'src/web/routes/pmtiles_chunked_upload_routes.dart';
@@ -125,6 +128,19 @@ void run(List<String> args) async {
       '/marker-icons/files',
     );
 
+    pod.webServer.addMiddleware(
+      const CorsMiddleware().call,
+      '/marker-attachments',
+    );
+    pod.webServer.addRoute(
+      MarkerAttachmentUploadRoute(),
+      '/marker-attachments/upload',
+    );
+    pod.webServer.addRoute(
+      MarkerAttachmentFileRoute(),
+      '/marker-attachments/files',
+    );
+
     pod.webServer.addMiddleware(const RestCorsMiddleware().call, '/api');
     pod.webServer.addMiddleware(const RestAuthMiddleware().call, '/api');
     pod.webServer.addRoute(RestApiRoute(), '/api');
@@ -212,6 +228,23 @@ void run(List<String> args) async {
         syncSession,
         'server',
         '📍 Marker icon storage unavailable | path=${WayfinderEnv.markerIconStoragePath}',
+      );
+    }
+
+    final markerAttachmentReady = await MarkerAttachmentStorage().ensureReady();
+    if (markerAttachmentReady) {
+      WfLog.info(
+        syncSession,
+        'server',
+        '🖼️ Marker attachment storage ready | '
+            'path=${WayfinderEnv.markerAttachmentStoragePath}',
+      );
+    } else {
+      WfLog.warn(
+        syncSession,
+        'server',
+        '🖼️ Marker attachment storage unavailable | '
+            'path=${WayfinderEnv.markerAttachmentStoragePath}',
       );
     }
 

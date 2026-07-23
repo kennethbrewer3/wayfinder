@@ -23,50 +23,53 @@ import 'layers/map_layer_change.dart' as _i8;
 import 'map/map_data_restore_summary.dart' as _i9;
 import 'map/map_marker.dart' as _i10;
 import 'map/map_marker_change.dart' as _i11;
-import 'markers/marker_icon_catalog_entry.dart' as _i12;
-import 'markers/marker_icon_category_definition.dart' as _i13;
-import 'pmtiles/pmtiles_file.dart' as _i14;
-import 'pmtiles/pmtiles_file_group_link.dart' as _i15;
-import 'pmtiles/pmtiles_group.dart' as _i16;
-import 'seasonal_overlays/seasonal_overlay.dart' as _i17;
-import 'seasonal_overlays/seasonal_overlay_change.dart' as _i18;
-import 'settings/app_settings.dart' as _i19;
-import 'settings/rest_api_key.dart' as _i20;
-import 'settings/rest_api_key_created.dart' as _i21;
-import 'settings/rest_api_key_info.dart' as _i22;
-import 'tides/tide_coastal_region.dart' as _i23;
-import 'tides/tide_extreme.dart' as _i24;
-import 'tides/tide_pack_info.dart' as _i25;
-import 'tides/tide_query_result.dart' as _i26;
-import 'tides/tide_sample.dart' as _i27;
-import 'tides/tide_station_info.dart' as _i28;
-import 'watch_log/watch_log_entry.dart' as _i29;
-import 'watch_log/watch_log_entry_change.dart' as _i30;
-import 'zones/map_zone.dart' as _i31;
-import 'zones/map_zone_change.dart' as _i32;
+import 'markers/marker_attachment.dart' as _i12;
+import 'markers/marker_icon_catalog_entry.dart' as _i13;
+import 'markers/marker_icon_category_definition.dart' as _i14;
+import 'pmtiles/pmtiles_file.dart' as _i15;
+import 'pmtiles/pmtiles_file_group_link.dart' as _i16;
+import 'pmtiles/pmtiles_group.dart' as _i17;
+import 'seasonal_overlays/seasonal_overlay.dart' as _i18;
+import 'seasonal_overlays/seasonal_overlay_change.dart' as _i19;
+import 'settings/app_settings.dart' as _i20;
+import 'settings/rest_api_key.dart' as _i21;
+import 'settings/rest_api_key_created.dart' as _i22;
+import 'settings/rest_api_key_info.dart' as _i23;
+import 'tides/tide_coastal_region.dart' as _i24;
+import 'tides/tide_extreme.dart' as _i25;
+import 'tides/tide_pack_info.dart' as _i26;
+import 'tides/tide_query_result.dart' as _i27;
+import 'tides/tide_sample.dart' as _i28;
+import 'tides/tide_station_info.dart' as _i29;
+import 'watch_log/watch_log_entry.dart' as _i30;
+import 'watch_log/watch_log_entry_change.dart' as _i31;
+import 'zones/map_zone.dart' as _i32;
+import 'zones/map_zone_change.dart' as _i33;
 import 'package:wayfinder_server/src/generated/categories/category.dart'
-    as _i33;
-import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i34;
-import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i35;
-import 'package:wayfinder_server/src/generated/markers/marker_icon_catalog_entry.dart'
-    as _i36;
-import 'package:wayfinder_server/src/generated/markers/marker_icon_category_definition.dart'
+    as _i34;
+import 'package:wayfinder_server/src/generated/layers/map_layer.dart' as _i35;
+import 'package:wayfinder_server/src/generated/map/map_marker.dart' as _i36;
+import 'package:wayfinder_server/src/generated/markers/marker_attachment.dart'
     as _i37;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
+import 'package:wayfinder_server/src/generated/markers/marker_icon_catalog_entry.dart'
     as _i38;
-import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
+import 'package:wayfinder_server/src/generated/markers/marker_icon_category_definition.dart'
     as _i39;
-import 'package:wayfinder_server/src/generated/seasonal_overlays/seasonal_overlay.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_file.dart'
     as _i40;
-import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
+import 'package:wayfinder_server/src/generated/pmtiles/pmtiles_group.dart'
     as _i41;
-import 'package:wayfinder_server/src/generated/tides/tide_pack_info.dart'
+import 'package:wayfinder_server/src/generated/seasonal_overlays/seasonal_overlay.dart'
     as _i42;
-import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
+import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
     as _i43;
-import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry.dart'
+import 'package:wayfinder_server/src/generated/tides/tide_pack_info.dart'
     as _i44;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i45;
+import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
+    as _i45;
+import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry.dart'
+    as _i46;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i47;
 export 'categories/category.dart';
 export 'greetings/greeting.dart';
 export 'layers/map_layer.dart';
@@ -74,6 +77,7 @@ export 'layers/map_layer_change.dart';
 export 'map/map_data_restore_summary.dart';
 export 'map/map_marker.dart';
 export 'map/map_marker_change.dart';
+export 'markers/marker_attachment.dart';
 export 'markers/marker_icon_catalog_entry.dart';
 export 'markers/marker_icon_category_definition.dart';
 export 'pmtiles/pmtiles_file.dart';
@@ -509,6 +513,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
+          name: 'checklistsJson',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
           name: 'layerId',
           columnType: _i2.ColumnType.uuid,
           isNullable: true,
@@ -703,6 +713,106 @@ class Protocol extends _i1.SerializationManagerServer {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'marker_attachment',
+      dartName: 'MarkerAttachment',
+      schema: 'public',
+      module: 'wayfinder',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'gen_random_uuid()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'markerId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
+          name: 'fileName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'contentType',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sizeBytes',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'storageId',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'addedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sortOrder',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'marker_attachment_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'marker_attachment_marker_id_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'markerId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'marker_attachment_storage_id_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'storageId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -1516,68 +1626,71 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i11.MapMarkerChange) {
       return _i11.MapMarkerChange.fromJson(data) as T;
     }
-    if (t == _i12.MarkerIconCatalogEntry) {
-      return _i12.MarkerIconCatalogEntry.fromJson(data) as T;
+    if (t == _i12.MarkerAttachment) {
+      return _i12.MarkerAttachment.fromJson(data) as T;
     }
-    if (t == _i13.MarkerIconCategoryDefinition) {
-      return _i13.MarkerIconCategoryDefinition.fromJson(data) as T;
+    if (t == _i13.MarkerIconCatalogEntry) {
+      return _i13.MarkerIconCatalogEntry.fromJson(data) as T;
     }
-    if (t == _i14.PmtilesFile) {
-      return _i14.PmtilesFile.fromJson(data) as T;
+    if (t == _i14.MarkerIconCategoryDefinition) {
+      return _i14.MarkerIconCategoryDefinition.fromJson(data) as T;
     }
-    if (t == _i15.PmtilesFileGroupLink) {
-      return _i15.PmtilesFileGroupLink.fromJson(data) as T;
+    if (t == _i15.PmtilesFile) {
+      return _i15.PmtilesFile.fromJson(data) as T;
     }
-    if (t == _i16.PmtilesGroup) {
-      return _i16.PmtilesGroup.fromJson(data) as T;
+    if (t == _i16.PmtilesFileGroupLink) {
+      return _i16.PmtilesFileGroupLink.fromJson(data) as T;
     }
-    if (t == _i17.SeasonalOverlay) {
-      return _i17.SeasonalOverlay.fromJson(data) as T;
+    if (t == _i17.PmtilesGroup) {
+      return _i17.PmtilesGroup.fromJson(data) as T;
     }
-    if (t == _i18.SeasonalOverlayChange) {
-      return _i18.SeasonalOverlayChange.fromJson(data) as T;
+    if (t == _i18.SeasonalOverlay) {
+      return _i18.SeasonalOverlay.fromJson(data) as T;
     }
-    if (t == _i19.AppSettings) {
-      return _i19.AppSettings.fromJson(data) as T;
+    if (t == _i19.SeasonalOverlayChange) {
+      return _i19.SeasonalOverlayChange.fromJson(data) as T;
     }
-    if (t == _i20.RestApiKey) {
-      return _i20.RestApiKey.fromJson(data) as T;
+    if (t == _i20.AppSettings) {
+      return _i20.AppSettings.fromJson(data) as T;
     }
-    if (t == _i21.RestApiKeyCreated) {
-      return _i21.RestApiKeyCreated.fromJson(data) as T;
+    if (t == _i21.RestApiKey) {
+      return _i21.RestApiKey.fromJson(data) as T;
     }
-    if (t == _i22.RestApiKeyInfo) {
-      return _i22.RestApiKeyInfo.fromJson(data) as T;
+    if (t == _i22.RestApiKeyCreated) {
+      return _i22.RestApiKeyCreated.fromJson(data) as T;
     }
-    if (t == _i23.TideCoastalRegion) {
-      return _i23.TideCoastalRegion.fromJson(data) as T;
+    if (t == _i23.RestApiKeyInfo) {
+      return _i23.RestApiKeyInfo.fromJson(data) as T;
     }
-    if (t == _i24.TideExtreme) {
-      return _i24.TideExtreme.fromJson(data) as T;
+    if (t == _i24.TideCoastalRegion) {
+      return _i24.TideCoastalRegion.fromJson(data) as T;
     }
-    if (t == _i25.TidePackInfo) {
-      return _i25.TidePackInfo.fromJson(data) as T;
+    if (t == _i25.TideExtreme) {
+      return _i25.TideExtreme.fromJson(data) as T;
     }
-    if (t == _i26.TideQueryResult) {
-      return _i26.TideQueryResult.fromJson(data) as T;
+    if (t == _i26.TidePackInfo) {
+      return _i26.TidePackInfo.fromJson(data) as T;
     }
-    if (t == _i27.TideSample) {
-      return _i27.TideSample.fromJson(data) as T;
+    if (t == _i27.TideQueryResult) {
+      return _i27.TideQueryResult.fromJson(data) as T;
     }
-    if (t == _i28.TideStationInfo) {
-      return _i28.TideStationInfo.fromJson(data) as T;
+    if (t == _i28.TideSample) {
+      return _i28.TideSample.fromJson(data) as T;
     }
-    if (t == _i29.WatchLogEntry) {
-      return _i29.WatchLogEntry.fromJson(data) as T;
+    if (t == _i29.TideStationInfo) {
+      return _i29.TideStationInfo.fromJson(data) as T;
     }
-    if (t == _i30.WatchLogEntryChange) {
-      return _i30.WatchLogEntryChange.fromJson(data) as T;
+    if (t == _i30.WatchLogEntry) {
+      return _i30.WatchLogEntry.fromJson(data) as T;
     }
-    if (t == _i31.MapZone) {
-      return _i31.MapZone.fromJson(data) as T;
+    if (t == _i31.WatchLogEntryChange) {
+      return _i31.WatchLogEntryChange.fromJson(data) as T;
     }
-    if (t == _i32.MapZoneChange) {
-      return _i32.MapZoneChange.fromJson(data) as T;
+    if (t == _i32.MapZone) {
+      return _i32.MapZone.fromJson(data) as T;
+    }
+    if (t == _i33.MapZoneChange) {
+      return _i33.MapZoneChange.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Category?>()) {
       return (data != null ? _i5.Category.fromJson(data) : null) as T;
@@ -1601,75 +1714,78 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i11.MapMarkerChange?>()) {
       return (data != null ? _i11.MapMarkerChange.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.MarkerIconCatalogEntry?>()) {
-      return (data != null ? _i12.MarkerIconCatalogEntry.fromJson(data) : null)
+    if (t == _i1.getType<_i12.MarkerAttachment?>()) {
+      return (data != null ? _i12.MarkerAttachment.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i13.MarkerIconCatalogEntry?>()) {
+      return (data != null ? _i13.MarkerIconCatalogEntry.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i13.MarkerIconCategoryDefinition?>()) {
+    if (t == _i1.getType<_i14.MarkerIconCategoryDefinition?>()) {
       return (data != null
-              ? _i13.MarkerIconCategoryDefinition.fromJson(data)
+              ? _i14.MarkerIconCategoryDefinition.fromJson(data)
               : null)
           as T;
     }
-    if (t == _i1.getType<_i14.PmtilesFile?>()) {
-      return (data != null ? _i14.PmtilesFile.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.PmtilesFile?>()) {
+      return (data != null ? _i15.PmtilesFile.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.PmtilesFileGroupLink?>()) {
-      return (data != null ? _i15.PmtilesFileGroupLink.fromJson(data) : null)
+    if (t == _i1.getType<_i16.PmtilesFileGroupLink?>()) {
+      return (data != null ? _i16.PmtilesFileGroupLink.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i16.PmtilesGroup?>()) {
-      return (data != null ? _i16.PmtilesGroup.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.PmtilesGroup?>()) {
+      return (data != null ? _i17.PmtilesGroup.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.SeasonalOverlay?>()) {
-      return (data != null ? _i17.SeasonalOverlay.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.SeasonalOverlay?>()) {
+      return (data != null ? _i18.SeasonalOverlay.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.SeasonalOverlayChange?>()) {
-      return (data != null ? _i18.SeasonalOverlayChange.fromJson(data) : null)
+    if (t == _i1.getType<_i19.SeasonalOverlayChange?>()) {
+      return (data != null ? _i19.SeasonalOverlayChange.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i19.AppSettings?>()) {
-      return (data != null ? _i19.AppSettings.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.AppSettings?>()) {
+      return (data != null ? _i20.AppSettings.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.RestApiKey?>()) {
-      return (data != null ? _i20.RestApiKey.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i21.RestApiKey?>()) {
+      return (data != null ? _i21.RestApiKey.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.RestApiKeyCreated?>()) {
-      return (data != null ? _i21.RestApiKeyCreated.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i22.RestApiKeyCreated?>()) {
+      return (data != null ? _i22.RestApiKeyCreated.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i22.RestApiKeyInfo?>()) {
-      return (data != null ? _i22.RestApiKeyInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i23.RestApiKeyInfo?>()) {
+      return (data != null ? _i23.RestApiKeyInfo.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i23.TideCoastalRegion?>()) {
-      return (data != null ? _i23.TideCoastalRegion.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i24.TideCoastalRegion?>()) {
+      return (data != null ? _i24.TideCoastalRegion.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i24.TideExtreme?>()) {
-      return (data != null ? _i24.TideExtreme.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.TideExtreme?>()) {
+      return (data != null ? _i25.TideExtreme.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i25.TidePackInfo?>()) {
-      return (data != null ? _i25.TidePackInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.TidePackInfo?>()) {
+      return (data != null ? _i26.TidePackInfo.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i26.TideQueryResult?>()) {
-      return (data != null ? _i26.TideQueryResult.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.TideQueryResult?>()) {
+      return (data != null ? _i27.TideQueryResult.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i27.TideSample?>()) {
-      return (data != null ? _i27.TideSample.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i28.TideSample?>()) {
+      return (data != null ? _i28.TideSample.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.TideStationInfo?>()) {
-      return (data != null ? _i28.TideStationInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i29.TideStationInfo?>()) {
+      return (data != null ? _i29.TideStationInfo.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i29.WatchLogEntry?>()) {
-      return (data != null ? _i29.WatchLogEntry.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i30.WatchLogEntry?>()) {
+      return (data != null ? _i30.WatchLogEntry.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i30.WatchLogEntryChange?>()) {
-      return (data != null ? _i30.WatchLogEntryChange.fromJson(data) : null)
+    if (t == _i1.getType<_i31.WatchLogEntryChange?>()) {
+      return (data != null ? _i31.WatchLogEntryChange.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i31.MapZone?>()) {
-      return (data != null ? _i31.MapZone.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.MapZone?>()) {
+      return (data != null ? _i32.MapZone.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.MapZoneChange?>()) {
-      return (data != null ? _i32.MapZoneChange.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i33.MapZoneChange?>()) {
+      return (data != null ? _i33.MapZoneChange.fromJson(data) : null) as T;
     }
     if (t == List<_i1.UuidValue>) {
       return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
@@ -1683,82 +1799,88 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i27.TideSample>) {
-      return (data as List).map((e) => deserialize<_i27.TideSample>(e)).toList()
+    if (t == List<_i28.TideSample>) {
+      return (data as List).map((e) => deserialize<_i28.TideSample>(e)).toList()
           as T;
     }
-    if (t == List<_i24.TideExtreme>) {
+    if (t == List<_i25.TideExtreme>) {
       return (data as List)
-              .map((e) => deserialize<_i24.TideExtreme>(e))
+              .map((e) => deserialize<_i25.TideExtreme>(e))
               .toList()
           as T;
     }
-    if (t == List<_i33.Category>) {
-      return (data as List).map((e) => deserialize<_i33.Category>(e)).toList()
+    if (t == List<_i34.Category>) {
+      return (data as List).map((e) => deserialize<_i34.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i34.MapLayer>) {
-      return (data as List).map((e) => deserialize<_i34.MapLayer>(e)).toList()
+    if (t == List<_i35.MapLayer>) {
+      return (data as List).map((e) => deserialize<_i35.MapLayer>(e)).toList()
           as T;
     }
-    if (t == List<_i35.MapMarker>) {
-      return (data as List).map((e) => deserialize<_i35.MapMarker>(e)).toList()
+    if (t == List<_i36.MapMarker>) {
+      return (data as List).map((e) => deserialize<_i36.MapMarker>(e)).toList()
           as T;
     }
-    if (t == List<_i36.MarkerIconCatalogEntry>) {
+    if (t == List<_i37.MarkerAttachment>) {
       return (data as List)
-              .map((e) => deserialize<_i36.MarkerIconCatalogEntry>(e))
+              .map((e) => deserialize<_i37.MarkerAttachment>(e))
               .toList()
           as T;
     }
-    if (t == List<_i37.MarkerIconCategoryDefinition>) {
+    if (t == List<_i38.MarkerIconCatalogEntry>) {
       return (data as List)
-              .map((e) => deserialize<_i37.MarkerIconCategoryDefinition>(e))
+              .map((e) => deserialize<_i38.MarkerIconCatalogEntry>(e))
               .toList()
           as T;
     }
-    if (t == List<_i38.PmtilesFile>) {
+    if (t == List<_i39.MarkerIconCategoryDefinition>) {
       return (data as List)
-              .map((e) => deserialize<_i38.PmtilesFile>(e))
+              .map((e) => deserialize<_i39.MarkerIconCategoryDefinition>(e))
               .toList()
           as T;
     }
-    if (t == List<_i39.PmtilesGroup>) {
+    if (t == List<_i40.PmtilesFile>) {
       return (data as List)
-              .map((e) => deserialize<_i39.PmtilesGroup>(e))
+              .map((e) => deserialize<_i40.PmtilesFile>(e))
               .toList()
           as T;
     }
-    if (t == List<_i40.SeasonalOverlay>) {
+    if (t == List<_i41.PmtilesGroup>) {
       return (data as List)
-              .map((e) => deserialize<_i40.SeasonalOverlay>(e))
+              .map((e) => deserialize<_i41.PmtilesGroup>(e))
               .toList()
           as T;
     }
-    if (t == List<_i41.RestApiKey>) {
-      return (data as List).map((e) => deserialize<_i41.RestApiKey>(e)).toList()
-          as T;
-    }
-    if (t == List<_i42.TidePackInfo>) {
+    if (t == List<_i42.SeasonalOverlay>) {
       return (data as List)
-              .map((e) => deserialize<_i42.TidePackInfo>(e))
+              .map((e) => deserialize<_i42.SeasonalOverlay>(e))
               .toList()
           as T;
     }
-    if (t == List<_i43.TideCoastalRegion>) {
+    if (t == List<_i43.RestApiKey>) {
+      return (data as List).map((e) => deserialize<_i43.RestApiKey>(e)).toList()
+          as T;
+    }
+    if (t == List<_i44.TidePackInfo>) {
       return (data as List)
-              .map((e) => deserialize<_i43.TideCoastalRegion>(e))
+              .map((e) => deserialize<_i44.TidePackInfo>(e))
               .toList()
           as T;
     }
-    if (t == List<_i44.WatchLogEntry>) {
+    if (t == List<_i45.TideCoastalRegion>) {
       return (data as List)
-              .map((e) => deserialize<_i44.WatchLogEntry>(e))
+              .map((e) => deserialize<_i45.TideCoastalRegion>(e))
               .toList()
           as T;
     }
-    if (t == List<_i45.MapZone>) {
-      return (data as List).map((e) => deserialize<_i45.MapZone>(e)).toList()
+    if (t == List<_i46.WatchLogEntry>) {
+      return (data as List)
+              .map((e) => deserialize<_i46.WatchLogEntry>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i47.MapZone>) {
+      return (data as List).map((e) => deserialize<_i47.MapZone>(e)).toList()
           as T;
     }
     try {
@@ -1782,27 +1904,28 @@ class Protocol extends _i1.SerializationManagerServer {
       _i9.MapDataRestoreSummary => 'MapDataRestoreSummary',
       _i10.MapMarker => 'MapMarker',
       _i11.MapMarkerChange => 'MapMarkerChange',
-      _i12.MarkerIconCatalogEntry => 'MarkerIconCatalogEntry',
-      _i13.MarkerIconCategoryDefinition => 'MarkerIconCategoryDefinition',
-      _i14.PmtilesFile => 'PmtilesFile',
-      _i15.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
-      _i16.PmtilesGroup => 'PmtilesGroup',
-      _i17.SeasonalOverlay => 'SeasonalOverlay',
-      _i18.SeasonalOverlayChange => 'SeasonalOverlayChange',
-      _i19.AppSettings => 'AppSettings',
-      _i20.RestApiKey => 'RestApiKey',
-      _i21.RestApiKeyCreated => 'RestApiKeyCreated',
-      _i22.RestApiKeyInfo => 'RestApiKeyInfo',
-      _i23.TideCoastalRegion => 'TideCoastalRegion',
-      _i24.TideExtreme => 'TideExtreme',
-      _i25.TidePackInfo => 'TidePackInfo',
-      _i26.TideQueryResult => 'TideQueryResult',
-      _i27.TideSample => 'TideSample',
-      _i28.TideStationInfo => 'TideStationInfo',
-      _i29.WatchLogEntry => 'WatchLogEntry',
-      _i30.WatchLogEntryChange => 'WatchLogEntryChange',
-      _i31.MapZone => 'MapZone',
-      _i32.MapZoneChange => 'MapZoneChange',
+      _i12.MarkerAttachment => 'MarkerAttachment',
+      _i13.MarkerIconCatalogEntry => 'MarkerIconCatalogEntry',
+      _i14.MarkerIconCategoryDefinition => 'MarkerIconCategoryDefinition',
+      _i15.PmtilesFile => 'PmtilesFile',
+      _i16.PmtilesFileGroupLink => 'PmtilesFileGroupLink',
+      _i17.PmtilesGroup => 'PmtilesGroup',
+      _i18.SeasonalOverlay => 'SeasonalOverlay',
+      _i19.SeasonalOverlayChange => 'SeasonalOverlayChange',
+      _i20.AppSettings => 'AppSettings',
+      _i21.RestApiKey => 'RestApiKey',
+      _i22.RestApiKeyCreated => 'RestApiKeyCreated',
+      _i23.RestApiKeyInfo => 'RestApiKeyInfo',
+      _i24.TideCoastalRegion => 'TideCoastalRegion',
+      _i25.TideExtreme => 'TideExtreme',
+      _i26.TidePackInfo => 'TidePackInfo',
+      _i27.TideQueryResult => 'TideQueryResult',
+      _i28.TideSample => 'TideSample',
+      _i29.TideStationInfo => 'TideStationInfo',
+      _i30.WatchLogEntry => 'WatchLogEntry',
+      _i31.WatchLogEntryChange => 'WatchLogEntryChange',
+      _i32.MapZone => 'MapZone',
+      _i33.MapZoneChange => 'MapZoneChange',
       _ => null,
     };
   }
@@ -1831,47 +1954,49 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'MapMarker';
       case _i11.MapMarkerChange():
         return 'MapMarkerChange';
-      case _i12.MarkerIconCatalogEntry():
+      case _i12.MarkerAttachment():
+        return 'MarkerAttachment';
+      case _i13.MarkerIconCatalogEntry():
         return 'MarkerIconCatalogEntry';
-      case _i13.MarkerIconCategoryDefinition():
+      case _i14.MarkerIconCategoryDefinition():
         return 'MarkerIconCategoryDefinition';
-      case _i14.PmtilesFile():
+      case _i15.PmtilesFile():
         return 'PmtilesFile';
-      case _i15.PmtilesFileGroupLink():
+      case _i16.PmtilesFileGroupLink():
         return 'PmtilesFileGroupLink';
-      case _i16.PmtilesGroup():
+      case _i17.PmtilesGroup():
         return 'PmtilesGroup';
-      case _i17.SeasonalOverlay():
+      case _i18.SeasonalOverlay():
         return 'SeasonalOverlay';
-      case _i18.SeasonalOverlayChange():
+      case _i19.SeasonalOverlayChange():
         return 'SeasonalOverlayChange';
-      case _i19.AppSettings():
+      case _i20.AppSettings():
         return 'AppSettings';
-      case _i20.RestApiKey():
+      case _i21.RestApiKey():
         return 'RestApiKey';
-      case _i21.RestApiKeyCreated():
+      case _i22.RestApiKeyCreated():
         return 'RestApiKeyCreated';
-      case _i22.RestApiKeyInfo():
+      case _i23.RestApiKeyInfo():
         return 'RestApiKeyInfo';
-      case _i23.TideCoastalRegion():
+      case _i24.TideCoastalRegion():
         return 'TideCoastalRegion';
-      case _i24.TideExtreme():
+      case _i25.TideExtreme():
         return 'TideExtreme';
-      case _i25.TidePackInfo():
+      case _i26.TidePackInfo():
         return 'TidePackInfo';
-      case _i26.TideQueryResult():
+      case _i27.TideQueryResult():
         return 'TideQueryResult';
-      case _i27.TideSample():
+      case _i28.TideSample():
         return 'TideSample';
-      case _i28.TideStationInfo():
+      case _i29.TideStationInfo():
         return 'TideStationInfo';
-      case _i29.WatchLogEntry():
+      case _i30.WatchLogEntry():
         return 'WatchLogEntry';
-      case _i30.WatchLogEntryChange():
+      case _i31.WatchLogEntryChange():
         return 'WatchLogEntryChange';
-      case _i31.MapZone():
+      case _i32.MapZone():
         return 'MapZone';
-      case _i32.MapZoneChange():
+      case _i33.MapZoneChange():
         return 'MapZoneChange';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1916,68 +2041,71 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'MapMarkerChange') {
       return deserialize<_i11.MapMarkerChange>(data['data']);
     }
+    if (dataClassName == 'MarkerAttachment') {
+      return deserialize<_i12.MarkerAttachment>(data['data']);
+    }
     if (dataClassName == 'MarkerIconCatalogEntry') {
-      return deserialize<_i12.MarkerIconCatalogEntry>(data['data']);
+      return deserialize<_i13.MarkerIconCatalogEntry>(data['data']);
     }
     if (dataClassName == 'MarkerIconCategoryDefinition') {
-      return deserialize<_i13.MarkerIconCategoryDefinition>(data['data']);
+      return deserialize<_i14.MarkerIconCategoryDefinition>(data['data']);
     }
     if (dataClassName == 'PmtilesFile') {
-      return deserialize<_i14.PmtilesFile>(data['data']);
+      return deserialize<_i15.PmtilesFile>(data['data']);
     }
     if (dataClassName == 'PmtilesFileGroupLink') {
-      return deserialize<_i15.PmtilesFileGroupLink>(data['data']);
+      return deserialize<_i16.PmtilesFileGroupLink>(data['data']);
     }
     if (dataClassName == 'PmtilesGroup') {
-      return deserialize<_i16.PmtilesGroup>(data['data']);
+      return deserialize<_i17.PmtilesGroup>(data['data']);
     }
     if (dataClassName == 'SeasonalOverlay') {
-      return deserialize<_i17.SeasonalOverlay>(data['data']);
+      return deserialize<_i18.SeasonalOverlay>(data['data']);
     }
     if (dataClassName == 'SeasonalOverlayChange') {
-      return deserialize<_i18.SeasonalOverlayChange>(data['data']);
+      return deserialize<_i19.SeasonalOverlayChange>(data['data']);
     }
     if (dataClassName == 'AppSettings') {
-      return deserialize<_i19.AppSettings>(data['data']);
+      return deserialize<_i20.AppSettings>(data['data']);
     }
     if (dataClassName == 'RestApiKey') {
-      return deserialize<_i20.RestApiKey>(data['data']);
+      return deserialize<_i21.RestApiKey>(data['data']);
     }
     if (dataClassName == 'RestApiKeyCreated') {
-      return deserialize<_i21.RestApiKeyCreated>(data['data']);
+      return deserialize<_i22.RestApiKeyCreated>(data['data']);
     }
     if (dataClassName == 'RestApiKeyInfo') {
-      return deserialize<_i22.RestApiKeyInfo>(data['data']);
+      return deserialize<_i23.RestApiKeyInfo>(data['data']);
     }
     if (dataClassName == 'TideCoastalRegion') {
-      return deserialize<_i23.TideCoastalRegion>(data['data']);
+      return deserialize<_i24.TideCoastalRegion>(data['data']);
     }
     if (dataClassName == 'TideExtreme') {
-      return deserialize<_i24.TideExtreme>(data['data']);
+      return deserialize<_i25.TideExtreme>(data['data']);
     }
     if (dataClassName == 'TidePackInfo') {
-      return deserialize<_i25.TidePackInfo>(data['data']);
+      return deserialize<_i26.TidePackInfo>(data['data']);
     }
     if (dataClassName == 'TideQueryResult') {
-      return deserialize<_i26.TideQueryResult>(data['data']);
+      return deserialize<_i27.TideQueryResult>(data['data']);
     }
     if (dataClassName == 'TideSample') {
-      return deserialize<_i27.TideSample>(data['data']);
+      return deserialize<_i28.TideSample>(data['data']);
     }
     if (dataClassName == 'TideStationInfo') {
-      return deserialize<_i28.TideStationInfo>(data['data']);
+      return deserialize<_i29.TideStationInfo>(data['data']);
     }
     if (dataClassName == 'WatchLogEntry') {
-      return deserialize<_i29.WatchLogEntry>(data['data']);
+      return deserialize<_i30.WatchLogEntry>(data['data']);
     }
     if (dataClassName == 'WatchLogEntryChange') {
-      return deserialize<_i30.WatchLogEntryChange>(data['data']);
+      return deserialize<_i31.WatchLogEntryChange>(data['data']);
     }
     if (dataClassName == 'MapZone') {
-      return deserialize<_i31.MapZone>(data['data']);
+      return deserialize<_i32.MapZone>(data['data']);
     }
     if (dataClassName == 'MapZoneChange') {
-      return deserialize<_i32.MapZoneChange>(data['data']);
+      return deserialize<_i33.MapZoneChange>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -2021,26 +2149,28 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i7.MapLayer.t;
       case _i10.MapMarker:
         return _i10.MapMarker.t;
-      case _i12.MarkerIconCatalogEntry:
-        return _i12.MarkerIconCatalogEntry.t;
-      case _i13.MarkerIconCategoryDefinition:
-        return _i13.MarkerIconCategoryDefinition.t;
-      case _i14.PmtilesFile:
-        return _i14.PmtilesFile.t;
-      case _i15.PmtilesFileGroupLink:
-        return _i15.PmtilesFileGroupLink.t;
-      case _i16.PmtilesGroup:
-        return _i16.PmtilesGroup.t;
-      case _i17.SeasonalOverlay:
-        return _i17.SeasonalOverlay.t;
-      case _i19.AppSettings:
-        return _i19.AppSettings.t;
-      case _i20.RestApiKey:
-        return _i20.RestApiKey.t;
-      case _i29.WatchLogEntry:
-        return _i29.WatchLogEntry.t;
-      case _i31.MapZone:
-        return _i31.MapZone.t;
+      case _i12.MarkerAttachment:
+        return _i12.MarkerAttachment.t;
+      case _i13.MarkerIconCatalogEntry:
+        return _i13.MarkerIconCatalogEntry.t;
+      case _i14.MarkerIconCategoryDefinition:
+        return _i14.MarkerIconCategoryDefinition.t;
+      case _i15.PmtilesFile:
+        return _i15.PmtilesFile.t;
+      case _i16.PmtilesFileGroupLink:
+        return _i16.PmtilesFileGroupLink.t;
+      case _i17.PmtilesGroup:
+        return _i17.PmtilesGroup.t;
+      case _i18.SeasonalOverlay:
+        return _i18.SeasonalOverlay.t;
+      case _i20.AppSettings:
+        return _i20.AppSettings.t;
+      case _i21.RestApiKey:
+        return _i21.RestApiKey.t;
+      case _i30.WatchLogEntry:
+        return _i30.WatchLogEntry.t;
+      case _i32.MapZone:
+        return _i32.MapZone.t;
     }
     return null;
   }

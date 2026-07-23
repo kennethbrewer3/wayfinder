@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
+import '../markers/marker_attachment_service.dart';
 import 'map_marker_change_broadcast.dart';
 import 'marker_tracking_service.dart';
 import 'marker_weather_json.dart';
@@ -112,6 +113,7 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
           where: (t) => t.id.equals(id),
         );
         if (deleted.isNotEmpty) {
+          await MarkerAttachmentService.deleteAllForMarker(session, id);
           await MapMarkerChangeBroadcast.deleted(session, id);
         }
         return deleted.isNotEmpty;

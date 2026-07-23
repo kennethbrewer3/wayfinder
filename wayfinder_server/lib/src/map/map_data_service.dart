@@ -2,6 +2,8 @@ import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
 import '../layers/map_layer_bootstrap.dart';
+import '../markers/marker_attachment_backup.dart';
+import '../markers/marker_attachment_service.dart';
 import '../markers/marker_icon_backup.dart';
 import '../settings/app_settings_backup.dart';
 import '../settings/app_settings_store.dart';
@@ -9,9 +11,9 @@ import '../pmtiles/pmtiles_catalog_sync.dart';
 import '../pmtiles/pmtiles_storage.dart';
 import '../web/rest/rest_json.dart';
 
-const mapDataBackupVersion = 5;
+const mapDataBackupVersion = 6;
 
-const supportedMapDataBackupVersions = {1, 2, 3, 4, 5};
+const supportedMapDataBackupVersions = {1, 2, 3, 4, 5, 6};
 
 /// Full map structure export (layers, markers, zones, seasonal overlays, watch log).
 Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
@@ -35,6 +37,7 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   );
 
   final markerIcons = await exportMarkerIconBackup(session);
+  final markerAttachments = await exportMarkerAttachmentBackup(session);
   final settings = await AppSettingsStore.getOrCreate(session);
 
   return {
@@ -47,6 +50,7 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     'seasonalOverlays': RestJson.encodeModels(seasonalOverlays),
     'watchLogEntries': RestJson.encodeModels(watchLogEntries),
     ...markerIcons,
+    ...markerAttachments,
   };
 }
 
@@ -59,6 +63,7 @@ class MapDataRestoreCounts {
     this.watchLogEntries = 0,
     this.markerIconCategories = 0,
     this.markerIcons = 0,
+    this.markerAttachments = 0,
   });
 
   final int layers;
@@ -68,6 +73,7 @@ class MapDataRestoreCounts {
   final int watchLogEntries;
   final int markerIconCategories;
   final int markerIcons;
+  final int markerAttachments;
 
   Map<String, dynamic> toJson() => {
     'layers': layers,
@@ -77,6 +83,7 @@ class MapDataRestoreCounts {
     'watchLogEntries': watchLogEntries,
     'markerIconCategories': markerIconCategories,
     'markerIcons': markerIcons,
+    'markerAttachments': markerAttachments,
   };
 }
 
@@ -265,6 +272,10 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
       watchLogEntries: watchLogEntries.length,
     );
   });
+
+  // Clear existing photos; zip restore re-imports `marker-attachments/` after
+  // this returns. JSON-only restore leaves markers without photos.
+  await MarkerAttachmentService.deleteAll(session);
 
   return MapDataRestoreCounts(
     layers: mapCounts.layers,

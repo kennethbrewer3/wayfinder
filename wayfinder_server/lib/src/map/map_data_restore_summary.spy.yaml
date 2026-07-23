@@ -7,3 +7,4 @@ fields:
   watchLogEntries: int
   markerIconCategories: int
   markerIcons: int
+  markerAttachments: int, default=0

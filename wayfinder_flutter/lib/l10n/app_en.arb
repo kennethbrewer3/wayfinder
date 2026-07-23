@@ -308,7 +308,7 @@
   "watchLogTextHint": "What happened?",
   "watchLogTextRequired": "Enter event text.",
   "backupTitle": "Map data backup",
-  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.",
+  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -367,6 +367,45 @@
   },
   "backupRestoreFailed": "Restore failed: {error}",
   "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentsTitle": "Photos",
+  "markerAttachmentsEmpty": "No photos yet. Add a JPEG, PNG, or WebP image.",
+  "markerAttachmentsEmptyReadOnly": "No photos on this marker.",
+  "markerAttachmentAdd": "Add photo",
+  "markerAttachmentUploading": "Uploading…",
+  "markerAttachmentUploadSuccess": "Photo added.",
+  "markerAttachmentUploadFailed": "Photo upload failed: {error}",
+  "@markerAttachmentUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentLoadFailed": "Could not load photos: {error}",
+  "@markerAttachmentLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentDeleteConfirmTitle": "Delete photo?",
+  "markerAttachmentDeleteConfirmMessage": "Remove \"{fileName}\" from this marker?",
+  "@markerAttachmentDeleteConfirmMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "markerAttachmentDeleteFailed": "Could not delete photo: {error}",
+  "@markerAttachmentDeleteFailed": {
     "placeholders": {
       "error": {
         "type": "String"
@@ -1186,6 +1225,46 @@
     "placeholders": {
       "date": {
         "type": "String"
+      }
+    }
+  },
+  "markerChecklistsTitle": "Checklists / SOPs",
+  "markerChecklistsEmptyHelp": "Location SOPs and audits — e.g. bug-out bag check at a retreat.",
+  "markerChecklistsCount": "{count, plural, =1{1 checklist} other{{count} checklists}}",
+  "@markerChecklistsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markerChecklistsAddChecklist": "Add checklist",
+  "markerChecklistsRemoveChecklist": "Remove checklist",
+  "markerChecklistsChecklistHeading": "Checklist",
+  "markerChecklistsNameLabel": "Checklist name",
+  "markerChecklistsNotesLabel": "Notes",
+  "markerChecklistsLastAuditedNever": "Never audited",
+  "markerChecklistsLastAudited": "Last audited {date}",
+  "@markerChecklistsLastAudited": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markerChecklistsMarkAudited": "Mark audited now",
+  "markerChecklistsAddItem": "Add item",
+  "markerChecklistsRemoveItem": "Remove item",
+  "markerChecklistsItemLabel": "Item",
+  "markerChecklistsItemNotesLabel": "Item notes",
+  "markerChecklistsProgress": "{done} of {total} done",
+  "@markerChecklistsProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
       }
     }
   },

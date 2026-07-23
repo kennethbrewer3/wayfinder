@@ -9,8 +9,10 @@ import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/presentation/track_transportation_mode_field.dart';
 import '../models/marker_color.dart';
 import '../models/marker_icon_registry.dart';
+import '../models/marker_checklists.dart';
 import '../models/marker_inventory.dart';
 import '../models/marker_radio.dart';
+import 'marker_checklists_editor.dart';
 import 'marker_form_fields.dart';
 import 'marker_inventory_editor.dart';
 import 'marker_notes_editor.dart';
@@ -30,6 +32,7 @@ class MarkerFormData {
     this.transportationMode = TrackTransportationMode.onFoot,
     this.inventoryItems = const [],
     this.radioContact = const MarkerRadioContact(),
+    this.checklists = const [],
   });
 
   final String name;
@@ -44,11 +47,15 @@ class MarkerFormData {
   final TrackTransportationMode transportationMode;
   final List<MarkerInventoryItem> inventoryItems;
   final MarkerRadioContact radioContact;
+  final List<MarkerChecklist> checklists;
 
   String? get inventoryJson =>
       MarkerInventory(items: inventoryItems).toStorageJson();
 
   String? get radioJson => radioContact.toStorageJson();
+
+  String? get checklistsJson =>
+      MarkerChecklists(checklists: checklists).toStorageJson();
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -70,6 +77,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
       TrackTransportationMode.onFoot,
   List<MarkerInventoryItem> initialInventoryItems = const [],
   MarkerRadioContact initialRadioContact = const MarkerRadioContact(),
+  List<MarkerChecklist> initialChecklists = const [],
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -92,6 +100,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
         initialTransportationMode: initialTransportationMode,
         initialInventoryItems: initialInventoryItems,
         initialRadioContact: initialRadioContact,
+        initialChecklists: initialChecklists,
       );
     },
   );
@@ -126,6 +135,9 @@ Future<MarkerFormData?> showEditMarkerDialog({
     initialRadioContact: MarkerRadioContact.fromMarkerRadioJson(
       marker.radioJson,
     ),
+    initialChecklists: MarkerChecklists.fromMarkerChecklistsJson(
+      marker.checklistsJson,
+    ).checklists,
   );
 }
 
@@ -148,6 +160,7 @@ class MarkerFormDialog extends StatefulWidget {
     this.initialTransportationMode = TrackTransportationMode.onFoot,
     this.initialInventoryItems = const [],
     this.initialRadioContact = const MarkerRadioContact(),
+    this.initialChecklists = const [],
   });
 
   final String title;
@@ -166,6 +179,7 @@ class MarkerFormDialog extends StatefulWidget {
   final TrackTransportationMode initialTransportationMode;
   final List<MarkerInventoryItem> initialInventoryItems;
   final MarkerRadioContact initialRadioContact;
+  final List<MarkerChecklist> initialChecklists;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -184,6 +198,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   UuidValue? _selectedLayerId;
   late List<MarkerInventoryItem> _inventoryItems;
   late MarkerRadioContact _radioContact;
+  late List<MarkerChecklist> _checklists;
 
   @override
   void initState() {
@@ -218,6 +233,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
       widget.initialInventoryItems,
     );
     _radioContact = widget.initialRadioContact;
+    _checklists = List<MarkerChecklist>.from(widget.initialChecklists);
     if (_radioContact.isEmpty && isRadioContactMarkerIcon(_selectedIcon)) {
       _radioContact = _radioContact.copyWith(
         role: suggestedRadioRoleForIcon(_selectedIcon),
@@ -305,6 +321,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         transportationMode: _transportationMode,
         inventoryItems: sanitizeMarkerInventoryItems(_inventoryItems),
         radioContact: _radioContact,
+        checklists: sanitizeMarkerChecklists(_checklists),
       ),
     );
   }
@@ -415,6 +432,12 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
               MarkerInventoryEditor(
                 items: _inventoryItems,
                 onChanged: (items) => setState(() => _inventoryItems = items),
+              ),
+              const SizedBox(height: 8),
+              MarkerChecklistsEditor(
+                checklists: _checklists,
+                onChanged: (checklists) =>
+                    setState(() => _checklists = checklists),
               ),
             ],
           ),

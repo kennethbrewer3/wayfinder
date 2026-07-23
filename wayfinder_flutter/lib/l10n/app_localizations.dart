@@ -1309,7 +1309,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, and app settings. Backups are a .zip with backup.json plus marker-icons/*.svg. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles). Legacy .json backups can still be restored.'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -1378,6 +1378,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore failed: {error}'**
   String backupRestoreFailed(String error);
+
+  /// No description provided for @markerAttachmentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get markerAttachmentsTitle;
+
+  /// No description provided for @markerAttachmentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos yet. Add a JPEG, PNG, or WebP image.'**
+  String get markerAttachmentsEmpty;
+
+  /// No description provided for @markerAttachmentsEmptyReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos on this marker.'**
+  String get markerAttachmentsEmptyReadOnly;
+
+  /// No description provided for @markerAttachmentAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get markerAttachmentAdd;
+
+  /// No description provided for @markerAttachmentUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading…'**
+  String get markerAttachmentUploading;
+
+  /// No description provided for @markerAttachmentUploadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo added.'**
+  String get markerAttachmentUploadSuccess;
+
+  /// No description provided for @markerAttachmentUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo upload failed: {error}'**
+  String markerAttachmentUploadFailed(String error);
+
+  /// No description provided for @markerAttachmentLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load photos: {error}'**
+  String markerAttachmentLoadFailed(String error);
+
+  /// No description provided for @markerAttachmentDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete photo?'**
+  String get markerAttachmentDeleteConfirmTitle;
+
+  /// No description provided for @markerAttachmentDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{fileName}\" from this marker?'**
+  String markerAttachmentDeleteConfirmMessage(String fileName);
+
+  /// No description provided for @markerAttachmentDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete photo: {error}'**
+  String markerAttachmentDeleteFailed(String error);
 
   /// No description provided for @kioskModeTitle.
   ///
@@ -3310,6 +3376,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last audited {date}'**
   String markerInventoryDetailLastAudited(String date);
+
+  /// No description provided for @markerChecklistsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Checklists / SOPs'**
+  String get markerChecklistsTitle;
+
+  /// No description provided for @markerChecklistsEmptyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Location SOPs and audits — e.g. bug-out bag check at a retreat.'**
+  String get markerChecklistsEmptyHelp;
+
+  /// No description provided for @markerChecklistsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 checklist} other{{count} checklists}}'**
+  String markerChecklistsCount(int count);
+
+  /// No description provided for @markerChecklistsAddChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Add checklist'**
+  String get markerChecklistsAddChecklist;
+
+  /// No description provided for @markerChecklistsRemoveChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove checklist'**
+  String get markerChecklistsRemoveChecklist;
+
+  /// No description provided for @markerChecklistsChecklistHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checklist'**
+  String get markerChecklistsChecklistHeading;
+
+  /// No description provided for @markerChecklistsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Checklist name'**
+  String get markerChecklistsNameLabel;
+
+  /// No description provided for @markerChecklistsNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get markerChecklistsNotesLabel;
+
+  /// No description provided for @markerChecklistsLastAuditedNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never audited'**
+  String get markerChecklistsLastAuditedNever;
+
+  /// No description provided for @markerChecklistsLastAudited.
+  ///
+  /// In en, this message translates to:
+  /// **'Last audited {date}'**
+  String markerChecklistsLastAudited(String date);
+
+  /// No description provided for @markerChecklistsMarkAudited.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark audited now'**
+  String get markerChecklistsMarkAudited;
+
+  /// No description provided for @markerChecklistsAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get markerChecklistsAddItem;
+
+  /// No description provided for @markerChecklistsRemoveItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove item'**
+  String get markerChecklistsRemoveItem;
+
+  /// No description provided for @markerChecklistsItemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Item'**
+  String get markerChecklistsItemLabel;
+
+  /// No description provided for @markerChecklistsItemNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Item notes'**
+  String get markerChecklistsItemNotesLabel;
+
+  /// No description provided for @markerChecklistsProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String markerChecklistsProgress(int done, int total);
 
   /// No description provided for @markerTrackingLabel.
   ///

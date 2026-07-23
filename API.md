@@ -217,6 +217,44 @@ curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d
   -d '{"inventoryJson":"{\"items\":[{\"id\":\"inv_1\",\"name\":\"Rice\",\"quantity\":25,\"unit\":\"lb\",\"category\":\"food\",\"expiresAt\":\"2026-10-01T00:00:00.000Z\"}]}"}'
 ```
 
+### Checklists / SOPs
+
+Any marker can store named checklists (SOPs, location audits) in `checklistsJson` (a JSON **string**). Useful for retreat bag audits, site readiness, and waypoint procedures.
+
+```json
+{
+  "checklists": [
+    {
+      "id": "cl_1",
+      "name": "Bug-out bag audit",
+      "notes": "Quarterly at retreat",
+      "lastAuditedAt": "2026-07-01T00:00:00.000Z",
+      "items": [
+        {
+          "id": "cli_1",
+          "label": "Water filter present",
+          "done": true,
+          "notes": "Sawyer Squeeze"
+        },
+        {
+          "id": "cli_2",
+          "label": "First-aid kit restocked",
+          "done": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+`notes` and `lastAuditedAt` are optional. Item `done` defaults to `false`.
+
+```bash
+curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d82da6 \
+  -H "Content-Type: application/json" \
+  -d '{"checklistsJson":"{\"checklists\":[{\"id\":\"cl_1\",\"name\":\"Bug-out bag audit\",\"items\":[{\"id\":\"cli_1\",\"label\":\"Water filter present\",\"done\":false}]}]}"}'
+```
+
 ### Weather station readings
 
 Weather station markers (`icon: "weather_station"`) can store local weather readings on the server in `weatherJson`. This field is intended for data ingested from APRS or other offline/local integrations — Wayfinder does not fetch weather from the public internet.
@@ -622,6 +660,7 @@ Export or restore the full map structure (layers, markers, zones, and custom mar
 
 - `backup.json` — map data (version `2`)
 - `marker-icons/{key}.svg` — one file per custom icon on the server
+- `marker-attachments/{storageId}` — marker photo bytes (backup version `6+`)
 
 Legacy plain JSON export (`GET /api/map-data`) remains available; version `2` JSON may also embed `svgContent` inline when the SVG file exists on disk.
 
@@ -701,6 +740,29 @@ If the backup has no layers, a default layer is created. Markers or zones refere
 
 ```bash
 0 2 * * * curl -sf http://localhost:18082/api/map-data/backup.zip -o "/backups/wayfinder-$(date +\%Y\%m\%d).zip"
+```
+
+---
+
+## Marker photos / attachments
+
+Photo files are stored on disk (default `storage/marker-attachments/{uuid}`, override with `WAYFINDER_MARKER_ATTACHMENT_STORAGE`). Metadata lives in the `marker_attachment` table. Allowed types: JPEG, PNG, WebP. Max **15 MB** per file and **20** photos per marker.
+
+```bash
+# List attachments for a marker
+curl http://localhost:18082/api/markers/<markerId>/attachments
+
+# Upload a photo (raw body)
+curl -X POST \
+  "http://localhost:18082/marker-attachments/upload?markerId=<markerId>&fileName=gate.jpg&contentType=image/jpeg" \
+  -H "Content-Type: image/jpeg" \
+  --data-binary @gate.jpg
+
+# Download
+curl http://localhost:18082/marker-attachments/files/<storageId> -o gate.jpg
+
+# Delete
+curl -X DELETE http://localhost:18082/api/marker-attachments/<id>
 ```
 
 ---
@@ -873,6 +935,10 @@ curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 | DELETE | `/api/pmtiles/active` | Clear active file |
 | DELETE | `/api/pmtiles/:id` | Delete catalog entry and file |
 | GET | `/pmtiles/files/:id` | Download PMTiles bytes |
+| GET | `/api/markers/:markerId/attachments` | List photos for a marker |
+| DELETE | `/api/marker-attachments/:id` | Delete a marker photo |
+| POST | `/marker-attachments/upload` | Upload marker photo (raw body) |
+| GET | `/marker-attachments/files/:storageId` | Download marker photo |
 | GET | `/api/marker-icons` | List marker icon catalog |
 | POST | `/api/marker-icons` | Register marker icon metadata |
 | GET | `/api/marker-icons/:key` | Get marker icon metadata |

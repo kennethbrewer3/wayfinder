@@ -85,6 +85,8 @@ import '../../rectangles/providers/rectangle_drawing_provider.dart';
 import '../../rectangles/utils/rectangle_bounds.dart';
 import '../../rectangles/utils/rectangle_hit_test.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
+import '../../kiosk/presentation/kiosk_mode_banner.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/data/offline_tile_cache.dart';
 import '../../offline_packs/data/offline_tile_providers.dart';
 import '../../offline_packs/presentation/offline_mode_banner.dart';
@@ -4418,7 +4420,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           );
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final geocodingReachable =
-        ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
+        !ref.watch(offlineModeActiveProvider) &&
+        (ref.watch(geocodingServerReachableProvider).valueOrNull ?? false);
     final seasonalOverlays =
         ref.watch(seasonalOverlaysProvider).valueOrNull ??
         const <SeasonalOverlay>[];
@@ -5128,7 +5131,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               MapRadialMenu(
                 center: center,
                 onDismiss: _closeRadialMenu,
-                actions: ref.watch(offlineModeActiveProvider)
+                actions: ref.watch(kioskModeActiveProvider)
+                    ? [
+                        MapRadialMenuAction(
+                          icon: Icons.copy,
+                          label: l10n.mapRadialCopyCoordinates,
+                          onSelected: _copyRadialMenuCoordinates,
+                        ),
+                      ]
+                    : ref.watch(offlineModeActiveProvider)
                     ? [
                         MapRadialMenuAction(
                           icon: Icons.add_location_alt,
@@ -5237,7 +5248,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           ),
                         ],
                       },
-                footerAction: ref.watch(offlineModeActiveProvider)
+                footerAction:
+                    ref.watch(kioskModeActiveProvider) ||
+                        ref.watch(offlineModeActiveProvider)
                     ? null
                     : switch (_radialMenuPage) {
                         0 => MapRadialMenuAction(
@@ -5258,7 +5271,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       },
               ),
             if (_searchCoordinateRadialCenter case final center?
-                when _searchCoordinateRadialMarker != null)
+                when _searchCoordinateRadialMarker != null &&
+                    !ref.watch(kioskModeActiveProvider))
               MapRadialMenu(
                 center: center,
                 onDismiss: _closeRadialMenu,
@@ -5276,7 +5290,14 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     ),
                 ],
               ),
-            if (ref.watch(offlineModeActiveProvider))
+            if (ref.watch(kioskModeActiveProvider))
+              const Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: KioskModeBanner(),
+              )
+            else if (ref.watch(offlineModeActiveProvider))
               const Positioned(
                 left: 0,
                 right: 0,

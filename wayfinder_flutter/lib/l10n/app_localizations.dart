@@ -1379,6 +1379,182 @@ abstract class AppLocalizations {
   /// **'Restore failed: {error}'**
   String backupRestoreFailed(String error);
 
+  /// No description provided for @kioskModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk / viewer mode'**
+  String get kioskModeTitle;
+
+  /// No description provided for @kioskModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn this laptop into a TOC viewer: hide Settings and create tools, block edits, and use a quieter battery-friendly poll. Use this on spare viewer laptops pointed at your Wayfinder server. For a spare server appliance that must reject all writes, set WAYFINDER_READ_ONLY=1 on the server.'**
+  String get kioskModeDescription;
+
+  /// No description provided for @kioskModeEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter kiosk mode'**
+  String get kioskModeEnter;
+
+  /// No description provided for @kioskModeExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit kiosk'**
+  String get kioskModeExit;
+
+  /// No description provided for @kioskModeEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk mode on — this device is view-only.'**
+  String get kioskModeEntered;
+
+  /// No description provided for @kioskModeEnterConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter kiosk mode?'**
+  String get kioskModeEnterConfirmTitle;
+
+  /// No description provided for @kioskModeEnterConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings and map editing will be hidden on this device until you exit kiosk mode. Other devices are not affected.'**
+  String get kioskModeEnterConfirmMessage;
+
+  /// No description provided for @kioskModeBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewer mode'**
+  String get kioskModeBannerTitle;
+
+  /// No description provided for @kioskModeBannerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This laptop is view-only. Pan, zoom, search, and inspect map objects.'**
+  String get kioskModeBannerHint;
+
+  /// No description provided for @kioskModeBannerServerEnforced.
+  ///
+  /// In en, this message translates to:
+  /// **'This Wayfinder server is read-only (WAYFINDER_READ_ONLY). Writes are blocked for every client.'**
+  String get kioskModeBannerServerEnforced;
+
+  /// No description provided for @kioskModeSettingsLockedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings are hidden while this device is in kiosk / viewer mode.'**
+  String get kioskModeSettingsLockedMessage;
+
+  /// No description provided for @kioskModeBackToMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to map'**
+  String get kioskModeBackToMap;
+
+  /// No description provided for @fieldPackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Field pack'**
+  String get fieldPackTitle;
+
+  /// No description provided for @fieldPackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'One archive for a spare server or laptop: map objects, custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
+  String get fieldPackDescription;
+
+  /// No description provided for @fieldPackExportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export field pack'**
+  String get fieldPackExportButton;
+
+  /// No description provided for @fieldPackRestoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore field pack'**
+  String get fieldPackRestoreButton;
+
+  /// No description provided for @fieldPackSelectPmtilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Include PMTiles'**
+  String get fieldPackSelectPmtilesTitle;
+
+  /// No description provided for @fieldPackSelectPmtilesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which map tile archives to include. Large regional files can make the pack several GB.'**
+  String get fieldPackSelectPmtilesMessage;
+
+  /// No description provided for @fieldPackSelectPmtilesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No PMTiles are installed on this server. The pack will include map data and icons only.'**
+  String get fieldPackSelectPmtilesEmpty;
+
+  /// No description provided for @fieldPackSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get fieldPackSelectAll;
+
+  /// No description provided for @fieldPackSelectNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Select none'**
+  String get fieldPackSelectNone;
+
+  /// No description provided for @fieldPackExportConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get fieldPackExportConfirm;
+
+  /// No description provided for @fieldPackExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Field pack saved.'**
+  String get fieldPackExportSuccess;
+
+  /// No description provided for @fieldPackExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Field pack export failed: {error}'**
+  String fieldPackExportFailed(String error);
+
+  /// No description provided for @fieldPackRestoreConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore field pack?'**
+  String get fieldPackRestoreConfirmTitle;
+
+  /// No description provided for @fieldPackRestoreConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This replaces all map data and custom icons on the server, and installs the PMTiles archives from the pack (matching IDs are overwritten). This cannot be undone.'**
+  String get fieldPackRestoreConfirmMessage;
+
+  /// No description provided for @fieldPackRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {icons} custom icon(s), and {pmtiles} PMTiles archive(s).'**
+  String fieldPackRestoreSuccess(
+    int layers,
+    int markers,
+    int zones,
+    int seasonalOverlays,
+    int watchLogEntries,
+    int icons,
+    int pmtiles,
+  );
+
+  /// No description provided for @fieldPackRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Field pack restore failed: {error}'**
+  String fieldPackRestoreFailed(String error);
+
   /// No description provided for @geoExchangeTitle.
   ///
   /// In en, this message translates to:
@@ -1814,6 +1990,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only unsynced offline markers can be deleted until the server returns'**
   String get offlineDeleteSyncedMarkerDisabled;
+
+  /// No description provided for @offlineGeocodingUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding contributions are unavailable while offline.'**
+  String get offlineGeocodingUnavailable;
 
   /// No description provided for @offlineModeBannerPending.
   ///

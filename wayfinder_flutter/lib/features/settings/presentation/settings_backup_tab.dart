@@ -12,7 +12,9 @@ import '../../layers/providers/layers_provider.dart';
 import '../../map_atlas/presentation/map_atlas_export_action.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
+import '../models/pmtiles_file.dart';
 import '../providers/map_data_providers.dart';
+import '../providers/pmtiles_providers.dart';
 
 class SettingsBackupTab extends ConsumerStatefulWidget {
   const SettingsBackupTab({super.key});
@@ -26,6 +28,8 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
 
   bool _isExportingMapData = false;
   bool _isRestoringMapData = false;
+  bool _isExportingFieldPack = false;
+  bool _isRestoringFieldPack = false;
   bool _isImportingGeo = false;
   bool _isExportingGeo = false;
   bool _isExportingAtlas = false;
@@ -264,6 +268,143 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
     }
   }
 
+  Future<void> _exportFieldPack() async {
+    final l10n = AppLocalizations.of(context)!;
+    List<PmtilesFile> files;
+    try {
+      files = await ref.read(pmtilesCatalogProvider.future);
+    } catch (error, stackTrace) {
+      _log.error(
+        '🎒 Field pack: failed to load PMTiles catalog',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.fieldPackExportFailed(error.toString()))),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    final selectedIds = await showDialog<Set<String>>(
+      context: context,
+      builder: (context) => _FieldPackPmtilesPickerDialog(files: files),
+    );
+    if (selectedIds == null || !mounted) {
+      return;
+    }
+
+    setState(() => _isExportingFieldPack = true);
+    try {
+      final bytes = await ref
+          .read(fieldPackRepositoryProvider)
+          .exportFieldPack(pmtilesIds: selectedIds.toList());
+      final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
+        ':',
+        '-',
+      );
+      final saved = await saveBinaryFile(
+        fileName: 'wayfinder-field-$timestamp.wayfinder-field',
+        bytes: bytes,
+      );
+      if (!mounted) return;
+      if (saved) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.fieldPackExportSuccess)),
+        );
+      }
+    } catch (error, stackTrace) {
+      _log.error(
+        '🎒 Field pack export failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.fieldPackExportFailed(error.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isExportingFieldPack = false);
+      }
+    }
+  }
+
+  Future<void> _restoreFieldPack() async {
+    final picked = await pickFieldPackFile();
+    if (picked == null || !mounted) {
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.fieldPackRestoreConfirmTitle),
+          content: Text(l10n.fieldPackRestoreConfirmMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.actionCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.actionRestore),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    setState(() => _isRestoringFieldPack = true);
+    try {
+      final result = await ref
+          .read(fieldPackRepositoryProvider)
+          .restoreFieldPack(picked);
+      refreshMapData(ref);
+      refreshPmtiles(ref);
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      final map = result.map;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.fieldPackRestoreSuccess(
+              map.layers,
+              map.markers,
+              map.zones,
+              map.seasonalOverlays,
+              map.watchLogEntries,
+              map.markerIcons,
+              result.pmtiles,
+            ),
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🎒 Field pack restore failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.fieldPackRestoreFailed(error.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isRestoringFieldPack = false);
+      }
+    }
+  }
+
   Future<void> _exportGeoExchange() async {
     final l10n = AppLocalizations.of(context)!;
     final format = await showDialog<GeoExchangeFormat>(
@@ -394,6 +535,48 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
         ),
         const SizedBox(height: 32),
         Text(
+          l10n.fieldPackTitle,
+          style: theme.textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.fieldPackDescription,
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.icon(
+          onPressed: _isExportingFieldPack ? null : _exportFieldPack,
+          icon: _isExportingFieldPack
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.inventory_2_outlined),
+          label: Text(
+            _isExportingFieldPack
+                ? l10n.actionExporting
+                : l10n.fieldPackExportButton,
+          ),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: _isRestoringFieldPack ? null : _restoreFieldPack,
+          icon: _isRestoringFieldPack
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.unarchive_outlined),
+          label: Text(
+            _isRestoringFieldPack
+                ? l10n.actionRestoring
+                : l10n.fieldPackRestoreButton,
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
           l10n.geoExchangeTitle,
           style: theme.textTheme.titleLarge,
         ),
@@ -459,6 +642,109 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                 ? l10n.actionExporting
                 : l10n.mapAtlasExportButton,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FieldPackPmtilesPickerDialog extends StatefulWidget {
+  const _FieldPackPmtilesPickerDialog({required this.files});
+
+  final List<PmtilesFile> files;
+
+  @override
+  State<_FieldPackPmtilesPickerDialog> createState() =>
+      _FieldPackPmtilesPickerDialogState();
+}
+
+class _FieldPackPmtilesPickerDialogState
+    extends State<_FieldPackPmtilesPickerDialog> {
+  late final Set<String> _selectedIds;
+
+  @override
+  void initState() {
+    super.initState();
+    final enabled = widget.files.where((f) => f.enabledOnMap).toList();
+    final defaults = enabled.isNotEmpty ? enabled : widget.files;
+    _selectedIds = {for (final file in defaults) file.id};
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final files = widget.files;
+
+    return AlertDialog(
+      title: Text(l10n.fieldPackSelectPmtilesTitle),
+      content: SizedBox(
+        width: 420,
+        child: files.isEmpty
+            ? Text(l10n.fieldPackSelectPmtilesEmpty)
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(l10n.fieldPackSelectPmtilesMessage),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedIds
+                              ..clear()
+                              ..addAll(files.map((f) => f.id));
+                          });
+                        },
+                        child: Text(l10n.fieldPackSelectAll),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(_selectedIds.clear);
+                        },
+                        child: Text(l10n.fieldPackSelectNone),
+                      ),
+                    ],
+                  ),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 320),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: files.length,
+                      itemBuilder: (context, index) {
+                        final file = files[index];
+                        return CheckboxListTile(
+                          value: _selectedIds.contains(file.id),
+                          onChanged: (checked) {
+                            setState(() {
+                              if (checked == true) {
+                                _selectedIds.add(file.id);
+                              } else {
+                                _selectedIds.remove(file.id);
+                              }
+                            });
+                          },
+                          title: Text(file.name),
+                          subtitle: Text(file.formattedSize),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          dense: true,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.actionCancel),
+        ),
+        FilledButton(
+          onPressed: () =>
+              Navigator.of(context).pop(Set<String>.from(_selectedIds)),
+          child: Text(l10n.fieldPackExportConfirm),
         ),
       ],
     );

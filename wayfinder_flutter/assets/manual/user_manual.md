@@ -525,6 +525,28 @@ Clear or refresh the pack from the same prepare dialog. Web browsers may hit sto
 
 ---
 
+## Kiosk / viewer mode (TOC laptops)
+
+Use this when one or more **spare laptops** should only watch the map (TOC / duty desk), without editing or opening admin Settings.
+
+### On a viewer client (same server as editors)
+
+1. Open **Settings → General → Enter kiosk mode** and confirm.
+2. Settings gear, create tools, PDF atlas export, and offline-pack prep are hidden.
+3. Long-press radial menu only offers **Copy coordinates**.
+4. A **Viewer mode** banner appears; use **Exit kiosk** to return to normal on that device.
+5. Reachability polling slows down to save battery.
+
+Other clients are unaffected. This is a per-device preference (stored locally).
+
+### On a spare read-only server (air-gap / field pack)
+
+Set `WAYFINDER_READ_ONLY=1` (or `true`) in the server environment / `.env`, then restart. The appliance rejects REST and RPC writes for **every** client. Clients detect this via `GET /api/status` and enter viewer mode automatically (exit is not available until the server flag is cleared).
+
+Field pack restore onto a spare box plus `WAYFINDER_READ_ONLY` is the usual pattern for a dedicated viewer appliance.
+
+---
+
 ## Long-press radial menu
 
 Long-press (hold) on empty map space to open the radial menu. Available actions include:
@@ -746,7 +768,28 @@ Tap **Export map data** to download `wayfinder-backup-<timestamp>.zip`. Store it
 
 Tap **Restore from backup**, select a backup file, and confirm. **Restore replaces all existing map objects** on the server with the backup contents.
 
-Backup does **not** include tide packs, PMTiles files, or geocoding database contents — transfer those separately from **Settings → Tides**, **Map tiles**, and **Geocoding**.
+Backup does **not** include tide packs, PMTiles files, or geocoding database contents — transfer those separately from **Settings → Tides**, **Map tiles**, and **Geocoding**, or use a **field pack** (below) when you need map data and selected PMTiles together.
+
+### Field pack (spare server / laptop)
+
+Use a field pack when you want a single archive for another Wayfinder server or field laptop: **map objects + custom marker icons + selected PMTiles regions**. This is related to client **offline packs**, but the field pack is assembled on the server for full instance transfer (whole regional `.pmtiles` files you choose), not a phone tile cache for the current map view.
+
+#### Export
+
+1. Open **Settings → Backup**.
+2. Tap **Export field pack**.
+3. Select which installed PMTiles archives to include (enabled map tiles are selected by default; you can select all, none, or a mix).
+4. Save `wayfinder-field-<timestamp>.wayfinder-field`.
+
+Large regional archives can make the pack several GB — keep enough free disk and memory on both machines.
+
+#### Restore
+
+1. On the spare server, open **Settings → Backup → Restore field pack**.
+2. Choose the `.wayfinder-field` (or `.zip`) file and confirm.
+3. Restore **replaces** existing map data and icons, and installs (or overwrites matching IDs for) the PMTiles archives from the pack.
+
+Tide packs and geocoding data are still separate (**Settings → Tides** / **Geocoding**).
 
 ### GPX / KML / GeoJSON
 
@@ -909,6 +952,9 @@ Server administrators can also set `WAYFINDER_REST_API_KEY` in the server enviro
 | Share marker | Marker details → Share link or QR code |
 | Tracking marker | Marker edit → Tracking marker; manage trail in sidebar (track) |
 | Backup data | Settings → Backup → Export |
+| Field pack (spare server) | Settings → Backup → Export field pack |
+| Kiosk / TOC viewer laptop | Settings → General → Enter kiosk mode |
+| Read-only spare server | `WAYFINDER_READ_ONLY=1` on the appliance |
 | Print map sheets (PDF) | Settings → Backup → Export printable atlas |
 | Offline elevation DEM | Settings → Map tiles → enable `*dem*` / `*terrarium*` pack |
 | Path elevation profile | Line/track details → Elevation profile, or sidebar checkboxes → Elevation profile |

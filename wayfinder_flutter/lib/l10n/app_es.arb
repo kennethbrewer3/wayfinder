@@ -303,6 +303,73 @@
       }
     }
   },
+  "kioskModeTitle": "Modo kiosco / visor",
+  "kioskModeDescription": "Convierte este portátil en un visor TOC: oculta Ajustes y herramientas de creación, bloquea ediciones y usa un sondeo más suave para la batería. Úsalo en portátiles de reserva apuntando a tu servidor Wayfinder. Para un servidor de reserva que deba rechazar todas las escrituras, configura WAYFINDER_READ_ONLY=1 en el servidor.",
+  "kioskModeEnter": "Entrar en modo kiosco",
+  "kioskModeExit": "Salir del kiosco",
+  "kioskModeEntered": "Modo kiosco activado: este dispositivo es de solo lectura.",
+  "kioskModeEnterConfirmTitle": "¿Entrar en modo kiosco?",
+  "kioskModeEnterConfirmMessage": "Los ajustes y la edición del mapa se ocultarán en este dispositivo hasta que salgas del modo kiosco. Otros dispositivos no se ven afectados.",
+  "kioskModeBannerTitle": "Modo visor",
+  "kioskModeBannerHint": "Este portátil es de solo lectura. Puedes desplazar, ampliar, buscar e inspeccionar objetos del mapa.",
+  "kioskModeBannerServerEnforced": "Este servidor Wayfinder está en solo lectura (WAYFINDER_READ_ONLY). Las escrituras están bloqueadas para todos los clientes.",
+  "kioskModeSettingsLockedMessage": "Los ajustes están ocultos mientras este dispositivo está en modo kiosco / visor.",
+  "kioskModeBackToMap": "Volver al mapa",
+  "fieldPackTitle": "Paquete de campo",
+  "fieldPackDescription": "Un archivo para un servidor o portátil de reserva: objetos del mapa, iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.",
+  "fieldPackExportButton": "Exportar paquete de campo",
+  "fieldPackRestoreButton": "Restaurar paquete de campo",
+  "fieldPackSelectPmtilesTitle": "Incluir PMTiles",
+  "fieldPackSelectPmtilesMessage": "Elige qué archivos de teselas incluir. Los archivos regionales grandes pueden hacer que el paquete ocupe varios GB.",
+  "fieldPackSelectPmtilesEmpty": "No hay PMTiles instalados en este servidor. El paquete incluirá solo datos del mapa e iconos.",
+  "fieldPackSelectAll": "Seleccionar todo",
+  "fieldPackSelectNone": "Seleccionar ninguno",
+  "fieldPackExportConfirm": "Exportar",
+  "fieldPackExportSuccess": "Paquete de campo guardado.",
+  "fieldPackExportFailed": "Error al exportar el paquete de campo: {error}",
+  "@fieldPackExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldPackRestoreConfirmTitle": "¿Restaurar paquete de campo?",
+  "fieldPackRestoreConfirmMessage": "Esto reemplaza todos los datos del mapa e iconos personalizados en el servidor e instala los archivos PMTiles del paquete (los IDs coincidentes se sobrescriben). Esta acción no se puede deshacer.",
+  "fieldPackRestoreSuccess": "Restauradas {layers} capa(s), {markers} marcador(es), {zones} zona(s), {seasonalOverlays} capa(s) estacional(es), {watchLogEntries} entrada(s) del registro, {icons} icono(s) personalizado(s) y {pmtiles} archivo(s) PMTiles.",
+  "@fieldPackRestoreSuccess": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      },
+      "seasonalOverlays": {
+        "type": "int"
+      },
+      "watchLogEntries": {
+        "type": "int"
+      },
+      "icons": {
+        "type": "int"
+      },
+      "pmtiles": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldPackRestoreFailed": "Error al restaurar el paquete de campo: {error}",
+  "@fieldPackRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "geoExchangeTitle": "GPX / KML / GeoJSON",
   "geoExchangeDescription": "Importe waypoints y tracks desde GPX, KML o GeoJSON. Si el mapa ya tiene marcadores o zonas, puede añadirlos, reemplazarlos o cancelar. Exporte marcadores como waypoints y líneas/tracks como rutas.",
   "geoExchangeImportButton": "Importar archivo geográfico",
@@ -430,6 +497,7 @@
   "offlineModeBannerReadWriteHint": "Mostrando capas del paquete. Puede añadir marcadores, cambiar su capa, borrar marcadores sin sincronizar, grabar tracks GPS y añadir entradas del registro de guardia.",
   "offlineDeleteUnsyncedMarker": "Borrar marcador sin sincronizar",
   "offlineDeleteSyncedMarkerDisabled": "Solo se pueden borrar marcadores sin sincronizar hasta que vuelva el servidor",
+  "offlineGeocodingUnavailable": "Las contribuciones de geocodificación no están disponibles sin conexión.",
   "offlineModeBannerPending": "{count} cambio(s) pendientes de sincronizar.",
   "mapTilesGetMapsTitle": "Obtener mapas",
   "mapTilesGetMapsDescription": "Descargue basemaps regionales Protomaps de Project NOMAD, o un DEM Terrarium de Mapterhorn. El servidor Wayfinder descarga o extrae el archivo; mantenga este diálogo abierto hasta que termine.",

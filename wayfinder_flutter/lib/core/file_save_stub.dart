@@ -63,3 +63,8 @@ Future<BackupPickResult?> pickBackupFile() async {
 Future<Uint8List?> pickTidePackFile() async {
   return null;
 }
+
+/// Picks a `.wayfinder-field` or `.zip` field pack archive from local storage.
+Future<Uint8List?> pickFieldPackFile() async {
+  return null;
+}

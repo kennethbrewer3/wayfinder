@@ -80,6 +80,28 @@ class WayfinderEnv {
     return _readDotEnv('WAYFINDER_REST_API_KEY');
   }
 
+  /// When true, the appliance rejects writes (spare TOC / viewer server).
+  ///
+  /// Set `WAYFINDER_READ_ONLY=1` or `true` in the process environment or `.env`.
+  static bool get readOnly {
+    for (final key in ['WAYFINDER_READ_ONLY']) {
+      final value = Platform.environment[key]?.trim();
+      if (value != null && value.isNotEmpty) {
+        return _parseBool(value);
+      }
+    }
+    final fromFile = _readDotEnv('WAYFINDER_READ_ONLY');
+    if (fromFile != null && fromFile.isNotEmpty) {
+      return _parseBool(fromFile);
+    }
+    return false;
+  }
+
+  static bool _parseBool(String raw) {
+    final value = raw.trim().toLowerCase();
+    return value == '1' || value == 'true' || value == 'yes' || value == 'on';
+  }
+
   static String? _readDotEnv(String key) {
     _dotEnvCache ??= _loadDotEnv();
     return _dotEnvCache![key];

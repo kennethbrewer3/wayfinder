@@ -15,6 +15,7 @@ import '../../map_atlas/presentation/map_atlas_export_action.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
 import '../../markers/utils/marker_share_url.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/presentation/prepare_offline_pack_dialog.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
@@ -359,6 +360,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
 
     final offlineActive = ref.watch(offlineModeActiveProvider);
+    final kioskActive = ref.watch(kioskModeActiveProvider);
     final hasOfflinePack =
         ref.watch(offlinePackMetaProvider).valueOrNull != null;
 
@@ -375,26 +377,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         actions: [
           const AddressSearchReadinessIndicator(),
           const MapTilesLoadIndicator(),
-          IconButton(
-            tooltip: hasOfflinePack
-                ? l10n.offlinePackPrepareTooltipReady
-                : l10n.offlinePackPrepareTooltip,
-            icon: Icon(
-              hasOfflinePack
-                  ? Icons.offline_pin
-                  : Icons.download_for_offline_outlined,
-              color: offlineActive
-                  ? Theme.of(context).colorScheme.tertiary
-                  : (hasOfflinePack
-                        ? Theme.of(context).colorScheme.primary
-                        : null),
+          if (!kioskActive)
+            IconButton(
+              tooltip: hasOfflinePack
+                  ? l10n.offlinePackPrepareTooltipReady
+                  : l10n.offlinePackPrepareTooltip,
+              icon: Icon(
+                hasOfflinePack
+                    ? Icons.offline_pin
+                    : Icons.download_for_offline_outlined,
+                color: offlineActive
+                    ? Theme.of(context).colorScheme.tertiary
+                    : (hasOfflinePack
+                          ? Theme.of(context).colorScheme.primary
+                          : null),
+              ),
+              onPressed: offlineActive
+                  ? null
+                  : () async {
+                      await showPrepareOfflinePackDialog(context);
+                    },
             ),
-            onPressed: offlineActive
-                ? null
-                : () async {
-                    await showPrepareOfflinePackDialog(context);
-                  },
-          ),
           IconButton(
             tooltip: mgrsGridEnabled
                 ? l10n.mapMgrsGridHideTooltip
@@ -445,20 +448,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             icon: const Icon(Icons.home),
             onPressed: _goHome,
           ),
-          IconButton(
-            tooltip: l10n.mapAtlasTooltip,
-            icon: _isExportingAtlas
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  )
-                : const Icon(Icons.picture_as_pdf_outlined),
-            onPressed: _isExportingAtlas ? null : _exportMapAtlas,
-          ),
+          if (!kioskActive)
+            IconButton(
+              tooltip: l10n.mapAtlasTooltip,
+              icon: _isExportingAtlas
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  : const Icon(Icons.picture_as_pdf_outlined),
+              onPressed: _isExportingAtlas ? null : _exportMapAtlas,
+            ),
           IconButton(
             tooltip: l10n.mapManualTooltip,
             icon: const Icon(Icons.menu_book_outlined),
@@ -469,14 +473,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               context.push('/manual');
             },
           ),
-          IconButton(
-            tooltip: l10n.mapSettingsTooltip,
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              AppLogger.logNav.info('🧭 Navigating to settings from app bar');
-              context.push('/settings/general');
-            },
-          ),
+          if (!kioskActive)
+            IconButton(
+              tooltip: l10n.mapSettingsTooltip,
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                AppLogger.logNav.info('🧭 Navigating to settings from app bar');
+                context.push('/settings/general');
+              },
+            ),
         ],
       ),
       body: MapObjectSelectionListener(

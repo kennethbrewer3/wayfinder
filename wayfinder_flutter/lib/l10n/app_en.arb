@@ -373,6 +373,73 @@
       }
     }
   },
+  "kioskModeTitle": "Kiosk / viewer mode",
+  "kioskModeDescription": "Turn this laptop into a TOC viewer: hide Settings and create tools, block edits, and use a quieter battery-friendly poll. Use this on spare viewer laptops pointed at your Wayfinder server. For a spare server appliance that must reject all writes, set WAYFINDER_READ_ONLY=1 on the server.",
+  "kioskModeEnter": "Enter kiosk mode",
+  "kioskModeExit": "Exit kiosk",
+  "kioskModeEntered": "Kiosk mode on — this device is view-only.",
+  "kioskModeEnterConfirmTitle": "Enter kiosk mode?",
+  "kioskModeEnterConfirmMessage": "Settings and map editing will be hidden on this device until you exit kiosk mode. Other devices are not affected.",
+  "kioskModeBannerTitle": "Viewer mode",
+  "kioskModeBannerHint": "This laptop is view-only. Pan, zoom, search, and inspect map objects.",
+  "kioskModeBannerServerEnforced": "This Wayfinder server is read-only (WAYFINDER_READ_ONLY). Writes are blocked for every client.",
+  "kioskModeSettingsLockedMessage": "Settings are hidden while this device is in kiosk / viewer mode.",
+  "kioskModeBackToMap": "Back to map",
+  "fieldPackTitle": "Field pack",
+  "fieldPackDescription": "One archive for a spare server or laptop: map objects, custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.",
+  "fieldPackExportButton": "Export field pack",
+  "fieldPackRestoreButton": "Restore field pack",
+  "fieldPackSelectPmtilesTitle": "Include PMTiles",
+  "fieldPackSelectPmtilesMessage": "Choose which map tile archives to include. Large regional files can make the pack several GB.",
+  "fieldPackSelectPmtilesEmpty": "No PMTiles are installed on this server. The pack will include map data and icons only.",
+  "fieldPackSelectAll": "Select all",
+  "fieldPackSelectNone": "Select none",
+  "fieldPackExportConfirm": "Export",
+  "fieldPackExportSuccess": "Field pack saved.",
+  "fieldPackExportFailed": "Field pack export failed: {error}",
+  "@fieldPackExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldPackRestoreConfirmTitle": "Restore field pack?",
+  "fieldPackRestoreConfirmMessage": "This replaces all map data and custom icons on the server, and installs the PMTiles archives from the pack (matching IDs are overwritten). This cannot be undone.",
+  "fieldPackRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {icons} custom icon(s), and {pmtiles} PMTiles archive(s).",
+  "@fieldPackRestoreSuccess": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      },
+      "seasonalOverlays": {
+        "type": "int"
+      },
+      "watchLogEntries": {
+        "type": "int"
+      },
+      "icons": {
+        "type": "int"
+      },
+      "pmtiles": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldPackRestoreFailed": "Field pack restore failed: {error}",
+  "@fieldPackRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "geoExchangeTitle": "GPX / KML / GeoJSON",
   "geoExchangeDescription": "Import waypoints and tracks from GPX, KML, or GeoJSON. When the map already has markers or zones, you can add to them, replace them, or cancel. Export markers as waypoints and lines/tracks as paths.",
   "geoExchangeImportButton": "Import geographic file",
@@ -529,6 +596,7 @@
   "offlineModeBannerReadWriteHint": "Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.",
   "offlineDeleteUnsyncedMarker": "Delete unsynced marker",
   "offlineDeleteSyncedMarkerDisabled": "Only unsynced offline markers can be deleted until the server returns",
+  "offlineGeocodingUnavailable": "Geocoding contributions are unavailable while offline.",
   "offlineModeBannerPending": "{count} change(s) waiting to sync.",
   "@offlineModeBannerPending": {
     "placeholders": {

@@ -38,6 +38,7 @@ import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/marker_form_fields.dart';
 import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
@@ -219,6 +220,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     AppLocalizations l10n,
   ) {
     final offline = ref.watch(offlineModeActiveProvider);
+    final kiosk = ref.watch(kioskModeActiveProvider);
+    final editLocked = offline || kiosk;
     final overlays = ref.watch(seasonalOverlaysProvider).valueOrNull;
     final overlay = overlays == null
         ? null
@@ -245,7 +248,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         color: parseMarkerColor(overlay.borderColor),
         icon: Icons.calendar_month,
       ),
-      onEdit: offline ? null : onEdit,
+      onEdit: editLocked ? null : onEdit,
       l10n: l10n,
       children: [
         _DetailRow(
@@ -316,10 +319,13 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
     final offline = ref.watch(offlineModeActiveProvider);
+    final kiosk = ref.watch(kioskModeActiveProvider);
+    final editLocked = offline || kiosk;
     final pendingCreates =
         ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
         const <String>{};
     final unsyncedOffline = offline && pendingCreates.contains(marker.id.uuid);
+    final canAddToGeocoding = !editLocked && geocodingReachable;
 
     return _DetailsDialogShell(
       title: marker.name,
@@ -330,7 +336,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
         ),
         color: parseMarkerColor(marker.color),
       ),
-      onEdit: offline ? null : onEdit,
+      onEdit: editLocked ? null : onEdit,
       l10n: l10n,
       linkedMarkerId: marker.id,
       shareUrl: shareUrl,
@@ -338,7 +344,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onShowQrCode: () => showMarkerQrDialog(context: context, marker: marker),
       contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
       additionalActions: [
-        if (geocodingReachable)
+        if (canAddToGeocoding)
           TextButton.icon(
             onPressed: () async {
               await submitGeocodingContribution(

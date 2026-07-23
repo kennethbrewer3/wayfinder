@@ -733,6 +733,114 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get kioskModeTitle => 'Modo kiosco / visor';
+
+  @override
+  String get kioskModeDescription =>
+      'Convierte este portátil en un visor TOC: oculta Ajustes y herramientas de creación, bloquea ediciones y usa un sondeo más suave para la batería. Úsalo en portátiles de reserva apuntando a tu servidor Wayfinder. Para un servidor de reserva que deba rechazar todas las escrituras, configura WAYFINDER_READ_ONLY=1 en el servidor.';
+
+  @override
+  String get kioskModeEnter => 'Entrar en modo kiosco';
+
+  @override
+  String get kioskModeExit => 'Salir del kiosco';
+
+  @override
+  String get kioskModeEntered =>
+      'Modo kiosco activado: este dispositivo es de solo lectura.';
+
+  @override
+  String get kioskModeEnterConfirmTitle => '¿Entrar en modo kiosco?';
+
+  @override
+  String get kioskModeEnterConfirmMessage =>
+      'Los ajustes y la edición del mapa se ocultarán en este dispositivo hasta que salgas del modo kiosco. Otros dispositivos no se ven afectados.';
+
+  @override
+  String get kioskModeBannerTitle => 'Modo visor';
+
+  @override
+  String get kioskModeBannerHint =>
+      'Este portátil es de solo lectura. Puedes desplazar, ampliar, buscar e inspeccionar objetos del mapa.';
+
+  @override
+  String get kioskModeBannerServerEnforced =>
+      'Este servidor Wayfinder está en solo lectura (WAYFINDER_READ_ONLY). Las escrituras están bloqueadas para todos los clientes.';
+
+  @override
+  String get kioskModeSettingsLockedMessage =>
+      'Los ajustes están ocultos mientras este dispositivo está en modo kiosco / visor.';
+
+  @override
+  String get kioskModeBackToMap => 'Volver al mapa';
+
+  @override
+  String get fieldPackTitle => 'Paquete de campo';
+
+  @override
+  String get fieldPackDescription =>
+      'Un archivo para un servidor o portátil de reserva: objetos del mapa, iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.';
+
+  @override
+  String get fieldPackExportButton => 'Exportar paquete de campo';
+
+  @override
+  String get fieldPackRestoreButton => 'Restaurar paquete de campo';
+
+  @override
+  String get fieldPackSelectPmtilesTitle => 'Incluir PMTiles';
+
+  @override
+  String get fieldPackSelectPmtilesMessage =>
+      'Elige qué archivos de teselas incluir. Los archivos regionales grandes pueden hacer que el paquete ocupe varios GB.';
+
+  @override
+  String get fieldPackSelectPmtilesEmpty =>
+      'No hay PMTiles instalados en este servidor. El paquete incluirá solo datos del mapa e iconos.';
+
+  @override
+  String get fieldPackSelectAll => 'Seleccionar todo';
+
+  @override
+  String get fieldPackSelectNone => 'Seleccionar ninguno';
+
+  @override
+  String get fieldPackExportConfirm => 'Exportar';
+
+  @override
+  String get fieldPackExportSuccess => 'Paquete de campo guardado.';
+
+  @override
+  String fieldPackExportFailed(String error) {
+    return 'Error al exportar el paquete de campo: $error';
+  }
+
+  @override
+  String get fieldPackRestoreConfirmTitle => '¿Restaurar paquete de campo?';
+
+  @override
+  String get fieldPackRestoreConfirmMessage =>
+      'Esto reemplaza todos los datos del mapa e iconos personalizados en el servidor e instala los archivos PMTiles del paquete (los IDs coincidentes se sobrescriben). Esta acción no se puede deshacer.';
+
+  @override
+  String fieldPackRestoreSuccess(
+    int layers,
+    int markers,
+    int zones,
+    int seasonalOverlays,
+    int watchLogEntries,
+    int icons,
+    int pmtiles,
+  ) {
+    return 'Restauradas $layers capa(s), $markers marcador(es), $zones zona(s), $seasonalOverlays capa(s) estacional(es), $watchLogEntries entrada(s) del registro, $icons icono(s) personalizado(s) y $pmtiles archivo(s) PMTiles.';
+  }
+
+  @override
+  String fieldPackRestoreFailed(String error) {
+    return 'Error al restaurar el paquete de campo: $error';
+  }
+
+  @override
   String get geoExchangeTitle => 'GPX / KML / GeoJSON';
 
   @override
@@ -993,6 +1101,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get offlineDeleteSyncedMarkerDisabled =>
       'Solo se pueden borrar marcadores sin sincronizar hasta que vuelva el servidor';
+
+  @override
+  String get offlineGeocodingUnavailable =>
+      'Las contribuciones de geocodificación no están disponibles sin conexión.';
 
   @override
   String offlineModeBannerPending(int count) {

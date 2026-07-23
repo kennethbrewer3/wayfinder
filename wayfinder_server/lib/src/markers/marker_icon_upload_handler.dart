@@ -3,7 +3,9 @@ import 'dart:typed_data';
 
 import 'package:serverpod/serverpod.dart';
 
+import '../core/read_only_mode.dart';
 import '../generated/protocol.dart';
+import '../web/rest/rest_json.dart';
 import 'marker_icon_category_service.dart';
 import 'marker_icon_key.dart';
 import 'marker_icon_storage.dart';
@@ -18,6 +20,14 @@ Future<Result> handleMarkerIconSvgUpload(
 ) async {
   if (request.method == Method.options) {
     return Response.ok(headers: Headers.empty());
+  }
+
+  if (ReadOnlyMode.enabled) {
+    return RestJson.error(
+      403,
+      'Server is in read-only / kiosk mode. '
+      'Unset WAYFINDER_READ_ONLY to allow writes.',
+    );
   }
 
   try {

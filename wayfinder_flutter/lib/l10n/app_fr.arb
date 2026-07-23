@@ -303,6 +303,73 @@
       }
     }
   },
+  "kioskModeTitle": "Mode kiosque / visionneuse",
+  "kioskModeDescription": "Transformez ce portable en visionneuse TOC : masquez Réglages et outils de création, bloquez les modifications et utilisez une interrogation plus douce pour la batterie. À utiliser sur les portables de secours pointés vers votre serveur Wayfinder. Pour un serveur de secours qui doit refuser toutes les écritures, définissez WAYFINDER_READ_ONLY=1 sur le serveur.",
+  "kioskModeEnter": "Entrer en mode kiosque",
+  "kioskModeExit": "Quitter le kiosque",
+  "kioskModeEntered": "Mode kiosque activé — cet appareil est en lecture seule.",
+  "kioskModeEnterConfirmTitle": "Entrer en mode kiosque ?",
+  "kioskModeEnterConfirmMessage": "Les réglages et l'édition de la carte seront masqués sur cet appareil jusqu'à ce que vous quittiez le mode kiosque. Les autres appareils ne sont pas affectés.",
+  "kioskModeBannerTitle": "Mode visionneuse",
+  "kioskModeBannerHint": "Ce portable est en lecture seule. Vous pouvez déplacer, zoomer, rechercher et inspecter les objets de la carte.",
+  "kioskModeBannerServerEnforced": "Ce serveur Wayfinder est en lecture seule (WAYFINDER_READ_ONLY). Les écritures sont bloquées pour tous les clients.",
+  "kioskModeSettingsLockedMessage": "Les réglages sont masqués tant que cet appareil est en mode kiosque / visionneuse.",
+  "kioskModeBackToMap": "Retour à la carte",
+  "fieldPackTitle": "Pack terrain",
+  "fieldPackDescription": "Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques, icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu'à mettre des tuiles en cache sur cet appareil.",
+  "fieldPackExportButton": "Exporter le pack terrain",
+  "fieldPackRestoreButton": "Restaurer le pack terrain",
+  "fieldPackSelectPmtilesTitle": "Inclure les PMTiles",
+  "fieldPackSelectPmtilesMessage": "Choisissez les archives de tuiles à inclure. Les gros fichiers régionaux peuvent rendre le pack de plusieurs Go.",
+  "fieldPackSelectPmtilesEmpty": "Aucun PMTiles n'est installé sur ce serveur. Le pack n'inclura que les données cartographiques et les icônes.",
+  "fieldPackSelectAll": "Tout sélectionner",
+  "fieldPackSelectNone": "Ne rien sélectionner",
+  "fieldPackExportConfirm": "Exporter",
+  "fieldPackExportSuccess": "Pack terrain enregistré.",
+  "fieldPackExportFailed": "Échec de l'exportation du pack terrain : {error}",
+  "@fieldPackExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldPackRestoreConfirmTitle": "Restaurer le pack terrain ?",
+  "fieldPackRestoreConfirmMessage": "Cela remplace toutes les données cartographiques et icônes personnalisées sur le serveur, et installe les archives PMTiles du pack (les identifiants correspondants sont écrasés). Cette action est irréversible.",
+  "fieldPackRestoreSuccess": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s), {watchLogEntries} entrée(s) du journal, {icons} icône(s) personnalisée(s) et {pmtiles} archive(s) PMTiles restauré(s).",
+  "@fieldPackRestoreSuccess": {
+    "placeholders": {
+      "layers": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      },
+      "zones": {
+        "type": "int"
+      },
+      "seasonalOverlays": {
+        "type": "int"
+      },
+      "watchLogEntries": {
+        "type": "int"
+      },
+      "icons": {
+        "type": "int"
+      },
+      "pmtiles": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldPackRestoreFailed": "Échec de la restauration du pack terrain : {error}",
+  "@fieldPackRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "geoExchangeTitle": "GPX / KML / GeoJSON",
   "geoExchangeDescription": "Importez des waypoints et traces depuis GPX, KML ou GeoJSON. Si la carte a déjà des marqueurs ou zones, vous pouvez les conserver, les remplacer ou annuler. Exportez les marqueurs en waypoints et les lignes/traces en chemins.",
   "geoExchangeImportButton": "Importer un fichier géographique",
@@ -430,6 +497,7 @@
   "offlineModeBannerReadWriteHint": "Affichage des calques du pack. Vous pouvez ajouter des marqueurs, changer leur calque, supprimer les marqueurs non synchronisés, enregistrer des traces GPS et ajouter des entrées du journal de veille.",
   "offlineDeleteUnsyncedMarker": "Supprimer le marqueur non synchronisé",
   "offlineDeleteSyncedMarkerDisabled": "Seuls les marqueurs hors ligne non synchronisés peuvent être supprimés tant que le serveur est absent",
+  "offlineGeocodingUnavailable": "Les contributions de géocodage sont indisponibles hors ligne.",
   "offlineModeBannerPending": "{count} modification(s) en attente de synchronisation.",
   "mapTilesGetMapsTitle": "Obtenir des cartes",
   "mapTilesGetMapsDescription": "Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder télécharge ou extrait le fichier — gardez cette boîte de dialogue ouverte jusqu'à la fin.",

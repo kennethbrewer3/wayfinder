@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../../core/read_only_mode.dart';
 import '../../generated/protocol.dart';
 import '../../pmtiles/pmtiles_storage.dart';
 import 'rest_json.dart';
@@ -48,18 +49,23 @@ abstract final class HealthRestHandlers {
         request.url.queryParameters['verbose'] == '1';
 
     if (healthy && !includeDetails) {
-      return RestJson.ok(true);
+      return RestJson.ok({
+        'healthy': true,
+        'readOnly': ReadOnlyMode.enabled,
+      });
     }
 
     if (healthy) {
       return RestJson.ok({
         'healthy': true,
+        'readOnly': ReadOnlyMode.enabled,
         'checks': checks,
       });
     }
 
     return RestJson.serviceUnavailable({
       'healthy': false,
+      'readOnly': ReadOnlyMode.enabled,
       'checks': checks,
     });
   }

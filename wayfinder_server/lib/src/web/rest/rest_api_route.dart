@@ -2,7 +2,9 @@ import 'package:serverpod/serverpod.dart';
 
 import 'app_settings_rest_handlers.dart';
 import 'categories_rest_handlers.dart';
+import 'field_pack_rest_handlers.dart';
 import 'health_rest_handlers.dart';
+import 'status_rest_handlers.dart';
 import 'layers_rest_handlers.dart';
 import 'map_data_rest_handlers.dart';
 import 'markers_rest_handlers.dart';
@@ -23,6 +25,7 @@ class RestApiRoute extends Route {
     router
       ..get('/', _index)
       ..get('/health', HealthRestHandlers.check)
+      ..get('/status', StatusRestHandlers.get)
       ..get('/markers', MarkersRestHandlers.list)
       ..get('/markers/:id', MarkersRestHandlers.get)
       ..post('/markers', MarkersRestHandlers.create)
@@ -65,6 +68,8 @@ class RestApiRoute extends Route {
       ..get('/map-data/backup.zip', MapDataRestHandlers.exportArchive)
       ..post('/map-data/restore', MapDataRestHandlers.restore)
       ..post('/map-data/backup.zip', MapDataRestHandlers.restoreArchive)
+      ..post('/field-pack/export', FieldPackRestHandlers.export)
+      ..post('/field-pack', FieldPackRestHandlers.restore)
       ..get('/pmtiles', PmtilesRestHandlers.list)
       ..post('/pmtiles/import-url', PmtilesRestHandlers.importUrl)
       ..post('/pmtiles/extract-dem', PmtilesRestHandlers.extractDem)
@@ -127,6 +132,7 @@ class RestApiRoute extends Route {
       'name': 'Wayfinder REST API',
       'resources': {
         'health': '/api/health',
+        'status': '/api/status',
         'markers': '/api/markers',
         'zones': '/api/zones',
         'categories': '/api/categories',
@@ -137,6 +143,8 @@ class RestApiRoute extends Route {
         'mapDataBackupZip': '/api/map-data/backup.zip',
         'mapDataRestore': '/api/map-data/restore',
         'mapDataRestoreZip': '/api/map-data/backup.zip',
+        'fieldPackExport': '/api/field-pack/export',
+        'fieldPackRestore': '/api/field-pack',
         'pmtiles': '/api/pmtiles',
         'pmtilesUpload': '/api/pmtiles/upload?name=<file.pmtiles>',
         'pmtilesImportUrl': '/api/pmtiles/import-url',

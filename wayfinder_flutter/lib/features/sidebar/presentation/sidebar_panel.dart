@@ -48,6 +48,7 @@ import '../../markers/models/marker_radio.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
@@ -1138,11 +1139,14 @@ class _MarkerListTile extends ConsumerWidget {
             if (radio.mode != MarkerRadioMode.other)
               markerRadioModeLabel(l10n, radio.mode),
           ].join(' · ');
+    final kiosk = ref.watch(kioskModeActiveProvider);
     final offline = ref.watch(offlineModeActiveProvider);
+    final mutationsLocked = kiosk || offline;
     final pendingCreates =
         ref.watch(offlinePendingCreateMarkerIdsProvider).valueOrNull ??
         const <String>{};
-    final unsyncedOffline = offline && pendingCreates.contains(marker.id.uuid);
+    final unsyncedOffline =
+        !kiosk && offline && pendingCreates.contains(marker.id.uuid);
 
     return ColoredBox(
       color: _selectionHighlightColor(theme, isSelected),
@@ -1221,7 +1225,7 @@ class _MarkerListTile extends ConsumerWidget {
                 icon: marker.visible ? Icons.visibility : Icons.visibility_off,
                 toggled: marker.visible,
                 isToggle: true,
-                onPressed: offline
+                onPressed: mutationsLocked
                     ? null
                     : () async {
                         final client = ref.read(serverClientProvider);
@@ -1234,7 +1238,7 @@ class _MarkerListTile extends ConsumerWidget {
               _MapObjectIconAction(
                 tooltip: l10n.sidebarEditMarker,
                 icon: Icons.edit_outlined,
-                onPressed: offline
+                onPressed: mutationsLocked
                     ? null
                     : () => updateMarkerFromForm(
                         context: context,
@@ -1243,13 +1247,13 @@ class _MarkerListTile extends ConsumerWidget {
                       ),
               ),
               _MapObjectIconAction(
-                tooltip: offline
+                tooltip: mutationsLocked
                     ? (unsyncedOffline
                           ? l10n.offlineDeleteUnsyncedMarker
                           : l10n.offlineDeleteSyncedMarkerDisabled)
                     : l10n.sidebarDeleteMarker,
                 icon: Icons.delete_outline,
-                onPressed: offline
+                onPressed: mutationsLocked
                     ? (unsyncedOffline
                           ? () async {
                               final deleted = await ref
@@ -2587,6 +2591,8 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
     final showInactive = ref.watch(showInactiveSeasonalOverlaysProvider);
     final selected = ref.watch(selectedMapObjectProvider);
     final offline = ref.watch(offlineModeActiveProvider);
+    final kiosk = ref.watch(kioskModeActiveProvider);
+    final mutationsLocked = kiosk || offline;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -2658,7 +2664,7 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
                         tooltip: overlay.visible
                             ? l10n.seasonalOverlayHide
                             : l10n.seasonalOverlayShow,
-                        onPressed: offline
+                        onPressed: mutationsLocked
                             ? null
                             : () {
                                 unawaited(
@@ -2676,7 +2682,7 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
                       ),
                       IconButton(
                         tooltip: l10n.actionEdit,
-                        onPressed: offline
+                        onPressed: mutationsLocked
                             ? null
                             : () {
                                 unawaited(

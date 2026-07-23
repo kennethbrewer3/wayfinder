@@ -12,7 +12,10 @@ abstract final class RestApiAuth {
     }
 
     final path = _normalizedPath(request);
-    return path == '/api' || path == '/api/' || path == '/api/health';
+    return path == '/api' ||
+        path == '/api/' ||
+        path == '/api/health' ||
+        path == '/api/status';
   }
 
   static String? extractCredential(Request request) {

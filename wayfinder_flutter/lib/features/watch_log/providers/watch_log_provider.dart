@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
@@ -63,6 +64,9 @@ class WatchLogEntriesNotifier extends AsyncNotifier<List<WatchLogEntry>> {
   }
 
   Future<WatchLogEntry> create(WatchLogEntry entry) async {
+    if (ref.read(kioskModeActiveProvider)) {
+      throw StateError('Watch log creates are not available in kiosk mode.');
+    }
     if (ref.read(offlineModeActiveProvider)) {
       await ref.read(offlinePackControllerProvider).enqueueWatchLog(entry);
       await reload();
@@ -76,6 +80,9 @@ class WatchLogEntriesNotifier extends AsyncNotifier<List<WatchLogEntry>> {
   }
 
   Future<WatchLogEntry> updateEntry(WatchLogEntry entry) async {
+    if (ref.read(kioskModeActiveProvider)) {
+      throw StateError('Watch log edits are not available in kiosk mode.');
+    }
     if (ref.read(offlineModeActiveProvider)) {
       throw StateError('Watch log edits are not available offline.');
     }
@@ -87,6 +94,9 @@ class WatchLogEntriesNotifier extends AsyncNotifier<List<WatchLogEntry>> {
   }
 
   Future<void> delete(UuidValue id) async {
+    if (ref.read(kioskModeActiveProvider)) {
+      throw StateError('Watch log deletes are not available in kiosk mode.');
+    }
     if (ref.read(offlineModeActiveProvider)) {
       throw StateError('Watch log deletes are not available offline.');
     }

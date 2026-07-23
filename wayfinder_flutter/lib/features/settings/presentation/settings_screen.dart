@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../settings_tab.dart';
 import 'settings_about_tab.dart';
 import 'settings_backup_tab.dart';
@@ -80,6 +81,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final kiosk = ref.watch(kioskModeActiveProvider);
+    final serverEnforced = ref.watch(kioskModeServerEnforcedProvider);
+
+    if (kiosk) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.kioskModeBannerTitle),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/maps'),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Icon(
+                Icons.desktop_windows_outlined,
+                size: 48,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                serverEnforced
+                    ? l10n.kioskModeBannerServerEnforced
+                    : l10n.kioskModeSettingsLockedMessage,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 24),
+              if (!serverEnforced)
+                FilledButton.icon(
+                  onPressed: () async {
+                    await ref
+                        .read(localKioskModeProvider.notifier)
+                        .setEnabled(false);
+                    if (context.mounted) {
+                      context.go('/maps');
+                    }
+                  },
+                  icon: const Icon(Icons.lock_open),
+                  label: Text(l10n.kioskModeExit),
+                ),
+              const SizedBox(height: 12),
+              OutlinedButton(
+                onPressed: () => context.go('/maps'),
+                child: Text(l10n.kioskModeBackToMap),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(

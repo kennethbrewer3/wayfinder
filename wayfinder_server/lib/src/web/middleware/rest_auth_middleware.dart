@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../../core/read_only_mode.dart';
 import '../rest/rest_api_auth.dart';
 import '../rest/rest_json.dart';
 
@@ -7,11 +8,26 @@ import '../rest/rest_json.dart';
 class RestAuthMiddleware extends MiddlewareObject {
   const RestAuthMiddleware();
 
+  static const _mutatingMethods = {
+    Method.post,
+    Method.put,
+    Method.patch,
+    Method.delete,
+  };
+
   @override
   Handler call(Handler next) {
     return (Request request) async {
       if (RestApiAuth.isPublicRequest(request)) {
         return next(request);
+      }
+
+      if (ReadOnlyMode.enabled && _mutatingMethods.contains(request.method)) {
+        return RestJson.error(
+          403,
+          'Server is in read-only / kiosk mode. '
+          'Unset WAYFINDER_READ_ONLY to allow writes.',
+        );
       }
 
       final session = await request.session;

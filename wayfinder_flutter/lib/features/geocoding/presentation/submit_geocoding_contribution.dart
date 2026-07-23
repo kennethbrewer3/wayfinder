@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../data/geocoding_repository.dart';
 import '../providers/geocoding_providers.dart';
 
@@ -17,6 +18,12 @@ Future<bool> submitGeocodingContribution({
   String? notes,
 }) async {
   final l10n = AppLocalizations.of(context)!;
+  if (ref.read(offlineModeActiveProvider)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.offlineGeocodingUnavailable)),
+    );
+    return false;
+  }
   final trimmedName = name.trim();
   if (trimmedName.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(

@@ -71,6 +71,8 @@ services:
       SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: "${SERVERPOD_WEB_SERVER_PUBLIC_SCHEME:-http}"
       WAYFINDER_PMTILES_STORAGE: /data/pmtiles
       WAYFINDER_MARKER_ICON_STORAGE: /data/marker-icons
+      # Optional: spare TOC viewer appliance (rejects all writes when "1" / "true")
+      WAYFINDER_READ_ONLY: "${WAYFINDER_READ_ONLY:-}"
     volumes:
       - ${WAYFINDER_PMTILES_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/pmtiles}:/data/pmtiles${WAYFINDER_PMTILES_MOUNT_OPTIONS:-}
       - ${WAYFINDER_MARKER_ICON_HOST_PATH:-${WAYFINDER_DATA_PATH:-./storage/data}/marker-icons}:/data/marker-icons

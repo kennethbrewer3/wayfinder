@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
 
+import '../core/read_only_mode.dart';
 import '../core/wayfinder_log.dart';
 import '../generated/protocol.dart';
+import '../web/rest/rest_json.dart';
 import 'pmtiles_header_bounds.dart';
 import 'pmtiles_storage.dart';
 
@@ -19,6 +21,10 @@ abstract final class PmtilesChunkedUpload {
   static Future<Result> init(Session session, Request request) async {
     if (request.method == Method.options) {
       return Response.ok(headers: Headers.empty());
+    }
+    final denied = _rejectIfReadOnly();
+    if (denied != null) {
+      return denied;
     }
 
     final name = _readName(request);
@@ -65,6 +71,10 @@ abstract final class PmtilesChunkedUpload {
   static Future<Result> chunk(Session session, Request request) async {
     if (request.method == Method.options) {
       return Response.ok(headers: Headers.empty());
+    }
+    final denied = _rejectIfReadOnly();
+    if (denied != null) {
+      return denied;
     }
 
     final uploadId = request.queryParameters.raw['uploadId']?.trim();
@@ -147,6 +157,10 @@ abstract final class PmtilesChunkedUpload {
   static Future<Result> complete(Session session, Request request) async {
     if (request.method == Method.options) {
       return Response.ok(headers: Headers.empty());
+    }
+    final denied = _rejectIfReadOnly();
+    if (denied != null) {
+      return denied;
     }
 
     final uploadId = request.queryParameters.raw['uploadId']?.trim();
@@ -238,6 +252,17 @@ abstract final class PmtilesChunkedUpload {
       return;
     }
     await PmtilesStorage().delete(active.storageId);
+  }
+
+  static Result? _rejectIfReadOnly() {
+    if (!ReadOnlyMode.enabled) {
+      return null;
+    }
+    return RestJson.error(
+      403,
+      'Server is in read-only / kiosk mode. '
+      'Unset WAYFINDER_READ_ONLY to allow writes.',
+    );
   }
 
   static String? _readName(Request request) {

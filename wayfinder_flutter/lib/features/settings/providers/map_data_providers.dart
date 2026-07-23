@@ -21,10 +21,15 @@ import '../../watch_log/providers/watch_log_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/pmtiles_providers.dart';
+import '../data/field_pack_repository.dart';
 import '../data/map_data_repository.dart';
 
 final mapDataRepositoryProvider = Provider<MapDataRepository>(
   (ref) => MapDataRepository(client: ref.watch(serverClientProvider)),
+);
+
+final fieldPackRepositoryProvider = Provider<FieldPackRepository>(
+  (ref) => FieldPackRepository(),
 );
 
 void refreshMapData(WidgetRef ref) {

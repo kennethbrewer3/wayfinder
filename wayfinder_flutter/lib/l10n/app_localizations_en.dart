@@ -724,6 +724,113 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get kioskModeTitle => 'Kiosk / viewer mode';
+
+  @override
+  String get kioskModeDescription =>
+      'Turn this laptop into a TOC viewer: hide Settings and create tools, block edits, and use a quieter battery-friendly poll. Use this on spare viewer laptops pointed at your Wayfinder server. For a spare server appliance that must reject all writes, set WAYFINDER_READ_ONLY=1 on the server.';
+
+  @override
+  String get kioskModeEnter => 'Enter kiosk mode';
+
+  @override
+  String get kioskModeExit => 'Exit kiosk';
+
+  @override
+  String get kioskModeEntered => 'Kiosk mode on — this device is view-only.';
+
+  @override
+  String get kioskModeEnterConfirmTitle => 'Enter kiosk mode?';
+
+  @override
+  String get kioskModeEnterConfirmMessage =>
+      'Settings and map editing will be hidden on this device until you exit kiosk mode. Other devices are not affected.';
+
+  @override
+  String get kioskModeBannerTitle => 'Viewer mode';
+
+  @override
+  String get kioskModeBannerHint =>
+      'This laptop is view-only. Pan, zoom, search, and inspect map objects.';
+
+  @override
+  String get kioskModeBannerServerEnforced =>
+      'This Wayfinder server is read-only (WAYFINDER_READ_ONLY). Writes are blocked for every client.';
+
+  @override
+  String get kioskModeSettingsLockedMessage =>
+      'Settings are hidden while this device is in kiosk / viewer mode.';
+
+  @override
+  String get kioskModeBackToMap => 'Back to map';
+
+  @override
+  String get fieldPackTitle => 'Field pack';
+
+  @override
+  String get fieldPackDescription =>
+      'One archive for a spare server or laptop: map objects, custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
+
+  @override
+  String get fieldPackExportButton => 'Export field pack';
+
+  @override
+  String get fieldPackRestoreButton => 'Restore field pack';
+
+  @override
+  String get fieldPackSelectPmtilesTitle => 'Include PMTiles';
+
+  @override
+  String get fieldPackSelectPmtilesMessage =>
+      'Choose which map tile archives to include. Large regional files can make the pack several GB.';
+
+  @override
+  String get fieldPackSelectPmtilesEmpty =>
+      'No PMTiles are installed on this server. The pack will include map data and icons only.';
+
+  @override
+  String get fieldPackSelectAll => 'Select all';
+
+  @override
+  String get fieldPackSelectNone => 'Select none';
+
+  @override
+  String get fieldPackExportConfirm => 'Export';
+
+  @override
+  String get fieldPackExportSuccess => 'Field pack saved.';
+
+  @override
+  String fieldPackExportFailed(String error) {
+    return 'Field pack export failed: $error';
+  }
+
+  @override
+  String get fieldPackRestoreConfirmTitle => 'Restore field pack?';
+
+  @override
+  String get fieldPackRestoreConfirmMessage =>
+      'This replaces all map data and custom icons on the server, and installs the PMTiles archives from the pack (matching IDs are overwritten). This cannot be undone.';
+
+  @override
+  String fieldPackRestoreSuccess(
+    int layers,
+    int markers,
+    int zones,
+    int seasonalOverlays,
+    int watchLogEntries,
+    int icons,
+    int pmtiles,
+  ) {
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), $icons custom icon(s), and $pmtiles PMTiles archive(s).';
+  }
+
+  @override
+  String fieldPackRestoreFailed(String error) {
+    return 'Field pack restore failed: $error';
+  }
+
+  @override
   String get geoExchangeTitle => 'GPX / KML / GeoJSON';
 
   @override
@@ -981,6 +1088,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offlineDeleteSyncedMarkerDisabled =>
       'Only unsynced offline markers can be deleted until the server returns';
+
+  @override
+  String get offlineGeocodingUnavailable =>
+      'Geocoding contributions are unavailable while offline.';
 
   @override
   String offlineModeBannerPending(int count) {

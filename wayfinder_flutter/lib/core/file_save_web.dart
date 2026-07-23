@@ -119,3 +119,20 @@ Future<Uint8List?> pickTidePackFile() async {
   }
   return Uint8List.fromList(bytes);
 }
+
+/// Picks a `.wayfinder-field` or `.zip` field pack archive from local storage.
+Future<Uint8List?> pickFieldPackFile() async {
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: const ['wayfinder-field', 'zip'],
+    withData: true,
+  );
+  if (result == null || result.files.isEmpty) {
+    return null;
+  }
+  final bytes = result.files.single.bytes;
+  if (bytes == null) {
+    return null;
+  }
+  return Uint8List.fromList(bytes);
+}

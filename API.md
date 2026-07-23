@@ -48,7 +48,9 @@ Errors return JSON with an `error` message:
 
 ### Authentication
 
-When a REST API key is configured, all endpoints except `GET /api/` and `GET /api/health` require authentication.
+When a REST API key is configured, all endpoints except `GET /api/`, `GET /api/health`, and `GET /api/status` require authentication.
+
+When `WAYFINDER_READ_ONLY=1` is set on the server, mutating methods (`POST` / `PUT` / `PATCH` / `DELETE`) return HTTP **403**.
 
 Send the key using either header:
 
@@ -82,19 +84,26 @@ Use this endpoint for load balancers, uptime monitors, and cron scripts.
 
 ```bash
 curl http://localhost:18082/api/health
+curl http://localhost:18082/api/status
 ```
 
-When the server and its dependencies are healthy, the response is HTTP **200** with the JSON boolean:
+When the server and its dependencies are healthy, `/api/health` responds HTTP **200** with:
 
 ```json
-true
+{
+  "healthy": true,
+  "readOnly": false
+}
 ```
 
-When a dependency check fails, the response is HTTP **503** with diagnostic details:
+`GET /api/status` always returns the same `healthy` / `readOnly` pair (for kiosk clients).
+
+When a dependency check fails, `/api/health` responds HTTP **503** with diagnostic details:
 
 ```json
 {
   "healthy": false,
+  "readOnly": false,
   "checks": {
     "database": {
       "ok": false,
@@ -826,7 +835,8 @@ curl -X DELETE http://localhost:18082/api/marker-icon-categories/aviation
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/` | API index |
-| GET | `/api/health` | Server health check |
+| GET | `/api/health` | Server health check (`healthy`, `readOnly`) |
+| GET | `/api/status` | Lightweight status (`healthy`, `readOnly`) |
 | GET | `/api/markers` | List markers |
 | GET | `/api/markers/:id` | Get marker |
 | POST | `/api/markers` | Create marker |

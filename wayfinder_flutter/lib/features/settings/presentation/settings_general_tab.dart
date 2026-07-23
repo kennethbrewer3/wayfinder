@@ -33,6 +33,7 @@ import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../polygons/providers/polygon_angle_snap_provider.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
@@ -334,9 +335,68 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       }
     });
 
+    final serverReadOnly = ref.watch(serverReadOnlyProvider);
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        Text(
+          l10n.kioskModeTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.kioskModeDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        if (serverReadOnly) ...[
+          const SizedBox(height: 12),
+          Text(
+            l10n.kioskModeBannerServerEnforced,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ] else ...[
+          const SizedBox(height: 12),
+          FilledButton.tonalIcon(
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(l10n.kioskModeEnterConfirmTitle),
+                    content: Text(l10n.kioskModeEnterConfirmMessage),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(l10n.actionCancel),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text(l10n.kioskModeEnter),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (confirmed != true || !mounted) {
+                return;
+              }
+              await ref.read(localKioskModeProvider.notifier).setEnabled(true);
+              if (!mounted) {
+                return;
+              }
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.kioskModeEntered)),
+              );
+            },
+            icon: const Icon(Icons.desktop_windows_outlined),
+            label: Text(l10n.kioskModeEnter),
+          ),
+        ],
+        const SizedBox(height: 32),
         Text(
           l10n.settingsLanguageTitle,
           style: Theme.of(context).textTheme.titleLarge,

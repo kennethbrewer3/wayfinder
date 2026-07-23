@@ -473,6 +473,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Coordinates and zoom for the home button on the map. Stored on the server so all clients share the same home location. Also used as the starting view when no previous map position is saved.';
 
   @override
+  String get settingsMapHomePermissionDenied =>
+      'You do not have permission to change the shared map home location.';
+
+  @override
   String get settingsLatitude => 'Latitude';
 
   @override
@@ -501,6 +505,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsServerConnectionDescription =>
       'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2). Restart the app after changing this.';
+
+  @override
+  String get settingsServerConnectionPermissionDenied =>
+      'You do not have permission to change this device\'s Wayfinder server URL.';
 
   @override
   String get settingsServerUrl => 'Server URL';
@@ -598,7 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMapDisplayDescription =>
-      'Map overlays stored on the server.';
+      'Compass rose and MGRS grid for your account. Saved to your account so it follows you on any workstation.';
 
   @override
   String get settingsMapCompassRoseTitle => 'Show compass rose';
@@ -613,6 +621,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsMapMgrsGridDescription =>
       'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.';
+
+  @override
+  String get settingsMapZoomRangeTitle => 'Map zoom range';
+
+  @override
+  String get settingsMapZoomRangeDescription =>
+      'Shared minimum and maximum zoom for all clients. Stored on the server. Raising the maximum can hurt performance if offline tiles do not cover those levels.';
+
+  @override
+  String get settingsMapZoomRangePermissionDenied =>
+      'You do not have permission to change the shared map zoom range.';
 
   @override
   String get settingsMapZoomRangeWarning =>
@@ -656,7 +675,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMapMarkerSizeDescription =>
-      'Adjust how large markers appear on the map. Included in server backups.';
+      'Adjust how large markers appear on the map. Saved to your account so it follows you on any workstation.';
 
   @override
   String settingsMapMarkerSizeValue(int percent) {

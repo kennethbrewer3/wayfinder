@@ -928,6 +928,12 @@ abstract class AppLocalizations {
   /// **'Coordinates and zoom for the home button on the map. Stored on the server so all clients share the same home location. Also used as the starting view when no previous map position is saved.'**
   String get settingsMapHomeDescription;
 
+  /// No description provided for @settingsMapHomePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to change the shared map home location.'**
+  String get settingsMapHomePermissionDenied;
+
   /// No description provided for @settingsLatitude.
   ///
   /// In en, this message translates to:
@@ -981,6 +987,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2). Restart the app after changing this.'**
   String get settingsServerConnectionDescription;
+
+  /// No description provided for @settingsServerConnectionPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to change this device\'s Wayfinder server URL.'**
+  String get settingsServerConnectionPermissionDenied;
 
   /// No description provided for @settingsServerUrl.
   ///
@@ -1153,7 +1165,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapDisplayDescription.
   ///
   /// In en, this message translates to:
-  /// **'Map overlays stored on the server.'**
+  /// **'Compass rose and MGRS grid for your account. Saved to your account so it follows you on any workstation.'**
   String get settingsMapDisplayDescription;
 
   /// No description provided for @settingsMapCompassRoseTitle.
@@ -1179,6 +1191,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.'**
   String get settingsMapMgrsGridDescription;
+
+  /// No description provided for @settingsMapZoomRangeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map zoom range'**
+  String get settingsMapZoomRangeTitle;
+
+  /// No description provided for @settingsMapZoomRangeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared minimum and maximum zoom for all clients. Stored on the server. Raising the maximum can hurt performance if offline tiles do not cover those levels.'**
+  String get settingsMapZoomRangeDescription;
+
+  /// No description provided for @settingsMapZoomRangePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to change the shared map zoom range.'**
+  String get settingsMapZoomRangePermissionDenied;
 
   /// No description provided for @settingsMapZoomRangeWarning.
   ///
@@ -1249,7 +1279,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapMarkerSizeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Adjust how large markers appear on the map. Included in server backups.'**
+  /// **'Adjust how large markers appear on the map. Saved to your account so it follows you on any workstation.'**
   String get settingsMapMarkerSizeDescription;
 
   /// No description provided for @settingsMapMarkerSizeValue.

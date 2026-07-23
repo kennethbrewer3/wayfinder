@@ -107,6 +107,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       onSuccess: (settings) =>
           'lat=${settings.homeLatitude} lng=${settings.homeLongitude} '
           'zoom=${settings.homeZoom}',
+      requiredPermission: WayfinderPermission.manageMapHome,
     );
   }
 
@@ -126,6 +127,36 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           ),
         );
       },
+      requiredPermission: WayfinderPermission.manageMapHome,
+    );
+  }
+
+  Future<AppSettings> updateMapZoomRange(
+    Session session,
+    double mapMinZoom,
+    double mapMaxZoom,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'updateMapZoomRange',
+      () async {
+        AppSettingsStore.validateMapZoomRange(
+          mapMinZoom: mapMinZoom,
+          mapMaxZoom: mapMaxZoom,
+        );
+        final settings = await AppSettingsStore.getOrCreate(session);
+        return AppSettingsStore.update(
+          session,
+          settings.copyWith(
+            mapMinZoom: mapMinZoom,
+            mapMaxZoom: mapMaxZoom,
+          ),
+        );
+      },
+      onSuccess: (settings) =>
+          'min=${settings.mapMinZoom} max=${settings.mapMaxZoom}',
+      requiredPermission: WayfinderPermission.manageMapZoom,
     );
   }
 
@@ -180,7 +211,10 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
       _tag,
       'updateClientPreferences',
       () async {
-        AppSettingsStore.validateClientPreferences(
+        // Shared TOC defaults for open/bootstrap mode and legacy clients.
+        // Zoom range is intentionally ignored here — use [updateMapZoomRange]
+        // (requires manage_map_zoom).
+        AppSettingsStore.validatePersonalClientPreferences(
           measurementUnits: measurementUnits,
           angleDisplayFormat: angleDisplayFormat,
           bearingReference: bearingReference,
@@ -188,12 +222,9 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           appTheme: appTheme,
           appLocale: appLocale,
           mapMarkerSizeScale: mapMarkerSizeScale,
-          mapViewportDebugBorder: mapViewportDebugBorder,
-          mapTileBorderDebug: mapTileBorderDebug,
-          mapCompassRoseEnabled: mapCompassRoseEnabled,
-          mapMgrsGridEnabled: mapMgrsGridEnabled,
-          polygonSnapRightAngles: polygonSnapRightAngles,
-          polygonSnap45Angles: polygonSnap45Angles,
+        );
+        // Keep validating unused zoom args so malformed clients still fail loudly.
+        AppSettingsStore.validateMapZoomRange(
           mapMinZoom: mapMinZoom,
           mapMaxZoom: mapMaxZoom,
         );
@@ -215,8 +246,6 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
             mapMgrsGridEnabled: mapMgrsGridEnabled,
             polygonSnapRightAngles: polygonSnapRightAngles,
             polygonSnap45Angles: polygonSnap45Angles,
-            mapMinZoom: mapMinZoom,
-            mapMaxZoom: mapMaxZoom,
           ),
         );
       },
@@ -228,6 +257,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           'theme=${settings.appTheme} '
           'locale=${settings.appLocale} '
           'markerScale=${settings.mapMarkerSizeScale}',
+      requiredPermission: WayfinderPermission.manageSettings,
     );
   }
 

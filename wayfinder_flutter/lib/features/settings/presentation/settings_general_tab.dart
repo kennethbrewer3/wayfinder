@@ -339,6 +339,10 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
 
     final serverReadOnly = ref.watch(serverReadOnlyProvider);
     final session = ref.watch(accessSessionProvider).valueOrNull;
+    final canManageMapHome = ref.watch(canManageMapHomeProvider);
+    final canManageMapZoom = ref.watch(canManageMapZoomProvider);
+    final canEditServerConnection = ref.watch(canEditServerConnectionProvider);
+    final mapEditsLocked = ref.watch(mapEditsLockedByRoleProvider);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -492,79 +496,83 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.settingsMapHomeDescription,
+          canManageMapHome
+              ? l10n.settingsMapHomeDescription
+              : l10n.settingsMapHomePermissionDenied,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _homeLatController,
-                decoration: InputDecoration(
-                  labelText: l10n.settingsLatitude,
-                  hintText: '38.903481',
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextField(
-                controller: _homeLngController,
-                decoration: InputDecoration(
-                  labelText: l10n.settingsLongitude,
-                  hintText: '-77.262817',
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
+        if (canManageMapHome) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _homeLatController,
+                  decoration: InputDecoration(
+                    labelText: l10n.settingsLatitude,
+                    hintText: '38.903481',
+                    border: const OutlineInputBorder(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: _homeZoomController,
-          decoration: InputDecoration(
-            labelText: l10n.settingsZoom,
-            hintText: '12',
-            helperText: l10n.settingsZoomHelper(
-              mapZoomRange.max.toStringAsFixed(0),
-            ),
-            border: const OutlineInputBorder(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: _homeLngController,
+                  decoration: InputDecoration(
+                    labelText: l10n.settingsLongitude,
+                    hintText: '-77.262817',
+                    border: const OutlineInputBorder(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                ),
+              ),
+            ],
           ),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 12,
-          runSpacing: 8,
-          children: [
-            FilledButton(
-              onPressed: _isSavingHomeLocation ? null : _saveHomeLocation,
-              child: Text(
-                _isSavingHomeLocation
-                    ? l10n.actionSaving
-                    : l10n.settingsSaveHome,
+          const SizedBox(height: 12),
+          TextField(
+            controller: _homeZoomController,
+            decoration: InputDecoration(
+              labelText: l10n.settingsZoom,
+              hintText: '12',
+              helperText: l10n.settingsZoomHelper(
+                mapZoomRange.max.toStringAsFixed(0),
               ),
+              border: const OutlineInputBorder(),
             ),
-            OutlinedButton(
-              onPressed: _isSavingHomeLocation ? null : _useCurrentMapView,
-              child: Text(l10n.settingsUseCurrentMapView),
-            ),
-            OutlinedButton(
-              onPressed: _isSavingHomeLocation ? null : _resetHomeLocation,
-              child: Text(l10n.settingsResetToDefault),
-            ),
-          ],
-        ),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              FilledButton(
+                onPressed: _isSavingHomeLocation ? null : _saveHomeLocation,
+                child: Text(
+                  _isSavingHomeLocation
+                      ? l10n.actionSaving
+                      : l10n.settingsSaveHome,
+                ),
+              ),
+              OutlinedButton(
+                onPressed: _isSavingHomeLocation ? null : _useCurrentMapView,
+                child: Text(l10n.settingsUseCurrentMapView),
+              ),
+              OutlinedButton(
+                onPressed: _isSavingHomeLocation ? null : _resetHomeLocation,
+                child: Text(l10n.settingsResetToDefault),
+              ),
+            ],
+          ),
+        ],
         const SizedBox(height: 32),
         Text(
           l10n.settingsServerConnectionTitle,
@@ -572,44 +580,54 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.settingsServerConnectionDescription,
+          canEditServerConnection
+              ? l10n.settingsServerConnectionDescription
+              : l10n.settingsServerConnectionPermissionDenied,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: _serverUrlController,
-          decoration: InputDecoration(
-            labelText: l10n.settingsServerUrl,
-            hintText: 'http://localhost:18080',
-            border: const OutlineInputBorder(),
+        if (canEditServerConnection) ...[
+          const SizedBox(height: 12),
+          TextField(
+            controller: _serverUrlController,
+            decoration: InputDecoration(
+              labelText: l10n.settingsServerUrl,
+              hintText: 'http://localhost:18080',
+              border: const OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            autofillHints: const [AutofillHints.url],
           ),
-          keyboardType: TextInputType.url,
-          autocorrect: false,
-          autofillHints: const [AutofillHints.url],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.settingsCurrentWebServer(appServerConfig.webUrl),
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            FilledButton(
-              onPressed: _isSavingServerUrl ? null : _saveServerUrl,
-              child: Text(
-                _isSavingServerUrl
-                    ? l10n.actionSaving
-                    : l10n.settingsSaveServerUrl,
+          const SizedBox(height: 8),
+          Text(
+            l10n.settingsCurrentWebServer(appServerConfig.webUrl),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              FilledButton(
+                onPressed: _isSavingServerUrl ? null : _saveServerUrl,
+                child: Text(
+                  _isSavingServerUrl
+                      ? l10n.actionSaving
+                      : l10n.settingsSaveServerUrl,
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            OutlinedButton(
-              onPressed: _isSavingServerUrl ? null : _resetServerUrl,
-              child: Text(l10n.settingsResetToDefault),
-            ),
-          ],
-        ),
+              const SizedBox(width: 12),
+              OutlinedButton(
+                onPressed: _isSavingServerUrl ? null : _resetServerUrl,
+                child: Text(l10n.settingsResetToDefault),
+              ),
+            ],
+          ),
+        ] else ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.settingsCurrentWebServer(appServerConfig.webUrl),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
         const SizedBox(height: 32),
         Text(
           l10n.settingsMeasurementsTitle,
@@ -722,37 +740,41 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 .setDisplay(selection.first);
           },
         ),
-        const SizedBox(height: 32),
-        Text(
-          l10n.settingsMapEditingTitle,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.settingsMapEditingDescription,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 12),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.settingsPolygonSnapRightAnglesTitle),
-          subtitle: Text(l10n.settingsPolygonSnapRightAnglesDescription),
-          value: polygonSnapRightAngles,
-          onChanged: (enabled) {
-            ref
-                .read(polygonSnapRightAnglesProvider.notifier)
-                .setEnabled(enabled);
-          },
-        ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.settingsPolygonSnap45AnglesTitle),
-          subtitle: Text(l10n.settingsPolygonSnap45AnglesDescription),
-          value: polygonSnap45Angles,
-          onChanged: (enabled) {
-            ref.read(polygonSnap45AnglesProvider.notifier).setEnabled(enabled);
-          },
-        ),
+        if (!mapEditsLocked) ...[
+          const SizedBox(height: 32),
+          Text(
+            l10n.settingsMapEditingTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.settingsMapEditingDescription,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.settingsPolygonSnapRightAnglesTitle),
+            subtitle: Text(l10n.settingsPolygonSnapRightAnglesDescription),
+            value: polygonSnapRightAngles,
+            onChanged: (enabled) {
+              ref
+                  .read(polygonSnapRightAnglesProvider.notifier)
+                  .setEnabled(enabled);
+            },
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.settingsPolygonSnap45AnglesTitle),
+            subtitle: Text(l10n.settingsPolygonSnap45AnglesDescription),
+            value: polygonSnap45Angles,
+            onChanged: (enabled) {
+              ref
+                  .read(polygonSnap45AnglesProvider.notifier)
+                  .setEnabled(enabled);
+            },
+          ),
+        ],
         const SizedBox(height: 32),
         Text(
           l10n.settingsMapMarkerSizeTitle,
@@ -837,71 +859,85 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             ref.read(mapMgrsGridEnabledProvider.notifier).setEnabled(enabled);
           },
         ),
-        const SizedBox(height: 16),
-        Card(
-          color: Theme.of(context).colorScheme.errorContainer.withValues(
-            alpha: 0.45,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              l10n.settingsMapZoomRangeWarning,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onErrorContainer,
+        const SizedBox(height: 32),
+        Text(
+          l10n.settingsMapZoomRangeTitle,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          canManageMapZoom
+              ? l10n.settingsMapZoomRangeDescription
+              : l10n.settingsMapZoomRangePermissionDenied,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        if (canManageMapZoom) ...[
+          const SizedBox(height: 16),
+          Card(
+            color: Theme.of(context).colorScheme.errorContainer.withValues(
+              alpha: 0.45,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                l10n.settingsMapZoomRangeWarning,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _mapMinZoomController,
-                decoration: InputDecoration(
-                  labelText: l10n.settingsMapMinZoom,
-                  helperText: l10n.settingsMapZoomLimitHelper(
-                    AppConstants.absoluteMapMinZoom.toStringAsFixed(0),
-                    (AppConstants.absoluteMapMaxZoom - 1).toStringAsFixed(0),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _mapMinZoomController,
+                  decoration: InputDecoration(
+                    labelText: l10n.settingsMapMinZoom,
+                    helperText: l10n.settingsMapZoomLimitHelper(
+                      AppConstants.absoluteMapMinZoom.toStringAsFixed(0),
+                      (AppConstants.absoluteMapMaxZoom - 1).toStringAsFixed(0),
+                    ),
+                    border: const OutlineInputBorder(),
                   ),
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextField(
-                controller: _mapMaxZoomController,
-                decoration: InputDecoration(
-                  labelText: l10n.settingsMapMaxZoom,
-                  helperText: l10n.settingsMapZoomLimitHelper(
-                    (AppConstants.absoluteMapMinZoom + 1).toStringAsFixed(0),
-                    AppConstants.absoluteMapMaxZoom.toStringAsFixed(0),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: FilledButton(
-            onPressed: _isSavingMapZoomRange ? null : _saveMapZoomRange,
-            child: Text(
-              _isSavingMapZoomRange
-                  ? l10n.actionSaving
-                  : l10n.settingsMapZoomRangeSave,
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: _mapMaxZoomController,
+                  decoration: InputDecoration(
+                    labelText: l10n.settingsMapMaxZoom,
+                    helperText: l10n.settingsMapZoomLimitHelper(
+                      (AppConstants.absoluteMapMinZoom + 1).toStringAsFixed(0),
+                      AppConstants.absoluteMapMaxZoom.toStringAsFixed(0),
+                    ),
+                    border: const OutlineInputBorder(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton(
+              onPressed: _isSavingMapZoomRange ? null : _saveMapZoomRange,
+              child: Text(
+                _isSavingMapZoomRange
+                    ? l10n.actionSaving
+                    : l10n.settingsMapZoomRangeSave,
+              ),
             ),
           ),
-        ),
+        ],
         const SizedBox(height: 32),
         Text(
           l10n.settingsMapDebugTitle,

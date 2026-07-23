@@ -64,6 +64,49 @@ abstract final class AppSettingsRestHandlers {
     });
   }
 
+  static Future<Result> getMapZoomRange(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final settings = await AppSettingsStore.getOrCreate(session);
+      return RestJson.ok({
+        'mapMinZoom': settings.mapMinZoom,
+        'mapMaxZoom': settings.mapMaxZoom,
+      });
+    });
+  }
+
+  static Future<Result> updateMapZoomRange(Request request) async {
+    return RestJson.handleErrors(() async {
+      final session = await request.session;
+      final body = await RestJson.readObject(request);
+      final mapMinZoom = _readDouble(body['mapMinZoom']);
+      final mapMaxZoom = _readDouble(body['mapMaxZoom']);
+      if (mapMinZoom == null || mapMaxZoom == null) {
+        throw const FormatException(
+          'Fields "mapMinZoom" and "mapMaxZoom" are required.',
+        );
+      }
+
+      AppSettingsStore.validateMapZoomRange(
+        mapMinZoom: mapMinZoom,
+        mapMaxZoom: mapMaxZoom,
+      );
+
+      final settings = await AppSettingsStore.getOrCreate(session);
+      final updated = await AppSettingsStore.update(
+        session,
+        settings.copyWith(
+          mapMinZoom: mapMinZoom,
+          mapMaxZoom: mapMaxZoom,
+        ),
+      );
+      return RestJson.ok({
+        'mapMinZoom': updated.mapMinZoom,
+        'mapMaxZoom': updated.mapMaxZoom,
+      });
+    });
+  }
+
   static Future<Result> getPmtilesStoragePath(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
@@ -125,8 +168,6 @@ abstract final class AppSettingsRestHandlers {
           _readBool(body['polygonSnapRightAngles']) ?? true;
       final polygonSnap45Angles =
           _readBool(body['polygonSnap45Angles']) ?? false;
-      final mapMinZoom = _readDouble(body['mapMinZoom']);
-      final mapMaxZoom = _readDouble(body['mapMaxZoom']);
       if (measurementUnits == null ||
           angleDisplayFormat == null ||
           circleSizeDisplay == null ||
@@ -135,19 +176,16 @@ abstract final class AppSettingsRestHandlers {
           mapMarkerSizeScale == null ||
           mapViewportDebugBorder == null ||
           mapTileBorderDebug == null ||
-          mapCompassRoseEnabled == null ||
-          mapMinZoom == null ||
-          mapMaxZoom == null) {
+          mapCompassRoseEnabled == null) {
         throw const FormatException(
           'Fields "measurementUnits", "angleDisplayFormat", '
           '"circleSizeDisplay", "appTheme", "appLocale", '
           '"mapMarkerSizeScale", "mapViewportDebugBorder", '
-          '"mapTileBorderDebug", "mapCompassRoseEnabled", '
-          '"mapMinZoom", and "mapMaxZoom" are required.',
+          '"mapTileBorderDebug", and "mapCompassRoseEnabled" are required.',
         );
       }
 
-      AppSettingsStore.validateClientPreferences(
+      AppSettingsStore.validatePersonalClientPreferences(
         measurementUnits: measurementUnits,
         angleDisplayFormat: angleDisplayFormat,
         bearingReference: bearingReference,
@@ -155,17 +193,10 @@ abstract final class AppSettingsRestHandlers {
         appTheme: appTheme,
         appLocale: appLocale,
         mapMarkerSizeScale: mapMarkerSizeScale,
-        mapViewportDebugBorder: mapViewportDebugBorder,
-        mapTileBorderDebug: mapTileBorderDebug,
-        mapCompassRoseEnabled: mapCompassRoseEnabled,
-        mapMgrsGridEnabled: mapMgrsGridEnabled,
-        polygonSnapRightAngles: polygonSnapRightAngles,
-        polygonSnap45Angles: polygonSnap45Angles,
-        mapMinZoom: mapMinZoom,
-        mapMaxZoom: mapMaxZoom,
       );
 
       final settings = await AppSettingsStore.getOrCreate(session);
+      // Zoom range is not updated here — use PUT /settings/map-zoom.
       final updated = await AppSettingsStore.update(
         session,
         settings.copyWith(
@@ -182,8 +213,6 @@ abstract final class AppSettingsRestHandlers {
           mapMgrsGridEnabled: mapMgrsGridEnabled,
           polygonSnapRightAngles: polygonSnapRightAngles,
           polygonSnap45Angles: polygonSnap45Angles,
-          mapMinZoom: mapMinZoom,
-          mapMaxZoom: mapMaxZoom,
         ),
       );
       return RestJson.ok(_encodeClientPreferences(updated));

@@ -158,6 +158,48 @@ final canManagePmtilesProvider = Provider<bool>((ref) {
   return session.canManagePmtiles;
 });
 
+final canManageMapHomeProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageMapHome;
+});
+
+final canManageMapZoomProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageMapZoom;
+});
+
+/// True when the signed-in role may change this device's Wayfinder server URL.
+/// Viewers are locked out; editors and open mode may still re-point the client.
+final canEditServerConnectionProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return true;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  if (!session.authenticated) {
+    return false;
+  }
+  return session.canEditMap ||
+      session.isAdmin ||
+      session.canManageSettings ||
+      session.canManageMapHome ||
+      session.canManagePmtiles;
+});
+
 @visibleForTesting
 AccessSessionInfo openAccessSessionForTests() {
   return AccessSessionInfo(
@@ -176,5 +218,7 @@ AccessSessionInfo openAccessSessionForTests() {
     canManageGeocoding: true,
     canManageMarkerIcons: true,
     canManagePmtiles: true,
+    canManageMapHome: true,
+    canManageMapZoom: true,
   );
 }

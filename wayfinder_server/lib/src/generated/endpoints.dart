@@ -1930,6 +1930,31 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['appSettings'] as _i14.AppSettingsEndpoint)
                   .resetHomeLocation(session),
         ),
+        'updateMapZoomRange': _i1.MethodConnector(
+          name: 'updateMapZoomRange',
+          params: {
+            'mapMinZoom': _i1.ParameterDescription(
+              name: 'mapMinZoom',
+              type: _i1.getType<double>(),
+              nullable: false,
+            ),
+            'mapMaxZoom': _i1.ParameterDescription(
+              name: 'mapMaxZoom',
+              type: _i1.getType<double>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['appSettings'] as _i14.AppSettingsEndpoint)
+                  .updateMapZoomRange(
+                    session,
+                    params['mapMinZoom'],
+                    params['mapMaxZoom'],
+                  ),
+        ),
         'updatePmtilesStoragePath': _i1.MethodConnector(
           name: 'updatePmtilesStoragePath',
           params: {

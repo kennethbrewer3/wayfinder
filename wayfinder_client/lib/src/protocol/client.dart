@@ -1034,6 +1034,18 @@ class EndpointAppSettings extends _i1.EndpointRef {
         {},
       );
 
+  _i2.Future<_i23.AppSettings> updateMapZoomRange(
+    double mapMinZoom,
+    double mapMaxZoom,
+  ) => caller.callServerEndpoint<_i23.AppSettings>(
+    'appSettings',
+    'updateMapZoomRange',
+    {
+      'mapMinZoom': mapMinZoom,
+      'mapMaxZoom': mapMaxZoom,
+    },
+  );
+
   _i2.Future<_i23.AppSettings> updatePmtilesStoragePath(String storagePath) =>
       caller.callServerEndpoint<_i23.AppSettings>(
         'appSettings',

@@ -474,6 +474,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Coordonnées et zoom du bouton d\'accueil sur la carte. Enregistré sur le serveur pour que tous les clients partagent le même point d\'accueil. Utilisé aussi comme vue initiale lorsqu\'aucune position précédente n\'est enregistrée.';
 
   @override
+  String get settingsMapHomePermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de modifier le point d\'accueil partagé de la carte.';
+
+  @override
   String get settingsLatitude => 'Latitude';
 
   @override
@@ -502,6 +506,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsServerConnectionDescription =>
       'URL du serveur API Wayfinder, y compris l\'hôte et le port. L\'URL du serveur web (API REST et PMTiles) est dérivée automatiquement (port API + 2). Redémarrez l\'application après modification.';
+
+  @override
+  String get settingsServerConnectionPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de modifier l\'URL du serveur Wayfinder de cet appareil.';
 
   @override
   String get settingsServerUrl => 'URL du serveur';
@@ -599,7 +607,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapDisplayDescription =>
-      'Superpositions de carte enregistrées sur le serveur.';
+      'Rose des vents et grille MGRS pour votre compte. Enregistré sur votre compte pour vous suivre sur tout poste de travail.';
 
   @override
   String get settingsMapCompassRoseTitle => 'Afficher la rose des vents';
@@ -614,6 +622,17 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsMapMgrsGridDescription =>
       'Superpose une vraie grille MGRS (basée sur l\'UTM). L\'espacement suit le zoom. Les joints de zone et une légère courbure sur la carte Web Mercator sont attendus — les carrés MGRS ne sont pas des rectangles lat/lng.';
+
+  @override
+  String get settingsMapZoomRangeTitle => 'Plage de zoom de la carte';
+
+  @override
+  String get settingsMapZoomRangeDescription =>
+      'Zoom minimum et maximum partagés pour tous les clients. Enregistré sur le serveur. Augmenter le maximum peut nuire aux performances si les tuiles hors ligne ne couvrent pas ces niveaux.';
+
+  @override
+  String get settingsMapZoomRangePermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de modifier la plage de zoom partagée de la carte.';
 
   @override
   String get settingsMapZoomRangeWarning =>
@@ -658,7 +677,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapMarkerSizeDescription =>
-      'Ajustez la taille des marqueurs sur la carte. Inclus dans les sauvegardes du serveur.';
+      'Ajustez la taille des marqueurs sur la carte. Enregistré sur votre compte pour vous suivre sur tout poste de travail.';
 
   @override
   String settingsMapMarkerSizeValue(int percent) {

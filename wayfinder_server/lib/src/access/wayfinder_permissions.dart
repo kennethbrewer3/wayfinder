@@ -12,6 +12,8 @@ abstract final class WayfinderPermission {
   static const manageTides = 'manage_tides';
   static const manageGeocoding = 'manage_geocoding';
   static const manageMarkerIcons = 'manage_marker_icons';
+  static const manageMapHome = 'manage_map_home';
+  static const manageMapZoom = 'manage_map_zoom';
 
   static const all = <String>{
     viewMap,
@@ -26,6 +28,8 @@ abstract final class WayfinderPermission {
     manageTides,
     manageGeocoding,
     manageMarkerIcons,
+    manageMapHome,
+    manageMapZoom,
   };
 
   static const editorDefaults = <String>{
@@ -37,6 +41,7 @@ abstract final class WayfinderPermission {
     manageGeocoding,
     manageMarkerIcons,
     managePmtiles,
+    manageMapHome,
   };
 
   static const viewerDefaults = <String>{viewMap};

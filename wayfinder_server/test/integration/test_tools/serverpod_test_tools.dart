@@ -3159,6 +3159,41 @@ class _AppSettingsEndpoint {
     });
   }
 
+  _i3.Future<_i23.AppSettings> updateMapZoomRange(
+    _i1.TestSessionBuilder sessionBuilder,
+    double mapMinZoom,
+    double mapMaxZoom,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appSettings',
+            method: 'updateMapZoomRange',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appSettings',
+          methodName: 'updateMapZoomRange',
+          parameters: _i1.testObjectToJson({
+            'mapMinZoom': mapMinZoom,
+            'mapMaxZoom': mapMaxZoom,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i23.AppSettings>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i23.AppSettings> updatePmtilesStoragePath(
     _i1.TestSessionBuilder sessionBuilder,
     String storagePath,

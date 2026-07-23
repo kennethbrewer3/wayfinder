@@ -8,6 +8,7 @@ import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/rest_api_headers.dart';
 import '../../map/models/home_location.dart';
+import '../../map/models/map_zoom_limits.dart';
 import '../models/client_preferences.dart';
 
 class AppSettingsRepository {
@@ -144,6 +145,80 @@ class AppSettingsRepository {
   ) async {
     final current = await getClientPreferences();
     return updateClientPreferences(update(current));
+  }
+
+  Future<MapZoomRange> getMapZoomRange() async {
+    try {
+      final settings = await _client.appSettings.getSettings();
+      return normalizeMapZoomRange(
+        min: settings.mapMinZoom,
+        max: settings.mapMaxZoom,
+      );
+    } catch (error, _) {
+      _log.warn(
+        '🗺️ Map zoom range RPC failed, trying REST',
+        error: error,
+      );
+      return _getMapZoomRangeRest();
+    }
+  }
+
+  Future<MapZoomRange> updateMapZoomRange(MapZoomRange range) async {
+    final normalized = validateMapZoomRange(range);
+    try {
+      final settings = await _client.appSettings.updateMapZoomRange(
+        normalized.min,
+        normalized.max,
+      );
+      return normalizeMapZoomRange(
+        min: settings.mapMinZoom,
+        max: settings.mapMaxZoom,
+      );
+    } catch (error, _) {
+      _log.warn(
+        '🗺️ Map zoom range update RPC failed, trying REST',
+        error: error,
+      );
+      return _updateMapZoomRangeRest(normalized);
+    }
+  }
+
+  Future<MapZoomRange> _getMapZoomRangeRest() async {
+    final response = await http.get(
+      Uri.parse('$_webServerUrl/api/settings/map-zoom'),
+      headers: await RestApiHeaders.readOnly(),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'GET /api/settings/map-zoom returned ${response.statusCode}',
+      );
+    }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return normalizeMapZoomRange(
+      min: (body['mapMinZoom'] as num?)?.toDouble(),
+      max: (body['mapMaxZoom'] as num?)?.toDouble(),
+    );
+  }
+
+  Future<MapZoomRange> _updateMapZoomRangeRest(MapZoomRange range) async {
+    final response = await http.put(
+      Uri.parse('$_webServerUrl/api/settings/map-zoom'),
+      headers: await RestApiHeaders.json(),
+      body: jsonEncode({
+        'mapMinZoom': range.min,
+        'mapMaxZoom': range.max,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(
+        'PUT /api/settings/map-zoom returned ${response.statusCode}',
+      );
+    }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return normalizeMapZoomRange(
+      min: (body['mapMinZoom'] as num?)?.toDouble(),
+      max: (body['mapMaxZoom'] as num?)?.toDouble(),
+    );
   }
 
   Future<ClientPreferences> _getClientPreferencesRest() async {

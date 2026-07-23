@@ -35,6 +35,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     required this.canManageGeocoding,
     required this.canManageMarkerIcons,
     required this.canManagePmtiles,
+    required this.canManageMapHome,
+    required this.canManageMapZoom,
   });
 
   factory AccessSessionInfo({
@@ -58,6 +60,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     required bool canManageGeocoding,
     required bool canManageMarkerIcons,
     required bool canManagePmtiles,
+    required bool canManageMapHome,
+    required bool canManageMapZoom,
   }) = _AccessSessionInfoImpl;
 
   factory AccessSessionInfo.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -114,6 +118,12 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
       canManagePmtiles: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['canManagePmtiles'],
       ),
+      canManageMapHome: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageMapHome'],
+      ),
+      canManageMapZoom: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageMapZoom'],
+      ),
     );
   }
 
@@ -157,6 +167,10 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
 
   bool canManagePmtiles;
 
+  bool canManageMapHome;
+
+  bool canManageMapZoom;
+
   /// Returns a shallow copy of this [AccessSessionInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -181,6 +195,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     bool? canManageGeocoding,
     bool? canManageMarkerIcons,
     bool? canManagePmtiles,
+    bool? canManageMapHome,
+    bool? canManageMapZoom,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -206,6 +222,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
       'canManageGeocoding': canManageGeocoding,
       'canManageMarkerIcons': canManageMarkerIcons,
       'canManagePmtiles': canManagePmtiles,
+      'canManageMapHome': canManageMapHome,
+      'canManageMapZoom': canManageMapZoom,
     };
   }
 
@@ -239,6 +257,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     required bool canManageGeocoding,
     required bool canManageMarkerIcons,
     required bool canManagePmtiles,
+    required bool canManageMapHome,
+    required bool canManageMapZoom,
   }) : super._(
          authRequired: authRequired,
          authenticated: authenticated,
@@ -260,6 +280,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
          canManageGeocoding: canManageGeocoding,
          canManageMarkerIcons: canManageMarkerIcons,
          canManagePmtiles: canManagePmtiles,
+         canManageMapHome: canManageMapHome,
+         canManageMapZoom: canManageMapZoom,
        );
 
   /// Returns a shallow copy of this [AccessSessionInfo]
@@ -287,6 +309,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     bool? canManageGeocoding,
     bool? canManageMarkerIcons,
     bool? canManagePmtiles,
+    bool? canManageMapHome,
+    bool? canManageMapZoom,
   }) {
     return AccessSessionInfo(
       authRequired: authRequired ?? this.authRequired,
@@ -309,6 +333,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
       canManageGeocoding: canManageGeocoding ?? this.canManageGeocoding,
       canManageMarkerIcons: canManageMarkerIcons ?? this.canManageMarkerIcons,
       canManagePmtiles: canManagePmtiles ?? this.canManagePmtiles,
+      canManageMapHome: canManageMapHome ?? this.canManageMapHome,
+      canManageMapZoom: canManageMapZoom ?? this.canManageMapZoom,
     );
   }
 }

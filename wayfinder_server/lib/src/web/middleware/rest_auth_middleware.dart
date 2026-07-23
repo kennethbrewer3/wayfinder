@@ -61,6 +61,12 @@ class RestAuthMiddleware extends MiddlewareObject {
   }
 
   static String _permissionForPath(String path) {
+    if (path.contains('/settings/home')) {
+      return WayfinderPermission.manageMapHome;
+    }
+    if (path.contains('/settings/map-zoom')) {
+      return WayfinderPermission.manageMapZoom;
+    }
     if (path.contains('/settings')) {
       return WayfinderPermission.manageSettings;
     }

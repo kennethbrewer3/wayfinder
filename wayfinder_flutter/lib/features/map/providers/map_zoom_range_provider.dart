@@ -23,11 +23,7 @@ class MapZoomRangeNotifier extends StateNotifier<MapZoomRange> {
 
   Future<void> _load() async {
     try {
-      final preferences = await _repository.getClientPreferences();
-      state = normalizeMapZoomRange(
-        min: preferences.mapMinZoom,
-        max: preferences.mapMaxZoom,
-      );
+      state = await _repository.getMapZoomRange();
     } catch (error, _) {
       _log.warn(
         '🗺️ Failed to load map zoom range from server',
@@ -41,17 +37,13 @@ class MapZoomRangeNotifier extends StateNotifier<MapZoomRange> {
     final normalized = validateMapZoomRange(range);
     state = normalized;
     try {
-      await _repository.patchClientPreferences(
-        (current) => current.copyWith(
-          mapMinZoom: normalized.min,
-          mapMaxZoom: normalized.max,
-        ),
-      );
+      await _repository.updateMapZoomRange(normalized);
     } catch (error, _) {
       _log.warn(
         '🗺️ Failed to save map zoom range to server',
         error: error,
       );
+      rethrow;
     }
   }
 }

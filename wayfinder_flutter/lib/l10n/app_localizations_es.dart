@@ -473,6 +473,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Coordenadas y zoom del botón de inicio en el mapa. Se guarda en el servidor para que todos los clientes compartan la misma ubicación de inicio.';
 
   @override
+  String get settingsMapHomePermissionDenied =>
+      'No tienes permiso para cambiar la ubicación de inicio compartida del mapa.';
+
+  @override
   String get settingsLatitude => 'Latitud';
 
   @override
@@ -501,6 +505,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsServerConnectionDescription =>
       'URL del servidor API de Wayfinder, incluido host y puerto. La URL del servidor web se deriva automáticamente (puerto API + 2). Reinicie la aplicación después de cambiarla.';
+
+  @override
+  String get settingsServerConnectionPermissionDenied =>
+      'No tienes permiso para cambiar la URL del servidor Wayfinder de este dispositivo.';
 
   @override
   String get settingsServerUrl => 'URL del servidor';
@@ -598,7 +606,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapDisplayDescription =>
-      'Superposiciones del mapa guardadas en el servidor.';
+      'Rosa de los vientos y cuadrícula MGRS de tu cuenta. Se guarda en tu cuenta para seguirte en cualquier estación de trabajo.';
 
   @override
   String get settingsMapCompassRoseTitle => 'Mostrar rosa de los vientos';
@@ -613,6 +621,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsMapMgrsGridDescription =>
       'Superpone una cuadrícula MGRS real (basada en UTM). El espaciado sigue el zoom. Las uniones entre zonas y una ligera curvatura en el mapa Web Mercator son normales: los cuadrados MGRS no son rectángulos de lat/lng.';
+
+  @override
+  String get settingsMapZoomRangeTitle => 'Rango de zoom del mapa';
+
+  @override
+  String get settingsMapZoomRangeDescription =>
+      'Zoom mínimo y máximo compartidos para todos los clientes. Se guarda en el servidor. Subir el máximo puede afectar el rendimiento si las teselas sin conexión no cubren esos niveles.';
+
+  @override
+  String get settingsMapZoomRangePermissionDenied =>
+      'No tienes permiso para cambiar el rango de zoom compartido del mapa.';
 
   @override
   String get settingsMapZoomRangeWarning =>
@@ -656,7 +675,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapMarkerSizeDescription =>
-      'Ajuste el tamaño de los marcadores en el mapa. Se incluye en las copias de seguridad del servidor.';
+      'Ajuste el tamaño de los marcadores en el mapa. Se guarda en tu cuenta para seguirte en cualquier estación de trabajo.';
 
   @override
   String settingsMapMarkerSizeValue(int percent) {

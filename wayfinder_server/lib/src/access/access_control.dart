@@ -42,6 +42,8 @@ abstract final class AccessControl {
         canManageGeocoding: !authRequired,
         canManageMarkerIcons: !authRequired,
         canManagePmtiles: !authRequired,
+        canManageMapHome: !authRequired,
+        canManageMapZoom: !authRequired,
       );
     }
 
@@ -68,6 +70,8 @@ abstract final class AccessControl {
         canManageGeocoding: false,
         canManageMarkerIcons: false,
         canManagePmtiles: false,
+        canManageMapHome: false,
+        canManageMapZoom: false,
       );
     }
 
@@ -110,6 +114,10 @@ abstract final class AccessControl {
           permissions.contains(WayfinderPermission.manageMarkerIcons),
       canManagePmtiles:
           isAdmin || permissions.contains(WayfinderPermission.managePmtiles),
+      canManageMapHome:
+          isAdmin || permissions.contains(WayfinderPermission.manageMapHome),
+      canManageMapZoom:
+          isAdmin || permissions.contains(WayfinderPermission.manageMapZoom),
     );
   }
 

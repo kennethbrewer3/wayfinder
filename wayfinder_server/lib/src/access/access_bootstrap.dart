@@ -44,25 +44,55 @@ abstract final class AccessBootstrap {
         session,
         where: (t) => t.key.equals(spec.key),
       );
-      if (existing != null) {
+      final encoded = AccessControl.encodePermissions(spec.perms);
+      if (existing == null) {
+        await AccessRole.db.insertRow(
+          session,
+          AccessRole(
+            key: spec.key,
+            name: spec.name,
+            description: spec.description,
+            isSystem: true,
+            permissionsJson: encoded,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        WfLog.info(
+          session,
+          'access',
+          '🔐 Seeded built-in role | key=${spec.key}',
+        );
         continue;
       }
-      await AccessRole.db.insertRow(
+
+      if (!existing.isSystem) {
+        continue;
+      }
+
+      // Merge newly added default keys onto built-in roles without removing
+      // permissions an admin may have granted (e.g. manage_map_zoom on editor).
+      final current = AccessControl.parsePermissions(existing.permissionsJson);
+      final merged = {...current, ...spec.perms};
+      final mergedEncoded = AccessControl.encodePermissions(merged);
+      if (mergedEncoded == existing.permissionsJson &&
+          existing.name == spec.name &&
+          existing.description == spec.description) {
+        continue;
+      }
+      await AccessRole.db.updateRow(
         session,
-        AccessRole(
-          key: spec.key,
+        existing.copyWith(
           name: spec.name,
           description: spec.description,
-          isSystem: true,
-          permissionsJson: AccessControl.encodePermissions(spec.perms),
-          createdAt: now,
+          permissionsJson: mergedEncoded,
           updatedAt: now,
         ),
       );
       WfLog.info(
         session,
         'access',
-        '🔐 Seeded built-in role | key=${spec.key}',
+        '🔐 Synced built-in role permissions | key=${spec.key}',
       );
     }
   }

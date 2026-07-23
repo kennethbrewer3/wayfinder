@@ -95,6 +95,7 @@ appSettings:
   - updateMyClientPreferences:
   - updateHomeLocation:
   - resetHomeLocation:
+  - updateMapZoomRange:
   - updatePmtilesStoragePath:
   - updateClientPreferences:
   - getRestApiKeyStatus:

@@ -118,6 +118,8 @@ class RestApiRoute extends Route {
       ..get('/settings/home', AppSettingsRestHandlers.getHomeLocation)
       ..put('/settings/home', AppSettingsRestHandlers.updateHomeLocation)
       ..delete('/settings/home', AppSettingsRestHandlers.resetHomeLocation)
+      ..get('/settings/map-zoom', AppSettingsRestHandlers.getMapZoomRange)
+      ..put('/settings/map-zoom', AppSettingsRestHandlers.updateMapZoomRange)
       ..get(
         '/settings/pmtiles-storage',
         AppSettingsRestHandlers.getPmtilesStoragePath,

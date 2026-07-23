@@ -20,3 +20,5 @@ fields:
   canManageGeocoding: bool
   canManageMarkerIcons: bool
   canManagePmtiles: bool
+  canManageMapHome: bool
+  canManageMapZoom: bool

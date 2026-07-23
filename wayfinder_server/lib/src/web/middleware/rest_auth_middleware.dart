@@ -43,11 +43,17 @@ class RestAuthMiddleware extends MiddlewareObject {
 
       if (RestApiAuth.usedJwt(request) && !RestApiAuth.usedApiKey(request)) {
         final path = request.url.path;
-        final permission = _permissionForPath(path);
         final isBackupPath =
             path.contains('/map-data') || path.contains('/field-pack');
-        // Backup export is a GET but still requires manage_backups.
-        if (_mutatingMethods.contains(request.method) || isBackupPath) {
+        final isWatchLogRead =
+            path.contains('/watch-log') && request.method == Method.get;
+        // Backup export and watch-log reads are GETs that still need a role check.
+        if (_mutatingMethods.contains(request.method) ||
+            isBackupPath ||
+            isWatchLogRead) {
+          final permission = isWatchLogRead
+              ? WayfinderPermission.viewWatchLog
+              : _permissionForPath(path);
           try {
             await AccessControl.assertPermission(session, permission);
           } on AccessDeniedException catch (error) {
@@ -82,6 +88,9 @@ class RestAuthMiddleware extends MiddlewareObject {
     }
     if (path.contains('/layers') || path.contains('/seasonal-overlays')) {
       return WayfinderPermission.manageLayers;
+    }
+    if (path.contains('/watch-log')) {
+      return WayfinderPermission.addWatchLog;
     }
     return WayfinderPermission.editMapObjects;
   }

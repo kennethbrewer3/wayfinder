@@ -88,6 +88,25 @@ class AccessControlEndpoint extends Endpoint with EndpointLogging {
     );
   }
 
+  /// Any signed-in user may change their own password (current password required).
+  Future<bool> changeOwnPassword(
+    Session session,
+    String currentPassword,
+    String newPassword,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'changeOwnPassword',
+      () => AccessAdminService.changeOwnPassword(
+        session,
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      ),
+      skipAccessCheck: true,
+    );
+  }
+
   Future<AccessUserInfo> updateUserRole(
     Session session,
     UuidValue membershipId,

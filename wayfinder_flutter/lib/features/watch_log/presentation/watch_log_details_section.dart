@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../access/providers/access_session_provider.dart';
 import '../providers/watch_log_provider.dart';
 import 'watch_log_entry_dialog.dart';
 
@@ -21,8 +22,14 @@ class WatchLogDetailsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final canView = ref.watch(canViewWatchLogProvider);
+    if (!canView) {
+      return const SizedBox.shrink();
+    }
+
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final canAdd = ref.watch(canAddWatchLogProvider);
     final entriesAsync = ref.watch(watchLogEntriesProvider);
 
     return entriesAsync.when(
@@ -61,18 +68,19 @@ class WatchLogDetailsSection extends ConsumerWidget {
                           style: theme.textTheme.titleSmall,
                         ),
                       ),
-                      TextButton.icon(
-                        onPressed: () async {
-                          await showWatchLogEntryDialog(
-                            context: context,
-                            ref: ref,
-                            markerId: markerId,
-                            zoneId: zoneId,
-                          );
-                        },
-                        icon: const Icon(Icons.add, size: 18),
-                        label: Text(l10n.watchLogAddEntry),
-                      ),
+                      if (canAdd)
+                        TextButton.icon(
+                          onPressed: () async {
+                            await showWatchLogEntryDialog(
+                              context: context,
+                              ref: ref,
+                              markerId: markerId,
+                              zoneId: zoneId,
+                            );
+                          },
+                          icon: const Icon(Icons.add, size: 18),
+                          label: Text(l10n.watchLogAddEntry),
+                        ),
                     ],
                   ),
                   Text(
@@ -92,6 +100,7 @@ class WatchLogDetailsSection extends ConsumerWidget {
                       if (index > 0) const Divider(height: 16),
                       _WatchLogEntryTile(
                         entry: entry,
+                        canEdit: canAdd,
                         onEdit: () async {
                           await showWatchLogEntryDialog(
                             context: context,
@@ -128,11 +137,13 @@ class WatchLogDetailsSection extends ConsumerWidget {
 class _WatchLogEntryTile extends StatelessWidget {
   const _WatchLogEntryTile({
     required this.entry,
+    required this.canEdit,
     required this.onEdit,
     required this.onDelete,
   });
 
   final WatchLogEntry entry;
+  final bool canEdit;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -162,18 +173,20 @@ class _WatchLogEntryTile extends StatelessWidget {
                 ),
               ),
             ),
-            IconButton(
-              tooltip: l10n.actionEdit,
-              onPressed: onEdit,
-              icon: const Icon(Icons.edit_outlined, size: 18),
-              visualDensity: VisualDensity.compact,
-            ),
-            IconButton(
-              tooltip: l10n.actionDelete,
-              onPressed: onDelete,
-              icon: const Icon(Icons.delete_outline, size: 18),
-              visualDensity: VisualDensity.compact,
-            ),
+            if (canEdit) ...[
+              IconButton(
+                tooltip: l10n.actionEdit,
+                onPressed: onEdit,
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                visualDensity: VisualDensity.compact,
+              ),
+              IconButton(
+                tooltip: l10n.actionDelete,
+                onPressed: onDelete,
+                icon: const Icon(Icons.delete_outline, size: 18),
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
           ],
         ),
         if (entry.author != null && entry.author!.trim().isNotEmpty)

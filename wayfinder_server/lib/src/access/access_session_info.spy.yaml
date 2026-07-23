@@ -22,3 +22,5 @@ fields:
   canManagePmtiles: bool
   canManageMapHome: bool
   canManageMapZoom: bool
+  canViewWatchLog: bool
+  canAddWatchLog: bool

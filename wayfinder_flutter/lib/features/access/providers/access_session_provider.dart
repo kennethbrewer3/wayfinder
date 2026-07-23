@@ -180,6 +180,28 @@ final canManageMapZoomProvider = Provider<bool>((ref) {
   return session.canManageMapZoom;
 });
 
+final canViewWatchLogProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canViewWatchLog;
+});
+
+final canAddWatchLogProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canAddWatchLog;
+});
+
 /// True when the signed-in role may change this device's Wayfinder server URL.
 /// Viewers are locked out; editors and open mode may still re-point the client.
 final canEditServerConnectionProvider = Provider<bool>((ref) {
@@ -220,5 +242,7 @@ AccessSessionInfo openAccessSessionForTests() {
     canManagePmtiles: true,
     canManageMapHome: true,
     canManageMapZoom: true,
+    canViewWatchLog: true,
+    canAddWatchLog: true,
   );
 }

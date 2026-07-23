@@ -130,6 +130,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accessSignOut => 'Sign out';
 
   @override
+  String get accessChangePassword => 'Change password';
+
+  @override
+  String get accessChangePasswordTitle => 'Change password';
+
+  @override
+  String get accessChangePasswordSave => 'Update password';
+
+  @override
+  String get accessCurrentPasswordLabel => 'Current password';
+
+  @override
+  String get accessNewPasswordLabel => 'New password';
+
+  @override
+  String get accessConfirmPasswordLabel => 'Confirm new password';
+
+  @override
+  String get accessChangePasswordTooShort =>
+      'Password must be at least 8 characters.';
+
+  @override
+  String get accessChangePasswordMismatch =>
+      'New password and confirmation do not match.';
+
+  @override
+  String get accessChangePasswordSameAsCurrent =>
+      'New password must be different from the current password.';
+
+  @override
+  String get accessChangePasswordFieldsRequired =>
+      'Enter your current password and a new password.';
+
+  @override
+  String get accessChangePasswordSuccess => 'Password updated.';
+
+  @override
+  String accessChangePasswordFailed(String error) {
+    return 'Could not change password: $error';
+  }
+
+  @override
   String get accessSignedIn => 'Signed in';
 
   @override
@@ -839,6 +881,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get watchLogSubtitle =>
       'Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.';
+
+  @override
+  String get watchLogPermissionDenied =>
+      'You do not have permission to view the incident / watch log.';
+
+  @override
+  String get watchLogAddPermissionDenied =>
+      'You do not have permission to add or edit incident / watch log entries.';
 
   @override
   String get watchLogObjectHint => 'Entries linked to this map object.';

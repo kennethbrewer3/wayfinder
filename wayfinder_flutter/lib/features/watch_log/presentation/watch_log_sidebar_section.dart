@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../access/providers/access_session_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -22,8 +23,14 @@ class WatchLogSidebarSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final canView = ref.watch(canViewWatchLogProvider);
+    if (!canView) {
+      return const SizedBox.shrink();
+    }
+
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final canAdd = ref.watch(canAddWatchLogProvider);
     final entriesAsync = ref.watch(watchLogEntriesProvider);
     final markers = ref.watch(markersProvider).valueOrNull ?? const [];
     final zones = ref.watch(zonesProvider).valueOrNull ?? const [];
@@ -37,19 +44,20 @@ class WatchLogSidebarSection extends ConsumerWidget {
         style: theme.textTheme.bodySmall,
       ),
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: () async {
-                await showWatchLogEntryDialog(context: context, ref: ref);
-              },
-              icon: const Icon(Icons.add),
-              label: Text(l10n.watchLogAddEntry),
+        if (canAdd)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () async {
+                  await showWatchLogEntryDialog(context: context, ref: ref);
+                },
+                icon: const Icon(Icons.add),
+                label: Text(l10n.watchLogAddEntry),
+              ),
             ),
           ),
-        ),
         entriesAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(16),
@@ -93,17 +101,19 @@ class WatchLogSidebarSection extends ConsumerWidget {
                         onZoomTo: onZoomTo,
                       );
                     },
-                    trailing: IconButton(
-                      tooltip: l10n.actionEdit,
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      onPressed: () async {
-                        await showWatchLogEntryDialog(
-                          context: context,
-                          ref: ref,
-                          existing: entry,
-                        );
-                      },
-                    ),
+                    trailing: canAdd
+                        ? IconButton(
+                            tooltip: l10n.actionEdit,
+                            icon: const Icon(Icons.edit_outlined, size: 18),
+                            onPressed: () async {
+                              await showWatchLogEntryDialog(
+                                context: context,
+                                ref: ref,
+                                existing: entry,
+                              );
+                            },
+                          )
+                        : null,
                   ),
                 if (entries.length > visible.length)
                   Padding(

@@ -14,6 +14,8 @@ abstract final class WayfinderPermission {
   static const manageMarkerIcons = 'manage_marker_icons';
   static const manageMapHome = 'manage_map_home';
   static const manageMapZoom = 'manage_map_zoom';
+  static const viewWatchLog = 'view_watch_log';
+  static const addWatchLog = 'add_watch_log';
 
   static const all = <String>{
     viewMap,
@@ -30,6 +32,8 @@ abstract final class WayfinderPermission {
     manageMarkerIcons,
     manageMapHome,
     manageMapZoom,
+    viewWatchLog,
+    addWatchLog,
   };
 
   static const editorDefaults = <String>{
@@ -42,6 +46,8 @@ abstract final class WayfinderPermission {
     manageMarkerIcons,
     managePmtiles,
     manageMapHome,
+    viewWatchLog,
+    addWatchLog,
   };
 
   static const viewerDefaults = <String>{viewMap};
@@ -54,7 +60,10 @@ abstract final class WayfinderPermission {
     required bool isWrite,
   }) {
     if (!isWrite) {
-      return viewMap;
+      return switch (tag) {
+        'watchLog' => viewWatchLog,
+        _ => viewMap,
+      };
     }
 
     return switch (tag) {
@@ -65,9 +74,9 @@ abstract final class WayfinderPermission {
       'markerIcons' || 'markerIcon' => manageMarkerIcons,
       'mapLayer' || 'seasonalOverlay' => manageLayers,
       'tides' => manageTides,
+      'watchLog' => addWatchLog,
       'mapMarker' ||
       'mapZone' ||
-      'watchLog' ||
       'category' ||
       'markerAttachment' => editMapObjects,
       _ => editMapObjects,

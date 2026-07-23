@@ -74,6 +74,25 @@
   },
   "accessRetry": "Retry",
   "accessSignOut": "Sign out",
+  "accessChangePassword": "Change password",
+  "accessChangePasswordTitle": "Change password",
+  "accessChangePasswordSave": "Update password",
+  "accessCurrentPasswordLabel": "Current password",
+  "accessNewPasswordLabel": "New password",
+  "accessConfirmPasswordLabel": "Confirm new password",
+  "accessChangePasswordTooShort": "Password must be at least 8 characters.",
+  "accessChangePasswordMismatch": "New password and confirmation do not match.",
+  "accessChangePasswordSameAsCurrent": "New password must be different from the current password.",
+  "accessChangePasswordFieldsRequired": "Enter your current password and a new password.",
+  "accessChangePasswordSuccess": "Password updated.",
+  "accessChangePasswordFailed": "Could not change password: {error}",
+  "@accessChangePasswordFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "accessSignedIn": "Signed in",
   "accessUnknownRole": "No role",
   "accessUsersTitle": "Users",
@@ -402,6 +421,8 @@
   "circleSizeToggleNone": "Size hidden on map · tap for radius",
   "watchLogTitle": "Incident / watch log",
   "watchLogSubtitle": "Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.",
+  "watchLogPermissionDenied": "You do not have permission to view the incident / watch log.",
+  "watchLogAddPermissionDenied": "You do not have permission to add or edit incident / watch log entries.",
   "watchLogObjectHint": "Entries linked to this map object.",
   "watchLogSidebarHint": "Newest first across all map objects",
   "watchLogAddEntry": "Add entry",

@@ -130,6 +130,48 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accessSignOut => 'Sign out';
 
   @override
+  String get accessChangePassword => 'Change password';
+
+  @override
+  String get accessChangePasswordTitle => 'Change password';
+
+  @override
+  String get accessChangePasswordSave => 'Update password';
+
+  @override
+  String get accessCurrentPasswordLabel => 'Current password';
+
+  @override
+  String get accessNewPasswordLabel => 'New password';
+
+  @override
+  String get accessConfirmPasswordLabel => 'Confirm new password';
+
+  @override
+  String get accessChangePasswordTooShort =>
+      'Password must be at least 8 characters.';
+
+  @override
+  String get accessChangePasswordMismatch =>
+      'New password and confirmation do not match.';
+
+  @override
+  String get accessChangePasswordSameAsCurrent =>
+      'New password must be different from the current password.';
+
+  @override
+  String get accessChangePasswordFieldsRequired =>
+      'Enter your current password and a new password.';
+
+  @override
+  String get accessChangePasswordSuccess => 'Password updated.';
+
+  @override
+  String accessChangePasswordFailed(String error) {
+    return 'Could not change password: $error';
+  }
+
+  @override
   String get accessSignedIn => 'Signed in';
 
   @override
@@ -847,6 +889,14 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get watchLogSubtitle =>
       'Événements horodatés pour le retour d\'expérience. Notes de planification uniquement.';
+
+  @override
+  String get watchLogPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation de consulter le journal d\'incident / de veille.';
+
+  @override
+  String get watchLogAddPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation d\'ajouter ou de modifier des entrées du journal d\'incident / de veille.';
 
   @override
   String get watchLogObjectHint => 'Entrées liées à cet objet cartographique.';

@@ -278,6 +278,8 @@
   "circleSizeToggleNone": "Tamaño oculto en el mapa · toque para radio",
   "watchLogTitle": "Registro de incidentes / guardia",
   "watchLogSubtitle": "Eventos con marca de tiempo para revisión posterior. Solo notas de planificación.",
+  "watchLogPermissionDenied": "No tienes permiso para ver el registro de incidentes / guardia.",
+  "watchLogAddPermissionDenied": "No tienes permiso para añadir o editar entradas del registro de incidentes / guardia.",
   "watchLogObjectHint": "Entradas vinculadas a este objeto del mapa.",
   "watchLogSidebarHint": "Más recientes primero en todos los objetos",
   "watchLogAddEntry": "Añadir entrada",

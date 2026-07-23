@@ -1,5 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../access/access_control.dart';
+import '../access/wayfinder_permissions.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import 'watch_log_entry_change_broadcast.dart';
@@ -18,6 +20,7 @@ class WatchLogEndpoint extends Endpoint with EndpointLogging {
         orderDescending: true,
       ),
       onSuccess: (entries) => 'count=${entries.length}',
+      requiredPermission: WayfinderPermission.viewWatchLog,
     );
   }
 
@@ -28,6 +31,7 @@ class WatchLogEndpoint extends Endpoint with EndpointLogging {
       'getEntry',
       () => WatchLogEntry.db.findById(session, id),
       onSuccess: (entry) => entry == null ? 'not found id=$id' : 'found id=$id',
+      requiredPermission: WayfinderPermission.viewWatchLog,
     );
   }
 
@@ -52,6 +56,7 @@ class WatchLogEndpoint extends Endpoint with EndpointLogging {
         return created;
       },
       onSuccess: (created) => 'id=${created.id} severity=${created.severity}',
+      requiredPermission: WayfinderPermission.addWatchLog,
     );
   }
 
@@ -74,6 +79,7 @@ class WatchLogEndpoint extends Endpoint with EndpointLogging {
         return updated;
       },
       onSuccess: (updated) => 'id=${updated.id}',
+      requiredPermission: WayfinderPermission.addWatchLog,
     );
   }
 
@@ -93,10 +99,18 @@ class WatchLogEndpoint extends Endpoint with EndpointLogging {
         return deleted.isNotEmpty;
       },
       onSuccess: (deleted) => deleted ? 'deleted id=$id' : 'not found id=$id',
+      requiredPermission: WayfinderPermission.addWatchLog,
     );
   }
 
   Stream<WatchLogEntryChange> entryChanges(Session session) async* {
+    await AccessControl.assertAllowed(
+      session,
+      tag: _tag,
+      operation: 'entryChanges',
+      isWrite: false,
+      requiredPermission: WayfinderPermission.viewWatchLog,
+    );
     final changes = session.messages.createStream<WatchLogEntryChange>(
       WatchLogEntryChangeBroadcast.channel,
     );

@@ -218,6 +218,32 @@ class Endpoints extends _i1.EndpointDispatch {
                         params['displayName'],
                       ),
         ),
+        'changeOwnPassword': _i1.MethodConnector(
+          name: 'changeOwnPassword',
+          params: {
+            'currentPassword': _i1.ParameterDescription(
+              name: 'currentPassword',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'newPassword': _i1.ParameterDescription(
+              name: 'newPassword',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['accessControl'] as _i2.AccessControlEndpoint)
+                      .changeOwnPassword(
+                        session,
+                        params['currentPassword'],
+                        params['newPassword'],
+                      ),
+        ),
         'updateUserRole': _i1.MethodConnector(
           name: 'updateUserRole',
           params: {

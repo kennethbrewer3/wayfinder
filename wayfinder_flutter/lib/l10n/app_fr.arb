@@ -278,6 +278,8 @@
   "circleSizeToggleNone": "Taille masquée sur la carte · appuyez pour le rayon",
   "watchLogTitle": "Journal d'incident / de veille",
   "watchLogSubtitle": "Événements horodatés pour le retour d'expérience. Notes de planification uniquement.",
+  "watchLogPermissionDenied": "Vous n'avez pas l'autorisation de consulter le journal d'incident / de veille.",
+  "watchLogAddPermissionDenied": "Vous n'avez pas l'autorisation d'ajouter ou de modifier des entrées du journal d'incident / de veille.",
   "watchLogObjectHint": "Entrées liées à cet objet cartographique.",
   "watchLogSidebarHint": "Plus récents d'abord sur tous les objets",
   "watchLogAddEntry": "Ajouter une entrée",

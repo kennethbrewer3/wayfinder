@@ -430,6 +430,41 @@ class _AccessControlEndpoint {
     });
   }
 
+  _i3.Future<bool> changeOwnPassword(
+    _i1.TestSessionBuilder sessionBuilder,
+    String currentPassword,
+    String newPassword,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'accessControl',
+            method: 'changeOwnPassword',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'accessControl',
+          methodName: 'changeOwnPassword',
+          parameters: _i1.testObjectToJson({
+            'currentPassword': currentPassword,
+            'newPassword': newPassword,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i5.AccessUserInfo> updateUserRole(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue membershipId,

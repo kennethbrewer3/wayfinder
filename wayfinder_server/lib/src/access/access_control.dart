@@ -44,6 +44,8 @@ abstract final class AccessControl {
         canManagePmtiles: !authRequired,
         canManageMapHome: !authRequired,
         canManageMapZoom: !authRequired,
+        canViewWatchLog: !authRequired,
+        canAddWatchLog: !authRequired,
       );
     }
 
@@ -72,6 +74,8 @@ abstract final class AccessControl {
         canManagePmtiles: false,
         canManageMapHome: false,
         canManageMapZoom: false,
+        canViewWatchLog: false,
+        canAddWatchLog: false,
       );
     }
 
@@ -118,6 +122,10 @@ abstract final class AccessControl {
           isAdmin || permissions.contains(WayfinderPermission.manageMapHome),
       canManageMapZoom:
           isAdmin || permissions.contains(WayfinderPermission.manageMapZoom),
+      canViewWatchLog:
+          isAdmin || permissions.contains(WayfinderPermission.viewWatchLog),
+      canAddWatchLog:
+          isAdmin || permissions.contains(WayfinderPermission.addWatchLog),
     );
   }
 

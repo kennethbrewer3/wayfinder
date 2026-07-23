@@ -316,6 +316,78 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get accessSignOut;
 
+  /// No description provided for @accessChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get accessChangePassword;
+
+  /// No description provided for @accessChangePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get accessChangePasswordTitle;
+
+  /// No description provided for @accessChangePasswordSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get accessChangePasswordSave;
+
+  /// No description provided for @accessCurrentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get accessCurrentPasswordLabel;
+
+  /// No description provided for @accessNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get accessNewPasswordLabel;
+
+  /// No description provided for @accessConfirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get accessConfirmPasswordLabel;
+
+  /// No description provided for @accessChangePasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters.'**
+  String get accessChangePasswordTooShort;
+
+  /// No description provided for @accessChangePasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'New password and confirmation do not match.'**
+  String get accessChangePasswordMismatch;
+
+  /// No description provided for @accessChangePasswordSameAsCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'New password must be different from the current password.'**
+  String get accessChangePasswordSameAsCurrent;
+
+  /// No description provided for @accessChangePasswordFieldsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current password and a new password.'**
+  String get accessChangePasswordFieldsRequired;
+
+  /// No description provided for @accessChangePasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated.'**
+  String get accessChangePasswordSuccess;
+
+  /// No description provided for @accessChangePasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not change password: {error}'**
+  String accessChangePasswordFailed(String error);
+
   /// No description provided for @accessSignedIn.
   ///
   /// In en, this message translates to:
@@ -1575,6 +1647,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.'**
   String get watchLogSubtitle;
+
+  /// No description provided for @watchLogPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to view the incident / watch log.'**
+  String get watchLogPermissionDenied;
+
+  /// No description provided for @watchLogAddPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to add or edit incident / watch log entries.'**
+  String get watchLogAddPermissionDenied;
 
   /// No description provided for @watchLogObjectHint.
   ///

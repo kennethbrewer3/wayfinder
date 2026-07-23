@@ -110,6 +110,72 @@ abstract final class AccessAdminService {
     );
   }
 
+  /// Lets a signed-in user change their own password after verifying the current one.
+  static Future<bool> changeOwnPassword(
+    Session session, {
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final auth = session.authenticated;
+    if (auth == null) {
+      throw AccessDeniedException(
+        'Authentication required. Sign in to continue.',
+      );
+    }
+
+    final authUserId = AccessControl.authUserIdOf(auth);
+    final membership = await UserMembership.db.findFirstRow(
+      session,
+      where: (t) => t.authUserId.equals(authUserId),
+    );
+    if (membership == null) {
+      throw AccessDeniedException(
+        'Authentication required. Sign in to continue.',
+      );
+    }
+
+    if (newPassword.trim().length < 8) {
+      throw ArgumentError('Password must be at least 8 characters.');
+    }
+    if (currentPassword == newPassword) {
+      throw ArgumentError(
+        'New password must be different from the current password.',
+      );
+    }
+
+    try {
+      final verifiedAuthUserId = await AuthServices
+          .instance
+          .emailIdp
+          .utils
+          .authentication
+          .authenticate(
+            session,
+            email: membership.email,
+            password: currentPassword,
+            transaction: null,
+          );
+      if (verifiedAuthUserId != authUserId) {
+        throw ArgumentError('Current password is incorrect.');
+      }
+    } on EmailAuthenticationInvalidCredentialsException {
+      throw ArgumentError('Current password is incorrect.');
+    } on EmailAccountNotFoundException {
+      throw ArgumentError('Current password is incorrect.');
+    } on EmailAuthenticationTooManyAttemptsException {
+      throw StateError(
+        'Too many failed password attempts. Try again later.',
+      );
+    }
+
+    await AuthServices.instance.emailIdp.admin.setPassword(
+      session,
+      email: membership.email,
+      password: newPassword,
+    );
+    return true;
+  }
+
   static Future<AccessUserInfo> updateUserRole(
     Session session, {
     required UuidValue membershipId,

@@ -130,6 +130,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accessSignOut => 'Sign out';
 
   @override
+  String get accessChangePassword => 'Change password';
+
+  @override
+  String get accessChangePasswordTitle => 'Change password';
+
+  @override
+  String get accessChangePasswordSave => 'Update password';
+
+  @override
+  String get accessCurrentPasswordLabel => 'Current password';
+
+  @override
+  String get accessNewPasswordLabel => 'New password';
+
+  @override
+  String get accessConfirmPasswordLabel => 'Confirm new password';
+
+  @override
+  String get accessChangePasswordTooShort =>
+      'Password must be at least 8 characters.';
+
+  @override
+  String get accessChangePasswordMismatch =>
+      'New password and confirmation do not match.';
+
+  @override
+  String get accessChangePasswordSameAsCurrent =>
+      'New password must be different from the current password.';
+
+  @override
+  String get accessChangePasswordFieldsRequired =>
+      'Enter your current password and a new password.';
+
+  @override
+  String get accessChangePasswordSuccess => 'Password updated.';
+
+  @override
+  String accessChangePasswordFailed(String error) {
+    return 'Could not change password: $error';
+  }
+
+  @override
   String get accessSignedIn => 'Signed in';
 
   @override
@@ -844,6 +886,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get watchLogSubtitle =>
       'Eventos con marca de tiempo para revisión posterior. Solo notas de planificación.';
+
+  @override
+  String get watchLogPermissionDenied =>
+      'No tienes permiso para ver el registro de incidentes / guardia.';
+
+  @override
+  String get watchLogAddPermissionDenied =>
+      'No tienes permiso para añadir o editar entradas del registro de incidentes / guardia.';
 
   @override
   String get watchLogObjectHint =>

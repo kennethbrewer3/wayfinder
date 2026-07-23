@@ -37,6 +37,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     required this.canManagePmtiles,
     required this.canManageMapHome,
     required this.canManageMapZoom,
+    required this.canViewWatchLog,
+    required this.canAddWatchLog,
   });
 
   factory AccessSessionInfo({
@@ -62,6 +64,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     required bool canManagePmtiles,
     required bool canManageMapHome,
     required bool canManageMapZoom,
+    required bool canViewWatchLog,
+    required bool canAddWatchLog,
   }) = _AccessSessionInfoImpl;
 
   factory AccessSessionInfo.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -124,6 +128,12 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
       canManageMapZoom: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['canManageMapZoom'],
       ),
+      canViewWatchLog: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canViewWatchLog'],
+      ),
+      canAddWatchLog: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canAddWatchLog'],
+      ),
     );
   }
 
@@ -171,6 +181,10 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
 
   bool canManageMapZoom;
 
+  bool canViewWatchLog;
+
+  bool canAddWatchLog;
+
   /// Returns a shallow copy of this [AccessSessionInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -197,6 +211,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
     bool? canManagePmtiles,
     bool? canManageMapHome,
     bool? canManageMapZoom,
+    bool? canViewWatchLog,
+    bool? canAddWatchLog,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -224,6 +240,8 @@ abstract class AccessSessionInfo implements _i1.SerializableModel {
       'canManagePmtiles': canManagePmtiles,
       'canManageMapHome': canManageMapHome,
       'canManageMapZoom': canManageMapZoom,
+      'canViewWatchLog': canViewWatchLog,
+      'canAddWatchLog': canAddWatchLog,
     };
   }
 
@@ -259,6 +277,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     required bool canManagePmtiles,
     required bool canManageMapHome,
     required bool canManageMapZoom,
+    required bool canViewWatchLog,
+    required bool canAddWatchLog,
   }) : super._(
          authRequired: authRequired,
          authenticated: authenticated,
@@ -282,6 +302,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
          canManagePmtiles: canManagePmtiles,
          canManageMapHome: canManageMapHome,
          canManageMapZoom: canManageMapZoom,
+         canViewWatchLog: canViewWatchLog,
+         canAddWatchLog: canAddWatchLog,
        );
 
   /// Returns a shallow copy of this [AccessSessionInfo]
@@ -311,6 +333,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     bool? canManagePmtiles,
     bool? canManageMapHome,
     bool? canManageMapZoom,
+    bool? canViewWatchLog,
+    bool? canAddWatchLog,
   }) {
     return AccessSessionInfo(
       authRequired: authRequired ?? this.authRequired,
@@ -335,6 +359,8 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
       canManagePmtiles: canManagePmtiles ?? this.canManagePmtiles,
       canManageMapHome: canManageMapHome ?? this.canManageMapHome,
       canManageMapZoom: canManageMapZoom ?? this.canManageMapZoom,
+      canViewWatchLog: canViewWatchLog ?? this.canViewWatchLog,
+      canAddWatchLog: canAddWatchLog ?? this.canAddWatchLog,
     );
   }
 }

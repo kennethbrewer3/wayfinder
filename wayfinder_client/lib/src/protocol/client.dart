@@ -117,6 +117,19 @@ class EndpointAccessControl extends _i1.EndpointRef {
     },
   );
 
+  /// Any signed-in user may change their own password (current password required).
+  _i2.Future<bool> changeOwnPassword(
+    String currentPassword,
+    String newPassword,
+  ) => caller.callServerEndpoint<bool>(
+    'accessControl',
+    'changeOwnPassword',
+    {
+      'currentPassword': currentPassword,
+      'newPassword': newPassword,
+    },
+  );
+
   _i2.Future<_i4.AccessUserInfo> updateUserRole(
     _i1.UuidValue membershipId,
     _i1.UuidValue roleId,

@@ -3,6 +3,7 @@ accessControl:
   - listKnownPermissions:
   - listUsers:
   - createUser:
+  - changeOwnPassword:
   - updateUserRole:
   - setUserBlocked:
   - deleteUser:

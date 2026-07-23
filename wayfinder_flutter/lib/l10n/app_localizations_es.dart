@@ -43,10 +43,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessSignInSubtitle =>
-      'Sign in with the account your TOC administrator created for you.';
+      'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.';
 
   @override
   String get accessSignInRequired => 'Sign in to manage users and roles.';
+
+  @override
+  String get accessSignInAction => 'Sign in';
 
   @override
   String accessSessionLoadFailed(String error) {
@@ -70,7 +73,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessUsersHelp =>
-      'Create TOC accounts and assign roles. Public self-registration is disabled.';
+      'Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.';
 
   @override
   String get accessUsersPermissionDenied =>
@@ -78,7 +81,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessUsersEmpty =>
-      'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD.';
+      'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD (username + password).';
 
   @override
   String accessUsersLoadFailed(String error) {
@@ -89,7 +92,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accessCreateUser => 'Create user';
 
   @override
-  String get accessEmailLabel => 'Email';
+  String get accessUsernameLabel => 'Username';
+
+  @override
+  String get accessUsernameHelp =>
+      'Local login id for this TOC. No email is sent.';
+
+  @override
+  String get accessEmailLabel => 'Username';
 
   @override
   String get accessPasswordLabel => 'Password';

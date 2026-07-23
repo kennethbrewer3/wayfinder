@@ -169,7 +169,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessSignInSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign in with the account your TOC administrator created for you.'**
+  /// **'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.'**
   String get accessSignInSubtitle;
 
   /// No description provided for @accessSignInRequired.
@@ -177,6 +177,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in to manage users and roles.'**
   String get accessSignInRequired;
+
+  /// No description provided for @accessSignInAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get accessSignInAction;
 
   /// No description provided for @accessSessionLoadFailed.
   ///
@@ -217,7 +223,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessUsersHelp.
   ///
   /// In en, this message translates to:
-  /// **'Create TOC accounts and assign roles. Public self-registration is disabled.'**
+  /// **'Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.'**
   String get accessUsersHelp;
 
   /// No description provided for @accessUsersPermissionDenied.
@@ -229,7 +235,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessUsersEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD.'**
+  /// **'No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD (username + password).'**
   String get accessUsersEmpty;
 
   /// No description provided for @accessUsersLoadFailed.
@@ -244,10 +250,22 @@ abstract class AppLocalizations {
   /// **'Create user'**
   String get accessCreateUser;
 
+  /// No description provided for @accessUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get accessUsernameLabel;
+
+  /// No description provided for @accessUsernameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Local login id for this TOC. No email is sent.'**
+  String get accessUsernameHelp;
+
   /// No description provided for @accessEmailLabel.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
+  /// **'Username'**
   String get accessEmailLabel;
 
   /// No description provided for @accessPasswordLabel.

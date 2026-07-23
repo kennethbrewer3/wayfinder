@@ -48,7 +48,7 @@ Edit `.env` before the first start.
 | `WAYFINDER_SERVER_IMAGE` | No | Pin a release, e.g. `ghcr.io/kennethbrewer3/wayfinder-server:v1.1.0` |
 | `WAYFINDER_READ_ONLY` | No | Set `1` / `true` for a spare TOC viewer appliance that must reject all writes |
 | `WAYFINDER_AUTH_REQUIRED` | No | Force login even before any users exist |
-| `WAYFINDER_BOOTSTRAP_ADMIN_EMAIL` | No | Create first admin on startup (with password below) |
+| `WAYFINDER_BOOTSTRAP_ADMIN_EMAIL` | No | Create first admin on startup (local username, not a mailbox) |
 | `WAYFINDER_BOOTSTRAP_ADMIN_PASSWORD` | No | Password for bootstrap admin |
 
 Direct LAN access:

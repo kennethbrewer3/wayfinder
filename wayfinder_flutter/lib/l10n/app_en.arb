@@ -14,8 +14,9 @@
   "settingsTabUsers": "Users & roles",
   "settingsTabBackup": "Backup",
   "settingsTabAbout": "About",
-  "accessSignInSubtitle": "Sign in with the account your TOC administrator created for you.",
+  "accessSignInSubtitle": "Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.",
   "accessSignInRequired": "Sign in to manage users and roles.",
+  "accessSignInAction": "Sign in",
   "accessSessionLoadFailed": "Could not load access session: {error}",
   "@accessSessionLoadFailed": {
     "placeholders": {
@@ -29,9 +30,9 @@
   "accessSignedIn": "Signed in",
   "accessUnknownRole": "No role",
   "accessUsersTitle": "Users",
-  "accessUsersHelp": "Create TOC accounts and assign roles. Public self-registration is disabled.",
+  "accessUsersHelp": "Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.",
   "accessUsersPermissionDenied": "You do not have permission to manage users or roles.",
-  "accessUsersEmpty": "No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD.",
+  "accessUsersEmpty": "No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD (username + password).",
   "accessUsersLoadFailed": "Could not load users: {error}",
   "@accessUsersLoadFailed": {
     "placeholders": {
@@ -41,7 +42,9 @@
     }
   },
   "accessCreateUser": "Create user",
-  "accessEmailLabel": "Email",
+  "accessUsernameLabel": "Username",
+  "accessUsernameHelp": "Local login id for this TOC. No email is sent.",
+  "accessEmailLabel": "Username",
   "accessPasswordLabel": "Password",
   "accessDisplayNameLabel": "Display name (optional)",
   "accessRoleLabel": "Role",

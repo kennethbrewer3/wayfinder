@@ -54,15 +54,79 @@ class AuthGate extends ConsumerWidget {
   }
 }
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key, this.onAuthenticated});
 
   final VoidCallback? onAuthenticated;
 
   @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  var _submitting = false;
+  var _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+    if (username.isEmpty || password.isEmpty) {
+      return;
+    }
+
+    setState(() => _submitting = true);
+    try {
+      final authSuccess = await client.emailIdp.login(
+        email: username,
+        password: password,
+      );
+      await client.auth.updateSignedInUser(authSuccess);
+      widget.onAuthenticated?.call();
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.authSuccess),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.authFailed(error.toString())),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _submitting = false);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final canSubmit =
+        !_submitting &&
+        _usernameController.text.trim().isNotEmpty &&
+        _passwordController.text.isNotEmpty;
 
     return Scaffold(
       body: SafeArea(
@@ -85,41 +149,56 @@ class SignInScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                SignInWidget(
-                  client: client,
-                  disableAnonymousSignInWidget: true,
-                  emailSignInWidget: EmailSignInWidget(
-                    client: client,
-                    startScreen: EmailFlowScreen.login,
-                    onAuthenticated: () {
-                      onAuthenticated?.call();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.authSuccess),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    },
-                    onError: (error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.authFailed(error.toString())),
-                          backgroundColor: Colors.red,
-                          duration: const Duration(seconds: 5),
-                        ),
-                      );
-                    },
+                TextField(
+                  controller: _usernameController,
+                  enabled: !_submitting,
+                  autofocus: true,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.username],
+                  decoration: InputDecoration(
+                    labelText: l10n.accessUsernameLabel,
+                    helperText: l10n.accessUsernameHelp,
                   ),
-                  onAuthenticated: onAuthenticated,
-                  onError: (error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.authFailed(error.toString())),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 5),
+                  onChanged: (_) => setState(() {}),
+                  onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _passwordController,
+                  enabled: !_submitting,
+                  obscureText: _obscurePassword,
+                  textInputAction: TextInputAction.done,
+                  autofillHints: const [AutofillHints.password],
+                  decoration: InputDecoration(
+                    labelText: l10n.accessPasswordLabel,
+                    suffixIcon: IconButton(
+                      onPressed: () => setState(
+                        () => _obscurePassword = !_obscurePassword,
                       ),
-                    );
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                    ),
+                  ),
+                  onChanged: (_) => setState(() {}),
+                  onSubmitted: (_) {
+                    if (canSubmit) {
+                      _submit();
+                    }
                   },
+                ),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: canSubmit ? _submit : null,
+                  child: _submitting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(l10n.accessSignInAction),
                 ),
               ],
             ),

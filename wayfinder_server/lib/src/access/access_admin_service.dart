@@ -46,8 +46,10 @@ abstract final class AccessAdminService {
     String? displayName,
   }) async {
     final normalized = email.trim().toLowerCase();
-    if (normalized.isEmpty || !normalized.contains('@')) {
-      throw ArgumentError('A valid email is required.');
+    if (!_isValidUsername(normalized)) {
+      throw ArgumentError(
+        'Username must be 2–64 characters with no spaces.',
+      );
     }
     if (password.trim().length < 8) {
       throw ArgumentError('Password must be at least 8 characters.');
@@ -63,7 +65,7 @@ abstract final class AccessAdminService {
       where: (t) => t.email.equals(normalized),
     );
     if (duplicate != null) {
-      throw StateError('A user with that email already exists.');
+      throw StateError('A user with that username already exists.');
     }
 
     final authUser = await AuthServices.instance.authUsers.create(
@@ -411,5 +413,14 @@ abstract final class AccessAdminService {
       throw ArgumentError('Role key is required.');
     }
     return key;
+  }
+
+  /// Offline-friendly login id (stored in the email IdP field).
+  static bool _isValidUsername(String value) {
+    if (value.length < 2 || value.length > 64) {
+      return false;
+    }
+    // Allow plain usernames (admin) or legacy email-shaped ids.
+    return !value.contains(RegExp(r'\s'));
   }
 }

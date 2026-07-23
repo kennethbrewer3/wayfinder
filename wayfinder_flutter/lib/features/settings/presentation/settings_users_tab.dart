@@ -343,10 +343,10 @@ Future<void> _showCreateUserDialog(BuildContext context, WidgetRef ref) async {
                   TextField(
                     controller: emailController,
                     decoration: InputDecoration(
-                      labelText: l10n.accessEmailLabel,
+                      labelText: l10n.accessUsernameLabel,
+                      helperText: l10n.accessUsernameHelp,
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autofillHints: const [AutofillHints.email],
+                    autofillHints: const [AutofillHints.username],
                   ),
                   TextField(
                     controller: passwordController,

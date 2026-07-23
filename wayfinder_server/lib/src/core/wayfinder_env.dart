@@ -130,7 +130,10 @@ class WayfinderEnv {
     return false;
   }
 
-  /// Optional bootstrap admin email (paired with [bootstrapAdminPassword]).
+  /// Optional bootstrap admin login id (paired with [bootstrapAdminPassword]).
+  ///
+  /// This is a local username stored in the email IdP field — Wayfinder does
+  /// not send email. Example: `admin`.
   static String? get bootstrapAdminEmail {
     for (final key in ['WAYFINDER_BOOTSTRAP_ADMIN_EMAIL']) {
       final value = Platform.environment[key]?.trim();

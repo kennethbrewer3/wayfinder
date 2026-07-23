@@ -171,6 +171,27 @@ class _UsersList extends ConsumerWidget {
                               user.membershipId,
                               roleId,
                             );
+                          case 'reset-password':
+                            final reset = await _showResetUserPasswordDialog(
+                              context: context,
+                              email: user.email,
+                            );
+                            if (reset == null) {
+                              return;
+                            }
+                            await client.accessControl.resetUserPassword(
+                              user.membershipId,
+                              reset,
+                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    l10n.accessResetPasswordSuccess(user.email),
+                                  ),
+                                ),
+                              );
+                            }
                           case 'block':
                             await client.accessControl.setUserBlocked(
                               user.membershipId,
@@ -193,7 +214,7 @@ class _UsersList extends ConsumerWidget {
                                   FilledButton(
                                     onPressed: () =>
                                         Navigator.pop(context, true),
-                                    child: Text(l10n.actionDelete),
+                                    child: Text(l10n.accessDeleteUser),
                                   ),
                                 ],
                               ),
@@ -204,6 +225,15 @@ class _UsersList extends ConsumerWidget {
                             await client.accessControl.deleteUser(
                               user.membershipId,
                             );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    l10n.accessDeleteUserSuccess(user.email),
+                                  ),
+                                ),
+                              );
+                            }
                         }
                         ref.invalidate(_accessUsersProvider);
                         ref.invalidate(_accessRolesProvider);
@@ -219,6 +249,10 @@ class _UsersList extends ConsumerWidget {
                       PopupMenuItem(
                         value: 'role',
                         child: Text(l10n.accessChangeRole),
+                      ),
+                      PopupMenuItem(
+                        value: 'reset-password',
+                        child: Text(l10n.accessResetPassword),
                       ),
                       PopupMenuItem(
                         value: 'block',
@@ -313,6 +347,128 @@ class _RolesList extends ConsumerWidget {
         );
       },
     );
+  }
+}
+
+Future<String?> _showResetUserPasswordDialog({
+  required BuildContext context,
+  required String email,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final passwordController = TextEditingController();
+  final confirmController = TextEditingController();
+  var obscurePassword = true;
+  var obscureConfirm = true;
+  String? errorText;
+
+  try {
+    return await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setLocalState) {
+            void submit() {
+              final next = passwordController.text;
+              final confirm = confirmController.text;
+              if (next.trim().length < 8) {
+                setLocalState(() {
+                  errorText = l10n.accessChangePasswordTooShort;
+                });
+                return;
+              }
+              if (next != confirm) {
+                setLocalState(() {
+                  errorText = l10n.accessChangePasswordMismatch;
+                });
+                return;
+              }
+              Navigator.of(dialogContext).pop(next);
+            }
+
+            return AlertDialog(
+              title: Text(l10n.accessResetPasswordTitle(email)),
+              content: SizedBox(
+                width: 360,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: passwordController,
+                      obscureText: obscurePassword,
+                      autofillHints: const [AutofillHints.newPassword],
+                      decoration: InputDecoration(
+                        labelText: l10n.accessNewPasswordLabel,
+                        helperText: l10n.accessChangePasswordTooShort,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setLocalState(() {
+                              obscurePassword = !obscurePassword;
+                            });
+                          },
+                          icon: Icon(
+                            obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                        ),
+                      ),
+                      onSubmitted: (_) => submit(),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: confirmController,
+                      obscureText: obscureConfirm,
+                      autofillHints: const [AutofillHints.newPassword],
+                      decoration: InputDecoration(
+                        labelText: l10n.accessConfirmPasswordLabel,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setLocalState(() {
+                              obscureConfirm = !obscureConfirm;
+                            });
+                          },
+                          icon: Icon(
+                            obscureConfirm
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                        ),
+                      ),
+                      onSubmitted: (_) => submit(),
+                    ),
+                    if (errorText != null) ...[
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          errorText!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(l10n.actionCancel),
+                ),
+                FilledButton(
+                  onPressed: submit,
+                  child: Text(l10n.accessResetPasswordSave),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  } finally {
+    passwordController.dispose();
+    confirmController.dispose();
   }
 }
 

@@ -162,6 +162,25 @@ class AccessControlEndpoint extends Endpoint with EndpointLogging {
     );
   }
 
+  /// Admin forgotten-password recovery: set a new password for a TOC user.
+  Future<bool> resetUserPassword(
+    Session session,
+    UuidValue membershipId,
+    String newPassword,
+  ) {
+    return loggedCall(
+      session,
+      _tag,
+      'resetUserPassword',
+      () => AccessAdminService.resetUserPassword(
+        session,
+        membershipId: membershipId,
+        newPassword: newPassword,
+      ),
+      requiredPermission: WayfinderPermission.manageUsers,
+    );
+  }
+
   Future<List<AccessRoleInfo>> listRoles(Session session) {
     return loggedCall(
       session,

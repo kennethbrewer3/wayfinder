@@ -496,23 +496,59 @@ abstract class AppLocalizations {
   /// **'Unblock user'**
   String get accessUnblockUser;
 
+  /// No description provided for @accessResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get accessResetPassword;
+
+  /// No description provided for @accessResetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password for {email}'**
+  String accessResetPasswordTitle(String email);
+
+  /// No description provided for @accessResetPasswordSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Set new password'**
+  String get accessResetPasswordSave;
+
+  /// No description provided for @accessResetPasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset for {email}.'**
+  String accessResetPasswordSuccess(String email);
+
+  /// No description provided for @accessResetPasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reset password: {error}'**
+  String accessResetPasswordFailed(String error);
+
   /// No description provided for @accessDeleteUser.
   ///
   /// In en, this message translates to:
-  /// **'Delete user'**
+  /// **'Remove user'**
   String get accessDeleteUser;
 
   /// No description provided for @accessDeleteUserTitle.
   ///
   /// In en, this message translates to:
-  /// **'Delete user?'**
+  /// **'Remove user?'**
   String get accessDeleteUserTitle;
 
   /// No description provided for @accessDeleteUserConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Delete {email}? This cannot be undone.'**
+  /// **'Remove {email}? Their account and preferences will be deleted. This cannot be undone.'**
   String accessDeleteUserConfirm(String email);
+
+  /// No description provided for @accessDeleteUserSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {email}.'**
+  String accessDeleteUserSuccess(String email);
 
   /// No description provided for @accessUserBlocked.
   ///

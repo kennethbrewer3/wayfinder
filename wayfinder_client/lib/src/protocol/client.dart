@@ -161,6 +161,19 @@ class EndpointAccessControl extends _i1.EndpointRef {
         {'membershipId': membershipId},
       );
 
+  /// Admin forgotten-password recovery: set a new password for a TOC user.
+  _i2.Future<bool> resetUserPassword(
+    _i1.UuidValue membershipId,
+    String newPassword,
+  ) => caller.callServerEndpoint<bool>(
+    'accessControl',
+    'resetUserPassword',
+    {
+      'membershipId': membershipId,
+      'newPassword': newPassword,
+    },
+  );
+
   _i2.Future<List<_i5.AccessRoleInfo>> listRoles() =>
       caller.callServerEndpoint<List<_i5.AccessRoleInfo>>(
         'accessControl',

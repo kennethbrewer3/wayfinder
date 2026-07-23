@@ -316,6 +316,32 @@ class Endpoints extends _i1.EndpointDispatch {
                         params['membershipId'],
                       ),
         ),
+        'resetUserPassword': _i1.MethodConnector(
+          name: 'resetUserPassword',
+          params: {
+            'membershipId': _i1.ParameterDescription(
+              name: 'membershipId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+            'newPassword': _i1.ParameterDescription(
+              name: 'newPassword',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['accessControl'] as _i2.AccessControlEndpoint)
+                      .resetUserPassword(
+                        session,
+                        params['membershipId'],
+                        params['newPassword'],
+                      ),
+        ),
         'listRoles': _i1.MethodConnector(
           name: 'listRoles',
           params: {},

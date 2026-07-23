@@ -268,6 +268,28 @@ abstract final class AccessAdminService {
     );
   }
 
+  /// Admin sets a new password for another TOC user (forgotten-password recovery).
+  static Future<bool> resetUserPassword(
+    Session session, {
+    required UuidValue membershipId,
+    required String newPassword,
+  }) async {
+    final membership = await UserMembership.db.findById(session, membershipId);
+    if (membership == null) {
+      throw StateError('User not found.');
+    }
+    if (newPassword.trim().length < 8) {
+      throw ArgumentError('Password must be at least 8 characters.');
+    }
+
+    await AuthServices.instance.emailIdp.admin.setPassword(
+      session,
+      email: membership.email,
+      password: newPassword,
+    );
+    return true;
+  }
+
   static Future<List<AccessRoleInfo>> listRoles(Session session) async {
     final roles = await AccessRole.db.find(
       session,

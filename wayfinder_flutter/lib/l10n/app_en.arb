@@ -118,10 +118,44 @@
   "accessChangeRole": "Change role",
   "accessBlockUser": "Block user",
   "accessUnblockUser": "Unblock user",
-  "accessDeleteUser": "Delete user",
-  "accessDeleteUserTitle": "Delete user?",
-  "accessDeleteUserConfirm": "Delete {email}? This cannot be undone.",
+  "accessResetPassword": "Reset password",
+  "accessResetPasswordTitle": "Reset password for {email}",
+  "@accessResetPasswordTitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accessResetPasswordSave": "Set new password",
+  "accessResetPasswordSuccess": "Password reset for {email}.",
+  "@accessResetPasswordSuccess": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accessResetPasswordFailed": "Could not reset password: {error}",
+  "@accessResetPasswordFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "accessDeleteUser": "Remove user",
+  "accessDeleteUserTitle": "Remove user?",
+  "accessDeleteUserConfirm": "Remove {email}? Their account and preferences will be deleted. This cannot be undone.",
   "@accessDeleteUserConfirm": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accessDeleteUserSuccess": "Removed {email}.",
+  "@accessDeleteUserSuccess": {
     "placeholders": {
       "email": {
         "type": "String"

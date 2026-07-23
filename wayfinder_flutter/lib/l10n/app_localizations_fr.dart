@@ -233,14 +233,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accessUnblockUser => 'Unblock user';
 
   @override
-  String get accessDeleteUser => 'Delete user';
+  String get accessResetPassword => 'Reset password';
 
   @override
-  String get accessDeleteUserTitle => 'Delete user?';
+  String accessResetPasswordTitle(String email) {
+    return 'Reset password for $email';
+  }
+
+  @override
+  String get accessResetPasswordSave => 'Set new password';
+
+  @override
+  String accessResetPasswordSuccess(String email) {
+    return 'Password reset for $email.';
+  }
+
+  @override
+  String accessResetPasswordFailed(String error) {
+    return 'Could not reset password: $error';
+  }
+
+  @override
+  String get accessDeleteUser => 'Remove user';
+
+  @override
+  String get accessDeleteUserTitle => 'Remove user?';
 
   @override
   String accessDeleteUserConfirm(String email) {
-    return 'Delete $email? This cannot be undone.';
+    return 'Remove $email? Their account and preferences will be deleted. This cannot be undone.';
+  }
+
+  @override
+  String accessDeleteUserSuccess(String email) {
+    return 'Removed $email.';
   }
 
   @override

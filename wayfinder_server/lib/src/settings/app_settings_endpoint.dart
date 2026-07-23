@@ -226,6 +226,7 @@ class AppSettingsEndpoint extends Endpoint with EndpointLogging {
           appLocale: appLocale,
           mapMarkerSizeScale: mapMarkerSizeScale,
         );
+        await AppSettingsStore.assertAppThemeExists(session, appTheme);
         // Keep validating unused zoom args so malformed clients still fail loudly.
         AppSettingsStore.validateMapZoomRange(
           mapMinZoom: mapMinZoom,

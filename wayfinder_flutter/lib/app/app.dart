@@ -8,6 +8,7 @@ import '../features/markers/providers/map_marker_updates_listener.dart';
 import '../features/settings/data/client_ui_preferences_repository.dart';
 import '../features/settings/providers/app_locale_provider.dart';
 import '../features/settings/providers/app_theme_provider.dart';
+import '../features/themes/providers/app_theme_definitions_provider.dart';
 import '../screens/sign_in_screen.dart';
 import 'app_locale_choice.dart';
 import 'router.dart';
@@ -20,13 +21,15 @@ class WayfinderApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(mapMarkerUpdatesListenerProvider);
     ref.watch(clientUiPreferencesAuthListenerProvider);
-    final themeChoice = ref.watch(appThemeProvider);
+    final themeId = ref.watch(appThemeProvider);
+    final customThemes =
+        ref.watch(appThemeDefinitionsProvider).valueOrNull ?? const [];
     final localeChoice = ref.watch(appLocaleProvider);
 
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.forChoice(themeChoice),
+      theme: AppTheme.resolve(themeId, customThemes: customThemes),
       locale: appLocaleChoiceToLocale(localeChoice),
       routerConfig: appRouter,
       builder: (context, child) {

@@ -19,6 +19,7 @@ fields:
   canManageTides: bool
   canManageGeocoding: bool
   canManageMarkerIcons: bool
+  canManageThemes: bool
   canManagePmtiles: bool
   canManageMapHome: bool
   canManageMapZoom: bool

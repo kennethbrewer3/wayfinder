@@ -130,6 +130,12 @@ abstract class AppLocalizations {
   /// **'Marker icons'**
   String get settingsTabMarkerIcons;
 
+  /// No description provided for @settingsTabThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get settingsTabThemes;
+
   /// No description provided for @settingsTabGeocoding.
   ///
   /// In en, this message translates to:
@@ -973,8 +979,248 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAppearanceDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Saved to your account so it follows you on any workstation.'**
+  /// **'Choose a built-in or custom TOC theme. Custom themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.'**
   String get settingsAppearanceDescription;
+
+  /// No description provided for @settingsThemesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get settingsThemesTitle;
+
+  /// No description provided for @settingsThemesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and manage shared TOC themes. Anyone can select a theme; only users with manage_themes can create, edit, import, or export.'**
+  String get settingsThemesDescription;
+
+  /// No description provided for @settingsThemesPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select themes, but you do not have permission to create, edit, import, or export them.'**
+  String get settingsThemesPermissionDenied;
+
+  /// No description provided for @settingsThemesBuiltInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in themes'**
+  String get settingsThemesBuiltInTitle;
+
+  /// No description provided for @settingsThemesBuiltInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Included with Wayfinder'**
+  String get settingsThemesBuiltInSubtitle;
+
+  /// No description provided for @settingsThemesCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom TOC themes'**
+  String get settingsThemesCustomTitle;
+
+  /// No description provided for @settingsThemesCustomEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No custom themes yet. Create one or import a JSON file.'**
+  String get settingsThemesCustomEmpty;
+
+  /// No description provided for @settingsThemesUseBuiltInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Using a built-in theme'**
+  String get settingsThemesUseBuiltInHint;
+
+  /// No description provided for @settingsThemesNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New theme'**
+  String get settingsThemesNew;
+
+  /// No description provided for @settingsThemesNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New theme'**
+  String get settingsThemesNewTitle;
+
+  /// No description provided for @settingsThemesEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit theme'**
+  String get settingsThemesEditTitle;
+
+  /// No description provided for @settingsThemesEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get settingsThemesEdit;
+
+  /// No description provided for @settingsThemesDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get settingsThemesDuplicate;
+
+  /// No description provided for @settingsThemesExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get settingsThemesExport;
+
+  /// No description provided for @settingsThemesImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get settingsThemesImport;
+
+  /// No description provided for @settingsThemesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get settingsThemesDelete;
+
+  /// No description provided for @settingsThemesUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get settingsThemesUse;
+
+  /// No description provided for @settingsThemesName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get settingsThemesName;
+
+  /// No description provided for @settingsThemesNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a theme name.'**
+  String get settingsThemesNameRequired;
+
+  /// No description provided for @settingsThemesSeedColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Seed color'**
+  String get settingsThemesSeedColor;
+
+  /// No description provided for @settingsThemesSeedColorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Material generates the palette from this color. Overrides below replace specific roles.'**
+  String get settingsThemesSeedColorHint;
+
+  /// No description provided for @settingsThemesOverridesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Color overrides'**
+  String get settingsThemesOverridesTitle;
+
+  /// No description provided for @settingsThemesOverridesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Leave unset to keep the seed-generated color for that role.'**
+  String get settingsThemesOverridesHint;
+
+  /// No description provided for @settingsThemesOverrideFromSeed.
+  ///
+  /// In en, this message translates to:
+  /// **'From seed'**
+  String get settingsThemesOverrideFromSeed;
+
+  /// No description provided for @settingsThemesClearOverride.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear override'**
+  String get settingsThemesClearOverride;
+
+  /// No description provided for @settingsThemesShowAllOverrides.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all color roles'**
+  String get settingsThemesShowAllOverrides;
+
+  /// No description provided for @settingsThemesShowFewerOverrides.
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer color roles'**
+  String get settingsThemesShowFewerOverrides;
+
+  /// No description provided for @settingsThemesPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get settingsThemesPreview;
+
+  /// No description provided for @settingsThemesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load themes: {error}'**
+  String settingsThemesLoadFailed(String error);
+
+  /// No description provided for @settingsThemesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved theme “{name}”.'**
+  String settingsThemesSaved(String name);
+
+  /// No description provided for @settingsThemesSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save theme: {error}'**
+  String settingsThemesSaveFailed(String error);
+
+  /// No description provided for @settingsThemesImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported theme “{name}”.'**
+  String settingsThemesImported(String name);
+
+  /// No description provided for @settingsThemesImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to import theme: {error}'**
+  String settingsThemesImportFailed(String error);
+
+  /// No description provided for @settingsThemesExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported theme “{name}”.'**
+  String settingsThemesExported(String name);
+
+  /// No description provided for @settingsThemesExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to export theme: {error}'**
+  String settingsThemesExportFailed(String error);
+
+  /// No description provided for @settingsThemesDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete theme?'**
+  String get settingsThemesDeleteTitle;
+
+  /// No description provided for @settingsThemesDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”? Users who selected it will fall back to the standard light theme.'**
+  String settingsThemesDeleteMessage(String name);
+
+  /// No description provided for @settingsThemesDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted theme “{name}”.'**
+  String settingsThemesDeleted(String name);
+
+  /// No description provided for @settingsThemesDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete theme: {error}'**
+  String settingsThemesDeleteFailed(String error);
+
+  /// No description provided for @settingsThemesCopyName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} copy'**
+  String settingsThemesCopyName(String name);
 
   /// No description provided for @settingsLanguageTitle.
   ///

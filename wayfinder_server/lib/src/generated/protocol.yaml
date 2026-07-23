@@ -105,6 +105,14 @@ appSettings:
   - createRestApiKey:
   - deleteRestApiKey:
   - clearRestApiKeys:
+appTheme:
+  - listThemes:
+  - getTheme:
+  - createTheme:
+  - updateTheme:
+  - deleteTheme:
+  - importTheme:
+  - exportTheme:
 tides:
   - listPacks:
   - listCoastalRegions:

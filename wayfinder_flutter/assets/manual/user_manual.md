@@ -619,8 +619,9 @@ Choose **English**, **Spanish**, or **French** for the app interface. Some map d
 
 ### Appearance
 
-- **Theme family** — color palette variants.
-- **Brightness** — light, dark, or follow system. Dark mode darkens the app chrome and panels; map basemap tiles stay as authored unless you also enable **Darken map tiles in dark mode** under [Map display](#map-display).
+- **Theme family** — Standard or Military built-in palettes.
+- **Brightness** — light or dark for the selected built-in family. Dark app chrome uses the dark Material palette; map basemap tiles stay as authored unless you also enable **Darken map tiles in dark mode** under [Map display](#map-display).
+- **Custom TOC themes** — if any exist, pick one from the dropdown (managed under **Settings → Themes**). Selecting a built-in style clears the custom selection.
 
 Changing language may prompt an app restart.
 
@@ -658,6 +659,36 @@ Optional overlays for troubleshooting:
 - Copy debug info to clipboard
 
 Leave these off during normal use.
+
+---
+
+## Settings — Themes
+
+Shared **TOC custom themes** live on the server. Any signed-in user can **select** a theme from General → Appearance or the Themes tab. Creating, editing, duplicating, deleting, importing, and exporting require the **`manage_themes`** permission (grant it under Users & roles).
+
+### Built-in themes
+
+Standard and Military light/dark palettes ship with Wayfinder and cannot be edited. Use **Use** to apply one to your account.
+
+### Custom themes
+
+Each custom theme has:
+
+- **Name**
+- **Brightness** — light or dark
+- **Seed color** — Material 3 generates the rest of the palette from this color
+- **Optional color overrides** — replace specific ColorScheme roles (primary, surface, error, …)
+
+Actions:
+
+- **New theme** / **Edit** — open the theme editor with a live preview
+- **Duplicate** — copy an existing custom theme
+- **Export** — download a JSON file you can share with another TOC
+- **Import** — create a theme from an exported JSON file
+- **Delete** — remove the theme; users who had it selected fall back to standard light
+- **Use** — apply the theme to your account (no manage_themes required)
+
+JSON export shape (schemaVersion 1): `name`, `brightness`, `seedColor`, and `overrides` (role → hex).
 
 ---
 

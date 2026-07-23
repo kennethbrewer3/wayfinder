@@ -57,19 +57,21 @@ import 'package:wayfinder_server/src/generated/settings/rest_api_key.dart'
     as _i26;
 import 'package:wayfinder_server/src/generated/settings/rest_api_key_created.dart'
     as _i27;
-import 'package:wayfinder_server/src/generated/tides/tide_pack_info.dart'
+import 'package:wayfinder_server/src/generated/themes/app_theme_definition.dart'
     as _i28;
-import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
+import 'package:wayfinder_server/src/generated/tides/tide_pack_info.dart'
     as _i29;
-import 'package:wayfinder_server/src/generated/tides/tide_query_result.dart'
+import 'package:wayfinder_server/src/generated/tides/tide_coastal_region.dart'
     as _i30;
-import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry.dart'
+import 'package:wayfinder_server/src/generated/tides/tide_query_result.dart'
     as _i31;
-import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry_change.dart'
+import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry.dart'
     as _i32;
-import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i33;
+import 'package:wayfinder_server/src/generated/watch_log/watch_log_entry_change.dart'
+    as _i33;
+import 'package:wayfinder_server/src/generated/zones/map_zone.dart' as _i34;
 import 'package:wayfinder_server/src/generated/zones/map_zone_change.dart'
-    as _i34;
+    as _i35;
 import 'package:wayfinder_server/src/generated/protocol.dart';
 import 'package:wayfinder_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -210,6 +212,8 @@ class TestEndpoints {
 
   late final _AppSettingsEndpoint appSettings;
 
+  late final _AppThemeEndpoint appTheme;
+
   late final _TidesEndpoint tides;
 
   late final _WatchLogEndpoint watchLog;
@@ -273,6 +277,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     appSettings = _AppSettingsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    appTheme = _AppThemeEndpoint(
       endpoints,
       serializationManager,
     );
@@ -3513,6 +3521,251 @@ class _AppSettingsEndpoint {
   }
 }
 
+class _AppThemeEndpoint {
+  _AppThemeEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i28.AppThemeDefinition>> listThemes(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'listThemes',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'listThemes',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i28.AppThemeDefinition>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i28.AppThemeDefinition?> getTheme(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'getTheme',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'getTheme',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i28.AppThemeDefinition?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i28.AppThemeDefinition> createTheme(
+    _i1.TestSessionBuilder sessionBuilder,
+    String name,
+    String brightness,
+    String seedColor,
+    String overridesJson,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'createTheme',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'createTheme',
+          parameters: _i1.testObjectToJson({
+            'name': name,
+            'brightness': brightness,
+            'seedColor': seedColor,
+            'overridesJson': overridesJson,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i28.AppThemeDefinition>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i28.AppThemeDefinition> updateTheme(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+    String name,
+    String brightness,
+    String seedColor,
+    String overridesJson,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'updateTheme',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'updateTheme',
+          parameters: _i1.testObjectToJson({
+            'id': id,
+            'name': name,
+            'brightness': brightness,
+            'seedColor': seedColor,
+            'overridesJson': overridesJson,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i28.AppThemeDefinition>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> deleteTheme(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'deleteTheme',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'deleteTheme',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i28.AppThemeDefinition> importTheme(
+    _i1.TestSessionBuilder sessionBuilder,
+    String exportJson,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'importTheme',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'importTheme',
+          parameters: _i1.testObjectToJson({'exportJson': exportJson}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i28.AppThemeDefinition>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<String> exportTheme(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'appTheme',
+            method: 'exportTheme',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'appTheme',
+          methodName: 'exportTheme',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<String>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _TidesEndpoint {
   _TidesEndpoint(
     this._endpointDispatch,
@@ -3523,7 +3776,7 @@ class _TidesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i28.TidePackInfo>> listPacks(
+  _i3.Future<List<_i29.TidePackInfo>> listPacks(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -3545,7 +3798,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i28.TidePackInfo>>);
+                as _i3.Future<List<_i29.TidePackInfo>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3553,7 +3806,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<List<_i29.TideCoastalRegion>> listCoastalRegions(
+  _i3.Future<List<_i30.TideCoastalRegion>> listCoastalRegions(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -3575,7 +3828,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i29.TideCoastalRegion>>);
+                as _i3.Future<List<_i30.TideCoastalRegion>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3583,7 +3836,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i28.TidePackInfo> importCoastalRegion(
+  _i3.Future<_i29.TidePackInfo> importCoastalRegion(
     _i1.TestSessionBuilder sessionBuilder,
     String regionId,
   ) async {
@@ -3606,7 +3859,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i28.TidePackInfo>);
+                as _i3.Future<_i29.TidePackInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3614,7 +3867,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i28.TidePackInfo> setPackActive(
+  _i3.Future<_i29.TidePackInfo> setPackActive(
     _i1.TestSessionBuilder sessionBuilder,
     String packId,
     bool active,
@@ -3641,7 +3894,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i28.TidePackInfo>);
+                as _i3.Future<_i29.TidePackInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3711,7 +3964,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i28.TidePackInfo> importPackArchive(
+  _i3.Future<_i29.TidePackInfo> importPackArchive(
     _i1.TestSessionBuilder sessionBuilder,
     _i13.ByteData archiveBytes,
   ) async {
@@ -3734,7 +3987,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i28.TidePackInfo>);
+                as _i3.Future<_i29.TidePackInfo>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3742,7 +3995,7 @@ class _TidesEndpoint {
     });
   }
 
-  _i3.Future<_i30.TideQueryResult> queryAt(
+  _i3.Future<_i31.TideQueryResult> queryAt(
     _i1.TestSessionBuilder sessionBuilder,
     double lat,
     double lng,
@@ -3773,7 +4026,7 @@ class _TidesEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i30.TideQueryResult>);
+                as _i3.Future<_i31.TideQueryResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3792,7 +4045,7 @@ class _WatchLogEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i31.WatchLogEntry>> listEntries(
+  _i3.Future<List<_i32.WatchLogEntry>> listEntries(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -3814,7 +4067,7 @@ class _WatchLogEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i31.WatchLogEntry>>);
+                as _i3.Future<List<_i32.WatchLogEntry>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3822,7 +4075,7 @@ class _WatchLogEndpoint {
     });
   }
 
-  _i3.Future<_i31.WatchLogEntry?> getEntry(
+  _i3.Future<_i32.WatchLogEntry?> getEntry(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -3845,7 +4098,7 @@ class _WatchLogEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i31.WatchLogEntry?>);
+                as _i3.Future<_i32.WatchLogEntry?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3853,9 +4106,9 @@ class _WatchLogEndpoint {
     });
   }
 
-  _i3.Future<_i31.WatchLogEntry> createEntry(
+  _i3.Future<_i32.WatchLogEntry> createEntry(
     _i1.TestSessionBuilder sessionBuilder,
-    _i31.WatchLogEntry entry,
+    _i32.WatchLogEntry entry,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3876,7 +4129,7 @@ class _WatchLogEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i31.WatchLogEntry>);
+                as _i3.Future<_i32.WatchLogEntry>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3884,9 +4137,9 @@ class _WatchLogEndpoint {
     });
   }
 
-  _i3.Future<_i31.WatchLogEntry> updateEntry(
+  _i3.Future<_i32.WatchLogEntry> updateEntry(
     _i1.TestSessionBuilder sessionBuilder,
-    _i31.WatchLogEntry entry,
+    _i32.WatchLogEntry entry,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3907,7 +4160,7 @@ class _WatchLogEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i31.WatchLogEntry>);
+                as _i3.Future<_i32.WatchLogEntry>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3946,11 +4199,11 @@ class _WatchLogEndpoint {
     });
   }
 
-  _i3.Stream<_i32.WatchLogEntryChange> entryChanges(
+  _i3.Stream<_i33.WatchLogEntryChange> entryChanges(
     _i1.TestSessionBuilder sessionBuilder,
   ) {
     var _localTestStreamManager =
-        _i1.TestStreamManager<_i32.WatchLogEntryChange>();
+        _i1.TestStreamManager<_i33.WatchLogEntryChange>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -3989,7 +4242,7 @@ class _MapZoneEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i33.MapZone>> listZones(
+  _i3.Future<List<_i34.MapZone>> listZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -4011,7 +4264,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i33.MapZone>>);
+                as _i3.Future<List<_i34.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -4019,7 +4272,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<List<_i33.MapZone>> listDeletedZones(
+  _i3.Future<List<_i34.MapZone>> listDeletedZones(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -4041,7 +4294,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i33.MapZone>>);
+                as _i3.Future<List<_i34.MapZone>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -4049,7 +4302,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i33.MapZone?> getZone(
+  _i3.Future<_i34.MapZone?> getZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -4072,7 +4325,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i33.MapZone?>);
+                as _i3.Future<_i34.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -4080,9 +4333,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i33.MapZone> createZone(
+  _i3.Future<_i34.MapZone> createZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i33.MapZone zone,
+    _i34.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -4103,7 +4356,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i33.MapZone>);
+                as _i3.Future<_i34.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -4111,9 +4364,9 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i33.MapZone> updateZone(
+  _i3.Future<_i34.MapZone> updateZone(
     _i1.TestSessionBuilder sessionBuilder,
-    _i33.MapZone zone,
+    _i34.MapZone zone,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -4134,7 +4387,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i33.MapZone>);
+                as _i3.Future<_i34.MapZone>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -4173,7 +4426,7 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Future<_i33.MapZone?> restoreZone(
+  _i3.Future<_i34.MapZone?> restoreZone(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue id,
   ) async {
@@ -4196,7 +4449,7 @@ class _MapZoneEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i33.MapZone?>);
+                as _i3.Future<_i34.MapZone?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -4235,10 +4488,10 @@ class _MapZoneEndpoint {
     });
   }
 
-  _i3.Stream<_i34.MapZoneChange> zoneChanges(
+  _i3.Stream<_i35.MapZoneChange> zoneChanges(
     _i1.TestSessionBuilder sessionBuilder,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i34.MapZoneChange>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i35.MapZoneChange>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =

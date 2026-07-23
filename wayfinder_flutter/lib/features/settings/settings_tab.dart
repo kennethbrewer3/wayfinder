@@ -3,6 +3,7 @@ enum SettingsTab {
   general('general'),
   mapTiles('map-tiles'),
   markerIcons('marker-icons'),
+  themes('themes'),
   geocoding('geocoding'),
   tides('tides'),
   seasonalOverlays('seasonal-overlays'),

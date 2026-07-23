@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 
+import '../features/themes/models/app_theme_palette.dart';
 import 'app_theme_choice.dart';
 
 class AppTheme {
@@ -12,6 +14,32 @@ class AppTheme {
       AppThemeChoice.militaryLight => _militaryLight(),
       AppThemeChoice.militaryDark => _militaryDark(),
     };
+  }
+
+  /// Resolves a stored theme id (`light`, `militaryDark`, `custom:<uuid>`, …).
+  static ThemeData resolve(
+    String themeId, {
+    List<AppThemeDefinition> customThemes = const [],
+  }) {
+    for (final choice in AppThemeChoice.values) {
+      if (choice.name == themeId) {
+        return forChoice(choice);
+      }
+    }
+    const customPrefix = 'custom:';
+    if (themeId.startsWith(customPrefix)) {
+      final uuid = themeId.substring(customPrefix.length);
+      for (final theme in customThemes) {
+        if (theme.id.uuid == uuid) {
+          return fromDefinition(theme);
+        }
+      }
+    }
+    return forChoice(AppThemeChoice.light);
+  }
+
+  static ThemeData fromDefinition(AppThemeDefinition theme) {
+    return _buildTheme(colorSchemeFromThemeDefinition(theme));
   }
 
   static ThemeData _standardLight() {

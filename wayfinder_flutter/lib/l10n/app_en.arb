@@ -8,6 +8,7 @@
   "settingsTabGeneral": "General",
   "settingsTabMapTiles": "Map tiles",
   "settingsTabMarkerIcons": "Marker icons",
+  "settingsTabThemes": "Themes",
   "settingsTabGeocoding": "Geocoding",
   "settingsTabTides": "Tides",
   "settingsTabSeasonalOverlays": "Seasons",
@@ -274,7 +275,124 @@
     }
   },
   "settingsAppearanceTitle": "Appearance",
-  "settingsAppearanceDescription": "Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Saved to your account so it follows you on any workstation.",
+  "settingsAppearanceDescription": "Choose a built-in or custom TOC theme. Custom themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.",
+  "settingsThemesTitle": "Themes",
+  "settingsThemesDescription": "Create and manage shared TOC themes. Anyone can select a theme; only users with manage_themes can create, edit, import, or export.",
+  "settingsThemesPermissionDenied": "You can select themes, but you do not have permission to create, edit, import, or export them.",
+  "settingsThemesBuiltInTitle": "Built-in themes",
+  "settingsThemesBuiltInSubtitle": "Included with Wayfinder",
+  "settingsThemesCustomTitle": "Custom TOC themes",
+  "settingsThemesCustomEmpty": "No custom themes yet. Create one or import a JSON file.",
+  "settingsThemesUseBuiltInHint": "Using a built-in theme",
+  "settingsThemesNew": "New theme",
+  "settingsThemesNewTitle": "New theme",
+  "settingsThemesEditTitle": "Edit theme",
+  "settingsThemesEdit": "Edit",
+  "settingsThemesDuplicate": "Duplicate",
+  "settingsThemesExport": "Export",
+  "settingsThemesImport": "Import",
+  "settingsThemesDelete": "Delete",
+  "settingsThemesUse": "Use",
+  "settingsThemesName": "Name",
+  "settingsThemesNameRequired": "Enter a theme name.",
+  "settingsThemesSeedColor": "Seed color",
+  "settingsThemesSeedColorHint": "Material generates the palette from this color. Overrides below replace specific roles.",
+  "settingsThemesOverridesTitle": "Color overrides",
+  "settingsThemesOverridesHint": "Optional. Leave unset to keep the seed-generated color for that role.",
+  "settingsThemesOverrideFromSeed": "From seed",
+  "settingsThemesClearOverride": "Clear override",
+  "settingsThemesShowAllOverrides": "Show all color roles",
+  "settingsThemesShowFewerOverrides": "Show fewer color roles",
+  "settingsThemesPreview": "Preview",
+  "settingsThemesLoadFailed": "Failed to load themes: {error}",
+  "@settingsThemesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesSaved": "Saved theme “{name}”.",
+  "@settingsThemesSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesSaveFailed": "Failed to save theme: {error}",
+  "@settingsThemesSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesImported": "Imported theme “{name}”.",
+  "@settingsThemesImported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesImportFailed": "Failed to import theme: {error}",
+  "@settingsThemesImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesExported": "Exported theme “{name}”.",
+  "@settingsThemesExported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesExportFailed": "Failed to export theme: {error}",
+  "@settingsThemesExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesDeleteTitle": "Delete theme?",
+  "settingsThemesDeleteMessage": "Delete “{name}”? Users who selected it will fall back to the standard light theme.",
+  "@settingsThemesDeleteMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesDeleted": "Deleted theme “{name}”.",
+  "@settingsThemesDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesDeleteFailed": "Failed to delete theme: {error}",
+  "@settingsThemesDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesCopyName": "{name} copy",
+  "@settingsThemesCopyName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "settingsLanguageTitle": "Language",
   "settingsLanguageDescription": "Choose the language used throughout the app. Saved to your account so it follows you on any workstation.",
   "languageSystem": "System default",

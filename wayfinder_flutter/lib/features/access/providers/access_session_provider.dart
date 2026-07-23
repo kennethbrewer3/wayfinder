@@ -147,6 +147,17 @@ final canManageMarkerIconsProvider = Provider<bool>((ref) {
   return session.canManageMarkerIcons;
 });
 
+final canManageThemesProvider = Provider<bool>((ref) {
+  final session = ref.watch(accessSessionProvider).valueOrNull;
+  if (session == null) {
+    return false;
+  }
+  if (!session.authRequired) {
+    return true;
+  }
+  return session.canManageThemes;
+});
+
 final canManagePmtilesProvider = Provider<bool>((ref) {
   final session = ref.watch(accessSessionProvider).valueOrNull;
   if (session == null) {
@@ -239,6 +250,7 @@ AccessSessionInfo openAccessSessionForTests() {
     canManageTides: true,
     canManageGeocoding: true,
     canManageMarkerIcons: true,
+    canManageThemes: true,
     canManagePmtiles: true,
     canManageMapHome: true,
     canManageMapZoom: true,

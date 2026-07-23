@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../app/app_locale_choice.dart';
 import '../../../app/app_theme_choice.dart';
+import '../../../app/app_theme_ids.dart';
 import '../../../app/theme.dart';
 import '../../../core/app_globals.dart';
 import '../../../core/app_restart.dart';
@@ -37,6 +39,7 @@ import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../access/presentation/signed_in_account_tile.dart';
 import '../../access/providers/access_session_provider.dart';
+import '../../themes/providers/app_theme_definitions_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
@@ -331,7 +334,12 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       }
     });
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
-    final themeChoice = ref.watch(appThemeProvider);
+    final themeId = ref.watch(appThemeProvider);
+    final customThemes =
+        ref.watch(appThemeDefinitionsProvider).valueOrNull ?? const [];
+    final builtInChoice = AppThemeChoice.values
+        .where((choice) => choice.name == themeId)
+        .firstOrNull;
     final localeChoice = ref.watch(appLocaleProvider);
     ref.listen<HomeLocation>(homeLocationProvider, (previous, next) {
       if (previous != next) {
@@ -450,6 +458,35 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
+        if (customThemes.isNotEmpty) ...[
+          Text(
+            l10n.settingsThemesCustomTitle,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            key: ValueKey('custom-theme-$themeId'),
+            initialValue: AppThemeIds.isCustom(themeId) ? themeId : null,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: l10n.settingsThemesUseBuiltInHint,
+            ),
+            items: [
+              for (final theme in customThemes)
+                DropdownMenuItem(
+                  value: AppThemeIds.forCustom(theme.id),
+                  child: Text(theme.name),
+                ),
+            ],
+            onChanged: (value) {
+              if (value == null) {
+                return;
+              }
+              ref.read(appThemeProvider.notifier).setThemeId(value);
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
         Text(
           l10n.settingsThemeStyle,
           style: Theme.of(context).textTheme.labelLarge,
@@ -464,7 +501,9 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 ),
               )
               .toList(),
-          selected: {themeChoice.family},
+          selected: {
+            builtInChoice?.family ?? AppThemeFamily.standard,
+          },
           onSelectionChanged: (selection) {
             ref.read(appThemeProvider.notifier).setFamily(selection.first);
           },
@@ -484,13 +523,18 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 ),
               )
               .toList(),
-          selected: {themeChoice.brightness},
+          selected: {
+            builtInChoice?.brightness ?? AppThemeBrightness.light,
+          },
           onSelectionChanged: (selection) {
             ref.read(appThemeProvider.notifier).setBrightness(selection.first);
           },
         ),
         const SizedBox(height: 12),
-        _ThemePreview(choice: themeChoice),
+        _ThemePreview(
+          themeId: themeId,
+          customThemes: customThemes,
+        ),
         const SizedBox(height: 32),
         Text(
           l10n.settingsMapHomeTitle,
@@ -1005,15 +1049,35 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
 }
 
 class _ThemePreview extends StatelessWidget {
-  const _ThemePreview({required this.choice});
+  const _ThemePreview({
+    required this.themeId,
+    required this.customThemes,
+  });
 
-  final AppThemeChoice choice;
+  final String themeId;
+  final List<AppThemeDefinition> customThemes;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final previewTheme = AppTheme.forChoice(choice);
+    final previewTheme = AppTheme.resolve(
+      themeId,
+      customThemes: customThemes,
+    );
     final colors = previewTheme.colorScheme;
+    final label = () {
+      for (final choice in AppThemeChoice.values) {
+        if (choice.name == themeId) {
+          return choice.localizedLabel(l10n);
+        }
+      }
+      for (final theme in customThemes) {
+        if (AppThemeIds.forCustom(theme.id) == themeId) {
+          return theme.name;
+        }
+      }
+      return themeId;
+    }();
 
     return Theme(
       data: previewTheme,
@@ -1024,7 +1088,7 @@ class _ThemePreview extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                choice.localizedLabel(l10n),
+                label,
                 style: previewTheme.textTheme.titleSmall,
               ),
               const SizedBox(height: 12),

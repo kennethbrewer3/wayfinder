@@ -57,20 +57,22 @@ import 'package:wayfinder_client/src/protocol/settings/rest_api_key.dart'
     as _i26;
 import 'package:wayfinder_client/src/protocol/settings/rest_api_key_created.dart'
     as _i27;
-import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
+import 'package:wayfinder_client/src/protocol/themes/app_theme_definition.dart'
     as _i28;
-import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_pack_info.dart'
     as _i29;
-import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_coastal_region.dart'
     as _i30;
-import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
+import 'package:wayfinder_client/src/protocol/tides/tide_query_result.dart'
     as _i31;
-import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry.dart'
     as _i32;
-import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i33;
+import 'package:wayfinder_client/src/protocol/watch_log/watch_log_entry_change.dart'
+    as _i33;
+import 'package:wayfinder_client/src/protocol/zones/map_zone.dart' as _i34;
 import 'package:wayfinder_client/src/protocol/zones/map_zone_change.dart'
-    as _i34;
-import 'protocol.dart' as _i35;
+    as _i35;
+import 'protocol.dart' as _i36;
 
 /// {@category Endpoint}
 class EndpointAccessControl extends _i1.EndpointRef {
@@ -1158,37 +1160,116 @@ class EndpointAppSettings extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointAppTheme extends _i1.EndpointRef {
+  EndpointAppTheme(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'appTheme';
+
+  /// Any signed-in user (or open mode) may list themes to select them.
+  _i2.Future<List<_i28.AppThemeDefinition>> listThemes() =>
+      caller.callServerEndpoint<List<_i28.AppThemeDefinition>>(
+        'appTheme',
+        'listThemes',
+        {},
+      );
+
+  _i2.Future<_i28.AppThemeDefinition?> getTheme(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i28.AppThemeDefinition?>(
+        'appTheme',
+        'getTheme',
+        {'id': id},
+      );
+
+  _i2.Future<_i28.AppThemeDefinition> createTheme(
+    String name,
+    String brightness,
+    String seedColor,
+    String overridesJson,
+  ) => caller.callServerEndpoint<_i28.AppThemeDefinition>(
+    'appTheme',
+    'createTheme',
+    {
+      'name': name,
+      'brightness': brightness,
+      'seedColor': seedColor,
+      'overridesJson': overridesJson,
+    },
+  );
+
+  _i2.Future<_i28.AppThemeDefinition> updateTheme(
+    _i1.UuidValue id,
+    String name,
+    String brightness,
+    String seedColor,
+    String overridesJson,
+  ) => caller.callServerEndpoint<_i28.AppThemeDefinition>(
+    'appTheme',
+    'updateTheme',
+    {
+      'id': id,
+      'name': name,
+      'brightness': brightness,
+      'seedColor': seedColor,
+      'overridesJson': overridesJson,
+    },
+  );
+
+  _i2.Future<bool> deleteTheme(_i1.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'appTheme',
+        'deleteTheme',
+        {'id': id},
+      );
+
+  /// Imports a theme from the export JSON payload (map or JSON string).
+  _i2.Future<_i28.AppThemeDefinition> importTheme(String exportJson) =>
+      caller.callServerEndpoint<_i28.AppThemeDefinition>(
+        'appTheme',
+        'importTheme',
+        {'exportJson': exportJson},
+      );
+
+  _i2.Future<String> exportTheme(_i1.UuidValue id) =>
+      caller.callServerEndpoint<String>(
+        'appTheme',
+        'exportTheme',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointTides extends _i1.EndpointRef {
   EndpointTides(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'tides';
 
-  _i2.Future<List<_i28.TidePackInfo>> listPacks() =>
-      caller.callServerEndpoint<List<_i28.TidePackInfo>>(
+  _i2.Future<List<_i29.TidePackInfo>> listPacks() =>
+      caller.callServerEndpoint<List<_i29.TidePackInfo>>(
         'tides',
         'listPacks',
         {},
       );
 
-  _i2.Future<List<_i29.TideCoastalRegion>> listCoastalRegions() =>
-      caller.callServerEndpoint<List<_i29.TideCoastalRegion>>(
+  _i2.Future<List<_i30.TideCoastalRegion>> listCoastalRegions() =>
+      caller.callServerEndpoint<List<_i30.TideCoastalRegion>>(
         'tides',
         'listCoastalRegions',
         {},
       );
 
-  _i2.Future<_i28.TidePackInfo> importCoastalRegion(String regionId) =>
-      caller.callServerEndpoint<_i28.TidePackInfo>(
+  _i2.Future<_i29.TidePackInfo> importCoastalRegion(String regionId) =>
+      caller.callServerEndpoint<_i29.TidePackInfo>(
         'tides',
         'importCoastalRegion',
         {'regionId': regionId},
       );
 
-  _i2.Future<_i28.TidePackInfo> setPackActive(
+  _i2.Future<_i29.TidePackInfo> setPackActive(
     String packId,
     bool active,
-  ) => caller.callServerEndpoint<_i28.TidePackInfo>(
+  ) => caller.callServerEndpoint<_i29.TidePackInfo>(
     'tides',
     'setPackActive',
     {
@@ -1212,19 +1293,19 @@ class EndpointTides extends _i1.EndpointRef {
       );
 
   /// Installs a pack from a `.wayfinder-tide` / zip archive (no NOAA required).
-  _i2.Future<_i28.TidePackInfo> importPackArchive(_i13.ByteData archiveBytes) =>
-      caller.callServerEndpoint<_i28.TidePackInfo>(
+  _i2.Future<_i29.TidePackInfo> importPackArchive(_i13.ByteData archiveBytes) =>
+      caller.callServerEndpoint<_i29.TidePackInfo>(
         'tides',
         'importPackArchive',
         {'archiveBytes': archiveBytes},
       );
 
-  _i2.Future<_i30.TideQueryResult> queryAt(
+  _i2.Future<_i31.TideQueryResult> queryAt(
     double lat,
     double lng,
     DateTime date, {
     required int hours,
-  }) => caller.callServerEndpoint<_i30.TideQueryResult>(
+  }) => caller.callServerEndpoint<_i31.TideQueryResult>(
     'tides',
     'queryAt',
     {
@@ -1243,29 +1324,29 @@ class EndpointWatchLog extends _i1.EndpointRef {
   @override
   String get name => 'watchLog';
 
-  _i2.Future<List<_i31.WatchLogEntry>> listEntries() =>
-      caller.callServerEndpoint<List<_i31.WatchLogEntry>>(
+  _i2.Future<List<_i32.WatchLogEntry>> listEntries() =>
+      caller.callServerEndpoint<List<_i32.WatchLogEntry>>(
         'watchLog',
         'listEntries',
         {},
       );
 
-  _i2.Future<_i31.WatchLogEntry?> getEntry(_i1.UuidValue id) =>
-      caller.callServerEndpoint<_i31.WatchLogEntry?>(
+  _i2.Future<_i32.WatchLogEntry?> getEntry(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i32.WatchLogEntry?>(
         'watchLog',
         'getEntry',
         {'id': id},
       );
 
-  _i2.Future<_i31.WatchLogEntry> createEntry(_i31.WatchLogEntry entry) =>
-      caller.callServerEndpoint<_i31.WatchLogEntry>(
+  _i2.Future<_i32.WatchLogEntry> createEntry(_i32.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i32.WatchLogEntry>(
         'watchLog',
         'createEntry',
         {'entry': entry},
       );
 
-  _i2.Future<_i31.WatchLogEntry> updateEntry(_i31.WatchLogEntry entry) =>
-      caller.callServerEndpoint<_i31.WatchLogEntry>(
+  _i2.Future<_i32.WatchLogEntry> updateEntry(_i32.WatchLogEntry entry) =>
+      caller.callServerEndpoint<_i32.WatchLogEntry>(
         'watchLog',
         'updateEntry',
         {'entry': entry},
@@ -1278,10 +1359,10 @@ class EndpointWatchLog extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Stream<_i32.WatchLogEntryChange> entryChanges() =>
+  _i2.Stream<_i33.WatchLogEntryChange> entryChanges() =>
       caller.callStreamingServerEndpoint<
-        _i2.Stream<_i32.WatchLogEntryChange>,
-        _i32.WatchLogEntryChange
+        _i2.Stream<_i33.WatchLogEntryChange>,
+        _i33.WatchLogEntryChange
       >(
         'watchLog',
         'entryChanges',
@@ -1297,36 +1378,36 @@ class EndpointMapZone extends _i1.EndpointRef {
   @override
   String get name => 'mapZone';
 
-  _i2.Future<List<_i33.MapZone>> listZones() =>
-      caller.callServerEndpoint<List<_i33.MapZone>>(
+  _i2.Future<List<_i34.MapZone>> listZones() =>
+      caller.callServerEndpoint<List<_i34.MapZone>>(
         'mapZone',
         'listZones',
         {},
       );
 
-  _i2.Future<List<_i33.MapZone>> listDeletedZones() =>
-      caller.callServerEndpoint<List<_i33.MapZone>>(
+  _i2.Future<List<_i34.MapZone>> listDeletedZones() =>
+      caller.callServerEndpoint<List<_i34.MapZone>>(
         'mapZone',
         'listDeletedZones',
         {},
       );
 
-  _i2.Future<_i33.MapZone?> getZone(_i1.UuidValue id) =>
-      caller.callServerEndpoint<_i33.MapZone?>(
+  _i2.Future<_i34.MapZone?> getZone(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i34.MapZone?>(
         'mapZone',
         'getZone',
         {'id': id},
       );
 
-  _i2.Future<_i33.MapZone> createZone(_i33.MapZone zone) =>
-      caller.callServerEndpoint<_i33.MapZone>(
+  _i2.Future<_i34.MapZone> createZone(_i34.MapZone zone) =>
+      caller.callServerEndpoint<_i34.MapZone>(
         'mapZone',
         'createZone',
         {'zone': zone},
       );
 
-  _i2.Future<_i33.MapZone> updateZone(_i33.MapZone zone) =>
-      caller.callServerEndpoint<_i33.MapZone>(
+  _i2.Future<_i34.MapZone> updateZone(_i34.MapZone zone) =>
+      caller.callServerEndpoint<_i34.MapZone>(
         'mapZone',
         'updateZone',
         {'zone': zone},
@@ -1339,8 +1420,8 @@ class EndpointMapZone extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Future<_i33.MapZone?> restoreZone(_i1.UuidValue id) =>
-      caller.callServerEndpoint<_i33.MapZone?>(
+  _i2.Future<_i34.MapZone?> restoreZone(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i34.MapZone?>(
         'mapZone',
         'restoreZone',
         {'id': id},
@@ -1353,10 +1434,10 @@ class EndpointMapZone extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Stream<_i34.MapZoneChange> zoneChanges() =>
+  _i2.Stream<_i35.MapZoneChange> zoneChanges() =>
       caller.callStreamingServerEndpoint<
-        _i2.Stream<_i34.MapZoneChange>,
-        _i34.MapZoneChange
+        _i2.Stream<_i35.MapZoneChange>,
+        _i35.MapZoneChange
       >(
         'mapZone',
         'zoneChanges',
@@ -1396,7 +1477,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i35.Protocol(),
+         _i36.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1418,6 +1499,7 @@ class Client extends _i1.ServerpodClientShared {
     pmtiles = EndpointPmtiles(this);
     seasonalOverlay = EndpointSeasonalOverlay(this);
     appSettings = EndpointAppSettings(this);
+    appTheme = EndpointAppTheme(this);
     tides = EndpointTides(this);
     watchLog = EndpointWatchLog(this);
     mapZone = EndpointMapZone(this);
@@ -1450,6 +1532,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointAppSettings appSettings;
 
+  late final EndpointAppTheme appTheme;
+
   late final EndpointTides tides;
 
   late final EndpointWatchLog watchLog;
@@ -1473,6 +1557,7 @@ class Client extends _i1.ServerpodClientShared {
     'pmtiles': pmtiles,
     'seasonalOverlay': seasonalOverlay,
     'appSettings': appSettings,
+    'appTheme': appTheme,
     'tides': tides,
     'watchLog': watchLog,
     'mapZone': mapZone,

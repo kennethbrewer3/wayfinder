@@ -87,6 +87,7 @@ abstract final class UserClientPreferencesStore {
       appLocale: appLocale,
       mapMarkerSizeScale: mapMarkerSizeScale,
     );
+    await AppSettingsStore.assertAppThemeExists(session, appTheme);
 
     final authRequired = await AccessControl.isAuthRequired(session);
     if (!authRequired) {

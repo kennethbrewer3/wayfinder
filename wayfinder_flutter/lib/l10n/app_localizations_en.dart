@@ -24,6 +24,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabMarkerIcons => 'Marker icons';
 
   @override
+  String get settingsTabThemes => 'Themes';
+
+  @override
   String get settingsTabGeocoding => 'Geocoding';
 
   @override
@@ -506,7 +509,154 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Choose a color theme for the app. Military themes use olive, tan, and forest green tones. Saved to your account so it follows you on any workstation.';
+      'Choose a built-in or custom TOC theme. Custom themes are managed under Settings → Themes (manage_themes). Saved to your account so it follows you on any workstation.';
+
+  @override
+  String get settingsThemesTitle => 'Themes';
+
+  @override
+  String get settingsThemesDescription =>
+      'Create and manage shared TOC themes. Anyone can select a theme; only users with manage_themes can create, edit, import, or export.';
+
+  @override
+  String get settingsThemesPermissionDenied =>
+      'You can select themes, but you do not have permission to create, edit, import, or export them.';
+
+  @override
+  String get settingsThemesBuiltInTitle => 'Built-in themes';
+
+  @override
+  String get settingsThemesBuiltInSubtitle => 'Included with Wayfinder';
+
+  @override
+  String get settingsThemesCustomTitle => 'Custom TOC themes';
+
+  @override
+  String get settingsThemesCustomEmpty =>
+      'No custom themes yet. Create one or import a JSON file.';
+
+  @override
+  String get settingsThemesUseBuiltInHint => 'Using a built-in theme';
+
+  @override
+  String get settingsThemesNew => 'New theme';
+
+  @override
+  String get settingsThemesNewTitle => 'New theme';
+
+  @override
+  String get settingsThemesEditTitle => 'Edit theme';
+
+  @override
+  String get settingsThemesEdit => 'Edit';
+
+  @override
+  String get settingsThemesDuplicate => 'Duplicate';
+
+  @override
+  String get settingsThemesExport => 'Export';
+
+  @override
+  String get settingsThemesImport => 'Import';
+
+  @override
+  String get settingsThemesDelete => 'Delete';
+
+  @override
+  String get settingsThemesUse => 'Use';
+
+  @override
+  String get settingsThemesName => 'Name';
+
+  @override
+  String get settingsThemesNameRequired => 'Enter a theme name.';
+
+  @override
+  String get settingsThemesSeedColor => 'Seed color';
+
+  @override
+  String get settingsThemesSeedColorHint =>
+      'Material generates the palette from this color. Overrides below replace specific roles.';
+
+  @override
+  String get settingsThemesOverridesTitle => 'Color overrides';
+
+  @override
+  String get settingsThemesOverridesHint =>
+      'Optional. Leave unset to keep the seed-generated color for that role.';
+
+  @override
+  String get settingsThemesOverrideFromSeed => 'From seed';
+
+  @override
+  String get settingsThemesClearOverride => 'Clear override';
+
+  @override
+  String get settingsThemesShowAllOverrides => 'Show all color roles';
+
+  @override
+  String get settingsThemesShowFewerOverrides => 'Show fewer color roles';
+
+  @override
+  String get settingsThemesPreview => 'Preview';
+
+  @override
+  String settingsThemesLoadFailed(String error) {
+    return 'Failed to load themes: $error';
+  }
+
+  @override
+  String settingsThemesSaved(String name) {
+    return 'Saved theme “$name”.';
+  }
+
+  @override
+  String settingsThemesSaveFailed(String error) {
+    return 'Failed to save theme: $error';
+  }
+
+  @override
+  String settingsThemesImported(String name) {
+    return 'Imported theme “$name”.';
+  }
+
+  @override
+  String settingsThemesImportFailed(String error) {
+    return 'Failed to import theme: $error';
+  }
+
+  @override
+  String settingsThemesExported(String name) {
+    return 'Exported theme “$name”.';
+  }
+
+  @override
+  String settingsThemesExportFailed(String error) {
+    return 'Failed to export theme: $error';
+  }
+
+  @override
+  String get settingsThemesDeleteTitle => 'Delete theme?';
+
+  @override
+  String settingsThemesDeleteMessage(String name) {
+    return 'Delete “$name”? Users who selected it will fall back to the standard light theme.';
+  }
+
+  @override
+  String settingsThemesDeleted(String name) {
+    return 'Deleted theme “$name”.';
+  }
+
+  @override
+  String settingsThemesDeleteFailed(String error) {
+    return 'Failed to delete theme: $error';
+  }
+
+  @override
+  String settingsThemesCopyName(String name) {
+    return '$name copy';
+  }
 
   @override
   String get settingsLanguageTitle => 'Language';

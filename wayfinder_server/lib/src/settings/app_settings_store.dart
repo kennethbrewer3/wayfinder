@@ -4,6 +4,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/wayfinder_env.dart';
 import '../generated/protocol.dart';
+import '../themes/app_theme_ids.dart';
 import 'app_settings_backup.dart';
 import 'app_settings_constants.dart';
 
@@ -145,8 +146,28 @@ abstract final class AppSettingsStore {
   }
 
   static void validateAppTheme(String value) {
-    if (!AppSettingsConstants.allowedAppThemes.contains(value)) {
+    if (AppThemeIds.looksValid(value)) {
+      return;
+    }
+    throw FormatException('Unsupported app theme: $value');
+  }
+
+  /// Ensures [value] is a built-in theme or an existing custom TOC theme.
+  static Future<void> assertAppThemeExists(
+    Session session,
+    String value,
+  ) async {
+    validateAppTheme(value);
+    if (AppThemeIds.isBuiltIn(value)) {
+      return;
+    }
+    final id = AppThemeIds.tryParseCustomId(value);
+    if (id == null) {
       throw FormatException('Unsupported app theme: $value');
+    }
+    final theme = await AppThemeDefinition.db.findById(session, id);
+    if (theme == null) {
+      throw FormatException('Unknown custom app theme: $value');
     }
   }
 

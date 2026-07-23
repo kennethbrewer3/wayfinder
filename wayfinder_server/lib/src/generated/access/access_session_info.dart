@@ -35,6 +35,7 @@ abstract class AccessSessionInfo
     required this.canManageTides,
     required this.canManageGeocoding,
     required this.canManageMarkerIcons,
+    required this.canManageThemes,
     required this.canManagePmtiles,
     required this.canManageMapHome,
     required this.canManageMapZoom,
@@ -62,6 +63,7 @@ abstract class AccessSessionInfo
     required bool canManageTides,
     required bool canManageGeocoding,
     required bool canManageMarkerIcons,
+    required bool canManageThemes,
     required bool canManagePmtiles,
     required bool canManageMapHome,
     required bool canManageMapZoom,
@@ -120,6 +122,9 @@ abstract class AccessSessionInfo
       canManageMarkerIcons: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['canManageMarkerIcons'],
       ),
+      canManageThemes: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['canManageThemes'],
+      ),
       canManagePmtiles: _i1.BoolJsonExtension.fromJson(
         jsonSerialization['canManagePmtiles'],
       ),
@@ -176,6 +181,8 @@ abstract class AccessSessionInfo
 
   bool canManageMarkerIcons;
 
+  bool canManageThemes;
+
   bool canManagePmtiles;
 
   bool canManageMapHome;
@@ -209,6 +216,7 @@ abstract class AccessSessionInfo
     bool? canManageTides,
     bool? canManageGeocoding,
     bool? canManageMarkerIcons,
+    bool? canManageThemes,
     bool? canManagePmtiles,
     bool? canManageMapHome,
     bool? canManageMapZoom,
@@ -238,6 +246,7 @@ abstract class AccessSessionInfo
       'canManageTides': canManageTides,
       'canManageGeocoding': canManageGeocoding,
       'canManageMarkerIcons': canManageMarkerIcons,
+      'canManageThemes': canManageThemes,
       'canManagePmtiles': canManagePmtiles,
       'canManageMapHome': canManageMapHome,
       'canManageMapZoom': canManageMapZoom,
@@ -269,6 +278,7 @@ abstract class AccessSessionInfo
       'canManageTides': canManageTides,
       'canManageGeocoding': canManageGeocoding,
       'canManageMarkerIcons': canManageMarkerIcons,
+      'canManageThemes': canManageThemes,
       'canManagePmtiles': canManagePmtiles,
       'canManageMapHome': canManageMapHome,
       'canManageMapZoom': canManageMapZoom,
@@ -306,6 +316,7 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     required bool canManageTides,
     required bool canManageGeocoding,
     required bool canManageMarkerIcons,
+    required bool canManageThemes,
     required bool canManagePmtiles,
     required bool canManageMapHome,
     required bool canManageMapZoom,
@@ -331,6 +342,7 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
          canManageTides: canManageTides,
          canManageGeocoding: canManageGeocoding,
          canManageMarkerIcons: canManageMarkerIcons,
+         canManageThemes: canManageThemes,
          canManagePmtiles: canManagePmtiles,
          canManageMapHome: canManageMapHome,
          canManageMapZoom: canManageMapZoom,
@@ -362,6 +374,7 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
     bool? canManageTides,
     bool? canManageGeocoding,
     bool? canManageMarkerIcons,
+    bool? canManageThemes,
     bool? canManagePmtiles,
     bool? canManageMapHome,
     bool? canManageMapZoom,
@@ -388,6 +401,7 @@ class _AccessSessionInfoImpl extends AccessSessionInfo {
       canManageTides: canManageTides ?? this.canManageTides,
       canManageGeocoding: canManageGeocoding ?? this.canManageGeocoding,
       canManageMarkerIcons: canManageMarkerIcons ?? this.canManageMarkerIcons,
+      canManageThemes: canManageThemes ?? this.canManageThemes,
       canManagePmtiles: canManagePmtiles ?? this.canManagePmtiles,
       canManageMapHome: canManageMapHome ?? this.canManageMapHome,
       canManageMapZoom: canManageMapZoom ?? this.canManageMapZoom,

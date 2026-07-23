@@ -1,0 +1,17 @@
+class: AppThemeDefinition
+table: app_theme_definition
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  ### light or dark
+  brightness: String
+  ### Hex color used as ColorScheme.fromSeed seed (#RRGGBB or #AARRGGBB)
+  seedColor: String
+  ### JSON object of optional ColorScheme role overrides (role -> hex)
+  overridesJson: String
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  app_theme_definition_name_idx:
+    fields: name

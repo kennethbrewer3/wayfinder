@@ -16,6 +16,7 @@ final visibleSettingsTabsProvider = Provider<List<SettingsTab>>((ref) {
     SettingsTab.general,
     if (ref.watch(canManagePmtilesProvider)) SettingsTab.mapTiles,
     if (ref.watch(canManageMarkerIconsProvider)) SettingsTab.markerIcons,
+    if (ref.watch(canManageThemesProvider)) SettingsTab.themes,
     if (ref.watch(canManageGeocodingProvider)) SettingsTab.geocoding,
     if (ref.watch(canManageTidesProvider)) SettingsTab.tides,
     if (ref.watch(canManageLayersProvider)) SettingsTab.seasonalOverlays,

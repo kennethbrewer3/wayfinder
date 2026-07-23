@@ -14,6 +14,7 @@ import 'settings_geocoding_tab.dart';
 import 'settings_map_tiles_tab.dart';
 import 'settings_marker_icons_tab.dart';
 import 'settings_seasonal_overlays_tab.dart';
+import 'settings_themes_tab.dart';
 import 'settings_tides_tab.dart';
 import 'settings_trash_tab.dart';
 import 'settings_users_tab.dart';
@@ -177,6 +178,7 @@ class _SettingsTabsScaffoldState extends State<_SettingsTabsScaffold>
       SettingsTab.general => l10n.settingsTabGeneral,
       SettingsTab.mapTiles => l10n.settingsTabMapTiles,
       SettingsTab.markerIcons => l10n.settingsTabMarkerIcons,
+      SettingsTab.themes => l10n.settingsTabThemes,
       SettingsTab.geocoding => l10n.settingsTabGeocoding,
       SettingsTab.tides => l10n.settingsTabTides,
       SettingsTab.seasonalOverlays => l10n.settingsTabSeasonalOverlays,
@@ -192,6 +194,7 @@ class _SettingsTabsScaffoldState extends State<_SettingsTabsScaffold>
       SettingsTab.general => const SettingsGeneralTab(),
       SettingsTab.mapTiles => const SettingsMapTilesTab(),
       SettingsTab.markerIcons => const SettingsMarkerIconsTab(),
+      SettingsTab.themes => const SettingsThemesTab(),
       SettingsTab.geocoding => const SettingsGeocodingTab(),
       SettingsTab.tides => const SettingsTidesTab(),
       SettingsTab.seasonalOverlays => const SettingsSeasonalOverlaysTab(),

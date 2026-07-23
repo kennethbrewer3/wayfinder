@@ -1,7 +1,7 @@
 import 'package:wayfinder_client/wayfinder_client.dart' as wf;
 
 import '../../../app/app_locale_choice.dart';
-import '../../../app/app_theme_choice.dart';
+import '../../../app/app_theme_ids.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/models/bearing_reference.dart';
@@ -33,7 +33,9 @@ class ClientPreferences {
   final AngleDisplayFormat angleDisplayFormat;
   final BearingReference bearingReference;
   final CircleSizeDisplay circleSizeDisplay;
-  final AppThemeChoice appTheme;
+
+  /// Built-in theme name (`light`, …) or `custom:<uuid>`.
+  final String appTheme;
   final AppLocaleChoice appLocale;
   final double mapMarkerSizeScale;
   final bool mapViewportDebugBorder;
@@ -51,7 +53,7 @@ class ClientPreferences {
     angleDisplayFormat: AngleDisplayFormat.decimal,
     bearingReference: BearingReference.trueNorth,
     circleSizeDisplay: CircleSizeDisplay.radius,
-    appTheme: AppThemeChoice.light,
+    appTheme: AppThemeIds.defaultId,
     appLocale: AppLocaleChoice.system,
     mapMarkerSizeScale: mapMarkerSizeScaleDefault,
     mapViewportDebugBorder: false,
@@ -79,7 +81,7 @@ class ClientPreferences {
       circleSizeDisplay: circleSizeDisplayFromStorage(
         settings.circleSizeDisplay,
       ),
-      appTheme: appThemeChoiceFromStorage(settings.appTheme),
+      appTheme: AppThemeIds.normalize(settings.appTheme),
       appLocale: appLocaleChoiceFromStorage(settings.appLocale),
       mapMarkerSizeScale: clampMapMarkerSizeScale(settings.mapMarkerSizeScale),
       mapViewportDebugBorder: settings.mapViewportDebugBorder,
@@ -104,7 +106,7 @@ class ClientPreferences {
       ),
       bearingReference: bearingReferenceFromStorage(prefs.bearingReference),
       circleSizeDisplay: circleSizeDisplayFromStorage(prefs.circleSizeDisplay),
-      appTheme: appThemeChoiceFromStorage(prefs.appTheme),
+      appTheme: AppThemeIds.normalize(prefs.appTheme),
       appLocale: appLocaleChoiceFromStorage(prefs.appLocale),
       mapMarkerSizeScale: clampMapMarkerSizeScale(prefs.mapMarkerSizeScale),
       mapViewportDebugBorder: prefs.mapViewportDebugBorder,
@@ -137,7 +139,7 @@ class ClientPreferences {
       circleSizeDisplay: circleSizeDisplayFromStorage(
         json['circleSizeDisplay'] as String?,
       ),
-      appTheme: appThemeChoiceFromStorage(json['appTheme'] as String?),
+      appTheme: AppThemeIds.normalize(json['appTheme'] as String?),
       appLocale: appLocaleChoiceFromStorage(json['appLocale'] as String?),
       mapMarkerSizeScale: clampMapMarkerSizeScale(
         (json['mapMarkerSizeScale'] as num?)?.toDouble() ??
@@ -160,7 +162,7 @@ class ClientPreferences {
     AngleDisplayFormat? angleDisplayFormat,
     BearingReference? bearingReference,
     CircleSizeDisplay? circleSizeDisplay,
-    AppThemeChoice? appTheme,
+    String? appTheme,
     AppLocaleChoice? appLocale,
     double? mapMarkerSizeScale,
     bool? mapViewportDebugBorder,
@@ -203,9 +205,9 @@ class ClientPreferences {
       'angleDisplayFormat': angleDisplayFormatToStorage(angleDisplayFormat),
       'bearingReference': bearingReferenceToStorage(bearingReference),
       'circleSizeDisplay': circleSizeDisplayToStorage(circleSizeDisplay),
-      'appTheme': appThemeChoiceToStorage(appTheme),
+      'appTheme': appTheme,
       'appLocale': appLocaleChoiceToStorage(appLocale),
-      'mapMarkerSizeScale': clampMapMarkerSizeScale(mapMarkerSizeScale),
+      'mapMarkerSizeScale': mapMarkerSizeScale,
       'mapViewportDebugBorder': mapViewportDebugBorder,
       'mapTileBorderDebug': mapTileBorderDebug,
       'mapCompassRoseEnabled': mapCompassRoseEnabled,
@@ -218,11 +220,7 @@ class ClientPreferences {
     };
   }
 
-  /// Device-local prefs omit shared map zoom limits (those stay on the server).
   Map<String, dynamic> toLocalJson() {
-    final json = toJson();
-    json.remove('mapMinZoom');
-    json.remove('mapMaxZoom');
-    return json;
+    return toJson();
   }
 }

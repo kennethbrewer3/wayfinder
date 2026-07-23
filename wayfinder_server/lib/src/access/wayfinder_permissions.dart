@@ -12,6 +12,7 @@ abstract final class WayfinderPermission {
   static const manageTides = 'manage_tides';
   static const manageGeocoding = 'manage_geocoding';
   static const manageMarkerIcons = 'manage_marker_icons';
+  static const manageThemes = 'manage_themes';
   static const manageMapHome = 'manage_map_home';
   static const manageMapZoom = 'manage_map_zoom';
   static const viewWatchLog = 'view_watch_log';
@@ -30,6 +31,7 @@ abstract final class WayfinderPermission {
     manageTides,
     manageGeocoding,
     manageMarkerIcons,
+    manageThemes,
     manageMapHome,
     manageMapZoom,
     viewWatchLog,
@@ -72,6 +74,7 @@ abstract final class WayfinderPermission {
       'mapData' || 'fieldPack' => manageBackups,
       'pmtiles' => managePmtiles,
       'markerIcons' || 'markerIcon' => manageMarkerIcons,
+      'appTheme' || 'appThemes' => manageThemes,
       'mapLayer' || 'seasonalOverlay' => manageLayers,
       'tides' => manageTides,
       'watchLog' => addWatchLog,

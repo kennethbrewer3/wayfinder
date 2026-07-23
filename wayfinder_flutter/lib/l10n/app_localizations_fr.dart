@@ -24,6 +24,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabMarkerIcons => 'Icônes de marqueurs';
 
   @override
+  String get settingsTabThemes => 'Thèmes';
+
+  @override
   String get settingsTabGeocoding => 'Géocodage';
 
   @override
@@ -507,7 +510,155 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsAppearanceDescription =>
-      'Choisissez un thème de couleur pour l\'application. Les thèmes militaires utilisent des tons olive, sable et vert forêt. Enregistré sur votre compte pour vous suivre sur n\'importe quel poste.';
+      'Choisissez un thème intégré ou personnalisé du TOC. Les thèmes personnalisés se gèrent dans Paramètres → Thèmes (manage_themes). Enregistré sur votre compte pour vous suivre sur n\'importe quel poste.';
+
+  @override
+  String get settingsThemesTitle => 'Thèmes';
+
+  @override
+  String get settingsThemesDescription =>
+      'Créez et gérez des thèmes partagés du TOC. Tout le monde peut choisir un thème ; seuls les utilisateurs avec manage_themes peuvent créer, modifier, importer ou exporter.';
+
+  @override
+  String get settingsThemesPermissionDenied =>
+      'Vous pouvez choisir un thème, mais vous n\'avez pas la permission de créer, modifier, importer ou exporter.';
+
+  @override
+  String get settingsThemesBuiltInTitle => 'Thèmes intégrés';
+
+  @override
+  String get settingsThemesBuiltInSubtitle => 'Inclus avec Wayfinder';
+
+  @override
+  String get settingsThemesCustomTitle => 'Thèmes personnalisés du TOC';
+
+  @override
+  String get settingsThemesCustomEmpty =>
+      'Aucun thème personnalisé pour l\'instant. Créez-en un ou importez un fichier JSON.';
+
+  @override
+  String get settingsThemesUseBuiltInHint => 'Thème intégré en cours';
+
+  @override
+  String get settingsThemesNew => 'Nouveau thème';
+
+  @override
+  String get settingsThemesNewTitle => 'Nouveau thème';
+
+  @override
+  String get settingsThemesEditTitle => 'Modifier le thème';
+
+  @override
+  String get settingsThemesEdit => 'Modifier';
+
+  @override
+  String get settingsThemesDuplicate => 'Dupliquer';
+
+  @override
+  String get settingsThemesExport => 'Exporter';
+
+  @override
+  String get settingsThemesImport => 'Importer';
+
+  @override
+  String get settingsThemesDelete => 'Supprimer';
+
+  @override
+  String get settingsThemesUse => 'Utiliser';
+
+  @override
+  String get settingsThemesName => 'Nom';
+
+  @override
+  String get settingsThemesNameRequired => 'Saisissez un nom de thème.';
+
+  @override
+  String get settingsThemesSeedColor => 'Couleur de base';
+
+  @override
+  String get settingsThemesSeedColorHint =>
+      'Material génère la palette à partir de cette couleur. Les remplacements ci-dessous modifient des rôles précis.';
+
+  @override
+  String get settingsThemesOverridesTitle => 'Remplacements de couleur';
+
+  @override
+  String get settingsThemesOverridesHint =>
+      'Facultatif. Laissez vide pour conserver la couleur générée.';
+
+  @override
+  String get settingsThemesOverrideFromSeed => 'Depuis la base';
+
+  @override
+  String get settingsThemesClearOverride => 'Effacer le remplacement';
+
+  @override
+  String get settingsThemesShowAllOverrides =>
+      'Afficher tous les rôles de couleur';
+
+  @override
+  String get settingsThemesShowFewerOverrides => 'Afficher moins de rôles';
+
+  @override
+  String get settingsThemesPreview => 'Aperçu';
+
+  @override
+  String settingsThemesLoadFailed(String error) {
+    return 'Échec du chargement des thèmes : $error';
+  }
+
+  @override
+  String settingsThemesSaved(String name) {
+    return 'Thème « $name » enregistré.';
+  }
+
+  @override
+  String settingsThemesSaveFailed(String error) {
+    return 'Échec de l\'enregistrement du thème : $error';
+  }
+
+  @override
+  String settingsThemesImported(String name) {
+    return 'Thème « $name » importé.';
+  }
+
+  @override
+  String settingsThemesImportFailed(String error) {
+    return 'Échec de l\'importation du thème : $error';
+  }
+
+  @override
+  String settingsThemesExported(String name) {
+    return 'Thème « $name » exporté.';
+  }
+
+  @override
+  String settingsThemesExportFailed(String error) {
+    return 'Échec de l\'exportation du thème : $error';
+  }
+
+  @override
+  String get settingsThemesDeleteTitle => 'Supprimer le thème ?';
+
+  @override
+  String settingsThemesDeleteMessage(String name) {
+    return 'Supprimer « $name » ? Les utilisateurs qui l\'avaient choisi repasseront au thème clair standard.';
+  }
+
+  @override
+  String settingsThemesDeleted(String name) {
+    return 'Thème « $name » supprimé.';
+  }
+
+  @override
+  String settingsThemesDeleteFailed(String error) {
+    return 'Échec de la suppression du thème : $error';
+  }
+
+  @override
+  String settingsThemesCopyName(String name) {
+    return 'Copie de $name';
+  }
 
   @override
   String get settingsLanguageTitle => 'Langue';

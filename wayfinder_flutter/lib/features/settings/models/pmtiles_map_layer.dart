@@ -1,4 +1,4 @@
-import 'package:flutter_map_pmtiles/flutter_map_pmtiles.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:pmtiles/pmtiles.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart';
@@ -27,7 +27,7 @@ class PmtilesRasterMapLayerConfig extends PmtilesMapLayerConfig {
     required this.tileProvider,
   });
 
-  final PmTilesTileProvider tileProvider;
+  final TileProvider tileProvider;
 }
 
 class PmtilesVectorMapLayerConfig extends PmtilesMapLayerConfig {

@@ -502,6 +502,26 @@ Times are planning estimates from standard astronomical algorithms, not a live a
 
 ---
 
+## Offline packs (client)
+
+When the Wayfinder appliance may go down, prepare a local **offline pack** on each client while the server is still reachable.
+
+1. Pan the map to your operating area.
+2. Tap the **offline pack** button in the map app bar (or **Settings → Map tiles → Prepare offline pack**).
+3. Choose **layers** to mirror and a **tile zoom** range for the current view.
+4. Wait for object mirror + basemap tile download to finish.
+
+If the server becomes unreachable and a pack exists:
+
+- The map shows an **Offline** banner and draws from the pack (selected layers + cached tiles).
+- You can still **add markers**, create **GPS tracking** markers (breadcrumbs), and add **watch / incident log** entries.
+- Other create/edit tools are hidden until the server returns.
+- Pending changes flush automatically when the appliance is reachable again.
+
+Clear or refresh the pack from the same prepare dialog. Web browsers may hit storage quotas on large zoom ranges — prefer a tighter AOI.
+
+---
+
 ## Long-press radial menu
 
 Long-press (hold) on empty map space to open the radial menu. Available actions include:

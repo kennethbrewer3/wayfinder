@@ -8,6 +8,7 @@ import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform_file_utils.dart';
 import '../../elevation/utils/elevation_dem_detect.dart';
+import '../../offline_packs/presentation/prepare_offline_pack_dialog.dart';
 import '../data/app_settings_repository.dart';
 import '../models/pmtiles_file.dart';
 import '../models/pmtiles_group.dart';
@@ -519,6 +520,15 @@ class _SettingsMapTilesTabState extends ConsumerState<SettingsMapTilesTab> {
                     },
               icon: const Icon(Icons.cloud_download),
               label: Text(l10n.mapTilesGetMapsButton),
+            ),
+            FilledButton.tonalIcon(
+              onPressed: _isUploading
+                  ? null
+                  : () async {
+                      await showPrepareOfflinePackDialog(context);
+                    },
+              icon: const Icon(Icons.download_for_offline_outlined),
+              label: Text(l10n.offlinePackPrepareAction),
             ),
             FilledButton.tonalIcon(
               onPressed: _isUploading ? null : _uploadPmtiles,

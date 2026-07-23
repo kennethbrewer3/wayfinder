@@ -476,6 +476,60 @@
   "mapTilesDemBadge": "Elevation DEM",
   "mapTilesUploadButton": "Upload .pmtiles file",
   "mapTilesGetMapsButton": "Get maps",
+  "offlinePackPrepareTitle": "Prepare for offline",
+  "offlinePackPrepareDescription": "Mirror selected layers and cache basemap tiles for the current map view so clients keep working when the Wayfinder server is unreachable.",
+  "offlinePackPrepareAction": "Prepare offline pack",
+  "offlinePackPrepareTooltip": "Prepare for offline",
+  "offlinePackPrepareTooltipReady": "Offline pack ready — tap to refresh",
+  "offlinePackNameLabel": "Pack name",
+  "offlinePackDefaultName": "Offline pack",
+  "offlinePackLayersLabel": "Layers to include",
+  "offlinePackNoLayers": "No map layers available.",
+  "offlinePackSelectLayersRequired": "Select at least one layer.",
+  "offlinePackZoomLabel": "Tile detail (z{minZoom}–z{maxZoom})",
+  "@offlinePackZoomLabel": {
+    "placeholders": {
+      "minZoom": { "type": "int" },
+      "maxZoom": { "type": "int" }
+    }
+  },
+  "offlinePackZoomRangeInvalid": "Min zoom must be less than or equal to max zoom.",
+  "offlinePackEstimate": "About {tileCount} tiles across {archiveCount} enabled basemap(s). Large ranges can take several minutes and use substantial storage on web.",
+  "@offlinePackEstimate": {
+    "placeholders": {
+      "tileCount": { "type": "int" },
+      "archiveCount": { "type": "int" }
+    }
+  },
+  "offlinePackExistingSummary": "Current pack “{name}”: {tileCount} tiles, {markerCount} markers.",
+  "@offlinePackExistingSummary": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "tileCount": { "type": "int" },
+      "markerCount": { "type": "int" }
+    }
+  },
+  "offlinePackPreparing": "Preparing offline pack…",
+  "offlinePackClear": "Clear pack",
+  "offlinePackSynced": "Synced {count} offline change(s) to the server.",
+  "@offlinePackSynced": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "offlineModeBannerTitle": "Offline — {packName}",
+  "@offlineModeBannerTitle": {
+    "placeholders": {
+      "packName": { "type": "String" }
+    }
+  },
+  "offlineModeBannerReadWriteHint": "Showing packed layers. You can add markers, GPS tracks, and watch-log entries.",
+  "offlineModeBannerPending": "{count} change(s) waiting to sync.",
+  "@offlineModeBannerPending": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "mapTilesGetMapsTitle": "Get maps",
   "mapTilesGetMapsDescription": "Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage — keep this dialog open until the import finishes.",
   "mapTilesGetMapsBasemapDescription": "US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import — the server downloads it into Map tiles storage.",

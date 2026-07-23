@@ -85,6 +85,11 @@ import '../../rectangles/providers/rectangle_drawing_provider.dart';
 import '../../rectangles/utils/rectangle_bounds.dart';
 import '../../rectangles/utils/rectangle_hit_test.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
+import '../../offline_packs/data/offline_tile_cache.dart';
+import '../../offline_packs/data/offline_tile_providers.dart';
+import '../../offline_packs/presentation/offline_mode_banner.dart';
+import '../../offline_packs/providers/offline_track_recorder.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../settings/data/pmtiles_loader.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
@@ -598,15 +603,28 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     int generation,
   ) async {
     try {
-      final layer = await buildPmtilesMapLayer(
-        entry.source,
-        catalogId: entry.id,
-      );
+      final PmtilesMapLayerConfig layer;
+      if (ref.read(offlineModeActiveProvider)) {
+        final meta = await ref.read(offlinePackMetaProvider.future);
+        final basemap = meta?.basemapFor(entry.id);
+        if (basemap == null) {
+          throw StateError('Offline basemap missing for ${entry.id}');
+        }
+        layer = await buildOfflineCachedMapLayer(
+          basemap: basemap,
+          cache: ref.read(offlineTileCacheProvider),
+        );
+      } else {
+        layer = await buildPmtilesMapLayer(
+          entry.source,
+          catalogId: entry.id,
+        );
+      }
       if (mounted && generation == _layerLoadGeneration) {
         _layerCache[entry.id] = layer;
         _layerSources[entry.id] = entry.source;
         _layerLoadErrors.remove(entry.id);
-      } else {
+      } else if (!ref.read(offlineModeActiveProvider)) {
         await releasePmtilesArchive(entry.source);
       }
     } catch (error, stackTrace) {
@@ -4275,6 +4293,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     ref.watch(markerIconRevisionProvider);
     ref.watch(markerIconCatalogProvider);
+    ref.watch(offlineTrackRecorderProvider);
+    ref.listen<bool>(offlineModeActiveProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      _evictAllLayers();
+      _resolvedActiveEntry = null;
+      _scheduleVisibleLayerUpdate(preload: true, immediate: true);
+    });
     ref.listen<EvacKitRouteEditIntent?>(evacKitRouteEditIntentProvider, (
       previous,
       next,
@@ -5096,119 +5123,134 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               MapRadialMenu(
                 center: center,
                 onDismiss: _closeRadialMenu,
-                actions: switch (_radialMenuPage) {
-                  0 => [
-                    MapRadialMenuAction(
-                      icon: Icons.add_location_alt,
-                      label: l10n.mapRadialMarker,
-                      onSelected: _createMarkerFromRadialMenu,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.timeline,
-                      label: l10n.mapRadialLine,
-                      onSelected: _beginLineDrawing,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.radio_button_unchecked,
-                      label: l10n.mapRadialCircle,
-                      onSelected: _beginCircleDrawing,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.crop_square,
-                      label: l10n.mapRadialRectCenter,
-                      onSelected: _beginCenterRectDrawing,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.select_all,
-                      label: l10n.mapRadialRectCorners,
-                      onSelected: _beginCornersRectDrawing,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.polyline,
-                      label: l10n.mapRadialPolygon,
-                      onSelected: _beginPolygonDrawing,
-                    ),
-                  ],
-                  1 => [
-                    MapRadialMenuAction(
-                      icon: Icons.visibility,
-                      label: l10n.mapRadialViewshed,
-                      onSelected: _beginViewshed,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.terrain,
-                      label: l10n.mapRadialSlope,
-                      onSelected: _beginSlope,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.radar,
-                      label: l10n.mapRadialRangeRing,
-                      onSelected: () {
-                        unawaited(_beginRangeRing());
+                actions: ref.watch(offlineModeActiveProvider)
+                    ? [
+                        MapRadialMenuAction(
+                          icon: Icons.add_location_alt,
+                          label: l10n.mapRadialMarker,
+                          onSelected: _createMarkerFromRadialMenu,
+                        ),
+                        MapRadialMenuAction(
+                          icon: Icons.copy,
+                          label: l10n.mapRadialCopyCoordinates,
+                          onSelected: _copyRadialMenuCoordinates,
+                        ),
+                      ]
+                    : switch (_radialMenuPage) {
+                        0 => [
+                          MapRadialMenuAction(
+                            icon: Icons.add_location_alt,
+                            label: l10n.mapRadialMarker,
+                            onSelected: _createMarkerFromRadialMenu,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.timeline,
+                            label: l10n.mapRadialLine,
+                            onSelected: _beginLineDrawing,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.radio_button_unchecked,
+                            label: l10n.mapRadialCircle,
+                            onSelected: _beginCircleDrawing,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.crop_square,
+                            label: l10n.mapRadialRectCenter,
+                            onSelected: _beginCenterRectDrawing,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.select_all,
+                            label: l10n.mapRadialRectCorners,
+                            onSelected: _beginCornersRectDrawing,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.polyline,
+                            label: l10n.mapRadialPolygon,
+                            onSelected: _beginPolygonDrawing,
+                          ),
+                        ],
+                        1 => [
+                          MapRadialMenuAction(
+                            icon: Icons.visibility,
+                            label: l10n.mapRadialViewshed,
+                            onSelected: _beginViewshed,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.terrain,
+                            label: l10n.mapRadialSlope,
+                            onSelected: _beginSlope,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.radar,
+                            label: l10n.mapRadialRangeRing,
+                            onSelected: () {
+                              unawaited(_beginRangeRing());
+                            },
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.cell_tower,
+                            label: l10n.mapRadialCoveragePlan,
+                            onSelected: () {
+                              unawaited(_beginCoveragePlan());
+                            },
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.wb_twilight,
+                            label: l10n.mapRadialSunMoon,
+                            onSelected: () {
+                              unawaited(_beginSunMoon());
+                            },
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.waves,
+                            label: l10n.mapRadialTides,
+                            onSelected: () {
+                              unawaited(_beginTideTables());
+                            },
+                          ),
+                        ],
+                        _ => [
+                          MapRadialMenuAction(
+                            icon: Icons.route,
+                            label: l10n.mapRadialEvacKit,
+                            onSelected: _beginEvacKit,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.calendar_month,
+                            label: l10n.mapRadialSeasonalOverlay,
+                            onSelected: _beginSeasonalOverlayDrawing,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.directions_walk,
+                            label: l10n.mapRadialDeadReckoning,
+                            onSelected: _beginDeadReckoning,
+                          ),
+                          MapRadialMenuAction(
+                            icon: Icons.copy,
+                            label: l10n.mapRadialCopyCoordinates,
+                            onSelected: _copyRadialMenuCoordinates,
+                          ),
+                        ],
                       },
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.cell_tower,
-                      label: l10n.mapRadialCoveragePlan,
-                      onSelected: () {
-                        unawaited(_beginCoveragePlan());
+                footerAction: ref.watch(offlineModeActiveProvider)
+                    ? null
+                    : switch (_radialMenuPage) {
+                        0 => MapRadialMenuAction(
+                          icon: Icons.more_horiz,
+                          label: l10n.mapRadialMore,
+                          onSelected: () => setState(() => _radialMenuPage = 1),
+                        ),
+                        1 => MapRadialMenuAction(
+                          icon: Icons.more_horiz,
+                          label: l10n.mapRadialMore,
+                          onSelected: () => setState(() => _radialMenuPage = 2),
+                        ),
+                        _ => MapRadialMenuAction(
+                          icon: Icons.arrow_back,
+                          label: l10n.mapRadialBack,
+                          onSelected: () => setState(() => _radialMenuPage = 0),
+                        ),
                       },
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.wb_twilight,
-                      label: l10n.mapRadialSunMoon,
-                      onSelected: () {
-                        unawaited(_beginSunMoon());
-                      },
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.waves,
-                      label: l10n.mapRadialTides,
-                      onSelected: () {
-                        unawaited(_beginTideTables());
-                      },
-                    ),
-                  ],
-                  _ => [
-                    MapRadialMenuAction(
-                      icon: Icons.route,
-                      label: l10n.mapRadialEvacKit,
-                      onSelected: _beginEvacKit,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.calendar_month,
-                      label: l10n.mapRadialSeasonalOverlay,
-                      onSelected: _beginSeasonalOverlayDrawing,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.directions_walk,
-                      label: l10n.mapRadialDeadReckoning,
-                      onSelected: _beginDeadReckoning,
-                    ),
-                    MapRadialMenuAction(
-                      icon: Icons.copy,
-                      label: l10n.mapRadialCopyCoordinates,
-                      onSelected: _copyRadialMenuCoordinates,
-                    ),
-                  ],
-                },
-                footerAction: switch (_radialMenuPage) {
-                  0 => MapRadialMenuAction(
-                    icon: Icons.more_horiz,
-                    label: l10n.mapRadialMore,
-                    onSelected: () => setState(() => _radialMenuPage = 1),
-                  ),
-                  1 => MapRadialMenuAction(
-                    icon: Icons.more_horiz,
-                    label: l10n.mapRadialMore,
-                    onSelected: () => setState(() => _radialMenuPage = 2),
-                  ),
-                  _ => MapRadialMenuAction(
-                    icon: Icons.arrow_back,
-                    label: l10n.mapRadialBack,
-                    onSelected: () => setState(() => _radialMenuPage = 0),
-                  ),
-                },
               ),
             if (_searchCoordinateRadialCenter case final center?
                 when _searchCoordinateRadialMarker != null)
@@ -5228,6 +5270,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       onSelected: _addSearchCoordinateMarkerToGeocoding,
                     ),
                 ],
+              ),
+            if (ref.watch(offlineModeActiveProvider))
+              const Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: OfflineModeBanner(),
               ),
             if (bearingPlot.active)
               Positioned(

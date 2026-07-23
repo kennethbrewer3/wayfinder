@@ -890,6 +890,86 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTilesGetMapsButton => 'Get maps';
 
   @override
+  String get offlinePackPrepareTitle => 'Prepare for offline';
+
+  @override
+  String get offlinePackPrepareDescription =>
+      'Mirror selected layers and cache basemap tiles for the current map view so clients keep working when the Wayfinder server is unreachable.';
+
+  @override
+  String get offlinePackPrepareAction => 'Prepare offline pack';
+
+  @override
+  String get offlinePackPrepareTooltip => 'Prepare for offline';
+
+  @override
+  String get offlinePackPrepareTooltipReady =>
+      'Offline pack ready — tap to refresh';
+
+  @override
+  String get offlinePackNameLabel => 'Pack name';
+
+  @override
+  String get offlinePackDefaultName => 'Offline pack';
+
+  @override
+  String get offlinePackLayersLabel => 'Layers to include';
+
+  @override
+  String get offlinePackNoLayers => 'No map layers available.';
+
+  @override
+  String get offlinePackSelectLayersRequired => 'Select at least one layer.';
+
+  @override
+  String offlinePackZoomLabel(int minZoom, int maxZoom) {
+    return 'Tile detail (z$minZoom–z$maxZoom)';
+  }
+
+  @override
+  String get offlinePackZoomRangeInvalid =>
+      'Min zoom must be less than or equal to max zoom.';
+
+  @override
+  String offlinePackEstimate(int tileCount, int archiveCount) {
+    return 'About $tileCount tiles across $archiveCount enabled basemap(s). Large ranges can take several minutes and use substantial storage on web.';
+  }
+
+  @override
+  String offlinePackExistingSummary(
+    String name,
+    int tileCount,
+    int markerCount,
+  ) {
+    return 'Current pack “$name”: $tileCount tiles, $markerCount markers.';
+  }
+
+  @override
+  String get offlinePackPreparing => 'Preparing offline pack…';
+
+  @override
+  String get offlinePackClear => 'Clear pack';
+
+  @override
+  String offlinePackSynced(int count) {
+    return 'Synced $count offline change(s) to the server.';
+  }
+
+  @override
+  String offlineModeBannerTitle(String packName) {
+    return 'Offline — $packName';
+  }
+
+  @override
+  String get offlineModeBannerReadWriteHint =>
+      'Showing packed layers. You can add markers, GPS tracks, and watch-log entries.';
+
+  @override
+  String offlineModeBannerPending(int count) {
+    return '$count change(s) waiting to sync.';
+  }
+
+  @override
   String get mapTilesGetMapsTitle => 'Get maps';
 
   @override

@@ -904,6 +904,87 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mapTilesGetMapsButton => 'Obtenir des cartes';
 
   @override
+  String get offlinePackPrepareTitle => 'Préparer pour le hors ligne';
+
+  @override
+  String get offlinePackPrepareDescription =>
+      'Mettez en miroir les calques choisis et mettez en cache les tuiles du fond de carte pour la vue actuelle, afin de continuer si le serveur Wayfinder est inaccessible.';
+
+  @override
+  String get offlinePackPrepareAction => 'Préparer le pack hors ligne';
+
+  @override
+  String get offlinePackPrepareTooltip => 'Préparer pour le hors ligne';
+
+  @override
+  String get offlinePackPrepareTooltipReady =>
+      'Pack prêt — appuyez pour actualiser';
+
+  @override
+  String get offlinePackNameLabel => 'Nom du pack';
+
+  @override
+  String get offlinePackDefaultName => 'Pack hors ligne';
+
+  @override
+  String get offlinePackLayersLabel => 'Calques à inclure';
+
+  @override
+  String get offlinePackNoLayers => 'Aucun calque de carte disponible.';
+
+  @override
+  String get offlinePackSelectLayersRequired =>
+      'Sélectionnez au moins un calque.';
+
+  @override
+  String offlinePackZoomLabel(int minZoom, int maxZoom) {
+    return 'Détail des tuiles (z$minZoom–z$maxZoom)';
+  }
+
+  @override
+  String get offlinePackZoomRangeInvalid =>
+      'Le zoom min doit être inférieur ou égal au zoom max.';
+
+  @override
+  String offlinePackEstimate(int tileCount, int archiveCount) {
+    return 'Environ $tileCount tuiles sur $archiveCount fond(s) de carte activé(s). Les grandes zones peuvent prendre plusieurs minutes et utiliser beaucoup de stockage sur le web.';
+  }
+
+  @override
+  String offlinePackExistingSummary(
+    String name,
+    int tileCount,
+    int markerCount,
+  ) {
+    return 'Pack actuel « $name » : $tileCount tuiles, $markerCount marqueurs.';
+  }
+
+  @override
+  String get offlinePackPreparing => 'Préparation du pack hors ligne…';
+
+  @override
+  String get offlinePackClear => 'Effacer le pack';
+
+  @override
+  String offlinePackSynced(int count) {
+    return '$count modification(s) hors ligne synchronisée(s) avec le serveur.';
+  }
+
+  @override
+  String offlineModeBannerTitle(String packName) {
+    return 'Hors ligne — $packName';
+  }
+
+  @override
+  String get offlineModeBannerReadWriteHint =>
+      'Affichage des calques du pack. Vous pouvez ajouter des marqueurs, des traces GPS et des entrées du journal de veille.';
+
+  @override
+  String offlineModeBannerPending(int count) {
+    return '$count modification(s) en attente de synchronisation.';
+  }
+
+  @override
   String get mapTilesGetMapsTitle => 'Obtenir des cartes';
 
   @override

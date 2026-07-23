@@ -6,6 +6,8 @@ import '../../../core/serverpod_client.dart';
 import '../../circles/models/circle_geometry.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../evac_kits/models/evac_kit_geometry.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
@@ -15,6 +17,8 @@ import '../utils/merge_line_geometry.dart';
 class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
   @override
   Future<List<MapZone>> build() async {
+    ref.watch(offlineModeActiveProvider);
+    ref.watch(offlineSnapshotProvider);
     return _fetchZones();
   }
 
@@ -24,6 +28,15 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
   }
 
   Future<List<MapZone>> _fetchZones() async {
+    if (ref.read(offlineModeActiveProvider)) {
+      final snapshot = await ref.read(offlineSnapshotProvider.future);
+      final zones = snapshot?.zones ?? const <MapZone>[];
+      AppLogger.logZones.info(
+        '📡 Zones from offline pack',
+        data: 'count=${zones.length}',
+      );
+      return zones;
+    }
     AppLogger.logZones.debug('📡 Fetching zones from server');
     try {
       final client = ref.read(serverClientProvider);

@@ -7,6 +7,9 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
+import '../../map/providers/device_location_provider.dart';
+import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../models/marker_color.dart';
@@ -54,26 +57,39 @@ Future<bool> createMarkerAtPoint({
     data:
         'lat=${formData.latitude ?? point.latitude} lng=${formData.longitude ?? point.longitude}',
   );
-  final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
-  var created = await client.mapMarker.createMarker(
-    MapMarker(
-      name: formData.name,
-      notes: formData.notes,
-      latitude: formData.latitude ?? point.latitude,
-      longitude: formData.longitude ?? point.longitude,
-      elevation: formData.elevation,
-      color: formatMarkerColorHex(formData.color),
-      icon: formData.icon,
-      visible: true,
-      isTracking: formData.isTracking,
-      inventoryJson: formData.inventoryJson,
-      radioJson: formData.radioJson,
-      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
-      createdAt: now,
-      updatedAt: now,
-    ),
+  final draft = MapMarker(
+    name: formData.name,
+    notes: formData.notes,
+    latitude: formData.latitude ?? point.latitude,
+    longitude: formData.longitude ?? point.longitude,
+    elevation: formData.elevation,
+    color: formatMarkerColorHex(formData.color),
+    icon: formData.icon,
+    visible: true,
+    isTracking: formData.isTracking,
+    inventoryJson: formData.inventoryJson,
+    radioJson: formData.radioJson,
+    layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
+    createdAt: now,
+    updatedAt: now,
   );
+
+  if (ref.read(offlineModeActiveProvider)) {
+    if (formData.isTracking) {
+      await ref
+          .read(offlinePackControllerProvider)
+          .createTrackingMarkerOffline(marker: draft);
+      await ref.read(deviceLocationProvider.notifier).locateAndFollow();
+    } else {
+      await ref.read(offlinePackControllerProvider).enqueueMarker(draft);
+    }
+    AppLogger.logMarkers.success('📍 Marker queued offline');
+    return true;
+  }
+
+  final client = ref.read(serverClientProvider);
+  var created = await client.mapMarker.createMarker(draft);
   if (formData.isTracking) {
     if (created.trackZoneId == null) {
       created = await client.mapMarker.getMarker(created.id) ?? created;
@@ -95,6 +111,9 @@ Future<bool> updateMarkerFromForm({
   required WidgetRef ref,
   required MapMarker marker,
 }) async {
+  if (ref.read(offlineModeActiveProvider)) {
+    return false;
+  }
   final client = ref.read(serverClientProvider);
   var initialTransportationMode = TrackTransportationMode.onFoot;
   if (marker.trackZoneId != null) {

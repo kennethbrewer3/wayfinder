@@ -6,10 +6,21 @@ import '../../../core/serverpod_client.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../data/layers_repository.dart';
 import '../utils/map_layer_utils.dart';
 
 final layersProvider = FutureProvider<List<MapLayer>>((ref) async {
+  if (ref.watch(offlineModeActiveProvider)) {
+    final snapshot = await ref.watch(offlineSnapshotProvider.future);
+    final layers = snapshot?.layers ?? const <MapLayer>[];
+    AppLogger.logMap.info(
+      '📡 Map layers from offline pack',
+      data: 'count=${layers.length}',
+    );
+    return layers;
+  }
   AppLogger.logMap.debug('📡 Fetching map layers from server');
   try {
     final client = ref.read(serverClientProvider);

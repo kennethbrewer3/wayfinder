@@ -3,8 +3,20 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 
 final markersProvider = FutureProvider<List<MapMarker>>((ref) async {
+  if (ref.watch(offlineModeActiveProvider)) {
+    final snapshot = await ref.watch(offlineSnapshotProvider.future);
+    final markers = snapshot?.markers ?? const <MapMarker>[];
+    AppLogger.logMarkers.info(
+      '📍 Markers from offline pack',
+      data: 'count=${markers.length}',
+    );
+    return markers;
+  }
+
   AppLogger.logMarkers.debug('📡 Fetching markers from server');
   try {
     final client = ref.watch(serverClientProvider);
@@ -25,6 +37,9 @@ final markersProvider = FutureProvider<List<MapMarker>>((ref) async {
 });
 
 final categoriesProvider = FutureProvider<List<Category>>((ref) async {
+  if (ref.watch(offlineModeActiveProvider)) {
+    return const [];
+  }
   AppLogger.logZones.debug('📡 Fetching categories from server');
   try {
     final client = ref.watch(serverClientProvider);

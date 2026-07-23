@@ -901,6 +901,86 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapTilesGetMapsButton => 'Obtener mapas';
 
   @override
+  String get offlinePackPrepareTitle => 'Preparar para sin conexión';
+
+  @override
+  String get offlinePackPrepareDescription =>
+      'Copie capas seleccionadas y almacene en caché teselas del mapa base para la vista actual, para seguir trabajando si el servidor Wayfinder no está disponible.';
+
+  @override
+  String get offlinePackPrepareAction => 'Preparar paquete sin conexión';
+
+  @override
+  String get offlinePackPrepareTooltip => 'Preparar para sin conexión';
+
+  @override
+  String get offlinePackPrepareTooltipReady =>
+      'Paquete listo — toque para actualizar';
+
+  @override
+  String get offlinePackNameLabel => 'Nombre del paquete';
+
+  @override
+  String get offlinePackDefaultName => 'Paquete sin conexión';
+
+  @override
+  String get offlinePackLayersLabel => 'Capas a incluir';
+
+  @override
+  String get offlinePackNoLayers => 'No hay capas de mapa disponibles.';
+
+  @override
+  String get offlinePackSelectLayersRequired => 'Seleccione al menos una capa.';
+
+  @override
+  String offlinePackZoomLabel(int minZoom, int maxZoom) {
+    return 'Detalle de teselas (z$minZoom–z$maxZoom)';
+  }
+
+  @override
+  String get offlinePackZoomRangeInvalid =>
+      'El zoom mínimo debe ser menor o igual que el máximo.';
+
+  @override
+  String offlinePackEstimate(int tileCount, int archiveCount) {
+    return 'Unas $tileCount teselas en $archiveCount mapa(s) base habilitado(s). Los rangos grandes pueden tardar varios minutos y usar mucho almacenamiento en la web.';
+  }
+
+  @override
+  String offlinePackExistingSummary(
+    String name,
+    int tileCount,
+    int markerCount,
+  ) {
+    return 'Paquete actual “$name”: $tileCount teselas, $markerCount marcadores.';
+  }
+
+  @override
+  String get offlinePackPreparing => 'Preparando paquete sin conexión…';
+
+  @override
+  String get offlinePackClear => 'Borrar paquete';
+
+  @override
+  String offlinePackSynced(int count) {
+    return 'Se sincronizaron $count cambio(s) sin conexión al servidor.';
+  }
+
+  @override
+  String offlineModeBannerTitle(String packName) {
+    return 'Sin conexión — $packName';
+  }
+
+  @override
+  String get offlineModeBannerReadWriteHint =>
+      'Mostrando capas del paquete. Puede añadir marcadores, tracks GPS y entradas del registro de guardia.';
+
+  @override
+  String offlineModeBannerPending(int count) {
+    return '$count cambio(s) pendientes de sincronizar.';
+  }
+
+  @override
   String get mapTilesGetMapsTitle => 'Obtener mapas';
 
   @override

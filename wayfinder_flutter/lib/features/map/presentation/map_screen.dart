@@ -15,6 +15,9 @@ import '../../map_atlas/presentation/map_atlas_export_action.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../markers/utils/marker_hit_test.dart';
 import '../../markers/utils/marker_share_url.dart';
+import '../../offline_packs/presentation/prepare_offline_pack_dialog.dart';
+import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
@@ -337,6 +340,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _followDeviceLocation,
     );
 
+    ref.listen<bool>(serverReachableProvider, (previous, next) {
+      if (previous == false && next == true) {
+        final messenger = ScaffoldMessenger.of(context);
+        final syncedMessage = l10n.offlinePackSynced;
+        unawaited(() async {
+          final flushed = await ref
+              .read(offlinePackControllerProvider)
+              .syncIfNeeded();
+          if (!mounted || flushed <= 0) {
+            return;
+          }
+          messenger.showSnackBar(
+            SnackBar(content: Text(syncedMessage(flushed))),
+          );
+        }());
+      }
+    });
+
+    final offlineActive = ref.watch(offlineModeActiveProvider);
+    final hasOfflinePack =
+        ref.watch(offlinePackMetaProvider).valueOrNull != null;
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -350,6 +375,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         actions: [
           const AddressSearchReadinessIndicator(),
           const MapTilesLoadIndicator(),
+          IconButton(
+            tooltip: hasOfflinePack
+                ? l10n.offlinePackPrepareTooltipReady
+                : l10n.offlinePackPrepareTooltip,
+            icon: Icon(
+              hasOfflinePack
+                  ? Icons.offline_pin
+                  : Icons.download_for_offline_outlined,
+              color: offlineActive
+                  ? Theme.of(context).colorScheme.tertiary
+                  : (hasOfflinePack
+                        ? Theme.of(context).colorScheme.primary
+                        : null),
+            ),
+            onPressed: offlineActive
+                ? null
+                : () async {
+                    await showPrepareOfflinePackDialog(context);
+                  },
+          ),
           IconButton(
             tooltip: mgrsGridEnabled
                 ? l10n.mapMgrsGridHideTooltip

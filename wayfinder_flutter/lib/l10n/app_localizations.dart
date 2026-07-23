@@ -1667,6 +1667,130 @@ abstract class AppLocalizations {
   /// **'Get maps'**
   String get mapTilesGetMapsButton;
 
+  /// No description provided for @offlinePackPrepareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare for offline'**
+  String get offlinePackPrepareTitle;
+
+  /// No description provided for @offlinePackPrepareDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirror selected layers and cache basemap tiles for the current map view so clients keep working when the Wayfinder server is unreachable.'**
+  String get offlinePackPrepareDescription;
+
+  /// No description provided for @offlinePackPrepareAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare offline pack'**
+  String get offlinePackPrepareAction;
+
+  /// No description provided for @offlinePackPrepareTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare for offline'**
+  String get offlinePackPrepareTooltip;
+
+  /// No description provided for @offlinePackPrepareTooltipReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline pack ready — tap to refresh'**
+  String get offlinePackPrepareTooltipReady;
+
+  /// No description provided for @offlinePackNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack name'**
+  String get offlinePackNameLabel;
+
+  /// No description provided for @offlinePackDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline pack'**
+  String get offlinePackDefaultName;
+
+  /// No description provided for @offlinePackLayersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Layers to include'**
+  String get offlinePackLayersLabel;
+
+  /// No description provided for @offlinePackNoLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'No map layers available.'**
+  String get offlinePackNoLayers;
+
+  /// No description provided for @offlinePackSelectLayersRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one layer.'**
+  String get offlinePackSelectLayersRequired;
+
+  /// No description provided for @offlinePackZoomLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tile detail (z{minZoom}–z{maxZoom})'**
+  String offlinePackZoomLabel(int minZoom, int maxZoom);
+
+  /// No description provided for @offlinePackZoomRangeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Min zoom must be less than or equal to max zoom.'**
+  String get offlinePackZoomRangeInvalid;
+
+  /// No description provided for @offlinePackEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'About {tileCount} tiles across {archiveCount} enabled basemap(s). Large ranges can take several minutes and use substantial storage on web.'**
+  String offlinePackEstimate(int tileCount, int archiveCount);
+
+  /// No description provided for @offlinePackExistingSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Current pack “{name}”: {tileCount} tiles, {markerCount} markers.'**
+  String offlinePackExistingSummary(
+    String name,
+    int tileCount,
+    int markerCount,
+  );
+
+  /// No description provided for @offlinePackPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing offline pack…'**
+  String get offlinePackPreparing;
+
+  /// No description provided for @offlinePackClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear pack'**
+  String get offlinePackClear;
+
+  /// No description provided for @offlinePackSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced {count} offline change(s) to the server.'**
+  String offlinePackSynced(int count);
+
+  /// No description provided for @offlineModeBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — {packName}'**
+  String offlineModeBannerTitle(String packName);
+
+  /// No description provided for @offlineModeBannerReadWriteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing packed layers. You can add markers, GPS tracks, and watch-log entries.'**
+  String get offlineModeBannerReadWriteHint;
+
+  /// No description provided for @offlineModeBannerPending.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} change(s) waiting to sync.'**
+  String offlineModeBannerPending(int count);
+
   /// No description provided for @mapTilesGetMapsTitle.
   ///
   /// In en, this message translates to:

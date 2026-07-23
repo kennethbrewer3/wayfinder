@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/logging/app_logger.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../data/seasonal_overlays_repository.dart';
 import '../models/seasonal_date_window.dart';
@@ -17,10 +18,15 @@ final seasonalOverlaysProvider =
 class SeasonalOverlaysNotifier extends AsyncNotifier<List<SeasonalOverlay>> {
   @override
   Future<List<SeasonalOverlay>> build() {
+    ref.watch(offlineModeActiveProvider);
     return _load();
   }
 
   Future<List<SeasonalOverlay>> _load() async {
+    if (ref.read(offlineModeActiveProvider)) {
+      AppLogger.logMap.info('📡 Seasonal overlays unavailable offline');
+      return const [];
+    }
     AppLogger.logMap.debug('📡 Fetching seasonal overlays');
     final overlays = await ref
         .read(seasonalOverlaysRepositoryProvider)

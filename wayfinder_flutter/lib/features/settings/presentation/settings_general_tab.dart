@@ -859,85 +859,93 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             ref.read(mapMgrsGridEnabledProvider.notifier).setEnabled(enabled);
           },
         ),
-        const SizedBox(height: 32),
-        Text(
-          l10n.settingsMapZoomRangeTitle,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          canManageMapZoom
-              ? l10n.settingsMapZoomRangeDescription
-              : l10n.settingsMapZoomRangePermissionDenied,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        if (canManageMapZoom) ...[
-          const SizedBox(height: 16),
-          Card(
-            color: Theme.of(context).colorScheme.errorContainer.withValues(
-              alpha: 0.45,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                l10n.settingsMapZoomRangeWarning,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
+        Visibility(
+          visible: canManageMapZoom,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _mapMinZoomController,
-                  decoration: InputDecoration(
-                    labelText: l10n.settingsMapMinZoom,
-                    helperText: l10n.settingsMapZoomLimitHelper(
-                      AppConstants.absoluteMapMinZoom.toStringAsFixed(0),
-                      (AppConstants.absoluteMapMaxZoom - 1).toStringAsFixed(0),
+              const SizedBox(height: 32),
+              Text(
+                l10n.settingsMapZoomRangeTitle,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.settingsMapZoomRangeDescription,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              Card(
+                color: Theme.of(context).colorScheme.errorContainer.withValues(
+                  alpha: 0.45,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    l10n.settingsMapZoomRangeWarning,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onErrorContainer,
                     ),
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: _mapMaxZoomController,
-                  decoration: InputDecoration(
-                    labelText: l10n.settingsMapMaxZoom,
-                    helperText: l10n.settingsMapZoomLimitHelper(
-                      (AppConstants.absoluteMapMinZoom + 1).toStringAsFixed(0),
-                      AppConstants.absoluteMapMaxZoom.toStringAsFixed(0),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _mapMinZoomController,
+                      decoration: InputDecoration(
+                        labelText: l10n.settingsMapMinZoom,
+                        helperText: l10n.settingsMapZoomLimitHelper(
+                          AppConstants.absoluteMapMinZoom.toStringAsFixed(0),
+                          (AppConstants.absoluteMapMaxZoom - 1).toStringAsFixed(
+                            0,
+                          ),
+                        ),
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                     ),
-                    border: const OutlineInputBorder(),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _mapMaxZoomController,
+                      decoration: InputDecoration(
+                        labelText: l10n.settingsMapMaxZoom,
+                        helperText: l10n.settingsMapZoomLimitHelper(
+                          (AppConstants.absoluteMapMinZoom + 1).toStringAsFixed(
+                            0,
+                          ),
+                          AppConstants.absoluteMapMaxZoom.toStringAsFixed(0),
+                        ),
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FilledButton(
+                  onPressed: _isSavingMapZoomRange ? null : _saveMapZoomRange,
+                  child: Text(
+                    _isSavingMapZoomRange
+                        ? l10n.actionSaving
+                        : l10n.settingsMapZoomRangeSave,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: FilledButton(
-              onPressed: _isSavingMapZoomRange ? null : _saveMapZoomRange,
-              child: Text(
-                _isSavingMapZoomRange
-                    ? l10n.actionSaving
-                    : l10n.settingsMapZoomRangeSave,
-              ),
-            ),
-          ),
-        ],
+        ),
         const SizedBox(height: 32),
         Text(
           l10n.settingsMapDebugTitle,

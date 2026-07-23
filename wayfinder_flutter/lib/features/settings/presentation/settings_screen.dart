@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
+import '../providers/visible_settings_tabs_provider.dart';
 import '../settings_tab.dart';
 import 'settings_about_tab.dart';
 import 'settings_backup_tab.dart';
@@ -17,71 +18,13 @@ import 'settings_tides_tab.dart';
 import 'settings_trash_tab.dart';
 import 'settings_users_tab.dart';
 
-class SettingsScreen extends ConsumerStatefulWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key, required this.tab});
 
   final SettingsTab tab;
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends ConsumerState<SettingsScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(
-      length: SettingsTab.values.length,
-      vsync: this,
-      initialIndex: widget.tab.index,
-    );
-    _tabController.addListener(_syncRouteFromSwipe);
-    AppLogger.logSettings.info(
-      '⚙️ Settings screen opened',
-      data: widget.tab.routePath,
-    );
-  }
-
-  @override
-  void didUpdateWidget(SettingsScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.tab != widget.tab &&
-        _tabController.index != widget.tab.index) {
-      _tabController.index = widget.tab.index;
-    }
-  }
-
-  @override
-  void dispose() {
-    _tabController.removeListener(_syncRouteFromSwipe);
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  void _syncRouteFromSwipe() {
-    if (_tabController.indexIsChanging) {
-      return;
-    }
-
-    final selectedTab = SettingsTab.values[_tabController.index];
-    if (selectedTab != widget.tab) {
-      context.replace(selectedTab.routePath);
-    }
-  }
-
-  void _openTab(int index) {
-    final selectedTab = SettingsTab.values[index];
-    if (selectedTab == widget.tab) {
-      return;
-    }
-    context.replace(selectedTab.routePath);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final kiosk = ref.watch(kioskModeActiveProvider);
     final serverEnforced = ref.watch(kioskModeServerEnforcedProvider);
@@ -137,6 +80,132 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       );
     }
 
+    final visibleTabs = ref.watch(visibleSettingsTabsProvider);
+    final selectedTab = visibleTabs.contains(tab) ? tab : SettingsTab.general;
+
+    if (selectedTab != tab) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          context.replace(selectedTab.routePath);
+        }
+      });
+    }
+
+    return _SettingsTabsScaffold(
+      key: ValueKey(visibleTabs.map((t) => t.slug).join(',')),
+      tabs: visibleTabs,
+      selectedTab: selectedTab,
+    );
+  }
+}
+
+class _SettingsTabsScaffold extends StatefulWidget {
+  const _SettingsTabsScaffold({
+    super.key,
+    required this.tabs,
+    required this.selectedTab,
+  });
+
+  final List<SettingsTab> tabs;
+  final SettingsTab selectedTab;
+
+  @override
+  State<_SettingsTabsScaffold> createState() => _SettingsTabsScaffoldState();
+}
+
+class _SettingsTabsScaffoldState extends State<_SettingsTabsScaffold>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: widget.tabs.length,
+      vsync: this,
+      initialIndex: _indexFor(widget.selectedTab),
+    );
+    _tabController.addListener(_syncRouteFromSwipe);
+    AppLogger.logSettings.info(
+      '⚙️ Settings screen opened',
+      data: widget.selectedTab.routePath,
+    );
+  }
+
+  @override
+  void didUpdateWidget(_SettingsTabsScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final nextIndex = _indexFor(widget.selectedTab);
+    if (_tabController.index != nextIndex) {
+      _tabController.index = nextIndex;
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_syncRouteFromSwipe);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  int _indexFor(SettingsTab tab) {
+    final index = widget.tabs.indexOf(tab);
+    return index >= 0 ? index : 0;
+  }
+
+  void _syncRouteFromSwipe() {
+    if (_tabController.indexIsChanging) {
+      return;
+    }
+
+    final selectedTab = widget.tabs[_tabController.index];
+    if (selectedTab != widget.selectedTab) {
+      context.replace(selectedTab.routePath);
+    }
+  }
+
+  void _openTab(int index) {
+    final selectedTab = widget.tabs[index];
+    if (selectedTab == widget.selectedTab) {
+      return;
+    }
+    context.replace(selectedTab.routePath);
+  }
+
+  String _labelFor(SettingsTab tab, AppLocalizations l10n) {
+    return switch (tab) {
+      SettingsTab.general => l10n.settingsTabGeneral,
+      SettingsTab.mapTiles => l10n.settingsTabMapTiles,
+      SettingsTab.markerIcons => l10n.settingsTabMarkerIcons,
+      SettingsTab.geocoding => l10n.settingsTabGeocoding,
+      SettingsTab.tides => l10n.settingsTabTides,
+      SettingsTab.seasonalOverlays => l10n.settingsTabSeasonalOverlays,
+      SettingsTab.users => l10n.settingsTabUsers,
+      SettingsTab.trash => l10n.settingsTabTrash,
+      SettingsTab.backup => l10n.settingsTabBackup,
+      SettingsTab.about => l10n.settingsTabAbout,
+    };
+  }
+
+  Widget _bodyFor(SettingsTab tab) {
+    return switch (tab) {
+      SettingsTab.general => const SettingsGeneralTab(),
+      SettingsTab.mapTiles => const SettingsMapTilesTab(),
+      SettingsTab.markerIcons => const SettingsMarkerIconsTab(),
+      SettingsTab.geocoding => const SettingsGeocodingTab(),
+      SettingsTab.tides => const SettingsTidesTab(),
+      SettingsTab.seasonalOverlays => const SettingsSeasonalOverlaysTab(),
+      SettingsTab.users => const SettingsUsersTab(),
+      SettingsTab.trash => const SettingsTrashTab(),
+      SettingsTab.backup => const SettingsBackupTab(),
+      SettingsTab.about => const SettingsAboutTab(),
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settingsTitle),
@@ -145,33 +214,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           isScrollable: true,
           onTap: _openTab,
           tabs: [
-            Tab(text: l10n.settingsTabGeneral),
-            Tab(text: l10n.settingsTabMapTiles),
-            Tab(text: l10n.settingsTabMarkerIcons),
-            Tab(text: l10n.settingsTabGeocoding),
-            Tab(text: l10n.settingsTabTides),
-            Tab(text: l10n.settingsTabSeasonalOverlays),
-            Tab(text: l10n.settingsTabUsers),
-            Tab(text: l10n.settingsTabTrash),
-            Tab(text: l10n.settingsTabBackup),
-            Tab(text: l10n.settingsTabAbout),
+            for (final tab in widget.tabs) Tab(text: _labelFor(tab, l10n)),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          SettingsGeneralTab(),
-          SettingsMapTilesTab(),
-          SettingsMarkerIconsTab(),
-          SettingsGeocodingTab(),
-          SettingsTidesTab(),
-          SettingsSeasonalOverlaysTab(),
-          SettingsUsersTab(),
-          SettingsTrashTab(),
-          SettingsBackupTab(),
-          SettingsAboutTab(),
-        ],
+        children: [for (final tab in widget.tabs) _bodyFor(tab)],
       ),
     );
   }

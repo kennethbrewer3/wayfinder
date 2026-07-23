@@ -1,0 +1,23 @@
+### Durable audit trail for marker/zone create, update, delete, restore, purge.
+class: MapObjectAuditEvent
+table: map_object_audit_event
+fields:
+  id: UuidValue, defaultModel=random
+  ### marker | zone
+  entityType: String
+  entityId: UuidValue
+  entityName: String?
+  ### created | updated | deleted | restored | purged
+  action: String
+  actorAuthUserId: UuidValue?
+  ### Login id / label at event time
+  actorUsername: String?
+  ### Optional JSON snapshot of the entity at event time
+  snapshotJson: String?
+  createdAt: DateTime
+
+indexes:
+  map_object_audit_created_at_idx:
+    fields: createdAt
+  map_object_audit_entity_idx:
+    fields: entityType, entityId

@@ -36,10 +36,73 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTabUsers => 'Usuarios y roles';
 
   @override
+  String get settingsTabTrash => 'Papelera';
+
+  @override
   String get settingsTabBackup => 'Copia de seguridad';
 
   @override
   String get settingsTabAbout => 'Acerca de';
+
+  @override
+  String get actionUndo => 'Deshacer';
+
+  @override
+  String get mapObjectDeletedSnackbar => 'Movido a la papelera';
+
+  @override
+  String mapObjectDeletedNamedSnackbar(String name) {
+    return '“$name” movido a la papelera';
+  }
+
+  @override
+  String get mapObjectCreatedBy => 'Creado por';
+
+  @override
+  String get mapObjectUpdatedBy => 'Última edición por';
+
+  @override
+  String get mapObjectAttributionUnknown => 'Desconocido';
+
+  @override
+  String get mapObjectTrashTitle => 'Papelera';
+
+  @override
+  String get mapObjectTrashHelp =>
+      'Los marcadores y zonas eliminados se pueden restaurar o borrar definitivamente. El borrado permanente no se puede deshacer.';
+
+  @override
+  String get mapObjectTrashEmpty => 'La papelera está vacía.';
+
+  @override
+  String mapObjectTrashLoadFailed(String error) {
+    return 'No se pudo cargar la papelera: $error';
+  }
+
+  @override
+  String get mapObjectTrashMarkersSection => 'Marcadores';
+
+  @override
+  String get mapObjectTrashZonesSection => 'Zonas';
+
+  @override
+  String get mapObjectTrashRestore => 'Restaurar';
+
+  @override
+  String get mapObjectTrashPurge => 'Eliminar definitivamente';
+
+  @override
+  String mapObjectTrashDeletedBy(String user) {
+    return 'Eliminado por $user';
+  }
+
+  @override
+  String get mapObjectTrashPurgeConfirmTitle => '¿Eliminar definitivamente?';
+
+  @override
+  String mapObjectTrashPurgeConfirmBody(String name) {
+    return '“$name” se eliminará para siempre, incluidas las adjuntos.';
+  }
 
   @override
   String get accessSignInSubtitle =>

@@ -7,6 +7,7 @@ infrastructure, not a multi-tenant SaaS.
 ## Defaults
 
 - Optional **multi-user TOC login** (admin / editor / viewer + custom roles).
+- Marker/zone **create–edit–delete audit** (who did what), soft-delete **Trash** with restore, and durable audit events plus server log lines.
   Until the first user exists the UI can stay open on a trusted LAN; after
   that, sign-in is required. Still combine with firewall / VPN / reverse proxy.
 - The REST API is **open** until you generate a key in **Settings → About →

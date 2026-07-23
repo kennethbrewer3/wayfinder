@@ -25,6 +25,13 @@ abstract class MapZone
     required this.visible,
     required this.geometryJson,
     this.layerId,
+    this.createdByAuthUserId,
+    this.createdByUsername,
+    this.updatedByAuthUserId,
+    this.updatedByUsername,
+    this.deletedAt,
+    this.deletedByAuthUserId,
+    this.deletedByUsername,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj();
@@ -40,6 +47,13 @@ abstract class MapZone
     required bool visible,
     required String geometryJson,
     _i1.UuidValue? layerId,
+    _i1.UuidValue? createdByAuthUserId,
+    String? createdByUsername,
+    _i1.UuidValue? updatedByAuthUserId,
+    String? updatedByUsername,
+    DateTime? deletedAt,
+    _i1.UuidValue? deletedByAuthUserId,
+    String? deletedByUsername,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MapZoneImpl;
@@ -60,6 +74,27 @@ abstract class MapZone
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
+      createdByAuthUserId: jsonSerialization['createdByAuthUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['createdByAuthUserId'],
+            ),
+      createdByUsername: jsonSerialization['createdByUsername'] as String?,
+      updatedByAuthUserId: jsonSerialization['updatedByAuthUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['updatedByAuthUserId'],
+            ),
+      updatedByUsername: jsonSerialization['updatedByUsername'] as String?,
+      deletedAt: jsonSerialization['deletedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['deletedAt']),
+      deletedByAuthUserId: jsonSerialization['deletedByAuthUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['deletedByAuthUserId'],
+            ),
+      deletedByUsername: jsonSerialization['deletedByUsername'] as String?,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -94,6 +129,25 @@ abstract class MapZone
 
   _i1.UuidValue? layerId;
 
+  /// Auth user that created this zone (null for legacy / anonymous)
+  _i1.UuidValue? createdByAuthUserId;
+
+  /// Login id / display label at create time (survives user deletion)
+  String? createdByUsername;
+
+  /// Auth user that last edited this zone
+  _i1.UuidValue? updatedByAuthUserId;
+
+  /// Login id / display label at last edit
+  String? updatedByUsername;
+
+  /// Soft-delete timestamp; null means active
+  DateTime? deletedAt;
+
+  _i1.UuidValue? deletedByAuthUserId;
+
+  String? deletedByUsername;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -115,6 +169,13 @@ abstract class MapZone
     bool? visible,
     String? geometryJson,
     _i1.UuidValue? layerId,
+    _i1.UuidValue? createdByAuthUserId,
+    String? createdByUsername,
+    _i1.UuidValue? updatedByAuthUserId,
+    String? updatedByUsername,
+    DateTime? deletedAt,
+    _i1.UuidValue? deletedByAuthUserId,
+    String? deletedByUsername,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -132,6 +193,16 @@ abstract class MapZone
       'visible': visible,
       'geometryJson': geometryJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
+      if (createdByAuthUserId != null)
+        'createdByAuthUserId': createdByAuthUserId?.toJson(),
+      if (createdByUsername != null) 'createdByUsername': createdByUsername,
+      if (updatedByAuthUserId != null)
+        'updatedByAuthUserId': updatedByAuthUserId?.toJson(),
+      if (updatedByUsername != null) 'updatedByUsername': updatedByUsername,
+      if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
+      if (deletedByAuthUserId != null)
+        'deletedByAuthUserId': deletedByAuthUserId?.toJson(),
+      if (deletedByUsername != null) 'deletedByUsername': deletedByUsername,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -151,6 +222,16 @@ abstract class MapZone
       'visible': visible,
       'geometryJson': geometryJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
+      if (createdByAuthUserId != null)
+        'createdByAuthUserId': createdByAuthUserId?.toJson(),
+      if (createdByUsername != null) 'createdByUsername': createdByUsername,
+      if (updatedByAuthUserId != null)
+        'updatedByAuthUserId': updatedByAuthUserId?.toJson(),
+      if (updatedByUsername != null) 'updatedByUsername': updatedByUsername,
+      if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
+      if (deletedByAuthUserId != null)
+        'deletedByAuthUserId': deletedByAuthUserId?.toJson(),
+      if (deletedByUsername != null) 'deletedByUsername': deletedByUsername,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -200,6 +281,13 @@ class _MapZoneImpl extends MapZone {
     required bool visible,
     required String geometryJson,
     _i1.UuidValue? layerId,
+    _i1.UuidValue? createdByAuthUserId,
+    String? createdByUsername,
+    _i1.UuidValue? updatedByAuthUserId,
+    String? updatedByUsername,
+    DateTime? deletedAt,
+    _i1.UuidValue? deletedByAuthUserId,
+    String? deletedByUsername,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -213,6 +301,13 @@ class _MapZoneImpl extends MapZone {
          visible: visible,
          geometryJson: geometryJson,
          layerId: layerId,
+         createdByAuthUserId: createdByAuthUserId,
+         createdByUsername: createdByUsername,
+         updatedByAuthUserId: updatedByAuthUserId,
+         updatedByUsername: updatedByUsername,
+         deletedAt: deletedAt,
+         deletedByAuthUserId: deletedByAuthUserId,
+         deletedByUsername: deletedByUsername,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -232,6 +327,13 @@ class _MapZoneImpl extends MapZone {
     bool? visible,
     String? geometryJson,
     Object? layerId = _Undefined,
+    Object? createdByAuthUserId = _Undefined,
+    Object? createdByUsername = _Undefined,
+    Object? updatedByAuthUserId = _Undefined,
+    Object? updatedByUsername = _Undefined,
+    Object? deletedAt = _Undefined,
+    Object? deletedByAuthUserId = _Undefined,
+    Object? deletedByUsername = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -246,6 +348,25 @@ class _MapZoneImpl extends MapZone {
       visible: visible ?? this.visible,
       geometryJson: geometryJson ?? this.geometryJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
+      createdByAuthUserId: createdByAuthUserId is _i1.UuidValue?
+          ? createdByAuthUserId
+          : this.createdByAuthUserId,
+      createdByUsername: createdByUsername is String?
+          ? createdByUsername
+          : this.createdByUsername,
+      updatedByAuthUserId: updatedByAuthUserId is _i1.UuidValue?
+          ? updatedByAuthUserId
+          : this.updatedByAuthUserId,
+      updatedByUsername: updatedByUsername is String?
+          ? updatedByUsername
+          : this.updatedByUsername,
+      deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
+      deletedByAuthUserId: deletedByAuthUserId is _i1.UuidValue?
+          ? deletedByAuthUserId
+          : this.deletedByAuthUserId,
+      deletedByUsername: deletedByUsername is String?
+          ? deletedByUsername
+          : this.deletedByUsername,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -302,6 +423,51 @@ class MapZoneUpdateTable extends _i1.UpdateTable<MapZoneTable> {
         value,
       );
 
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> createdByAuthUserId(
+    _i1.UuidValue? value,
+  ) => _i1.ColumnValue(
+    table.createdByAuthUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> createdByUsername(String? value) =>
+      _i1.ColumnValue(
+        table.createdByUsername,
+        value,
+      );
+
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> updatedByAuthUserId(
+    _i1.UuidValue? value,
+  ) => _i1.ColumnValue(
+    table.updatedByAuthUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> updatedByUsername(String? value) =>
+      _i1.ColumnValue(
+        table.updatedByUsername,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> deletedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.deletedAt,
+        value,
+      );
+
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> deletedByAuthUserId(
+    _i1.UuidValue? value,
+  ) => _i1.ColumnValue(
+    table.deletedByAuthUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> deletedByUsername(String? value) =>
+      _i1.ColumnValue(
+        table.deletedByUsername,
+        value,
+      );
+
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _i1.ColumnValue(
         table.createdAt,
@@ -354,6 +520,34 @@ class MapZoneTable extends _i1.Table<_i1.UuidValue> {
       'layerId',
       this,
     );
+    createdByAuthUserId = _i1.ColumnUuid(
+      'createdByAuthUserId',
+      this,
+    );
+    createdByUsername = _i1.ColumnString(
+      'createdByUsername',
+      this,
+    );
+    updatedByAuthUserId = _i1.ColumnUuid(
+      'updatedByAuthUserId',
+      this,
+    );
+    updatedByUsername = _i1.ColumnString(
+      'updatedByUsername',
+      this,
+    );
+    deletedAt = _i1.ColumnDateTime(
+      'deletedAt',
+      this,
+    );
+    deletedByAuthUserId = _i1.ColumnUuid(
+      'deletedByAuthUserId',
+      this,
+    );
+    deletedByUsername = _i1.ColumnString(
+      'deletedByUsername',
+      this,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -384,6 +578,25 @@ class MapZoneTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnUuid layerId;
 
+  /// Auth user that created this zone (null for legacy / anonymous)
+  late final _i1.ColumnUuid createdByAuthUserId;
+
+  /// Login id / display label at create time (survives user deletion)
+  late final _i1.ColumnString createdByUsername;
+
+  /// Auth user that last edited this zone
+  late final _i1.ColumnUuid updatedByAuthUserId;
+
+  /// Login id / display label at last edit
+  late final _i1.ColumnString updatedByUsername;
+
+  /// Soft-delete timestamp; null means active
+  late final _i1.ColumnDateTime deletedAt;
+
+  late final _i1.ColumnUuid deletedByAuthUserId;
+
+  late final _i1.ColumnString deletedByUsername;
+
   late final _i1.ColumnDateTime createdAt;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -400,6 +613,13 @@ class MapZoneTable extends _i1.Table<_i1.UuidValue> {
     visible,
     geometryJson,
     layerId,
+    createdByAuthUserId,
+    createdByUsername,
+    updatedByAuthUserId,
+    updatedByUsername,
+    deletedAt,
+    deletedByAuthUserId,
+    deletedByUsername,
     createdAt,
     updatedAt,
   ];

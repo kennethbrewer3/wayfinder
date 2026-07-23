@@ -11,8 +11,54 @@
   "settingsTabGeocoding": "Géocodage",
   "settingsTabTides": "Marées",
   "settingsTabUsers": "Utilisateurs et rôles",
+  "settingsTabTrash": "Corbeille",
   "settingsTabBackup": "Sauvegarde",
   "settingsTabAbout": "À propos",
+  "actionUndo": "Annuler",
+  "mapObjectDeletedSnackbar": "Déplacé vers la corbeille",
+  "mapObjectDeletedNamedSnackbar": "« {name} » déplacé vers la corbeille",
+  "@mapObjectDeletedNamedSnackbar": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectCreatedBy": "Créé par",
+  "mapObjectUpdatedBy": "Dernière modification par",
+  "mapObjectAttributionUnknown": "Inconnu",
+  "mapObjectTrashTitle": "Corbeille",
+  "mapObjectTrashHelp": "Les marqueurs et zones supprimés peuvent être restaurés ou définitivement effacés. La suppression définitive est irréversible.",
+  "mapObjectTrashEmpty": "La corbeille est vide.",
+  "mapObjectTrashLoadFailed": "Impossible de charger la corbeille : {error}",
+  "@mapObjectTrashLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectTrashMarkersSection": "Marqueurs",
+  "mapObjectTrashZonesSection": "Zones",
+  "mapObjectTrashRestore": "Restaurer",
+  "mapObjectTrashPurge": "Supprimer définitivement",
+  "mapObjectTrashDeletedBy": "Supprimé par {user}",
+  "@mapObjectTrashDeletedBy": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectTrashPurgeConfirmTitle": "Supprimer définitivement ?",
+  "mapObjectTrashPurgeConfirmBody": "« {name} » sera définitivement supprimé, y compris les pièces jointes.",
+  "@mapObjectTrashPurgeConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "settingsAboutTitle": "À propos de Wayfinder",
   "settingsAboutDescription": "Détails de compilation et de connexion en lecture seule pour ce client. Utilisez le commit git pour vérifier si la dernière compilation est en cours d'exécution.",
   "settingsAboutLoading": "Chargement des informations de l'application…",

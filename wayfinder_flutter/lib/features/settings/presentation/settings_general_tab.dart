@@ -34,6 +34,8 @@ import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
+import '../../access/presentation/signed_in_account_tile.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
@@ -336,10 +338,20 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     });
 
     final serverReadOnly = ref.watch(serverReadOnlyProvider);
+    final session = ref.watch(accessSessionProvider).valueOrNull;
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        if (session?.authenticated == true) ...[
+          Text(
+            l10n.accessSignedIn,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          const SignedInAccountTile(contentPadding: EdgeInsets.zero),
+          const Divider(height: 32),
+        ],
         Text(
           l10n.kioskModeTitle,
           style: Theme.of(context).textTheme.titleLarge,

@@ -199,6 +199,7 @@ Wayfinder can run open on a trusted LAN (default until the first user exists) or
 
 1. Set `WAYFINDER_BOOTSTRAP_ADMIN_EMAIL` (local username, e.g. `admin`) and `WAYFINDER_BOOTSTRAP_ADMIN_PASSWORD` in the server `.env`, then restart once to create the first admin.
 2. Sign in with that username. Settings → **Users & roles** lets admins create users, assign roles, and define custom roles with permissions.
+3. Marker and zone create/edit/delete actions are attributed to the signed-in username. Deletes go to Settings → **Trash** (with an Undo snackbar) so accidental removals can be restored. Server logs and a durable audit table record who created, edited, deleted, restored, or permanently purged each object.
 3. Once any user exists, the app requires sign-in. Viewers can browse the map; editors can change map data; admins manage users/roles/settings.
 4. Public self-registration is disabled — only admins create accounts. Wayfinder does **not** send email; usernames are offline login IDs.
 

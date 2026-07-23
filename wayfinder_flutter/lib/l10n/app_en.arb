@@ -12,8 +12,54 @@
   "settingsTabTides": "Tides",
   "settingsTabSeasonalOverlays": "Seasons",
   "settingsTabUsers": "Users & roles",
+  "settingsTabTrash": "Trash",
   "settingsTabBackup": "Backup",
   "settingsTabAbout": "About",
+  "actionUndo": "Undo",
+  "mapObjectDeletedSnackbar": "Moved to trash",
+  "mapObjectDeletedNamedSnackbar": "“{name}” moved to trash",
+  "@mapObjectDeletedNamedSnackbar": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectCreatedBy": "Created by",
+  "mapObjectUpdatedBy": "Last edited by",
+  "mapObjectAttributionUnknown": "Unknown",
+  "mapObjectTrashTitle": "Trash",
+  "mapObjectTrashHelp": "Soft-deleted markers and zones can be restored or permanently removed. Permanent delete cannot be undone.",
+  "mapObjectTrashEmpty": "Trash is empty.",
+  "mapObjectTrashLoadFailed": "Could not load trash: {error}",
+  "@mapObjectTrashLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectTrashMarkersSection": "Markers",
+  "mapObjectTrashZonesSection": "Zones",
+  "mapObjectTrashRestore": "Restore",
+  "mapObjectTrashPurge": "Delete permanently",
+  "mapObjectTrashDeletedBy": "Deleted by {user}",
+  "@mapObjectTrashDeletedBy": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectTrashPurgeConfirmTitle": "Delete permanently?",
+  "mapObjectTrashPurgeConfirmBody": "“{name}” will be removed forever, including attachments.",
+  "@mapObjectTrashPurgeConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "accessSignInSubtitle": "Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.",
   "accessSignInRequired": "Sign in to manage users and roles.",
   "accessSignInAction": "Sign in",

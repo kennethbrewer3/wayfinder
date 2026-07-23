@@ -44,10 +44,13 @@ mapData:
   - restoreMapDataArchive:
 mapMarker:
   - listMarkers:
+  - listDeletedMarkers:
   - getMarker:
   - createMarker:
   - updateMarker:
   - deleteMarker:
+  - restoreMarker:
+  - purgeDeletedMarker:
   - markerChanges:
 markerAttachment:
   - listForMarker:
@@ -115,8 +118,11 @@ watchLog:
   - entryChanges:
 mapZone:
   - listZones:
+  - listDeletedZones:
   - getZone:
   - createZone:
   - updateZone:
   - deleteZone:
+  - restoreZone:
+  - purgeDeletedZone:
   - zoneChanges:

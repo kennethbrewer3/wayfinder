@@ -2,9 +2,11 @@ import 'package:serverpod/serverpod.dart';
 
 import '../../generated/protocol.dart';
 import '../../map/map_marker_change_broadcast.dart';
+import '../../map/map_object_actor.dart';
+import '../../map/map_object_audit.dart';
 import '../../map/marker_tracking_service.dart';
 import '../../map/marker_weather_json.dart';
-import '../../markers/marker_attachment_service.dart';
+import 'rest_api_auth.dart';
 import 'rest_json.dart';
 
 abstract final class MarkersRestHandlers {
@@ -15,6 +17,7 @@ abstract final class MarkersRestHandlers {
       final session = await request.session;
       final markers = await MapMarker.db.find(
         session,
+        where: (t) => t.deletedAt.equals(null),
         orderBy: (t) => t.name,
       );
       return RestJson.ok(RestJson.encodeModels(markers));
@@ -29,7 +32,7 @@ abstract final class MarkersRestHandlers {
         label: 'marker id',
       );
       final marker = await MapMarker.db.findById(session, id);
-      if (marker == null) {
+      if (marker == null || marker.deletedAt != null) {
         return RestJson.error(404, 'Marker not found');
       }
       return RestJson.ok(RestJson.encodeModel(marker));
@@ -39,15 +42,25 @@ abstract final class MarkersRestHandlers {
   static Future<Result> create(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
+      final actor = await _actorFor(request, session);
       final body = await RestJson.readObject(request);
       var created = await MapMarker.db.insertRow(
         session,
-        _markerFromCreateBody(body),
+        _markerFromCreateBody(body, actor),
       );
       created = await _applyTrackingChanges(
         session: session,
         before: null,
         after: created,
+      );
+      await MapObjectAudit.record(
+        session: session,
+        entityType: MapObjectAudit.entityMarker,
+        entityId: created.id,
+        entityName: created.name,
+        action: MapObjectAudit.actionCreated,
+        actor: actor,
+        snapshot: created,
       );
       await MapMarkerChangeBroadcast.created(session, created);
       return RestJson.created(RestJson.encodeModel(created));
@@ -57,24 +70,34 @@ abstract final class MarkersRestHandlers {
   static Future<Result> update(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
+      final actor = await _actorFor(request, session);
       final id = RestJson.parseUuid(
         request.pathParameters.get(_idParam),
         label: 'marker id',
       );
       final existing = await MapMarker.db.findById(session, id);
-      if (existing == null) {
+      if (existing == null || existing.deletedAt != null) {
         return RestJson.error(404, 'Marker not found');
       }
 
       final body = await RestJson.readObject(request);
       var updated = await MapMarker.db.updateRow(
         session,
-        _mergeMarker(existing, body),
+        _mergeMarker(existing, body, actor),
       );
       updated = await _applyTrackingChanges(
         session: session,
         before: existing,
         after: updated,
+      );
+      await MapObjectAudit.record(
+        session: session,
+        entityType: MapObjectAudit.entityMarker,
+        entityId: updated.id,
+        entityName: updated.name,
+        action: MapObjectAudit.actionUpdated,
+        actor: actor,
+        snapshot: updated,
       );
       await MapMarkerChangeBroadcast.updated(session, updated);
       return RestJson.ok(RestJson.encodeModel(updated));
@@ -84,29 +107,61 @@ abstract final class MarkersRestHandlers {
   static Future<Result> delete(Request request) async {
     return RestJson.handleErrors(() async {
       final session = await request.session;
+      final actor = await _actorFor(request, session);
       final id = RestJson.parseUuid(
         request.pathParameters.get(_idParam),
         label: 'marker id',
       );
       final existing = await MapMarker.db.findById(session, id);
-      if (existing == null) {
+      if (existing == null || existing.deletedAt != null) {
         return RestJson.error(404, 'Marker not found');
       }
       await MarkerTrackingService.processMarkerDelete(
         session: session,
         marker: existing,
       );
-      await MapMarker.db.deleteWhere(
+      final now = DateTime.now().toUtc();
+      final softDeleted = await MapMarker.db.updateRow(
         session,
-        where: (t) => t.id.equals(id),
+        existing.copyWith(
+          deletedAt: now,
+          deletedByAuthUserId: actor.authUserId,
+          deletedByUsername: actor.username,
+          updatedAt: now,
+          updatedByAuthUserId: actor.authUserId,
+          updatedByUsername: actor.username,
+        ),
       );
-      await MarkerAttachmentService.deleteAllForMarker(session, id);
+      await MapObjectAudit.record(
+        session: session,
+        entityType: MapObjectAudit.entityMarker,
+        entityId: softDeleted.id,
+        entityName: softDeleted.name,
+        action: MapObjectAudit.actionDeleted,
+        actor: actor,
+        snapshot: softDeleted,
+      );
       await MapMarkerChangeBroadcast.deleted(session, id);
       return RestJson.noContent();
     });
   }
 
-  static MapMarker _markerFromCreateBody(Map<String, dynamic> body) {
+  static Future<MapObjectActor> _actorFor(
+    Request request,
+    Session session,
+  ) {
+    return MapObjectActor.resolve(
+      session,
+      unauthenticatedLabel: RestApiAuth.usedApiKey(request)
+          ? 'api-key'
+          : 'anonymous',
+    );
+  }
+
+  static MapMarker _markerFromCreateBody(
+    Map<String, dynamic> body,
+    MapObjectActor actor,
+  ) {
     final name = body['name'];
     final latitude = body['latitude'];
     final longitude = body['longitude'];
@@ -153,6 +208,10 @@ abstract final class MarkersRestHandlers {
       radioJson: body['radioJson'] as String?,
       checklistsJson: body['checklistsJson'] as String?,
       layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
+      createdByAuthUserId: actor.authUserId,
+      createdByUsername: actor.username,
+      updatedByAuthUserId: actor.authUserId,
+      updatedByUsername: actor.username,
       createdAt: now,
       updatedAt: now,
     );
@@ -161,6 +220,7 @@ abstract final class MarkersRestHandlers {
   static MapMarker _mergeMarker(
     MapMarker existing,
     Map<String, dynamic> body,
+    MapObjectActor actor,
   ) {
     return MapMarker(
       id: existing.id,
@@ -209,6 +269,10 @@ abstract final class MarkersRestHandlers {
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
           : existing.layerId,
+      createdByAuthUserId: existing.createdByAuthUserId,
+      createdByUsername: existing.createdByUsername,
+      updatedByAuthUserId: actor.authUserId,
+      updatedByUsername: actor.username,
       createdAt: existing.createdAt,
       updatedAt: DateTime.now().toUtc(),
     );

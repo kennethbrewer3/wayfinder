@@ -344,6 +344,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: editLocked ? null : onEdit,
       l10n: l10n,
       linkedMarkerId: marker.id,
+      createdByUsername: marker.createdByUsername,
+      updatedByUsername: marker.updatedByUsername,
+      createdAt: marker.createdAt,
+      updatedAt: marker.updatedAt,
       shareUrl: shareUrl,
       onCopyShareUrl: copyShareUrl,
       onShowQrCode: () => showMarkerQrDialog(context: context, marker: marker),
@@ -562,6 +566,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       additionalActions: [
         TextButton.icon(
           onPressed: () {
@@ -633,6 +641,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       additionalActions: geometry.hasRenderablePath
           ? [
               TextButton.icon(
@@ -713,6 +725,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
@@ -802,6 +818,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
@@ -853,6 +873,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       children: [
         _DetailRow(
           label: l10n.mapObjectDetailType,
@@ -903,6 +927,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       additionalActions: [
         TextButton.icon(
           onPressed: () {
@@ -1017,6 +1045,10 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onEdit: onEdit,
       l10n: l10n,
       linkedZoneId: zone.id,
+      createdByUsername: zone.createdByUsername,
+      updatedByUsername: zone.updatedByUsername,
+      createdAt: zone.createdAt,
+      updatedAt: zone.updatedAt,
       children: [
         _DetailRow(label: l10n.mapObjectDetailType, value: zone.type),
         _DetailRow(
@@ -1071,6 +1103,10 @@ class _DetailsDialogShell extends StatelessWidget {
     this.onShowQrCode,
     this.contentWidth = 520,
     this.additionalActions = const [],
+    this.createdByUsername,
+    this.updatedByUsername,
+    this.createdAt,
+    this.updatedAt,
   });
 
   final String title;
@@ -1085,9 +1121,22 @@ class _DetailsDialogShell extends StatelessWidget {
   final VoidCallback? onShowQrCode;
   final double contentWidth;
   final List<Widget> additionalActions;
+  final String? createdByUsername;
+  final String? updatedByUsername;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   @override
   Widget build(BuildContext context) {
+    final createdLabel = _attributionLabel(
+      username: createdByUsername,
+      at: createdAt,
+    );
+    final updatedLabel = _attributionLabel(
+      username: updatedByUsername,
+      at: updatedAt,
+    );
+
     return AlertDialog(
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1111,6 +1160,16 @@ class _DetailsDialogShell extends StatelessWidget {
                   zoneId: linkedZoneId,
                 ),
               ...children,
+              if (createdLabel != null)
+                _DetailRow(
+                  label: l10n.mapObjectCreatedBy,
+                  value: createdLabel,
+                ),
+              if (updatedLabel != null)
+                _DetailRow(
+                  label: l10n.mapObjectUpdatedBy,
+                  value: updatedLabel,
+                ),
             ],
           ),
         ),
@@ -1140,6 +1199,22 @@ class _DetailsDialogShell extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  String? _attributionLabel({
+    required String? username,
+    required DateTime? at,
+  }) {
+    final name = username?.trim();
+    final hasName = name != null && name.isNotEmpty;
+    if (!hasName && at == null) {
+      return null;
+    }
+    final who = hasName ? name : l10n.mapObjectAttributionUnknown;
+    if (at == null) {
+      return who;
+    }
+    return '$who · ${at.toLocal()}';
   }
 }
 

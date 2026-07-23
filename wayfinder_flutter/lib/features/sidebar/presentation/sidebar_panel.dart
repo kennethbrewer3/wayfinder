@@ -53,6 +53,7 @@ import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../markers/utils/map_object_soft_delete.dart';
 import '../../markers/utils/effective_marker_icon.dart';
 import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
@@ -1270,9 +1271,12 @@ class _MarkerListTile extends ConsumerWidget {
                             }
                           : null)
                     : () async {
-                        final client = ref.read(serverClientProvider);
-                        await client.mapMarker.deleteMarker(marker.id);
-                        ref.invalidate(markersProvider);
+                        await softDeleteMarkerWithUndo(
+                          context: context,
+                          ref: ref,
+                          markerId: marker.id,
+                          markerName: marker.name,
+                        );
                       },
               ),
             ],
@@ -1510,9 +1514,12 @@ class _LineZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeleteLine,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zoneId);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zoneId,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],
@@ -1657,9 +1664,12 @@ class _TrackZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeleteTrack,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zoneId);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zoneId,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],
@@ -1816,9 +1826,12 @@ class _CircleZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeleteCircle,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zoneId);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zoneId,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],
@@ -1976,9 +1989,12 @@ class _RectangleZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeleteRectangle,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zoneId);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zoneId,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],
@@ -2111,9 +2127,12 @@ class _PolygonZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeletePolygon,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zoneId);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zoneId,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],
@@ -2250,9 +2269,12 @@ class _EvacKitZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeleteEvacKit,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zoneId);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zoneId,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],
@@ -2359,9 +2381,12 @@ class _GenericZoneListTile extends ConsumerWidget {
                 tooltip: l10n.sidebarDeleteZone,
                 icon: Icons.delete_outline,
                 onPressed: () async {
-                  final client = ref.read(serverClientProvider);
-                  await client.mapZone.deleteZone(zone.id);
-                  ref.read(zonesProvider.notifier).reload();
+                  await softDeleteZoneWithUndo(
+                    context: context,
+                    ref: ref,
+                    zoneId: zone.id,
+                    zoneName: zone.name,
+                  );
                 },
               ),
             ],

@@ -11,8 +11,54 @@
   "settingsTabGeocoding": "Geocodificación",
   "settingsTabTides": "Mareas",
   "settingsTabUsers": "Usuarios y roles",
+  "settingsTabTrash": "Papelera",
   "settingsTabBackup": "Copia de seguridad",
   "settingsTabAbout": "Acerca de",
+  "actionUndo": "Deshacer",
+  "mapObjectDeletedSnackbar": "Movido a la papelera",
+  "mapObjectDeletedNamedSnackbar": "“{name}” movido a la papelera",
+  "@mapObjectDeletedNamedSnackbar": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectCreatedBy": "Creado por",
+  "mapObjectUpdatedBy": "Última edición por",
+  "mapObjectAttributionUnknown": "Desconocido",
+  "mapObjectTrashTitle": "Papelera",
+  "mapObjectTrashHelp": "Los marcadores y zonas eliminados se pueden restaurar o borrar definitivamente. El borrado permanente no se puede deshacer.",
+  "mapObjectTrashEmpty": "La papelera está vacía.",
+  "mapObjectTrashLoadFailed": "No se pudo cargar la papelera: {error}",
+  "@mapObjectTrashLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectTrashMarkersSection": "Marcadores",
+  "mapObjectTrashZonesSection": "Zonas",
+  "mapObjectTrashRestore": "Restaurar",
+  "mapObjectTrashPurge": "Eliminar definitivamente",
+  "mapObjectTrashDeletedBy": "Eliminado por {user}",
+  "@mapObjectTrashDeletedBy": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "mapObjectTrashPurgeConfirmTitle": "¿Eliminar definitivamente?",
+  "mapObjectTrashPurgeConfirmBody": "“{name}” se eliminará para siempre, incluidas las adjuntos.",
+  "@mapObjectTrashPurgeConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "settingsAboutTitle": "Acerca de Wayfinder",
   "settingsAboutDescription": "Detalles de compilación y conexión de solo lectura para este cliente. Use el commit de git para confirmar si se está ejecutando la compilación más reciente.",
   "settingsAboutLoading": "Cargando información de la app…",

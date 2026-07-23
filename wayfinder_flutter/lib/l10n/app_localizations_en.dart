@@ -36,10 +36,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabUsers => 'Users & roles';
 
   @override
+  String get settingsTabTrash => 'Trash';
+
+  @override
   String get settingsTabBackup => 'Backup';
 
   @override
   String get settingsTabAbout => 'About';
+
+  @override
+  String get actionUndo => 'Undo';
+
+  @override
+  String get mapObjectDeletedSnackbar => 'Moved to trash';
+
+  @override
+  String mapObjectDeletedNamedSnackbar(String name) {
+    return '“$name” moved to trash';
+  }
+
+  @override
+  String get mapObjectCreatedBy => 'Created by';
+
+  @override
+  String get mapObjectUpdatedBy => 'Last edited by';
+
+  @override
+  String get mapObjectAttributionUnknown => 'Unknown';
+
+  @override
+  String get mapObjectTrashTitle => 'Trash';
+
+  @override
+  String get mapObjectTrashHelp =>
+      'Soft-deleted markers and zones can be restored or permanently removed. Permanent delete cannot be undone.';
+
+  @override
+  String get mapObjectTrashEmpty => 'Trash is empty.';
+
+  @override
+  String mapObjectTrashLoadFailed(String error) {
+    return 'Could not load trash: $error';
+  }
+
+  @override
+  String get mapObjectTrashMarkersSection => 'Markers';
+
+  @override
+  String get mapObjectTrashZonesSection => 'Zones';
+
+  @override
+  String get mapObjectTrashRestore => 'Restore';
+
+  @override
+  String get mapObjectTrashPurge => 'Delete permanently';
+
+  @override
+  String mapObjectTrashDeletedBy(String user) {
+    return 'Deleted by $user';
+  }
+
+  @override
+  String get mapObjectTrashPurgeConfirmTitle => 'Delete permanently?';
+
+  @override
+  String mapObjectTrashPurgeConfirmBody(String name) {
+    return '“$name” will be removed forever, including attachments.';
+  }
 
   @override
   String get accessSignInSubtitle =>

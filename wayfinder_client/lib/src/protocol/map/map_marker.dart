@@ -30,6 +30,13 @@ abstract class MapMarker implements _i1.SerializableModel {
     this.radioJson,
     this.checklistsJson,
     this.layerId,
+    this.createdByAuthUserId,
+    this.createdByUsername,
+    this.updatedByAuthUserId,
+    this.updatedByUsername,
+    this.deletedAt,
+    this.deletedByAuthUserId,
+    this.deletedByUsername,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const _i1.Uuid().v4obj(),
@@ -53,6 +60,13 @@ abstract class MapMarker implements _i1.SerializableModel {
     String? radioJson,
     String? checklistsJson,
     _i1.UuidValue? layerId,
+    _i1.UuidValue? createdByAuthUserId,
+    String? createdByUsername,
+    _i1.UuidValue? updatedByAuthUserId,
+    String? updatedByUsername,
+    DateTime? deletedAt,
+    _i1.UuidValue? deletedByAuthUserId,
+    String? deletedByUsername,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MapMarkerImpl;
@@ -85,6 +99,27 @@ abstract class MapMarker implements _i1.SerializableModel {
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
+      createdByAuthUserId: jsonSerialization['createdByAuthUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['createdByAuthUserId'],
+            ),
+      createdByUsername: jsonSerialization['createdByUsername'] as String?,
+      updatedByAuthUserId: jsonSerialization['updatedByAuthUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['updatedByAuthUserId'],
+            ),
+      updatedByUsername: jsonSerialization['updatedByUsername'] as String?,
+      deletedAt: jsonSerialization['deletedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['deletedAt']),
+      deletedByAuthUserId: jsonSerialization['deletedByAuthUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['deletedByAuthUserId'],
+            ),
+      deletedByUsername: jsonSerialization['deletedByUsername'] as String?,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -128,6 +163,25 @@ abstract class MapMarker implements _i1.SerializableModel {
 
   _i1.UuidValue? layerId;
 
+  /// Auth user that created this marker (null for legacy / anonymous)
+  _i1.UuidValue? createdByAuthUserId;
+
+  /// Login id / display label at create time (survives user deletion)
+  String? createdByUsername;
+
+  /// Auth user that last edited this marker
+  _i1.UuidValue? updatedByAuthUserId;
+
+  /// Login id / display label at last edit
+  String? updatedByUsername;
+
+  /// Soft-delete timestamp; null means active
+  DateTime? deletedAt;
+
+  _i1.UuidValue? deletedByAuthUserId;
+
+  String? deletedByUsername;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -152,6 +206,13 @@ abstract class MapMarker implements _i1.SerializableModel {
     String? radioJson,
     String? checklistsJson,
     _i1.UuidValue? layerId,
+    _i1.UuidValue? createdByAuthUserId,
+    String? createdByUsername,
+    _i1.UuidValue? updatedByAuthUserId,
+    String? updatedByUsername,
+    DateTime? deletedAt,
+    _i1.UuidValue? deletedByAuthUserId,
+    String? deletedByUsername,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -175,6 +236,16 @@ abstract class MapMarker implements _i1.SerializableModel {
       if (radioJson != null) 'radioJson': radioJson,
       if (checklistsJson != null) 'checklistsJson': checklistsJson,
       if (layerId != null) 'layerId': layerId?.toJson(),
+      if (createdByAuthUserId != null)
+        'createdByAuthUserId': createdByAuthUserId?.toJson(),
+      if (createdByUsername != null) 'createdByUsername': createdByUsername,
+      if (updatedByAuthUserId != null)
+        'updatedByAuthUserId': updatedByAuthUserId?.toJson(),
+      if (updatedByUsername != null) 'updatedByUsername': updatedByUsername,
+      if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
+      if (deletedByAuthUserId != null)
+        'deletedByAuthUserId': deletedByAuthUserId?.toJson(),
+      if (deletedByUsername != null) 'deletedByUsername': deletedByUsername,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -206,6 +277,13 @@ class _MapMarkerImpl extends MapMarker {
     String? radioJson,
     String? checklistsJson,
     _i1.UuidValue? layerId,
+    _i1.UuidValue? createdByAuthUserId,
+    String? createdByUsername,
+    _i1.UuidValue? updatedByAuthUserId,
+    String? updatedByUsername,
+    DateTime? deletedAt,
+    _i1.UuidValue? deletedByAuthUserId,
+    String? deletedByUsername,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -225,6 +303,13 @@ class _MapMarkerImpl extends MapMarker {
          radioJson: radioJson,
          checklistsJson: checklistsJson,
          layerId: layerId,
+         createdByAuthUserId: createdByAuthUserId,
+         createdByUsername: createdByUsername,
+         updatedByAuthUserId: updatedByAuthUserId,
+         updatedByUsername: updatedByUsername,
+         deletedAt: deletedAt,
+         deletedByAuthUserId: deletedByAuthUserId,
+         deletedByUsername: deletedByUsername,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -250,6 +335,13 @@ class _MapMarkerImpl extends MapMarker {
     Object? radioJson = _Undefined,
     Object? checklistsJson = _Undefined,
     Object? layerId = _Undefined,
+    Object? createdByAuthUserId = _Undefined,
+    Object? createdByUsername = _Undefined,
+    Object? updatedByAuthUserId = _Undefined,
+    Object? updatedByUsername = _Undefined,
+    Object? deletedAt = _Undefined,
+    Object? deletedByAuthUserId = _Undefined,
+    Object? deletedByUsername = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -276,6 +368,25 @@ class _MapMarkerImpl extends MapMarker {
           ? checklistsJson
           : this.checklistsJson,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
+      createdByAuthUserId: createdByAuthUserId is _i1.UuidValue?
+          ? createdByAuthUserId
+          : this.createdByAuthUserId,
+      createdByUsername: createdByUsername is String?
+          ? createdByUsername
+          : this.createdByUsername,
+      updatedByAuthUserId: updatedByAuthUserId is _i1.UuidValue?
+          ? updatedByAuthUserId
+          : this.updatedByAuthUserId,
+      updatedByUsername: updatedByUsername is String?
+          ? updatedByUsername
+          : this.updatedByUsername,
+      deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
+      deletedByAuthUserId: deletedByAuthUserId is _i1.UuidValue?
+          ? deletedByAuthUserId
+          : this.deletedByAuthUserId,
+      deletedByUsername: deletedByUsername is String?
+          ? deletedByUsername
+          : this.deletedByUsername,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

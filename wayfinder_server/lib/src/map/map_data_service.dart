@@ -20,10 +20,12 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   final layers = await listLayersEnsuringDefault(session);
   final markers = await MapMarker.db.find(
     session,
+    where: (t) => t.deletedAt.equals(null),
     orderBy: (t) => t.name,
   );
   final zones = await MapZone.db.find(
     session,
+    where: (t) => t.deletedAt.equals(null),
     orderByList: (t) => [Order(column: t.name), Order(column: t.id)],
   );
   final seasonalOverlays = await SeasonalOverlay.db.find(

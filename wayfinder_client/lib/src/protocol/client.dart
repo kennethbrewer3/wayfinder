@@ -552,6 +552,13 @@ class EndpointMapMarker extends _i1.EndpointRef {
         {},
       );
 
+  _i2.Future<List<_i14.MapMarker>> listDeletedMarkers() =>
+      caller.callServerEndpoint<List<_i14.MapMarker>>(
+        'mapMarker',
+        'listDeletedMarkers',
+        {},
+      );
+
   _i2.Future<_i14.MapMarker?> getMarker(_i1.UuidValue id) =>
       caller.callServerEndpoint<_i14.MapMarker?>(
         'mapMarker',
@@ -577,6 +584,20 @@ class EndpointMapMarker extends _i1.EndpointRef {
       caller.callServerEndpoint<bool>(
         'mapMarker',
         'deleteMarker',
+        {'id': id},
+      );
+
+  _i2.Future<_i14.MapMarker?> restoreMarker(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i14.MapMarker?>(
+        'mapMarker',
+        'restoreMarker',
+        {'id': id},
+      );
+
+  _i2.Future<bool> purgeDeletedMarker(_i1.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'mapMarker',
+        'purgeDeletedMarker',
         {'id': id},
       );
 
@@ -1196,6 +1217,13 @@ class EndpointMapZone extends _i1.EndpointRef {
         {},
       );
 
+  _i2.Future<List<_i32.MapZone>> listDeletedZones() =>
+      caller.callServerEndpoint<List<_i32.MapZone>>(
+        'mapZone',
+        'listDeletedZones',
+        {},
+      );
+
   _i2.Future<_i32.MapZone?> getZone(_i1.UuidValue id) =>
       caller.callServerEndpoint<_i32.MapZone?>(
         'mapZone',
@@ -1221,6 +1249,20 @@ class EndpointMapZone extends _i1.EndpointRef {
       caller.callServerEndpoint<bool>(
         'mapZone',
         'deleteZone',
+        {'id': id},
+      );
+
+  _i2.Future<_i32.MapZone?> restoreZone(_i1.UuidValue id) =>
+      caller.callServerEndpoint<_i32.MapZone?>(
+        'mapZone',
+        'restoreZone',
+        {'id': id},
+      );
+
+  _i2.Future<bool> purgeDeletedZone(_i1.UuidValue id) =>
+      caller.callServerEndpoint<bool>(
+        'mapZone',
+        'purgeDeletedZone',
         {'id': id},
       );
 

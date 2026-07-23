@@ -18,6 +18,18 @@ fields:
   ### Named checklists / SOPs with checkable items (JSON)
   checklistsJson: String?
   layerId: UuidValue?
+  ### Auth user that created this marker (null for legacy / anonymous)
+  createdByAuthUserId: UuidValue?
+  ### Login id / display label at create time (survives user deletion)
+  createdByUsername: String?
+  ### Auth user that last edited this marker
+  updatedByAuthUserId: UuidValue?
+  ### Login id / display label at last edit
+  updatedByUsername: String?
+  ### Soft-delete timestamp; null means active
+  deletedAt: DateTime?
+  deletedByAuthUserId: UuidValue?
+  deletedByUsername: String?
   createdAt: DateTime
   updatedAt: DateTime
 
@@ -26,3 +38,5 @@ indexes:
     fields: name
   map_marker_layer_id_idx:
     fields: layerId
+  map_marker_deleted_at_idx:
+    fields: deletedAt

@@ -36,10 +36,73 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabUsers => 'Utilisateurs et rôles';
 
   @override
+  String get settingsTabTrash => 'Corbeille';
+
+  @override
   String get settingsTabBackup => 'Sauvegarde';
 
   @override
   String get settingsTabAbout => 'À propos';
+
+  @override
+  String get actionUndo => 'Annuler';
+
+  @override
+  String get mapObjectDeletedSnackbar => 'Déplacé vers la corbeille';
+
+  @override
+  String mapObjectDeletedNamedSnackbar(String name) {
+    return '« $name » déplacé vers la corbeille';
+  }
+
+  @override
+  String get mapObjectCreatedBy => 'Créé par';
+
+  @override
+  String get mapObjectUpdatedBy => 'Dernière modification par';
+
+  @override
+  String get mapObjectAttributionUnknown => 'Inconnu';
+
+  @override
+  String get mapObjectTrashTitle => 'Corbeille';
+
+  @override
+  String get mapObjectTrashHelp =>
+      'Les marqueurs et zones supprimés peuvent être restaurés ou définitivement effacés. La suppression définitive est irréversible.';
+
+  @override
+  String get mapObjectTrashEmpty => 'La corbeille est vide.';
+
+  @override
+  String mapObjectTrashLoadFailed(String error) {
+    return 'Impossible de charger la corbeille : $error';
+  }
+
+  @override
+  String get mapObjectTrashMarkersSection => 'Marqueurs';
+
+  @override
+  String get mapObjectTrashZonesSection => 'Zones';
+
+  @override
+  String get mapObjectTrashRestore => 'Restaurer';
+
+  @override
+  String get mapObjectTrashPurge => 'Supprimer définitivement';
+
+  @override
+  String mapObjectTrashDeletedBy(String user) {
+    return 'Supprimé par $user';
+  }
+
+  @override
+  String get mapObjectTrashPurgeConfirmTitle => 'Supprimer définitivement ?';
+
+  @override
+  String mapObjectTrashPurgeConfirmBody(String name) {
+    return '« $name » sera définitivement supprimé, y compris les pièces jointes.';
+  }
 
   @override
   String get accessSignInSubtitle =>

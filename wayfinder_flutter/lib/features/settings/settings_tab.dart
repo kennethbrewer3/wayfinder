@@ -7,6 +7,7 @@ enum SettingsTab {
   tides('tides'),
   seasonalOverlays('seasonal-overlays'),
   users('users'),
+  trash('trash'),
   backup('backup'),
   about('about');
 

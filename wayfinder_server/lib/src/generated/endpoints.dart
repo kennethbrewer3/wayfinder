@@ -922,6 +922,16 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['mapMarker'] as _i9.MapMarkerEndpoint)
                   .listMarkers(session),
         ),
+        'listDeletedMarkers': _i1.MethodConnector(
+          name: 'listDeletedMarkers',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapMarker'] as _i9.MapMarkerEndpoint)
+                  .listDeletedMarkers(session),
+        ),
         'getMarker': _i1.MethodConnector(
           name: 'getMarker',
           params: {
@@ -994,6 +1004,44 @@ class Endpoints extends _i1.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['mapMarker'] as _i9.MapMarkerEndpoint)
                   .deleteMarker(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'restoreMarker': _i1.MethodConnector(
+          name: 'restoreMarker',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapMarker'] as _i9.MapMarkerEndpoint)
+                  .restoreMarker(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'purgeDeletedMarker': _i1.MethodConnector(
+          name: 'purgeDeletedMarker',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapMarker'] as _i9.MapMarkerEndpoint)
+                  .purgeDeletedMarker(
                     session,
                     params['id'],
                   ),
@@ -2253,6 +2301,16 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['mapZone'] as _i17.MapZoneEndpoint)
                   .listZones(session),
         ),
+        'listDeletedZones': _i1.MethodConnector(
+          name: 'listDeletedZones',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapZone'] as _i17.MapZoneEndpoint)
+                  .listDeletedZones(session),
+        ),
         'getZone': _i1.MethodConnector(
           name: 'getZone',
           params: {
@@ -2324,6 +2382,44 @@ class Endpoints extends _i1.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async =>
                   (endpoints['mapZone'] as _i17.MapZoneEndpoint).deleteZone(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'restoreZone': _i1.MethodConnector(
+          name: 'restoreZone',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['mapZone'] as _i17.MapZoneEndpoint).restoreZone(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'purgeDeletedZone': _i1.MethodConnector(
+          name: 'purgeDeletedZone',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['mapZone'] as _i17.MapZoneEndpoint)
+                  .purgeDeletedZone(
                     session,
                     params['id'],
                   ),

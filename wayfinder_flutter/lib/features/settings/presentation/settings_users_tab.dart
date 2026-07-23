@@ -6,6 +6,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/app_globals.dart';
 import '../../../core/serverpod_client.dart';
+import '../../access/presentation/signed_in_account_tile.dart';
 import '../../access/providers/access_session_provider.dart';
 
 final _accessUsersProvider = FutureProvider.autoDispose<List<AccessUserInfo>>((
@@ -46,26 +47,24 @@ class SettingsUsersTab extends ConsumerWidget {
     }
 
     if (!canUsers && !canRoles) {
-      return Center(child: Text(l10n.accessUsersPermissionDenied));
+      return ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          if (session?.authenticated == true) ...[
+            const SignedInAccountTile(contentPadding: EdgeInsets.zero),
+            const Divider(),
+            const SizedBox(height: 8),
+          ],
+          Text(l10n.accessUsersPermissionDenied),
+        ],
+      );
     }
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         if (session?.authenticated == true) ...[
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.person_outline),
-            title: Text(session?.email ?? l10n.accessSignedIn),
-            subtitle: Text(
-              session?.roleName ?? session?.roleKey ?? l10n.accessUnknownRole,
-            ),
-            trailing: TextButton(
-              onPressed: () =>
-                  ref.read(accessSessionProvider.notifier).signOut(),
-              child: Text(l10n.accessSignOut),
-            ),
-          ),
+          const SignedInAccountTile(contentPadding: EdgeInsets.zero),
           const Divider(),
         ],
         Text(

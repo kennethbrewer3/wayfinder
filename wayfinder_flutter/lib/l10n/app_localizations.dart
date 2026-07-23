@@ -154,6 +154,12 @@ abstract class AppLocalizations {
   /// **'Users & roles'**
   String get settingsTabUsers;
 
+  /// No description provided for @settingsTabTrash.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get settingsTabTrash;
+
   /// No description provided for @settingsTabBackup.
   ///
   /// In en, this message translates to:
@@ -165,6 +171,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About'**
   String get settingsTabAbout;
+
+  /// No description provided for @actionUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get actionUndo;
+
+  /// No description provided for @mapObjectDeletedSnackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to trash'**
+  String get mapObjectDeletedSnackbar;
+
+  /// No description provided for @mapObjectDeletedNamedSnackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” moved to trash'**
+  String mapObjectDeletedNamedSnackbar(String name);
+
+  /// No description provided for @mapObjectCreatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Created by'**
+  String get mapObjectCreatedBy;
+
+  /// No description provided for @mapObjectUpdatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Last edited by'**
+  String get mapObjectUpdatedBy;
+
+  /// No description provided for @mapObjectAttributionUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get mapObjectAttributionUnknown;
+
+  /// No description provided for @mapObjectTrashTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get mapObjectTrashTitle;
+
+  /// No description provided for @mapObjectTrashHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft-deleted markers and zones can be restored or permanently removed. Permanent delete cannot be undone.'**
+  String get mapObjectTrashHelp;
+
+  /// No description provided for @mapObjectTrashEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash is empty.'**
+  String get mapObjectTrashEmpty;
+
+  /// No description provided for @mapObjectTrashLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load trash: {error}'**
+  String mapObjectTrashLoadFailed(String error);
+
+  /// No description provided for @mapObjectTrashMarkersSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Markers'**
+  String get mapObjectTrashMarkersSection;
+
+  /// No description provided for @mapObjectTrashZonesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Zones'**
+  String get mapObjectTrashZonesSection;
+
+  /// No description provided for @mapObjectTrashRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get mapObjectTrashRestore;
+
+  /// No description provided for @mapObjectTrashPurge.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get mapObjectTrashPurge;
+
+  /// No description provided for @mapObjectTrashDeletedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted by {user}'**
+  String mapObjectTrashDeletedBy(String user);
+
+  /// No description provided for @mapObjectTrashPurgeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently?'**
+  String get mapObjectTrashPurgeConfirmTitle;
+
+  /// No description provided for @mapObjectTrashPurgeConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” will be removed forever, including attachments.'**
+  String mapObjectTrashPurgeConfirmBody(String name);
 
   /// No description provided for @accessSignInSubtitle.
   ///

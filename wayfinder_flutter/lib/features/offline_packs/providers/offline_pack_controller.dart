@@ -9,6 +9,7 @@ import '../../markers/providers/markers_provider.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../tracks/models/track_geometry.dart';
+import '../../tracks/models/track_transportation_mode.dart';
 import '../../watch_log/providers/watch_log_provider.dart';
 import '../data/offline_pack_store.dart';
 import '../data/offline_sync.dart';
@@ -245,6 +246,7 @@ class OfflinePackController {
   /// Creates a tracking marker + track zone entirely on the client.
   Future<MapMarker> createTrackingMarkerOffline({
     required MapMarker marker,
+    TrackTransportationMode transportationMode = TrackTransportationMode.onFoot,
   }) async {
     final now = DateTime.now().toUtc();
     final zoneId = const Uuid().v4obj();
@@ -256,6 +258,7 @@ class OfflinePackController {
           recordedAt: now,
         ),
       ],
+      transportationMode: transportationMode,
     );
     final zone = MapZone(
       id: zoneId,
@@ -281,8 +284,14 @@ class OfflinePackController {
     return trackingMarker;
   }
 
-  /// Appends GPS points to every offline tracking marker that has moved enough.
-  Future<void> appendGpsToTrackingMarkers(LatLng position) async {
+  /// Appends GPS points to offline tracking markers that have moved enough.
+  ///
+  /// When [onlyMarkerId] is set, only that marker is updated (used when the
+  /// device GPS is bound to a specific tracking marker).
+  Future<void> appendGpsToTrackingMarkers(
+    LatLng position, {
+    UuidValue? onlyMarkerId,
+  }) async {
     final store = _ref.read(offlinePackStoreProvider);
     final snapshot = await store.loadSnapshot();
     if (snapshot == null) {
@@ -294,6 +303,9 @@ class OfflinePackController {
     var changed = false;
 
     for (final marker in snapshot.markers) {
+      if (onlyMarkerId != null && marker.id != onlyMarkerId) {
+        continue;
+      }
       if (!marker.isTracking || marker.trackZoneId == null) {
         continue;
       }

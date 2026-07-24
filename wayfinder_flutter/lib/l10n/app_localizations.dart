@@ -4319,6 +4319,48 @@ abstract class AppLocalizations {
   /// **'Active'**
   String get markerTrackingStatusActive;
 
+  /// No description provided for @markerTrackingStatusRecordingGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording GPS'**
+  String get markerTrackingStatusRecordingGps;
+
+  /// No description provided for @markerTrackingStartGpsTrail.
+  ///
+  /// In en, this message translates to:
+  /// **'Record trail with GPS'**
+  String get markerTrackingStartGpsTrail;
+
+  /// No description provided for @markerTrackingStopGpsTrail.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop GPS trail'**
+  String get markerTrackingStopGpsTrail;
+
+  /// No description provided for @markerTrackingGpsTrailHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: bind this device’s GPS to this marker only. Works online or in an offline pack. Other tracking markers (APRS, REST, etc.) are unaffected.'**
+  String get markerTrackingGpsTrailHelp;
+
+  /// No description provided for @markerTrackingGpsTrailOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Record this device’s GPS into that tracking marker’s trail? Works offline in a pack.'**
+  String get markerTrackingGpsTrailOffer;
+
+  /// No description provided for @trackCreateEvacKitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create evac kit from trail'**
+  String get trackCreateEvacKitButton;
+
+  /// No description provided for @mapDeviceLocationRecordingTrail.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording trail: {name}'**
+  String mapDeviceLocationRecordingTrail(String name);
+
   /// No description provided for @weatherStationCurrentConditions.
   ///
   /// In en, this message translates to:

@@ -670,6 +670,26 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
                 icon: const Icon(Icons.terrain),
                 label: Text(l10n.elevationProfileButton),
               ),
+              if (!_detailsEditLocked(ref))
+                TextButton.icon(
+                  onPressed: () {
+                    unawaited(
+                      createEvacKitFromWaypoints(
+                        context: context,
+                        ref: ref,
+                        waypoints: [
+                          for (final point in geometry.pathPoints)
+                            EvacWaypoint(
+                              kind: EvacWaypointKind.point,
+                              point: point,
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.emergency_share_outlined),
+                  label: Text(l10n.trackCreateEvacKitButton),
+                ),
             ]
           : const [],
       children: [

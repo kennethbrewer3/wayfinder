@@ -3,13 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../access/providers/access_session_provider.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../lines/utils/line_distance.dart';
+import '../../map/providers/device_location_provider.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/presentation/track_transportation_icon.dart';
+import '../../tracks/providers/gps_track_binding_provider.dart';
 
 class MarkerTrackingDetailsSection extends ConsumerWidget {
   const MarkerTrackingDetailsSection({
@@ -35,6 +38,9 @@ class MarkerTrackingDetailsSection extends ConsumerWidget {
         ? null
         : TrackGeometry.fromZone(trackZone);
     final mode = geometry?.transportationMode ?? TrackTransportationMode.onFoot;
+    final boundId = ref.watch(gpsTrackBindingProvider);
+    final recordingThis = boundId == marker.id;
+    final editsLocked = ref.watch(mapEditsLockedByRoleProvider);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -69,8 +75,12 @@ class MarkerTrackingDetailsSection extends ConsumerWidget {
                     ),
                   ),
                   _StatusChip(
-                    label: l10n.markerTrackingStatusActive,
-                    color: theme.colorScheme.primary,
+                    label: recordingThis
+                        ? l10n.markerTrackingStatusRecordingGps
+                        : l10n.markerTrackingStatusActive,
+                    color: recordingThis
+                        ? theme.colorScheme.tertiary
+                        : theme.colorScheme.primary,
                   ),
                 ],
               ),
@@ -131,11 +141,64 @@ class MarkerTrackingDetailsSection extends ConsumerWidget {
                   ],
                 ),
               ],
+              if (!editsLocked) ...[
+                const SizedBox(height: 12),
+                FilledButton.tonalIcon(
+                  onPressed: () => _toggleGpsRecording(context, ref),
+                  icon: Icon(
+                    recordingThis
+                        ? Icons.stop_circle_outlined
+                        : Icons.gps_fixed,
+                  ),
+                  label: Text(
+                    recordingThis
+                        ? l10n.markerTrackingStopGpsTrail
+                        : l10n.markerTrackingStartGpsTrail,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.markerTrackingGpsTrailHelp,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _toggleGpsRecording(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final binding = ref.read(gpsTrackBindingProvider.notifier);
+    if (ref.read(gpsTrackBindingProvider) == marker.id) {
+      binding.stopRecording();
+      return;
+    }
+
+    final ok = await binding.startRecording(marker.id);
+    if (!context.mounted) {
+      return;
+    }
+    if (!ok) {
+      final code = ref.read(deviceLocationProvider).errorMessage;
+      final message = switch (DeviceLocationError.fromCode(code)) {
+        DeviceLocationError.serviceDisabled =>
+          l10n.mapDeviceLocationServiceDisabled,
+        DeviceLocationError.permissionDenied =>
+          l10n.mapDeviceLocationPermissionDenied,
+        DeviceLocationError.permissionDeniedForever =>
+          l10n.mapDeviceLocationPermissionDeniedForever,
+        DeviceLocationError.unavailable ||
+        null => l10n.mapDeviceLocationUnavailable,
+      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
   }
 }
 

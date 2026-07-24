@@ -2519,6 +2519,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markerTrackingStatusActive => 'Active';
 
   @override
+  String get markerTrackingStatusRecordingGps => 'Recording GPS';
+
+  @override
+  String get markerTrackingStartGpsTrail => 'Record trail with GPS';
+
+  @override
+  String get markerTrackingStopGpsTrail => 'Stop GPS trail';
+
+  @override
+  String get markerTrackingGpsTrailHelp =>
+      'Optional: bind this device’s GPS to this marker only. Works online or in an offline pack. Other tracking markers (APRS, REST, etc.) are unaffected.';
+
+  @override
+  String get markerTrackingGpsTrailOffer =>
+      'Record this device’s GPS into that tracking marker’s trail? Works offline in a pack.';
+
+  @override
+  String get trackCreateEvacKitButton => 'Create evac kit from trail';
+
+  @override
+  String mapDeviceLocationRecordingTrail(String name) {
+    return 'Recording trail: $name';
+  }
+
+  @override
   String get weatherStationCurrentConditions => 'Current conditions';
 
   @override

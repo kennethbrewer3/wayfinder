@@ -91,8 +91,8 @@ import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/data/offline_tile_cache.dart';
 import '../../offline_packs/data/offline_tile_providers.dart';
 import '../../offline_packs/presentation/offline_mode_banner.dart';
-import '../../offline_packs/providers/offline_track_recorder.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../tracks/providers/gps_track_recorder_provider.dart';
 import '../../settings/data/pmtiles_loader.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
@@ -4303,7 +4303,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final l10n = AppLocalizations.of(context)!;
     ref.watch(markerIconRevisionProvider);
     ref.watch(markerIconCatalogProvider);
-    ref.watch(offlineTrackRecorderProvider);
+    ref.watch(gpsTrackRecorderProvider);
     ref.listen<bool>(offlineModeActiveProvider, (previous, next) {
       if (previous == next) {
         return;

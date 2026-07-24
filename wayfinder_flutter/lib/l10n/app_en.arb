@@ -1584,6 +1584,20 @@
   "markerTrackingLabel": "Tracking marker",
   "markerTrackingHelp": "Record movement history as a trail on the map.",
   "markerTrackingStatusActive": "Active",
+  "markerTrackingStatusRecordingGps": "Recording GPS",
+  "markerTrackingStartGpsTrail": "Record trail with GPS",
+  "markerTrackingStopGpsTrail": "Stop GPS trail",
+  "markerTrackingGpsTrailHelp": "Optional: bind this device’s GPS to this marker only. Works online or in an offline pack. Other tracking markers (APRS, REST, etc.) are unaffected.",
+  "markerTrackingGpsTrailOffer": "Record this device’s GPS into that tracking marker’s trail? Works offline in a pack.",
+  "trackCreateEvacKitButton": "Create evac kit from trail",
+  "mapDeviceLocationRecordingTrail": "Recording trail: {name}",
+  "@mapDeviceLocationRecordingTrail": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "weatherStationCurrentConditions": "Current conditions",
   "weatherDisplayUnitsLabel": "Units",
   "weatherNoData": "No weather readings yet. Weather data is stored on the server when received from APRS or other local integrations.",

@@ -1,17 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
+import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
-import '../../map/providers/device_location_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
+import '../../tracks/providers/gps_track_binding_provider.dart';
 import '../models/marker_color.dart';
 import '../providers/markers_provider.dart';
 import 'marker_form_dialog.dart';
@@ -26,6 +29,31 @@ Future<void> _syncTrackTransportationMode({
     updateZone: client.mapZone.updateZone,
     marker: marker,
     mode: mode,
+  );
+}
+
+void _offerGpsTrailRecording({
+  required BuildContext context,
+  required WidgetRef ref,
+  required UuidValue markerId,
+}) {
+  if (!context.mounted) {
+    return;
+  }
+  final l10n = AppLocalizations.of(context)!;
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(l10n.markerTrackingGpsTrailOffer),
+      duration: const Duration(seconds: 10),
+      action: SnackBarAction(
+        label: l10n.markerTrackingStartGpsTrail,
+        onPressed: () {
+          unawaited(
+            ref.read(gpsTrackBindingProvider.notifier).startRecording(markerId),
+          );
+        },
+      ),
+    ),
   );
 }
 
@@ -78,14 +106,24 @@ Future<bool> createMarkerAtPoint({
 
   if (ref.read(offlineModeActiveProvider)) {
     if (formData.isTracking) {
-      await ref
+      final created = await ref
           .read(offlinePackControllerProvider)
-          .createTrackingMarkerOffline(marker: draft);
-      await ref.read(deviceLocationProvider.notifier).locateAndFollow();
+          .createTrackingMarkerOffline(
+            marker: draft,
+            transportationMode: formData.transportationMode,
+          );
+      AppLogger.logMarkers.success('📍 Tracking marker queued offline');
+      if (context.mounted) {
+        _offerGpsTrailRecording(
+          context: context,
+          ref: ref,
+          markerId: created.id,
+        );
+      }
     } else {
       await ref.read(offlinePackControllerProvider).enqueueMarker(draft);
+      AppLogger.logMarkers.success('📍 Marker queued offline');
     }
-    AppLogger.logMarkers.success('📍 Marker queued offline');
     return true;
   }
 
@@ -104,6 +142,13 @@ Future<bool> createMarkerAtPoint({
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();
   AppLogger.logMarkers.success('📍 Marker created');
+  if (formData.isTracking && context.mounted) {
+    _offerGpsTrailRecording(
+      context: context,
+      ref: ref,
+      markerId: created.id,
+    );
+  }
   return true;
 }
 
@@ -163,6 +208,16 @@ Future<bool> updateMarkerFromForm({
       marker: updated,
       mode: formData.transportationMode,
     );
+    if (!marker.isTracking && context.mounted) {
+      _offerGpsTrailRecording(
+        context: context,
+        ref: ref,
+        markerId: updated.id,
+      );
+    }
+  } else if (ref.read(gpsTrackBindingProvider) == marker.id) {
+    // Tracking turned off — stop binding this device's GPS to it.
+    ref.read(gpsTrackBindingProvider.notifier).clear();
   }
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();

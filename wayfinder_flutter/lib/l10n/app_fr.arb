@@ -1128,6 +1128,20 @@
   "markerTrackingLabel": "Marqueur de suivi",
   "markerTrackingHelp": "Enregistrez l'historique des déplacements sous forme de trace sur la carte.",
   "markerTrackingStatusActive": "Actif",
+  "markerTrackingStatusRecordingGps": "Enregistrement GPS",
+  "markerTrackingStartGpsTrail": "Enregistrer la trace avec le GPS",
+  "markerTrackingStopGpsTrail": "Arrêter la trace GPS",
+  "markerTrackingGpsTrailHelp": "Optionnel : associez le GPS de cet appareil à ce marqueur uniquement. Fonctionne en ligne ou avec un pack hors ligne. Les autres marqueurs de suivi (APRS, REST, etc.) ne sont pas affectés.",
+  "markerTrackingGpsTrailOffer": "Enregistrer le GPS de cet appareil dans la trace de ce marqueur ? Fonctionne hors ligne avec un pack.",
+  "trackCreateEvacKitButton": "Créer un kit d'évacuation depuis la trace",
+  "mapDeviceLocationRecordingTrail": "Enregistrement de la trace : {name}",
+  "@mapDeviceLocationRecordingTrail": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "weatherStationCurrentConditions": "Conditions actuelles",
   "weatherDisplayUnitsLabel": "Unités",
   "weatherNoData": "Aucune lecture météo pour l'instant. Les données sont stockées sur le serveur lorsqu'elles arrivent via APRS ou d'autres intégrations locales.",

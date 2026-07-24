@@ -2546,6 +2546,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markerTrackingStatusActive => 'Actif';
 
   @override
+  String get markerTrackingStatusRecordingGps => 'Enregistrement GPS';
+
+  @override
+  String get markerTrackingStartGpsTrail => 'Enregistrer la trace avec le GPS';
+
+  @override
+  String get markerTrackingStopGpsTrail => 'Arrêter la trace GPS';
+
+  @override
+  String get markerTrackingGpsTrailHelp =>
+      'Optionnel : associez le GPS de cet appareil à ce marqueur uniquement. Fonctionne en ligne ou avec un pack hors ligne. Les autres marqueurs de suivi (APRS, REST, etc.) ne sont pas affectés.';
+
+  @override
+  String get markerTrackingGpsTrailOffer =>
+      'Enregistrer le GPS de cet appareil dans la trace de ce marqueur ? Fonctionne hors ligne avec un pack.';
+
+  @override
+  String get trackCreateEvacKitButton =>
+      'Créer un kit d\'évacuation depuis la trace';
+
+  @override
+  String mapDeviceLocationRecordingTrail(String name) {
+    return 'Enregistrement de la trace : $name';
+  }
+
+  @override
   String get weatherStationCurrentConditions => 'Conditions actuelles';
 
   @override

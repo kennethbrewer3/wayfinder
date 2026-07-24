@@ -61,6 +61,7 @@ Tap the **my location** button (crosshair) in the map app bar to show a blue **y
 - **Long-press** the button to hide the blue dot and stop tracking.
 - An accuracy circle appears when the device reports a useful accuracy radius.
 - A **status card** (bottom-left) shows your position as lat/lng, or as **MGRS** when the MGRS grid is on, plus magnetic variation (WMM2025). If a **marker is selected**, it also shows distance and bearing to that marker (true or magnetic per Settings → Bearings), with a dashed guide line on the map.
+- To **save a trail** of your movement into a tracking marker (walk, drive, boat, etc.), see **Tracking markers → Record trail with GPS** below.
 - **Web note:** browsers only allow geolocation in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts) — `https://…` or `http://localhost`. Plain `http://192.168.x.x` usually blocks location. Serve the client behind HTTPS on the LAN if you need GPS in the browser (see the client deploy guide). Native Android/iOS/macOS builds use system location APIs and do not need HTTPS for GPS.
 
 ### MGRS grid
@@ -233,7 +234,7 @@ Marker details show coordinates, notes, and actions:
 
 ### Tracking markers
 
-A **tracking marker** records where the marker has moved over time. Each time the position changes by at least about **5 meters**, a new point is saved and a **trail** is drawn on the map behind the marker. This is useful for following a pet, person, or vehicle when coordinates are updated from the app or over the REST API.
+A **tracking marker** records where the marker has moved over time. Each time the position changes by at least about **5 meters**, a new point is saved and a **trail** is drawn on the map behind the marker. This is useful for following a pet, person, or vehicle when coordinates are updated from the app or over the REST API — and for recording **your own** walk, drive, or other trip from this device’s GPS.
 
 **Turn tracking on or off**
 
@@ -241,6 +242,17 @@ A **tracking marker** records where the marker has moved over time. Each time th
 2. Enable **Tracking marker** in the form and save.
 
 When tracking is **off**, no new points are recorded, but **existing history is kept** in the database. Turn tracking on again to resume appending to the same trail.
+
+**Record trail with GPS (this device)**
+
+GPS recording is **opt-in** and binds to **one** tracking marker at a time. Other tracking markers (for example APRS or REST updates) keep recording trails from their own position updates and are not moved by this device’s GPS.
+
+1. Create a **tracking marker** (any **Transportation** mode — mode only changes trail style).
+2. When you save, a snackbar offers **Record trail with GPS** (optional). You can also open the marker’s details later and tap **Record trail with GPS**.
+3. While bound, each move of about **5 meters** updates that marker and appends a point to its companion track — **including while an offline pack is active** and the appliance is out of range. Points queue in the pack and sync when the server returns.
+4. Tap **Stop GPS trail** to unbind (My Location can stay on), or long-press **My location** to hide the blue dot and stop GPS trail recording.
+
+The GPS status card shows **Recording trail: …** while a marker is bound.
 
 **What you see on the map**
 
@@ -289,6 +301,10 @@ Enabling tracking creates a companion **track** object in the sidebar (transport
 | Change trail color, name, or transportation | **Edit track** |
 
 Hiding or moving the track does **not** delete its history. Disabling **Tracking marker** on the marker also does **not** clear the trail.
+
+**Create an evac kit from a trail**
+
+After you have recorded a path (for example a walk), open the companion **track** in the sidebar or details dialog and choose **Create evac kit from trail**. Wayfinder copies the track points into a new evac route kit you can name, style, and edit like any other kit.
 
 **Update position from automation**
 
@@ -541,7 +557,8 @@ If the server becomes unreachable and a pack exists:
 
 - The map shows an **Offline** banner and draws from the pack (selected layers + cached tiles).
 - Packed **seasonal overlays** display if you opted in; they stay **read-only** until the server returns.
-- You can still **add markers**, **change a marker’s layer**, create **GPS tracking** markers (breadcrumbs), and add **watch / incident log** entries.
+- You can still **add markers**, **change a marker’s layer**, create **tracking markers**, and add **watch / incident log** entries.
+- To **record a walk (or any trip) with this phone’s GPS** while offline: long-press → **Add marker** → enable **Tracking marker** → save → tap **Record trail with GPS** on the snackbar (or later in marker details). Breadcrumbs are stored in the pack and flush when the server returns. APRS/REST tracking markers in the pack are not moved unless you explicitly bind GPS to them.
 - Markers you created offline (still waiting to sync) can be **deleted** if you placed one in the wrong spot. Markers that came from the server pack cannot be deleted until the server returns.
 - Other create/edit tools are hidden until the server returns.
 - Pending changes flush automatically when the appliance is reachable again.

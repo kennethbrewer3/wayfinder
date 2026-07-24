@@ -8,6 +8,7 @@ import '../../elevation/utils/elevation_format.dart';
 import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../../tracks/providers/gps_track_binding_provider.dart';
 import '../providers/device_location_provider.dart';
 import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/selected_map_object_provider.dart';
@@ -38,6 +39,18 @@ class MapDeviceLocationHud extends ConsumerWidget {
     final bearingReference = ref.watch(bearingReferenceProvider);
     final selection = ref.watch(selectedMapObjectProvider);
     final markers = ref.watch(markersProvider).valueOrNull ?? const [];
+    final boundMarkerId = ref.watch(gpsTrackBindingProvider);
+    String? recordingTrailName;
+    if (boundMarkerId != null) {
+      for (final candidate in markers) {
+        if (candidate.id == boundMarkerId) {
+          recordingTrailName = candidate.name.trim().isEmpty
+              ? l10n.mapDeviceLocationSelectedMarker
+              : candidate.name.trim();
+          break;
+        }
+      }
+    }
     final target = selectedMarkerTarget(
       selection: selection,
       markers: markers,
@@ -117,6 +130,16 @@ class MapDeviceLocationHud extends ConsumerWidget {
                 ),
               ],
             ),
+            if (recordingTrailName != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                l10n.mapDeviceLocationRecordingTrail(recordingTrailName),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
             const SizedBox(height: 2),
             Text(
               formatMagneticDeclination(declination),

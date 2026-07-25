@@ -194,10 +194,11 @@
   "settingsSaveHome": "Enregistrer l'accueil",
   "settingsUseCurrentMapView": "Utiliser la vue actuelle",
   "settingsResetToDefault": "Réinitialiser par défaut",
-  "settingsServerConnectionTitle": "Connexion au serveur API",
-  "settingsServerConnectionDescription": "URL du serveur API Wayfinder, y compris l'hôte et le port. L'URL du serveur web (API REST et PMTiles) est dérivée automatiquement (port API + 2).",
+  "settingsServerConnectionTitle": "Connexion au serveur",
+  "settingsServerConnectionDescription": "Saisissez l'URL de l'API Wayfinder (connexion / données en direct) et l'URL web (tuiles cartographiques, REST, fichiers). Ce sont souvent des hôtes différents derrière un reverse proxy.",
   "settingsServerConnectionPermissionDenied": "Vous n'avez pas l'autorisation de modifier l'URL du serveur Wayfinder de cet appareil.",
   "settingsServerUrl": "URL du serveur API",
+  "settingsWebServerUrl": "URL du serveur web",
   "settingsCurrentWebServer": "Serveur web actuel : {webUrl}",
   "@settingsCurrentWebServer": {
     "placeholders": {
@@ -206,7 +207,11 @@
       }
     }
   },
-  "settingsSaveServerUrl": "Enregistrer l'URL du serveur API",
+  "settingsSaveServerUrl": "Enregistrer les URL du serveur",
+  "settingsEditServerUrls": "Modifier les URL du serveur",
+  "settingsGeocodingAvailabilityTitle": "Map search (geocoding)",
+  "settingsGeocodingAvailabilityDescription": "Whether place and address search from the map bar is available for this device.",
+  "settingsGeocodingOpenTab": "Geocoding settings",
   "settingsMeasurementsTitle": "Mesures",
   "settingsMeasurementsDescription": "Choisissez comment les distances des lignes sont affichées sur la carte. Enregistré sur le serveur pour que chaque navigateur utilise les mêmes unités.",
   "settingsAnglesTitle": "Angles",
@@ -1477,6 +1482,34 @@
   "mapTilesNotReadyTooltip": "Tuiles cartographiques non prêtes",
   "mapTilesLoadingTitle": "Chargement des tuiles cartographiques",
   "mapTilesCatalogLoadFailed": "Échec du chargement du catalogue de tuiles.",
+  "mapTilesCatalogLoading": "Loading map tile catalog…",
+  "mapTilesPreparingFile": "Preparing {name}",
+  "@mapTilesPreparingFile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesOpeningElapsed": "Opening {name}… {seconds}s",
+  "@mapTilesOpeningElapsed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "mapTilesOpeningFromUrl": "Fetching header from {url}",
+  "@mapTilesOpeningFromUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
   "mapTilesOpeningLayer": "Ouverture : {name}",
   "@mapTilesOpeningLayer": {
     "placeholders": {

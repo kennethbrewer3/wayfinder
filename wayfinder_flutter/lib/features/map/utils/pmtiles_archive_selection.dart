@@ -218,6 +218,17 @@ Future<ArchiveSelectionResult> resolveActiveArchiveForViewport({
     );
   }
 
+  // Sole enabled archive: always open it. Viewport filtering can leave
+  // activeEntry null on first mobile layout (wrong/zero bounds) and then
+  // the map never starts loading the only available file.
+  if (entries.length == 1) {
+    return ArchiveSelectionResult(
+      entry: entries.first,
+      scores: const [],
+      reason: 'single enabled archive',
+    );
+  }
+
   final paddedViewport = expandLatLngBounds(viewportBounds);
 
   final containingCenter = rankArchivesContainingCenter(

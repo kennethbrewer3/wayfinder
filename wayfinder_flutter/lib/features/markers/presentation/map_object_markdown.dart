@@ -55,12 +55,35 @@ class MapObjectMarkdownBody extends StatelessWidget {
     final theme = Theme.of(context);
 
     return MarkdownBody(
-      data: markdown,
+      // Soft-break long URLs so narrow layouts (phones, side panels) wrap
+      // instead of overflowing. fitContent:false stretches to parent width.
+      data: softWrapLongUrls(markdown),
       shrinkWrap: true,
+      fitContent: false,
       styleSheet: mapObjectMarkdownStyleSheet(theme, color: color),
       onTapLink: (text, href, title) {
         handleMapObjectMarkdownLink(context, href);
       },
     );
   }
+}
+
+/// Inserts zero-width spaces after common URL delimiters so Flutter can wrap.
+@visibleForTesting
+String softWrapLongUrls(String markdown) {
+  return markdown.replaceAllMapped(
+    RegExp(r'https?://[^\s<>\[\]()]+'),
+    (match) {
+      final url = match[0]!;
+      final out = StringBuffer();
+      for (var i = 0; i < url.length; i++) {
+        out.write(url[i]);
+        final ch = url[i];
+        if (i < url.length - 1 && '/&=?#._%-'.contains(ch)) {
+          out.write('\u200B');
+        }
+      }
+      return out.toString();
+    },
+  );
 }

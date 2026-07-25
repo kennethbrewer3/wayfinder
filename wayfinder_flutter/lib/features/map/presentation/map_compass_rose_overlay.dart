@@ -143,6 +143,10 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
                 onDoubleTap: _resetRotation,
                 onLongPress: _toggleBearingReference,
                 child: Tooltip(
+                  // Default long-press trigger steals the gesture on phones and
+                  // shows the tip instead of toggling true/magnetic north.
+                  // manual keeps mouse-hover tips on desktop/web.
+                  triggerMode: TooltipTriggerMode.manual,
                   message:
                       'Double-tap: reset rotation\n'
                       'Long-press: toggle true / magnetic north',

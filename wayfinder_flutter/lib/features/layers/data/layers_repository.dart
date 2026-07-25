@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import '../../../core/logging/logging_http_client.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
@@ -34,7 +34,7 @@ Future<List<MapLayer>> fetchMapLayers(Client client) async {
 
 Future<List<MapLayer>> _fetchLayersViaRest() async {
   final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
-  final response = await http.get(
+  final response = await loggedHttpGet(
     Uri.parse('$base/api/layers'),
     headers: await RestApiHeaders.readOnly(),
   );

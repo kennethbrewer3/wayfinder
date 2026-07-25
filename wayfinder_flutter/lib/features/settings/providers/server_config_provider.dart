@@ -11,21 +11,28 @@ final savedServerApiUrlProvider = FutureProvider<String?>((ref) async {
   return ref.watch(serverConfigStorageProvider).loadApiUrl();
 });
 
+final savedServerWebUrlProvider = FutureProvider<String?>((ref) async {
+  return ref.watch(serverConfigStorageProvider).loadWebUrl();
+});
+
 class ServerUrlSettingsController {
   ServerUrlSettingsController(this._storage);
 
   final ServerConfigStorage _storage;
 
-  Future<AppServerConfig> saveApiUrl(String input) async {
-    final apiUrl = normalizeApiUrl(input);
+  /// Persists API + web URLs. Both are required and stored independently.
+  Future<AppServerConfig> saveServerUrls({
+    required String apiUrlInput,
+    required String webUrlInput,
+  }) async {
+    final apiUrl = normalizeApiUrl(apiUrlInput);
+    final webUrl = normalizeWebUrl(webUrlInput);
     await _storage.saveApiUrl(apiUrl);
-    return AppServerConfig(
-      apiUrl: apiUrl,
-      webUrl: defaultWebUrlForApi(apiUrl) ?? defaultWebUrl,
-    );
+    await _storage.saveWebUrl(webUrl);
+    return AppServerConfig(apiUrl: apiUrl, webUrl: webUrl);
   }
 
-  Future<void> resetToDefault() => _storage.clearApiUrl();
+  Future<void> resetToDefault() => _storage.clearServerUrls();
 }
 
 final serverUrlSettingsControllerProvider =

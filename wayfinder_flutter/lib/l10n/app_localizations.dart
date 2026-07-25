@@ -319,26 +319,44 @@ abstract class AppLocalizations {
   /// No description provided for @accessConnectionHint.
   ///
   /// In en, this message translates to:
-  /// **'If this device cannot reach localhost, enter your Wayfinder API server address below (LAN IP or hostname).'**
+  /// **'If this device cannot reach localhost, enter your Wayfinder API and web server addresses below (LAN IP or hostname).'**
   String get accessConnectionHint;
 
   /// No description provided for @accessServerUrlHelp.
   ///
   /// In en, this message translates to:
-  /// **'Enter the Wayfinder API server URL reachable from this device. Do not use localhost.'**
+  /// **'API server URL for sign-in and live data (Serverpod). Do not use localhost on a phone.'**
   String get accessServerUrlHelp;
 
   /// No description provided for @accessServerUrlHint.
   ///
   /// In en, this message translates to:
-  /// **'http://192.168.1.10:18080'**
+  /// **'https://wayfinder-api.example.com'**
   String get accessServerUrlHint;
+
+  /// No description provided for @accessWebServerUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Web server URL for map tiles (PMTiles), REST, and file downloads. Often a different host than the API.'**
+  String get accessWebServerUrlHelp;
+
+  /// No description provided for @accessWebServerUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://wayfinder-web.example.com'**
+  String get accessWebServerUrlHint;
 
   /// No description provided for @accessServerUrlApplied.
   ///
   /// In en, this message translates to:
   /// **'Connecting to {apiUrl}…'**
   String accessServerUrlApplied(String apiUrl);
+
+  /// No description provided for @accessServerUrlsApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…\nAPI: {apiUrl}\nWeb: {webUrl}'**
+  String accessServerUrlsApplied(String apiUrl, String webUrl);
 
   /// No description provided for @accessApiServerConfigured.
   ///
@@ -1405,13 +1423,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsServerConnectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'API server connection'**
+  /// **'Server connection'**
   String get settingsServerConnectionTitle;
 
   /// No description provided for @settingsServerConnectionDescription.
   ///
   /// In en, this message translates to:
-  /// **'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2).'**
+  /// **'Enter both the Wayfinder API URL (sign-in / live data) and the web URL (map tiles, REST, files). They are often different hosts behind a reverse proxy.'**
   String get settingsServerConnectionDescription;
 
   /// No description provided for @settingsServerConnectionPermissionDenied.
@@ -1426,6 +1444,12 @@ abstract class AppLocalizations {
   /// **'API server URL'**
   String get settingsServerUrl;
 
+  /// No description provided for @settingsWebServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Web server URL'**
+  String get settingsWebServerUrl;
+
   /// No description provided for @settingsCurrentWebServer.
   ///
   /// In en, this message translates to:
@@ -1435,8 +1459,32 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSaveServerUrl.
   ///
   /// In en, this message translates to:
-  /// **'Save API server URL'**
+  /// **'Save server URLs'**
   String get settingsSaveServerUrl;
+
+  /// No description provided for @settingsEditServerUrls.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit server URLs'**
+  String get settingsEditServerUrls;
+
+  /// No description provided for @settingsGeocodingAvailabilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map search (geocoding)'**
+  String get settingsGeocodingAvailabilityTitle;
+
+  /// No description provided for @settingsGeocodingAvailabilityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Whether place and address search from the map bar is available for this device.'**
+  String get settingsGeocodingAvailabilityDescription;
+
+  /// No description provided for @settingsGeocodingOpenTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding settings'**
+  String get settingsGeocodingOpenTab;
 
   /// No description provided for @settingsMeasurementsTitle.
   ///
@@ -5921,6 +5969,18 @@ abstract class AppLocalizations {
   /// **'Failed to load map tile catalog.'**
   String get mapTilesCatalogLoadFailed;
 
+  /// No description provided for @mapTilesCatalogLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading map tile catalog…'**
+  String get mapTilesCatalogLoading;
+
+  /// No description provided for @mapTilesPreparingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing {name}'**
+  String mapTilesPreparingFile(String name);
+
   /// No description provided for @mapTilesOpeningLayer.
   ///
   /// In en, this message translates to:
@@ -5956,6 +6016,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Opening {name}…'**
   String mapTilesOpeningProgress(String name);
+
+  /// No description provided for @mapTilesOpeningElapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening {name}… {seconds}s'**
+  String mapTilesOpeningElapsed(String name, int seconds);
+
+  /// No description provided for @mapTilesOpeningFromUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching header from {url}'**
+  String mapTilesOpeningFromUrl(String url);
 
   /// No description provided for @greetingsConnected.
   ///

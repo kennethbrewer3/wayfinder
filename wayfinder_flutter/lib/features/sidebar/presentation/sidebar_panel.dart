@@ -55,7 +55,6 @@ import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../markers/utils/map_object_soft_delete.dart';
 import '../../markers/utils/effective_marker_icon.dart';
-import '../../markers/presentation/map_object_notes_preview.dart';
 import '../../markers/presentation/map_objects_status.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
@@ -244,181 +243,193 @@ class _LayerOrganizedPanel extends ConsumerWidget {
       });
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Text(
-            l10n.sidebarLayerOrderHint,
-            style: Theme.of(context).textTheme.bodySmall,
+    // One scroll surface for the whole panel. On mobile the sheet is short;
+    // keeping filters / ExpansionTiles above an Expanded ListView overflowed
+    // whenever seasonal overlays (or watch log) expanded.
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              l10n.sidebarLayerOrderHint,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              FilterChip(
-                avatar: Icon(
-                  Icons.kitchen_outlined,
-                  size: 18,
-                  color: filterFoodExpiring
-                      ? Theme.of(context).colorScheme.onSecondaryContainer
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                label: Text(l10n.sidebarFilterFoodExpiring90Days),
-                selected: filterFoodExpiring,
-                onSelected: (selected) {
-                  ref
-                      .read(sidebarProvider.notifier)
-                      .setFilterFoodExpiring90Days(selected);
-                },
-              ),
-              FilterChip(
-                avatar: Icon(
-                  Icons.cell_tower_outlined,
-                  size: 18,
-                  color: filterRadioContacts
-                      ? Theme.of(context).colorScheme.onSecondaryContainer
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                label: Text(l10n.sidebarFilterRadioContacts),
-                selected: filterRadioContacts,
-                onSelected: (selected) {
-                  ref
-                      .read(sidebarProvider.notifier)
-                      .setFilterRadioContacts(selected);
-                },
-              ),
-            ],
-          ),
-        ),
-        const _PathProfileSelectionBar(),
-        WatchLogSidebarSection(onZoomTo: onZoomTo),
-        _SeasonalOverlaysSidebarSection(onZoomTo: onZoomTo),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            itemCount: orderedLayers.length,
-            itemBuilder: (context, index) {
-              final layer = orderedLayers[index];
-              final layerSettings = sidebar.settingsForLayer(layer.id);
-              final filteredLayerMarkers = markersForLayer(
-                markers,
-                layer.id,
-              ).where(matchesMarkerFilters).toList();
-              final filteredLayerZones = zonesForLayer(
-                zones,
-                layer.id,
-              ).where((zone) => matchesSearch(zone.name)).toList();
-              final layerMarkers = sortMarkers(
-                filteredLayerMarkers,
-                layerSettings.markerSort,
-              );
-              final layerZones = sortZones(
-                filteredLayerZones,
-                layerSettings.zoneSort,
-              );
-              final isSelected = layer.id == selectedLayerId;
-              final isExpanded = isLayerExpandedInSidebar(
-                layerId: layer.id,
-                expandedLayerIds: sidebar.expandedLayerIds,
-              );
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Material(
-                  color: isSelected
-                      ? Theme.of(
-                          context,
-                        ).colorScheme.primaryContainer.withValues(alpha: 0.35)
-                      : Theme.of(context).colorScheme.surfaceContainerHighest
-                            .withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _LayerHeader(
-                        layer: layer,
-                        isSelected: isSelected,
-                        isExpanded: isExpanded,
-                        isTop: index == 0,
-                        isBottom: index == orderedLayers.length - 1,
-                        objectCount: layerMarkers.length + layerZones.length,
-                        onSelect: () {
-                          ref
-                              .read(sidebarProvider.notifier)
-                              .setSelectedLayerId(layer.id);
-                        },
-                        onToggleExpanded: () {
-                          ref
-                              .read(sidebarProvider.notifier)
-                              .toggleLayerExpanded(
-                                layer.id,
-                                expanded: !isExpanded,
-                                allLayerIds: orderedLayers.map((l) => l.id),
-                              );
-                        },
-                        onToggleVisible: layersMutationsLocked
-                            ? null
-                            : () {
-                                updateMapLayer(
-                                  ref,
-                                  layer.copyWith(visible: !layer.visible),
-                                );
-                              },
-                        onMoveUp: layersMutationsLocked
-                            ? null
-                            : () {
-                                reorderMapLayers(
-                                  ref,
-                                  applyLayerOrder(layers, index, index - 1),
-                                );
-                              },
-                        onMoveDown: layersMutationsLocked
-                            ? null
-                            : () {
-                                reorderMapLayers(
-                                  ref,
-                                  applyLayerOrder(layers, index, index + 1),
-                                );
-                              },
-                        onRename: layersMutationsLocked
-                            ? null
-                            : () => _renameLayer(context, ref, layer),
-                        onDelete: layersMutationsLocked
-                            ? null
-                            : () => _deleteLayer(context, ref, layer, layers),
-                      ),
-                      if (isExpanded)
-                        _LayerObjectPanel(
-                          layerId: layer.id,
-                          settings: layerSettings,
-                          layerMarkers: layerMarkers,
-                          layerZones: layerZones,
-                          hasSearchQuery:
-                              query.isNotEmpty ||
-                              filterFoodExpiring ||
-                              filterRadioContacts,
-                          onZoomTo: onZoomTo,
-                        ),
-                    ],
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilterChip(
+                  avatar: Icon(
+                    Icons.kitchen_outlined,
+                    size: 18,
+                    color: filterFoodExpiring
+                        ? Theme.of(context).colorScheme.onSecondaryContainer
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
+                  label: Text(l10n.sidebarFilterFoodExpiring90Days),
+                  selected: filterFoodExpiring,
+                  onSelected: (selected) {
+                    ref
+                        .read(sidebarProvider.notifier)
+                        .setFilterFoodExpiring90Days(selected);
+                  },
                 ),
-              );
-            },
+                FilterChip(
+                  avatar: Icon(
+                    Icons.cell_tower_outlined,
+                    size: 18,
+                    color: filterRadioContacts
+                        ? Theme.of(context).colorScheme.onSecondaryContainer
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  label: Text(l10n.sidebarFilterRadioContacts),
+                  selected: filterRadioContacts,
+                  onSelected: (selected) {
+                    ref
+                        .read(sidebarProvider.notifier)
+                        .setFilterRadioContacts(selected);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: FilledButton.icon(
-            onPressed: layersMutationsLocked
-                ? null
-                : () => _createLayer(context, ref),
-            icon: const Icon(Icons.add),
-            label: Text(l10n.sidebarAddLayer),
+        const SliverToBoxAdapter(child: _PathProfileSelectionBar()),
+        SliverToBoxAdapter(child: WatchLogSidebarSection(onZoomTo: onZoomTo)),
+        SliverToBoxAdapter(
+          child: _SeasonalOverlaysSidebarSection(onZoomTo: onZoomTo),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final layer = orderedLayers[index];
+                final layerSettings = sidebar.settingsForLayer(layer.id);
+                final filteredLayerMarkers = markersForLayer(
+                  markers,
+                  layer.id,
+                ).where(matchesMarkerFilters).toList();
+                final filteredLayerZones = zonesForLayer(
+                  zones,
+                  layer.id,
+                ).where((zone) => matchesSearch(zone.name)).toList();
+                final layerMarkers = sortMarkers(
+                  filteredLayerMarkers,
+                  layerSettings.markerSort,
+                );
+                final layerZones = sortZones(
+                  filteredLayerZones,
+                  layerSettings.zoneSort,
+                );
+                final isSelected = layer.id == selectedLayerId;
+                final isExpanded = isLayerExpandedInSidebar(
+                  layerId: layer.id,
+                  expandedLayerIds: sidebar.expandedLayerIds,
+                );
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: isSelected
+                        ? Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer.withValues(alpha: 0.35)
+                        : Theme.of(context).colorScheme.surfaceContainerHighest
+                              .withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _LayerHeader(
+                          layer: layer,
+                          isSelected: isSelected,
+                          isExpanded: isExpanded,
+                          isTop: index == 0,
+                          isBottom: index == orderedLayers.length - 1,
+                          objectCount: layerMarkers.length + layerZones.length,
+                          onSelect: () {
+                            ref
+                                .read(sidebarProvider.notifier)
+                                .setSelectedLayerId(layer.id);
+                          },
+                          onToggleExpanded: () {
+                            ref
+                                .read(sidebarProvider.notifier)
+                                .toggleLayerExpanded(
+                                  layer.id,
+                                  expanded: !isExpanded,
+                                  allLayerIds: orderedLayers.map((l) => l.id),
+                                );
+                          },
+                          onToggleVisible: layersMutationsLocked
+                              ? null
+                              : () {
+                                  updateMapLayer(
+                                    ref,
+                                    layer.copyWith(visible: !layer.visible),
+                                  );
+                                },
+                          onMoveUp: layersMutationsLocked
+                              ? null
+                              : () {
+                                  reorderMapLayers(
+                                    ref,
+                                    applyLayerOrder(layers, index, index - 1),
+                                  );
+                                },
+                          onMoveDown: layersMutationsLocked
+                              ? null
+                              : () {
+                                  reorderMapLayers(
+                                    ref,
+                                    applyLayerOrder(layers, index, index + 1),
+                                  );
+                                },
+                          onRename: layersMutationsLocked
+                              ? null
+                              : () => _renameLayer(context, ref, layer),
+                          onDelete: layersMutationsLocked
+                              ? null
+                              : () => _deleteLayer(context, ref, layer, layers),
+                        ),
+                        if (isExpanded)
+                          _LayerObjectPanel(
+                            layerId: layer.id,
+                            settings: layerSettings,
+                            layerMarkers: layerMarkers,
+                            layerZones: layerZones,
+                            hasSearchQuery:
+                                query.isNotEmpty ||
+                                filterFoodExpiring ||
+                                filterRadioContacts,
+                            onZoomTo: onZoomTo,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              childCount: orderedLayers.length,
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: FilledButton.icon(
+              onPressed: layersMutationsLocked
+                  ? null
+                  : () => _createLayer(context, ref),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.sidebarAddLayer),
+            ),
           ),
         ),
       ],
@@ -603,6 +614,24 @@ class _LayerHeader extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
+    Widget compactIconButton({
+      required String tooltip,
+      required VoidCallback? onPressed,
+      required IconData icon,
+    }) {
+      return IconButton(
+        tooltip: tooltip,
+        onPressed: onPressed,
+        visualDensity: VisualDensity.compact,
+        style: IconButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minimumSize: const Size(36, 36),
+          padding: const EdgeInsets.all(6),
+        ),
+        icon: Icon(icon, size: 20),
+      );
+    }
+
     return InkWell(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
       onTap: onSelect,
@@ -610,23 +639,19 @@ class _LayerHeader extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
         child: Row(
           children: [
-            IconButton(
+            compactIconButton(
               tooltip: isExpanded
                   ? l10n.sidebarCollapseLayer
                   : l10n.sidebarExpandLayer,
               onPressed: onToggleExpanded,
-              icon: Icon(
-                isExpanded ? Icons.expand_less : Icons.expand_more,
-              ),
+              icon: isExpanded ? Icons.expand_less : Icons.expand_more,
             ),
-            IconButton(
+            compactIconButton(
               tooltip: layer.visible
                   ? l10n.sidebarHideLayer
                   : l10n.sidebarShowLayer,
               onPressed: onToggleVisible,
-              icon: Icon(
-                layer.visible ? Icons.visibility : Icons.visibility_off,
-              ),
+              icon: layer.visible ? Icons.visibility : Icons.visibility_off,
             ),
             Expanded(
               child: Column(
@@ -634,11 +659,15 @@ class _LayerHeader extends StatelessWidget {
                 children: [
                   Text(
                     layer.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   Text(
                     l10n.sidebarObjectCount(objectCount) +
                         (isSelected ? l10n.sidebarSelectedForNewObjects : ''),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: isSelected
                           ? colorScheme.primary
@@ -648,20 +677,18 @@ class _LayerHeader extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-              tooltip: l10n.sidebarMoveUp,
-              onPressed: (isTop || onMoveUp == null) ? null : onMoveUp,
-              icon: const Icon(Icons.arrow_upward),
-            ),
-            IconButton(
-              tooltip: l10n.sidebarMoveDown,
-              onPressed: (isBottom || onMoveDown == null) ? null : onMoveDown,
-              icon: const Icon(Icons.arrow_downward),
-            ),
-            if (onRename != null || onDelete != null)
+            if (onMoveUp != null ||
+                onMoveDown != null ||
+                onRename != null ||
+                onDelete != null)
               PopupMenuButton<_LayerMenuAction>(
+                padding: EdgeInsets.zero,
                 onSelected: (action) {
                   switch (action) {
+                    case _LayerMenuAction.moveUp:
+                      onMoveUp?.call();
+                    case _LayerMenuAction.moveDown:
+                      onMoveDown?.call();
                     case _LayerMenuAction.rename:
                       onRename?.call();
                     case _LayerMenuAction.delete:
@@ -669,6 +696,18 @@ class _LayerHeader extends StatelessWidget {
                   }
                 },
                 itemBuilder: (context) => [
+                  if (onMoveUp != null)
+                    PopupMenuItem(
+                      value: _LayerMenuAction.moveUp,
+                      enabled: !isTop,
+                      child: Text(l10n.sidebarMoveUp),
+                    ),
+                  if (onMoveDown != null)
+                    PopupMenuItem(
+                      value: _LayerMenuAction.moveDown,
+                      enabled: !isBottom,
+                      child: Text(l10n.sidebarMoveDown),
+                    ),
                   if (onRename != null)
                     PopupMenuItem(
                       value: _LayerMenuAction.rename,
@@ -688,7 +727,7 @@ class _LayerHeader extends StatelessWidget {
   }
 }
 
-enum _LayerMenuAction { rename, delete }
+enum _LayerMenuAction { moveUp, moveDown, rename, delete }
 
 class _LayerObjectPanel extends ConsumerWidget {
   const _LayerObjectPanel({
@@ -719,6 +758,7 @@ class _LayerObjectPanel extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: SegmentedButton<SidebarPanelTab>(
+            showSelectedIcon: false,
             segments: [
               ButtonSegment(
                 value: SidebarPanelTab.markers,
@@ -740,6 +780,7 @@ class _LayerObjectPanel extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: SegmentedButton<SidebarViewMode>(
+            showSelectedIcon: false,
             segments: [
               ButtonSegment(
                 value: SidebarViewMode.list,
@@ -1142,7 +1183,6 @@ class _MarkerListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final notesPreview = marker.notes?.trim();
     final radio = MarkerRadioContact.fromMarkerRadioJson(marker.radioJson);
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
@@ -1225,11 +1265,6 @@ class _MarkerListTile extends ConsumerWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ],
-                        if (notesPreview != null &&
-                            notesPreview.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          MapObjectNotesPreview(markdown: notesPreview),
                         ],
                       ],
                     ),
@@ -1400,7 +1435,6 @@ class _LineZoneListTile extends ConsumerWidget {
         (ids) => ids.contains(zone.id.uuid),
       ),
     );
-    final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -1468,14 +1502,6 @@ class _LineZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null &&
-                            notesPreview.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          MapObjectNotesPreview(
-                            markdown: notesPreview,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -1737,7 +1763,6 @@ class _CircleZoneListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
-    final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -1798,14 +1823,6 @@ class _CircleZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null &&
-                            notesPreview.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          MapObjectNotesPreview(
-                            markdown: notesPreview,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -1908,7 +1925,6 @@ class _RectangleZoneListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
-    final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -1968,14 +1984,6 @@ class _RectangleZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null &&
-                            notesPreview.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          MapObjectNotesPreview(
-                            markdown: notesPreview,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -2079,7 +2087,6 @@ class _PolygonZoneListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
-    final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -2127,14 +2134,6 @@ class _PolygonZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null &&
-                            notesPreview.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          MapObjectNotesPreview(
-                            markdown: notesPreview,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -2225,7 +2224,6 @@ class _EvacKitZoneListTile extends ConsumerWidget {
     final selected = ref.watch(selectedMapObjectProvider);
     final isSelected =
         selected?.kind == SelectedMapObjectKind.zone && selected?.id == zone.id;
-    final notesPreview = geometry?.notes?.trim();
 
     if (geometry == null || !geometry.isValid) {
       return _GenericZoneListTile(zone: zone, onZoomTo: onZoomTo);
@@ -2287,14 +2285,6 @@ class _EvacKitZoneListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (notesPreview != null &&
-                            notesPreview.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          MapObjectNotesPreview(
-                            markdown: notesPreview,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -2685,6 +2675,8 @@ Color _selectionHighlightColor(ThemeData theme, bool isSelected) {
       : Colors.transparent;
 }
 
+enum _SeasonalOverlayMenuAction { toggleVisible, edit, zoomTo }
+
 class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
   const _SeasonalOverlaysSidebarSection({required this.onZoomTo});
 
@@ -2707,7 +2699,9 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
       child: Card(
         margin: EdgeInsets.zero,
         child: ExpansionTile(
-          initiallyExpanded: overlays.isNotEmpty,
+          // Keep collapsed by default so short mobile sheets aren't dominated
+          // by overlay chrome; users can expand when needed.
+          initiallyExpanded: false,
           leading: const Icon(Icons.calendar_month),
           title: Text(l10n.sidebarSeasonalOverlays),
           subtitle: Text(
@@ -2765,56 +2759,50 @@ class _SeasonalOverlaysSidebarSection extends ConsumerWidget {
                           openDetails: false,
                         );
                   },
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        tooltip: overlay.visible
-                            ? l10n.seasonalOverlayHide
-                            : l10n.seasonalOverlayShow,
-                        onPressed: mutationsLocked
-                            ? null
-                            : () {
-                                unawaited(
-                                  ref
-                                      .read(seasonalOverlaysProvider.notifier)
-                                      .setVisible(overlay.id, !overlay.visible),
-                                );
-                              },
-                        icon: Icon(
-                          overlay.visible
-                              ? Icons.visibility
-                              : Icons.visibility_off_outlined,
-                          size: 20,
-                        ),
-                      ),
-                      IconButton(
-                        tooltip: l10n.actionEdit,
-                        onPressed: mutationsLocked
-                            ? null
-                            : () {
-                                unawaited(
-                                  updateSeasonalOverlayFromForm(
-                                    context: context,
-                                    ref: ref,
-                                    overlay: overlay,
-                                  ),
-                                );
-                              },
-                        icon: const Icon(Icons.edit_outlined, size: 20),
-                      ),
-                      IconButton(
-                        tooltip: l10n.seasonalOverlayZoomTo,
-                        onPressed: () {
+                  trailing: PopupMenuButton<_SeasonalOverlayMenuAction>(
+                    onSelected: (action) {
+                      switch (action) {
+                        case _SeasonalOverlayMenuAction.toggleVisible:
+                          unawaited(
+                            ref
+                                .read(seasonalOverlaysProvider.notifier)
+                                .setVisible(overlay.id, !overlay.visible),
+                          );
+                        case _SeasonalOverlayMenuAction.edit:
+                          unawaited(
+                            updateSeasonalOverlayFromForm(
+                              context: context,
+                              ref: ref,
+                              overlay: overlay,
+                            ),
+                          );
+                        case _SeasonalOverlayMenuAction.zoomTo:
                           final geometry = PolygonGeometry.fromJsonString(
                             overlay.geometryJson,
                           );
-                          if (geometry == null) {
-                            return;
+                          if (geometry != null) {
+                            onZoomTo(geometry.labelPoint);
                           }
-                          onZoomTo(geometry.labelPoint);
-                        },
-                        icon: const Icon(Icons.my_location_outlined, size: 20),
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: _SeasonalOverlayMenuAction.toggleVisible,
+                        enabled: !mutationsLocked,
+                        child: Text(
+                          overlay.visible
+                              ? l10n.seasonalOverlayHide
+                              : l10n.seasonalOverlayShow,
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: _SeasonalOverlayMenuAction.edit,
+                        enabled: !mutationsLocked,
+                        child: Text(l10n.actionEdit),
+                      ),
+                      PopupMenuItem(
+                        value: _SeasonalOverlayMenuAction.zoomTo,
+                        child: Text(l10n.seasonalOverlayZoomTo),
                       ),
                     ],
                   ),

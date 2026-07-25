@@ -194,10 +194,11 @@
   "settingsSaveHome": "Guardar inicio",
   "settingsUseCurrentMapView": "Usar vista actual del mapa",
   "settingsResetToDefault": "Restablecer valores predeterminados",
-  "settingsServerConnectionTitle": "Conexión al servidor API",
-  "settingsServerConnectionDescription": "URL del servidor API de Wayfinder, incluido host y puerto. La URL del servidor web se deriva automáticamente (puerto API + 2).",
+  "settingsServerConnectionTitle": "Conexión al servidor",
+  "settingsServerConnectionDescription": "Introduzca la URL de la API de Wayfinder (inicio de sesión / datos en vivo) y la URL web (mosaicos del mapa, REST, archivos). A menudo son hosts distintos detrás de un proxy inverso.",
   "settingsServerConnectionPermissionDenied": "No tienes permiso para cambiar la URL del servidor Wayfinder de este dispositivo.",
   "settingsServerUrl": "URL del servidor API",
+  "settingsWebServerUrl": "URL del servidor web",
   "settingsCurrentWebServer": "Servidor web actual: {webUrl}",
   "@settingsCurrentWebServer": {
     "placeholders": {
@@ -206,7 +207,11 @@
       }
     }
   },
-  "settingsSaveServerUrl": "Guardar URL del servidor API",
+  "settingsSaveServerUrl": "Guardar URLs del servidor",
+  "settingsEditServerUrls": "Editar URLs del servidor",
+  "settingsGeocodingAvailabilityTitle": "Map search (geocoding)",
+  "settingsGeocodingAvailabilityDescription": "Whether place and address search from the map bar is available for this device.",
+  "settingsGeocodingOpenTab": "Geocoding settings",
   "settingsMeasurementsTitle": "Medidas",
   "settingsMeasurementsDescription": "Elija cómo se muestran las distancias de las líneas en el mapa. Se guarda en el servidor para que cada navegador use las mismas unidades.",
   "settingsAnglesTitle": "Ángulos",
@@ -1477,6 +1482,34 @@
   "mapTilesNotReadyTooltip": "Mosaicos del mapa no listos",
   "mapTilesLoadingTitle": "Cargando mosaicos del mapa",
   "mapTilesCatalogLoadFailed": "Error al cargar el catálogo de mosaicos.",
+  "mapTilesCatalogLoading": "Loading map tile catalog…",
+  "mapTilesPreparingFile": "Preparing {name}",
+  "@mapTilesPreparingFile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapTilesOpeningElapsed": "Opening {name}… {seconds}s",
+  "@mapTilesOpeningElapsed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "mapTilesOpeningFromUrl": "Fetching header from {url}",
+  "@mapTilesOpeningFromUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
   "mapTilesOpeningLayer": "Abriendo: {name}",
   "@mapTilesOpeningLayer": {
     "placeholders": {

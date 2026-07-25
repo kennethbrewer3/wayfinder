@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
+import '../../../core/logging/logging_http_client.dart';
 import 'package:wayfinder_client/wayfinder_client.dart' as wf;
 
 import '../../../core/app_globals.dart';
@@ -185,7 +185,7 @@ class AppSettingsRepository {
   }
 
   Future<MapZoomRange> _getMapZoomRangeRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$_webServerUrl/api/settings/map-zoom'),
       headers: await RestApiHeaders.readOnly(),
     );
@@ -202,7 +202,7 @@ class AppSettingsRepository {
   }
 
   Future<MapZoomRange> _updateMapZoomRangeRest(MapZoomRange range) async {
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$_webServerUrl/api/settings/map-zoom'),
       headers: await RestApiHeaders.json(),
       body: jsonEncode({
@@ -223,7 +223,7 @@ class AppSettingsRepository {
   }
 
   Future<ClientPreferences> _getClientPreferencesRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$_webServerUrl/api/settings/client-preferences'),
       headers: await RestApiHeaders.readOnly(),
     );
@@ -240,7 +240,7 @@ class AppSettingsRepository {
   Future<ClientPreferences> _updateClientPreferencesRest(
     ClientPreferences preferences,
   ) async {
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$_webServerUrl/api/settings/client-preferences'),
       headers: await RestApiHeaders.json(),
       body: jsonEncode(preferences.toJson()),
@@ -256,7 +256,7 @@ class AppSettingsRepository {
   }
 
   Future<HomeLocation> _getHomeLocationRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$_webServerUrl/api/settings/home'),
       headers: await RestApiHeaders.readOnly(),
     );
@@ -271,7 +271,7 @@ class AppSettingsRepository {
   }
 
   Future<HomeLocation> _updateHomeLocationRest(HomeLocation location) async {
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$_webServerUrl/api/settings/home'),
       headers: await RestApiHeaders.json(),
       body: jsonEncode({
@@ -291,7 +291,7 @@ class AppSettingsRepository {
   }
 
   Future<HomeLocation> _resetHomeLocationRest() async {
-    final response = await http.delete(
+    final response = await loggedHttpDelete(
       Uri.parse('$_webServerUrl/api/settings/home'),
       headers: await RestApiHeaders.readOnly(),
     );
@@ -306,7 +306,7 @@ class AppSettingsRepository {
   }
 
   Future<PmtilesStorageSettings> _getPmtilesStoragePathRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$_webServerUrl/api/settings/pmtiles-storage'),
       headers: await RestApiHeaders.readOnly(),
     );
@@ -323,7 +323,7 @@ class AppSettingsRepository {
   Future<PmtilesStorageSettings> _updatePmtilesStoragePathRest(
     String storagePath,
   ) async {
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$_webServerUrl/api/settings/pmtiles-storage'),
       headers: await RestApiHeaders.json(),
       body: jsonEncode({'storagePath': storagePath}),

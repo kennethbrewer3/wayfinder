@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import '../../../core/logging/logging_http_client.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../../core/app_globals.dart';
@@ -67,7 +67,7 @@ class MapDataRepository {
   }
 
   Future<Uint8List> _fetchBackupArchiveViaRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       _exportArchiveUri,
       headers: await RestApiHeaders.readOnly(),
     );
@@ -93,7 +93,7 @@ class MapDataRepository {
   }
 
   Future<String> _fetchBackupJsonViaRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       _exportUri,
       headers: await RestApiHeaders.readOnly(),
     );
@@ -137,7 +137,7 @@ class MapDataRepository {
   Future<MapDataRestoreResult> _restoreFromArchiveViaRest(
     Uint8List archiveBytes,
   ) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       _restoreArchiveUri,
       headers: {
         ...(await RestApiHeaders.readOnly()),
@@ -184,7 +184,7 @@ class MapDataRepository {
   Future<MapDataRestoreResult> _restoreFromJsonViaRest(
     Map<String, dynamic> decoded,
   ) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       _restoreUri,
       headers: await RestApiHeaders.json(),
       body: jsonEncode(decoded),

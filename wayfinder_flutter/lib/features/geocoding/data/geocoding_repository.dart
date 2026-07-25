@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
+import '../../../core/logging/logging_http_client.dart';
 
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
@@ -32,9 +32,10 @@ class GeocodingRepository {
       return false;
     }
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/api/health'))
-          .timeout(const Duration(seconds: 5));
+      final response = await loggedHttpGet(
+        Uri.parse('$baseUrl/api/health'),
+        timeout: const Duration(seconds: 5),
+      );
       return response.statusCode == 200;
     } catch (error, _) {
       _log.warn('🌍 Geocoding server health check failed', error: error);
@@ -50,7 +51,10 @@ class GeocodingRepository {
     }
     try {
       final uri = Uri.parse('$baseUrl/api/geocoding/country-codes');
-      final response = await http.get(uri).timeout(const Duration(seconds: 10));
+      final response = await loggedHttpGet(
+        uri,
+        timeout: const Duration(seconds: 10),
+      );
       if (response.statusCode != 200) {
         throw Exception(
           'GET /api/geocoding/country-codes returned ${response.statusCode}',
@@ -76,7 +80,7 @@ class GeocodingRepository {
 
   Future<GeocodingSearchReadiness> getSearchReadiness() async {
     final uri = Uri.parse('$baseUrl/api/geocoding/search-readiness');
-    final response = await http.get(uri);
+    final response = await loggedHttpGet(uri);
     if (response.statusCode != 200) {
       throw Exception(
         'GET /api/geocoding/search-readiness returned ${response.statusCode}',
@@ -199,7 +203,7 @@ class GeocodingRepository {
   }
 
   Future<GeocodingImportState> _getSettingsRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$baseUrl/api/geocoding/settings'),
     );
     if (response.statusCode != 200) {
@@ -214,7 +218,7 @@ class GeocodingRepository {
     String sourceUrl, {
     List<String>? countryCodes,
   }) async {
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$baseUrl/api/geocoding/settings'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -235,7 +239,7 @@ class GeocodingRepository {
     String? sourceUrl, {
     List<String>? countryCodes,
   }) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/import'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -255,7 +259,7 @@ class GeocodingRepository {
   Future<GeocodingImportState> _startHousenumbersImportRest(
     String? sourceUrl,
   ) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/import/housenumbers'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -271,7 +275,7 @@ class GeocodingRepository {
   }
 
   Future<GeocodingImportState> _cancelImportRest() async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/import/cancel'),
     );
     if (response.statusCode != 200) {
@@ -283,7 +287,7 @@ class GeocodingRepository {
   }
 
   Future<GeocodingImportState> _cancelHousenumbersImportRest() async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/import/housenumbers/cancel'),
     );
     if (response.statusCode != 200) {
@@ -295,7 +299,7 @@ class GeocodingRepository {
   }
 
   Future<String> _exportPlacesArchiveRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$baseUrl/api/geocoding/export/places'),
     );
     if (response.statusCode != 200) {
@@ -307,7 +311,7 @@ class GeocodingRepository {
   }
 
   Future<String> _exportHousenumbersArchiveRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$baseUrl/api/geocoding/export/housenumbers'),
     );
     if (response.statusCode != 200) {
@@ -319,7 +323,7 @@ class GeocodingRepository {
   }
 
   Future<int> _importPlacesArchiveRest(String archiveJson) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/archive/places'),
       headers: const {'Content-Type': 'application/json'},
       body: archiveJson,
@@ -337,7 +341,7 @@ class GeocodingRepository {
   }
 
   Future<int> _importHousenumbersArchiveRest(String archiveJson) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/archive/housenumbers'),
       headers: const {'Content-Type': 'application/json'},
       body: archiveJson,
@@ -355,7 +359,7 @@ class GeocodingRepository {
   }
 
   Future<int> _clearPlacesRest() async {
-    final response = await http.delete(
+    final response = await loggedHttpDelete(
       Uri.parse('$baseUrl/api/geocoding/places'),
     );
     if (response.statusCode != 200) {
@@ -371,7 +375,7 @@ class GeocodingRepository {
   }
 
   Future<int> _clearHousenumbersRest() async {
-    final response = await http.delete(
+    final response = await loggedHttpDelete(
       Uri.parse('$baseUrl/api/geocoding/housenumbers'),
     );
     if (response.statusCode != 200) {
@@ -389,7 +393,7 @@ class GeocodingRepository {
   }
 
   Future<List<GeocodingContribution>> _listContributionsRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$baseUrl/api/geocoding/contributions'),
     );
     if (response.statusCode != 200) {
@@ -414,7 +418,7 @@ class GeocodingRepository {
     String? notes,
     String? countryCode,
   }) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/contributions'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -444,7 +448,7 @@ class GeocodingRepository {
     String? notes,
     String? countryCode,
   }) async {
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$baseUrl/api/geocoding/contributions/$id'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -467,7 +471,7 @@ class GeocodingRepository {
   }
 
   Future<void> _deleteContributionRest(int id) async {
-    final response = await http.delete(
+    final response = await loggedHttpDelete(
       Uri.parse('$baseUrl/api/geocoding/contributions/$id'),
     );
     if (response.statusCode != 200) {
@@ -478,7 +482,7 @@ class GeocodingRepository {
   }
 
   Future<String> _exportContributionsRest() async {
-    final response = await http.get(
+    final response = await loggedHttpGet(
       Uri.parse('$baseUrl/api/geocoding/export/contributions'),
     );
     if (response.statusCode != 200) {
@@ -490,7 +494,7 @@ class GeocodingRepository {
   }
 
   Future<int> _importContributionsRest(String archiveJson) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/archive/contributions'),
       headers: const {'Content-Type': 'application/json'},
       body: archiveJson,
@@ -508,7 +512,7 @@ class GeocodingRepository {
   }
 
   Future<int> _clearContributionsRest() async {
-    final response = await http.delete(
+    final response = await loggedHttpDelete(
       Uri.parse('$baseUrl/api/geocoding/contributions'),
     );
     if (response.statusCode != 200) {
@@ -524,7 +528,7 @@ class GeocodingRepository {
   }
 
   Future<int> _importCrowdsourceRest({String? sourceUrl}) async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/crowdsource/import'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -544,7 +548,7 @@ class GeocodingRepository {
   }
 
   Future<GeocodingCrowdsourceSubmitResult> _submitCrowdsourceRest() async {
-    final response = await http.post(
+    final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/geocoding/crowdsource/submit'),
     );
     if (response.statusCode != 200) {
@@ -561,7 +565,7 @@ class GeocodingRepository {
     String crowdsourceSourceUrl,
   ) async {
     final settings = await getSettings();
-    final response = await http.put(
+    final response = await loggedHttpPut(
       Uri.parse('$baseUrl/api/geocoding/settings'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -592,7 +596,7 @@ class GeocodingRepository {
     final uri = Uri.parse('$baseUrl/api/geocoding/search').replace(
       queryParameters: queryParameters,
     );
-    final response = await http.get(uri);
+    final response = await loggedHttpGet(uri);
     if (response.statusCode != 200) {
       throw Exception(
         'GET /api/geocoding/search returned ${response.statusCode}',

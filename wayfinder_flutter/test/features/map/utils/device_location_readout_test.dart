@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/features/lines/models/bearing_reference.dart';
 import 'package:wayfinder_flutter/features/lines/models/measurement_units.dart';
 import 'package:wayfinder_flutter/features/map/utils/device_location_readout.dart';

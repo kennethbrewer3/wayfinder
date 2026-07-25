@@ -41,12 +41,16 @@ Future<AppServerConfig> loadAppServerConfig() async {
 
   final storage = ServerConfigStorage();
   final savedApiUrl = await storage.loadApiUrl();
+  final savedWebUrl = await storage.loadWebUrl();
   final savedGeocodingWebUrl = await storage.loadGeocodingWebUrl();
   if (savedApiUrl != null && savedApiUrl.isNotEmpty) {
     final apiUrl = normalizeApiUrl(savedApiUrl);
+    final webUrl = savedWebUrl != null && savedWebUrl.trim().isNotEmpty
+        ? normalizeWebUrl(savedWebUrl)
+        : (defaultWebUrlForApi(apiUrl) ?? defaultWebUrl);
     return AppServerConfig(
       apiUrl: apiUrl,
-      webUrl: defaultWebUrlForApi(apiUrl) ?? defaultWebUrl,
+      webUrl: webUrl,
       geocodingWebUrl:
           savedGeocodingWebUrl != null && savedGeocodingWebUrl.isNotEmpty
           ? normalizeWebUrl(savedGeocodingWebUrl)
@@ -155,13 +159,45 @@ String _formatServerUri(Uri uri) {
   ).toString();
 }
 
+/// Derives the REST/PMTiles web base URL from an API URL.
+///
+/// - Local Serverpod (`:18080` etc.): web is API port + 2 (`:18082`).
+/// - Public HTTPS (`:443` / no port): keep the public port — never invent
+///   `:445` from `443 + 2`.
+/// - Hostnames like `wayfinder-api.example.com` or `api.example.com` map to
+///   `wayfinder-web.example.com` / `web.example.com` (common reverse-proxy
+///   split). Otherwise the web host matches the API host.
 String? defaultWebUrlForApi(String apiUrl) {
   final uri = Uri.tryParse(apiUrl);
-  if (uri == null || uri.port == 0) {
+  if (uri == null || uri.host.isEmpty) {
     return null;
   }
 
-  return uri.replace(port: uri.port + 2).toString();
+  final webHost = _defaultWebHostForApiHost(uri.host);
+  final useDevPortOffset = uri.hasPort && uri.port != 80 && uri.port != 443;
+  final webPort = useDevPortOffset
+      ? uri.port + 2
+      : (uri.hasPort ? uri.port : null);
+
+  return Uri(
+    scheme: uri.scheme.isEmpty ? 'https' : uri.scheme,
+    host: webHost,
+    port: webPort,
+  ).toString();
+}
+
+String _defaultWebHostForApiHost(String apiHost) {
+  final host = apiHost.toLowerCase();
+  if (host.startsWith('api.') && host.length > 4) {
+    return 'web.${host.substring(4)}';
+  }
+  if (host.contains('-api.')) {
+    return host.replaceFirst('-api.', '-web.');
+  }
+  if (host.endsWith('-api') && host.length > 4) {
+    return '${host.substring(0, host.length - 4)}-web';
+  }
+  return host;
 }
 
 /// Whether [apiUrl] points at this device (never usable from a phone/tablet).
@@ -177,14 +213,22 @@ bool isLoopbackApiUrl(String apiUrl) {
       host == '0.0.0.0';
 }
 
-/// Value for API URL text fields on device setup / sign-in.
+/// Value for API/web URL text fields on device setup / sign-in.
 ///
 /// Returns null (empty field + hint only) when the resolved URL is loopback,
 /// since that cannot work from a physical device. Otherwise returns the saved
-/// or configured API URL so the user does not have to retype it.
+/// or configured URL so the user does not have to retype it.
 String? apiUrlForDeviceForm(String apiUrl) {
   if (isLoopbackApiUrl(apiUrl)) {
     return null;
   }
   return apiUrl;
+}
+
+/// Same as [apiUrlForDeviceForm] for the web/PMTiles base URL.
+String? webUrlForDeviceForm(String webUrl) {
+  if (isLoopbackApiUrl(webUrl)) {
+    return null;
+  }
+  return webUrl;
 }

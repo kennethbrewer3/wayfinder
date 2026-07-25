@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
@@ -19,6 +20,9 @@ import '../../access/presentation/signed_in_account_tile.dart';
 import '../../access/providers/access_session_provider.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/providers/circle_size_display_provider.dart';
+import '../../geocoding/data/geocoding_repository.dart';
+import '../../geocoding/presentation/address_search_readiness_indicator.dart';
+import '../../geocoding/providers/geocoding_providers.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/models/bearing_reference.dart';
@@ -44,6 +48,7 @@ import '../../themes/providers/app_theme_definitions_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
+import '../settings_tab.dart';
 
 class SettingsGeneralTab extends ConsumerStatefulWidget {
   const SettingsGeneralTab({super.key});
@@ -59,6 +64,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
   bool _isSavingHomeLocation = false;
   bool _isSavingMapZoomRange = false;
   final _serverUrlController = TextEditingController();
+  final _webServerUrlController = TextEditingController();
   final _homeLatController = TextEditingController();
   final _homeLngController = TextEditingController();
   final _homeZoomController = TextEditingController();
@@ -68,6 +74,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
   @override
   void dispose() {
     _serverUrlController.dispose();
+    _webServerUrlController.dispose();
     _homeLatController.dispose();
     _homeLngController.dispose();
     _homeZoomController.dispose();
@@ -91,6 +98,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
   void initState() {
     super.initState();
     _serverUrlController.text = appServerConfig.apiUrl;
+    _webServerUrlController.text = appServerConfig.webUrl;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
@@ -236,10 +244,14 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     setState(() => _isSavingServerUrl = true);
     try {
       final controller = ref.read(serverUrlSettingsControllerProvider);
-      final config = await controller.saveApiUrl(_serverUrlController.text);
+      final config = await controller.saveServerUrls(
+        apiUrlInput: _serverUrlController.text,
+        webUrlInput: _webServerUrlController.text,
+      );
       await applyAppServerConfig(config);
       ref.read(serverClientEpochProvider.notifier).state++;
       ref.invalidate(savedServerApiUrlProvider);
+      ref.invalidate(savedServerWebUrlProvider);
       ref.invalidate(accessSessionProvider);
       if (!mounted) {
         return;
@@ -306,8 +318,10 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
   Future<void> _resetServerUrl() async {
     await ref.read(serverUrlSettingsControllerProvider).resetToDefault();
     ref.invalidate(savedServerApiUrlProvider);
+    ref.invalidate(savedServerWebUrlProvider);
     setState(() {
       _serverUrlController.text = defaultApiUrl;
+      _webServerUrlController.text = defaultWebUrl;
     });
     if (!mounted) {
       return;
@@ -641,7 +655,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             controller: _serverUrlController,
             decoration: InputDecoration(
               labelText: l10n.settingsServerUrl,
-              hintText: 'http://192.168.1.10:18080',
+              hintText: l10n.accessServerUrlHint,
+              helperText: l10n.accessServerUrlHelp,
               border: const OutlineInputBorder(),
             ),
             keyboardType: TextInputType.url,
@@ -650,10 +665,20 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             smartDashesType: SmartDashesType.disabled,
             smartQuotesType: SmartQuotesType.disabled,
           ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.settingsCurrentWebServer(appServerConfig.webUrl),
-            style: Theme.of(context).textTheme.bodySmall,
+          const SizedBox(height: 12),
+          TextField(
+            controller: _webServerUrlController,
+            decoration: InputDecoration(
+              labelText: l10n.settingsWebServerUrl,
+              hintText: l10n.accessWebServerUrlHint,
+              helperText: l10n.accessWebServerUrlHelp,
+              border: const OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            enableSuggestions: false,
+            smartDashesType: SmartDashesType.disabled,
+            smartQuotesType: SmartQuotesType.disabled,
           ),
           const SizedBox(height: 12),
           Row(
@@ -676,10 +701,17 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ] else ...[
           const SizedBox(height: 8),
           Text(
+            l10n.accessApiServerConfigured(appServerConfig.apiUrl),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 4),
+          Text(
             l10n.settingsCurrentWebServer(appServerConfig.webUrl),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
+        const SizedBox(height: 32),
+        const _GeocodingAvailabilitySection(),
         const SizedBox(height: 32),
         Text(
           l10n.settingsMeasurementsTitle,
@@ -1070,6 +1102,111 @@ String _appearanceDropdownValue(
       .where((choice) => choice.name == themeId)
       .firstOrNull;
   return (builtIn?.family ?? AppThemeFamily.standard).name;
+}
+
+class _GeocodingAvailabilitySection extends ConsumerWidget {
+  const _GeocodingAvailabilitySection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final repository = ref.watch(geocodingRepositoryProvider);
+    final readinessAsync = ref.watch(geocodingSearchReadinessProvider);
+
+    final String statusLabel;
+    final IconData statusIcon;
+    final Color statusColor;
+    final String? detail;
+
+    if (!repository.isConfigured) {
+      statusLabel = l10n.searchReadinessGeocodingNotConfiguredTooltip;
+      statusIcon = Icons.cloud_off_outlined;
+      statusColor = theme.colorScheme.error;
+      detail = null;
+    } else if (readinessAsync.isLoading && !readinessAsync.hasValue) {
+      statusLabel = l10n.searchReadinessCheckingTooltip;
+      statusIcon = Icons.hourglass_top;
+      statusColor = theme.colorScheme.onSurfaceVariant;
+      detail = null;
+    } else if (readinessAsync.hasError) {
+      statusLabel = l10n.searchReadinessUnavailableTooltip;
+      statusIcon = Icons.error_outline;
+      statusColor = theme.colorScheme.error;
+      detail = readinessAsync.error.toString();
+    } else {
+      final readiness =
+          readinessAsync.valueOrNull ?? emptyGeocodingSearchReadiness;
+      final unreachable =
+          readiness.statusMessage == 'Geocoding server unavailable';
+      if (unreachable) {
+        statusLabel = l10n.searchReadinessGeocodingUnavailableTooltip;
+        statusIcon = Icons.cloud_off_outlined;
+        statusColor = theme.colorScheme.error;
+        detail = null;
+      } else {
+        statusLabel = searchReadinessTooltip(l10n, readiness);
+        statusIcon = readiness.isFullSearchReady
+            ? Icons.check_circle_outline
+            : (readiness.isPlacesSearchReady || readiness.isAddressSearchReady)
+            ? Icons.info_outline
+            : Icons.hourglass_empty;
+        statusColor = readiness.isFullSearchReady
+            ? theme.colorScheme.primary
+            : theme.colorScheme.onSurfaceVariant;
+        detail = searchReadinessSummaryMessage(l10n, readiness);
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.settingsGeocodingAvailabilityTitle,
+          style: theme.textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsGeocodingAvailabilityDescription,
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(statusIcon, color: statusColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    statusLabel,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: statusColor,
+                    ),
+                  ),
+                  if (detail != null && detail.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(detail, style: theme.textTheme.bodySmall),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => context.push(SettingsTab.geocoding.routePath),
+            icon: const Icon(Icons.travel_explore),
+            label: Text(l10n.settingsGeocodingOpenTab),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 bool _appearanceIsDark({

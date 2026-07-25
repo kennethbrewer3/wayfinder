@@ -131,18 +131,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accessConnectionHint =>
-      'If this device cannot reach localhost, enter your Wayfinder API server address below (LAN IP or hostname).';
+      'If this device cannot reach localhost, enter your Wayfinder API and web server addresses below (LAN IP or hostname).';
 
   @override
   String get accessServerUrlHelp =>
-      'Enter the Wayfinder API server URL reachable from this device. Do not use localhost.';
+      'API server URL for sign-in and live data (Serverpod). Do not use localhost on a phone.';
 
   @override
-  String get accessServerUrlHint => 'http://192.168.1.10:18080';
+  String get accessServerUrlHint => 'https://wayfinder-api.example.com';
+
+  @override
+  String get accessWebServerUrlHelp =>
+      'Web server URL for map tiles (PMTiles), REST, and file downloads. Often a different host than the API.';
+
+  @override
+  String get accessWebServerUrlHint => 'https://wayfinder-web.example.com';
 
   @override
   String accessServerUrlApplied(String apiUrl) {
     return 'Connecting to $apiUrl…';
+  }
+
+  @override
+  String accessServerUrlsApplied(String apiUrl, String webUrl) {
+    return 'Connecting…\nAPI: $apiUrl\nWeb: $webUrl';
   }
 
   @override
@@ -762,11 +774,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsResetToDefault => 'Reset to default';
 
   @override
-  String get settingsServerConnectionTitle => 'API server connection';
+  String get settingsServerConnectionTitle => 'Server connection';
 
   @override
   String get settingsServerConnectionDescription =>
-      'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2).';
+      'Enter both the Wayfinder API URL (sign-in / live data) and the web URL (map tiles, REST, files). They are often different hosts behind a reverse proxy.';
 
   @override
   String get settingsServerConnectionPermissionDenied =>
@@ -776,12 +788,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsServerUrl => 'API server URL';
 
   @override
+  String get settingsWebServerUrl => 'Web server URL';
+
+  @override
   String settingsCurrentWebServer(String webUrl) {
     return 'Current web server: $webUrl';
   }
 
   @override
-  String get settingsSaveServerUrl => 'Save API server URL';
+  String get settingsSaveServerUrl => 'Save server URLs';
+
+  @override
+  String get settingsEditServerUrls => 'Edit server URLs';
+
+  @override
+  String get settingsGeocodingAvailabilityTitle => 'Map search (geocoding)';
+
+  @override
+  String get settingsGeocodingAvailabilityDescription =>
+      'Whether place and address search from the map bar is available for this device.';
+
+  @override
+  String get settingsGeocodingOpenTab => 'Geocoding settings';
 
   @override
   String get settingsMeasurementsTitle => 'Measurements';
@@ -3397,6 +3425,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTilesCatalogLoadFailed => 'Failed to load map tile catalog.';
 
   @override
+  String get mapTilesCatalogLoading => 'Loading map tile catalog…';
+
+  @override
+  String mapTilesPreparingFile(String name) {
+    return 'Preparing $name';
+  }
+
+  @override
   String mapTilesOpeningLayer(String name) {
     return 'Opening: $name';
   }
@@ -3422,6 +3458,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String mapTilesOpeningProgress(String name) {
     return 'Opening $name…';
+  }
+
+  @override
+  String mapTilesOpeningElapsed(String name, int seconds) {
+    return 'Opening $name… ${seconds}s';
+  }
+
+  @override
+  String mapTilesOpeningFromUrl(String url) {
+    return 'Fetching header from $url';
   }
 
   @override

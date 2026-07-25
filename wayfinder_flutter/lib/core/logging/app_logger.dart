@@ -12,6 +12,7 @@ class AppLogger {
 
   static const logApp = AppLogger('app');
   static const logServer = AppLogger('server');
+  static const logApi = AppLogger('api');
   static const logMap = AppLogger('map');
   static const logSettings = AppLogger('settings');
   static const logPmtiles = AppLogger('pmtiles');

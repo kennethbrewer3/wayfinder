@@ -26,5 +26,6 @@ class AppConstants {
 
   static const viewportStorageKey = 'wayfinder.map.viewport';
   static const serverApiUrlStorageKey = 'wayfinder.settings.serverApiUrl';
+  static const serverWebUrlStorageKey = 'wayfinder.settings.serverWebUrl';
   static const geocodingWebUrlStorageKey = 'wayfinder.settings.geocodingWebUrl';
 }

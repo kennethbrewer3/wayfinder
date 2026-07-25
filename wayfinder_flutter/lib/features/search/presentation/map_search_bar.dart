@@ -151,10 +151,8 @@ class _MapSearchFieldState extends ConsumerState<MapSearchField> {
           hintStyle: theme.textTheme.bodyLarge?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+          // No prefix search icon — the suffix submit button already uses
+          // Icons.search; duplicating it confuses users on narrow app bars.
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

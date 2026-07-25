@@ -9,7 +9,6 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/logging/app_logger.dart';
-import '../../geocoding/presentation/address_search_readiness_indicator.dart';
 import '../../geocoding/providers/geocoding_providers.dart';
 import '../../map_atlas/presentation/map_atlas_export_action.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -31,8 +30,20 @@ import '../providers/map_mgrs_grid_provider.dart';
 import '../providers/map_providers.dart';
 import '../providers/selected_map_object_provider.dart';
 import 'map_object_selection_listener.dart';
-import 'map_tiles_load_indicator.dart';
 import 'map_view.dart';
+
+/// Below this width, secondary AppBar actions move into a trailing overflow menu
+/// so search + primary map controls still fit on phones.
+const _mapAppBarCompactBreakpoint = 720.0;
+
+enum _MapAppBarOverflowAction {
+  toggleMgrsGrid,
+  goHome,
+  prepareOffline,
+  exportAtlas,
+  openManual,
+  openSettings,
+}
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({
@@ -305,6 +316,251 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
+  List<Widget> _buildMapAppBarActions({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required bool compact,
+    required bool kioskActive,
+    required bool offlineActive,
+    required bool hasOfflinePack,
+    required bool mgrsGridEnabled,
+    required DeviceLocationState deviceLocation,
+  }) {
+    final theme = Theme.of(context);
+    final actions = <Widget>[];
+
+    if (!compact) {
+      if (!kioskActive) {
+        actions.add(
+          IconButton(
+            tooltip: hasOfflinePack
+                ? l10n.offlinePackPrepareTooltipReady
+                : l10n.offlinePackPrepareTooltip,
+            icon: Icon(
+              hasOfflinePack
+                  ? Icons.offline_pin
+                  : Icons.download_for_offline_outlined,
+              color: offlineActive
+                  ? theme.colorScheme.tertiary
+                  : (hasOfflinePack ? theme.colorScheme.primary : null),
+            ),
+            onPressed: offlineActive
+                ? null
+                : () async {
+                    await showPrepareOfflinePackDialog(context);
+                  },
+          ),
+        );
+      }
+      actions.add(
+        IconButton(
+          tooltip: mgrsGridEnabled
+              ? l10n.mapMgrsGridHideTooltip
+              : l10n.mapMgrsGridShowTooltip,
+          icon: Icon(
+            Icons.grid_on,
+            color: mgrsGridEnabled ? theme.colorScheme.primary : null,
+          ),
+          onPressed: () {
+            ref.read(mapMgrsGridEnabledProvider.notifier).toggle();
+          },
+        ),
+      );
+    }
+
+    actions.add(
+      IconButton(
+        tooltip: deviceLocation.tracking
+            ? (deviceLocation.following
+                  ? l10n.mapDeviceLocationFollowingTooltip
+                  : l10n.mapDeviceLocationStopTooltip)
+            : l10n.mapDeviceLocationTooltip,
+        icon: deviceLocation.busy
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: theme.colorScheme.primary,
+                ),
+              )
+            : Icon(
+                deviceLocation.tracking
+                    ? (deviceLocation.following
+                          ? Icons.gps_fixed
+                          : Icons.gps_not_fixed)
+                    : Icons.my_location,
+                color: deviceLocation.tracking
+                    ? theme.colorScheme.primary
+                    : null,
+              ),
+        // Keep the button enabled while busy so long-press can still stop.
+        onPressed: _locateMe,
+        onLongPress: (deviceLocation.tracking || deviceLocation.busy)
+            ? _stopLocateMe
+            : null,
+      ),
+    );
+
+    if (compact) {
+      actions.add(
+        _buildMapAppBarOverflowMenu(
+          context: context,
+          l10n: l10n,
+          kioskActive: kioskActive,
+          offlineActive: offlineActive,
+          hasOfflinePack: hasOfflinePack,
+          mgrsGridEnabled: mgrsGridEnabled,
+        ),
+      );
+      return actions;
+    }
+
+    actions.add(
+      IconButton(
+        tooltip: l10n.mapHomeTooltip,
+        icon: const Icon(Icons.home),
+        onPressed: _goHome,
+      ),
+    );
+    if (!kioskActive) {
+      actions.add(
+        IconButton(
+          tooltip: l10n.mapAtlasTooltip,
+          icon: _isExportingAtlas
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: theme.colorScheme.primary,
+                  ),
+                )
+              : const Icon(Icons.picture_as_pdf_outlined),
+          onPressed: _isExportingAtlas ? null : _exportMapAtlas,
+        ),
+      );
+    }
+    actions.add(
+      IconButton(
+        tooltip: l10n.mapManualTooltip,
+        icon: const Icon(Icons.menu_book_outlined),
+        onPressed: _openManual,
+      ),
+    );
+    if (!kioskActive) {
+      actions.add(
+        IconButton(
+          tooltip: l10n.mapSettingsTooltip,
+          icon: const Icon(Icons.settings),
+          onPressed: _openSettings,
+        ),
+      );
+    }
+    return actions;
+  }
+
+  Widget _buildMapAppBarOverflowMenu({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required bool kioskActive,
+    required bool offlineActive,
+    required bool hasOfflinePack,
+    required bool mgrsGridEnabled,
+  }) {
+    return PopupMenuButton<_MapAppBarOverflowAction>(
+      tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+      icon: const Icon(Icons.more_vert),
+      onSelected: _handleMapAppBarOverflowAction,
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+            value: _MapAppBarOverflowAction.toggleMgrsGrid,
+            child: _MapAppBarOverflowItem(
+              icon: Icons.grid_on,
+              label: mgrsGridEnabled
+                  ? l10n.mapMgrsGridHideTooltip
+                  : l10n.mapMgrsGridShowTooltip,
+            ),
+          ),
+          PopupMenuItem(
+            value: _MapAppBarOverflowAction.goHome,
+            child: _MapAppBarOverflowItem(
+              icon: Icons.home,
+              label: l10n.mapHomeTooltip,
+            ),
+          ),
+          if (!kioskActive)
+            PopupMenuItem(
+              value: _MapAppBarOverflowAction.prepareOffline,
+              enabled: !offlineActive,
+              child: _MapAppBarOverflowItem(
+                icon: hasOfflinePack
+                    ? Icons.offline_pin
+                    : Icons.download_for_offline_outlined,
+                label: hasOfflinePack
+                    ? l10n.offlinePackPrepareTooltipReady
+                    : l10n.offlinePackPrepareTooltip,
+              ),
+            ),
+          if (!kioskActive)
+            PopupMenuItem(
+              value: _MapAppBarOverflowAction.exportAtlas,
+              enabled: !_isExportingAtlas,
+              child: _MapAppBarOverflowItem(
+                icon: Icons.picture_as_pdf_outlined,
+                label: l10n.mapAtlasTooltip,
+              ),
+            ),
+          PopupMenuItem(
+            value: _MapAppBarOverflowAction.openManual,
+            child: _MapAppBarOverflowItem(
+              icon: Icons.menu_book_outlined,
+              label: l10n.mapManualTooltip,
+            ),
+          ),
+          if (!kioskActive)
+            PopupMenuItem(
+              value: _MapAppBarOverflowAction.openSettings,
+              child: _MapAppBarOverflowItem(
+                icon: Icons.settings,
+                label: l10n.mapSettingsTooltip,
+              ),
+            ),
+        ];
+      },
+    );
+  }
+
+  Future<void> _handleMapAppBarOverflowAction(
+    _MapAppBarOverflowAction action,
+  ) async {
+    switch (action) {
+      case _MapAppBarOverflowAction.toggleMgrsGrid:
+        ref.read(mapMgrsGridEnabledProvider.notifier).toggle();
+      case _MapAppBarOverflowAction.goHome:
+        await _goHome();
+      case _MapAppBarOverflowAction.prepareOffline:
+        await showPrepareOfflinePackDialog(context);
+      case _MapAppBarOverflowAction.exportAtlas:
+        await _exportMapAtlas();
+      case _MapAppBarOverflowAction.openManual:
+        _openManual();
+      case _MapAppBarOverflowAction.openSettings:
+        _openSettings();
+    }
+  }
+
+  void _openManual() {
+    AppLogger.logNav.info('🧭 Navigating to user manual from app bar');
+    context.push('/manual');
+  }
+
+  void _openSettings() {
+    AppLogger.logNav.info('🧭 Navigating to settings from app bar');
+    context.push('/settings/general');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -374,115 +630,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 child: MapSearchResults(onResultSelected: _handleSearchResult),
               )
             : null,
-        actions: [
-          const AddressSearchReadinessIndicator(),
-          const MapTilesLoadIndicator(),
-          if (!kioskActive)
-            IconButton(
-              tooltip: hasOfflinePack
-                  ? l10n.offlinePackPrepareTooltipReady
-                  : l10n.offlinePackPrepareTooltip,
-              icon: Icon(
-                hasOfflinePack
-                    ? Icons.offline_pin
-                    : Icons.download_for_offline_outlined,
-                color: offlineActive
-                    ? Theme.of(context).colorScheme.tertiary
-                    : (hasOfflinePack
-                          ? Theme.of(context).colorScheme.primary
-                          : null),
-              ),
-              onPressed: offlineActive
-                  ? null
-                  : () async {
-                      await showPrepareOfflinePackDialog(context);
-                    },
-            ),
-          IconButton(
-            tooltip: mgrsGridEnabled
-                ? l10n.mapMgrsGridHideTooltip
-                : l10n.mapMgrsGridShowTooltip,
-            icon: Icon(
-              Icons.grid_on,
-              color: mgrsGridEnabled
-                  ? Theme.of(context).colorScheme.primary
-                  : null,
-            ),
-            onPressed: () {
-              ref.read(mapMgrsGridEnabledProvider.notifier).toggle();
-            },
-          ),
-          IconButton(
-            tooltip: deviceLocation.tracking
-                ? (deviceLocation.following
-                      ? l10n.mapDeviceLocationFollowingTooltip
-                      : l10n.mapDeviceLocationStopTooltip)
-                : l10n.mapDeviceLocationTooltip,
-            icon: deviceLocation.busy
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  )
-                : Icon(
-                    deviceLocation.tracking
-                        ? (deviceLocation.following
-                              ? Icons.gps_fixed
-                              : Icons.gps_not_fixed)
-                        : Icons.my_location,
-                    color: deviceLocation.tracking
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                  ),
-            // Keep the button enabled while busy so long-press can still stop.
-            onPressed: _locateMe,
-            onLongPress: (deviceLocation.tracking || deviceLocation.busy)
-                ? _stopLocateMe
-                : null,
-          ),
-          IconButton(
-            tooltip: l10n.mapHomeTooltip,
-            icon: const Icon(Icons.home),
-            onPressed: _goHome,
-          ),
-          if (!kioskActive)
-            IconButton(
-              tooltip: l10n.mapAtlasTooltip,
-              icon: _isExportingAtlas
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    )
-                  : const Icon(Icons.picture_as_pdf_outlined),
-              onPressed: _isExportingAtlas ? null : _exportMapAtlas,
-            ),
-          IconButton(
-            tooltip: l10n.mapManualTooltip,
-            icon: const Icon(Icons.menu_book_outlined),
-            onPressed: () {
-              AppLogger.logNav.info(
-                '🧭 Navigating to user manual from app bar',
-              );
-              context.push('/manual');
-            },
-          ),
-          if (!kioskActive)
-            IconButton(
-              tooltip: l10n.mapSettingsTooltip,
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                AppLogger.logNav.info('🧭 Navigating to settings from app bar');
-                context.push('/settings/general');
-              },
-            ),
-        ],
+        actions: _buildMapAppBarActions(
+          context: context,
+          l10n: l10n,
+          compact:
+              MediaQuery.sizeOf(context).width < _mapAppBarCompactBreakpoint,
+          kioskActive: kioskActive,
+          offlineActive: offlineActive,
+          hasOfflinePack: hasOfflinePack,
+          mgrsGridEnabled: mgrsGridEnabled,
+          deviceLocation: deviceLocation,
+        ),
       ),
       body: MapObjectSelectionListener(
         child: viewportAsync.when(
@@ -495,8 +653,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               sidebarProvider.select((state) => state.expanded),
             );
             const sidebarWidth = 320.0;
-            const sidebarHeightExpanded = 280.0;
-            const sidebarHeightCollapsed = 56.0;
+            // Header is 8+8 padding + 48 IconButton (=64). 56 overflowed by 8px.
+            const sidebarHeightCollapsed = 64.0;
+            // Give the map-objects sheet enough room on phones; the old fixed
+            // 280px height overflowed once filters + seasonal overlays expanded.
+            final screenHeight = MediaQuery.sizeOf(context).height;
+            final sidebarHeightExpanded = (screenHeight * 0.48).clamp(
+              320.0,
+              520.0,
+            );
 
             final mapSection = Stack(
               children: [
@@ -562,6 +727,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _MapAppBarOverflowItem extends StatelessWidget {
+  const _MapAppBarOverflowItem({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon),
+        const SizedBox(width: 12),
+        Expanded(child: Text(label)),
+      ],
     );
   }
 }

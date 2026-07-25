@@ -122,6 +122,7 @@ import '../utils/pmtiles_archive_selection.dart';
 import '../utils/pmtiles_viewport.dart';
 import 'map_compass_rose_overlay.dart';
 import 'map_cursor_coordinates.dart';
+import 'map_tiles_load_indicator.dart';
 import 'map_device_location_hud.dart';
 import 'map_device_location_layer.dart';
 import 'map_mgrs_grid_layer.dart';
@@ -164,7 +165,11 @@ class MapView extends ConsumerWidget {
     }
 
     final enabledEntries = metadataAsync.valueOrNull ?? const [];
-    if (enabledEntries.isEmpty && !metadataAsync.isLoading) {
+    // Only treat as "catalog loading" when we have no entries yet. Using
+    // AsyncValue.isLoading would also be true on refresh and wipe the
+    // in-progress "opening file.pmtiles" status.
+    final metadataLoading = !metadataAsync.hasValue && !metadataAsync.hasError;
+    if (enabledEntries.isEmpty && !metadataLoading) {
       AppLogger.logMap.warn('🗺️ No PMTiles map layers — showing placeholder');
     }
 
@@ -172,7 +177,7 @@ class MapView extends ConsumerWidget {
       viewport: viewport,
       onViewportChanged: onViewportChanged,
       enabledEntries: enabledEntries,
-      metadataLoading: metadataAsync.isLoading,
+      metadataLoading: metadataLoading,
       markersAsync: markersAsync,
       zonesAsync: zonesAsync,
       layersAsync: layersAsync,
@@ -266,6 +271,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   final Map<String, PmtilesMapLayerConfig> _layerCache = {};
   final Map<String, PmtilesSource> _layerSources = {};
   final Map<String, String> _layerLoadErrors = {};
+
+  /// Catalog ids currently inside [buildPmtilesMapLayer] / offline open.
+  final Set<String> _inflightLayerLoads = {};
   List<PmtilesMapLayerConfig> _visibleMapLayers = const [];
   String? _activeLayerCatalogId;
   PmtilesArchiveEntry? _resolvedActiveEntry;
@@ -273,6 +281,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
   Timer? _viewportLayerUpdateTimer;
   int _layerLoadGeneration = 0;
   Size? _lastMapSize;
+
+  /// Last tile-status line written to logcat (dedupe identical updates).
+  String? _lastLoggedTileStatus;
 
   LatLng? _cursorLocation;
   Offset? _cursorScreenPosition;
@@ -336,6 +347,51 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
   }
 
+  /// Push load status to Riverpod and rebuild this canvas so the in-map
+  /// overlay updates without waiting for an unrelated parent rebuild.
+  ///
+  /// Also mirrors status into logcat (`I/flutter`) so phones without a
+  /// DevTools console can still see tile progress via `flutter run` / adb.
+  void _setPmtilesLoadStatus(PmtilesLoadStatus status) {
+    ref.read(pmtilesLoadStatusProvider.notifier).update(status);
+    _logTileLoadStatus(status);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _logTileLoadStatus(PmtilesLoadStatus status) {
+    final phase = status.isReady
+        ? 'ready'
+        : status.isLoading
+        ? 'loading'
+        : status.failureMessage != null
+        ? 'failed'
+        : 'idle';
+    final message = status.statusMessage?.trim();
+    final failure = status.failureMessage?.trim();
+    final line = [
+      'TILES [$phase]',
+      if (status.enabledCount > 0 || status.loadedCount > 0)
+        '${status.loadedCount}/${status.enabledCount} cached',
+      if (status.loadingLayerName != null) 'opening=${status.loadingLayerName}',
+      if (status.activeLayerName != null) 'active=${status.activeLayerName}',
+      if (message != null && message.isNotEmpty) message,
+      if (failure != null && failure.isNotEmpty) 'error=$failure',
+    ].join(' | ');
+    if (line == _lastLoggedTileStatus) {
+      return;
+    }
+    _lastLoggedTileStatus = line;
+    if (phase == 'failed') {
+      AppLogger.logPmtiles.error(line);
+    } else if (phase == 'ready') {
+      AppLogger.logPmtiles.success(line);
+    } else {
+      AppLogger.logPmtiles.info(line);
+    }
+  }
+
   @override
   void dispose() {
     _viewportLayerUpdateTimer?.cancel();
@@ -390,9 +446,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     bool immediate = false,
   }) {
     _viewportLayerUpdateTimer?.cancel();
-    void run() => unawaited(_runVisibleLayerSync(preload: preload));
+    void run() {
+      if (!mounted) {
+        return;
+      }
+      unawaited(_runVisibleLayerSync(preload: preload));
+    }
+
     if (immediate) {
-      run();
+      // Never sync (and update Riverpod) synchronously from didUpdateWidget /
+      // build — that throws "Tried to modify a provider while the widget tree
+      // was building". Defer to the next microtask.
+      Future<void>(() => run());
       return;
     }
     _viewportLayerUpdateTimer = Timer(
@@ -432,135 +497,174 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
   }
 
+  /// User-facing archive label for load status.
+  ///
+  /// Prefer the catalog [PmtilesArchiveEntry.name] (e.g. `north-va.pmtiles`).
+  /// Download URLs end with the archive UUID, which is meaningless in the UI.
+  String _pmtilesFileLabel(PmtilesArchiveEntry entry) {
+    final catalogName = entry.name.trim();
+    if (catalogName.isNotEmpty) {
+      return catalogName;
+    }
+    final fromSource = switch (entry.source) {
+      PmtilesSourcePath(:final path) => path.split(RegExp(r'[\\/]')).last,
+      PmtilesSourceUrl(:final url) => Uri.tryParse(
+        url,
+      )?.pathSegments.lastOrNull,
+      PmtilesSourceBytes() => null,
+    };
+    if (fromSource != null && fromSource.isNotEmpty) {
+      return fromSource;
+    }
+    return entry.id;
+  }
+
+  void _announceOpeningEntry(PmtilesArchiveEntry entry) {
+    if (!mounted) {
+      return;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    final fileLabel = _pmtilesFileLabel(entry);
+    final loadedCount = widget.enabledEntries
+        .where((candidate) => _layerCache.containsKey(candidate.id))
+        .length;
+    _setPmtilesLoadStatus(
+      PmtilesLoadStatus(
+        isReady: false,
+        isLoading: true,
+        enabledCount: widget.enabledEntries.length,
+        loadedCount: loadedCount,
+        loadingLayerName: fileLabel,
+        statusMessage: l10n.mapTilesOpeningProgress(fileLabel),
+      ),
+    );
+  }
+
   void _publishPmtilesLoadStatus() {
     if (!mounted) {
       return;
     }
 
-    final l10n = AppLocalizations.of(context)!;
-    final entries = widget.enabledEntries;
-    if (widget.metadataLoading) {
-      ref
-          .read(pmtilesLoadStatusProvider.notifier)
-          .update(
-            PmtilesLoadStatus(
-              isReady: false,
-              isLoading: true,
-              statusMessage: l10n.statusLoading,
-            ),
-          );
-      return;
-    }
-
-    if (entries.isEmpty) {
-      ref
-          .read(pmtilesLoadStatusProvider.notifier)
-          .update(
-            PmtilesLoadStatus.noLayers,
-          );
-      return;
-    }
-
-    final loadedCount = entries
-        .where((entry) => _layerCache.containsKey(entry.id))
-        .length;
-    final selectedEntries = _resolvedActiveEntry == null
-        ? selectArchivesForViewport(
-            entries: entries,
-            viewportBounds: _currentViewportBounds(),
-            viewportCenter: _currentViewportCenter(),
-            viewportZoom: _currentViewportZoom(),
-          )
-        : [_resolvedActiveEntry!];
-    final activeEntry = selectedEntries.isEmpty ? null : selectedEntries.first;
-    final activeLayer = activeEntry == null
-        ? null
-        : _layerCache[activeEntry.id];
-    final activeReady = activeLayer != null && _visibleMapLayers.isNotEmpty;
-
-    if (activeReady && activeEntry != null) {
-      ref
-          .read(pmtilesLoadStatusProvider.notifier)
-          .update(
-            PmtilesLoadStatus(
-              isReady: true,
-              isLoading: false,
-              enabledCount: entries.length,
-              loadedCount: loadedCount,
-              activeLayerName: activeEntry.name,
-              statusMessage: 'Map tiles are active for the current view.',
-            ),
-          );
-      return;
-    }
-
-    if (activeEntry != null) {
-      final loadError = _layerLoadErrors[activeEntry.id];
-      if (loadError != null) {
-        ref
-            .read(pmtilesLoadStatusProvider.notifier)
-            .update(
-              PmtilesLoadStatus(
-                isReady: false,
-                isLoading: false,
-                enabledCount: entries.length,
-                loadedCount: loadedCount,
-                loadingLayerName: activeEntry.name,
-                statusMessage: 'Failed to open ${activeEntry.name}.',
-                failureMessage: loadError,
-              ),
-            );
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      final entries = widget.enabledEntries;
+      if (widget.metadataLoading) {
+        _setPmtilesLoadStatus(
+          PmtilesLoadStatus(
+            isReady: false,
+            isLoading: true,
+            statusMessage: l10n.mapTilesCatalogLoading,
+          ),
+        );
         return;
       }
 
-      ref
-          .read(pmtilesLoadStatusProvider.notifier)
-          .update(
-            PmtilesLoadStatus(
-              isReady: false,
-              isLoading: true,
-              enabledCount: entries.length,
-              loadedCount: loadedCount,
-              loadingLayerName: activeEntry.name,
-              statusMessage: l10n.mapTilesOpeningProgress(activeEntry.name),
-            ),
-          );
-      return;
-    }
+      if (entries.isEmpty) {
+        _setPmtilesLoadStatus(PmtilesLoadStatus.noLayers);
+        return;
+      }
 
-    if (loadedCount < entries.length) {
-      final pending = entries.firstWhere(
-        (entry) => !_layerCache.containsKey(entry.id),
-        orElse: () => entries.first,
-      );
-      ref
-          .read(pmtilesLoadStatusProvider.notifier)
-          .update(
-            PmtilesLoadStatus(
-              isReady: false,
-              isLoading: true,
-              enabledCount: entries.length,
-              loadedCount: loadedCount,
-              loadingLayerName: pending.name,
-              statusMessage: 'Preparing visible map tile layers…',
-            ),
-          );
-      return;
-    }
+      final loadedCount = entries
+          .where((entry) => _layerCache.containsKey(entry.id))
+          .length;
+      final selectedEntries = _resolvedActiveEntry == null
+          ? selectArchivesForViewport(
+              entries: entries,
+              viewportBounds: _currentViewportBounds(),
+              viewportCenter: _currentViewportCenter(),
+              viewportZoom: _currentViewportZoom(),
+            )
+          : [_resolvedActiveEntry!];
+      final activeEntry = selectedEntries.isEmpty
+          ? null
+          : selectedEntries.first;
+      final activeLayer = activeEntry == null
+          ? null
+          : _layerCache[activeEntry.id];
+      final activeReady = activeLayer != null && _visibleMapLayers.isNotEmpty;
 
-    ref
-        .read(pmtilesLoadStatusProvider.notifier)
-        .update(
+      if (activeReady && activeEntry != null) {
+        _setPmtilesLoadStatus(
           PmtilesLoadStatus(
-            isReady: false,
+            isReady: true,
             isLoading: false,
             enabledCount: entries.length,
             loadedCount: loadedCount,
-            statusMessage:
-                'Visible map layers do not cover the current map view. '
-                'Pan or zoom to an area covered by an enabled layer.',
+            activeLayerName: _pmtilesFileLabel(activeEntry),
+            statusMessage: 'Map tiles are active for the current view.',
           ),
         );
+        return;
+      }
+
+      if (activeEntry != null) {
+        final fileLabel = _pmtilesFileLabel(activeEntry);
+        final loadError = _layerLoadErrors[activeEntry.id];
+        if (loadError != null) {
+          _setPmtilesLoadStatus(
+            PmtilesLoadStatus(
+              isReady: false,
+              isLoading: false,
+              enabledCount: entries.length,
+              loadedCount: loadedCount,
+              loadingLayerName: fileLabel,
+              statusMessage: 'Failed to open $fileLabel.',
+              failureMessage: loadError,
+            ),
+          );
+          return;
+        }
+
+        _setPmtilesLoadStatus(
+          PmtilesLoadStatus(
+            isReady: false,
+            isLoading: true,
+            enabledCount: entries.length,
+            loadedCount: loadedCount,
+            loadingLayerName: fileLabel,
+            statusMessage: l10n.mapTilesOpeningProgress(fileLabel),
+          ),
+        );
+        return;
+      }
+
+      if (loadedCount < entries.length) {
+        final pending = entries.firstWhere(
+          (entry) => !_layerCache.containsKey(entry.id),
+          orElse: () => entries.first,
+        );
+        final fileLabel = _pmtilesFileLabel(pending);
+        _setPmtilesLoadStatus(
+          PmtilesLoadStatus(
+            isReady: false,
+            isLoading: true,
+            enabledCount: entries.length,
+            loadedCount: loadedCount,
+            loadingLayerName: fileLabel,
+            statusMessage: l10n.mapTilesPreparingFile(fileLabel),
+          ),
+        );
+        return;
+      }
+
+      _setPmtilesLoadStatus(
+        PmtilesLoadStatus(
+          isReady: false,
+          isLoading: false,
+          enabledCount: entries.length,
+          loadedCount: loadedCount,
+          statusMessage:
+              'Visible map layers do not cover the current map view. '
+              'Pan or zoom to an area covered by an enabled layer.',
+        ),
+      );
+    } catch (error, stackTrace) {
+      AppLogger.logPmtiles.error(
+        '🗺️ Failed to publish PMTiles load status',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   void _evictRemovedLayers(Set<String> removedIds) {
@@ -607,9 +711,65 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     PmtilesArchiveEntry entry,
     int generation,
   ) async {
+    if (_layerCache.containsKey(entry.id)) {
+      return;
+    }
+    // Mobile layout/camera churn bumps [_layerLoadGeneration] often. Do not
+    // start a second open of the same archive — that raced and discarded
+    // completed Virginia (etc.) opens before they could be applied.
+    if (!_inflightLayerLoads.add(entry.id)) {
+      AppLogger.logPmtiles.info(
+        'TILES | already opening (skip duplicate)',
+        data: 'id=${entry.id} name="${entry.name}"',
+      );
+      return;
+    }
+    final fileLabel = _pmtilesFileLabel(entry);
+    final sourceUrl = switch (entry.source) {
+      PmtilesSourceUrl(:final url) => url,
+      _ => null,
+    };
+    final startedAt = DateTime.now();
+    AppLogger.logPmtiles.info(
+      'TILES | start open',
+      data:
+          'name="$fileLabel" id=${entry.id} '
+          'source=${sourceUrl ?? entry.source.runtimeType}',
+    );
+    void publishOpeningHeartbeat() {
+      if (!mounted || !_inflightLayerLoads.contains(entry.id)) {
+        return;
+      }
+      final l10n = AppLocalizations.of(context)!;
+      final seconds = DateTime.now().difference(startedAt).inSeconds;
+      final detail = sourceUrl == null
+          ? l10n.mapTilesOpeningElapsed(fileLabel, seconds)
+          : '${l10n.mapTilesOpeningElapsed(fileLabel, seconds)}\n'
+                '${l10n.mapTilesOpeningFromUrl(sourceUrl)}';
+      _setPmtilesLoadStatus(
+        PmtilesLoadStatus(
+          isReady: false,
+          isLoading: true,
+          enabledCount: widget.enabledEntries.length,
+          loadedCount: _layerCache.length,
+          loadingLayerName: fileLabel,
+          statusMessage: detail,
+        ),
+      );
+    }
+
+    publishOpeningHeartbeat();
+    final heartbeat = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => publishOpeningHeartbeat(),
+    );
     try {
       final PmtilesMapLayerConfig layer;
       if (ref.read(offlineModeActiveProvider)) {
+        AppLogger.logPmtiles.info(
+          'TILES | building offline layer',
+          data: fileLabel,
+        );
         final meta = await ref.read(offlinePackMetaProvider.future);
         final basemap = meta?.basemapFor(entry.id);
         if (basemap == null) {
@@ -620,30 +780,49 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
           cache: ref.read(offlineTileCacheProvider),
         );
       } else {
+        AppLogger.logPmtiles.info(
+          'TILES | building online layer (probe + open archive)',
+          data: fileLabel,
+        );
         layer = await buildPmtilesMapLayer(
           entry.source,
           catalogId: entry.id,
         );
       }
-      if (mounted && generation == _layerLoadGeneration) {
-        _layerCache[entry.id] = layer;
-        _layerSources[entry.id] = entry.source;
-        _layerLoadErrors.remove(entry.id);
-      } else if (!ref.read(offlineModeActiveProvider)) {
-        await releasePmtilesArchive(entry.source);
+      if (!mounted) {
+        if (!ref.read(offlineModeActiveProvider)) {
+          await releasePmtilesArchive(entry.source);
+        }
+        return;
       }
+      // Keep successful opens even if a newer sync generation started — the
+      // open is expensive and the next sync will reuse the cache.
+      _layerCache[entry.id] = layer;
+      _layerSources[entry.id] = entry.source;
+      _layerLoadErrors.remove(entry.id);
+      final elapsedMs = DateTime.now().difference(startedAt).inMilliseconds;
+      AppLogger.logPmtiles.success(
+        'TILES | open complete',
+        data:
+            'name="$fileLabel" id=${entry.id} ${elapsedMs}ms '
+            'generation=$generation current=$_layerLoadGeneration',
+      );
+      _applyVisibleLayerSelection();
+      _publishPmtilesLoadStatus();
     } catch (error, stackTrace) {
-      if (mounted && generation == _layerLoadGeneration) {
+      if (mounted) {
         _layerLoadErrors[entry.id] = error.toString();
       }
       AppLogger.logPmtiles.error(
-        '🗺️ Failed to load PMTiles layer',
+        'TILES | open failed',
         error: error,
         stackTrace: stackTrace,
-        data: 'id=${entry.id} name="${entry.name}"',
+        data: 'id=${entry.id} name="$fileLabel" source=$sourceUrl',
       );
     } finally {
-      if (mounted && generation == _layerLoadGeneration) {
+      heartbeat.cancel();
+      _inflightLayerLoads.remove(entry.id);
+      if (mounted) {
         _publishPmtilesLoadStatus();
       }
     }
@@ -670,6 +849,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     }
 
     if (widget.enabledEntries.isEmpty) {
+      AppLogger.logPmtiles.info('TILES | sync skipped — no enabled layers');
       if (_visibleMapLayers.isNotEmpty || _activeLayerCatalogId != null) {
         setState(() {
           _visibleMapLayers = const [];
@@ -680,7 +860,23 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       return;
     }
 
-    _publishPmtilesLoadStatus();
+    final enabledNames = widget.enabledEntries
+        .map(_pmtilesFileLabel)
+        .join(', ');
+    AppLogger.logPmtiles.info(
+      'TILES | sync start',
+      data:
+          'preload=$preload enabled=${widget.enabledEntries.length} '
+          'cached=${_layerCache.length} names=[$enabledNames]',
+    );
+
+    // Announce a concrete file immediately — resolveActiveArchiveForViewport
+    // can take a while, and the overlay used to sit on generic "Working…".
+    final initialPending = widget.enabledEntries.firstWhere(
+      (entry) => !_layerCache.containsKey(entry.id),
+      orElse: () => widget.enabledEntries.first,
+    );
+    _announceOpeningEntry(initialPending);
 
     try {
       final resolveGeneration = ++_layerLoadGeneration;
@@ -691,17 +887,34 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         viewportZoom: _currentViewportZoom(),
       );
       if (!mounted || resolveGeneration != _layerLoadGeneration) {
+        AppLogger.logPmtiles.info(
+          'TILES | sync superseded during archive resolve',
+          data: 'generation=$resolveGeneration current=$_layerLoadGeneration',
+        );
         return;
       }
       _resolvedActiveEntry = selection.entry;
       _archiveSelectionDebug = selection.debugSummary;
       final activeEntry = selection.entry;
-      var generation = _layerLoadGeneration;
+      AppLogger.logPmtiles.info(
+        'TILES | active archive for viewport',
+        data: activeEntry == null
+            ? 'none | ${selection.debugSummary}'
+            : 'name="${_pmtilesFileLabel(activeEntry)}" '
+                  'id=${activeEntry.id} cached=${_layerCache.containsKey(activeEntry.id)} '
+                  '| ${selection.debugSummary}',
+      );
 
       if (activeEntry != null && !_layerCache.containsKey(activeEntry.id)) {
-        generation = ++_layerLoadGeneration;
-        await _loadLayerEntry(activeEntry, generation);
-        if (!mounted || generation != _layerLoadGeneration) {
+        // Do not bump generation here — that cancelled in-flight opens of the
+        // same archive whenever layout/camera scheduled another sync.
+        await _loadLayerEntry(activeEntry, resolveGeneration);
+        if (!mounted || resolveGeneration != _layerLoadGeneration) {
+          // A newer sync owns the flow; still apply if this open cached.
+          if (mounted && _layerCache.containsKey(activeEntry.id)) {
+            _applyVisibleLayerSelection();
+            _publishPmtilesLoadStatus();
+          }
           return;
         }
         _applyVisibleLayerSelection();
@@ -716,12 +929,15 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         );
         final backgroundEntries = rankedEntries
             .where((entry) => !_layerCache.containsKey(entry.id))
+            .where((entry) => !_inflightLayerLoads.contains(entry.id))
             .where((entry) => entry.id != activeEntry?.id)
             .toList();
         if (backgroundEntries.isNotEmpty) {
-          generation = ++_layerLoadGeneration;
           unawaited(
-            _loadBackgroundLayers(generation, backgroundEntries).catchError(
+            _loadBackgroundLayers(
+              resolveGeneration,
+              backgroundEntries,
+            ).catchError(
               (Object error, StackTrace stackTrace) {
                 AppLogger.logPmtiles.error(
                   '🗺️ Uncaught background PMTiles preload failure',
@@ -742,18 +958,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         error: error,
         stackTrace: stackTrace,
       );
-      ref
-          .read(pmtilesLoadStatusProvider.notifier)
-          .update(
-            PmtilesLoadStatus(
-              isReady: false,
-              isLoading: false,
-              enabledCount: widget.enabledEntries.length,
-              loadedCount: _layerCache.length,
-              statusMessage: 'Failed to prepare map tiles.',
-              failureMessage: error.toString(),
-            ),
-          );
+      _setPmtilesLoadStatus(
+        PmtilesLoadStatus(
+          isReady: false,
+          isLoading: false,
+          enabledCount: widget.enabledEntries.length,
+          loadedCount: _layerCache.length,
+          statusMessage: 'Failed to prepare map tiles.',
+          failureMessage: error.toString(),
+        ),
+      );
     }
   }
 
@@ -769,7 +983,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
       viewportZoom: _currentViewportZoom(),
     );
     final activeEntry =
-        _resolvedActiveEntry ?? (fallback.isEmpty ? null : fallback.first);
+        _resolvedActiveEntry ??
+        (fallback.isEmpty ? null : fallback.first) ??
+        (widget.enabledEntries.length == 1
+            ? widget.enabledEntries.first
+            : null);
     final activeLayer = activeEntry == null
         ? null
         : _layerCache[activeEntry.id];
@@ -789,10 +1007,18 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     });
 
     if (activeLayer != null) {
-      AppLogger.logPmtiles.debug(
-        '🗺️ Active PMTiles layer',
+      AppLogger.logPmtiles.success(
+        'TILES | visible on map',
         data:
-            'id=${activeEntry!.id} name="${activeEntry.name}" enabled=${widget.enabledEntries.length}',
+            'id=${activeEntry!.id} name="${_pmtilesFileLabel(activeEntry)}" '
+            'enabled=${widget.enabledEntries.length}',
+      );
+    } else {
+      AppLogger.logPmtiles.info(
+        'TILES | no visible layer yet',
+        data:
+            'activeId=${activeEntry?.id} cached=${_layerCache.length} '
+            'enabled=${widget.enabledEntries.length}',
       );
     }
 
@@ -4304,6 +4530,20 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     ref.watch(markerIconRevisionProvider);
     ref.watch(markerIconCatalogProvider);
     ref.watch(gpsTrackRecorderProvider);
+    // Catalog completion can race didUpdateWidget; sync as soon as archives
+    // are available so the loading overlay is not stuck on "catalog loading".
+    ref.listen(pmtilesEnabledMetadataProvider, (previous, next) {
+      if (!next.hasValue) {
+        return;
+      }
+      final previousIds =
+          previous?.valueOrNull?.map((entry) => entry.id).toSet() ?? const {};
+      final nextIds = next.requireValue.map((entry) => entry.id).toSet();
+      final catalogJustReady = previous?.hasValue != true;
+      if (catalogJustReady || previousIds != nextIds) {
+        _scheduleVisibleLayerUpdate(preload: true, immediate: true);
+      }
+    });
     ref.listen<bool>(offlineModeActiveProvider, (previous, next) {
       if (previous == next) {
         return;
@@ -4408,7 +4648,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
         mapLayers.isNotEmpty;
     final showViewportDebugBorder = ref.watch(mapViewportDebugBorderProvider);
     final showTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
-    final showCompassRose = ref.watch(mapCompassRoseEnabledProvider);
+    final showCompassRose =
+        ref.watch(mapCompassRoseEnabledProvider) && mapTilesDisplayed;
     final showMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
     final darkenMapTiles =
         Theme.of(context).brightness == Brightness.dark &&
@@ -4517,7 +4758,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             if (!mounted) {
               return;
             }
-            _scheduleVisibleLayerUpdate(immediate: true);
+            // Debounce — immediate resyncs on every safe-area/layout blip were
+            // cancelling in-flight PMTiles opens on phones.
+            _scheduleVisibleLayerUpdate();
           });
         }
         _lastMapSize = mapSize;
@@ -5448,6 +5691,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                   details: viewportDebugDetails,
                 ),
               ),
+            const MapTilesLoadingOverlay(),
           ],
         );
       },

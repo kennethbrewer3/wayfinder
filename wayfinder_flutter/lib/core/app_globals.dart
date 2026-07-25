@@ -15,9 +15,24 @@ late AppServerConfig appServerConfig;
 /// Rebuilds the global [client] against [config] and re-initializes auth.
 Future<void> applyAppServerConfig(AppServerConfig config) async {
   appServerConfig = config;
-  client = Client(config.apiUrl)
-    ..connectivityMonitor = FlutterConnectivityMonitor()
-    ..authSessionManager = FlutterAuthSessionManager();
+  client =
+      Client(
+          config.apiUrl,
+          onSucceededCall: (context) {
+            AppLogger.logApi.success(
+              'RPC ← ${context.endpointName}.${context.methodName}',
+            );
+          },
+          onFailedCall: (context, error, stackTrace) {
+            AppLogger.logApi.error(
+              'RPC ✕ ${context.endpointName}.${context.methodName}',
+              error: error,
+              stackTrace: stackTrace,
+            );
+          },
+        )
+        ..connectivityMonitor = FlutterConnectivityMonitor()
+        ..authSessionManager = FlutterAuthSessionManager();
   client.auth.initialize();
   AppLogger.logServer.info(
     '🔌 Server client re-pointed',
@@ -25,5 +40,9 @@ Future<void> applyAppServerConfig(AppServerConfig config) async {
       'apiUrl': config.apiUrl,
       'webUrl': config.webUrl,
     },
+  );
+  AppLogger.logApi.info(
+    'RPC client ready (Serverpod calls will log as RPC ← / RPC ✕)',
+    data: config.apiUrl,
   );
 }

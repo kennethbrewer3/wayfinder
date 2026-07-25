@@ -1246,6 +1246,36 @@ abstract class AppLocalizations {
   /// **'Failed to load themes: {error}'**
   String settingsThemesLoadFailed(String error);
 
+  /// No description provided for @settingsThemesLoadFailedServerError.
+  ///
+  /// In en, this message translates to:
+  /// **'The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: {apiUrl}\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work — update/redeploy the API and apply migrations, then retry.'**
+  String settingsThemesLoadFailedServerError(String apiUrl);
+
+  /// No description provided for @settingsThemesLoadFailedSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not list custom themes. Sign in with an account that can view the map, then retry.\n\nAPI: {apiUrl}'**
+  String settingsThemesLoadFailedSignIn(String apiUrl);
+
+  /// No description provided for @settingsThemesLoadFailedUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the Wayfinder API to load custom themes.\n\nAPI: {apiUrl}\n\nOn a phone, confirm Settings → General uses your real API URL (not localhost) and that it is separate from the web/PMTiles URL.'**
+  String settingsThemesLoadFailedUnreachable(String apiUrl);
+
+  /// No description provided for @settingsThemesLoadFailedGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load custom themes.\n\nAPI: {apiUrl}\n\nDetails: {error}'**
+  String settingsThemesLoadFailedGeneric(String apiUrl, String error);
+
+  /// No description provided for @settingsThemesRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get settingsThemesRetry;
+
   /// No description provided for @settingsThemesSaved.
   ///
   /// In en, this message translates to:

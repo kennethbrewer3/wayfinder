@@ -10,7 +10,11 @@ import 'app_theme_definition_store.dart';
 class AppThemeEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'appTheme';
 
-  /// Any signed-in user (or open mode) may list themes to select them.
+  /// Theme catalog is readable without auth.
+  ///
+  /// The Flutter app resolves custom themes during startup (before the auth
+  /// session is always restored on mobile). Mutations still require
+  /// [WayfinderPermission.manageThemes].
   Future<List<AppThemeDefinition>> listThemes(Session session) {
     return loggedCall(
       session,
@@ -18,6 +22,7 @@ class AppThemeEndpoint extends Endpoint with EndpointLogging {
       'listThemes',
       () => AppThemeDefinitionStore.list(session),
       onSuccess: (themes) => 'count=${themes.length}',
+      skipAccessCheck: true,
     );
   }
 
@@ -28,6 +33,7 @@ class AppThemeEndpoint extends Endpoint with EndpointLogging {
       'getTheme',
       () => AppThemeDefinitionStore.get(session, id),
       onSuccess: (theme) => theme == null ? 'not found id=$id' : 'found id=$id',
+      skipAccessCheck: true,
     );
   }
 

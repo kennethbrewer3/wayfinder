@@ -351,6 +351,42 @@
       }
     }
   },
+  "settingsThemesLoadFailedServerError": "The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: {apiUrl}\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work — update/redeploy the API and apply migrations, then retry.",
+  "@settingsThemesLoadFailedServerError": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesLoadFailedSignIn": "Could not list custom themes. Sign in with an account that can view the map, then retry.\n\nAPI: {apiUrl}",
+  "@settingsThemesLoadFailedSignIn": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesLoadFailedUnreachable": "Could not reach the Wayfinder API to load custom themes.\n\nAPI: {apiUrl}\n\nOn a phone, confirm Settings → General uses your real API URL (not localhost) and that it is separate from the web/PMTiles URL.",
+  "@settingsThemesLoadFailedUnreachable": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesLoadFailedGeneric": "Could not load custom themes.\n\nAPI: {apiUrl}\n\nDetails: {error}",
+  "@settingsThemesLoadFailedGeneric": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsThemesRetry": "Retry",
   "settingsThemesSaved": "Saved theme “{name}”.",
   "@settingsThemesSaved": {
     "placeholders": {

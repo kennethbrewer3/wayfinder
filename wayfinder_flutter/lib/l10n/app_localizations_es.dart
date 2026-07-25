@@ -663,6 +663,29 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String settingsThemesLoadFailedServerError(String apiUrl) {
+    return 'The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: $apiUrl\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work — update/redeploy the API and apply migrations, then retry.';
+  }
+
+  @override
+  String settingsThemesLoadFailedSignIn(String apiUrl) {
+    return 'Could not list custom themes. Sign in with an account that can view the map, then retry.\n\nAPI: $apiUrl';
+  }
+
+  @override
+  String settingsThemesLoadFailedUnreachable(String apiUrl) {
+    return 'Could not reach the Wayfinder API to load custom themes.\n\nAPI: $apiUrl\n\nOn a phone, confirm Settings → General uses your real API URL (not localhost) and that it is separate from the web/PMTiles URL.';
+  }
+
+  @override
+  String settingsThemesLoadFailedGeneric(String apiUrl, String error) {
+    return 'Could not load custom themes.\n\nAPI: $apiUrl\n\nDetails: $error';
+  }
+
+  @override
+  String get settingsThemesRetry => 'Retry';
+
+  @override
   String settingsThemesSaved(String name) {
     return 'Tema “$name” guardado.';
   }

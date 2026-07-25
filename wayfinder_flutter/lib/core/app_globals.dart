@@ -33,12 +33,16 @@ Future<void> applyAppServerConfig(AppServerConfig config) async {
         )
         ..connectivityMonitor = FlutterConnectivityMonitor()
         ..authSessionManager = FlutterAuthSessionManager();
-  client.auth.initialize();
+  // Must await: Secure Storage restore is async on mobile. Firing themes /
+  // other RPCs before this finishes looks "unauthenticated" and the server
+  // returns HTTP 500 for AccessDeniedException.
+  final authReady = await client.auth.initialize();
   AppLogger.logServer.info(
     '🔌 Server client re-pointed',
     data: {
       'apiUrl': config.apiUrl,
       'webUrl': config.webUrl,
+      'authRestored': authReady || client.auth.isAuthenticated,
     },
   );
   AppLogger.logApi.info(

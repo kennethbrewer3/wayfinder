@@ -50,6 +50,10 @@ import '../providers/app_theme_provider.dart';
 import '../providers/server_config_provider.dart';
 import '../settings_tab.dart';
 
+/// Matches the map AppBar compact breakpoint — settings rows that fight for
+/// horizontal space stack into a column below this width.
+const _settingsCompactBreakpoint = 720.0;
+
 class SettingsGeneralTab extends ConsumerStatefulWidget {
   const SettingsGeneralTab({super.key});
 
@@ -367,6 +371,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         _syncHomeFields(next);
       }
     });
+    final isCompactLayout =
+        MediaQuery.sizeOf(context).width < _settingsCompactBreakpoint;
 
     final serverReadOnly = ref.watch(serverReadOnlyProvider);
     final session = ref.watch(accessSessionProvider).valueOrNull;
@@ -454,20 +460,49 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
-        SegmentedButton<AppLocaleChoice>(
-          segments: appLocaleChoices
-              .map(
-                (choice) => ButtonSegment(
-                  value: choice,
-                  label: Text(choice.localizedLabel(l10n)),
-                ),
-              )
-              .toList(),
-          selected: {localeChoice},
-          onSelectionChanged: (selection) {
-            ref.read(appLocaleProvider.notifier).setLocale(selection.first);
-          },
-        ),
+        // Narrow widths crush "System default" in a SegmentedButton.
+        if (isCompactLayout)
+          InputDecorator(
+            decoration: InputDecoration(
+              labelText: l10n.settingsLanguageTitle,
+              border: const OutlineInputBorder(),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<AppLocaleChoice>(
+                value: localeChoice,
+                isExpanded: true,
+                isDense: true,
+                items: [
+                  for (final choice in appLocaleChoices)
+                    DropdownMenuItem(
+                      value: choice,
+                      child: Text(choice.localizedLabel(l10n)),
+                    ),
+                ],
+                onChanged: (selection) {
+                  if (selection == null) {
+                    return;
+                  }
+                  ref.read(appLocaleProvider.notifier).setLocale(selection);
+                },
+              ),
+            ),
+          )
+        else
+          SegmentedButton<AppLocaleChoice>(
+            segments: appLocaleChoices
+                .map(
+                  (choice) => ButtonSegment(
+                    value: choice,
+                    label: Text(choice.localizedLabel(l10n)),
+                  ),
+                )
+                .toList(),
+            selected: {localeChoice},
+            onSelectionChanged: (selection) {
+              ref.read(appLocaleProvider.notifier).setLocale(selection.first);
+            },
+          ),
         const SizedBox(height: 32),
         Text(
           l10n.settingsAppearanceTitle,
@@ -479,74 +514,84 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 3,
-              child: DropdownButtonFormField<String>(
-                key: ValueKey(
-                  'appearance-theme-${_appearanceDropdownValue(themeId, customThemes)}',
+        Builder(
+          builder: (context) {
+            final themeDropdown = DropdownButtonFormField<String>(
+              key: ValueKey(
+                'appearance-theme-${_appearanceDropdownValue(themeId, customThemes)}',
+              ),
+              initialValue: _appearanceDropdownValue(themeId, customThemes),
+              decoration: InputDecoration(
+                labelText: l10n.settingsAppearanceTheme,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: AppThemeFamily.standard.name,
+                  child: Text(AppThemeFamily.standard.localizedLabel(l10n)),
                 ),
-                initialValue: _appearanceDropdownValue(themeId, customThemes),
-                decoration: InputDecoration(
-                  labelText: l10n.settingsAppearanceTheme,
-                  border: const OutlineInputBorder(),
+                DropdownMenuItem(
+                  value: AppThemeFamily.military.name,
+                  child: Text(AppThemeFamily.military.localizedLabel(l10n)),
                 ),
-                items: [
+                for (final theme in customThemes)
                   DropdownMenuItem(
-                    value: AppThemeFamily.standard.name,
-                    child: Text(AppThemeFamily.standard.localizedLabel(l10n)),
+                    value: AppThemeIds.forCustom(theme.id),
+                    child: Text(theme.name),
                   ),
-                  DropdownMenuItem(
-                    value: AppThemeFamily.military.name,
-                    child: Text(AppThemeFamily.military.localizedLabel(l10n)),
-                  ),
-                  for (final theme in customThemes)
-                    DropdownMenuItem(
-                      value: AppThemeIds.forCustom(theme.id),
-                      child: Text(theme.name),
-                    ),
+              ],
+              onChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+                final notifier = ref.read(appThemeProvider.notifier);
+                if (value == AppThemeFamily.standard.name) {
+                  notifier.setFamily(AppThemeFamily.standard);
+                  return;
+                }
+                if (value == AppThemeFamily.military.name) {
+                  notifier.setFamily(AppThemeFamily.military);
+                  return;
+                }
+                final customId = AppThemeIds.tryParseCustomId(value);
+                if (customId == null) {
+                  return;
+                }
+                notifier.setCustomTheme(customId);
+              },
+            );
+            final darkModeSwitch = SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.settingsDarkMode),
+              subtitle: Text(l10n.settingsDarkModeDescription),
+              value: _appearanceIsDark(
+                themeId: themeId,
+                customThemes: customThemes,
+                builtInChoice: builtInChoice,
+              ),
+              onChanged: (enabled) {
+                ref.read(appThemeProvider.notifier).setDarkMode(enabled);
+              },
+            );
+            if (isCompactLayout) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  themeDropdown,
+                  const SizedBox(height: 8),
+                  darkModeSwitch,
                 ],
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  final notifier = ref.read(appThemeProvider.notifier);
-                  if (value == AppThemeFamily.standard.name) {
-                    notifier.setFamily(AppThemeFamily.standard);
-                    return;
-                  }
-                  if (value == AppThemeFamily.military.name) {
-                    notifier.setFamily(AppThemeFamily.military);
-                    return;
-                  }
-                  final customId = AppThemeIds.tryParseCustomId(value);
-                  if (customId == null) {
-                    return;
-                  }
-                  notifier.setCustomTheme(customId);
-                },
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 2,
-              child: SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsDarkMode),
-                subtitle: Text(l10n.settingsDarkModeDescription),
-                value: _appearanceIsDark(
-                  themeId: themeId,
-                  customThemes: customThemes,
-                  builtInChoice: builtInChoice,
-                ),
-                onChanged: (enabled) {
-                  ref.read(appThemeProvider.notifier).setDarkMode(enabled);
-                },
-              ),
-            ),
-          ],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(flex: 3, child: themeDropdown),
+                const SizedBox(width: 12),
+                Expanded(flex: 2, child: darkModeSwitch),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 12),
         _ThemePreview(

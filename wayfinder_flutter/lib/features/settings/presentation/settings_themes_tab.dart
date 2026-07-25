@@ -9,13 +9,15 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../app/app_theme_choice.dart';
 import '../../../app/app_theme_ids.dart';
 import '../../../app/theme.dart';
+import '../../../core/app_globals.dart';
 import '../../../core/file_save.dart';
 import '../../../core/l10n/localized_labels.dart';
 import '../../access/providers/access_session_provider.dart';
 import '../../settings/providers/app_theme_provider.dart';
 import '../../themes/models/app_theme_palette.dart';
-import '../../themes/providers/app_theme_definitions_provider.dart';
 import '../../themes/presentation/app_theme_editor_dialog.dart';
+import '../../themes/presentation/themes_load_error.dart';
+import '../../themes/providers/app_theme_definitions_provider.dart';
 
 class SettingsThemesTab extends ConsumerWidget {
   const SettingsThemesTab({super.key});
@@ -87,9 +89,38 @@ class SettingsThemesTab extends ConsumerWidget {
             padding: EdgeInsets.symmetric(vertical: 24),
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (error, _) => Text(
-            l10n.settingsThemesLoadFailed(error.toString()),
-          ),
+          error: (error, _) {
+            final theme = Theme.of(context);
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    themesLoadErrorMessage(
+                      error,
+                      l10n,
+                      apiUrl: appServerConfig.apiUrl,
+                    ),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        ref.invalidate(appThemeDefinitionsProvider);
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: Text(l10n.settingsThemesRetry),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
           data: (themes) {
             if (themes.isEmpty) {
               return Text(l10n.settingsThemesCustomEmpty);

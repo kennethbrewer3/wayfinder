@@ -13,6 +13,9 @@ import '../../seasonal_overlays/models/seasonal_date_window.dart';
 import '../../seasonal_overlays/presentation/create_seasonal_overlay_dialog.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 
+/// Matches settings general / map AppBar compact breakpoint.
+const _settingsCompactBreakpoint = 720.0;
+
 class SettingsSeasonalOverlaysTab extends ConsumerWidget {
   const SettingsSeasonalOverlaysTab({super.key});
 
@@ -105,120 +108,175 @@ class _SeasonalOverlaySettingsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final active = isSeasonalOverlayCurrentlyActive(overlay);
     final schedule = SeasonalSchedule.parse(
       dateMode: overlay.dateMode,
       dateWindowsJson: overlay.dateWindowsJson,
     );
     final geometry = PolygonGeometry.fromJsonString(overlay.geometryJson);
+    final isCompact =
+        MediaQuery.sizeOf(context).width < _settingsCompactBreakpoint;
+
+    final statusIcon = Icon(
+      active ? Icons.calendar_month : Icons.calendar_month_outlined,
+      color: active
+          ? theme.colorScheme.primary
+          : theme.colorScheme.onSurfaceVariant,
+    );
+    final title = Text(overlay.name);
+    final subtitle = Text(
+      [
+        active
+            ? l10n.seasonalOverlayStatusActive
+            : l10n.seasonalOverlayStatusInactive,
+        schedule.isRecurring
+            ? l10n.seasonalOverlayDateModeRecurring
+            : l10n.seasonalOverlayDateModeAbsolute,
+        l10n.seasonalOverlayWindowCount(schedule.windows.length),
+      ].join(' · '),
+    );
+    // IconButton default padding insets the glyph past the text edge in the
+    // stacked compact layout; strip it so actions flush with the title.
+    final actionButtonStyle = isCompact
+        ? IconButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+            alignment: Alignment.centerLeft,
+          )
+        : null;
+    final actions = Wrap(
+      spacing: isCompact ? 12 : 4,
+      runSpacing: 0,
+      alignment: isCompact ? WrapAlignment.start : WrapAlignment.end,
+      children: [
+        if (canManage)
+          IconButton(
+            style: actionButtonStyle,
+            tooltip: overlay.visible
+                ? l10n.seasonalOverlayHide
+                : l10n.seasonalOverlayShow,
+            onPressed: () {
+              unawaited(
+                ref
+                    .read(seasonalOverlaysProvider.notifier)
+                    .setVisible(overlay.id, !overlay.visible),
+              );
+            },
+            icon: Icon(
+              overlay.visible
+                  ? Icons.visibility
+                  : Icons.visibility_off_outlined,
+            ),
+          ),
+        if (canManage)
+          IconButton(
+            style: actionButtonStyle,
+            tooltip: l10n.actionEdit,
+            onPressed: () {
+              unawaited(
+                updateSeasonalOverlayFromForm(
+                  context: context,
+                  ref: ref,
+                  overlay: overlay,
+                ),
+              );
+            },
+            icon: const Icon(Icons.edit_outlined),
+          ),
+        if (geometry != null)
+          IconButton(
+            style: actionButtonStyle,
+            tooltip: l10n.seasonalOverlayZoomTo,
+            onPressed: () {
+              ref.read(sidebarProvider.notifier).setExpanded(false);
+              context.go('/maps');
+              unawaited(
+                ref
+                    .read(mapViewportProvider.notifier)
+                    .moveTo(
+                      center: geometry.labelPoint,
+                      zoom: 14,
+                    ),
+              );
+            },
+            icon: const Icon(Icons.my_location_outlined),
+          ),
+        if (canManage)
+          IconButton(
+            style: actionButtonStyle,
+            tooltip: l10n.actionDelete,
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(l10n.seasonalOverlayDeleteTitle),
+                  content: Text(
+                    l10n.seasonalOverlayDeleteConfirm(overlay.name),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(l10n.actionCancel),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text(l10n.actionDelete),
+                    ),
+                  ],
+                ),
+              );
+              if (confirmed == true) {
+                await ref
+                    .read(seasonalOverlaysProvider.notifier)
+                    .delete(overlay.id);
+              }
+            },
+            icon: const Icon(Icons.delete_outline),
+          ),
+      ],
+    );
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: Icon(
-          active ? Icons.calendar_month : Icons.calendar_month_outlined,
-          color: active
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-        title: Text(overlay.name),
-        subtitle: Text(
-          [
-            active
-                ? l10n.seasonalOverlayStatusActive
-                : l10n.seasonalOverlayStatusInactive,
-            schedule.isRecurring
-                ? l10n.seasonalOverlayDateModeRecurring
-                : l10n.seasonalOverlayDateModeAbsolute,
-            l10n.seasonalOverlayWindowCount(schedule.windows.length),
-          ].join(' · '),
-        ),
-        trailing: Wrap(
-          spacing: 4,
-          children: [
-            if (canManage)
-              IconButton(
-                tooltip: overlay.visible
-                    ? l10n.seasonalOverlayHide
-                    : l10n.seasonalOverlayShow,
-                onPressed: () {
-                  unawaited(
-                    ref
-                        .read(seasonalOverlaysProvider.notifier)
-                        .setVisible(overlay.id, !overlay.visible),
-                  );
-                },
-                icon: Icon(
-                  overlay.visible
-                      ? Icons.visibility
-                      : Icons.visibility_off_outlined,
-                ),
-              ),
-            if (canManage)
-              IconButton(
-                tooltip: l10n.actionEdit,
-                onPressed: () {
-                  unawaited(
-                    updateSeasonalOverlayFromForm(
-                      context: context,
-                      ref: ref,
-                      overlay: overlay,
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.edit_outlined),
-              ),
-            if (geometry != null)
-              IconButton(
-                tooltip: l10n.seasonalOverlayZoomTo,
-                onPressed: () {
-                  ref.read(sidebarProvider.notifier).setExpanded(false);
-                  context.go('/maps');
-                  unawaited(
-                    ref
-                        .read(mapViewportProvider.notifier)
-                        .moveTo(
-                          center: geometry.labelPoint,
-                          zoom: 14,
+      child: isCompact
+          ? Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  statusIcon,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DefaultTextStyle.merge(
+                          style: theme.textTheme.titleMedium!,
+                          child: title,
                         ),
-                  );
-                },
-                icon: const Icon(Icons.my_location_outlined),
-              ),
-            if (canManage)
-              IconButton(
-                tooltip: l10n.actionDelete,
-                onPressed: () async {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(l10n.seasonalOverlayDeleteTitle),
-                      content: Text(
-                        l10n.seasonalOverlayDeleteConfirm(overlay.name),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: Text(l10n.actionCancel),
+                        const SizedBox(height: 4),
+                        DefaultTextStyle.merge(
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          child: subtitle,
                         ),
-                        FilledButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: Text(l10n.actionDelete),
-                        ),
+                        actions,
                       ],
                     ),
-                  );
-                  if (confirmed == true) {
-                    await ref
-                        .read(seasonalOverlaysProvider.notifier)
-                        .delete(overlay.id);
-                  }
-                },
-                icon: const Icon(Icons.delete_outline),
+                  ),
+                ],
               ),
-          ],
-        ),
-      ),
+            )
+          : ListTile(
+              leading: statusIcon,
+              title: title,
+              subtitle: subtitle,
+              trailing: actions,
+            ),
     );
   }
 }

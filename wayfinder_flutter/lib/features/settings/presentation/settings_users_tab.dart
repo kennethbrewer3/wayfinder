@@ -297,11 +297,12 @@ class _RolesList extends ConsumerWidget {
           children: [
             for (final role in roles)
               Card(
-                child: ListTile(
+                clipBehavior: Clip.antiAlias,
+                child: ExpansionTile(
+                  controlAffinity: ListTileControlAffinity.leading,
                   title: Text(role.name),
                   subtitle: Text(
-                    '${role.key} · ${l10n.accessRoleMemberCount(role.memberCount)} · '
-                    '${role.permissions.join(', ')}',
+                    '${role.key} · ${l10n.accessRoleMemberCount(role.memberCount)}',
                   ),
                   trailing: canRoles
                       ? PopupMenuButton<String>(
@@ -341,6 +342,27 @@ class _RolesList extends ConsumerWidget {
                           ],
                         )
                       : null,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final permission in role.permissions)
+                              Chip(
+                                label: Text(permission),
+                                visualDensity: VisualDensity.compact,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
           ],

@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
-import '../../../core/app_globals.dart';
 import '../../../core/serverpod_client.dart';
 
 final accessSessionProvider =
@@ -12,18 +13,53 @@ final accessSessionProvider =
     );
 
 class AccessSessionNotifier extends AsyncNotifier<AccessSessionInfo> {
+  Client? _boundClient;
+
   @override
   Future<AccessSessionInfo> build() async {
-    final apiClient = ref.watch(serverClientProvider);
-    client.auth.authInfoListenable.addListener(_onAuthChanged);
-    ref.onDispose(() {
-      client.auth.authInfoListenable.removeListener(_onAuthChanged);
+    // Prefer read + epoch listen over watch(serverClientProvider). Watching the
+    // client rebuilds this notifier into a bare AsyncLoading (no previous
+    // session), which unmounts SignInScreen and scrambles text fields.
+    ref.listen<int>(serverClientEpochProvider, (previous, next) {
+      if (previous == null || previous == next) {
+        return;
+      }
+      unawaited(_rebindClientAndRefresh());
     });
+
+    final apiClient = ref.read(serverClientProvider);
+    _bindAuthListener(apiClient);
+    ref.onDispose(_unbindAuthListener);
     return _fetch(apiClient);
   }
 
+  void _bindAuthListener(Client apiClient) {
+    _unbindAuthListener();
+    _boundClient = apiClient;
+    apiClient.auth.authInfoListenable.addListener(_onAuthChanged);
+  }
+
+  void _unbindAuthListener() {
+    final bound = _boundClient;
+    if (bound == null) {
+      return;
+    }
+    bound.auth.authInfoListenable.removeListener(_onAuthChanged);
+    _boundClient = null;
+  }
+
   void _onAuthChanged() {
-    ref.invalidateSelf();
+    // No session yet (connection / first load): ignore auth listenable noise so
+    // we do not refresh-storm while the user types the server URL.
+    if (!state.hasValue) {
+      return;
+    }
+    unawaited(refresh());
+  }
+
+  Future<void> _rebindClientAndRefresh() async {
+    _bindAuthListener(ref.read(serverClientProvider));
+    await refresh();
   }
 
   Future<AccessSessionInfo> _fetch(Client apiClient) {
@@ -31,14 +67,27 @@ class AccessSessionNotifier extends AsyncNotifier<AccessSessionInfo> {
   }
 
   Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(
+    final previous = state;
+    // Keep the prior session visible (isRefreshing) so AuthGate does not swap
+    // screens and dispose text fields mid-edit.
+    state = const AsyncLoading<AccessSessionInfo>().copyWithPrevious(previous);
+    final next = await AsyncValue.guard(
       () => _fetch(ref.read(serverClientProvider)),
     );
+    // Failed refresh must not drop a known session — that flipped AuthGate from
+    // sign-in → connection and destroyed focused TextFields.
+    if (next.hasError && previous.hasValue) {
+      state = AsyncError<AccessSessionInfo>(
+        next.error!,
+        next.stackTrace ?? StackTrace.current,
+      ).copyWithPrevious(previous);
+      return;
+    }
+    state = next;
   }
 
   Future<void> signOut() async {
-    await client.auth.signOutDevice();
+    await ref.read(serverClientProvider).auth.signOutDevice();
     await refresh();
   }
 }

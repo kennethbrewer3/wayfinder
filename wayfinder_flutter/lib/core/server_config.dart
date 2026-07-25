@@ -163,3 +163,28 @@ String? defaultWebUrlForApi(String apiUrl) {
 
   return uri.replace(port: uri.port + 2).toString();
 }
+
+/// Whether [apiUrl] points at this device (never usable from a phone/tablet).
+bool isLoopbackApiUrl(String apiUrl) {
+  final uri = Uri.tryParse(apiUrl.trim());
+  if (uri == null || uri.host.isEmpty) {
+    return true;
+  }
+  final host = uri.host.toLowerCase();
+  return host == 'localhost' ||
+      host == '127.0.0.1' ||
+      host == '::1' ||
+      host == '0.0.0.0';
+}
+
+/// Value for API URL text fields on device setup / sign-in.
+///
+/// Returns null (empty field + hint only) when the resolved URL is loopback,
+/// since that cannot work from a physical device. Otherwise returns the saved
+/// or configured API URL so the user does not have to retype it.
+String? apiUrlForDeviceForm(String apiUrl) {
+  if (isLoopbackApiUrl(apiUrl)) {
+    return null;
+  }
+  return apiUrl;
+}

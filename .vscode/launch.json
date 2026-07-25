@@ -31,6 +31,41 @@
         "group": "wayfinder",
         "order": 2
       }
+    },
+    {
+      "name": "Wayfinder Phone",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/wayfinder_flutter",
+      "program": "lib/main.dart",
+      "presentation": {
+        "group": "wayfinder",
+        "order": 3
+      }
+    },
+    {
+      "name": "Wayfinder Phone (Android)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/wayfinder_flutter",
+      "program": "lib/main.dart",
+      "deviceId": "19241FDEE009QW",
+      "presentation": {
+        "group": "wayfinder",
+        "order": 4
+      }
+    },
+    {
+      "name": "Wayfinder Phone (iOS)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/wayfinder_flutter",
+      "program": "lib/main.dart",
+      "deviceId": "00008120-0014798936DB401E",
+      "presentation": {
+        "group": "wayfinder",
+        "order": 5
+      }
     }
   ],
   "compounds": [
@@ -44,6 +79,42 @@
       "presentation": {
         "group": "wayfinder",
         "order": 1
+      }
+    },
+    {
+      "name": "Wayfinder (Server + Phone)",
+      "configurations": [
+        "Wayfinder Server",
+        "Wayfinder Phone"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "wayfinder",
+        "order": 2
+      }
+    },
+    {
+      "name": "Wayfinder (Server + Phone Android)",
+      "configurations": [
+        "Wayfinder Server",
+        "Wayfinder Phone (Android)"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "wayfinder",
+        "order": 3
+      }
+    },
+    {
+      "name": "Wayfinder (Server + Phone iOS)",
+      "configurations": [
+        "Wayfinder Server",
+        "Wayfinder Phone (iOS)"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "wayfinder",
+        "order": 4
       }
     }
   ]

@@ -1,0 +1,57 @@
+---
+description: ViewModel + Riverpod pattern for Flutter UI, especially TextFields
+globs: wayfinder_flutter/**/*.dart
+alwaysApply: false
+---
+
+# ViewModel + Riverpod (wayfinder_flutter)
+
+Prefer a **ViewModel** (`Notifier` / `AsyncNotifier` / plain class + `Provider`) for screen/feature logic, with widgets as thin bindings.
+
+## Structure
+
+- **ViewModel** (`lib/features/<feature>/providers/*_view_model.dart`): save/load, validation, commands, UI flags (`saving`, `errorMessage`).
+- **Widget**: `ref.watch` only what it needs to render; call `ref.read(provider.notifier)` for actions.
+- Match existing Riverpod style (`NotifierProvider`, `StateNotifierProvider`) — no requirement for `riverpod_generator` unless already used in that area.
+- Use Flutter’s normal `TextField` / `TextFormField`. Do not wrap them in custom “safe keyboard” widgets unless there is a proven, specific need.
+
+## TextEditingController (critical)
+
+Do not rewrite the controller while the user is typing.
+
+**Do:**
+
+- Own `TextEditingController` on the widget `State` that builds the `TextField` (`initState` / `dispose`). One controller → one field.
+- Pass field text into ViewModel methods (`save(String url)`). Do not put `TextEditingController` in a Riverpod `Provider`.
+- Put only non-text UI state in Riverpod (`saving`, errors).
+- For live constraints, use `TextInputFormatter` — do not assign `controller.text` in `onChanged` / listeners / `build`.
+
+**Do not:**
+
+```dart
+// BAD — rebuild / onChanged feedback loop
+controller.text = ref.watch(urlProvider);
+onChanged: (v) { controller.text = v; notifier.setUrl(v); }
+```
+
+```dart
+// BAD — rebuilds replace keyboard value
+Widget build(context) {
+  controller.text = viewModel.url;
+  return TextField(controller: controller);
+}
+```
+
+**External updates only** (e.g. load completed), and only when the field is not focused:
+
+```dart
+controller.value = TextEditingValue(
+  text: newText,
+  selection: TextSelection.collapsed(offset: newText.length),
+);
+```
+
+## Rebuild isolation
+
+- Put changing chrome (`errorText`, spinners) in **sibling** widgets when possible.
+- ViewModel `build()` must not `ref.watch` volatile providers if that would recreate the controller.

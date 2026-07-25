@@ -14,8 +14,12 @@ import '../../../core/constants.dart';
 import '../../../core/l10n/localized_labels.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/server_config.dart';
+import '../../../core/serverpod_client.dart';
+import '../../access/presentation/signed_in_account_tile.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../circles/models/circle_size_display.dart';
 import '../../circles/providers/circle_size_display_provider.dart';
+import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../lines/models/angle_display_format.dart';
 import '../../lines/models/bearing_reference.dart';
 import '../../lines/models/measurement_units.dart';
@@ -23,22 +27,19 @@ import '../../lines/providers/angle_display_format_provider.dart';
 import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/models/home_location.dart';
-import '../../map/providers/home_location_provider.dart';
-import '../../map/providers/map_providers.dart';
 import '../../map/models/map_zoom_limits.dart';
-import '../../map/providers/map_zoom_range_provider.dart';
 import '../../map/providers/dark_map_tiles_provider.dart';
+import '../../map/providers/home_location_provider.dart';
 import '../../map/providers/map_compass_rose_provider.dart';
 import '../../map/providers/map_mgrs_grid_provider.dart';
+import '../../map/providers/map_providers.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
+import '../../map/providers/map_zoom_range_provider.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../polygons/providers/polygon_angle_snap_provider.dart';
-import '../../kiosk/providers/kiosk_mode_provider.dart';
-import '../../access/presentation/signed_in_account_tile.dart';
-import '../../access/providers/access_session_provider.dart';
 import '../../themes/providers/app_theme_definitions_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
@@ -236,7 +237,10 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     try {
       final controller = ref.read(serverUrlSettingsControllerProvider);
       final config = await controller.saveApiUrl(_serverUrlController.text);
+      await applyAppServerConfig(config);
+      ref.read(serverClientEpochProvider.notifier).state++;
       ref.invalidate(savedServerApiUrlProvider);
+      ref.invalidate(accessSessionProvider);
       if (!mounted) {
         return;
       }
@@ -246,9 +250,12 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         builder: (context) {
           final l10n = AppLocalizations.of(context)!;
           return AlertDialog(
-            title: Text(l10n.settingsRestartRequiredTitle),
+            title: Text(l10n.settingsServerUrlAppliedTitle),
             content: Text(
-              l10n.settingsRestartRequiredMessage(config.apiUrl, config.webUrl),
+              l10n.settingsServerUrlAppliedMessage(
+                config.apiUrl,
+                config.webUrl,
+              ),
             ),
             actions: [
               TextButton(
@@ -634,12 +641,14 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
             controller: _serverUrlController,
             decoration: InputDecoration(
               labelText: l10n.settingsServerUrl,
-              hintText: 'http://localhost:18080',
+              hintText: 'http://192.168.1.10:18080',
               border: const OutlineInputBorder(),
             ),
             keyboardType: TextInputType.url,
             autocorrect: false,
-            autofillHints: const [AutofillHints.url],
+            enableSuggestions: false,
+            smartDashesType: SmartDashesType.disabled,
+            smartQuotesType: SmartQuotesType.disabled,
           ),
           const SizedBox(height: 8),
           Text(

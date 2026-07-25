@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.example.wayfinder_flutter"
-    compileSdk = flutter.compileSdkVersion
+    // file_picker / flutter_plugin_android_lifecycle require API 36+.
+    compileSdk = maxOf(36, flutter.compileSdkVersion)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

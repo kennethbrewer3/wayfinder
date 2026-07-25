@@ -316,6 +316,42 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get accessRetry;
 
+  /// No description provided for @accessConnectionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If this device cannot reach localhost, enter your Wayfinder API server address below (LAN IP or hostname).'**
+  String get accessConnectionHint;
+
+  /// No description provided for @accessServerUrlHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the Wayfinder API server URL reachable from this device. Do not use localhost.'**
+  String get accessServerUrlHelp;
+
+  /// No description provided for @accessServerUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'http://192.168.1.10:18080'**
+  String get accessServerUrlHint;
+
+  /// No description provided for @accessServerUrlApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to {apiUrl}…'**
+  String accessServerUrlApplied(String apiUrl);
+
+  /// No description provided for @accessApiServerConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'API server: {apiUrl}'**
+  String accessApiServerConfigured(String apiUrl);
+
+  /// No description provided for @accessChangeApiServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Change API server'**
+  String get accessChangeApiServer;
+
   /// No description provided for @accessSignOut.
   ///
   /// In en, this message translates to:
@@ -1369,13 +1405,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsServerConnectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Server connection'**
+  /// **'API server connection'**
   String get settingsServerConnectionTitle;
 
   /// No description provided for @settingsServerConnectionDescription.
   ///
   /// In en, this message translates to:
-  /// **'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2). Restart the app after changing this.'**
+  /// **'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2).'**
   String get settingsServerConnectionDescription;
 
   /// No description provided for @settingsServerConnectionPermissionDenied.
@@ -1387,7 +1423,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsServerUrl.
   ///
   /// In en, this message translates to:
-  /// **'Server URL'**
+  /// **'API server URL'**
   String get settingsServerUrl;
 
   /// No description provided for @settingsCurrentWebServer.
@@ -1399,7 +1435,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSaveServerUrl.
   ///
   /// In en, this message translates to:
-  /// **'Save server URL'**
+  /// **'Save API server URL'**
   String get settingsSaveServerUrl;
 
   /// No description provided for @settingsMeasurementsTitle.
@@ -1785,6 +1821,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Server URL saved.\n\nAPI: {apiUrl}\nWeb: {webUrl}\n\nRestart the app to connect to the new server.'**
   String settingsRestartRequiredMessage(String apiUrl, String webUrl);
+
+  /// No description provided for @settingsServerUrlAppliedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL updated'**
+  String get settingsServerUrlAppliedTitle;
+
+  /// No description provided for @settingsServerUrlAppliedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL saved and applied.\n\nAPI: {apiUrl}\nWeb: {webUrl}'**
+  String settingsServerUrlAppliedMessage(String apiUrl, String webUrl);
 
   /// No description provided for @settingsServerUrlReset.
   ///

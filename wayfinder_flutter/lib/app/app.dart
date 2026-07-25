@@ -14,11 +14,20 @@ import 'app_locale_choice.dart';
 import 'router.dart';
 import 'theme.dart';
 
-class WayfinderApp extends ConsumerWidget {
+class WayfinderApp extends ConsumerStatefulWidget {
   const WayfinderApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WayfinderApp> createState() => _WayfinderAppState();
+}
+
+class _WayfinderAppState extends ConsumerState<WayfinderApp> {
+  /// Keeps [AuthGate] State (and its URL [TextEditingController]) across
+  /// [MaterialApp] builder rebuilds from theme / locale / MediaQuery.
+  final _authGateKey = GlobalKey(debugLabel: 'authGate');
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(mapMarkerUpdatesListenerProvider);
     ref.watch(clientUiPreferencesAuthListenerProvider);
     final themeId = ref.watch(appThemeProvider);
@@ -33,7 +42,10 @@ class WayfinderApp extends ConsumerWidget {
       locale: appLocaleChoiceToLocale(localeChoice),
       routerConfig: appRouter,
       builder: (context, child) {
-        return AuthGate(child: child ?? const SizedBox.shrink());
+        return AuthGate(
+          key: _authGateKey,
+          child: child ?? const SizedBox.shrink(),
+        );
       },
       localizationsDelegates: const [
         AppLocalizations.delegate,

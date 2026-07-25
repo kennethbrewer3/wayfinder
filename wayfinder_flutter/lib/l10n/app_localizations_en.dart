@@ -130,6 +130,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accessRetry => 'Retry';
 
   @override
+  String get accessConnectionHint =>
+      'If this device cannot reach localhost, enter your Wayfinder API server address below (LAN IP or hostname).';
+
+  @override
+  String get accessServerUrlHelp =>
+      'Enter the Wayfinder API server URL reachable from this device. Do not use localhost.';
+
+  @override
+  String get accessServerUrlHint => 'http://192.168.1.10:18080';
+
+  @override
+  String accessServerUrlApplied(String apiUrl) {
+    return 'Connecting to $apiUrl…';
+  }
+
+  @override
+  String accessApiServerConfigured(String apiUrl) {
+    return 'API server: $apiUrl';
+  }
+
+  @override
+  String get accessChangeApiServer => 'Change API server';
+
+  @override
   String get accessSignOut => 'Sign out';
 
   @override
@@ -738,18 +762,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsResetToDefault => 'Reset to default';
 
   @override
-  String get settingsServerConnectionTitle => 'Server connection';
+  String get settingsServerConnectionTitle => 'API server connection';
 
   @override
   String get settingsServerConnectionDescription =>
-      'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2). Restart the app after changing this.';
+      'Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2).';
 
   @override
   String get settingsServerConnectionPermissionDenied =>
       'You do not have permission to change this device\'s Wayfinder server URL.';
 
   @override
-  String get settingsServerUrl => 'Server URL';
+  String get settingsServerUrl => 'API server URL';
 
   @override
   String settingsCurrentWebServer(String webUrl) {
@@ -757,7 +781,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get settingsSaveServerUrl => 'Save server URL';
+  String get settingsSaveServerUrl => 'Save API server URL';
 
   @override
   String get settingsMeasurementsTitle => 'Measurements';
@@ -981,6 +1005,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String settingsRestartRequiredMessage(String apiUrl, String webUrl) {
     return 'Server URL saved.\n\nAPI: $apiUrl\nWeb: $webUrl\n\nRestart the app to connect to the new server.';
+  }
+
+  @override
+  String get settingsServerUrlAppliedTitle => 'Server URL updated';
+
+  @override
+  String settingsServerUrlAppliedMessage(String apiUrl, String webUrl) {
+    return 'Server URL saved and applied.\n\nAPI: $apiUrl\nWeb: $webUrl';
   }
 
   @override

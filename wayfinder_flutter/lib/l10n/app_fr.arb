@@ -194,10 +194,10 @@
   "settingsSaveHome": "Enregistrer l'accueil",
   "settingsUseCurrentMapView": "Utiliser la vue actuelle",
   "settingsResetToDefault": "Réinitialiser par défaut",
-  "settingsServerConnectionTitle": "Connexion au serveur",
-  "settingsServerConnectionDescription": "URL du serveur API Wayfinder, y compris l'hôte et le port. L'URL du serveur web (API REST et PMTiles) est dérivée automatiquement (port API + 2). Redémarrez l'application après modification.",
+  "settingsServerConnectionTitle": "Connexion au serveur API",
+  "settingsServerConnectionDescription": "URL du serveur API Wayfinder, y compris l'hôte et le port. L'URL du serveur web (API REST et PMTiles) est dérivée automatiquement (port API + 2).",
   "settingsServerConnectionPermissionDenied": "Vous n'avez pas l'autorisation de modifier l'URL du serveur Wayfinder de cet appareil.",
-  "settingsServerUrl": "URL du serveur",
+  "settingsServerUrl": "URL du serveur API",
   "settingsCurrentWebServer": "Serveur web actuel : {webUrl}",
   "@settingsCurrentWebServer": {
     "placeholders": {
@@ -206,7 +206,7 @@
       }
     }
   },
-  "settingsSaveServerUrl": "Enregistrer l'URL du serveur",
+  "settingsSaveServerUrl": "Enregistrer l'URL du serveur API",
   "settingsMeasurementsTitle": "Mesures",
   "settingsMeasurementsDescription": "Choisissez comment les distances des lignes sont affichées sur la carte. Enregistré sur le serveur pour que chaque navigateur utilise les mêmes unités.",
   "settingsAnglesTitle": "Angles",
@@ -279,6 +279,18 @@
   "settingsRestartRequiredTitle": "Redémarrage requis",
   "settingsRestartRequiredMessage": "URL du serveur enregistrée.\n\nAPI : {apiUrl}\nWeb : {webUrl}\n\nRedémarrez l'application pour vous connecter au nouveau serveur.",
   "@settingsRestartRequiredMessage": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      },
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerUrlAppliedTitle": "URL du serveur mise à jour",
+  "settingsServerUrlAppliedMessage": "URL du serveur enregistrée et appliquée.\n\nAPI : {apiUrl}\nWeb : {webUrl}",
+  "@settingsServerUrlAppliedMessage": {
     "placeholders": {
       "apiUrl": {
         "type": "String"

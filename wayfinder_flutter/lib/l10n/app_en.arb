@@ -74,6 +74,26 @@
     }
   },
   "accessRetry": "Retry",
+  "accessConnectionHint": "If this device cannot reach localhost, enter your Wayfinder API server address below (LAN IP or hostname).",
+  "accessServerUrlHelp": "Enter the Wayfinder API server URL reachable from this device. Do not use localhost.",
+  "accessServerUrlHint": "http://192.168.1.10:18080",
+  "accessServerUrlApplied": "Connecting to {apiUrl}…",
+  "@accessServerUrlApplied": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "accessApiServerConfigured": "API server: {apiUrl}",
+  "@accessApiServerConfigured": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "accessChangeApiServer": "Change API server",
   "accessSignOut": "Sign out",
   "accessChangePassword": "Change password",
   "accessChangePasswordTitle": "Change password",
@@ -424,10 +444,10 @@
   "settingsSaveHome": "Save home",
   "settingsUseCurrentMapView": "Use current map view",
   "settingsResetToDefault": "Reset to default",
-  "settingsServerConnectionTitle": "Server connection",
-  "settingsServerConnectionDescription": "Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2). Restart the app after changing this.",
+  "settingsServerConnectionTitle": "API server connection",
+  "settingsServerConnectionDescription": "Wayfinder API server URL, including host and port. The web server URL (REST API and PMTiles) is derived automatically (API port + 2).",
   "settingsServerConnectionPermissionDenied": "You do not have permission to change this device's Wayfinder server URL.",
-  "settingsServerUrl": "Server URL",
+  "settingsServerUrl": "API server URL",
   "settingsCurrentWebServer": "Current web server: {webUrl}",
   "@settingsCurrentWebServer": {
     "placeholders": {
@@ -436,7 +456,7 @@
       }
     }
   },
-  "settingsSaveServerUrl": "Save server URL",
+  "settingsSaveServerUrl": "Save API server URL",
   "settingsMeasurementsTitle": "Measurements",
   "settingsMeasurementsDescription": "Choose how line distances are displayed on the map. Saved to your account so it follows you on any workstation.",
   "settingsAnglesTitle": "Angles",
@@ -533,6 +553,18 @@
   "settingsRestartRequiredTitle": "Restart required",
   "settingsRestartRequiredMessage": "Server URL saved.\n\nAPI: {apiUrl}\nWeb: {webUrl}\n\nRestart the app to connect to the new server.",
   "@settingsRestartRequiredMessage": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      },
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerUrlAppliedTitle": "Server URL updated",
+  "settingsServerUrlAppliedMessage": "Server URL saved and applied.\n\nAPI: {apiUrl}\nWeb: {webUrl}",
+  "@settingsServerUrlAppliedMessage": {
     "placeholders": {
       "apiUrl": {
         "type": "String"

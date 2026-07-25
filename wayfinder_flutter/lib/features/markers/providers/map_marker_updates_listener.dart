@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
+import '../../access/providers/access_session_provider.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
 import 'markers_provider.dart';
 
 const _reconnectDelay = Duration(seconds: 5);
+const _waitForSessionDelay = Duration(seconds: 1);
 
 /// Keeps Serverpod streaming connections open and refreshes map data providers
 /// whenever the server broadcasts marker, zone, or layer changes (REST, RPC, or restore).
@@ -43,13 +45,37 @@ class MapMarkerUpdatesListener {
     _stopped = true;
   }
 
+  /// Streams are only useful once AuthGate would show the app (reachable
+  /// server, and signed in when auth is required). Skip reconnect spam while
+  /// the user is still entering a server URL on a phone.
+  bool get _sessionAllowsStreams {
+    final session = _ref.read(accessSessionProvider).valueOrNull;
+    if (session == null) {
+      return false;
+    }
+    return !session.authRequired || session.authenticated;
+  }
+
+  Future<bool> _waitUntilSessionAllowsStreams() async {
+    while (!_stopped && !_sessionAllowsStreams) {
+      await Future<void>.delayed(_waitForSessionDelay);
+    }
+    return !_stopped;
+  }
+
   Future<void> _connectMarkerLoop() async {
     while (!_stopped) {
+      if (!await _waitUntilSessionAllowsStreams()) {
+        return;
+      }
       try {
         AppLogger.logMarkers.debug('📡 Connecting to marker change stream');
         final client = _ref.read(serverClientProvider);
         await for (final change in client.mapMarker.markerChanges()) {
           if (_stopped) {
+            break;
+          }
+          if (!_sessionAllowsStreams) {
             break;
           }
           AppLogger.logMarkers.debug(
@@ -63,6 +89,9 @@ class MapMarkerUpdatesListener {
       } catch (error, stackTrace) {
         if (_stopped) {
           return;
+        }
+        if (!_sessionAllowsStreams) {
+          continue;
         }
         AppLogger.logMarkers.warn(
           '📡 Marker change stream disconnected; reconnecting',
@@ -79,11 +108,17 @@ class MapMarkerUpdatesListener {
 
   Future<void> _connectZoneLoop() async {
     while (!_stopped) {
+      if (!await _waitUntilSessionAllowsStreams()) {
+        return;
+      }
       try {
         AppLogger.logZones.debug('📡 Connecting to zone change stream');
         final client = _ref.read(serverClientProvider);
         await for (final change in client.mapZone.zoneChanges()) {
           if (_stopped) {
+            break;
+          }
+          if (!_sessionAllowsStreams) {
             break;
           }
           AppLogger.logZones.debug(
@@ -100,6 +135,9 @@ class MapMarkerUpdatesListener {
         if (_stopped) {
           return;
         }
+        if (!_sessionAllowsStreams) {
+          continue;
+        }
         AppLogger.logZones.warn(
           '📡 Zone change stream disconnected; reconnecting',
           error: error,
@@ -115,11 +153,17 @@ class MapMarkerUpdatesListener {
 
   Future<void> _connectLayerLoop() async {
     while (!_stopped) {
+      if (!await _waitUntilSessionAllowsStreams()) {
+        return;
+      }
       try {
         AppLogger.logMap.debug('📡 Connecting to layer change stream');
         final client = _ref.read(serverClientProvider);
         await for (final change in client.mapLayer.layerChanges()) {
           if (_stopped) {
+            break;
+          }
+          if (!_sessionAllowsStreams) {
             break;
           }
           AppLogger.logMap.debug(
@@ -136,6 +180,9 @@ class MapMarkerUpdatesListener {
         if (_stopped) {
           return;
         }
+        if (!_sessionAllowsStreams) {
+          continue;
+        }
         AppLogger.logMap.warn(
           '📡 Layer change stream disconnected; reconnecting',
           error: error,
@@ -151,11 +198,17 @@ class MapMarkerUpdatesListener {
 
   Future<void> _connectSeasonalOverlayLoop() async {
     while (!_stopped) {
+      if (!await _waitUntilSessionAllowsStreams()) {
+        return;
+      }
       try {
         AppLogger.logMap.debug('📡 Connecting to seasonal overlay stream');
         final client = _ref.read(serverClientProvider);
         await for (final change in client.seasonalOverlay.overlayChanges()) {
           if (_stopped) {
+            break;
+          }
+          if (!_sessionAllowsStreams) {
             break;
           }
           AppLogger.logMap.debug(
@@ -167,6 +220,9 @@ class MapMarkerUpdatesListener {
       } catch (error, stackTrace) {
         if (_stopped) {
           return;
+        }
+        if (!_sessionAllowsStreams) {
+          continue;
         }
         AppLogger.logMap.warn(
           '📡 Seasonal overlay stream disconnected; reconnecting',

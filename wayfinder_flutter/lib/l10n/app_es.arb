@@ -194,10 +194,10 @@
   "settingsSaveHome": "Guardar inicio",
   "settingsUseCurrentMapView": "Usar vista actual del mapa",
   "settingsResetToDefault": "Restablecer valores predeterminados",
-  "settingsServerConnectionTitle": "Conexión al servidor",
-  "settingsServerConnectionDescription": "URL del servidor API de Wayfinder, incluido host y puerto. La URL del servidor web se deriva automáticamente (puerto API + 2). Reinicie la aplicación después de cambiarla.",
+  "settingsServerConnectionTitle": "Conexión al servidor API",
+  "settingsServerConnectionDescription": "URL del servidor API de Wayfinder, incluido host y puerto. La URL del servidor web se deriva automáticamente (puerto API + 2).",
   "settingsServerConnectionPermissionDenied": "No tienes permiso para cambiar la URL del servidor Wayfinder de este dispositivo.",
-  "settingsServerUrl": "URL del servidor",
+  "settingsServerUrl": "URL del servidor API",
   "settingsCurrentWebServer": "Servidor web actual: {webUrl}",
   "@settingsCurrentWebServer": {
     "placeholders": {
@@ -206,7 +206,7 @@
       }
     }
   },
-  "settingsSaveServerUrl": "Guardar URL del servidor",
+  "settingsSaveServerUrl": "Guardar URL del servidor API",
   "settingsMeasurementsTitle": "Medidas",
   "settingsMeasurementsDescription": "Elija cómo se muestran las distancias de las líneas en el mapa. Se guarda en el servidor para que cada navegador use las mismas unidades.",
   "settingsAnglesTitle": "Ángulos",
@@ -279,6 +279,18 @@
   "settingsRestartRequiredTitle": "Reinicio requerido",
   "settingsRestartRequiredMessage": "URL del servidor guardada.\n\nAPI: {apiUrl}\nWeb: {webUrl}\n\nReinicie la aplicación para conectarse al nuevo servidor.",
   "@settingsRestartRequiredMessage": {
+    "placeholders": {
+      "apiUrl": {
+        "type": "String"
+      },
+      "webUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerUrlAppliedTitle": "URL del servidor actualizada",
+  "settingsServerUrlAppliedMessage": "URL del servidor guardada y aplicada.\n\nAPI: {apiUrl}\nWeb: {webUrl}",
+  "@settingsServerUrlAppliedMessage": {
     "placeholders": {
       "apiUrl": {
         "type": "String"

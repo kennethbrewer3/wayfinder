@@ -6,6 +6,47 @@ pin all three to the same version when upgrading.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.0] - 2026-07-25
+
+Major TOC multi-user, offline, and field-operations release. Pin server, client,
+and geocoding images to the same tag when upgrading.
+
+### Added
+
+- **Multi-user TOC access** — roles (admin / editor / viewer and custom),
+  permission-gated settings and map actions, audit attribution, soft-delete
+  trash, admin password reset, and self-service password change.
+- **Offline packs** — AOI tile download, layer mirror, outbox sync for markers /
+  watch log / track zones, plus **field pack** export for spare laptops.
+- **Kiosk / viewer mode** — local or server-enforced read-only mode for TOC
+  displays.
+- **Shared themes** — Themes settings tab, custom TOC themes, unified
+  appearance dropdown with dark mode (including optional dark map tiles).
+- **Field operations tools** — seasonal overlays, evacuation kit routes (draw /
+  edit / promote), NOAA tide packs, sun/moon twilight tool, watch log,
+  radio contact cards, coverage planning, marker photo attachments and
+  checklists/SOPs.
+- **GPS trail recording** — opt-in recording for tracking markers, including
+  offline packs.
+- **Mobile / phone connectivity** — dual API + web URL setup that works from
+  physical devices (no localhost), with compact settings layouts.
+- **Testing & quality** — expanded unit tests, Flutter widget + golden UI suite,
+  CI for Flutter / geocoding / server, and selective Freezed models for planned
+  radio-sync domain events ([radio-sync-events.md](radio-sync-events.md),
+  [TESTING.md](TESTING.md)).
+
+### Fixed
+
+- Phone API URL setup without breaking web sign-in; theme loading when auth
+  races on mobile; compass rose theming and artwork; first-admin bootstrap when
+  auth is required; assorted map and settings permission gaps.
+
+### Changed
+
+- Settings tabs and zoom UI hide when the role lacks access.
+- Compact Seasons overlay cards and accordion role lists on narrow layouts.
+- Compass rose and marker SVG pin presentation refinements.
+
 ## [1.1.0] - 2026-06-29
 
 ### Added
@@ -83,9 +124,11 @@ First public release of the Wayfinder map stack.
 - Map tiles (`.pmtiles`) are **not bundled** — operators supply their own archives.
 - Geocoding is a **separate** compose stack and requires substantial disk for
   large imports.
-- The UI does not expose a sign-in flow; protect network-exposed servers with
-  a REST API key and LAN/firewall controls ([SECURITY.md](SECURITY.md)).
+- When auth is required, use TOC usernames (not email). Still protect
+  network-exposed servers with REST API keys and LAN/firewall controls
+  ([SECURITY.md](SECURITY.md)).
 
+[2.0.0]: https://github.com/kennethbrewer3/wayfinder/compare/v1.2.0...v2.0.0
 [1.1.0]: https://github.com/kennethbrewer3/wayfinder/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/kennethbrewer3/wayfinder/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kennethbrewer3/wayfinder/compare/v1.0.0...v1.0.1

@@ -1,2 +1,5 @@
+# Tag integration tests that need postgres_test.
+# Default `dart test` skips them locally. CI uses `--run-skipped`.
 tags:
-  integration: {}
+  integration:
+    skip: "Requires postgres_test (docker compose --profile test up -d postgres_test)"

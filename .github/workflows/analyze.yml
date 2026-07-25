@@ -7,9 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  analyze:
+  analyze-server:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -25,4 +24,24 @@ jobs:
 
       - name: Analyze server
         working-directory: wayfinder_server
+        run: dart analyze --fatal-infos
+
+  analyze-flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: wayfinder_flutter
+        run: |
+          sed -i '/^resolution: workspace$/d' pubspec.yaml
+          flutter pub get
+
+      - name: Analyze Flutter
+        working-directory: wayfinder_flutter
         run: dart analyze --fatal-infos

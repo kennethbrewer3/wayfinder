@@ -1,3 +1,6 @@
+@Tags(['integration'])
+library;
+
 import 'package:test/test.dart';
 
 // Import the generated test helper file, it contains everything you need.

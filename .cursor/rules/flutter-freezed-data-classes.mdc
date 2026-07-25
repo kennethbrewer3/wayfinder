@@ -1,0 +1,48 @@
+---
+description: When to use Freezed in wayfinder_flutter (selective, not universal)
+globs: wayfinder_flutter/lib/**/*.dart
+alwaysApply: false
+---
+
+# Freezed usage (selective)
+
+Serverpod already generates primary API entities (`MapMarker`, `MapZone`, etc.). **Do not** re-model those with Freezed.
+
+Use Freezed in `wayfinder_flutter` only where it clearly helps:
+
+## Use Freezed for
+
+- **Sealed unions / variants** (e.g. `RadioDomainEvent`, seasonal date window shapes, source variants)
+- **Large immutable DTOs** with painful hand-rolled `copyWith` / `==` (e.g. nested marker JSON blobs, fat preferences/weather snapshots)
+- **New radio-sync / event payloads** that are pattern-matched by variant
+
+## Prefer hand-written classes for
+
+- Small value objects (a few fields, simple `copyWith`)
+- Geometry helpers that are mostly domain methods on a small payload
+- Thin wrappers around Serverpod types
+- Field-less `enum`s, catalogs, formatters, platform wrappers (`TileProvider`, themes, etc.)
+
+## Conventions when using Freezed
+
+```dart
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'example.freezed.dart';
+
+@freezed
+sealed class Example with _$Example {
+  const Example._(); // if adding methods / custom toJson
+
+  const factory Example.variantA({required String id}) = ExampleVariantA;
+  const factory Example.variantB({required int count}) = ExampleVariantB;
+}
+```
+
+- On-air / RF encoding stays a **custom binary codec** when applicable — not `toJson()`
+- After edits: `dart run build_runner build` from `wayfinder_flutter/`
+- Commit generated `*.freezed.dart`
+
+## New code
+
+Default to a normal Dart class for small DTOs. Reach for Freezed when adding a union or a large immutable model that would otherwise grow boilerplate.

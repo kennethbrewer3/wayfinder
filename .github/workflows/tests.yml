@@ -7,7 +7,48 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  flutter-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: wayfinder_flutter
+        run: |
+          sed -i '/^resolution: workspace$/d' pubspec.yaml
+          flutter pub get
+
+      - name: Run Flutter tests
+        working-directory: wayfinder_flutter
+        run: flutter test
+
+  geocoding-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.8.0
+
+      - name: Install geocoding server dependencies
+        working-directory: wayfinder_geocoding_server
+        run: |
+          if grep -q '^resolution: workspace$' pubspec.yaml; then
+            sed -i '/^resolution: workspace$/d' pubspec.yaml
+          fi
+          dart pub get
+
+      - name: Run geocoding server tests
+        working-directory: wayfinder_geocoding_server
+        run: dart test
+
+  server-test:
     runs-on: ubuntu-latest
     env:
       VERSION: '3.4.8'
@@ -28,11 +69,6 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: 3.8.0
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: false
 
       - name: Start test database
         working-directory: wayfinder_server
@@ -63,9 +99,10 @@ jobs:
         working-directory: wayfinder_server
         run: serverpod generate
 
-      - name: Run tests
+      - name: Run server tests
         working-directory: wayfinder_server
-        run: dart test
+        # Include @Tags(['integration']) tests that need postgres_test.
+        run: dart test --run-skipped
 
       - name: Stop containers
         if: always()

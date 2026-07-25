@@ -6,7 +6,7 @@ Draft — design only. **Not ready for implementation.**
 
 ### Version
 
-0.1
+0.4
 
 ### Related domains
 
@@ -33,7 +33,7 @@ Example operations:
 - Full marker inventory / weather / radio / checklist JSON blobs over the air
 - Complex CRDTs
 - Replacing Serverpod live streams for online clients
-- Arbitrary GMRS digital networking (see §10); GMRS remains a constrained / voice-first option pending regulatory review
+- Arbitrary GMRS digital networking (see §11); GMRS remains a constrained / voice-first option pending regulatory review
 
 ## 3. Design principle
 
@@ -58,7 +58,77 @@ Prefer **compact binary** payloads. Do **not** send JSON over the air. Hex/Base6
 
 ---
 
-## 4. Frame format
+## 4. Dart data classes (Freezed — selective)
+
+Serverpod already generates primary API entities. Freezed does **not** replace that.
+
+In `wayfinder_flutter`, use [`freezed`](https://pub.dev/packages/freezed) **selectively**:
+
+| Use Freezed | Prefer hand-written |
+|-------------|---------------------|
+| Radio-sync domain event unions | Small DTOs (viewport, zoom range, …) |
+| Other sealed variants / result unions | Geometry helpers that are mostly methods |
+| Large immutable nested JSON blobs (when boilerplate hurts) | Thin wrappers around Serverpod types |
+
+Project rule: `.cursor/rules/flutter-freezed-data-classes.mdc`.
+
+### What Freezed owns for radio sync
+
+- Domain events (`MarkerUpsert`, `LogAppend`, `EvacKitMetaUpsert`, `EvacRouteUpsert`, …) as a sealed Freezed family (`RadioDomainEvent`)
+- Nested air payload pieces (e.g. `EvacWaypointAir`)
+
+### What Freezed does **not** own
+
+- **On-the-air encoding.** Wire format remains the binary frame in §5. Do not treat `toJson()` as the radio payload.
+- Mapping Freezed event → `Uint8List` lives in an explicit **binary codec** layer.
+
+### Tooling
+
+- Dependencies already in `wayfinder_flutter`: `freezed_annotation`, `freezed` (dev), `build_runner` (dev)
+- Generated `*.freezed.dart` are committed
+- Models live Flutter-first under `lib/features/radio_sync/`
+
+### Example shape (implemented in `radio_domain_event.dart`)
+
+```dart
+@freezed
+class RadioDomainEvent with _$RadioDomainEvent {
+  const factory RadioDomainEvent.markerUpsert({
+    required String eventId,
+    required String entityId,
+    required int revisedAtSeconds,
+    required String name,
+    required int latE7,
+    required int lonE7,
+    // …
+  }) = MarkerUpsertEvent;
+
+  const factory RadioDomainEvent.logAppend({
+    required String eventId,
+    required String entityId,
+    required int revisedAtSeconds,
+    required int occurredAtSeconds,
+    required int severity,
+    required String text,
+    // …
+  }) = LogAppendEvent;
+
+  const factory RadioDomainEvent.evacRouteUpsert({
+    required String eventId,
+    required String entityId, // kit zone id
+    required int revisedAtSeconds,
+    required String routeId,
+    required List<EvacWaypointAir> waypoints,
+    // …
+  }) = EvacRouteUpsertEvent;
+
+  // MarkerDelete, EvacKitMetaUpsert, …
+}
+```
+
+---
+
+## 5. Frame format
 
 All transports carry the same frame:
 
@@ -67,7 +137,7 @@ All transports carry the same frame:
 | 0 | 2 | `magic` | `WF` (`0x57 0x46`) |
 | 2 | 1 | `version` | Start at `1` |
 | 3 | 1 | `flags` | bit0: chunked inner payload; bit1: ack-request; others reserved |
-| 4 | 1 | `msgType` | See §5 |
+| 4 | 1 | `msgType` | See §6 |
 | 5 | 16 | `eventId` | UUID; dedupe key |
 | 21 | 16 | `entityId` | UUID of marker / zone / watch-log / kit zone |
 | 37 | 4 | `revisedAt` | Unix seconds UTC (last-write-wins for upserts) |
@@ -96,7 +166,7 @@ Reassemble, verify the inner frame CRC, then decode as usual. Evac route upserts
 
 ---
 
-## 5. Event catalog (v1)
+## 6. Event catalog (v1)
 
 Air payloads are **operational subsets**, not full Serverpod `toJson()` documents.
 
@@ -223,7 +293,7 @@ Seasonal overlays, full GPS track polylines, attachments, inventory/weather blob
 
 ---
 
-## 6. Codec and apply rules
+## 7. Codec and apply rules
 
 ### Detection and reliability (above the modem)
 
@@ -254,7 +324,7 @@ Retreat gateway decodes events and calls existing Serverpod endpoints (`mapMarke
 
 ---
 
-## 7. Transport port
+## 8. Transport port
 
 Conceptual interface:
 
@@ -285,23 +355,23 @@ The retreat gateway is the natural bridge: `mesh ↔ Wayfinder server ↔ ham di
 
 ---
 
-## 8. Mapping to current Wayfinder code
+## 9. Mapping to current Wayfinder code
 
 | Today | This design |
 |-------|-------------|
-| `MapMarkerChange` / `MapZoneChange` / `WatchLogEntryChange` full objects | Remain for online streams; radio uses slim events |
-| Offline outbox `{ type, payload: toJson }` | Evolve toward same `msgType` + binary codec (dual-write acceptable during migration) |
+| `MapMarkerChange` / `MapZoneChange` / `WatchLogEntryChange` full objects | Remain for online streams; radio uses slim Freezed events |
+| Offline outbox `{ type, payload: toJson }` | Evolve toward Freezed events + binary codec bytes (dual-write acceptable during migration) |
 | Field packs | Unrelated bulk path; keep separate |
-| Evac kits via `MapZone` + `EvacKitGeometry` | First-class radio events `0x10`–`0x13` |
-| Providers / dialogs mutating markers, zones, watch log, evac kits | Later: emit domain events into a sync controller when radio mode is enabled |
+| Evac kits via `MapZone` + `EvacKitGeometry` | First-class radio events `0x10`–`0x13` (Freezed + binary codec) |
+| Hand-written Flutter models elsewhere | Freezed only for unions / large DTOs (§4); Serverpod models stay generated; small DTOs stay hand-written |
+| Providers / dialogs mutating markers, zones, watch log, evac kits | Later: emit Freezed domain events into a sync controller when radio mode is enabled |
 
-Suggested future package home (when implementing):  
-`wayfinder_flutter/lib/features/radio_sync/`  
-and/or a shared package if the server gateway must share the codec.
+**Current home (Flutter-first):**  
+`wayfinder_flutter/lib/features/radio_sync/` — Freezed domain events are present; binary codec and transports are not implemented yet. A shared Dart package can be extracted later if the server gateway needs the same models.
 
 ---
 
-## 9. Consistency model
+## 10. Consistency model
 
 - **Online + radio:** server is system of record; gateway translates both directions
 - **Radio-only field mesh:** peers converge via LWW (upserts) and append (logs); when any node reaches the gateway, events flush upward; gateway may echo latest state back out
@@ -309,7 +379,7 @@ and/or a shared package if the server gateway must share the codec.
 
 ---
 
-## 10. Security, trust, and spectrum notes
+## 11. Security, trust, and spectrum notes
 
 - Frame CRC is integrity against corruption, not authentication
 - Mesh channel keys / hop limits are transport concerns
@@ -320,13 +390,13 @@ and/or a shared package if the server gateway must share the codec.
 
 ---
 
-## 11. Phased delivery (when ready to implement)
+## 12. Phased delivery (when ready to implement)
 
 | Phase | Work |
 |-------|------|
 | **A** | Design lock (this document) |
-| **B** | Codec + in-process loopback; unit tests for CRC, dedupe, LWW, evac route merge |
-| **C** | Outbox stores binary events; flush to server when HTTP available |
+| **B** | Freezed event models (started in `wayfinder_flutter/lib/features/radio_sync/`) + binary codec + in-process loopback; unit tests for CRC, dedupe, LWW, evac route merge |
+| **C** | Outbox stores binary events (and/or Freezed snapshots); flush to server when HTTP available |
 | **D** | Mesh adapter; bidirectional marker + log + evac meta/route |
 | **E** | Ham digimode adapter (chunking-heavy) |
 | **F** | `ZoneUpsertLight` + gateway rebroadcast polish |
@@ -335,19 +405,27 @@ No implementation work is implied by accepting this draft.
 
 ---
 
-## 12. Open decisions (lock before coding)
+## 13. Open decisions (lock before coding)
+
+**Decided**
+
+- Radio-sync domain events use **Freezed** sealed unions; on-air format stays custom binary (not JSON)
+- **Flutter-first:** models live in `wayfinder_flutter/lib/features/radio_sync/` (shared package deferred)
+- Freezed union: single sealed `RadioDomainEvent` family (see `radio_domain_event.dart`)
+- **Project-wide Freezed policy is selective** (unions + large DTOs), not “all data classes” — Serverpod remains the source for API entities
+
+**Still open**
 
 1. Icon representation: fixed `uint8` dictionary vs short ASCII icon key  
 2. `ZoneUpsertLight` v1 scope: circle-only first vs polygon/line ≤16 points  
-3. Shared codec package vs Flutter-first  
-4. `revisedAt` seconds vs milliseconds (seconds save space; ms reduce ties)  
-5. Evac air caps: confirm 24 waypoints / 4 routes  
-6. Route id encoding: always 16-byte UUID (current string ids are UUID strings)  
-7. Whether radio deletes are soft-only (recommended: yes)  
-8. GMRS: explicitly in or out of supported adapters for v1
+3. `revisedAt` seconds vs milliseconds (seconds save space; ms reduce ties)  
+4. Evac air caps: confirm 24 waypoints / 4 routes  
+5. Route id encoding: always 16-byte UUID (current string ids are UUID strings)  
+6. Whether radio deletes are soft-only (recommended: yes)  
+7. GMRS: explicitly in or out of supported adapters for v1
 
 ---
 
-## 13. Summary
+## 14. Summary
 
-Design Wayfinder radio sync around **versioned binary domain events** with a stable frame and CRC, slim payloads for markers, watch-log entries, light zones, and **first-class evacuation kit meta/route updates**, plus a **transport port** so mesh and ham (and later other audio paths) are adapters. Keep field packs and rich nested marker blobs off the air. Implement only after this proposal is reviewed and the open decisions in §12 are closed.
+Design Wayfinder radio sync around **versioned binary domain events** modeled in Dart with **Freezed**, encoded on the wire with a stable binary frame and CRC. Slim payloads cover markers, watch-log entries, light zones, and **first-class evacuation kit meta/route updates**, with a **transport port** so mesh and ham (and later other audio paths) are adapters. Keep field packs and rich nested marker blobs off the air. Implement only after this proposal is reviewed and the open decisions in §13 are closed.

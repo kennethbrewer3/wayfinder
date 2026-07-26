@@ -135,7 +135,11 @@ Future<void> pumpUi(
 }
 
 /// Install once per golden test file (setUpAll) for Linux/macOS AA tolerance.
-void installTolerantGoldens({double precisionTolerance = 0.01}) {
+///
+/// CI runs on Linux while goldens are often refreshed on macOS; Material text
+/// and AA commonly differ by a couple percent. Keep this high enough for that
+/// platform gap, but still low enough that layout/text regressions fail.
+void installTolerantGoldens({double precisionTolerance = 0.035}) {
   final current = goldenFileComparator;
   if (current is! LocalFileComparator) {
     return;

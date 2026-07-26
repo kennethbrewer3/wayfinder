@@ -46,7 +46,7 @@ cd wayfinder_flutter
 flutter test test/ui --update-goldens
 ```
 
-Goldens use a small pixel tolerance (1%) so macOS vs Linux AA differences do not flake CI. Large layout/text changes still fail and require `--update-goldens`.
+Goldens use a pixel tolerance (3.5%) so macOS vs Linux AA / font raster differences do not flake CI. Large layout/text changes still fail and require `--update-goldens`. Prefer regenerating baselines on Linux (same as CI) when convenient.
 
 ### Adding a UI / golden test
 

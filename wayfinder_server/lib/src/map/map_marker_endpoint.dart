@@ -8,6 +8,7 @@ import 'map_object_actor.dart';
 import 'map_object_audit.dart';
 import 'marker_tracking_service.dart';
 import 'marker_weather_json.dart';
+import 'marker_weather_watch_log_service.dart';
 
 class MapMarkerEndpoint extends Endpoint with EndpointLogging {
   static const _tag = 'mapMarker';
@@ -85,6 +86,11 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
           before: null,
           after: created,
         );
+        await MarkerWeatherWatchLogService.maybeAppend(
+          session: session,
+          before: null,
+          after: created,
+        );
         await MapObjectAudit.record(
           session: session,
           entityType: MapObjectAudit.entityMarker,
@@ -134,6 +140,11 @@ class MapMarkerEndpoint extends Endpoint with EndpointLogging {
         );
         var updated = await MapMarker.db.updateRow(session, incoming);
         updated = await _applyTrackingChanges(
+          session: session,
+          before: before,
+          after: updated,
+        );
+        await MarkerWeatherWatchLogService.maybeAppend(
           session: session,
           before: before,
           after: updated,

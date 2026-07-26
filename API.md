@@ -350,6 +350,8 @@ curl -X PATCH http://localhost:18082/api/markers/9e2ee7b0-9ba4-4e17-8948-54ae65d
   -d '{"weatherJson":"{\"observedAt\":\"2026-06-29T15:00:00.000Z\",\"source\":\"aprs\",\"temperature\":22.4,\"temperatureUnit\":\"C\",\"humidityPercent\":58,\"condition\":\"Overcast\"}"}'
 ```
 
+When `weatherJson` readings change on a `weather_station` marker (RPC or REST), the server appends a linked watch-log entry automatically. Unit-preference-only updates (`displayUnits`) and history reshuffles do not create entries. Author defaults to `source` (e.g. `aprs`) when present; `occurredAt` uses the reading's `observedAt` when set.
+
 ### Delete a marker
 
 ```bash

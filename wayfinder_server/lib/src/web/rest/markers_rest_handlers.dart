@@ -6,6 +6,7 @@ import '../../map/map_object_actor.dart';
 import '../../map/map_object_audit.dart';
 import '../../map/marker_tracking_service.dart';
 import '../../map/marker_weather_json.dart';
+import '../../map/marker_weather_watch_log_service.dart';
 import 'rest_api_auth.dart';
 import 'rest_json.dart';
 
@@ -53,6 +54,11 @@ abstract final class MarkersRestHandlers {
         before: null,
         after: created,
       );
+      await MarkerWeatherWatchLogService.maybeAppend(
+        session: session,
+        before: null,
+        after: created,
+      );
       await MapObjectAudit.record(
         session: session,
         entityType: MapObjectAudit.entityMarker,
@@ -86,6 +92,11 @@ abstract final class MarkersRestHandlers {
         _mergeMarker(existing, body, actor),
       );
       updated = await _applyTrackingChanges(
+        session: session,
+        before: existing,
+        after: updated,
+      );
+      await MarkerWeatherWatchLogService.maybeAppend(
         session: session,
         before: existing,
         after: updated,

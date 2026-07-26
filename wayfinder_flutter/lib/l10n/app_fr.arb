@@ -43,6 +43,8 @@
   "mapObjectTrashZonesSection": "Zones",
   "mapObjectTrashRestore": "Restaurer",
   "mapObjectTrashPurge": "Supprimer définitivement",
+  "mapObjectTrashRestoreAll": "Tout restaurer",
+  "mapObjectTrashPurgeAll": "Tout supprimer définitivement",
   "mapObjectTrashDeletedBy": "Supprimé par {user}",
   "@mapObjectTrashDeletedBy": {
     "placeholders": {
@@ -60,6 +62,8 @@
       }
     }
   },
+  "mapObjectTrashPurgeAllConfirmTitle": "Tout supprimer définitivement ?",
+  "mapObjectTrashPurgeAllConfirmBody": "Tout le contenu de la corbeille sera définitivement supprimé, y compris les pièces jointes.",
   "mapObjectTrashPermissionDenied": "Vous n'avez pas l'autorisation de restaurer ou de supprimer définitivement des éléments de la corbeille.",
   "settingsAboutTitle": "À propos de Wayfinder",
   "settingsAboutDescription": "Détails de compilation et de connexion en lecture seule pour ce client. Utilisez le commit git pour vérifier si la dernière compilation est en cours d'exécution.",

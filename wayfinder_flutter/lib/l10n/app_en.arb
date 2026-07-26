@@ -44,6 +44,8 @@
   "mapObjectTrashZonesSection": "Zones",
   "mapObjectTrashRestore": "Restore",
   "mapObjectTrashPurge": "Delete permanently",
+  "mapObjectTrashRestoreAll": "Restore all",
+  "mapObjectTrashPurgeAll": "Delete all permanently",
   "mapObjectTrashDeletedBy": "Deleted by {user}",
   "@mapObjectTrashDeletedBy": {
     "placeholders": {
@@ -61,6 +63,8 @@
       }
     }
   },
+  "mapObjectTrashPurgeAllConfirmTitle": "Delete all permanently?",
+  "mapObjectTrashPurgeAllConfirmBody": "Everything in trash will be removed forever, including attachments.",
   "mapObjectTrashPermissionDenied": "You do not have permission to restore or permanently delete items from trash.",
   "accessSignInSubtitle": "Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.",
   "accessSignInRequired": "Sign in to manage users and roles.",

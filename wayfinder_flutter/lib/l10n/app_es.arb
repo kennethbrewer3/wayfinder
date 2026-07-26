@@ -43,6 +43,8 @@
   "mapObjectTrashZonesSection": "Zonas",
   "mapObjectTrashRestore": "Restaurar",
   "mapObjectTrashPurge": "Eliminar definitivamente",
+  "mapObjectTrashRestoreAll": "Restaurar todo",
+  "mapObjectTrashPurgeAll": "Eliminar todo definitivamente",
   "mapObjectTrashDeletedBy": "Eliminado por {user}",
   "@mapObjectTrashDeletedBy": {
     "placeholders": {
@@ -60,6 +62,8 @@
       }
     }
   },
+  "mapObjectTrashPurgeAllConfirmTitle": "¿Eliminar todo definitivamente?",
+  "mapObjectTrashPurgeAllConfirmBody": "Todo el contenido de la papelera se eliminará para siempre, incluidos los adjuntos.",
   "mapObjectTrashPermissionDenied": "No tienes permiso para restaurar o eliminar definitivamente elementos de la papelera.",
   "settingsAboutTitle": "Acerca de Wayfinder",
   "settingsAboutDescription": "Detalles de compilación y conexión de solo lectura para este cliente. Use el commit de git para confirmar si se está ejecutando la compilación más reciente.",

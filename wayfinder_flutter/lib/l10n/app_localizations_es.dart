@@ -95,6 +95,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapObjectTrashPurge => 'Eliminar definitivamente';
 
   @override
+  String get mapObjectTrashRestoreAll => 'Restaurar todo';
+
+  @override
+  String get mapObjectTrashPurgeAll => 'Eliminar todo definitivamente';
+
+  @override
   String mapObjectTrashDeletedBy(String user) {
     return 'Eliminado por $user';
   }
@@ -106,6 +112,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String mapObjectTrashPurgeConfirmBody(String name) {
     return '“$name” se eliminará para siempre, incluidas las adjuntos.';
   }
+
+  @override
+  String get mapObjectTrashPurgeAllConfirmTitle =>
+      '¿Eliminar todo definitivamente?';
+
+  @override
+  String get mapObjectTrashPurgeAllConfirmBody =>
+      'Todo el contenido de la papelera se eliminará para siempre, incluidos los adjuntos.';
 
   @override
   String get mapObjectTrashPermissionDenied =>

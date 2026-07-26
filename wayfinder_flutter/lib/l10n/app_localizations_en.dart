@@ -95,6 +95,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapObjectTrashPurge => 'Delete permanently';
 
   @override
+  String get mapObjectTrashRestoreAll => 'Restore all';
+
+  @override
+  String get mapObjectTrashPurgeAll => 'Delete all permanently';
+
+  @override
   String mapObjectTrashDeletedBy(String user) {
     return 'Deleted by $user';
   }
@@ -106,6 +112,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String mapObjectTrashPurgeConfirmBody(String name) {
     return '“$name” will be removed forever, including attachments.';
   }
+
+  @override
+  String get mapObjectTrashPurgeAllConfirmTitle => 'Delete all permanently?';
+
+  @override
+  String get mapObjectTrashPurgeAllConfirmBody =>
+      'Everything in trash will be removed forever, including attachments.';
 
   @override
   String get mapObjectTrashPermissionDenied =>

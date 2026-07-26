@@ -262,6 +262,18 @@ abstract class AppLocalizations {
   /// **'Delete permanently'**
   String get mapObjectTrashPurge;
 
+  /// No description provided for @mapObjectTrashRestoreAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore all'**
+  String get mapObjectTrashRestoreAll;
+
+  /// No description provided for @mapObjectTrashPurgeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all permanently'**
+  String get mapObjectTrashPurgeAll;
+
   /// No description provided for @mapObjectTrashDeletedBy.
   ///
   /// In en, this message translates to:
@@ -279,6 +291,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'“{name}” will be removed forever, including attachments.'**
   String mapObjectTrashPurgeConfirmBody(String name);
+
+  /// No description provided for @mapObjectTrashPurgeAllConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all permanently?'**
+  String get mapObjectTrashPurgeAllConfirmTitle;
+
+  /// No description provided for @mapObjectTrashPurgeAllConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything in trash will be removed forever, including attachments.'**
+  String get mapObjectTrashPurgeAllConfirmBody;
 
   /// No description provided for @mapObjectTrashPermissionDenied.
   ///

@@ -18,11 +18,18 @@ final _deletedZonesProvider = FutureProvider.autoDispose<List<MapZone>>((ref) {
   return ref.watch(serverClientProvider).mapZone.listDeletedZones();
 });
 
-class SettingsTrashTab extends ConsumerWidget {
+class SettingsTrashTab extends ConsumerStatefulWidget {
   const SettingsTrashTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsTrashTab> createState() => _SettingsTrashTabState();
+}
+
+class _SettingsTrashTabState extends ConsumerState<SettingsTrashTab> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final canEdit = !ref.watch(mapEditsLockedByRoleProvider);
     final markersAsync = ref.watch(_deletedMarkersProvider);
@@ -66,9 +73,30 @@ class SettingsTrashTab extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                Text(
-                  l10n.mapObjectTrashHelp,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.mapObjectTrashHelp,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: l10n.mapObjectTrashRestoreAll,
+                      onPressed: _busy
+                          ? null
+                          : () => _restoreAll(markers: markers, zones: zones),
+                      icon: const Icon(Icons.restore_from_trash),
+                    ),
+                    IconButton(
+                      tooltip: l10n.mapObjectTrashPurgeAll,
+                      onPressed: _busy
+                          ? null
+                          : () => _purgeAll(markers: markers, zones: zones),
+                      icon: const Icon(Icons.delete_forever),
+                    ),
+                  ],
                 ),
                 if (markers.isNotEmpty) ...[
                   const SizedBox(height: 24),
@@ -85,6 +113,7 @@ class SettingsTrashTab extends ConsumerWidget {
                         deletedAt: marker.deletedAt,
                         deletedBy: marker.deletedByUsername,
                       ),
+                      enabled: !_busy,
                       onRestore: () async {
                         await ref
                             .read(serverClientProvider)
@@ -126,6 +155,7 @@ class SettingsTrashTab extends ConsumerWidget {
                         deletedAt: zone.deletedAt,
                         deletedBy: zone.deletedByUsername,
                       ),
+                      enabled: !_busy,
                       onRestore: () async {
                         await ref
                             .read(serverClientProvider)
@@ -158,6 +188,58 @@ class SettingsTrashTab extends ConsumerWidget {
         );
       },
     );
+  }
+
+  Future<void> _restoreAll({
+    required List<MapMarker> markers,
+    required List<MapZone> zones,
+  }) async {
+    setState(() => _busy = true);
+    try {
+      final client = ref.read(serverClientProvider);
+      for (final marker in markers) {
+        await client.mapMarker.restoreMarker(marker.id);
+      }
+      for (final zone in zones) {
+        await client.mapZone.restoreZone(zone.id);
+      }
+      ref.invalidate(_deletedMarkersProvider);
+      ref.invalidate(_deletedZonesProvider);
+      ref.invalidate(markersProvider);
+      ref.read(zonesProvider.notifier).reload();
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
+  Future<void> _purgeAll({
+    required List<MapMarker> markers,
+    required List<MapZone> zones,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await _confirmPurgeAll(context, l10n);
+    if (!confirmed) {
+      return;
+    }
+
+    setState(() => _busy = true);
+    try {
+      final client = ref.read(serverClientProvider);
+      for (final marker in markers) {
+        await client.mapMarker.purgeDeletedMarker(marker.id);
+      }
+      for (final zone in zones) {
+        await client.mapZone.purgeDeletedZone(zone.id);
+      }
+      ref.invalidate(_deletedMarkersProvider);
+      ref.invalidate(_deletedZonesProvider);
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
   }
 
   static String _deletedSubtitle(
@@ -197,12 +279,37 @@ class SettingsTrashTab extends ConsumerWidget {
     );
     return result == true;
   }
+
+  static Future<bool> _confirmPurgeAll(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.mapObjectTrashPurgeAllConfirmTitle),
+        content: Text(l10n.mapObjectTrashPurgeAllConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.actionClose),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.mapObjectTrashPurgeAll),
+          ),
+        ],
+      ),
+    );
+    return result == true;
+  }
 }
 
 class _TrashTile extends StatelessWidget {
   const _TrashTile({
     required this.title,
     required this.subtitle,
+    required this.enabled,
     required this.onRestore,
     required this.onPurge,
     required this.l10n,
@@ -210,6 +317,7 @@ class _TrashTile extends StatelessWidget {
 
   final String title;
   final String subtitle;
+  final bool enabled;
   final Future<void> Function() onRestore;
   final Future<void> Function() onPurge;
   final AppLocalizations l10n;
@@ -222,15 +330,17 @@ class _TrashTile extends StatelessWidget {
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: Wrap(
-          spacing: 8,
+          spacing: 4,
           children: [
-            TextButton(
-              onPressed: () => onRestore(),
-              child: Text(l10n.mapObjectTrashRestore),
+            IconButton(
+              tooltip: l10n.mapObjectTrashRestore,
+              onPressed: enabled ? () => onRestore() : null,
+              icon: const Icon(Icons.restore_from_trash),
             ),
-            TextButton(
-              onPressed: () => onPurge(),
-              child: Text(l10n.mapObjectTrashPurge),
+            IconButton(
+              tooltip: l10n.mapObjectTrashPurge,
+              onPressed: enabled ? () => onPurge() : null,
+              icon: const Icon(Icons.delete_forever),
             ),
           ],
         ),

@@ -1046,6 +1046,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Prepare an offline pack from the map toolbar first.';
 
   @override
+  String get settingsSimulatedGpsWalkDelayTitle => 'Simulated GPS walk delay';
+
+  @override
+  String get settingsSimulatedGpsWalkDelayDescription =>
+      'Seconds between fake GPS steps when simulating a walk along a followed route. Applies the next time you start simulation.';
+
+  @override
+  String settingsSimulatedGpsWalkDelayValue(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get settingsSimulatedGpsWalkDelayMinLabel => 'Faster';
+
+  @override
+  String get settingsSimulatedGpsWalkDelayMaxLabel => 'Slower';
+
+  @override
   String get mapDebugOverlayCopyTooltip => 'Copy debug info';
 
   @override

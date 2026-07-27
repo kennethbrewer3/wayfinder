@@ -1052,6 +1052,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'Prepare primero un paquete sin conexión desde la barra del mapa.';
 
   @override
+  String get settingsSimulatedGpsWalkDelayTitle =>
+      'Retraso de caminata GPS simulada';
+
+  @override
+  String get settingsSimulatedGpsWalkDelayDescription =>
+      'Segundos entre pasos de GPS falso al simular una caminata por una ruta seguida. Se aplica la próxima vez que inicie la simulación.';
+
+  @override
+  String settingsSimulatedGpsWalkDelayValue(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get settingsSimulatedGpsWalkDelayMinLabel => 'Más rápido';
+
+  @override
+  String get settingsSimulatedGpsWalkDelayMaxLabel => 'Más lento';
+
+  @override
   String get mapDebugOverlayCopyTooltip => 'Copiar información de depuración';
 
   @override

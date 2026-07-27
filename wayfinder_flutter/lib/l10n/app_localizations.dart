@@ -1882,6 +1882,36 @@ abstract class AppLocalizations {
   /// **'Prepare an offline pack from the map toolbar first.'**
   String get settingsForceOfflinePackUnavailable;
 
+  /// No description provided for @settingsSimulatedGpsWalkDelayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated GPS walk delay'**
+  String get settingsSimulatedGpsWalkDelayTitle;
+
+  /// No description provided for @settingsSimulatedGpsWalkDelayDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds between fake GPS steps when simulating a walk along a followed route. Applies the next time you start simulation.'**
+  String get settingsSimulatedGpsWalkDelayDescription;
+
+  /// No description provided for @settingsSimulatedGpsWalkDelayValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String settingsSimulatedGpsWalkDelayValue(String seconds);
+
+  /// No description provided for @settingsSimulatedGpsWalkDelayMinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Faster'**
+  String get settingsSimulatedGpsWalkDelayMinLabel;
+
+  /// No description provided for @settingsSimulatedGpsWalkDelayMaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Slower'**
+  String get settingsSimulatedGpsWalkDelayMaxLabel;
+
   /// No description provided for @mapDebugOverlayCopyTooltip.
   ///
   /// In en, this message translates to:

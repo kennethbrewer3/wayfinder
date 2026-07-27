@@ -273,6 +273,18 @@
   "settingsForceOfflinePackTitle": "Usar paquete sin conexión con internet",
   "settingsForceOfflinePackDescription": "Usa el paquete sin conexión / de campo preparado aunque el servidor Wayfinder sea alcanzable. Permite probar el paquete sin cortar internet para otras apps.",
   "settingsForceOfflinePackUnavailable": "Prepare primero un paquete sin conexión desde la barra del mapa.",
+  "settingsSimulatedGpsWalkDelayTitle": "Retraso de caminata GPS simulada",
+  "settingsSimulatedGpsWalkDelayDescription": "Segundos entre pasos de GPS falso al simular una caminata por una ruta seguida. Se aplica la próxima vez que inicie la simulación.",
+  "settingsSimulatedGpsWalkDelayValue": "{seconds} s",
+  "@settingsSimulatedGpsWalkDelayValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSimulatedGpsWalkDelayMinLabel": "Más rápido",
+  "settingsSimulatedGpsWalkDelayMaxLabel": "Más lento",
   "mapDebugOverlayCopyTooltip": "Copiar información de depuración",
   "mapDebugOverlayCopied": "Información de depuración copiada al portapapeles.",
   "mapDebugOverlayCopyFailedTitle": "Copia bloqueada — seleccione y copie manualmente",

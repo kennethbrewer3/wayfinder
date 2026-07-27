@@ -1055,6 +1055,25 @@ class AppLocalizationsFr extends AppLocalizations {
       'Préparez d\'abord un pack hors ligne depuis la barre d\'outils de la carte.';
 
   @override
+  String get settingsSimulatedGpsWalkDelayTitle =>
+      'Délai de marche GPS simulée';
+
+  @override
+  String get settingsSimulatedGpsWalkDelayDescription =>
+      'Secondes entre les positions GPS fictives lors de la simulation d\'une marche sur un itinéraire suivi. S\'applique au prochain démarrage de la simulation.';
+
+  @override
+  String settingsSimulatedGpsWalkDelayValue(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get settingsSimulatedGpsWalkDelayMinLabel => 'Plus rapide';
+
+  @override
+  String get settingsSimulatedGpsWalkDelayMaxLabel => 'Plus lent';
+
+  @override
   String get mapDebugOverlayCopyTooltip => 'Copier les infos de débogage';
 
   @override

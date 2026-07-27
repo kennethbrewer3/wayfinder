@@ -596,6 +596,18 @@
   "settingsForceOfflinePackTitle": "Use offline pack while online",
   "settingsForceOfflinePackDescription": "Use the prepared offline / field pack even when the Wayfinder server is reachable. Lets you test pack behavior without cutting internet for other apps.",
   "settingsForceOfflinePackUnavailable": "Prepare an offline pack from the map toolbar first.",
+  "settingsSimulatedGpsWalkDelayTitle": "Simulated GPS walk delay",
+  "settingsSimulatedGpsWalkDelayDescription": "Seconds between fake GPS steps when simulating a walk along a followed route. Applies the next time you start simulation.",
+  "settingsSimulatedGpsWalkDelayValue": "{seconds} s",
+  "@settingsSimulatedGpsWalkDelayValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSimulatedGpsWalkDelayMinLabel": "Faster",
+  "settingsSimulatedGpsWalkDelayMaxLabel": "Slower",
   "mapDebugOverlayCopyTooltip": "Copy debug info",
   "mapDebugOverlayCopied": "Debug info copied to clipboard.",
   "mapDebugOverlayCopyFailedTitle": "Copy blocked — select and copy manually",

@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../map/providers/device_location_provider.dart';
+import '../../map/providers/simulated_gps_walk_delay_provider.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../utils/route_follow_progress.dart';
 
@@ -105,10 +106,14 @@ class RouteFollowNotifier extends StateNotifier<RouteFollowState> {
     if (!state.active || state.path.length < 2) {
       return;
     }
+    final stepInterval = Duration(
+      milliseconds: _ref.read(simulatedGpsWalkDelayMsProvider),
+    );
     await _ref
         .read(deviceLocationProvider.notifier)
         .startSimulatedWalkAlong(
           state.path,
+          stepInterval: stepInterval,
           onCompleted: () {
             if (state.active) {
               state = state.copyWith(simulating: false);

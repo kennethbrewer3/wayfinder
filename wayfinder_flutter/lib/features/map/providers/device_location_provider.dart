@@ -164,8 +164,9 @@ class DeviceLocationNotifier extends StateNotifier<DeviceLocationState> {
   /// Replaces the real location stream until [stopSimulation] or [stop].
   Future<void> startSimulatedWalkAlong(
     List<LatLng> path, {
-    Duration stepInterval = const Duration(milliseconds: 400),
-    double stepMeters = 12,
+    // Slow enough to read HUD bearings/ETA while still finishing a short route.
+    Duration stepInterval = const Duration(milliseconds: 2000),
+    double stepMeters = 6,
     void Function()? onCompleted,
   }) async {
     if (path.length < 2) {

@@ -39,6 +39,7 @@ import '../../map/providers/map_mgrs_grid_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/providers/map_viewport_debug_provider.dart';
 import '../../map/providers/map_zoom_range_provider.dart';
+import '../../map/providers/simulated_gps_walk_delay_provider.dart';
 import '../../markers/models/map_marker_size.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
@@ -351,6 +352,7 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
     );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
     final forceOfflinePack = ref.watch(forceOfflinePackWhileOnlineProvider);
+    final simulatedGpsWalkDelayMs = ref.watch(simulatedGpsWalkDelayMsProvider);
     final hasOfflinePack =
         ref.watch(offlinePackMetaProvider).valueOrNull != null;
     final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
@@ -1162,9 +1164,64 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 }
               : null,
         ),
+        const SizedBox(height: 16),
+        Text(
+          l10n.settingsSimulatedGpsWalkDelayTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l10n.settingsSimulatedGpsWalkDelayDescription,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        Slider(
+          value: simulatedGpsWalkDelayMs.toDouble(),
+          min: simulatedGpsWalkDelayMsMin.toDouble(),
+          max: simulatedGpsWalkDelayMsMax.toDouble(),
+          divisions:
+              ((simulatedGpsWalkDelayMsMax - simulatedGpsWalkDelayMsMin) /
+                      simulatedGpsWalkDelayMsStep)
+                  .round(),
+          label: l10n.settingsSimulatedGpsWalkDelayValue(
+            _formatSimulatedGpsWalkDelaySeconds(simulatedGpsWalkDelayMs),
+          ),
+          onChanged: (value) {
+            ref
+                .read(simulatedGpsWalkDelayMsProvider.notifier)
+                .setDelayMs(value.round());
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              l10n.settingsSimulatedGpsWalkDelayMinLabel,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            Text(
+              l10n.settingsSimulatedGpsWalkDelayValue(
+                _formatSimulatedGpsWalkDelaySeconds(simulatedGpsWalkDelayMs),
+              ),
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            Text(
+              l10n.settingsSimulatedGpsWalkDelayMaxLabel,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ],
     );
   }
+}
+
+String _formatSimulatedGpsWalkDelaySeconds(int delayMs) {
+  final seconds = delayMs / 1000;
+  if (seconds == seconds.roundToDouble()) {
+    return seconds.toStringAsFixed(0);
+  }
+  return seconds.toStringAsFixed(1);
 }
 
 String _appearanceDropdownValue(

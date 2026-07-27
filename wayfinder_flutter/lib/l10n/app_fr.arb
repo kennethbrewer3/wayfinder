@@ -273,6 +273,18 @@
   "settingsForceOfflinePackTitle": "Utiliser le pack hors ligne en ligne",
   "settingsForceOfflinePackDescription": "Utilise le pack hors ligne / de terrain préparé même si le serveur Wayfinder est joignable. Permet de tester le pack sans couper Internet pour les autres applications.",
   "settingsForceOfflinePackUnavailable": "Préparez d'abord un pack hors ligne depuis la barre d'outils de la carte.",
+  "settingsSimulatedGpsWalkDelayTitle": "Délai de marche GPS simulée",
+  "settingsSimulatedGpsWalkDelayDescription": "Secondes entre les positions GPS fictives lors de la simulation d'une marche sur un itinéraire suivi. S'applique au prochain démarrage de la simulation.",
+  "settingsSimulatedGpsWalkDelayValue": "{seconds} s",
+  "@settingsSimulatedGpsWalkDelayValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSimulatedGpsWalkDelayMinLabel": "Plus rapide",
+  "settingsSimulatedGpsWalkDelayMaxLabel": "Plus lent",
   "mapDebugOverlayCopyTooltip": "Copier les infos de débogage",
   "mapDebugOverlayCopied": "Infos de débogage copiées dans le presse-papiers.",
   "mapDebugOverlayCopyFailedTitle": "Copie bloquée — sélectionnez et copiez manuellement",

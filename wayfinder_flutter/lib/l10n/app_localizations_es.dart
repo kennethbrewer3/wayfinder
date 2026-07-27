@@ -1004,7 +1004,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsMapDebugDescription =>
-      'Ayudas visuales guardadas solo en este navegador.';
+      'Ayudas guardadas solo en este dispositivo.';
 
   @override
   String get settingsMapMarkerSizeTitle => 'Tamaño de marcadores';
@@ -1038,6 +1038,18 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsMapTileBorderDebugDescription =>
       'Dibuja bordes verdes alrededor de cada tile del mapa. Requiere la superposición de depuración del viewport anterior.';
+
+  @override
+  String get settingsForceOfflinePackTitle =>
+      'Usar paquete sin conexión con internet';
+
+  @override
+  String get settingsForceOfflinePackDescription =>
+      'Usa el paquete sin conexión / de campo preparado aunque el servidor Wayfinder sea alcanzable. Permite probar el paquete sin cortar internet para otras apps.';
+
+  @override
+  String get settingsForceOfflinePackUnavailable =>
+      'Prepare primero un paquete sin conexión desde la barra del mapa.';
 
   @override
   String get mapDebugOverlayCopyTooltip => 'Copiar información de depuración';
@@ -1733,6 +1745,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get offlineModeBannerReadWriteHint =>
       'Mostrando capas del paquete. Puede añadir marcadores, cambiar su capa, borrar marcadores sin sincronizar, grabar tracks GPS y añadir entradas del registro de guardia.';
+
+  @override
+  String get offlineModeBannerForcedHint =>
+      'Paquete sin conexión forzado (el servidor sigue alcanzable). Desactívelo en Ajustes → General → Depuración del mapa al terminar las pruebas.';
 
   @override
   String get offlineDeleteUnsyncedMarker => 'Borrar marcador sin sincronizar';

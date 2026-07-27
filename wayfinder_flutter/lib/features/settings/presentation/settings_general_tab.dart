@@ -43,6 +43,9 @@ import '../../markers/models/map_marker_size.dart';
 import '../../markers/models/marker_icon_registry.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
+import '../../offline_packs/providers/force_offline_pack_provider.dart';
+import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../../themes/providers/app_theme_definitions_provider.dart';
 import '../providers/app_locale_provider.dart';
@@ -347,6 +350,9 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
       mapViewportDebugBorderProvider,
     );
     final showMapTileBorderDebug = ref.watch(mapTileBorderDebugProvider);
+    final forceOfflinePack = ref.watch(forceOfflinePackWhileOnlineProvider);
+    final hasOfflinePack =
+        ref.watch(offlinePackMetaProvider).valueOrNull != null;
     final showMapCompassRose = ref.watch(mapCompassRoseEnabledProvider);
     final showMapMgrsGrid = ref.watch(mapMgrsGridEnabledProvider);
     final darkMapTilesInDarkMode = ref.watch(darkMapTilesInDarkModeProvider);
@@ -1123,6 +1129,36 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                   ref
                       .read(mapTileBorderDebugProvider.notifier)
                       .setEnabled(enabled);
+                }
+              : null,
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsForceOfflinePackTitle),
+          subtitle: Text(
+            hasOfflinePack
+                ? l10n.settingsForceOfflinePackDescription
+                : l10n.settingsForceOfflinePackUnavailable,
+          ),
+          value: forceOfflinePack && hasOfflinePack,
+          onChanged: hasOfflinePack
+              ? (enabled) async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  final syncedMessage = l10n.offlinePackSynced;
+                  await ref
+                      .read(forceOfflinePackWhileOnlineProvider.notifier)
+                      .setEnabled(enabled);
+                  if (!enabled) {
+                    final flushed = await ref
+                        .read(offlinePackControllerProvider)
+                        .syncIfNeeded();
+                    if (!mounted || flushed <= 0) {
+                      return;
+                    }
+                    messenger.showSnackBar(
+                      SnackBar(content: Text(syncedMessage(flushed))),
+                    );
+                  }
                 }
               : null,
         ),

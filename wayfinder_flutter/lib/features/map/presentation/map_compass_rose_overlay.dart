@@ -62,12 +62,20 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
   }
 
   void _rotateBy(double deltaDegrees) {
-    final current = widget.mapController.camera.rotation;
-    widget.mapController.rotate(current + deltaDegrees);
+    try {
+      final current = widget.mapController.camera.rotation;
+      widget.mapController.rotate(current + deltaDegrees);
+    } catch (_) {
+      // Map camera not ready (e.g. mid orientation change).
+    }
   }
 
   void _resetRotation() {
-    widget.mapController.rotate(0);
+    try {
+      widget.mapController.rotate(0);
+    } catch (_) {
+      // Map camera not ready (e.g. mid orientation change).
+    }
   }
 
   Future<void> _toggleBearingReference() async {
@@ -83,7 +91,13 @@ class _MapCompassRoseOverlayState extends ConsumerState<MapCompassRoseOverlay> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final camera = widget.mapController.camera;
+    final MapCamera camera;
+    try {
+      camera = widget.mapController.camera;
+    } catch (_) {
+      // Orientation / first-frame races — skip until the map camera is ready.
+      return const SizedBox.shrink();
+    }
     final bearingReference = ref.watch(bearingReferenceProvider);
     final declination = magneticDeclinationDegrees(location: camera.center);
     final trueNorthAngle = northScreenAngle(

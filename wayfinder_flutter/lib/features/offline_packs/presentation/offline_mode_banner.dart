@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../providers/force_offline_pack_provider.dart';
 import '../providers/offline_snapshot_provider.dart';
 import '../providers/server_reachability_provider.dart';
 
@@ -20,7 +21,12 @@ class OfflineModeBanner extends ConsumerWidget {
     final meta = ref.watch(offlinePackMetaProvider).valueOrNull;
     final outbox = ref.watch(offlineOutboxCountProvider).valueOrNull ?? 0;
     final packName = meta?.name ?? l10n.offlinePackDefaultName;
-    final subtitle = outbox > 0
+    final forced =
+        ref.watch(forceOfflinePackWhileOnlineProvider) &&
+        ref.watch(serverReachableProvider);
+    final subtitle = forced
+        ? l10n.offlineModeBannerForcedHint
+        : outbox > 0
         ? l10n.offlineModeBannerPending(outbox)
         : l10n.offlineModeBannerReadWriteHint;
 

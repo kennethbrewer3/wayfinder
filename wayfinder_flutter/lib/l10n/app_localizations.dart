@@ -1807,7 +1807,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapDebugDescription.
   ///
   /// In en, this message translates to:
-  /// **'Visual aids stored in this browser only.'**
+  /// **'Aids stored on this device only.'**
   String get settingsMapDebugDescription;
 
   /// No description provided for @settingsMapMarkerSizeTitle.
@@ -1863,6 +1863,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Draws green borders around each map tile. Requires the viewport debug overlay above.'**
   String get settingsMapTileBorderDebugDescription;
+
+  /// No description provided for @settingsForceOfflinePackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use offline pack while online'**
+  String get settingsForceOfflinePackTitle;
+
+  /// No description provided for @settingsForceOfflinePackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the prepared offline / field pack even when the Wayfinder server is reachable. Lets you test pack behavior without cutting internet for other apps.'**
+  String get settingsForceOfflinePackDescription;
+
+  /// No description provided for @settingsForceOfflinePackUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare an offline pack from the map toolbar first.'**
+  String get settingsForceOfflinePackUnavailable;
 
   /// No description provided for @mapDebugOverlayCopyTooltip.
   ///
@@ -3016,6 +3034,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.'**
   String get offlineModeBannerReadWriteHint;
+
+  /// No description provided for @offlineModeBannerForcedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Forced offline pack (server still reachable). Turn off in Settings → General → Map debugging when finished testing.'**
+  String get offlineModeBannerForcedHint;
 
   /// No description provided for @offlineDeleteUnsyncedMarker.
   ///

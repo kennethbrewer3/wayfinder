@@ -657,10 +657,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             const sidebarHeightCollapsed = 64.0;
             // Give the map-objects sheet enough room on phones; the old fixed
             // 280px height overflowed once filters + seasonal overlays expanded.
+            // Never force a 320px minimum on short landscape heights — that
+            // overflowed the Column when rotating a phone with GPS/HUD visible.
             final screenHeight = MediaQuery.sizeOf(context).height;
-            final sidebarHeightExpanded = (screenHeight * 0.48).clamp(
-              320.0,
-              520.0,
+            final sidebarHeightExpanded = mapObjectsSidebarExpandedHeight(
+              screenHeight,
             );
 
             final mapSection = Stack(
@@ -750,6 +751,20 @@ class _MapAppBarOverflowItem extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Expanded map-objects sheet height for the phone (narrow) layout.
+///
+/// Keeps a usable map viewport when the screen is short (landscape phones).
+@visibleForTesting
+double mapObjectsSidebarExpandedHeight(double screenHeight) {
+  if (screenHeight <= 0) {
+    return 160;
+  }
+  // Leave ≥45% of the screen for the map; allow short landscape sheets.
+  final maxHeight = (screenHeight * 0.55).clamp(96.0, 520.0);
+  final minHeight = maxHeight < 220 ? maxHeight : 220.0;
+  return (screenHeight * 0.48).clamp(minHeight, maxHeight);
 }
 
 MapViewport? parseMapViewportFromUri(Uri uri) {

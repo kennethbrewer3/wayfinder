@@ -6,6 +6,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../data/offline_pack_store.dart';
+import 'force_offline_pack_provider.dart';
 
 /// Whether the Wayfinder appliance RPC is reachable.
 final serverReachableProvider =
@@ -61,9 +62,15 @@ final offlinePackMetaProvider = FutureProvider((ref) async {
   return ref.watch(offlinePackStoreProvider).loadMeta();
 });
 
-/// True when the client should use the offline pack (server down + pack ready).
+/// True when the client should use the offline pack (server down + pack ready,
+/// or debug “use pack while online”).
 final offlineModeActiveProvider = Provider<bool>((ref) {
   final reachable = ref.watch(serverReachableProvider);
   final hasPack = ref.watch(offlinePackMetaProvider).valueOrNull != null;
-  return !reachable && hasPack;
+  final forceWhileOnline = ref.watch(forceOfflinePackWhileOnlineProvider);
+  return isOfflineModeActive(
+    serverReachable: reachable,
+    hasPack: hasPack,
+    forceWhileOnline: forceWhileOnline,
+  );
 });

@@ -1006,7 +1006,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsMapDebugDescription =>
-      'Aides visuelles enregistrées uniquement dans ce navigateur.';
+      'Aides enregistrées uniquement sur cet appareil.';
 
   @override
   String get settingsMapMarkerSizeTitle => 'Taille des marqueurs';
@@ -1041,6 +1041,18 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsMapTileBorderDebugDescription =>
       'Dessine des bordures vertes autour de chaque tuile de la carte. Nécessite la superposition de débogage du viewport ci-dessus.';
+
+  @override
+  String get settingsForceOfflinePackTitle =>
+      'Utiliser le pack hors ligne en ligne';
+
+  @override
+  String get settingsForceOfflinePackDescription =>
+      'Utilise le pack hors ligne / de terrain préparé même si le serveur Wayfinder est joignable. Permet de tester le pack sans couper Internet pour les autres applications.';
+
+  @override
+  String get settingsForceOfflinePackUnavailable =>
+      'Préparez d\'abord un pack hors ligne depuis la barre d\'outils de la carte.';
 
   @override
   String get mapDebugOverlayCopyTooltip => 'Copier les infos de débogage';
@@ -1737,6 +1749,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get offlineModeBannerReadWriteHint =>
       'Affichage des calques du pack. Vous pouvez ajouter des marqueurs, changer leur calque, supprimer les marqueurs non synchronisés, enregistrer des traces GPS et ajouter des entrées du journal de veille.';
+
+  @override
+  String get offlineModeBannerForcedHint =>
+      'Pack hors ligne forcé (serveur toujours joignable). Désactivez dans Paramètres → Général → Débogage de la carte une fois les tests terminés.';
 
   @override
   String get offlineDeleteUnsyncedMarker =>

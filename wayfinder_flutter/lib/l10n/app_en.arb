@@ -576,7 +576,7 @@
     }
   },
   "settingsMapDebugTitle": "Map debugging",
-  "settingsMapDebugDescription": "Visual aids stored in this browser only.",
+  "settingsMapDebugDescription": "Aids stored on this device only.",
   "settingsMapMarkerSizeTitle": "Map marker size",
   "settingsMapMarkerSizeDescription": "Adjust how large markers appear on the map. Saved to your account so it follows you on any workstation.",
   "settingsMapMarkerSizeValue": "{percent}%",
@@ -593,6 +593,9 @@
   "settingsMapViewportDebugBorderDescription": "Draws a red outline around the map canvas with archive, zoom, and center-tile details.",
   "settingsMapTileBorderDebugTitle": "Show tile borders",
   "settingsMapTileBorderDebugDescription": "Draws green borders around each map tile. Requires the viewport debug overlay above.",
+  "settingsForceOfflinePackTitle": "Use offline pack while online",
+  "settingsForceOfflinePackDescription": "Use the prepared offline / field pack even when the Wayfinder server is reachable. Lets you test pack behavior without cutting internet for other apps.",
+  "settingsForceOfflinePackUnavailable": "Prepare an offline pack from the map toolbar first.",
   "mapDebugOverlayCopyTooltip": "Copy debug info",
   "mapDebugOverlayCopied": "Debug info copied to clipboard.",
   "mapDebugOverlayCopyFailedTitle": "Copy blocked — select and copy manually",
@@ -1035,6 +1038,7 @@
     }
   },
   "offlineModeBannerReadWriteHint": "Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.",
+  "offlineModeBannerForcedHint": "Forced offline pack (server still reachable). Turn off in Settings → General → Map debugging when finished testing.",
   "offlineDeleteUnsyncedMarker": "Delete unsynced marker",
   "offlineDeleteSyncedMarkerDisabled": "Only unsynced offline markers can be deleted until the server returns",
   "offlineGeocodingUnavailable": "Geocoding contributions are unavailable while offline.",

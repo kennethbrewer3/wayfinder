@@ -98,85 +98,92 @@ class MapDeviceLocationHud extends ConsumerWidget {
       }
     }
 
-    return Material(
-      elevation: 2,
-      borderRadius: BorderRadius.circular(8),
-      color: theme.colorScheme.surface.withValues(alpha: 0.92),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  location.following ? Icons.gps_fixed : Icons.gps_not_fixed,
-                  size: 16,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    hereElevation == null
-                        ? positionText
-                        : '$positionText · ${formatElevationMeters(hereElevation, units)}',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                      fontWeight: FontWeight.w600,
+    final maxWidth = (MediaQuery.sizeOf(context).width - 24).clamp(
+      160.0,
+      420.0,
+    );
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(8),
+        color: theme.colorScheme.surface.withValues(alpha: 0.92),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    location.following ? Icons.gps_fixed : Icons.gps_not_fixed,
+                    size: 16,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      hereElevation == null
+                          ? positionText
+                          : '$positionText · ${formatElevationMeters(hereElevation, units)}',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
+                  ),
+                ],
+              ),
+              if (recordingTrailName != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  l10n.mapDeviceLocationRecordingTrail(recordingTrailName),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.tertiary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
-            ),
-            if (recordingTrailName != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               Text(
-                l10n.mapDeviceLocationRecordingTrail(recordingTrailName),
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.tertiary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-            const SizedBox(height: 2),
-            Text(
-              formatMagneticDeclination(declination),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
-            ),
-            if (rangeText != null && targetName != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                l10n.mapDeviceLocationToMarker(targetName, rangeText),
-                style: theme.textTheme.labelMedium?.copyWith(
+                formatMagneticDeclination(declination),
+                style: theme.textTheme.labelSmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
-              if (climbText != null) ...[
-                const SizedBox(height: 2),
+              if (rangeText != null && targetName != null) ...[
+                const SizedBox(height: 4),
                 Text(
-                  climbText,
+                  l10n.mapDeviceLocationToMarker(targetName, rangeText),
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
-              ],
-            ] else ...[
-              const SizedBox(height: 2),
-              Text(
-                l10n.mapDeviceLocationSelectMarkerHint,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+                if (climbText != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    climbText,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ],
+              ] else ...[
+                const SizedBox(height: 2),
+                Text(
+                  l10n.mapDeviceLocationSelectMarkerHint,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

@@ -407,7 +407,13 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.viewport.center != widget.viewport.center ||
         oldWidget.viewport.zoom != widget.viewport.zoom) {
-      _mapController.move(widget.viewport.center, widget.viewport.zoom);
+      // Orientation / layout churn can briefly detach the map camera while GPS
+      // follow keeps pushing viewport updates — never throw from here.
+      try {
+        _mapController.move(widget.viewport.center, widget.viewport.zoom);
+      } catch (_) {
+        // Map not ready yet; the next frame / onMapReady path will sync.
+      }
     }
 
     final oldIds = oldWidget.enabledEntries.map((entry) => entry.id).toSet();
@@ -5350,7 +5356,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 child: MapCursorCoordinates(
                   location: location,
                   showMgrs: showMgrsGrid,
-                  zoom: _mapController.camera.zoom,
+                  zoom: _currentViewportZoom(),
                 ),
               ),
             if (showCompassRose ||
@@ -5361,23 +5367,67 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 child: SafeArea(
                   top: false,
                   right: false,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (showCompassRose)
-                        MapCompassRoseOverlay(mapController: _mapController),
-                      if (showCompassRose &&
-                          deviceLocation.tracking &&
-                          deviceLocation.hasFix)
-                        const SizedBox(height: 8),
-                      if (deviceLocation.tracking && deviceLocation.hasFix)
-                        IgnorePointer(
-                          child: MapDeviceLocationHud(
-                            zoom: _mapController.camera.zoom,
+                  child: Builder(
+                    builder: (context) {
+                      final size = MediaQuery.sizeOf(context);
+                      final landscape = size.width > size.height;
+                      final showHud =
+                          deviceLocation.tracking && deviceLocation.hasFix;
+                      final hud = showHud
+                          ? IgnorePointer(
+                              child: MapDeviceLocationHud(
+                                zoom: _currentViewportZoom(),
+                              ),
+                            )
+                          : null;
+                      final compass = showCompassRose
+                          ? MapCompassRoseOverlay(
+                              mapController: _mapController,
+                            )
+                          : null;
+                      // Landscape phones are short; stack compass+HUD vertically
+                      // and they collide with the map-objects sheet. Sit them
+                      // side-by-side and cap height so rotation stays stable.
+                      if (landscape && compass != null && hud != null) {
+                        return ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: size.width * 0.92,
+                            maxHeight: size.height * 0.42,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                compass,
+                                const SizedBox(width: 8),
+                                Flexible(child: hud),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: size.width * 0.92,
+                          maxHeight: landscape
+                              ? size.height * 0.42
+                              : size.height * 0.55,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ?compass,
+                              if (compass != null && hud != null)
+                                const SizedBox(height: 8),
+                              ?hud,
+                            ],
                           ),
                         ),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),

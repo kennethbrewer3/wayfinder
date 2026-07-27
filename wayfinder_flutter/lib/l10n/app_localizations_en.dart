@@ -1000,8 +1000,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsMapDebugTitle => 'Map debugging';
 
   @override
-  String get settingsMapDebugDescription =>
-      'Visual aids stored in this browser only.';
+  String get settingsMapDebugDescription => 'Aids stored on this device only.';
 
   @override
   String get settingsMapMarkerSizeTitle => 'Map marker size';
@@ -1034,6 +1033,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsMapTileBorderDebugDescription =>
       'Draws green borders around each map tile. Requires the viewport debug overlay above.';
+
+  @override
+  String get settingsForceOfflinePackTitle => 'Use offline pack while online';
+
+  @override
+  String get settingsForceOfflinePackDescription =>
+      'Use the prepared offline / field pack even when the Wayfinder server is reachable. Lets you test pack behavior without cutting internet for other apps.';
+
+  @override
+  String get settingsForceOfflinePackUnavailable =>
+      'Prepare an offline pack from the map toolbar first.';
 
   @override
   String get mapDebugOverlayCopyTooltip => 'Copy debug info';
@@ -1717,6 +1727,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offlineModeBannerReadWriteHint =>
       'Showing packed layers. You can add markers, change marker layers, delete unsynced markers, record GPS tracks, and add watch-log entries.';
+
+  @override
+  String get offlineModeBannerForcedHint =>
+      'Forced offline pack (server still reachable). Turn off in Settings → General → Map debugging when finished testing.';
 
   @override
   String get offlineDeleteUnsyncedMarker => 'Delete unsynced marker';

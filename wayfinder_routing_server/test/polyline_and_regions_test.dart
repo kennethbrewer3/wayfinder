@@ -28,6 +28,21 @@ void main() {
     test('resolveSourceUrl returns null for custom without url', () {
       expect(resolveSourceUrl(regionId: 'custom'), isNull);
     });
+
+    test('extractDisplayName uses preset name or custom region', () {
+      expect(extractDisplayName(regionId: 'monaco'), 'Monaco');
+      expect(
+        extractDisplayName(
+          sourceUrl:
+              'https://download.geofabrik.de/europe/monaco-latest.osm.pbf',
+        ),
+        'Monaco',
+      );
+      expect(
+        extractDisplayName(sourceUrl: 'https://example.com/custom.osm.pbf'),
+        'custom region',
+      );
+    });
   });
 
   group('decodePolyline', () {

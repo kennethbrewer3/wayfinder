@@ -28,7 +28,9 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
 
   late final TextEditingController _routingServerUrlController;
   final _customUrlController = TextEditingController();
-  RoutingRegion? _selectedRegion;
+
+  /// Selected preset region id, or null for custom URL.
+  String? _selectedRegionId;
   bool _isSavingRoutingServerUrl = false;
   bool _isStartingImport = false;
   bool _isCancellingImport = false;
@@ -100,9 +102,9 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
 
   Future<void> _startImport() async {
     final l10n = AppLocalizations.of(context)!;
-    final region = _selectedRegion;
+    final regionId = _selectedRegionId;
     final customUrl = _customUrlController.text.trim();
-    if (region == null && customUrl.isEmpty) {
+    if (regionId == null && customUrl.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.routingRegionOrUrlRequired)),
       );
@@ -113,8 +115,8 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
     try {
       final repository = ref.read(routingRepositoryProvider);
       await repository.startImport(
-        regionId: region?.id,
-        sourceUrl: region == null ? customUrl : null,
+        regionId: regionId,
+        sourceUrl: regionId == null ? customUrl : null,
       );
       refreshRouting(ref);
       _schedulePolling(importInProgress: true);
@@ -179,6 +181,52 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
       RoutingImportStatus.cancelled => l10n.routingStatusCancelled,
       RoutingImportStatus.unknown => l10n.routingServerUnreachable,
     };
+  }
+
+  /// Region id shown in the dropdown (`null` = custom). During an active
+  /// import, prefer the server's reported region so the field does not go blank
+  /// when the regions list is re-fetched (new object identities).
+  String? _displayedRegionId(
+    RoutingStatus status,
+    List<RoutingRegion> regions,
+  ) {
+    if (status.importInProgress ||
+        status.status == RoutingImportStatus.downloading ||
+        status.status == RoutingImportStatus.building) {
+      final regionId = status.regionId;
+      if (regionId != null &&
+          regionId.isNotEmpty &&
+          regionId != 'custom' &&
+          regions.any((region) => region.id == regionId)) {
+        return regionId;
+      }
+      final sourceUrl = status.sourceUrl?.trim();
+      if (sourceUrl != null && sourceUrl.isNotEmpty) {
+        for (final region in regions) {
+          if (region.id == 'custom') {
+            continue;
+          }
+          if (region.sourceUrl?.trim() == sourceUrl) {
+            return region.id;
+          }
+        }
+      }
+      // Known import in progress but not a preset → show Custom region.
+      if (status.sourceUrl != null && status.sourceUrl!.trim().isNotEmpty) {
+        return null;
+      }
+    }
+    return _selectedRegionId;
+  }
+
+  List<RoutingRegion> _selectableRegions(List<RoutingRegion> regions) {
+    return [
+      for (final region in regions)
+        if (region.id != 'custom' &&
+            region.sourceUrl != null &&
+            region.sourceUrl!.trim().isNotEmpty)
+          region,
+    ];
   }
 
   Widget _buildServerConnection(AppLocalizations l10n) {
@@ -316,6 +364,9 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
     List<RoutingRegion> regions,
   ) {
     final controlsEnabled = !status.importInProgress && !_isStartingImport;
+    final selectable = _selectableRegions(regions);
+    final displayedRegionId = _displayedRegionId(status, selectable);
+    final showCustomUrl = selectable.isEmpty || displayedRegionId == null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -329,26 +380,33 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        if (regions.isNotEmpty)
-          DropdownButtonFormField<RoutingRegion?>(
-            initialValue: _selectedRegion,
+        if (selectable.isNotEmpty)
+          DropdownButtonFormField<String?>(
+            key: ValueKey(
+              'routing-region-$displayedRegionId-'
+              '${status.importInProgress}',
+            ),
+            initialValue: displayedRegionId,
             decoration: InputDecoration(
               labelText: l10n.routingRegionLabel,
               border: const OutlineInputBorder(),
             ),
             items: [
-              for (final region in regions)
-                DropdownMenuItem(value: region, child: Text(region.name)),
+              for (final region in selectable)
+                DropdownMenuItem(
+                  value: region.id,
+                  child: Text(region.name),
+                ),
               DropdownMenuItem(
                 value: null,
-                child: Text(l10n.routingCustomUrlLabel),
+                child: Text(l10n.routingCustomRegionLabel),
               ),
             ],
             onChanged: controlsEnabled
-                ? (value) => setState(() => _selectedRegion = value)
+                ? (value) => setState(() => _selectedRegionId = value)
                 : null,
           ),
-        if (regions.isEmpty || _selectedRegion == null) ...[
+        if (showCustomUrl) ...[
           const SizedBox(height: 12),
           HttpUrlField(
             controller: _customUrlController,

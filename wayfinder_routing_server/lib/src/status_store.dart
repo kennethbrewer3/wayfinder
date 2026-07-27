@@ -25,6 +25,8 @@ class RoutingStatusSnapshot {
     required this.status,
     required this.message,
     this.sourceUrl,
+    this.regionId,
+    this.regionName,
     this.progress,
     this.distanceMeters,
     this.ready = false,
@@ -35,6 +37,8 @@ class RoutingStatusSnapshot {
   RoutingStatus status;
   String message;
   String? sourceUrl;
+  String? regionId;
+  String? regionName;
   double? progress;
   double? distanceMeters;
   bool ready;
@@ -45,6 +49,8 @@ class RoutingStatusSnapshot {
     'status': status.name,
     'message': message,
     if (sourceUrl != null) 'sourceUrl': sourceUrl,
+    if (regionId != null) 'regionId': regionId,
+    if (regionName != null) 'regionName': regionName,
     if (progress != null) 'progress': progress,
     if (distanceMeters != null) 'distanceMeters': distanceMeters,
     'ready': ready,
@@ -57,6 +63,8 @@ class RoutingStatusSnapshot {
       status: RoutingStatus.fromString(json['status'] as String? ?? 'idle'),
       message: json['message'] as String? ?? '',
       sourceUrl: json['sourceUrl'] as String?,
+      regionId: json['regionId'] as String?,
+      regionName: json['regionName'] as String?,
       progress: (json['progress'] as num?)?.toDouble(),
       distanceMeters: (json['distanceMeters'] as num?)?.toDouble(),
       ready: json['ready'] as bool? ?? false,
@@ -71,6 +79,8 @@ class RoutingStatusSnapshot {
     status: status,
     message: message,
     sourceUrl: sourceUrl,
+    regionId: regionId,
+    regionName: regionName,
     progress: progress,
     distanceMeters: distanceMeters,
     ready: ready,

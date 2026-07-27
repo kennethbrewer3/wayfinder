@@ -2909,6 +2909,7 @@
   "routingImportTitle": "Importer les données cartographiques",
   "routingImportDescription": "Téléchargez un extrait OSM et construisez le graphe d'itinéraires hors ligne. Cela peut prendre du temps selon la taille de la région et le matériel du serveur.",
   "routingRegionLabel": "Région",
+  "routingCustomRegionLabel": "Région personnalisée",
   "routingCustomUrlLabel": "URL d'extrait OSM personnalisée",
   "routingRegionOrUrlRequired": "Choisissez une région ou saisissez une URL d'extrait OSM personnalisée.",
   "routingImportAction": "Importer la région",

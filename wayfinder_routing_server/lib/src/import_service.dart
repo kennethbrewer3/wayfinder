@@ -25,6 +25,9 @@ class ImportService {
   bool _importInProgress = false;
   bool _cancelRequested = false;
   http.Client? _downloadClient;
+  String? _activeRegionId;
+  String? _activeRegionName;
+  String? _activeSourceUrl;
 
   bool get isImporting => _importInProgress;
 
@@ -43,12 +46,23 @@ class ImportService {
       );
     }
 
+    final matched = (regionId != null && regionId != 'custom')
+        ? regionById(regionId)
+        : regionBySourceUrl(resolvedUrl);
+    final displayName = extractDisplayName(
+      regionId: matched?.id ?? regionId,
+      sourceUrl: resolvedUrl,
+    );
+
     routingLog.info(
-      'Import requested (regionId=${regionId ?? 'none'}, '
-      'sourceUrl=$resolvedUrl)',
+      'Import requested (regionId=${matched?.id ?? regionId ?? 'custom'}, '
+      'regionName=$displayName, sourceUrl=$resolvedUrl)',
     );
     _importInProgress = true;
     _cancelRequested = false;
+    _activeRegionId = matched?.id;
+    _activeRegionName = displayName;
+    _activeSourceUrl = resolvedUrl;
 
     unawaited(_runImport(resolvedUrl));
   }
@@ -66,6 +80,9 @@ class ImportService {
       RoutingStatusSnapshot(
         status: RoutingStatus.cancelled,
         message: 'Import cancelled.',
+        sourceUrl: _activeSourceUrl,
+        regionId: _activeRegionId,
+        regionName: _activeRegionName,
         ready: false,
       ),
     );
@@ -73,21 +90,25 @@ class ImportService {
 
   Future<void> _runImport(String url) async {
     final startedAt = DateTime.now();
-    routingLog.info('Import started for $url');
+    final regionId = _activeRegionId;
+    final regionName = _activeRegionName ?? 'custom region';
+    routingLog.info('Import started for $url ($regionName)');
     try {
       await graphHopperProcess.stop();
 
       await statusStore.update(
         RoutingStatusSnapshot(
           status: RoutingStatus.downloading,
-          message: 'Downloading OSM extract…',
+          message: _downloadMessage(regionName),
           sourceUrl: url,
+          regionId: regionId,
+          regionName: regionName,
           progress: 0,
           ready: false,
         ),
       );
 
-      await _downloadPbf(url);
+      await _downloadPbf(url, regionName: regionName, regionId: regionId);
 
       if (_cancelRequested) {
         routingLog.warning('Import cancelled after download');
@@ -97,8 +118,10 @@ class ImportService {
       await statusStore.update(
         RoutingStatusSnapshot(
           status: RoutingStatus.building,
-          message: 'Building routing graph (this may take a while)…',
+          message: 'Building routing graph for $regionName…',
           sourceUrl: url,
+          regionId: regionId,
+          regionName: regionName,
           progress: null,
           ready: false,
         ),
@@ -115,8 +138,10 @@ class ImportService {
       await statusStore.update(
         RoutingStatusSnapshot(
           status: RoutingStatus.ready,
-          message: 'Routing graph is ready.',
+          message: 'Routing graph is ready ($regionName).',
           sourceUrl: url,
+          regionId: regionId,
+          regionName: regionName,
           progress: 1,
           ready: true,
         ),
@@ -124,7 +149,7 @@ class ImportService {
       final elapsed = DateTime.now().difference(startedAt);
       routingLog.info(
         'Import finished successfully in ${elapsed.inSeconds}s '
-        '(sourceUrl=$url)',
+        '(regionName=$regionName, sourceUrl=$url)',
       );
     } on Object catch (error, stackTrace) {
       if (_cancelRequested) {
@@ -135,8 +160,10 @@ class ImportService {
       await statusStore.update(
         RoutingStatusSnapshot(
           status: RoutingStatus.failed,
-          message: 'Import failed.',
+          message: 'Import failed ($regionName).',
           sourceUrl: url,
+          regionId: regionId,
+          regionName: regionName,
           ready: false,
           error: error.toString(),
         ),
@@ -149,7 +176,11 @@ class ImportService {
     }
   }
 
-  Future<void> _downloadPbf(String url) async {
+  Future<void> _downloadPbf(
+    String url, {
+    required String regionName,
+    String? regionId,
+  }) async {
     final dir = Directory(config.dataDir);
     if (!await dir.exists()) {
       await dir.create(recursive: true);
@@ -221,10 +252,10 @@ class ImportService {
           await statusStore.update(
             RoutingStatusSnapshot(
               status: RoutingStatus.downloading,
-              message: percent == null
-                  ? 'Downloading OSM extract…'
-                  : 'Downloading OSM extract… $percent%',
+              message: _downloadMessage(regionName, percent: percent),
               sourceUrl: url,
+              regionId: regionId,
+              regionName: regionName,
               progress: progress,
               ready: false,
             ),
@@ -240,13 +271,14 @@ class ImportService {
             lastLoggedAt = now;
             if (percent != null && totalBytes != null) {
               routingLog.info(
-                'Download progress: $percent% '
+                'Download progress ($regionName): $percent% '
                 '(${formatByteSize(receivedBytes)} / '
                 '${formatByteSize(totalBytes)})',
               );
             } else {
               routingLog.info(
-                'Download progress: ${formatByteSize(receivedBytes)} received',
+                'Download progress ($regionName): '
+                '${formatByteSize(receivedBytes)} received',
               );
             }
           }
@@ -271,6 +303,13 @@ class ImportService {
     routingLog.info(
       'OSM PBF saved to ${target.path} (${formatByteSize(size)})',
     );
+  }
+
+  String _downloadMessage(String regionName, {int? percent}) {
+    if (percent == null) {
+      return 'Downloading OSM extract: $regionName…';
+    }
+    return 'Downloading OSM extract: $regionName… $percent%';
   }
 
   void dispose() {

@@ -6276,6 +6276,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get routingRegionLabel => 'Région';
 
   @override
+  String get routingCustomRegionLabel => 'Région personnalisée';
+
+  @override
   String get routingCustomUrlLabel => 'URL d\'extrait OSM personnalisée';
 
   @override

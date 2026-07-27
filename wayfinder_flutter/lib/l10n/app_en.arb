@@ -3646,6 +3646,7 @@
   "routingImportTitle": "Import map data",
   "routingImportDescription": "Download an OSM extract and build the offline routing graph. This can take a while depending on the region size and server hardware.",
   "routingRegionLabel": "Region",
+  "routingCustomRegionLabel": "Custom region",
   "routingCustomUrlLabel": "Custom OSM extract URL",
   "routingRegionOrUrlRequired": "Choose a region or enter a custom OSM extract URL.",
   "routingImportAction": "Import region",

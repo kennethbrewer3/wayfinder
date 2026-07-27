@@ -10815,6 +10815,12 @@ abstract class AppLocalizations {
   /// **'Region'**
   String get routingRegionLabel;
 
+  /// No description provided for @routingCustomRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom region'**
+  String get routingCustomRegionLabel;
+
   /// No description provided for @routingCustomUrlLabel.
   ///
   /// In en, this message translates to:

@@ -2909,6 +2909,7 @@
   "routingImportTitle": "Importar datos del mapa",
   "routingImportDescription": "Descarga un extracto de OSM y construye el grafo de rutas sin conexión. Esto puede tardar según el tamaño de la región y el hardware del servidor.",
   "routingRegionLabel": "Región",
+  "routingCustomRegionLabel": "Región personalizada",
   "routingCustomUrlLabel": "URL de extracto OSM personalizada",
   "routingRegionOrUrlRequired": "Elige una región o introduce una URL de extracto OSM personalizada.",
   "routingImportAction": "Importar región",

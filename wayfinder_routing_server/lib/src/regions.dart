@@ -104,6 +104,37 @@ RoutingRegion? regionById(String id) {
   return null;
 }
 
+RoutingRegion? regionBySourceUrl(String url) {
+  final trimmed = url.trim();
+  for (final region in presetRoutingRegions) {
+    if (region.id == 'custom') {
+      continue;
+    }
+    final sourceUrl = region.sourceUrl;
+    if (sourceUrl != null && sourceUrl.trim() == trimmed) {
+      return region;
+    }
+  }
+  return null;
+}
+
+/// Display label for status messages (`Monaco`, `custom region`, …).
+String extractDisplayName({String? regionId, String? sourceUrl}) {
+  if (regionId != null && regionId.isNotEmpty && regionId != 'custom') {
+    final byId = regionById(regionId);
+    if (byId != null) {
+      return byId.name;
+    }
+  }
+  if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
+    final byUrl = regionBySourceUrl(sourceUrl);
+    if (byUrl != null) {
+      return byUrl.name;
+    }
+  }
+  return 'custom region';
+}
+
 String? resolveSourceUrl({String? regionId, String? sourceUrl}) {
   if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
     return sourceUrl.trim();

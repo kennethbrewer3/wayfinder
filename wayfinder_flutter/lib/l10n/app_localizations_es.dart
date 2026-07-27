@@ -6260,6 +6260,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routingRegionLabel => 'Región';
 
   @override
+  String get routingCustomRegionLabel => 'Región personalizada';
+
+  @override
   String get routingCustomUrlLabel => 'URL de extracto OSM personalizada';
 
   @override

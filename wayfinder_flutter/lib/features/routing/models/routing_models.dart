@@ -31,6 +31,8 @@ class RoutingStatus {
     this.progress,
     this.message,
     this.sourceUrl,
+    this.regionId,
+    this.regionName,
     this.error,
   });
 
@@ -44,6 +46,8 @@ class RoutingStatus {
   final bool importInProgress;
   final String? message;
   final String? sourceUrl;
+  final String? regionId;
+  final String? regionName;
   final String? error;
 
   static const unconfigured = RoutingStatus(
@@ -63,6 +67,8 @@ class RoutingStatus {
       importInProgress: json['importInProgress'] as bool? ?? false,
       message: json['message'] as String?,
       sourceUrl: json['sourceUrl'] as String?,
+      regionId: json['regionId'] as String?,
+      regionName: json['regionName'] as String?,
       error: json['error'] as String?,
     );
   }

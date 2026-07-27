@@ -263,7 +263,23 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
         ),
         if (status.importInProgress) ...[
           const SizedBox(height: 8),
-          LinearProgressIndicator(value: status.progress.clamp(0, 1)),
+          LinearProgressIndicator(
+            value:
+                status.status == RoutingImportStatus.downloading &&
+                    status.progress != null
+                ? status.progress!.clamp(0.0, 1.0)
+                : null,
+          ),
+          if (status.status == RoutingImportStatus.downloading &&
+              status.progress != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              l10n.routingImportProgressPercent(
+                (status.progress! * 100).clamp(0, 100).toStringAsFixed(0),
+              ),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ],
         if (status.message != null && status.message!.isNotEmpty) ...[
           const SizedBox(height: 8),

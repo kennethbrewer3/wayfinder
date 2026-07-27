@@ -187,7 +187,6 @@ class RoutingStatusNotifier extends AsyncNotifier<RoutingStatus> {
     if (!await repository.isServerReachable()) {
       return const RoutingStatus(
         status: RoutingImportStatus.unknown,
-        progress: 0,
         ready: false,
         graphhopperUp: false,
         importInProgress: false,

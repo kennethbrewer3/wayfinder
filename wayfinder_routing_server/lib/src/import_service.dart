@@ -153,6 +153,8 @@ class ImportService {
     final totalBytes = response.contentLength;
     var receivedBytes = 0;
     final sink = temp.openWrite();
+    var lastReportedProgress = -1.0;
+    var lastReportedAt = DateTime.fromMillisecondsSinceEpoch(0);
 
     try {
       await for (final chunk in response.stream) {
@@ -163,18 +165,38 @@ class ImportService {
         sink.add(chunk);
 
         final progress = totalBytes != null && totalBytes > 0
-            ? receivedBytes / totalBytes
+            ? (receivedBytes / totalBytes).clamp(0.0, 1.0)
             : null;
 
-        await statusStore.update(
-          RoutingStatusSnapshot(
-            status: RoutingStatus.downloading,
-            message: 'Downloading OSM extract…',
-            sourceUrl: url,
-            progress: progress,
-            ready: false,
-          ),
-        );
+        final now = DateTime.now();
+        final shouldReport = progress == null
+            ? now.difference(lastReportedAt) >=
+                  const Duration(milliseconds: 500)
+            : progress >= 1.0 ||
+                  progress - lastReportedProgress >= 0.01 ||
+                  now.difference(lastReportedAt) >=
+                      const Duration(milliseconds: 250);
+
+        if (shouldReport) {
+          lastReportedAt = now;
+          if (progress != null) {
+            lastReportedProgress = progress;
+          }
+          final percent = progress == null
+              ? null
+              : (progress * 100).round().clamp(0, 100);
+          await statusStore.update(
+            RoutingStatusSnapshot(
+              status: RoutingStatus.downloading,
+              message: percent == null
+                  ? 'Downloading OSM extract…'
+                  : 'Downloading OSM extract… $percent%',
+              sourceUrl: url,
+              progress: progress,
+              ready: false,
+            ),
+          );
+        }
       }
     } finally {
       await sink.close();

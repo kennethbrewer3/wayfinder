@@ -6174,6 +6174,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routingStatusDownloading => 'Downloading…';
 
   @override
+  String routingImportProgressPercent(String percent) {
+    return '$percent%';
+  }
+
+  @override
   String get routingStatusBuilding => 'Building routing graph…';
 
   @override

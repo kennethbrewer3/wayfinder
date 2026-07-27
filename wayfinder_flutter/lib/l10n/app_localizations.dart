@@ -10767,6 +10767,12 @@ abstract class AppLocalizations {
   /// **'Downloading…'**
   String get routingStatusDownloading;
 
+  /// No description provided for @routingImportProgressPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String routingImportProgressPercent(String percent);
+
   /// No description provided for @routingStatusBuilding.
   ///
   /// In en, this message translates to:

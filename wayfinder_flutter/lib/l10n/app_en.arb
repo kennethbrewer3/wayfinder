@@ -3633,6 +3633,12 @@
   "routingStatusIdle": "Not imported",
   "routingStatusChecking": "Checking routing server…",
   "routingStatusDownloading": "Downloading…",
+  "routingImportProgressPercent": "{percent}%",
+  "@routingImportProgressPercent": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
   "routingStatusBuilding": "Building routing graph…",
   "routingStatusReady": "Ready",
   "routingStatusFailed": "Failed",

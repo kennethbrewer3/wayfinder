@@ -2896,6 +2896,12 @@
   "routingStatusIdle": "Non importé",
   "routingStatusChecking": "Vérification du serveur d'itinéraires…",
   "routingStatusDownloading": "Téléchargement…",
+  "routingImportProgressPercent": "{percent} %",
+  "@routingImportProgressPercent": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
   "routingStatusBuilding": "Construction du graphe d'itinéraires…",
   "routingStatusReady": "Prêt",
   "routingStatusFailed": "Échec",

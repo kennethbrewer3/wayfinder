@@ -25,17 +25,20 @@ enum RoutingImportStatus {
 class RoutingStatus {
   const RoutingStatus({
     required this.status,
-    required this.progress,
     required this.ready,
     required this.graphhopperUp,
     required this.importInProgress,
+    this.progress,
     this.message,
     this.sourceUrl,
     this.error,
   });
 
   final RoutingImportStatus status;
-  final double progress;
+
+  /// 0–1 while downloading when Content-Length is known; null when unknown
+  /// (e.g. building phase or chunked download without length).
+  final double? progress;
   final bool ready;
   final bool graphhopperUp;
   final bool importInProgress;
@@ -45,7 +48,7 @@ class RoutingStatus {
 
   static const unconfigured = RoutingStatus(
     status: RoutingImportStatus.idle,
-    progress: 0,
+    progress: null,
     ready: false,
     graphhopperUp: false,
     importInProgress: false,
@@ -54,7 +57,7 @@ class RoutingStatus {
   factory RoutingStatus.fromJson(Map<String, dynamic> json) {
     return RoutingStatus(
       status: RoutingImportStatus.fromWire(json['status'] as String?),
-      progress: (json['progress'] as num?)?.toDouble() ?? 0,
+      progress: (json['progress'] as num?)?.toDouble(),
       ready: json['ready'] as bool? ?? false,
       graphhopperUp: json['graphhopperUp'] as bool? ?? false,
       importInProgress: json['importInProgress'] as bool? ?? false,

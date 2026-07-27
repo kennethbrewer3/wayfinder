@@ -1108,6 +1108,49 @@
   "elevationNoDemAvailable": "No elevation DEM is enabled. Upload a Terrarium or Terrain-RGB .pmtiles file named with dem/terrarium/elevation and enable it under Map tiles.",
   "elevationProfileTitle": "Elevation profile",
   "elevationProfileButton": "Elevation profile",
+  "routeFollowButton": "Follow route",
+  "routeFollowPrimaryButton": "Follow primary route",
+  "routeFollowStop": "Stop following",
+  "routeFollowSimulate": "Simulate walk along route",
+  "routeFollowStopSimulate": "Stop simulated walk",
+  "routeFollowStarted": "Following “{name}”. Stay near the path.",
+  "@routeFollowStarted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "routeFollowGpsRequired": "Could not start GPS. Enable location and try again.",
+  "routeFollowActive": "Following {name}",
+  "@routeFollowActive": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "routeFollowOffRoute": "Off route · {distance}",
+  "@routeFollowOffRoute": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowCompleted": "Route complete",
+  "routeFollowRemaining": "{distance} left",
+  "@routeFollowRemaining": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowEta": "ETA {eta}",
+  "@routeFollowEta": {
+    "placeholders": {
+      "eta": { "type": "String" }
+    }
+  },
+  "routeFollowNextBearing": "Next {bearing}",
+  "@routeFollowNextBearing": {
+    "placeholders": {
+      "bearing": { "type": "String" }
+    }
+  },
   "elevationProfileEmpty": "Could not sample elevations along this path.",
   "elevationProfileFailed": "Could not build elevation profile: {error}",
   "@elevationProfileFailed": {

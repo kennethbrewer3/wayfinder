@@ -729,6 +729,49 @@
   "elevationNoDemAvailable": "No hay un DEM de elevación activado. Suba un .pmtiles Terrarium o Terrain-RGB con dem/terrarium/elevation en el nombre y actívelo en Mosaicos del mapa.",
   "elevationProfileTitle": "Perfil de elevación",
   "elevationProfileButton": "Perfil de elevación",
+  "routeFollowButton": "Seguir ruta",
+  "routeFollowPrimaryButton": "Seguir ruta principal",
+  "routeFollowStop": "Dejar de seguir",
+  "routeFollowSimulate": "Simular caminata por la ruta",
+  "routeFollowStopSimulate": "Detener simulación",
+  "routeFollowStarted": "Siguiendo “{name}”. Manténgase cerca del trazado.",
+  "@routeFollowStarted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "routeFollowGpsRequired": "No se pudo iniciar el GPS. Active la ubicación e inténtelo de nuevo.",
+  "routeFollowActive": "Siguiendo {name}",
+  "@routeFollowActive": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "routeFollowOffRoute": "Fuera de ruta · {distance}",
+  "@routeFollowOffRoute": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowCompleted": "Ruta completada",
+  "routeFollowRemaining": "{distance} restantes",
+  "@routeFollowRemaining": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowEta": "ETA {eta}",
+  "@routeFollowEta": {
+    "placeholders": {
+      "eta": { "type": "String" }
+    }
+  },
+  "routeFollowNextBearing": "Siguiente {bearing}",
+  "@routeFollowNextBearing": {
+    "placeholders": {
+      "bearing": { "type": "String" }
+    }
+  },
   "elevationProfileEmpty": "No se pudieron muestrear elevaciones en esta ruta.",
   "elevationProfileFailed": "No se pudo crear el perfil de elevación: {error}",
   "@elevationProfileFailed": {

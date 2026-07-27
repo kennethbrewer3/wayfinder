@@ -3197,6 +3197,84 @@ abstract class AppLocalizations {
   /// **'Elevation profile'**
   String get elevationProfileButton;
 
+  /// No description provided for @routeFollowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow route'**
+  String get routeFollowButton;
+
+  /// No description provided for @routeFollowPrimaryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow primary route'**
+  String get routeFollowPrimaryButton;
+
+  /// No description provided for @routeFollowStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop following'**
+  String get routeFollowStop;
+
+  /// No description provided for @routeFollowSimulate.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulate walk along route'**
+  String get routeFollowSimulate;
+
+  /// No description provided for @routeFollowStopSimulate.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop simulated walk'**
+  String get routeFollowStopSimulate;
+
+  /// No description provided for @routeFollowStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Following “{name}”. Stay near the path.'**
+  String routeFollowStarted(String name);
+
+  /// No description provided for @routeFollowGpsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start GPS. Enable location and try again.'**
+  String get routeFollowGpsRequired;
+
+  /// No description provided for @routeFollowActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Following {name}'**
+  String routeFollowActive(String name);
+
+  /// No description provided for @routeFollowOffRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Off route · {distance}'**
+  String routeFollowOffRoute(String distance);
+
+  /// No description provided for @routeFollowCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Route complete'**
+  String get routeFollowCompleted;
+
+  /// No description provided for @routeFollowRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} left'**
+  String routeFollowRemaining(String distance);
+
+  /// No description provided for @routeFollowEta.
+  ///
+  /// In en, this message translates to:
+  /// **'ETA {eta}'**
+  String routeFollowEta(String eta);
+
+  /// No description provided for @routeFollowNextBearing.
+  ///
+  /// In en, this message translates to:
+  /// **'Next {bearing}'**
+  String routeFollowNextBearing(String bearing);
+
   /// No description provided for @elevationProfileEmpty.
   ///
   /// In en, this message translates to:

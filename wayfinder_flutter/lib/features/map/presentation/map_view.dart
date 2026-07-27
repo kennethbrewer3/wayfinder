@@ -97,6 +97,8 @@ import '../../settings/data/pmtiles_loader.dart';
 import '../../settings/models/pmtiles_archive_entry.dart';
 import '../../settings/models/pmtiles_map_layer.dart';
 import '../../settings/models/pmtiles_source.dart';
+import '../../route_follow/presentation/map_route_follow_hud.dart';
+import '../../route_follow/providers/route_follow_provider.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../slope/presentation/map_slope_layer.dart';
 import '../../slope/presentation/slope_banner.dart';
@@ -4671,6 +4673,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             deviceLocationTarget.latitude,
             deviceLocationTarget.longitude,
           );
+    final routeFollow = ref.watch(routeFollowProvider);
+    final routeFollowGuidePoint = () {
+      final progress = routeFollow.progress;
+      if (!routeFollow.active || progress == null) {
+        return null;
+      }
+      return routeFollow.offRoute ? progress.snapPoint : progress.nextPoint;
+    }();
+    final locationGuidePoint =
+        routeFollowGuidePoint ?? deviceLocationTargetPoint;
     final mapMarkerSizeScale = ref.watch(mapMarkerSizeScaleProvider);
     final geocodingReachable =
         !ref.watch(offlineModeActiveProvider) &&
@@ -4945,7 +4957,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                     ],
                     ...buildDeviceLocationMapChildren(
                       deviceLocation,
-                      targetPoint: deviceLocationTargetPoint,
+                      targetPoint: locationGuidePoint,
                     ),
                     if (mapTilesDisplayed)
                       if (widget.searchCoordinateMarker case final marker?)
@@ -5360,7 +5372,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                 ),
               ),
             if (showCompassRose ||
-                (deviceLocation.tracking && deviceLocation.hasFix))
+                (deviceLocation.tracking && deviceLocation.hasFix) ||
+                routeFollow.active)
               Positioned(
                 left: 12,
                 bottom: 12,
@@ -5373,6 +5386,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                       final landscape = size.width > size.height;
                       final showHud =
                           deviceLocation.tracking && deviceLocation.hasFix;
+                      final followHud = routeFollow.active
+                          ? const MapRouteFollowHud()
+                          : null;
                       final hud = showHud
                           ? IgnorePointer(
                               child: MapDeviceLocationHud(
@@ -5385,17 +5401,16 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                               mapController: _mapController,
                             )
                           : null;
-                      // Landscape phones are short; stack compass+HUD vertically
-                      // and they collide with the map-objects sheet. Sit them
-                      // side-by-side and cap height so rotation stays stable.
-                      if (landscape && compass != null && hud != null) {
-                        return ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: size.width * 0.92,
-                            maxHeight: size.height * 0.42,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Row(
+                      final stacked = Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ?followHud,
+                          if (followHud != null &&
+                              (compass != null || hud != null))
+                            const SizedBox(height: 8),
+                          if (landscape && compass != null && hud != null)
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -5403,29 +5418,23 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                                 const SizedBox(width: 8),
                                 Flexible(child: hud),
                               ],
-                            ),
-                          ),
-                        );
-                      }
+                            )
+                          else ...[
+                            ?compass,
+                            if (compass != null && hud != null)
+                              const SizedBox(height: 8),
+                            ?hud,
+                          ],
+                        ],
+                      );
                       return ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: size.width * 0.92,
                           maxHeight: landscape
-                              ? size.height * 0.42
+                              ? size.height * 0.5
                               : size.height * 0.55,
                         ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ?compass,
-                              if (compass != null && hud != null)
-                                const SizedBox(height: 8),
-                              ?hud,
-                            ],
-                          ),
-                        ),
+                        child: SingleChildScrollView(child: stacked),
                       );
                     },
                   ),

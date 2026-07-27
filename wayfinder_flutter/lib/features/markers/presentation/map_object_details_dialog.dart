@@ -20,6 +20,8 @@ import '../../circles/utils/circle_distance.dart';
 import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
+import '../../evac_kits/utils/evac_kit_path.dart';
+import '../../route_follow/presentation/start_route_follow.dart';
 import '../../tides/presentation/create_tide_tables.dart';
 import '../../layers/presentation/layer_assignment_row.dart';
 import '../../lines/models/line_geometry.dart';
@@ -580,6 +582,22 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       createdAt: zone.createdAt,
       updatedAt: zone.updatedAt,
       additionalActions: [
+        if (geometry.renderPoints.length >= 2)
+          TextButton.icon(
+            onPressed: () {
+              unawaited(
+                startRouteFollowFromDetails(
+                  context: context,
+                  ref: ref,
+                  zoneId: zone.id,
+                  routeName: zone.name,
+                  path: geometry.renderPoints,
+                ),
+              );
+            },
+            icon: const Icon(Icons.navigation),
+            label: Text(l10n.routeFollowButton),
+          ),
         TextButton.icon(
           onPressed: () {
             unawaited(
@@ -962,6 +980,25 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       createdAt: zone.createdAt,
       updatedAt: zone.updatedAt,
       additionalActions: [
+        if (geometry.primaryRoute != null &&
+            buildEvacRouteRenderPoints(geometry.primaryRoute!).length >= 2)
+          TextButton.icon(
+            onPressed: () {
+              final route = geometry.primaryRoute!;
+              unawaited(
+                startRouteFollowFromDetails(
+                  context: context,
+                  ref: ref,
+                  zoneId: zone.id,
+                  routeName: zone.name,
+                  path: buildEvacRouteRenderPoints(route),
+                  mode: geometry.defaultMode,
+                ),
+              );
+            },
+            icon: const Icon(Icons.navigation),
+            label: Text(l10n.routeFollowPrimaryButton),
+          ),
         if (!editLocked)
           TextButton.icon(
             onPressed: () {

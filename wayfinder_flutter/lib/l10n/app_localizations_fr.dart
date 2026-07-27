@@ -1854,6 +1854,58 @@ class AppLocalizationsFr extends AppLocalizations {
   String get elevationProfileButton => 'Profil d\'élévation';
 
   @override
+  String get routeFollowButton => 'Suivre l\'itinéraire';
+
+  @override
+  String get routeFollowPrimaryButton => 'Suivre l\'itinéraire principal';
+
+  @override
+  String get routeFollowStop => 'Arrêter le suivi';
+
+  @override
+  String get routeFollowSimulate => 'Simuler la marche sur l\'itinéraire';
+
+  @override
+  String get routeFollowStopSimulate => 'Arrêter la simulation';
+
+  @override
+  String routeFollowStarted(String name) {
+    return 'Suivi de « $name ». Restez près du tracé.';
+  }
+
+  @override
+  String get routeFollowGpsRequired =>
+      'Impossible de démarrer le GPS. Activez la localisation et réessayez.';
+
+  @override
+  String routeFollowActive(String name) {
+    return 'Suivi de $name';
+  }
+
+  @override
+  String routeFollowOffRoute(String distance) {
+    return 'Hors parcours · $distance';
+  }
+
+  @override
+  String get routeFollowCompleted => 'Itinéraire terminé';
+
+  @override
+  String routeFollowRemaining(String distance) {
+    return '$distance restants';
+  }
+
+  @override
+  String routeFollowEta(String eta) {
+    return 'ETA $eta';
+  }
+
+  @override
+  String routeFollowNextBearing(String bearing) {
+    return 'Prochain $bearing';
+  }
+
+  @override
   String get elevationProfileEmpty =>
       'Impossible d\'échantillonner les élévations le long de ce parcours.';
 

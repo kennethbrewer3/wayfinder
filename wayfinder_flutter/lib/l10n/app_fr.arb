@@ -729,6 +729,49 @@
   "elevationNoDemAvailable": "Aucun DEM d'élévation n'est activé. Téléversez un .pmtiles Terrarium ou Terrain-RGB nommé avec dem/terrarium/elevation et activez-le sous Tuiles cartographiques.",
   "elevationProfileTitle": "Profil d'élévation",
   "elevationProfileButton": "Profil d'élévation",
+  "routeFollowButton": "Suivre l'itinéraire",
+  "routeFollowPrimaryButton": "Suivre l'itinéraire principal",
+  "routeFollowStop": "Arrêter le suivi",
+  "routeFollowSimulate": "Simuler la marche sur l'itinéraire",
+  "routeFollowStopSimulate": "Arrêter la simulation",
+  "routeFollowStarted": "Suivi de « {name} ». Restez près du tracé.",
+  "@routeFollowStarted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "routeFollowGpsRequired": "Impossible de démarrer le GPS. Activez la localisation et réessayez.",
+  "routeFollowActive": "Suivi de {name}",
+  "@routeFollowActive": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "routeFollowOffRoute": "Hors parcours · {distance}",
+  "@routeFollowOffRoute": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowCompleted": "Itinéraire terminé",
+  "routeFollowRemaining": "{distance} restants",
+  "@routeFollowRemaining": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowEta": "ETA {eta}",
+  "@routeFollowEta": {
+    "placeholders": {
+      "eta": { "type": "String" }
+    }
+  },
+  "routeFollowNextBearing": "Prochain {bearing}",
+  "@routeFollowNextBearing": {
+    "placeholders": {
+      "bearing": { "type": "String" }
+    }
+  },
   "elevationProfileEmpty": "Impossible d'échantillonner les élévations le long de ce parcours.",
   "elevationProfileFailed": "Impossible de créer le profil d'élévation : {error}",
   "@elevationProfileFailed": {

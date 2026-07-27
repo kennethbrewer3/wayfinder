@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
-import '../../../core/rest_api_headers.dart';
 import '../data/kiosk_mode_storage.dart';
 
 /// Whether this client has opted into local kiosk (viewer) mode.
@@ -53,9 +52,10 @@ class ServerReadOnlyNotifier extends StateNotifier<bool> {
     try {
       final base = appServerConfig.webUrl.replaceAll(RegExp(r'/$'), '');
       final uri = Uri.parse('$base/api/status');
-      final response = await http
-          .get(uri, headers: await RestApiHeaders.readOnly())
-          .timeout(const Duration(seconds: 8));
+      // Public endpoint — no auth headers. Custom headers force a CORS
+      // preflight; Relic MethodMiss on OPTIONS historically returned 405
+      // without Access-Control-* and blocked the poll from Flutter web.
+      final response = await http.get(uri).timeout(const Duration(seconds: 8));
       if (response.statusCode != 200) {
         return;
       }

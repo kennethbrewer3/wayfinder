@@ -8,6 +8,7 @@ import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/server_config.dart';
 import '../../../core/server_config_storage.dart';
+import '../../../core/widgets/http_url_field.dart';
 import '../../routing/data/routing_repository.dart';
 import '../../routing/models/routing_models.dart';
 // Gated by canManageGeocodingProvider for now — the same admins who manage
@@ -57,10 +58,12 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
       final storage = ServerConfigStorage();
       if (trimmed.isEmpty) {
         await storage.clearRoutingWebUrl();
+        updateOptionalAppServerUrls(clearRoutingWebUrl: true);
         ref.read(routingWebUrlProvider.notifier).state = null;
       } else {
         final normalized = normalizeWebUrl(trimmed);
         await storage.saveRoutingWebUrl(normalized);
+        updateOptionalAppServerUrls(routingWebUrl: normalized);
         ref.read(routingWebUrlProvider.notifier).state = normalized;
       }
       refreshRouting(ref);
@@ -193,16 +196,10 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        TextField(
+        HttpUrlField(
           controller: _routingServerUrlController,
-          decoration: InputDecoration(
-            labelText: l10n.routingServerUrlLabel,
-            hintText: defaultRoutingWebUrl,
-            border: const OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.url,
-          autocorrect: false,
-          autofillHints: const [AutofillHints.url],
+          labelText: l10n.routingServerUrlLabel,
+          hintText: defaultRoutingWebUrl,
         ),
         const SizedBox(height: 12),
         Align(
@@ -353,15 +350,9 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
           ),
         if (regions.isEmpty || _selectedRegion == null) ...[
           const SizedBox(height: 12),
-          TextField(
+          HttpUrlField(
             controller: _customUrlController,
-            decoration: InputDecoration(
-              labelText: l10n.routingCustomUrlLabel,
-              border: const OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.url,
-            autocorrect: false,
-            autofillHints: const [AutofillHints.url],
+            labelText: l10n.routingCustomUrlLabel,
             enabled: controlsEnabled,
           ),
         ],

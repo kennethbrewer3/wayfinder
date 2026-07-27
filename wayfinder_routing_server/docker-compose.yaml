@@ -24,6 +24,7 @@ services:
       PORT: "18382"
       DATA_DIR: /data
       JAVA_XMX: "${JAVA_XMX:-2g}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
       GRAPHHOPPER_URL: http://127.0.0.1:8989
       GRAPHHOPPER_JAR: /app/graphhopper-web.jar
       GRAPHHOPPER_CONFIG: /app/config/config.yml

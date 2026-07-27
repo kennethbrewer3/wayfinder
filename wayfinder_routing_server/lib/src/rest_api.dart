@@ -6,6 +6,7 @@ import 'package:wayfinder_routing_server/src/graphhopper_client.dart';
 import 'package:wayfinder_routing_server/src/graphhopper_process.dart';
 import 'package:wayfinder_routing_server/src/import_service.dart';
 import 'package:wayfinder_routing_server/src/regions.dart';
+import 'package:wayfinder_routing_server/src/routing_log.dart';
 import 'package:wayfinder_routing_server/src/status_store.dart';
 
 Handler createRestHandler({
@@ -49,6 +50,7 @@ Handler createRestHandler({
 
   router.post('/api/routing/import', (Request request) async {
     if (importService.isImporting) {
+      routingLog.warning('Rejected import: already in progress');
       return _jsonResponse(
         {'error': 'Import already in progress'},
         statusCode: 409,
@@ -64,15 +66,22 @@ Handler createRestHandler({
         regionId: regionId,
         sourceUrl: sourceUrl,
       );
+      routingLog.info(
+        'Import accepted (regionId=${regionId ?? 'none'}, '
+        'sourceUrl=${sourceUrl ?? 'from region'})',
+      );
       return _jsonResponse({'started': true});
     } on ArgumentError catch (error) {
+      routingLog.warning('Import rejected: ${error.message}');
       return _jsonResponse({'error': error.message}, statusCode: 400);
     } on StateError catch (error) {
+      routingLog.warning('Import rejected: ${error.message}');
       return _jsonResponse({'error': error.message}, statusCode: 409);
     }
   });
 
   router.post('/api/routing/import/cancel', (Request request) async {
+    routingLog.info('Import cancel endpoint called');
     await importService.cancelImport();
     return _jsonResponse({'cancelled': true});
   });
@@ -81,6 +90,10 @@ Handler createRestHandler({
     final snapshot = statusStore.current;
     final ghHealthy = await graphHopperClient.checkHealth();
     if (!snapshot.ready || !ghHealthy) {
+      routingLog.warning(
+        'Route rejected: engine not ready '
+        '(status=${snapshot.status.name}, graphhopperUp=$ghHealthy)',
+      );
       return _jsonResponse(
         {
           'error': 'Routing engine is not ready. Import OSM data first.',
@@ -95,6 +108,7 @@ Handler createRestHandler({
     final from = body['from'] as Map<String, dynamic>?;
     final to = body['to'] as Map<String, dynamic>?;
     if (from == null || to == null) {
+      routingLog.warning('Route rejected: missing from/to');
       return _jsonResponse(
         {'error': 'Request body must include from and to coordinates'},
         statusCode: 400,
@@ -112,10 +126,13 @@ Handler createRestHandler({
       );
       return _jsonResponse(route);
     } on ArgumentError catch (error) {
+      routingLog.warning('Route rejected: ${error.message}');
       return _jsonResponse({'error': error.message}, statusCode: 400);
     } on GraphHopperRouteException catch (error) {
+      routingLog.severe('Route proxy failed: $error');
       return _jsonResponse({'error': error.toString()}, statusCode: 502);
     } on StateError catch (error) {
+      routingLog.severe('Route failed: $error');
       return _jsonResponse({'error': error.toString()}, statusCode: 502);
     }
   });

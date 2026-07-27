@@ -31,8 +31,9 @@ Future<AppServerConfig> loadAppServerConfig() async {
   const geocodingWebUrlFromEnv = String.fromEnvironment('GEOCODING_SERVER_URL');
   const routingWebUrlFromEnv = String.fromEnvironment('ROUTING_SERVER_URL');
 
+  late final AppServerConfig baseConfig;
   if (apiUrlFromEnv.isNotEmpty) {
-    return AppServerConfig(
+    baseConfig = AppServerConfig(
       apiUrl: normalizeApiUrl(apiUrlFromEnv),
       webUrl: webUrlFromEnv.isNotEmpty
           ? normalizeWebUrl(webUrlFromEnv)
@@ -44,45 +45,78 @@ Future<AppServerConfig> loadAppServerConfig() async {
           ? normalizeWebUrl(routingWebUrlFromEnv)
           : null,
     );
+  } else {
+    final storage = ServerConfigStorage();
+    final savedApiUrl = await storage.loadApiUrl();
+    final savedWebUrl = await storage.loadWebUrl();
+    if (savedApiUrl != null && savedApiUrl.isNotEmpty) {
+      final apiUrl = normalizeApiUrl(savedApiUrl);
+      final webUrl = savedWebUrl != null && savedWebUrl.trim().isNotEmpty
+          ? normalizeWebUrl(savedWebUrl)
+          : (defaultWebUrlForApi(apiUrl) ?? defaultWebUrl);
+      baseConfig = AppServerConfig(apiUrl: apiUrl, webUrl: webUrl);
+    } else {
+      final deployedConfig = await _loadDeployedWebConfig();
+      if (deployedConfig != null) {
+        baseConfig = deployedConfig;
+      } else {
+        try {
+          final data = await rootBundle.loadString('assets/config.json');
+          baseConfig = _configFromJsonMap(
+            jsonDecode(data) as Map<String, dynamic>,
+          );
+        } catch (_) {
+          baseConfig = const AppServerConfig(
+            apiUrl: defaultApiUrl,
+            webUrl: defaultWebUrl,
+          );
+        }
+      }
+    }
   }
 
+  // User-saved geocoding/routing URLs must apply even when API URL comes from
+  // config.json / dart-define (common on web Docker). Compile-time defines for
+  // those optional servers still win over SharedPreferences.
+  return _overlaySavedOptionalServerUrls(
+    baseConfig,
+    geocodingFromEnv: geocodingWebUrlFromEnv,
+    routingFromEnv: routingWebUrlFromEnv,
+  );
+}
+
+Future<AppServerConfig> _overlaySavedOptionalServerUrls(
+  AppServerConfig config, {
+  required String geocodingFromEnv,
+  required String routingFromEnv,
+}) async {
   final storage = ServerConfigStorage();
-  final savedApiUrl = await storage.loadApiUrl();
-  final savedWebUrl = await storage.loadWebUrl();
-  final savedGeocodingWebUrl = await storage.loadGeocodingWebUrl();
-  final savedRoutingWebUrl = await storage.loadRoutingWebUrl();
-  if (savedApiUrl != null && savedApiUrl.isNotEmpty) {
-    final apiUrl = normalizeApiUrl(savedApiUrl);
-    final webUrl = savedWebUrl != null && savedWebUrl.trim().isNotEmpty
-        ? normalizeWebUrl(savedWebUrl)
-        : (defaultWebUrlForApi(apiUrl) ?? defaultWebUrl);
-    return AppServerConfig(
-      apiUrl: apiUrl,
-      webUrl: webUrl,
-      geocodingWebUrl:
-          savedGeocodingWebUrl != null && savedGeocodingWebUrl.isNotEmpty
-          ? normalizeWebUrl(savedGeocodingWebUrl)
-          : null,
-      routingWebUrl: savedRoutingWebUrl != null && savedRoutingWebUrl.isNotEmpty
-          ? normalizeWebUrl(savedRoutingWebUrl)
-          : null,
-    );
+  var geocodingWebUrl = config.geocodingWebUrl;
+  var routingWebUrl = config.routingWebUrl;
+
+  if (geocodingFromEnv.isEmpty) {
+    final saved = await storage.loadGeocodingWebUrl();
+    if (saved != null && saved.trim().isNotEmpty) {
+      geocodingWebUrl = normalizeWebUrl(saved);
+    }
+  }
+  if (routingFromEnv.isEmpty) {
+    final saved = await storage.loadRoutingWebUrl();
+    if (saved != null && saved.trim().isNotEmpty) {
+      routingWebUrl = normalizeWebUrl(saved);
+    }
   }
 
-  final deployedConfig = await _loadDeployedWebConfig();
-  if (deployedConfig != null) {
-    return deployedConfig;
+  if (geocodingWebUrl == config.geocodingWebUrl &&
+      routingWebUrl == config.routingWebUrl) {
+    return config;
   }
-
-  try {
-    final data = await rootBundle.loadString('assets/config.json');
-    return _configFromJsonMap(jsonDecode(data) as Map<String, dynamic>);
-  } catch (_) {
-    return const AppServerConfig(
-      apiUrl: defaultApiUrl,
-      webUrl: defaultWebUrl,
-    );
-  }
+  return AppServerConfig(
+    apiUrl: config.apiUrl,
+    webUrl: config.webUrl,
+    geocodingWebUrl: geocodingWebUrl,
+    routingWebUrl: routingWebUrl,
+  );
 }
 
 AppServerConfig _configFromJsonMap(Map<String, dynamic> config) {

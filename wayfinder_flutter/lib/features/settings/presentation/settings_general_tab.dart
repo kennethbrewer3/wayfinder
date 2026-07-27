@@ -16,6 +16,7 @@ import '../../../core/l10n/localized_labels.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/server_config.dart';
 import '../../../core/serverpod_client.dart';
+import '../../../core/widgets/http_url_field.dart';
 import '../../access/presentation/signed_in_account_tile.dart';
 import '../../access/providers/access_session_provider.dart';
 import '../../circles/models/circle_size_display.dart';
@@ -706,34 +707,18 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         ),
         if (canEditServerConnection) ...[
           const SizedBox(height: 12),
-          TextField(
+          HttpUrlField(
             controller: _serverUrlController,
-            decoration: InputDecoration(
-              labelText: l10n.settingsServerUrl,
-              hintText: l10n.accessServerUrlHint,
-              helperText: l10n.accessServerUrlHelp,
-              border: const OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.url,
-            autocorrect: false,
-            enableSuggestions: false,
-            smartDashesType: SmartDashesType.disabled,
-            smartQuotesType: SmartQuotesType.disabled,
+            labelText: l10n.settingsServerUrl,
+            hintText: l10n.accessServerUrlHint,
+            helperText: l10n.accessServerUrlHelp,
           ),
           const SizedBox(height: 12),
-          TextField(
+          HttpUrlField(
             controller: _webServerUrlController,
-            decoration: InputDecoration(
-              labelText: l10n.settingsWebServerUrl,
-              hintText: l10n.accessWebServerUrlHint,
-              helperText: l10n.accessWebServerUrlHelp,
-              border: const OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.url,
-            autocorrect: false,
-            enableSuggestions: false,
-            smartDashesType: SmartDashesType.disabled,
-            smartQuotesType: SmartQuotesType.disabled,
+            labelText: l10n.settingsWebServerUrl,
+            hintText: l10n.accessWebServerUrlHint,
+            helperText: l10n.accessWebServerUrlHelp,
           ),
           const SizedBox(height: 12),
           Row(

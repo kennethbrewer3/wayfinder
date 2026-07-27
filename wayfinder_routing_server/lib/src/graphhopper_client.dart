@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:wayfinder_routing_server/src/config.dart';
 import 'package:wayfinder_routing_server/src/polyline.dart';
+import 'package:wayfinder_routing_server/src/routing_log.dart';
 
 /// HTTP client that proxies routing requests to GraphHopper.
 class GraphHopperClient {
@@ -18,7 +19,8 @@ class GraphHopperClient {
           .get(Uri.parse('${config.graphHopperUrl}/health'))
           .timeout(const Duration(seconds: 3));
       return response.statusCode == 200;
-    } on Object {
+    } on Object catch (error) {
+      routingLog.fine('GraphHopper health check failed: $error');
       return false;
     }
   }
@@ -42,6 +44,11 @@ class GraphHopperClient {
       'locale': 'en',
     });
 
+    routingLog.info(
+      'Route request profile=$profile '
+      'from=($fromLat,$fromLon) to=($toLat,$toLon)',
+    );
+    final startedAt = DateTime.now();
     final response = await _http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
@@ -49,6 +56,10 @@ class GraphHopperClient {
     );
 
     if (response.statusCode != 200) {
+      routingLog.warning(
+        'GraphHopper /route failed '
+        '(${response.statusCode}): ${response.body}',
+      );
       throw GraphHopperRouteException(
         statusCode: response.statusCode,
         body: response.body,
@@ -56,7 +67,16 @@ class GraphHopperClient {
     }
 
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-    return translateGraphHopperRoute(decoded);
+    final route = translateGraphHopperRoute(decoded);
+    final elapsedMs = DateTime.now().difference(startedAt).inMilliseconds;
+    final distance = route['distanceMeters'];
+    final instructions = route['instructions'];
+    final instructionCount = instructions is List ? instructions.length : 0;
+    routingLog.info(
+      'Route OK in ${elapsedMs}ms '
+      '(distanceMeters=$distance, instructions=$instructionCount)',
+    );
+    return route;
   }
 
   void dispose() {

@@ -29,6 +29,7 @@ cp .env.example .env
 | `WAYFINDER_ROUTING_DATA_PATH` | Yes | Host folder for OSM PBF and graph cache |
 | `WAYFINDER_ROUTING_SERVER_PORT` | No | Default `18382` |
 | `JAVA_XMX` | No | Java heap for GraphHopper (default `2g`; increase for large regions) |
+| `LOG_LEVEL` | No | Dart log level (`INFO` default; use `FINE` for HTTP request lines) |
 | `WAYFINDER_ROUTING_SERVER_IMAGE` | No | Pin a release, e.g. `:v1.1.0` |
 
 Example:

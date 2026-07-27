@@ -8,6 +8,7 @@ environment:
 dependencies:
   args: ^2.7.0
   http: ^1.2.2
+  logging: ^1.3.0
   path: ^1.9.1
   shelf: ^1.4.2
   shelf_cors_headers: ^0.1.5

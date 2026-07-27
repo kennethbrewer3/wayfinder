@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../core/app_globals.dart';
 import '../core/server_config.dart';
+import '../core/widgets/http_url_field.dart';
 import '../features/access/providers/api_server_url_view_model.dart';
 
 /// API + web server URL editor for connection / sign-in screens.
@@ -210,38 +211,20 @@ class _ServerUrlSetupCardState extends ConsumerState<ServerUrlSetupCard> {
             onTap: _openMobileEditor,
           ),
         ] else ...[
-          TextField(
+          HttpUrlField(
             controller: _apiController,
-            keyboardType: TextInputType.url,
-            autocorrect: false,
-            enableSuggestions: false,
-            smartDashesType: SmartDashesType.disabled,
-            smartQuotesType: SmartQuotesType.disabled,
-            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: l10n.settingsServerUrl,
-              hintText: l10n.accessServerUrlHint,
-              helperText: l10n.accessServerUrlHelp,
-              border: const OutlineInputBorder(),
-            ),
+            labelText: l10n.settingsServerUrl,
+            hintText: l10n.accessServerUrlHint,
+            helperText: l10n.accessServerUrlHelp,
           ),
           const SizedBox(height: 12),
-          TextField(
+          HttpUrlField(
             controller: _webController,
-            keyboardType: TextInputType.url,
-            autocorrect: false,
-            enableSuggestions: false,
-            smartDashesType: SmartDashesType.disabled,
-            smartQuotesType: SmartQuotesType.disabled,
-            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
             textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: l10n.settingsWebServerUrl,
-              hintText: l10n.accessWebServerUrlHint,
-              helperText: l10n.accessWebServerUrlHelp,
-              border: const OutlineInputBorder(),
-            ),
+            labelText: l10n.settingsWebServerUrl,
+            hintText: l10n.accessWebServerUrlHint,
+            helperText: l10n.accessWebServerUrlHelp,
             onSubmitted: (_) => _save(),
           ),
         ],
@@ -363,21 +346,12 @@ class _ServerUrlsEditorPageState extends State<_ServerUrlsEditorPage> {
               ),
             ),
             const SizedBox(height: 12),
-            TextField(
+            HttpUrlField(
               controller: _apiController,
               focusNode: _apiFocusNode,
-              keyboardType: TextInputType.text,
-              autocorrect: false,
-              enableSuggestions: false,
-              smartDashesType: SmartDashesType.disabled,
-              smartQuotesType: SmartQuotesType.disabled,
-              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
               textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelText: widget.apiLabel,
-                hintText: widget.apiHint,
-                border: const OutlineInputBorder(),
-              ),
+              labelText: widget.apiLabel,
+              hintText: widget.apiHint,
             ),
             const SizedBox(height: 20),
             Text(
@@ -387,20 +361,11 @@ class _ServerUrlsEditorPageState extends State<_ServerUrlsEditorPage> {
               ),
             ),
             const SizedBox(height: 12),
-            TextField(
+            HttpUrlField(
               controller: _webController,
-              keyboardType: TextInputType.text,
-              autocorrect: false,
-              enableSuggestions: false,
-              smartDashesType: SmartDashesType.disabled,
-              smartQuotesType: SmartQuotesType.disabled,
-              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
               textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                labelText: widget.webLabel,
-                hintText: widget.webHint,
-                border: const OutlineInputBorder(),
-              ),
+              labelText: widget.webLabel,
+              hintText: widget.webHint,
               onSubmitted: (_) => _submit(),
             ),
             const SizedBox(height: 16),

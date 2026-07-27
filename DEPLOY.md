@@ -402,6 +402,10 @@ Generate values with `openssl rand -base64 32`.
 
 The client (port 9080/8080) calls the geocoding server (port 18182) cross-origin. Pull the latest `wayfinder-geocoding-server` image — older builds returned 405 on OPTIONS for `/api/geocoding/settings` without CORS headers.
 
+**Web REST `GET /api/status` blocked by CORS from Flutter web**
+
+Browser console shows preflight failure against `wayfinder-web…/api/status` (kiosk / read-only poll). Relic returns 405 for OPTIONS when only GET is registered, and that 405 skips CORS middleware. Pull the latest `wayfinder-server` image (explicit OPTIONS under `/api/**`) or use a client build that polls `/api/status` without auth headers.
+
 **Geocoding server logs: `relation "geocode_place" does not exist` or migration module mismatch**
 
 The geocoding stack uses its own Postgres database (`wayfinder_geocoding`). If migrations failed partway through, reset the volume and restart with the latest image:

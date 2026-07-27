@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/file_save.dart';
 import '../../../core/format/locale_count_format.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/widgets/http_url_field.dart';
 import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/models/geocoding_contribution.dart';
 import '../../geocoding/models/geocoding_country_catalog.dart';
@@ -939,15 +940,10 @@ class _SettingsGeocodingContributionsSectionState
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        TextField(
+        HttpUrlField(
           controller: _crowdsourceUrlController,
-          decoration: InputDecoration(
-            labelText: l10n.geocodingCrowdsourceUrlLabel,
-            hintText: defaultCrowdsourceSourceUrl,
-            border: const OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.url,
-          autocorrect: false,
+          labelText: l10n.geocodingCrowdsourceUrlLabel,
+          hintText: defaultCrowdsourceSourceUrl,
           enabled: controlsEnabled,
         ),
         const SizedBox(height: 12),

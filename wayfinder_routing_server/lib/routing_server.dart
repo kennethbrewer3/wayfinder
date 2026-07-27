@@ -7,4 +7,5 @@ export 'src/import_service.dart';
 export 'src/polyline.dart';
 export 'src/regions.dart';
 export 'src/rest_api.dart';
+export 'src/routing_log.dart';
 export 'src/status_store.dart';

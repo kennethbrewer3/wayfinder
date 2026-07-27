@@ -23,7 +23,11 @@ class RestApiRoute extends Route {
 
   @override
   void injectIn(RelicRouter router) {
+    // Relic returns bare 405 (no CORS) for OPTIONS when only GET/POST/etc. are
+    // registered — middleware never runs on MethodMiss. Explicit OPTIONS routes
+    // are required for browser preflight from the Flutter web client.
     router
+      ..options('/**', _preflight)
       ..get('/', _index)
       ..get('/health', HealthRestHandlers.check)
       ..get('/status', StatusRestHandlers.get)
@@ -136,6 +140,30 @@ class RestApiRoute extends Route {
         '/settings/client-preferences',
         AppSettingsRestHandlers.updateClientPreferences,
       );
+  }
+
+  static Future<Result> _preflight(Request request) async {
+    return Response.ok(
+      headers: Headers.build((mh) {
+        mh.accessControlAllowOrigin =
+            const AccessControlAllowOriginHeader.wildcard();
+        mh.accessControlAllowMethods = AccessControlAllowMethodsHeader.methods([
+          Method.get,
+          Method.head,
+          Method.post,
+          Method.put,
+          Method.patch,
+          Method.delete,
+          Method.options,
+        ]);
+        mh.accessControlAllowHeaders = AccessControlAllowHeadersHeader.headers([
+          'Content-Type',
+          'Authorization',
+          'X-API-Key',
+        ]);
+        mh.accessControlMaxAge = 86400;
+      }),
+    );
   }
 
   static Future<Result> _index(Request request) async {

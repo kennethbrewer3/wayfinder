@@ -12,6 +12,26 @@ import 'server_config.dart';
 late Client client;
 late AppServerConfig appServerConfig;
 
+/// Updates optional server URLs without reconnecting the API client
+/// (geocoding / routing use separate HTTP bases).
+void updateOptionalAppServerUrls({
+  String? geocodingWebUrl,
+  String? routingWebUrl,
+  bool clearGeocodingWebUrl = false,
+  bool clearRoutingWebUrl = false,
+}) {
+  appServerConfig = AppServerConfig(
+    apiUrl: appServerConfig.apiUrl,
+    webUrl: appServerConfig.webUrl,
+    geocodingWebUrl: clearGeocodingWebUrl
+        ? null
+        : (geocodingWebUrl ?? appServerConfig.geocodingWebUrl),
+    routingWebUrl: clearRoutingWebUrl
+        ? null
+        : (routingWebUrl ?? appServerConfig.routingWebUrl),
+  );
+}
+
 /// Rebuilds the global [client] against [config] and re-initializes auth.
 Future<void> applyAppServerConfig(AppServerConfig config) async {
   appServerConfig = config;

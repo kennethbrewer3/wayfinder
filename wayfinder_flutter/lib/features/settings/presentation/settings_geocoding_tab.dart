@@ -10,6 +10,7 @@ import '../../../core/format/locale_count_format.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/server_config.dart';
 import '../../../core/server_config_storage.dart';
+import '../../../core/widgets/http_url_field.dart';
 import '../../geocoding/data/geocoding_repository.dart';
 import '../../geocoding/models/geocoding_datasets.dart';
 import '../../geocoding/models/geocoding_models.dart';
@@ -70,10 +71,12 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
       final storage = ServerConfigStorage();
       if (trimmed.isEmpty) {
         await storage.clearGeocodingWebUrl();
+        updateOptionalAppServerUrls(clearGeocodingWebUrl: true);
         ref.read(geocodingWebUrlProvider.notifier).state = null;
       } else {
         final normalized = normalizeWebUrl(trimmed);
         await storage.saveGeocodingWebUrl(normalized);
+        updateOptionalAppServerUrls(geocodingWebUrl: normalized);
         ref.read(geocodingWebUrlProvider.notifier).state = normalized;
       }
       refreshGeocoding(ref);
@@ -759,16 +762,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        TextField(
+        HttpUrlField(
           controller: _geocodingServerUrlController,
-          decoration: InputDecoration(
-            labelText: l10n.geocodingServerUrlLabel,
-            hintText: defaultGeocodingWebUrl,
-            border: const OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.url,
-          autocorrect: false,
-          autofillHints: const [AutofillHints.url],
+          labelText: l10n.geocodingServerUrlLabel,
+          hintText: defaultGeocodingWebUrl,
         ),
         const SizedBox(height: 12),
         Align(
@@ -1009,16 +1006,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
         ],
         if (_selectedDataset.isCustom) ...[
           const SizedBox(height: 12),
-          TextField(
+          HttpUrlField(
             controller: _customUrlController,
-            decoration: InputDecoration(
-              labelText: l10n.geocodingCustomPlaceUrlLabel,
-              hintText: geocodingPlanetSourceUrl,
-              border: const OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.url,
-            autocorrect: false,
-            autofillHints: const [AutofillHints.url],
+            labelText: l10n.geocodingCustomPlaceUrlLabel,
+            hintText: geocodingPlanetSourceUrl,
             enabled: placesControlsEnabled,
           ),
         ],
@@ -1127,16 +1118,10 @@ class _SettingsGeocodingTabState extends ConsumerState<SettingsGeocodingTab> {
           ),
         ),
         const SizedBox(height: 12),
-        TextField(
+        HttpUrlField(
           controller: _housenumbersUrlController,
-          decoration: InputDecoration(
-            labelText: l10n.geocodingHousenumbersUrlLabel,
-            hintText: geocodingHousenumbersSourceUrl,
-            border: const OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.url,
-          autocorrect: false,
-          autofillHints: const [AutofillHints.url],
+          labelText: l10n.geocodingHousenumbersUrlLabel,
+          hintText: geocodingHousenumbersSourceUrl,
           enabled: housenumbersControlsEnabled,
         ),
         const SizedBox(height: 12),

@@ -3314,14 +3314,14 @@ abstract class AppLocalizations {
   /// No description provided for @routeFollowTurnPortIn.
   ///
   /// In en, this message translates to:
-  /// **'In {distance}, turn to port'**
-  String routeFollowTurnPortIn(String distance);
+  /// **'In {distance}, turn {degrees}° to port'**
+  String routeFollowTurnPortIn(String distance, int degrees);
 
   /// No description provided for @routeFollowTurnStarboardIn.
   ///
   /// In en, this message translates to:
-  /// **'In {distance}, turn to starboard'**
-  String routeFollowTurnStarboardIn(String distance);
+  /// **'In {distance}, turn {degrees}° to starboard'**
+  String routeFollowTurnStarboardIn(String distance, int degrees);
 
   /// No description provided for @routeFollowNauticalModeEnable.
   ///

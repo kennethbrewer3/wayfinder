@@ -790,16 +790,18 @@
       "distance": { "type": "String" }
     }
   },
-  "routeFollowTurnPortIn": "Dans {distance}, tournez à bâbord",
+  "routeFollowTurnPortIn": "Dans {distance}, tournez de {degrees}° à bâbord",
   "@routeFollowTurnPortIn": {
     "placeholders": {
-      "distance": { "type": "String" }
+      "distance": { "type": "String" },
+      "degrees": { "type": "int" }
     }
   },
-  "routeFollowTurnStarboardIn": "Dans {distance}, tournez à tribord",
+  "routeFollowTurnStarboardIn": "Dans {distance}, tournez de {degrees}° à tribord",
   "@routeFollowTurnStarboardIn": {
     "placeholders": {
-      "distance": { "type": "String" }
+      "distance": { "type": "String" },
+      "degrees": { "type": "int" }
     }
   },
   "routeFollowNauticalModeEnable": "Indications nautiques (bâbord / tribord)",

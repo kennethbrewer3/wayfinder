@@ -1924,13 +1924,13 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String routeFollowTurnPortIn(String distance) {
-    return 'En $distance, gire a babor';
+  String routeFollowTurnPortIn(String distance, int degrees) {
+    return 'En $distance, gire $degrees° a babor';
   }
 
   @override
-  String routeFollowTurnStarboardIn(String distance) {
-    return 'En $distance, gire a estribor';
+  String routeFollowTurnStarboardIn(String distance, int degrees) {
+    return 'En $distance, gire $degrees° a estribor';
   }
 
   @override

@@ -1930,13 +1930,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String routeFollowTurnPortIn(String distance) {
-    return 'Dans $distance, tournez à bâbord';
+  String routeFollowTurnPortIn(String distance, int degrees) {
+    return 'Dans $distance, tournez de $degrees° à bâbord';
   }
 
   @override
-  String routeFollowTurnStarboardIn(String distance) {
-    return 'Dans $distance, tournez à tribord';
+  String routeFollowTurnStarboardIn(String distance, int degrees) {
+    return 'Dans $distance, tournez de $degrees° à tribord';
   }
 
   @override

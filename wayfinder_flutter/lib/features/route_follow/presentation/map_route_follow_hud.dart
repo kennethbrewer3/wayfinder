@@ -49,6 +49,7 @@ class MapRouteFollowHud extends ConsumerWidget {
             units: units,
             kind: progress.nextManeuver,
             meters: progress.metersToNextManeuver,
+            turnDegrees: progress.turnDegrees,
             nautical: nautical,
           );
 
@@ -160,17 +161,19 @@ String _formatManeuverGuidance({
   required MeasurementUnits units,
   required RouteFollowManeuverKind kind,
   required double meters,
+  required double turnDegrees,
   required bool nautical,
 }) {
   final distance = formatLineDistance(meters, units);
+  final degrees = turnDegrees.round().clamp(1, 180);
   return switch (kind) {
     RouteFollowManeuverKind.turnLeft =>
       nautical
-          ? l10n.routeFollowTurnPortIn(distance)
+          ? l10n.routeFollowTurnPortIn(distance, degrees)
           : l10n.routeFollowTurnLeftIn(distance),
     RouteFollowManeuverKind.turnRight =>
       nautical
-          ? l10n.routeFollowTurnStarboardIn(distance)
+          ? l10n.routeFollowTurnStarboardIn(distance, degrees)
           : l10n.routeFollowTurnRightIn(distance),
     RouteFollowManeuverKind.continueStraight => l10n.routeFollowContinueFor(
       distance,

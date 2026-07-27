@@ -35,6 +35,7 @@ class RouteFollowProgress {
     required this.nextPoint,
     required this.metersToNextManeuver,
     required this.nextManeuver,
+    required this.turnDegrees,
     required this.completed,
   });
 
@@ -46,6 +47,9 @@ class RouteFollowProgress {
   final LatLng nextPoint;
   final double metersToNextManeuver;
   final RouteFollowManeuverKind nextManeuver;
+
+  /// Absolute heading change for [nextManeuver] turns; 0 when not a turn.
+  final double turnDegrees;
   final bool completed;
 
   bool get isOffRoute =>
@@ -117,7 +121,11 @@ double signedBearingDeltaDegrees(double fromDegrees, double toDegrees) {
 }
 
 /// Finds the next notable turn (or continue/arrive) ahead of [traveledMeters].
-({RouteFollowManeuverKind kind, double distanceMeters})
+({
+  RouteFollowManeuverKind kind,
+  double distanceMeters,
+  double turnDegrees,
+})
 findNextRouteFollowManeuver({
   required List<LatLng> path,
   required double traveledMeters,
@@ -127,7 +135,11 @@ findNextRouteFollowManeuver({
 }) {
   final remaining = (totalMeters - traveledMeters).clamp(0.0, totalMeters);
   if (remaining <= 5) {
-    return (kind: RouteFollowManeuverKind.arrive, distanceMeters: remaining);
+    return (
+      kind: RouteFollowManeuverKind.arrive,
+      distanceMeters: remaining,
+      turnDegrees: 0,
+    );
   }
 
   final legBearing = bearingAlongPolyline(path, traveledMeters);
@@ -135,6 +147,7 @@ findNextRouteFollowManeuver({
     return (
       kind: RouteFollowManeuverKind.continueStraight,
       distanceMeters: remaining,
+      turnDegrees: 0,
     );
   }
 
@@ -146,11 +159,20 @@ findNextRouteFollowManeuver({
       final delta = signedBearingDeltaDegrees(legBearing, aheadBearing);
       if (delta.abs() >= turnThresholdDegrees) {
         final distance = (scan - traveledMeters).clamp(0.0, remaining);
+        final peakDelta = _peakTurnDeltaDegrees(
+          path: path,
+          legBearing: legBearing,
+          fromDistanceMeters: scan,
+          totalMeters: totalMeters,
+          initialDelta: delta,
+          scanStepMeters: scanStepMeters,
+        );
         return (
-          kind: delta > 0
+          kind: peakDelta > 0
               ? RouteFollowManeuverKind.turnRight
               : RouteFollowManeuverKind.turnLeft,
           distanceMeters: distance,
+          turnDegrees: peakDelta.abs(),
         );
       }
     }
@@ -160,7 +182,42 @@ findNextRouteFollowManeuver({
   return (
     kind: RouteFollowManeuverKind.continueStraight,
     distanceMeters: remaining,
+    turnDegrees: 0,
   );
+}
+
+/// Continues past the first threshold crossing to measure the full turn size.
+double _peakTurnDeltaDegrees({
+  required List<LatLng> path,
+  required double legBearing,
+  required double fromDistanceMeters,
+  required double totalMeters,
+  required double initialDelta,
+  required double scanStepMeters,
+}) {
+  var peakDelta = initialDelta;
+  var scan = fromDistanceMeters + scanStepMeters;
+  while (scan < totalMeters - 2) {
+    final aheadBearing = bearingAlongPolyline(path, scan);
+    if (aheadBearing == null) {
+      break;
+    }
+    final delta = signedBearingDeltaDegrees(legBearing, aheadBearing);
+    // Stop if the bend reverses relative to the initial turn direction.
+    if (delta.sign != 0 &&
+        initialDelta.sign != 0 &&
+        delta.sign != initialDelta.sign) {
+      break;
+    }
+    if (delta.abs() > peakDelta.abs()) {
+      peakDelta = delta;
+    } else if (delta.abs() < peakDelta.abs() - 8) {
+      // Heading is settling onto a new course past the apex.
+      break;
+    }
+    scan += scanStepMeters;
+  }
+  return peakDelta;
 }
 
 /// Snaps [position] onto [path] and computes remaining distance / off-route.
@@ -203,7 +260,11 @@ RouteFollowProgress? computeRouteFollowProgress({
   final remaining = (total - traveled).clamp(0.0, total);
   final completed = remaining <= 5;
   final maneuver = completed
-      ? (kind: RouteFollowManeuverKind.arrive, distanceMeters: remaining)
+      ? (
+          kind: RouteFollowManeuverKind.arrive,
+          distanceMeters: remaining,
+          turnDegrees: 0.0,
+        )
       : findNextRouteFollowManeuver(
           path: path,
           traveledMeters: traveled,
@@ -229,6 +290,7 @@ RouteFollowProgress? computeRouteFollowProgress({
     nextPoint: next,
     metersToNextManeuver: maneuver.distanceMeters,
     nextManeuver: maneuver.kind,
+    turnDegrees: maneuver.turnDegrees,
     completed: completed,
   );
 }

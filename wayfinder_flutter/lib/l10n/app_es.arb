@@ -790,16 +790,18 @@
       "distance": { "type": "String" }
     }
   },
-  "routeFollowTurnPortIn": "En {distance}, gire a babor",
+  "routeFollowTurnPortIn": "En {distance}, gire {degrees}° a babor",
   "@routeFollowTurnPortIn": {
     "placeholders": {
-      "distance": { "type": "String" }
+      "distance": { "type": "String" },
+      "degrees": { "type": "int" }
     }
   },
-  "routeFollowTurnStarboardIn": "En {distance}, gire a estribor",
+  "routeFollowTurnStarboardIn": "En {distance}, gire {degrees}° a estribor",
   "@routeFollowTurnStarboardIn": {
     "placeholders": {
-      "distance": { "type": "String" }
+      "distance": { "type": "String" },
+      "degrees": { "type": "int" }
     }
   },
   "routeFollowNauticalModeEnable": "Indicaciones náuticas (babor / estribor)",

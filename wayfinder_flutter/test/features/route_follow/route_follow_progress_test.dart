@@ -53,6 +53,7 @@ void main() {
     expect(progress.nextManeuver, RouteFollowManeuverKind.turnRight);
     expect(progress.metersToNextManeuver, greaterThan(80));
     expect(progress.metersToNextManeuver, lessThan(130));
+    expect(progress.turnDegrees, closeTo(90, 15));
   });
 
   test('detects a left turn', () {
@@ -67,6 +68,7 @@ void main() {
     )!;
 
     expect(progress.nextManeuver, RouteFollowManeuverKind.turnLeft);
+    expect(progress.turnDegrees, closeTo(90, 15));
   });
 
   test('continues straight on a single leg', () {

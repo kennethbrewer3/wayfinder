@@ -1169,16 +1169,18 @@
       "distance": { "type": "String" }
     }
   },
-  "routeFollowTurnPortIn": "In {distance}, turn to port",
+  "routeFollowTurnPortIn": "In {distance}, turn {degrees}° to port",
   "@routeFollowTurnPortIn": {
     "placeholders": {
-      "distance": { "type": "String" }
+      "distance": { "type": "String" },
+      "degrees": { "type": "int" }
     }
   },
-  "routeFollowTurnStarboardIn": "In {distance}, turn to starboard",
+  "routeFollowTurnStarboardIn": "In {distance}, turn {degrees}° to starboard",
   "@routeFollowTurnStarboardIn": {
     "placeholders": {
-      "distance": { "type": "String" }
+      "distance": { "type": "String" },
+      "degrees": { "type": "int" }
     }
   },
   "routeFollowNauticalModeEnable": "Nautical cues (port / starboard)",

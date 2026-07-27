@@ -30,6 +30,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTabGeocoding => 'Geocodificación';
 
   @override
+  String get settingsTabRouting => 'Rutas';
+
+  @override
   String get settingsTabTides => 'Mareas';
 
   @override
@@ -461,6 +464,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsAboutGeocodingServerNotConfigured => 'No configurado';
 
   @override
+  String get settingsAboutRoutingServer => 'Servidor de rutas';
+
+  @override
+  String get settingsAboutRoutingServerNotConfigured => 'No configurado';
+
+  @override
   String settingsAboutCommitHint(String commit) {
     return 'Las compilaciones desplegadas incluyen un commit de git (por ejemplo $commit). Compárelo con el último commit en main o con la etiqueta de imagen que descargó.';
   }
@@ -848,6 +857,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsGeocodingOpenTab => 'Geocoding settings';
+
+  @override
+  String get settingsRoutingAvailabilityTitle => 'Navegación turn-by-turn';
+
+  @override
+  String get settingsRoutingAvailabilityDescription =>
+      'Indica si el cálculo de rutas OSM A→B desde este dispositivo puede alcanzar el servidor de rutas opcional.';
+
+  @override
+  String get settingsRoutingOpenTab => 'Ajustes de rutas';
 
   @override
   String get settingsMeasurementsTitle => 'Medidas';
@@ -6177,4 +6196,119 @@ class AppLocalizationsEs extends AppLocalizations {
   String sidebarSeasonalOverlaysCount(int count) {
     return '$count overlay(s)';
   }
+
+  @override
+  String get routingTitle => 'Rutas';
+
+  @override
+  String get routingPermissionDenied =>
+      'No tienes permiso para configurar el servidor de rutas.';
+
+  @override
+  String get routingServerConnectionTitle => 'Servidor de rutas';
+
+  @override
+  String get routingServerConnectionDescription =>
+      'Servidor de cálculo de rutas OSM sin conexión (GraphHopper), independiente de tu servidor principal. Importa una región una vez y los clientes de la red local podrán calcular rutas desde este host sin acceso a internet.';
+
+  @override
+  String get routingServerUrlLabel => 'URL web del servidor de rutas';
+
+  @override
+  String get routingSaveServerUrl => 'Guardar URL del servidor de rutas';
+
+  @override
+  String get routingServerUrlSaved => 'URL del servidor de rutas guardada.';
+
+  @override
+  String get routingStatusTitle => 'Estado de importación';
+
+  @override
+  String get routingStatusIdle => 'No importado';
+
+  @override
+  String get routingStatusChecking => 'Comprobando el servidor de rutas…';
+
+  @override
+  String get routingStatusDownloading => 'Descargando…';
+
+  @override
+  String get routingStatusBuilding => 'Construyendo el grafo de rutas…';
+
+  @override
+  String get routingStatusReady => 'Listo';
+
+  @override
+  String get routingStatusFailed => 'Fallido';
+
+  @override
+  String get routingStatusCancelled => 'Cancelado';
+
+  @override
+  String get routingImportTitle => 'Importar datos del mapa';
+
+  @override
+  String get routingImportDescription =>
+      'Descarga un extracto de OSM y construye el grafo de rutas sin conexión. Esto puede tardar según el tamaño de la región y el hardware del servidor.';
+
+  @override
+  String get routingRegionLabel => 'Región';
+
+  @override
+  String get routingCustomUrlLabel => 'URL de extracto OSM personalizada';
+
+  @override
+  String get routingRegionOrUrlRequired =>
+      'Elige una región o introduce una URL de extracto OSM personalizada.';
+
+  @override
+  String get routingImportAction => 'Importar región';
+
+  @override
+  String get routingCancelImport => 'Cancelar importación';
+
+  @override
+  String get routingImportStarted => 'Importación de rutas iniciada.';
+
+  @override
+  String routingImportFailed(String error) {
+    return 'Error al importar rutas: $error';
+  }
+
+  @override
+  String routingAbortFailed(String error) {
+    return 'Error al cancelar: $error';
+  }
+
+  @override
+  String get routingServerUnreachable =>
+      'No se puede conectar con el servidor de rutas. Verifica que esté en ejecución y accesible desde tu navegador.';
+
+  @override
+  String get routingNotConfigured =>
+      'Configura una URL de servidor de rutas para habilitar el cálculo de rutas.';
+
+  @override
+  String get routingNotReady =>
+      'El servidor de rutas aún no ha terminado de importar los datos del mapa.';
+
+  @override
+  String get routingReadyHint =>
+      'Listo para calcular rutas. Los clientes de la red local pueden calcular rutas desde este host sin acceso a internet.';
+
+  @override
+  String get routingRouteHereAction => 'Ruta hasta aquí';
+
+  @override
+  String routingRouteRequestFailed(String error) {
+    return 'Error en la solicitud de ruta: $error';
+  }
+
+  @override
+  String routingRouteSummary(String distance, String duration) {
+    return '$distance · $duration';
+  }
+
+  @override
+  String get routingClearRouteAction => 'Borrar ruta';
 }

@@ -8,6 +8,20 @@ import '../../map/providers/simulated_gps_walk_delay_provider.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../utils/route_follow_progress.dart';
 
+/// A single named turn-by-turn step (e.g. from OSM routing), positioned by
+/// cumulative distance along the followed [RouteFollowState.path].
+class RouteFollowNamedInstruction {
+  const RouteFollowNamedInstruction({
+    required this.text,
+    required this.startDistanceMeters,
+    this.streetName,
+  });
+
+  final String text;
+  final String? streetName;
+  final double startDistanceMeters;
+}
+
 class RouteFollowState {
   const RouteFollowState({
     this.active = false,
@@ -17,6 +31,7 @@ class RouteFollowState {
     this.mode = TrackTransportationMode.onFoot,
     this.progress,
     this.simulating = false,
+    this.namedInstructions = const [],
   });
 
   final bool active;
@@ -26,6 +41,10 @@ class RouteFollowState {
   final TrackTransportationMode mode;
   final RouteFollowProgress? progress;
   final bool simulating;
+
+  /// Optional OSM turn-by-turn text (e.g. from the routing server), shown in
+  /// the HUD in preference to geometry-only left/right cues when present.
+  final List<RouteFollowNamedInstruction> namedInstructions;
 
   bool get offRoute => progress?.isOffRoute ?? false;
   bool get completed => progress?.completed ?? false;
@@ -38,6 +57,7 @@ class RouteFollowState {
     TrackTransportationMode? mode,
     RouteFollowProgress? progress,
     bool? simulating,
+    List<RouteFollowNamedInstruction>? namedInstructions,
     bool clearProgress = false,
   }) {
     return RouteFollowState(
@@ -48,8 +68,29 @@ class RouteFollowState {
       mode: mode ?? this.mode,
       progress: clearProgress ? null : (progress ?? this.progress),
       simulating: simulating ?? this.simulating,
+      namedInstructions: namedInstructions ?? this.namedInstructions,
     );
   }
+}
+
+/// Finds the named instruction active at [traveledMeters], or null if
+/// [instructions] is empty.
+RouteFollowNamedInstruction? currentRouteFollowNamedInstruction(
+  List<RouteFollowNamedInstruction> instructions,
+  double traveledMeters,
+) {
+  if (instructions.isEmpty) {
+    return null;
+  }
+  var current = instructions.first;
+  for (final instruction in instructions) {
+    if (instruction.startDistanceMeters <= traveledMeters + 0.5) {
+      current = instruction;
+    } else {
+      break;
+    }
+  }
+  return current;
 }
 
 final routeFollowProvider =
@@ -75,10 +116,11 @@ class RouteFollowNotifier extends StateNotifier<RouteFollowState> {
   var _wasOffRoute = false;
 
   Future<bool> start({
-    required UuidValue zoneId,
+    UuidValue? zoneId,
     required String routeName,
     required List<LatLng> path,
     TrackTransportationMode mode = TrackTransportationMode.onFoot,
+    List<RouteFollowNamedInstruction> namedInstructions = const [],
   }) async {
     if (path.length < 2) {
       return false;
@@ -92,6 +134,7 @@ class RouteFollowNotifier extends StateNotifier<RouteFollowState> {
       routeName: routeName,
       path: List<LatLng>.from(path),
       mode: mode,
+      namedInstructions: namedInstructions,
     );
     _wasOffRoute = false;
     final position = _ref.read(deviceLocationProvider).position;

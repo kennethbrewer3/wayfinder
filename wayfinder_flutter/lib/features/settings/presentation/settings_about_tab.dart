@@ -138,6 +138,13 @@ class SettingsAboutTab extends ConsumerWidget {
                         l10n.settingsAboutGeocodingServerNotConfigured,
                     monospace: appServerConfig.geocodingWebUrl != null,
                   ),
+                  _InfoRow(
+                    label: l10n.settingsAboutRoutingServer,
+                    value:
+                        appServerConfig.routingWebUrl ??
+                        l10n.settingsAboutRoutingServerNotConfigured,
+                    monospace: appServerConfig.routingWebUrl != null,
+                  ),
                 ],
               ),
               if (buildInfo.shortGitCommit != null) ...[

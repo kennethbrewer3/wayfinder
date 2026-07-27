@@ -56,4 +56,22 @@ class ServerConfigStorage {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(AppConstants.geocodingWebUrlStorageKey);
   }
+
+  Future<String?> loadRoutingWebUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(AppConstants.routingWebUrlStorageKey);
+  }
+
+  Future<void> saveRoutingWebUrl(String routingWebUrl) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      AppConstants.routingWebUrlStorageKey,
+      routingWebUrl,
+    );
+  }
+
+  Future<void> clearRoutingWebUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AppConstants.routingWebUrlStorageKey);
+  }
 }

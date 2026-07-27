@@ -1,20 +1,21 @@
 # Deploying Wayfinder on separate machines
 
-Wayfinder is split into **three** independent Docker stacks. **You do not need to clone the repository** — download a small set of files per machine and pull pre-built images from GitHub Container Registry.
+Wayfinder is split into **independent Docker stacks**. **You do not need to clone the repository** — download a small set of files per machine and pull pre-built images from GitHub Container Registry.
 
 | Stack | Deployment guide | Image |
 |-------|------------------|-------|
 | **Server** | [deploy/server/README.md](deploy/server/README.md) | `ghcr.io/kennethbrewer3/wayfinder-server` |
 | **Geocoding server** (optional) | [deploy/geocoding-server/README.md](deploy/geocoding-server/README.md) | `ghcr.io/kennethbrewer3/wayfinder-geocoding-server` |
+| **Routing server** (optional) | [deploy/routing-server/README.md](deploy/routing-server/README.md) | `ghcr.io/kennethbrewer3/wayfinder-routing-server` |
 | **Client** | [deploy/client/README.md](deploy/client/README.md) | `ghcr.io/kennethbrewer3/wayfinder-client` |
 
 **Project N.O.M.A.D.:** [deploy/project-nomad/README.md](deploy/project-nomad/README.md) — Supply Depot for the client; Compose over SSH for server and geocoding.
 
 Images are built on every push to `main` and on release tags (see [.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml)).
 
-The sections below summarize all three stacks. For file lists, `.env` tables, start/stop scripts, and Supply Depot fields, use the component guides above.
+The sections below summarize the stacks. For file lists, `.env` tables, start/stop scripts, and Supply Depot fields, use the component guides above.
 
-Run the **server** on the machine that holds your database and PMTiles. Run the **geocoding server** on a machine with enough disk for OSMNames imports (often a different host). Run the **client** on any machine where users open the map UI. Address and place search only runs when the client is configured with a reachable geocoding server URL.
+Run the **server** on the machine that holds your database and PMTiles. Run the **geocoding server** on a machine with enough disk for OSMNames imports (often a different host). Run the **routing server** on a machine with enough RAM/disk for GraphHopper OSM graphs (often a different host). Run the **client** on any machine where users open the map UI. Address/place search needs a reachable geocoding URL; OSM A→B turn-by-turn needs a reachable routing URL after a region import.
 
 ## 1. Server machine
 
@@ -134,7 +135,49 @@ Import places and addresses from **Settings → Geocoding** in the client after 
 
 If you previously imported geocoding data into the main Wayfinder server, export that Postgres data and restore it into the geocoding server's database volume, or re-import from OSMNames on the new stack.
 
-## 3. Client machine
+## 3. Routing server (optional, separate machine)
+
+See [deploy/routing-server/README.md](deploy/routing-server/README.md) for the curl-install file list.
+
+```bash
+mkdir wayfinder-routing-server && cd wayfinder-routing-server
+
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/routing-server/docker-compose.yaml
+curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/routing-server/.env.example
+cp .env.example .env
+```
+
+Edit `.env`:
+
+- **`WAYFINDER_ROUTING_DATA_PATH`** — host folder for OSM PBF + GraphHopper graph cache
+- **`JAVA_XMX`** — increase for large regions (e.g. `4g` / `8g`)
+- **`WAYFINDER_ROUTING_SERVER_PORT`** — default `18382`
+
+Example:
+
+```env
+WAYFINDER_ROUTING_DATA_PATH=/mnt/storage/wayfinder-routing
+WAYFINDER_ROUTING_SERVER_PORT=18382
+JAVA_XMX=4g
+```
+
+### Start
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+### Verify
+
+```bash
+curl http://localhost:18382/api/health
+docker compose ps
+```
+
+Import a region from **Settings → Routing** in the client (start with Monaco for a quick test), then use **Route here** on a marker for A→B OSM turn-by-turn. After import, field clients only need LAN reachability to the routing host — no public internet.
+
+## 4. Client machine
 
 The client serves the Flutter web UI. It does not need Postgres, Redis, or PMTiles.
 
@@ -160,6 +203,7 @@ Edit `.env` — URLs must be reachable from the **browser**, not from inside Doc
 WAYFINDER_API_URL=http://192.168.1.10:18080
 WAYFINDER_WEB_URL=http://192.168.1.10:18082
 WAYFINDER_GEOCODING_WEB_URL=http://192.168.1.11:18182
+WAYFINDER_ROUTING_WEB_URL=http://192.168.1.12:18382
 WAYFINDER_CLIENT_PORT=8080
 ```
 
@@ -167,7 +211,9 @@ WAYFINDER_CLIENT_PORT=8080
 
 `WAYFINDER_GEOCODING_WEB_URL` is optional. When omitted, place and address search is disabled. When set, the client only queries geocoding if that server responds to `/api/health`.
 
-Replace `192.168.1.10` with your main server machine's IP or hostname, and `192.168.1.11` with your geocoding server (they may be the same host with different ports).
+`WAYFINDER_ROUTING_WEB_URL` is optional. When omitted, OSM A→B routing is disabled. When set, the client only offers routing if that server responds to `/api/health`.
+
+Replace `192.168.1.10` with your main server machine's IP or hostname, and use your geocoding / routing hosts (they may be the same machine with different ports).
 
 ### Start
 
@@ -203,6 +249,7 @@ Client `.env` on the same host:
 WAYFINDER_API_URL=http://localhost:18080
 WAYFINDER_WEB_URL=http://localhost:18082
 WAYFINDER_GEOCODING_WEB_URL=http://localhost:18182
+WAYFINDER_ROUTING_WEB_URL=http://localhost:18382
 ```
 
 ## Pinning a release
@@ -212,6 +259,7 @@ By default, compose pulls `:latest` (last successful build from `main`). To pin 
 ```env
 WAYFINDER_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-server:v1.0.1
 WAYFINDER_GEOCODING_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-geocoding-server:v1.0.1
+WAYFINDER_ROUTING_SERVER_IMAGE=ghcr.io/kennethbrewer3/wayfinder-routing-server:v1.0.1
 WAYFINDER_CLIENT_IMAGE=ghcr.io/kennethbrewer3/wayfinder-client:v1.0.1
 ```
 
@@ -229,6 +277,10 @@ On the **geocoding server** machine (if separate), allow inbound TCP:
 - `18182` — web (REST geocoding API)
 - `18180` — API (optional, for Serverpod RPC)
 
+On the **routing server** machine (if separate), allow inbound TCP:
+
+- `18382` — Wayfinder routing REST API
+
 On the **client** machine, allow inbound TCP on `8080` (or your `WAYFINDER_CLIENT_PORT`) if users connect from other devices.
 
 ## Moving data to a new server
@@ -245,6 +297,10 @@ cd wayfinder_server && docker compose up -d --build
 
 # Geocoding server
 cd wayfinder_geocoding_server && docker compose up -d --build
+
+# Routing server (from repo root)
+docker build -f wayfinder_routing_server/Dockerfile -t wayfinder-routing-server .
+# Then use deploy/routing-server/docker-compose.yaml with a local image override
 
 # Client
 cd wayfinder_flutter && docker compose up -d --build

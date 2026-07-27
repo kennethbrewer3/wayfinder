@@ -27,6 +27,7 @@ void main() async {
       'apiUrl': appServerConfig.apiUrl,
       'webUrl': appServerConfig.webUrl,
       'geocodingWebUrl': appServerConfig.geocodingWebUrl,
+      'routingWebUrl': appServerConfig.routingWebUrl,
     },
   );
   AppLogger.logServer.success('🔐 Auth session initialized');

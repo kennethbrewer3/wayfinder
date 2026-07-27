@@ -1,6 +1,6 @@
 # Wayfinder client — deployment guide
 
-The **client** is the Flutter web map UI. It is a **single Docker container** with no database. Point it at your Wayfinder server (and optional geocoding server) using environment variables.
+The **client** is the Flutter web map UI. It is a **single Docker container** with no database. Point it at your Wayfinder server (and optional geocoding / routing servers) using environment variables.
 
 **Image:** `ghcr.io/kennethbrewer3/wayfinder-client`
 
@@ -41,6 +41,7 @@ URLs must be reachable from the **user's browser**, not from inside the client c
 | `WAYFINDER_API_URL` | Yes | Main server API, e.g. `http://192.168.1.10:18080` or `https://api.example.com` |
 | `WAYFINDER_WEB_URL` | No | REST/PMTiles web URL (`:18082` or `https://web.example.com`). Derived from API URL if omitted |
 | `WAYFINDER_GEOCODING_WEB_URL` | No | Geocoding server web URL (`:18182` or `https://geo-web.example.com`). Omit if geocoding is not installed |
+| `WAYFINDER_ROUTING_WEB_URL` | No | Routing server URL (`:18382` or `https://routing.example.com`). Omit if routing is not installed |
 | `WAYFINDER_CLIENT_PORT` | No | Host port for the UI (default `8080`) |
 | `WAYFINDER_CLIENT_IMAGE` | No | Pin a release, e.g. `ghcr.io/kennethbrewer3/wayfinder-client:v1.1.0` |
 
@@ -51,6 +52,7 @@ WAYFINDER_CLIENT_PORT=8080
 WAYFINDER_API_URL=http://192.168.1.10:18080
 WAYFINDER_WEB_URL=http://192.168.1.10:18082
 WAYFINDER_GEOCODING_WEB_URL=http://192.168.1.11:18182
+WAYFINDER_ROUTING_WEB_URL=http://192.168.1.12:18382
 ```
 
 Behind Caddy or another reverse proxy (TLS on 443):
@@ -60,6 +62,7 @@ WAYFINDER_CLIENT_PORT=9080
 WAYFINDER_API_URL=https://api.example.com
 WAYFINDER_WEB_URL=https://web.example.com
 WAYFINDER_GEOCODING_WEB_URL=https://geo-web.example.com
+WAYFINDER_ROUTING_WEB_URL=https://routing.example.com
 ```
 
 Use the public hostnames your reverse proxy serves — not `localhost` inside the container. The browser must be able to reach these URLs.
@@ -121,6 +124,7 @@ Prerequisites:
 
 - Wayfinder **server** running (see [deploy/server/README.md](../server/README.md)).
 - Optional **geocoding server** (see [deploy/geocoding-server/README.md](../geocoding-server/README.md)).
+- Optional **routing server** (see [deploy/routing-server/README.md](../routing-server/README.md)).
 
 ### Port planning
 
@@ -144,9 +148,10 @@ NOMAD Command Center uses **8080**. Map the Wayfinder client to **9080** (or ano
 WAYFINDER_API_URL=http://192.168.1.10:18080
 WAYFINDER_WEB_URL=http://192.168.1.10:18082
 WAYFINDER_GEOCODING_WEB_URL=http://192.168.1.10:18182
+WAYFINDER_ROUTING_WEB_URL=http://192.168.1.10:18382
 ```
 
-Omit `WAYFINDER_GEOCODING_WEB_URL` if you did not install the geocoding server.
+Omit `WAYFINDER_GEOCODING_WEB_URL` / `WAYFINDER_ROUTING_WEB_URL` if you did not install those servers.
 
 3. Complete pre-flight checks and install.
 4. Open the app from Supply Depot at `http://192.168.1.10:9080`.
@@ -201,6 +206,7 @@ The map can show a blue **you are here** dot from the browser’s Geolocation AP
 | Compose hangs at "Creating" | Use `./start.sh` / `./stop.sh`; re-download latest scripts |
 | `container name is already in use` | Run `./stop.sh`, then `docker rm -f wayfinder-client` and `sudo docker rm -f wayfinder-client` |
 | Missing geocoding search | Set `WAYFINDER_GEOCODING_WEB_URL` in `.env` or Supply Depot env |
+| Missing Route here / OSM routing | Set `WAYFINDER_ROUTING_WEB_URL` and import a region in Settings → Routing |
 | My location fails in the browser | Serve the client over **HTTPS** (or open via `localhost`). Plain LAN HTTP is not a secure context for geolocation |
 
 More detail: [DEPLOY.md](../../DEPLOY.md).

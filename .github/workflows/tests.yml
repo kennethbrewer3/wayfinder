@@ -49,6 +49,27 @@ jobs:
         working-directory: wayfinder_geocoding_server
         run: dart test
 
+  routing-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.8.0
+
+      - name: Install routing server dependencies
+        working-directory: wayfinder_routing_server
+        run: dart pub get
+
+      - name: Analyze routing server
+        working-directory: wayfinder_routing_server
+        run: dart analyze --fatal-infos
+
+      - name: Run routing server tests
+        working-directory: wayfinder_routing_server
+        run: dart test
+
   server-test:
     runs-on: ubuntu-latest
     env:

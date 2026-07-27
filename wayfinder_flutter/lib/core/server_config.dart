@@ -11,21 +11,25 @@ class AppServerConfig {
     required this.apiUrl,
     required this.webUrl,
     this.geocodingWebUrl,
+    this.routingWebUrl,
   });
 
   final String apiUrl;
   final String webUrl;
   final String? geocodingWebUrl;
+  final String? routingWebUrl;
 }
 
 const defaultApiUrl = 'http://localhost:18080';
 const defaultWebUrl = 'http://localhost:18082';
 const defaultGeocodingWebUrl = 'http://localhost:18182';
+const defaultRoutingWebUrl = 'http://localhost:18382';
 
 Future<AppServerConfig> loadAppServerConfig() async {
   const apiUrlFromEnv = String.fromEnvironment('SERVER_URL');
   const webUrlFromEnv = String.fromEnvironment('WEB_SERVER_URL');
   const geocodingWebUrlFromEnv = String.fromEnvironment('GEOCODING_SERVER_URL');
+  const routingWebUrlFromEnv = String.fromEnvironment('ROUTING_SERVER_URL');
 
   if (apiUrlFromEnv.isNotEmpty) {
     return AppServerConfig(
@@ -36,6 +40,9 @@ Future<AppServerConfig> loadAppServerConfig() async {
       geocodingWebUrl: geocodingWebUrlFromEnv.isNotEmpty
           ? normalizeWebUrl(geocodingWebUrlFromEnv)
           : null,
+      routingWebUrl: routingWebUrlFromEnv.isNotEmpty
+          ? normalizeWebUrl(routingWebUrlFromEnv)
+          : null,
     );
   }
 
@@ -43,6 +50,7 @@ Future<AppServerConfig> loadAppServerConfig() async {
   final savedApiUrl = await storage.loadApiUrl();
   final savedWebUrl = await storage.loadWebUrl();
   final savedGeocodingWebUrl = await storage.loadGeocodingWebUrl();
+  final savedRoutingWebUrl = await storage.loadRoutingWebUrl();
   if (savedApiUrl != null && savedApiUrl.isNotEmpty) {
     final apiUrl = normalizeApiUrl(savedApiUrl);
     final webUrl = savedWebUrl != null && savedWebUrl.trim().isNotEmpty
@@ -54,6 +62,9 @@ Future<AppServerConfig> loadAppServerConfig() async {
       geocodingWebUrl:
           savedGeocodingWebUrl != null && savedGeocodingWebUrl.isNotEmpty
           ? normalizeWebUrl(savedGeocodingWebUrl)
+          : null,
+      routingWebUrl: savedRoutingWebUrl != null && savedRoutingWebUrl.isNotEmpty
+          ? normalizeWebUrl(savedRoutingWebUrl)
           : null,
     );
   }
@@ -85,10 +96,15 @@ AppServerConfig _configFromJsonMap(Map<String, dynamic> config) {
   final geocodingWebUrl = geocodingRaw == null || geocodingRaw.trim().isEmpty
       ? null
       : normalizeWebUrl(geocodingRaw);
+  final routingRaw = config['routingWebUrl'] as String?;
+  final routingWebUrl = routingRaw == null || routingRaw.trim().isEmpty
+      ? null
+      : normalizeWebUrl(routingRaw);
   return AppServerConfig(
     apiUrl: apiUrl,
     webUrl: webUrl,
     geocodingWebUrl: geocodingWebUrl,
+    routingWebUrl: routingWebUrl,
   );
 }
 

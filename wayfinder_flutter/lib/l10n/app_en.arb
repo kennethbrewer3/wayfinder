@@ -10,6 +10,7 @@
   "settingsTabMarkerIcons": "Marker icons",
   "settingsTabThemes": "Themes",
   "settingsTabGeocoding": "Geocoding",
+  "settingsTabRouting": "Routing",
   "settingsTabTides": "Tides",
   "settingsTabSeasonalOverlays": "Seasons",
   "settingsTabUsers": "Users & roles",
@@ -267,6 +268,8 @@
   "settingsAboutWebServer": "Web server",
   "settingsAboutGeocodingServer": "Geocoding server",
   "settingsAboutGeocodingServerNotConfigured": "Not configured",
+  "settingsAboutRoutingServer": "Routing server",
+  "settingsAboutRoutingServerNotConfigured": "Not configured",
   "settingsAboutCommitHint": "Deployed builds include a git commit (for example {commit}). Compare it to the latest commit on main or the image tag you pulled.",
   "@settingsAboutCommitHint": {
     "placeholders": {
@@ -515,6 +518,9 @@
   "settingsGeocodingAvailabilityTitle": "Map search (geocoding)",
   "settingsGeocodingAvailabilityDescription": "Whether place and address search from the map bar is available for this device.",
   "settingsGeocodingOpenTab": "Geocoding settings",
+  "settingsRoutingAvailabilityTitle": "Turn-by-turn routing",
+  "settingsRoutingAvailabilityDescription": "Whether OSM A→B routing from this device can reach the optional routing server.",
+  "settingsRoutingOpenTab": "Routing settings",
   "settingsMeasurementsTitle": "Measurements",
   "settingsMeasurementsDescription": "Choose how line distances are displayed on the map. Saved to your account so it follows you on any workstation.",
   "settingsAnglesTitle": "Angles",
@@ -3615,5 +3621,69 @@
         "type": "int"
       }
     }
-  }
+  },
+  "routingTitle": "Routing",
+  "routingPermissionDenied": "You do not have permission to configure the routing server.",
+  "routingServerConnectionTitle": "Routing server",
+  "routingServerConnectionDescription": "Separate offline OSM turn-by-turn routing server (GraphHopper). Import a region once, then LAN clients can compute routes from the routing host without any internet access.",
+  "routingServerUrlLabel": "Routing server web URL",
+  "routingSaveServerUrl": "Save routing server URL",
+  "routingServerUrlSaved": "Routing server URL saved.",
+  "routingStatusTitle": "Import status",
+  "routingStatusIdle": "Not imported",
+  "routingStatusChecking": "Checking routing server…",
+  "routingStatusDownloading": "Downloading…",
+  "routingStatusBuilding": "Building routing graph…",
+  "routingStatusReady": "Ready",
+  "routingStatusFailed": "Failed",
+  "routingStatusCancelled": "Cancelled",
+  "routingImportTitle": "Import map data",
+  "routingImportDescription": "Download an OSM extract and build the offline routing graph. This can take a while depending on the region size and server hardware.",
+  "routingRegionLabel": "Region",
+  "routingCustomUrlLabel": "Custom OSM extract URL",
+  "routingRegionOrUrlRequired": "Choose a region or enter a custom OSM extract URL.",
+  "routingImportAction": "Import region",
+  "routingCancelImport": "Cancel import",
+  "routingImportStarted": "Routing import started.",
+  "routingImportFailed": "Routing import failed: {error}",
+  "@routingImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingAbortFailed": "Abort failed: {error}",
+  "@routingAbortFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingServerUnreachable": "Cannot reach the routing server. Check that it is running and reachable from your browser.",
+  "routingNotConfigured": "Configure a routing server URL to enable turn-by-turn routing.",
+  "routingNotReady": "The routing server has not finished importing map data yet.",
+  "routingReadyHint": "Ready for routing. LAN clients can compute routes from this host without internet access.",
+  "routingRouteHereAction": "Route here",
+  "routingRouteRequestFailed": "Route request failed: {error}",
+  "@routingRouteRequestFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingRouteSummary": "{distance} · {duration}",
+  "@routingRouteSummary": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "routingClearRouteAction": "Clear route"
 }

@@ -30,6 +30,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsTabGeocoding => 'Géocodage';
 
   @override
+  String get settingsTabRouting => 'Itinéraires';
+
+  @override
   String get settingsTabTides => 'Marées';
 
   @override
@@ -462,6 +465,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsAboutGeocodingServerNotConfigured => 'Non configuré';
 
   @override
+  String get settingsAboutRoutingServer => 'Serveur d\'itinéraires';
+
+  @override
+  String get settingsAboutRoutingServerNotConfigured => 'Non configuré';
+
+  @override
   String settingsAboutCommitHint(String commit) {
     return 'Les compilations déployées incluent un commit git (par exemple $commit). Comparez-le au dernier commit sur main ou à l\'étiquette d\'image que vous avez téléchargée.';
   }
@@ -850,6 +859,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsGeocodingOpenTab => 'Geocoding settings';
+
+  @override
+  String get settingsRoutingAvailabilityTitle => 'Itinéraires turn-by-turn';
+
+  @override
+  String get settingsRoutingAvailabilityDescription =>
+      'Indique si le calcul d\'itinéraires OSM A→B depuis cet appareil peut joindre le serveur d\'itinéraires optionnel.';
+
+  @override
+  String get settingsRoutingOpenTab => 'Paramètres d\'itinéraires';
 
   @override
   String get settingsMeasurementsTitle => 'Mesures';
@@ -6191,4 +6210,121 @@ class AppLocalizationsFr extends AppLocalizations {
   String sidebarSeasonalOverlaysCount(int count) {
     return '$count overlay(s)';
   }
+
+  @override
+  String get routingTitle => 'Itinéraires';
+
+  @override
+  String get routingPermissionDenied =>
+      'Vous n\'avez pas la permission de configurer le serveur d\'itinéraires.';
+
+  @override
+  String get routingServerConnectionTitle => 'Serveur d\'itinéraires';
+
+  @override
+  String get routingServerConnectionDescription =>
+      'Serveur de calcul d\'itinéraires OSM hors ligne (GraphHopper), séparé de votre serveur principal. Importez une région une fois, puis les clients du réseau local peuvent calculer des itinéraires depuis cet hôte sans accès internet.';
+
+  @override
+  String get routingServerUrlLabel => 'URL web du serveur d\'itinéraires';
+
+  @override
+  String get routingSaveServerUrl =>
+      'Enregistrer l\'URL du serveur d\'itinéraires';
+
+  @override
+  String get routingServerUrlSaved =>
+      'URL du serveur d\'itinéraires enregistrée.';
+
+  @override
+  String get routingStatusTitle => 'État de l\'import';
+
+  @override
+  String get routingStatusIdle => 'Non importé';
+
+  @override
+  String get routingStatusChecking => 'Vérification du serveur d\'itinéraires…';
+
+  @override
+  String get routingStatusDownloading => 'Téléchargement…';
+
+  @override
+  String get routingStatusBuilding => 'Construction du graphe d\'itinéraires…';
+
+  @override
+  String get routingStatusReady => 'Prêt';
+
+  @override
+  String get routingStatusFailed => 'Échec';
+
+  @override
+  String get routingStatusCancelled => 'Annulé';
+
+  @override
+  String get routingImportTitle => 'Importer les données cartographiques';
+
+  @override
+  String get routingImportDescription =>
+      'Téléchargez un extrait OSM et construisez le graphe d\'itinéraires hors ligne. Cela peut prendre du temps selon la taille de la région et le matériel du serveur.';
+
+  @override
+  String get routingRegionLabel => 'Région';
+
+  @override
+  String get routingCustomUrlLabel => 'URL d\'extrait OSM personnalisée';
+
+  @override
+  String get routingRegionOrUrlRequired =>
+      'Choisissez une région ou saisissez une URL d\'extrait OSM personnalisée.';
+
+  @override
+  String get routingImportAction => 'Importer la région';
+
+  @override
+  String get routingCancelImport => 'Annuler l\'import';
+
+  @override
+  String get routingImportStarted => 'Import d\'itinéraires démarré.';
+
+  @override
+  String routingImportFailed(String error) {
+    return 'L\'import d\'itinéraires a échoué : $error';
+  }
+
+  @override
+  String routingAbortFailed(String error) {
+    return 'Échec de l\'annulation : $error';
+  }
+
+  @override
+  String get routingServerUnreachable =>
+      'Impossible de joindre le serveur d\'itinéraires. Vérifiez qu\'il est en cours d\'exécution et accessible depuis votre navigateur.';
+
+  @override
+  String get routingNotConfigured =>
+      'Configurez une URL de serveur d\'itinéraires pour activer le calcul d\'itinéraires.';
+
+  @override
+  String get routingNotReady =>
+      'Le serveur d\'itinéraires n\'a pas encore terminé l\'import des données cartographiques.';
+
+  @override
+  String get routingReadyHint =>
+      'Prêt pour le calcul d\'itinéraires. Les clients du réseau local peuvent calculer des itinéraires depuis cet hôte sans accès internet.';
+
+  @override
+  String get routingRouteHereAction => 'Itinéraire vers ici';
+
+  @override
+  String routingRouteRequestFailed(String error) {
+    return 'La demande d\'itinéraire a échoué : $error';
+  }
+
+  @override
+  String routingRouteSummary(String distance, String duration) {
+    return '$distance · $duration';
+  }
+
+  @override
+  String get routingClearRouteAction => 'Effacer l\'itinéraire';
 }

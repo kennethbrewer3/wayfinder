@@ -99,6 +99,9 @@ import '../../settings/models/pmtiles_map_layer.dart';
 import '../../settings/models/pmtiles_source.dart';
 import '../../route_follow/presentation/map_route_follow_hud.dart';
 import '../../route_follow/providers/route_follow_provider.dart';
+import '../../routing/presentation/map_routing_layer.dart';
+import '../../routing/presentation/routing_session_chip.dart';
+import '../../routing/providers/routing_session_provider.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../../slope/presentation/map_slope_layer.dart';
 import '../../slope/presentation/slope_banner.dart';
@@ -4674,6 +4677,7 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
             deviceLocationTarget.longitude,
           );
     final routeFollow = ref.watch(routeFollowProvider);
+    final routingSession = ref.watch(routingSessionProvider);
     final routeFollowGuidePoint = () {
       final progress = routeFollow.progress;
       if (!routeFollow.active || progress == null) {
@@ -4931,6 +4935,12 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         },
                       ),
                     ...mapObjectLayerChildren,
+                    if (mapTilesDisplayed && routingSession.hasRoute)
+                      PolylineLayer(
+                        polylines: buildRoutingSessionPolylines(
+                          routingSession.result,
+                        ),
+                      ),
                     if (mapTilesDisplayed && seasonalOverlays.isNotEmpty) ...[
                       PolygonLayer(
                         polygons: buildSeasonalOverlayPolygons(
@@ -5373,7 +5383,8 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
               ),
             if (showCompassRose ||
                 (deviceLocation.tracking && deviceLocation.hasFix) ||
-                routeFollow.active)
+                routeFollow.active ||
+                routingSession.hasRoute)
               Positioned(
                 left: 12,
                 bottom: 12,
@@ -5388,6 +5399,9 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                           deviceLocation.tracking && deviceLocation.hasFix;
                       final followHud = routeFollow.active
                           ? const MapRouteFollowHud()
+                          : null;
+                      final routingChip = routingSession.hasRoute
+                          ? const RoutingSessionChip()
                           : null;
                       final hud = showHud
                           ? IgnorePointer(
@@ -5406,7 +5420,10 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ?followHud,
-                          if (followHud != null &&
+                          if (followHud != null && routingChip != null)
+                            const SizedBox(height: 8),
+                          ?routingChip,
+                          if ((followHud != null || routingChip != null) &&
                               (compass != null || hud != null))
                             const SizedBox(height: 8),
                           if (landscape && compass != null && hud != null)

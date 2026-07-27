@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTabGeocoding => 'Geocoding';
 
   @override
+  String get settingsTabRouting => 'Routing';
+
+  @override
   String get settingsTabTides => 'Tides';
 
   @override
@@ -460,6 +463,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAboutGeocodingServerNotConfigured => 'Not configured';
 
   @override
+  String get settingsAboutRoutingServer => 'Routing server';
+
+  @override
+  String get settingsAboutRoutingServerNotConfigured => 'Not configured';
+
+  @override
   String settingsAboutCommitHint(String commit) {
     return 'Deployed builds include a git commit (for example $commit). Compare it to the latest commit on main or the image tag you pulled.';
   }
@@ -846,6 +855,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsGeocodingOpenTab => 'Geocoding settings';
+
+  @override
+  String get settingsRoutingAvailabilityTitle => 'Turn-by-turn routing';
+
+  @override
+  String get settingsRoutingAvailabilityDescription =>
+      'Whether OSM A→B routing from this device can reach the optional routing server.';
+
+  @override
+  String get settingsRoutingOpenTab => 'Routing settings';
 
   @override
   String get settingsMeasurementsTitle => 'Measurements';
@@ -6118,4 +6137,119 @@ class AppLocalizationsEn extends AppLocalizations {
   String sidebarSeasonalOverlaysCount(int count) {
     return '$count overlay(s)';
   }
+
+  @override
+  String get routingTitle => 'Routing';
+
+  @override
+  String get routingPermissionDenied =>
+      'You do not have permission to configure the routing server.';
+
+  @override
+  String get routingServerConnectionTitle => 'Routing server';
+
+  @override
+  String get routingServerConnectionDescription =>
+      'Separate offline OSM turn-by-turn routing server (GraphHopper). Import a region once, then LAN clients can compute routes from the routing host without any internet access.';
+
+  @override
+  String get routingServerUrlLabel => 'Routing server web URL';
+
+  @override
+  String get routingSaveServerUrl => 'Save routing server URL';
+
+  @override
+  String get routingServerUrlSaved => 'Routing server URL saved.';
+
+  @override
+  String get routingStatusTitle => 'Import status';
+
+  @override
+  String get routingStatusIdle => 'Not imported';
+
+  @override
+  String get routingStatusChecking => 'Checking routing server…';
+
+  @override
+  String get routingStatusDownloading => 'Downloading…';
+
+  @override
+  String get routingStatusBuilding => 'Building routing graph…';
+
+  @override
+  String get routingStatusReady => 'Ready';
+
+  @override
+  String get routingStatusFailed => 'Failed';
+
+  @override
+  String get routingStatusCancelled => 'Cancelled';
+
+  @override
+  String get routingImportTitle => 'Import map data';
+
+  @override
+  String get routingImportDescription =>
+      'Download an OSM extract and build the offline routing graph. This can take a while depending on the region size and server hardware.';
+
+  @override
+  String get routingRegionLabel => 'Region';
+
+  @override
+  String get routingCustomUrlLabel => 'Custom OSM extract URL';
+
+  @override
+  String get routingRegionOrUrlRequired =>
+      'Choose a region or enter a custom OSM extract URL.';
+
+  @override
+  String get routingImportAction => 'Import region';
+
+  @override
+  String get routingCancelImport => 'Cancel import';
+
+  @override
+  String get routingImportStarted => 'Routing import started.';
+
+  @override
+  String routingImportFailed(String error) {
+    return 'Routing import failed: $error';
+  }
+
+  @override
+  String routingAbortFailed(String error) {
+    return 'Abort failed: $error';
+  }
+
+  @override
+  String get routingServerUnreachable =>
+      'Cannot reach the routing server. Check that it is running and reachable from your browser.';
+
+  @override
+  String get routingNotConfigured =>
+      'Configure a routing server URL to enable turn-by-turn routing.';
+
+  @override
+  String get routingNotReady =>
+      'The routing server has not finished importing map data yet.';
+
+  @override
+  String get routingReadyHint =>
+      'Ready for routing. LAN clients can compute routes from this host without internet access.';
+
+  @override
+  String get routingRouteHereAction => 'Route here';
+
+  @override
+  String routingRouteRequestFailed(String error) {
+    return 'Route request failed: $error';
+  }
+
+  @override
+  String routingRouteSummary(String distance, String duration) {
+    return '$distance · $duration';
+  }
+
+  @override
+  String get routingClearRouteAction => 'Clear route';
 }

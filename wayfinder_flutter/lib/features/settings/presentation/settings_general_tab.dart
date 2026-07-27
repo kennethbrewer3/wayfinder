@@ -48,6 +48,8 @@ import '../../offline_packs/providers/force_offline_pack_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/providers/polygon_angle_snap_provider.dart';
+import '../../routing/data/routing_repository.dart';
+import '../../routing/models/routing_models.dart';
 import '../../themes/providers/app_theme_definitions_provider.dart';
 import '../providers/app_locale_provider.dart';
 import '../providers/app_theme_provider.dart';
@@ -766,6 +768,8 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
         const SizedBox(height: 32),
         const _GeocodingAvailabilitySection(),
         const SizedBox(height: 32),
+        const _RoutingAvailabilitySection(),
+        const SizedBox(height: 32),
         Text(
           l10n.settingsMeasurementsTitle,
           style: Theme.of(context).textTheme.titleLarge,
@@ -1340,6 +1344,114 @@ class _GeocodingAvailabilitySection extends ConsumerWidget {
             onPressed: () => context.push(SettingsTab.geocoding.routePath),
             icon: const Icon(Icons.travel_explore),
             label: Text(l10n.settingsGeocodingOpenTab),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RoutingAvailabilitySection extends ConsumerWidget {
+  const _RoutingAvailabilitySection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final repository = ref.watch(routingRepositoryProvider);
+    final statusAsync = ref.watch(routingStatusProvider);
+
+    final String statusLabel;
+    final IconData statusIcon;
+    final Color statusColor;
+    final String? detail;
+
+    if (!repository.isConfigured) {
+      statusLabel = l10n.routingNotConfigured;
+      statusIcon = Icons.cloud_off_outlined;
+      statusColor = theme.colorScheme.error;
+      detail = null;
+    } else if (statusAsync.isLoading && !statusAsync.hasValue) {
+      statusLabel = l10n.routingStatusChecking;
+      statusIcon = Icons.hourglass_top;
+      statusColor = theme.colorScheme.onSurfaceVariant;
+      detail = null;
+    } else if (statusAsync.hasError) {
+      statusLabel = l10n.routingServerUnreachable;
+      statusIcon = Icons.error_outline;
+      statusColor = theme.colorScheme.error;
+      detail = statusAsync.error.toString();
+    } else {
+      final status = statusAsync.valueOrNull ?? RoutingStatus.unconfigured;
+      if (!status.graphhopperUp && !status.ready) {
+        statusLabel = l10n.routingServerUnreachable;
+        statusIcon = Icons.cloud_off_outlined;
+        statusColor = theme.colorScheme.error;
+        detail = status.message ?? status.error;
+      } else if (status.ready) {
+        statusLabel = l10n.routingStatusReady;
+        statusIcon = Icons.route;
+        statusColor = theme.colorScheme.primary;
+        detail = l10n.routingReadyHint;
+      } else if (status.importInProgress) {
+        statusLabel = status.status == RoutingImportStatus.building
+            ? l10n.routingStatusBuilding
+            : l10n.routingStatusDownloading;
+        statusIcon = Icons.hourglass_top;
+        statusColor = theme.colorScheme.onSurfaceVariant;
+        detail = status.message;
+      } else {
+        statusLabel = l10n.routingStatusIdle;
+        statusIcon = Icons.cloud_outlined;
+        statusColor = theme.colorScheme.onSurfaceVariant;
+        detail = status.message;
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.settingsRoutingAvailabilityTitle,
+          style: theme.textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.settingsRoutingAvailabilityDescription,
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(statusIcon, color: statusColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    statusLabel,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: statusColor,
+                    ),
+                  ),
+                  if (detail != null && detail.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(detail, style: theme.textTheme.bodySmall),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => context.push(SettingsTab.routing.routePath),
+            icon: const Icon(Icons.route),
+            label: Text(l10n.settingsRoutingOpenTab),
           ),
         ),
       ],

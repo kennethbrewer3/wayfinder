@@ -32,6 +32,7 @@ services:
       WAYFINDER_API_URL: "${WAYFINDER_API_URL:?Set WAYFINDER_API_URL in .env}"
       WAYFINDER_WEB_URL: "${WAYFINDER_WEB_URL:-}"
       WAYFINDER_GEOCODING_WEB_URL: "${WAYFINDER_GEOCODING_WEB_URL:-}"
+      WAYFINDER_ROUTING_WEB_URL: "${WAYFINDER_ROUTING_WEB_URL:-}"
     restart: unless-stopped
     healthcheck:
       test:

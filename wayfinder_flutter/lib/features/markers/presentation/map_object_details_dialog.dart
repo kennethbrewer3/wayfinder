@@ -22,6 +22,8 @@ import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../evac_kits/utils/evac_kit_path.dart';
 import '../../route_follow/presentation/start_route_follow.dart';
+import '../../routing/data/routing_repository.dart';
+import '../../routing/presentation/route_to_dialog.dart';
 import '../../tides/presentation/create_tide_tables.dart';
 import '../../layers/presentation/layer_assignment_row.dart';
 import '../../lines/models/line_geometry.dart';
@@ -330,6 +332,8 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
     );
     final geocodingReachable =
         ref.watch(geocodingServerReachableProvider).valueOrNull ?? false;
+    final routingReachable =
+        ref.watch(routingServerReachableProvider).valueOrNull ?? false;
     final offline = ref.watch(offlineModeActiveProvider);
     final kiosk = ref.watch(kioskModeActiveProvider);
     final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
@@ -364,6 +368,20 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onShowQrCode: () => showMarkerQrDialog(context: context, marker: marker),
       contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
       additionalActions: [
+        if (!offline && routingReachable)
+          TextButton.icon(
+            onPressed: () async {
+              await routeToMapPoint(
+                context: context,
+                ref: ref,
+                destinationLabel: marker.name,
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              );
+            },
+            icon: const Icon(Icons.directions),
+            label: Text(l10n.routingRouteHereAction),
+          ),
         if (canAddToGeocoding)
           TextButton.icon(
             onPressed: () async {

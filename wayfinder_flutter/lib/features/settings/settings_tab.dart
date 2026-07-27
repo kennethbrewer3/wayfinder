@@ -5,6 +5,7 @@ enum SettingsTab {
   markerIcons('marker-icons'),
   themes('themes'),
   geocoding('geocoding'),
+  routing('routing'),
   tides('tides'),
   seasonalOverlays('seasonal-overlays'),
   users('users'),

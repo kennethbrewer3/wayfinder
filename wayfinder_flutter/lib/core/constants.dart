@@ -28,4 +28,5 @@ class AppConstants {
   static const serverApiUrlStorageKey = 'wayfinder.settings.serverApiUrl';
   static const serverWebUrlStorageKey = 'wayfinder.settings.serverWebUrl';
   static const geocodingWebUrlStorageKey = 'wayfinder.settings.geocodingWebUrl';
+  static const routingWebUrlStorageKey = 'wayfinder.settings.routingWebUrl';
 }

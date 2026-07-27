@@ -10,6 +10,7 @@
   "settingsTabMarkerIcons": "Iconos de marcadores",
   "settingsTabThemes": "Temas",
   "settingsTabGeocoding": "Geocodificación",
+  "settingsTabRouting": "Rutas",
   "settingsTabTides": "Mareas",
   "settingsTabUsers": "Usuarios y roles",
   "settingsTabTrash": "Papelera",
@@ -89,6 +90,8 @@
   "settingsAboutWebServer": "Servidor web",
   "settingsAboutGeocodingServer": "Servidor de geocodificación",
   "settingsAboutGeocodingServerNotConfigured": "No configurado",
+  "settingsAboutRoutingServer": "Servidor de rutas",
+  "settingsAboutRoutingServerNotConfigured": "No configurado",
   "settingsAboutCommitHint": "Las compilaciones desplegadas incluyen un commit de git (por ejemplo {commit}). Compárelo con el último commit en main o con la etiqueta de imagen que descargó.",
   "actionSave": "Guardar",
   "actionSearch": "Buscar",
@@ -216,6 +219,9 @@
   "settingsGeocodingAvailabilityTitle": "Map search (geocoding)",
   "settingsGeocodingAvailabilityDescription": "Whether place and address search from the map bar is available for this device.",
   "settingsGeocodingOpenTab": "Geocoding settings",
+  "settingsRoutingAvailabilityTitle": "Navegación turn-by-turn",
+  "settingsRoutingAvailabilityDescription": "Indica si el cálculo de rutas OSM A→B desde este dispositivo puede alcanzar el servidor de rutas opcional.",
+  "settingsRoutingOpenTab": "Ajustes de rutas",
   "settingsMeasurementsTitle": "Medidas",
   "settingsMeasurementsDescription": "Elija cómo se muestran las distancias de las líneas en el mapa. Se guarda en el servidor para que cada navegador use las mismas unidades.",
   "settingsAnglesTitle": "Ángulos",
@@ -2878,5 +2884,69 @@
   "settingsRestApiClientKeyDescription": "Guarda la clave aquí para que esta app pueda usar respaldos REST (restauración, sincronización de ajustes, etc.).",
   "settingsRestApiClientKeyLabel": "Clave API",
   "settingsRestApiSaveClientKeyAction": "Guardar clave en este dispositivo",
-  "settingsRestApiKeySaved": "Clave API guardada en este dispositivo."
+  "settingsRestApiKeySaved": "Clave API guardada en este dispositivo.",
+  "routingTitle": "Rutas",
+  "routingPermissionDenied": "No tienes permiso para configurar el servidor de rutas.",
+  "routingServerConnectionTitle": "Servidor de rutas",
+  "routingServerConnectionDescription": "Servidor de cálculo de rutas OSM sin conexión (GraphHopper), independiente de tu servidor principal. Importa una región una vez y los clientes de la red local podrán calcular rutas desde este host sin acceso a internet.",
+  "routingServerUrlLabel": "URL web del servidor de rutas",
+  "routingSaveServerUrl": "Guardar URL del servidor de rutas",
+  "routingServerUrlSaved": "URL del servidor de rutas guardada.",
+  "routingStatusTitle": "Estado de importación",
+  "routingStatusIdle": "No importado",
+  "routingStatusChecking": "Comprobando el servidor de rutas…",
+  "routingStatusDownloading": "Descargando…",
+  "routingStatusBuilding": "Construyendo el grafo de rutas…",
+  "routingStatusReady": "Listo",
+  "routingStatusFailed": "Fallido",
+  "routingStatusCancelled": "Cancelado",
+  "routingImportTitle": "Importar datos del mapa",
+  "routingImportDescription": "Descarga un extracto de OSM y construye el grafo de rutas sin conexión. Esto puede tardar según el tamaño de la región y el hardware del servidor.",
+  "routingRegionLabel": "Región",
+  "routingCustomUrlLabel": "URL de extracto OSM personalizada",
+  "routingRegionOrUrlRequired": "Elige una región o introduce una URL de extracto OSM personalizada.",
+  "routingImportAction": "Importar región",
+  "routingCancelImport": "Cancelar importación",
+  "routingImportStarted": "Importación de rutas iniciada.",
+  "routingImportFailed": "Error al importar rutas: {error}",
+  "@routingImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingAbortFailed": "Error al cancelar: {error}",
+  "@routingAbortFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingServerUnreachable": "No se puede conectar con el servidor de rutas. Verifica que esté en ejecución y accesible desde tu navegador.",
+  "routingNotConfigured": "Configura una URL de servidor de rutas para habilitar el cálculo de rutas.",
+  "routingNotReady": "El servidor de rutas aún no ha terminado de importar los datos del mapa.",
+  "routingReadyHint": "Listo para calcular rutas. Los clientes de la red local pueden calcular rutas desde este host sin acceso a internet.",
+  "routingRouteHereAction": "Ruta hasta aquí",
+  "routingRouteRequestFailed": "Error en la solicitud de ruta: {error}",
+  "@routingRouteRequestFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingRouteSummary": "{distance} · {duration}",
+  "@routingRouteSummary": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "routingClearRouteAction": "Borrar ruta"
 }

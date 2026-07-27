@@ -42,8 +42,16 @@ class MapRouteFollowHud extends ConsumerWidget {
               mode: follow.mode,
             ),
           );
+    final namedInstruction = progress == null
+        ? null
+        : currentRouteFollowNamedInstruction(
+            follow.namedInstructions,
+            progress.traveledMeters,
+          );
     final guidanceText = progress == null || progress.completed
         ? null
+        : namedInstruction != null
+        ? namedInstruction.text
         : _formatManeuverGuidance(
             l10n: l10n,
             units: units,

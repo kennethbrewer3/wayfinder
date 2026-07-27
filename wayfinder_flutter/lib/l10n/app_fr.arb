@@ -10,6 +10,7 @@
   "settingsTabMarkerIcons": "Icônes de marqueurs",
   "settingsTabThemes": "Thèmes",
   "settingsTabGeocoding": "Géocodage",
+  "settingsTabRouting": "Itinéraires",
   "settingsTabTides": "Marées",
   "settingsTabUsers": "Utilisateurs et rôles",
   "settingsTabTrash": "Corbeille",
@@ -89,6 +90,8 @@
   "settingsAboutWebServer": "Serveur web",
   "settingsAboutGeocodingServer": "Serveur de géocodage",
   "settingsAboutGeocodingServerNotConfigured": "Non configuré",
+  "settingsAboutRoutingServer": "Serveur d'itinéraires",
+  "settingsAboutRoutingServerNotConfigured": "Non configuré",
   "settingsAboutCommitHint": "Les compilations déployées incluent un commit git (par exemple {commit}). Comparez-le au dernier commit sur main ou à l'étiquette d'image que vous avez téléchargée.",
   "actionSave": "Enregistrer",
   "actionSearch": "Rechercher",
@@ -216,6 +219,9 @@
   "settingsGeocodingAvailabilityTitle": "Map search (geocoding)",
   "settingsGeocodingAvailabilityDescription": "Whether place and address search from the map bar is available for this device.",
   "settingsGeocodingOpenTab": "Geocoding settings",
+  "settingsRoutingAvailabilityTitle": "Itinéraires turn-by-turn",
+  "settingsRoutingAvailabilityDescription": "Indique si le calcul d'itinéraires OSM A→B depuis cet appareil peut joindre le serveur d'itinéraires optionnel.",
+  "settingsRoutingOpenTab": "Paramètres d'itinéraires",
   "settingsMeasurementsTitle": "Mesures",
   "settingsMeasurementsDescription": "Choisissez comment les distances des lignes sont affichées sur la carte. Enregistré sur le serveur pour que chaque navigateur utilise les mêmes unités.",
   "settingsAnglesTitle": "Angles",
@@ -2878,5 +2884,69 @@
   "settingsRestApiClientKeyDescription": "Enregistrez la clé ici pour que cette app puisse utiliser les replis REST (restauration de sauvegarde, sync des paramètres, etc.).",
   "settingsRestApiClientKeyLabel": "Clé API",
   "settingsRestApiSaveClientKeyAction": "Enregistrer la clé sur cet appareil",
-  "settingsRestApiKeySaved": "Clé API enregistrée sur cet appareil."
+  "settingsRestApiKeySaved": "Clé API enregistrée sur cet appareil.",
+  "routingTitle": "Itinéraires",
+  "routingPermissionDenied": "Vous n'avez pas la permission de configurer le serveur d'itinéraires.",
+  "routingServerConnectionTitle": "Serveur d'itinéraires",
+  "routingServerConnectionDescription": "Serveur de calcul d'itinéraires OSM hors ligne (GraphHopper), séparé de votre serveur principal. Importez une région une fois, puis les clients du réseau local peuvent calculer des itinéraires depuis cet hôte sans accès internet.",
+  "routingServerUrlLabel": "URL web du serveur d'itinéraires",
+  "routingSaveServerUrl": "Enregistrer l'URL du serveur d'itinéraires",
+  "routingServerUrlSaved": "URL du serveur d'itinéraires enregistrée.",
+  "routingStatusTitle": "État de l'import",
+  "routingStatusIdle": "Non importé",
+  "routingStatusChecking": "Vérification du serveur d'itinéraires…",
+  "routingStatusDownloading": "Téléchargement…",
+  "routingStatusBuilding": "Construction du graphe d'itinéraires…",
+  "routingStatusReady": "Prêt",
+  "routingStatusFailed": "Échec",
+  "routingStatusCancelled": "Annulé",
+  "routingImportTitle": "Importer les données cartographiques",
+  "routingImportDescription": "Téléchargez un extrait OSM et construisez le graphe d'itinéraires hors ligne. Cela peut prendre du temps selon la taille de la région et le matériel du serveur.",
+  "routingRegionLabel": "Région",
+  "routingCustomUrlLabel": "URL d'extrait OSM personnalisée",
+  "routingRegionOrUrlRequired": "Choisissez une région ou saisissez une URL d'extrait OSM personnalisée.",
+  "routingImportAction": "Importer la région",
+  "routingCancelImport": "Annuler l'import",
+  "routingImportStarted": "Import d'itinéraires démarré.",
+  "routingImportFailed": "L'import d'itinéraires a échoué : {error}",
+  "@routingImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingAbortFailed": "Échec de l'annulation : {error}",
+  "@routingAbortFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingServerUnreachable": "Impossible de joindre le serveur d'itinéraires. Vérifiez qu'il est en cours d'exécution et accessible depuis votre navigateur.",
+  "routingNotConfigured": "Configurez une URL de serveur d'itinéraires pour activer le calcul d'itinéraires.",
+  "routingNotReady": "Le serveur d'itinéraires n'a pas encore terminé l'import des données cartographiques.",
+  "routingReadyHint": "Prêt pour le calcul d'itinéraires. Les clients du réseau local peuvent calculer des itinéraires depuis cet hôte sans accès internet.",
+  "routingRouteHereAction": "Itinéraire vers ici",
+  "routingRouteRequestFailed": "La demande d'itinéraire a échoué : {error}",
+  "@routingRouteRequestFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "routingRouteSummary": "{distance} · {duration}",
+  "@routingRouteSummary": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "routingClearRouteAction": "Effacer l'itinéraire"
 }

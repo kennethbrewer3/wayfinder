@@ -18,6 +18,9 @@ final visibleSettingsTabsProvider = Provider<List<SettingsTab>>((ref) {
     if (ref.watch(canManageMarkerIconsProvider)) SettingsTab.markerIcons,
     if (ref.watch(canManageThemesProvider)) SettingsTab.themes,
     if (ref.watch(canManageGeocodingProvider)) SettingsTab.geocoding,
+    // Routing management reuses the geocoding permission for now; a
+    // dedicated `canManageRouting` permission can be added server-side later.
+    if (ref.watch(canManageGeocodingProvider)) SettingsTab.routing,
     if (ref.watch(canManageTidesProvider)) SettingsTab.tides,
     if (ref.watch(canManageLayersProvider)) SettingsTab.seasonalOverlays,
     if (canManageUsers || canManageRoles) SettingsTab.users,

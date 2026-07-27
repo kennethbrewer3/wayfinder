@@ -142,6 +142,12 @@ abstract class AppLocalizations {
   /// **'Geocoding'**
   String get settingsTabGeocoding;
 
+  /// No description provided for @settingsTabRouting.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing'**
+  String get settingsTabRouting;
+
   /// No description provided for @settingsTabTides.
   ///
   /// In en, this message translates to:
@@ -868,6 +874,18 @@ abstract class AppLocalizations {
   /// **'Not configured'**
   String get settingsAboutGeocodingServerNotConfigured;
 
+  /// No description provided for @settingsAboutRoutingServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing server'**
+  String get settingsAboutRoutingServer;
+
+  /// No description provided for @settingsAboutRoutingServerNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Not configured'**
+  String get settingsAboutRoutingServerNotConfigured;
+
   /// No description provided for @settingsAboutCommitHint.
   ///
   /// In en, this message translates to:
@@ -1539,6 +1557,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Geocoding settings'**
   String get settingsGeocodingOpenTab;
+
+  /// No description provided for @settingsRoutingAvailabilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn-by-turn routing'**
+  String get settingsRoutingAvailabilityTitle;
+
+  /// No description provided for @settingsRoutingAvailabilityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Whether OSM A→B routing from this device can reach the optional routing server.'**
+  String get settingsRoutingAvailabilityDescription;
+
+  /// No description provided for @settingsRoutingOpenTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing settings'**
+  String get settingsRoutingOpenTab;
 
   /// No description provided for @settingsMeasurementsTitle.
   ///
@@ -10664,6 +10700,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} overlay(s)'**
   String sidebarSeasonalOverlaysCount(int count);
+
+  /// No description provided for @routingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing'**
+  String get routingTitle;
+
+  /// No description provided for @routingPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to configure the routing server.'**
+  String get routingPermissionDenied;
+
+  /// No description provided for @routingServerConnectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing server'**
+  String get routingServerConnectionTitle;
+
+  /// No description provided for @routingServerConnectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate offline OSM turn-by-turn routing server (GraphHopper). Import a region once, then LAN clients can compute routes from the routing host without any internet access.'**
+  String get routingServerConnectionDescription;
+
+  /// No description provided for @routingServerUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing server web URL'**
+  String get routingServerUrlLabel;
+
+  /// No description provided for @routingSaveServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Save routing server URL'**
+  String get routingSaveServerUrl;
+
+  /// No description provided for @routingServerUrlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing server URL saved.'**
+  String get routingServerUrlSaved;
+
+  /// No description provided for @routingStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import status'**
+  String get routingStatusTitle;
+
+  /// No description provided for @routingStatusIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not imported'**
+  String get routingStatusIdle;
+
+  /// No description provided for @routingStatusChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking routing server…'**
+  String get routingStatusChecking;
+
+  /// No description provided for @routingStatusDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get routingStatusDownloading;
+
+  /// No description provided for @routingStatusBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building routing graph…'**
+  String get routingStatusBuilding;
+
+  /// No description provided for @routingStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get routingStatusReady;
+
+  /// No description provided for @routingStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get routingStatusFailed;
+
+  /// No description provided for @routingStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get routingStatusCancelled;
+
+  /// No description provided for @routingImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import map data'**
+  String get routingImportTitle;
+
+  /// No description provided for @routingImportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Download an OSM extract and build the offline routing graph. This can take a while depending on the region size and server hardware.'**
+  String get routingImportDescription;
+
+  /// No description provided for @routingRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get routingRegionLabel;
+
+  /// No description provided for @routingCustomUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom OSM extract URL'**
+  String get routingCustomUrlLabel;
+
+  /// No description provided for @routingRegionOrUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a region or enter a custom OSM extract URL.'**
+  String get routingRegionOrUrlRequired;
+
+  /// No description provided for @routingImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import region'**
+  String get routingImportAction;
+
+  /// No description provided for @routingCancelImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel import'**
+  String get routingCancelImport;
+
+  /// No description provided for @routingImportStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing import started.'**
+  String get routingImportStarted;
+
+  /// No description provided for @routingImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing import failed: {error}'**
+  String routingImportFailed(String error);
+
+  /// No description provided for @routingAbortFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Abort failed: {error}'**
+  String routingAbortFailed(String error);
+
+  /// No description provided for @routingServerUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reach the routing server. Check that it is running and reachable from your browser.'**
+  String get routingServerUnreachable;
+
+  /// No description provided for @routingNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure a routing server URL to enable turn-by-turn routing.'**
+  String get routingNotConfigured;
+
+  /// No description provided for @routingNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The routing server has not finished importing map data yet.'**
+  String get routingNotReady;
+
+  /// No description provided for @routingReadyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for routing. LAN clients can compute routes from this host without internet access.'**
+  String get routingReadyHint;
+
+  /// No description provided for @routingRouteHereAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Route here'**
+  String get routingRouteHereAction;
+
+  /// No description provided for @routingRouteRequestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Route request failed: {error}'**
+  String routingRouteRequestFailed(String error);
+
+  /// No description provided for @routingRouteSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} · {duration}'**
+  String routingRouteSummary(String distance, String duration);
+
+  /// No description provided for @routingClearRouteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear route'**
+  String get routingClearRouteAction;
 }
 
 class _AppLocalizationsDelegate

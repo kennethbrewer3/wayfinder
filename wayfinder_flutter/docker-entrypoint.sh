@@ -4,6 +4,7 @@ set -eu
 api_url="${WAYFINDER_API_URL:-http://localhost:18080}"
 web_url="${WAYFINDER_WEB_URL:-}"
 geocoding_web_url="${WAYFINDER_GEOCODING_WEB_URL:-}"
+routing_web_url="${WAYFINDER_ROUTING_WEB_URL:-}"
 
 if [ -z "$web_url" ]; then
   case "$api_url" in
@@ -30,22 +31,26 @@ if [ -z "$geocoding_web_url" ]; then
   esac
 fi
 
-if [ -n "$geocoding_web_url" ]; then
-  cat > /usr/share/nginx/html/config.json <<EOF
-{
-  "apiUrl": "${api_url}",
-  "webUrl": "${web_url}",
-  "geocodingWebUrl": "${geocoding_web_url}"
-}
-EOF
-else
-  cat > /usr/share/nginx/html/config.json <<EOF
-{
-  "apiUrl": "${api_url}",
-  "webUrl": "${web_url}"
-}
-EOF
+if [ -z "$routing_web_url" ]; then
+  case "$api_url" in
+    *:18080)
+      routing_web_url="${api_url%:18080}:18382"
+      ;;
+    *:18080/*)
+      routing_web_url="${api_url%:18080/*}:18382"
+      ;;
+  esac
 fi
+
+config_fields="\"apiUrl\": \"${api_url}\",\n  \"webUrl\": \"${web_url}\""
+if [ -n "$geocoding_web_url" ]; then
+  config_fields="${config_fields},\n  \"geocodingWebUrl\": \"${geocoding_web_url}\""
+fi
+if [ -n "$routing_web_url" ]; then
+  config_fields="${config_fields},\n  \"routingWebUrl\": \"${routing_web_url}\""
+fi
+
+printf '{\n  %b\n}\n' "$config_fields" > /usr/share/nginx/html/config.json
 
 cat > /usr/share/nginx/html/runtime-info.json <<EOF
 {

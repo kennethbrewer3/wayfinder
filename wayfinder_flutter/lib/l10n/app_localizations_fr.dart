@@ -1920,8 +1920,41 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String routeFollowNextBearing(String bearing) {
-    return 'Prochain $bearing';
+  String routeFollowTurnLeftIn(String distance) {
+    return 'Dans $distance, tournez à gauche';
+  }
+
+  @override
+  String routeFollowTurnRightIn(String distance) {
+    return 'Dans $distance, tournez à droite';
+  }
+
+  @override
+  String routeFollowTurnPortIn(String distance) {
+    return 'Dans $distance, tournez à bâbord';
+  }
+
+  @override
+  String routeFollowTurnStarboardIn(String distance) {
+    return 'Dans $distance, tournez à tribord';
+  }
+
+  @override
+  String get routeFollowNauticalModeEnable =>
+      'Indications nautiques (bâbord / tribord)';
+
+  @override
+  String get routeFollowNauticalModeDisable =>
+      'Indications standard (gauche / droite)';
+
+  @override
+  String routeFollowContinueFor(String distance) {
+    return 'Continuez $distance';
+  }
+
+  @override
+  String routeFollowArriveIn(String distance) {
+    return 'Arrivée dans $distance';
   }
 
   @override

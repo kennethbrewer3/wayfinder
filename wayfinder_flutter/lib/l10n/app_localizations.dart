@@ -3299,11 +3299,53 @@ abstract class AppLocalizations {
   /// **'ETA {eta}'**
   String routeFollowEta(String eta);
 
-  /// No description provided for @routeFollowNextBearing.
+  /// No description provided for @routeFollowTurnLeftIn.
   ///
   /// In en, this message translates to:
-  /// **'Next {bearing}'**
-  String routeFollowNextBearing(String bearing);
+  /// **'In {distance}, turn left'**
+  String routeFollowTurnLeftIn(String distance);
+
+  /// No description provided for @routeFollowTurnRightIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In {distance}, turn right'**
+  String routeFollowTurnRightIn(String distance);
+
+  /// No description provided for @routeFollowTurnPortIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In {distance}, turn to port'**
+  String routeFollowTurnPortIn(String distance);
+
+  /// No description provided for @routeFollowTurnStarboardIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In {distance}, turn to starboard'**
+  String routeFollowTurnStarboardIn(String distance);
+
+  /// No description provided for @routeFollowNauticalModeEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Nautical cues (port / starboard)'**
+  String get routeFollowNauticalModeEnable;
+
+  /// No description provided for @routeFollowNauticalModeDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard cues (left / right)'**
+  String get routeFollowNauticalModeDisable;
+
+  /// No description provided for @routeFollowContinueFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue {distance}'**
+  String routeFollowContinueFor(String distance);
+
+  /// No description provided for @routeFollowArriveIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive in {distance}'**
+  String routeFollowArriveIn(String distance);
 
   /// No description provided for @elevationProfileEmpty.
   ///

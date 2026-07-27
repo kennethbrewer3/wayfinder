@@ -7,8 +7,22 @@ import '../../lines/utils/line_distance.dart';
 /// Default corridor width before the follow UI treats the user as off-route.
 const routeFollowOffRouteThresholdMeters = 35.0;
 
-/// How far ahead along the path to aim the “next” cue.
+/// How far ahead along the path to aim the guide line when no turn is near.
 const routeFollowLookaheadMeters = 40.0;
+
+/// Absolute path-heading change that counts as a left/right turn.
+const routeFollowTurnThresholdDegrees = 30.0;
+
+/// Spacing used when scanning the densified polyline for heading changes.
+const routeFollowTurnScanStepMeters = 8.0;
+
+/// Next action the follow HUD should describe.
+enum RouteFollowManeuverKind {
+  continueStraight,
+  turnLeft,
+  turnRight,
+  arrive,
+}
 
 /// Progress of a device position along a route polyline (render points).
 class RouteFollowProgress {
@@ -19,7 +33,8 @@ class RouteFollowProgress {
     required this.offRouteMeters,
     required this.snapPoint,
     required this.nextPoint,
-    required this.bearingToNextDegrees,
+    required this.metersToNextManeuver,
+    required this.nextManeuver,
     required this.completed,
   });
 
@@ -29,7 +44,8 @@ class RouteFollowProgress {
   final double offRouteMeters;
   final LatLng snapPoint;
   final LatLng nextPoint;
-  final double? bearingToNextDegrees;
+  final double metersToNextManeuver;
+  final RouteFollowManeuverKind nextManeuver;
   final bool completed;
 
   bool get isOffRoute =>
@@ -59,6 +75,92 @@ LatLng? pointAlongPolyline(List<LatLng> path, double distanceMeters) {
     remaining -= segmentLength;
   }
   return path.last;
+}
+
+/// Path heading (degrees clockwise from true north) at [distanceMeters].
+double? bearingAlongPolyline(List<LatLng> path, double distanceMeters) {
+  if (path.length < 2) {
+    return null;
+  }
+
+  var remaining = distanceMeters.clamp(0.0, double.infinity);
+  for (var i = 0; i < path.length - 1; i++) {
+    final start = path[i];
+    final end = path[i + 1];
+    final segmentLength = lineLengthMeters(start, end);
+    if (segmentLength < 0.5) {
+      continue;
+    }
+    if (remaining <= segmentLength) {
+      return lineGeodesicCalculator.bearing(start, end);
+    }
+    remaining -= segmentLength;
+  }
+
+  final start = path[path.length - 2];
+  final end = path.last;
+  if (lineLengthMeters(start, end) < 0.5) {
+    return null;
+  }
+  return lineGeodesicCalculator.bearing(start, end);
+}
+
+/// Signed heading change in [-180, 180]. Positive = turn right.
+double signedBearingDeltaDegrees(double fromDegrees, double toDegrees) {
+  var delta = (toDegrees - fromDegrees) % 360.0;
+  if (delta > 180) {
+    delta -= 360;
+  } else if (delta < -180) {
+    delta += 360;
+  }
+  return delta;
+}
+
+/// Finds the next notable turn (or continue/arrive) ahead of [traveledMeters].
+({RouteFollowManeuverKind kind, double distanceMeters})
+findNextRouteFollowManeuver({
+  required List<LatLng> path,
+  required double traveledMeters,
+  required double totalMeters,
+  double turnThresholdDegrees = routeFollowTurnThresholdDegrees,
+  double scanStepMeters = routeFollowTurnScanStepMeters,
+}) {
+  final remaining = (totalMeters - traveledMeters).clamp(0.0, totalMeters);
+  if (remaining <= 5) {
+    return (kind: RouteFollowManeuverKind.arrive, distanceMeters: remaining);
+  }
+
+  final legBearing = bearingAlongPolyline(path, traveledMeters);
+  if (legBearing == null) {
+    return (
+      kind: RouteFollowManeuverKind.continueStraight,
+      distanceMeters: remaining,
+    );
+  }
+
+  // Skip a little noise immediately underfoot, then scan for heading change.
+  var scan = traveledMeters + math.max(scanStepMeters, 12.0);
+  while (scan < totalMeters - 2) {
+    final aheadBearing = bearingAlongPolyline(path, scan);
+    if (aheadBearing != null) {
+      final delta = signedBearingDeltaDegrees(legBearing, aheadBearing);
+      if (delta.abs() >= turnThresholdDegrees) {
+        final distance = (scan - traveledMeters).clamp(0.0, remaining);
+        return (
+          kind: delta > 0
+              ? RouteFollowManeuverKind.turnRight
+              : RouteFollowManeuverKind.turnLeft,
+          distanceMeters: distance,
+        );
+      }
+    }
+    scan += scanStepMeters;
+  }
+
+  return (
+    kind: RouteFollowManeuverKind.continueStraight,
+    distanceMeters: remaining,
+  );
 }
 
 /// Snaps [position] onto [path] and computes remaining distance / off-route.
@@ -100,12 +202,23 @@ RouteFollowProgress? computeRouteFollowProgress({
   final traveled = bestTraveled.clamp(0.0, total);
   final remaining = (total - traveled).clamp(0.0, total);
   final completed = remaining <= 5;
+  final maneuver = completed
+      ? (kind: RouteFollowManeuverKind.arrive, distanceMeters: remaining)
+      : findNextRouteFollowManeuver(
+          path: path,
+          traveledMeters: traveled,
+          totalMeters: total,
+        );
   final next = completed
       ? path.last
-      : pointAlongPolyline(path, traveled + lookaheadMeters) ?? path.last;
-  final bearing = completed
-      ? null
-      : lineGeodesicCalculator.bearing(position, next);
+      : pointAlongPolyline(
+              path,
+              traveled +
+                  (maneuver.kind == RouteFollowManeuverKind.continueStraight
+                      ? math.min(lookaheadMeters, remaining)
+                      : maneuver.distanceMeters),
+            ) ??
+            path.last;
 
   return RouteFollowProgress(
     totalMeters: total,
@@ -114,7 +227,8 @@ RouteFollowProgress? computeRouteFollowProgress({
     offRouteMeters: bestOffRoute.isFinite ? bestOffRoute : 0,
     snapPoint: bestSnap,
     nextPoint: next,
-    bearingToNextDegrees: bearing,
+    metersToNextManeuver: maneuver.distanceMeters,
+    nextManeuver: maneuver.kind,
     completed: completed,
   );
 }

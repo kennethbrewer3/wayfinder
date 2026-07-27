@@ -6,11 +6,10 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../lines/models/measurement_units.dart';
-import '../../lines/providers/bearing_reference_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
-import '../../map/providers/device_location_provider.dart';
-import '../../map/utils/magnetic_declination.dart';
+import '../providers/route_follow_nautical_mode_provider.dart';
 import '../providers/route_follow_provider.dart';
+import '../utils/route_follow_progress.dart';
 
 /// Compact guidance card while following a line or evac route.
 class MapRouteFollowHud extends ConsumerWidget {
@@ -26,8 +25,7 @@ class MapRouteFollowHud extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final units = ref.watch(measurementUnitsProvider);
-    final bearingReference = ref.watch(bearingReferenceProvider);
-    final location = ref.watch(deviceLocationProvider).position;
+    final nautical = ref.watch(routeFollowNauticalModeProvider);
     final progress = follow.progress;
 
     final remainingText = progress == null
@@ -44,17 +42,15 @@ class MapRouteFollowHud extends ConsumerWidget {
               mode: follow.mode,
             ),
           );
-    String? bearingText;
-    if (progress != null &&
-        progress.bearingToNextDegrees != null &&
-        location != null) {
-      final declination = magneticDeclinationDegrees(location: location);
-      bearingText = formatNavigationBearing(
-        trueBearingDegrees: progress.bearingToNextDegrees!,
-        reference: bearingReference,
-        declinationDegrees: declination,
-      );
-    }
+    final guidanceText = progress == null || progress.completed
+        ? null
+        : _formatManeuverGuidance(
+            l10n: l10n,
+            units: units,
+            kind: progress.nextManeuver,
+            meters: progress.metersToNextManeuver,
+            nautical: nautical,
+          );
 
     final offRoute = follow.offRoute;
     final completed = follow.completed;
@@ -102,10 +98,9 @@ class MapRouteFollowHud extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Text(
                     [
+                      ?guidanceText,
                       l10n.routeFollowRemaining(remainingText),
                       if (eta != null) l10n.routeFollowEta(eta),
-                      if (bearingText != null)
-                        l10n.routeFollowNextBearing(bearingText),
                     ].join(' · '),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
@@ -114,6 +109,21 @@ class MapRouteFollowHud extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            IconButton(
+              tooltip: nautical
+                  ? l10n.routeFollowNauticalModeDisable
+                  : l10n.routeFollowNauticalModeEnable,
+              onPressed: () {
+                unawaited(
+                  ref.read(routeFollowNauticalModeProvider.notifier).toggle(),
+                );
+              },
+              icon: Icon(
+                Icons.sailing,
+                color: nautical ? theme.colorScheme.primary : null,
+              ),
+              visualDensity: VisualDensity.compact,
             ),
             IconButton(
               tooltip: follow.simulating
@@ -143,4 +153,28 @@ class MapRouteFollowHud extends ConsumerWidget {
       ),
     );
   }
+}
+
+String _formatManeuverGuidance({
+  required AppLocalizations l10n,
+  required MeasurementUnits units,
+  required RouteFollowManeuverKind kind,
+  required double meters,
+  required bool nautical,
+}) {
+  final distance = formatLineDistance(meters, units);
+  return switch (kind) {
+    RouteFollowManeuverKind.turnLeft =>
+      nautical
+          ? l10n.routeFollowTurnPortIn(distance)
+          : l10n.routeFollowTurnLeftIn(distance),
+    RouteFollowManeuverKind.turnRight =>
+      nautical
+          ? l10n.routeFollowTurnStarboardIn(distance)
+          : l10n.routeFollowTurnRightIn(distance),
+    RouteFollowManeuverKind.continueStraight => l10n.routeFollowContinueFor(
+      distance,
+    ),
+    RouteFollowManeuverKind.arrive => l10n.routeFollowArriveIn(distance),
+  };
 }

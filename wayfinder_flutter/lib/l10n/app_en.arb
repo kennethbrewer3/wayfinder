@@ -1157,10 +1157,42 @@
       "eta": { "type": "String" }
     }
   },
-  "routeFollowNextBearing": "Next {bearing}",
-  "@routeFollowNextBearing": {
+  "routeFollowTurnLeftIn": "In {distance}, turn left",
+  "@routeFollowTurnLeftIn": {
     "placeholders": {
-      "bearing": { "type": "String" }
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnRightIn": "In {distance}, turn right",
+  "@routeFollowTurnRightIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnPortIn": "In {distance}, turn to port",
+  "@routeFollowTurnPortIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnStarboardIn": "In {distance}, turn to starboard",
+  "@routeFollowTurnStarboardIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowNauticalModeEnable": "Nautical cues (port / starboard)",
+  "routeFollowNauticalModeDisable": "Standard cues (left / right)",
+  "routeFollowContinueFor": "Continue {distance}",
+  "@routeFollowContinueFor": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowArriveIn": "Arrive in {distance}",
+  "@routeFollowArriveIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
     }
   },
   "elevationProfileEmpty": "Could not sample elevations along this path.",

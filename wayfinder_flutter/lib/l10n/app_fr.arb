@@ -778,10 +778,42 @@
       "eta": { "type": "String" }
     }
   },
-  "routeFollowNextBearing": "Prochain {bearing}",
-  "@routeFollowNextBearing": {
+  "routeFollowTurnLeftIn": "Dans {distance}, tournez à gauche",
+  "@routeFollowTurnLeftIn": {
     "placeholders": {
-      "bearing": { "type": "String" }
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnRightIn": "Dans {distance}, tournez à droite",
+  "@routeFollowTurnRightIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnPortIn": "Dans {distance}, tournez à bâbord",
+  "@routeFollowTurnPortIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnStarboardIn": "Dans {distance}, tournez à tribord",
+  "@routeFollowTurnStarboardIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowNauticalModeEnable": "Indications nautiques (bâbord / tribord)",
+  "routeFollowNauticalModeDisable": "Indications standard (gauche / droite)",
+  "routeFollowContinueFor": "Continuez {distance}",
+  "@routeFollowContinueFor": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowArriveIn": "Arrivée dans {distance}",
+  "@routeFollowArriveIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
     }
   },
   "elevationProfileEmpty": "Impossible d'échantillonner les élévations le long de ce parcours.",

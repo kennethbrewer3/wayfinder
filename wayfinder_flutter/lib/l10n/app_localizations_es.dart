@@ -1914,8 +1914,41 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String routeFollowNextBearing(String bearing) {
-    return 'Siguiente $bearing';
+  String routeFollowTurnLeftIn(String distance) {
+    return 'En $distance, gire a la izquierda';
+  }
+
+  @override
+  String routeFollowTurnRightIn(String distance) {
+    return 'En $distance, gire a la derecha';
+  }
+
+  @override
+  String routeFollowTurnPortIn(String distance) {
+    return 'En $distance, gire a babor';
+  }
+
+  @override
+  String routeFollowTurnStarboardIn(String distance) {
+    return 'En $distance, gire a estribor';
+  }
+
+  @override
+  String get routeFollowNauticalModeEnable =>
+      'Indicaciones náuticas (babor / estribor)';
+
+  @override
+  String get routeFollowNauticalModeDisable =>
+      'Indicaciones estándar (izquierda / derecha)';
+
+  @override
+  String routeFollowContinueFor(String distance) {
+    return 'Continúe $distance';
+  }
+
+  @override
+  String routeFollowArriveIn(String distance) {
+    return 'Llegada en $distance';
   }
 
   @override

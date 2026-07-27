@@ -778,10 +778,42 @@
       "eta": { "type": "String" }
     }
   },
-  "routeFollowNextBearing": "Siguiente {bearing}",
-  "@routeFollowNextBearing": {
+  "routeFollowTurnLeftIn": "En {distance}, gire a la izquierda",
+  "@routeFollowTurnLeftIn": {
     "placeholders": {
-      "bearing": { "type": "String" }
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnRightIn": "En {distance}, gire a la derecha",
+  "@routeFollowTurnRightIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnPortIn": "En {distance}, gire a babor",
+  "@routeFollowTurnPortIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowTurnStarboardIn": "En {distance}, gire a estribor",
+  "@routeFollowTurnStarboardIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowNauticalModeEnable": "Indicaciones náuticas (babor / estribor)",
+  "routeFollowNauticalModeDisable": "Indicaciones estándar (izquierda / derecha)",
+  "routeFollowContinueFor": "Continúe {distance}",
+  "@routeFollowContinueFor": {
+    "placeholders": {
+      "distance": { "type": "String" }
+    }
+  },
+  "routeFollowArriveIn": "Llegada en {distance}",
+  "@routeFollowArriveIn": {
+    "placeholders": {
+      "distance": { "type": "String" }
     }
   },
   "elevationProfileEmpty": "No se pudieron muestrear elevaciones en esta ruta.",

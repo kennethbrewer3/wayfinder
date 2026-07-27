@@ -12,6 +12,7 @@ WORKDIR /app/wayfinder_routing_server
 RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
+# Temurin already owns /lib as a symlink — do not COPY Dart /runtime onto /.
 FROM eclipse-temurin:21-jre-jammy
 
 RUN apt-get update \
@@ -25,12 +26,13 @@ RUN curl -fsSL \
   -o /app/graphhopper-web.jar \
   "https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/${GRAPHHOPPER_VERSION}/graphhopper-web-${GRAPHHOPPER_VERSION}.jar"
 
-COPY --from=build /runtime/ /
+COPY --from=build /runtime/ /dart-runtime/
 COPY --from=build /app/wayfinder_routing_server/bin/server /app/server
 COPY wayfinder_routing_server/config/config.yml /app/config/config.yml
 COPY wayfinder_routing_server/scripts/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
+ENV LD_LIBRARY_PATH=/dart-runtime/lib
 ENV PORT=18382
 ENV DATA_DIR=/data
 ENV GRAPHHOPPER_URL=http://127.0.0.1:8989

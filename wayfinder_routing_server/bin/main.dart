@@ -27,10 +27,14 @@ Future<void> main(List<String> arguments) async {
   final loaded = statusStore.current;
   routingLog.info(
     'Loaded status: ${loaded.status.name} '
-    '(ready=${loaded.ready}, sourceUrl=${loaded.sourceUrl ?? 'none'})',
+    '(ready=${loaded.ready}, region=${loaded.regionName ?? 'none'}, '
+    'sourceUrl=${loaded.sourceUrl ?? 'none'}, '
+    'error=${loaded.error ?? 'none'})',
   );
 
   final graphHopperProcess = GraphHopperProcess(config);
+  await graphHopperProcess.logEnvironmentDiagnostics(reason: 'startup');
+
   final importService = ImportService(
     config: config,
     statusStore: statusStore,
@@ -72,10 +76,12 @@ Future<void> main(List<String> arguments) async {
       .addMiddleware(
         logRequests(
           logger: (message, isError) {
+            // Always show HTTP access at INFO so import/status polls are visible
+            // in default docker logs without raising LOG_LEVEL.
             if (isError) {
-              routingLog.warning(message);
+              routingLog.warning('[http] $message');
             } else {
-              routingLog.fine(message);
+              routingLog.info('[http] $message');
             }
           },
         ),

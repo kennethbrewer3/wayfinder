@@ -92,8 +92,12 @@ class ImportService {
     final startedAt = DateTime.now();
     final regionId = _activeRegionId;
     final regionName = _activeRegionName ?? 'custom region';
-    routingLog.info('Import started for $url ($regionName)');
+    routingLog.info(
+      '── Import pipeline start ── region=$regionName '
+      'regionId=${regionId ?? 'custom'} url=$url',
+    );
     try {
+      routingLog.info('Phase: stop any running GraphHopper processes');
       await graphHopperProcess.stop();
 
       await statusStore.update(
@@ -108,7 +112,13 @@ class ImportService {
         ),
       );
 
+      routingLog.info('Phase: download OSM extract');
+      final downloadStarted = DateTime.now();
       await _downloadPbf(url, regionName: regionName, regionId: regionId);
+      routingLog.info(
+        'Phase: download complete '
+        '(${DateTime.now().difference(downloadStarted).inSeconds}s)',
+      );
 
       if (_cancelRequested) {
         routingLog.warning('Import cancelled after download');
@@ -127,8 +137,15 @@ class ImportService {
         ),
       );
 
-      routingLog.info('Download complete — building GraphHopper graph…');
+      routingLog.info(
+        'Phase: GraphHopper rebuild (clear cache + import + start)',
+      );
+      final buildStarted = DateTime.now();
       await graphHopperProcess.rebuild();
+      routingLog.info(
+        'Phase: GraphHopper rebuild complete '
+        '(${DateTime.now().difference(buildStarted).inSeconds}s)',
+      );
 
       if (_cancelRequested) {
         routingLog.warning('Import cancelled after graph build');
@@ -148,15 +165,19 @@ class ImportService {
       );
       final elapsed = DateTime.now().difference(startedAt);
       routingLog.info(
-        'Import finished successfully in ${elapsed.inSeconds}s '
-        '(regionName=$regionName, sourceUrl=$url)',
+        '── Import pipeline success ── region=$regionName '
+        'elapsed=${elapsed.inSeconds}s sourceUrl=$url',
       );
     } on Object catch (error, stackTrace) {
       if (_cancelRequested) {
         routingLog.warning('Import ended after cancel', error, stackTrace);
         return;
       }
-      routingLog.severe('Import failed for $url', error, stackTrace);
+      routingLog.severe(
+        '── Import pipeline FAILED ── region=$regionName url=$url',
+        error,
+        stackTrace,
+      );
       await statusStore.update(
         RoutingStatusSnapshot(
           status: RoutingStatus.failed,
@@ -173,6 +194,7 @@ class ImportService {
       _cancelRequested = false;
       _downloadClient?.close();
       _downloadClient = null;
+      routingLog.info('Import pipeline finished (importInProgress=false)');
     }
   }
 

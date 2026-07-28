@@ -60,6 +60,10 @@ Handler createRestHandler({
     final body = await _readJsonBody(request);
     final regionId = body['regionId'] as String?;
     final sourceUrl = body['sourceUrl'] as String?;
+    routingLog.info(
+      'POST /api/routing/import body='
+      '{regionId: ${regionId ?? 'null'}, sourceUrl: ${sourceUrl ?? 'null'}}',
+    );
 
     try {
       await importService.startImport(

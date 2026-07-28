@@ -61,7 +61,11 @@ class GraphHopperProcess {
     routingLog.info(
       'Starting GraphHopper server: ${config.javaBin} ${args.join(' ')}',
     );
-    _serverProcess = await Process.start(config.javaBin, args);
+    _serverProcess = await Process.start(
+      config.javaBin,
+      args,
+      workingDirectory: Directory(config.configYmlPath).parent.path,
+    );
     _attachProcessLogs(
       label: 'graphhopper-server',
       process: _serverProcess!,
@@ -106,9 +110,19 @@ class GraphHopperProcess {
   Future<void> rebuild() async {
     routingLog.info('Rebuilding GraphHopper graph…');
     await stop();
+    await _clearGraphCache();
     await _runImport();
     await start();
     routingLog.info('GraphHopper rebuild complete');
+  }
+
+  Future<void> _clearGraphCache() async {
+    final dir = Directory(config.graphCachePath);
+    if (!await dir.exists()) {
+      return;
+    }
+    routingLog.info('Clearing graph cache at ${config.graphCachePath}');
+    await dir.delete(recursive: true);
   }
 
   Future<void> _runImport() async {
@@ -126,10 +140,16 @@ class GraphHopperProcess {
     routingLog.info(
       'Running GraphHopper import: ${config.javaBin} ${args.join(' ')}',
     );
-    _importProcess = await Process.start(config.javaBin, args);
+    final recentLines = <String>[];
+    _importProcess = await Process.start(
+      config.javaBin,
+      args,
+      workingDirectory: Directory(config.configYmlPath).parent.path,
+    );
     _attachProcessLogs(
       label: 'graphhopper-import',
       process: _importProcess!,
+      recentLines: recentLines,
       onStdout: (sub) => _importStdoutSub = sub,
       onStderr: (sub) => _importStderrSub = sub,
     );
@@ -139,7 +159,12 @@ class GraphHopperProcess {
     _importStderrSub = null;
     _importProcess = null;
     if (exitCode != 0) {
-      throw StateError('GraphHopper import failed with exit code $exitCode');
+      final tail = recentLines.isEmpty
+          ? ''
+          : ' Last output:\n${recentLines.join('\n')}';
+      throw StateError(
+        'GraphHopper import failed with exit code $exitCode.$tail',
+      );
     }
     routingLog.info('GraphHopper import finished successfully');
   }
@@ -172,28 +197,37 @@ class GraphHopperProcess {
     required Process process,
     required void Function(StreamSubscription<String>) onStdout,
     required void Function(StreamSubscription<String>) onStderr,
+    List<String>? recentLines,
   }) {
+    void handleLine(String line, {required bool isError}) {
+      if (line.trim().isEmpty) {
+        return;
+      }
+      if (recentLines != null) {
+        recentLines.add(line);
+        const maxRecent = 40;
+        if (recentLines.length > maxRecent) {
+          recentLines.removeRange(0, recentLines.length - maxRecent);
+        }
+      }
+      if (isError) {
+        routingLog.warning('[$label] $line');
+      } else {
+        routingLog.info('[$label] $line');
+      }
+    }
+
     onStdout(
       process.stdout
           .transform(utf8.decoder)
           .transform(const LineSplitter())
-          .listen((line) {
-            if (line.trim().isEmpty) {
-              return;
-            }
-            routingLog.info('[$label] $line');
-          }),
+          .listen((line) => handleLine(line, isError: false)),
     );
     onStderr(
       process.stderr
           .transform(utf8.decoder)
           .transform(const LineSplitter())
-          .listen((line) {
-            if (line.trim().isEmpty) {
-              return;
-            }
-            routingLog.warning('[$label] $line');
-          }),
+          .listen((line) => handleLine(line, isError: true)),
     );
   }
 

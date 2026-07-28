@@ -1,17 +1,26 @@
 graphhopper:
+  # Overridden at runtime via -Ddw.graphhopper.datareader.file / graph.location
   datareader.file: ""
   graph.location: graph-cache
+
+  # Required in GraphHopper 9.x (import refuses to start without this key).
+  # Empty list keeps footways/cycleways for foot + bike profiles.
+  import.osm.ignored_highways: []
 
   profiles:
     - name: car
       custom_model_files: [car.json]
     - name: foot
-      custom_model_files: [foot.json, foot_elevation.json]
+      custom_model_files: [foot.json]
     - name: bike
-      custom_model_files: [bike.json, bike_elevation.json]
+      custom_model_files: [bike.json]
 
   profiles_ch:
     - profile: car
+
+  # Encoded values required by the built-in custom models above (GH 9.x lists
+  # the full set when any are missing — keep this in sync with foot/bike/car).
+  graph.encoded_values: car_access,car_average_speed,foot_access,foot_average_speed,bike_access,bike_average_speed,road_class,road_class_link,road_environment,max_speed,road_access,surface,hike_rating,foot_priority,bike_priority,roundabout
 
   prepare.min_network_size: 200
   prepare.subnetworks.threads: 1

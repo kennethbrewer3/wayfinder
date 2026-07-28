@@ -112,6 +112,7 @@ NOMAD overview: [deploy/project-nomad/README.md](../project-nomad/README.md).
 |-------|-----|
 | `ready: false` after start | Normal before first import — run import for a region |
 | Import fails / OOM | Increase `JAVA_XMX` and ensure enough disk |
+| `GraphHopper import failed with exit code 1` | Pull the latest routing-server image. Older configs omitted GraphHopper 9.x-required `import.osm.ignored_highways` / encoded values. Check `docker compose logs -f server` for the Java stack trace. |
 | Route returns 503 | Wait for import to finish; check `/api/routing/status` |
 | CORS errors from client | Pull the latest routing-server image |
 

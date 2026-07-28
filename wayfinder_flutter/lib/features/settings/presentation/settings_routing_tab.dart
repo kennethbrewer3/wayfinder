@@ -406,6 +406,28 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
                 ? (value) => setState(() => _selectedRegionId = value)
                 : null,
           ),
+        if (displayedRegionId != null) ...[
+          Builder(
+            builder: (context) {
+              final selected = selectable
+                  .where((region) => region.id == displayedRegionId)
+                  .firstOrNull;
+              final description = selected?.description;
+              if (description == null || description.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  description,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
         if (showCustomUrl) ...[
           const SizedBox(height: 12),
           HttpUrlField(

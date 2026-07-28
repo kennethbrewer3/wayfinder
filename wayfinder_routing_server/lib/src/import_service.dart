@@ -190,7 +190,7 @@ class ImportService {
           regionId: regionId,
           regionName: regionName,
           ready: false,
-          error: error.toString(),
+          error: _friendlyImportError(error),
         ),
       );
     } finally {
@@ -336,6 +336,20 @@ class ImportService {
       return 'Downloading OSM extract: $regionName…';
     }
     return 'Downloading OSM extract: $regionName… $percent%';
+  }
+
+  String _friendlyImportError(Object error) {
+    final raw = error.toString();
+    final lower = raw.toLowerCase();
+    if (lower.contains('outofmemoryerror') ||
+        lower.contains('java heap space')) {
+      return '$raw\n\n'
+          'Java ran out of heap while building the graph. '
+          'Set JAVA_XMX=32g (or higher) in the routing-server .env for the '
+          'entire United States, then docker compose up -d --force-recreate '
+          'and import again. The host must have enough free RAM for that heap.';
+    }
+    return raw;
   }
 
   void dispose() {

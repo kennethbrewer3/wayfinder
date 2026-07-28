@@ -38,27 +38,92 @@ const presetRoutingRegions = <RoutingRegion>[
     sourceUrl:
         'https://download.geofabrik.de/europe/liechtenstein-latest.osm.pbf',
   ),
+  // Prefer state extracts — full US needs tens of GB of Java heap to import.
+  RoutingRegion(
+    id: 'us-virginia',
+    name: 'Virginia (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/virginia-latest.osm.pbf',
+    description:
+        'Recommended for Virginia maps. Needs roughly 4–8 GB JAVA_XMX.',
+  ),
+  RoutingRegion(
+    id: 'us-maryland',
+    name: 'Maryland (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/maryland-latest.osm.pbf',
+  ),
+  RoutingRegion(
+    id: 'us-district-of-columbia',
+    name: 'District of Columbia (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/district-of-columbia-latest.osm.pbf',
+    description: 'Small extract; good for DC-area testing.',
+  ),
+  RoutingRegion(
+    id: 'us-pennsylvania',
+    name: 'Pennsylvania (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/pennsylvania-latest.osm.pbf',
+  ),
+  RoutingRegion(
+    id: 'us-west-virginia',
+    name: 'West Virginia (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/west-virginia-latest.osm.pbf',
+  ),
+  RoutingRegion(
+    id: 'us-north-carolina',
+    name: 'North Carolina (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/north-carolina-latest.osm.pbf',
+  ),
+  RoutingRegion(
+    id: 'us-california',
+    name: 'California (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/california-latest.osm.pbf',
+    description: 'Large state — plan for 8–16 GB JAVA_XMX.',
+  ),
+  RoutingRegion(
+    id: 'us-texas',
+    name: 'Texas (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/texas-latest.osm.pbf',
+    description: 'Large state — plan for 8–16 GB JAVA_XMX.',
+  ),
+  RoutingRegion(
+    id: 'us-new-york',
+    name: 'New York (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/new-york-latest.osm.pbf',
+  ),
   RoutingRegion(
     id: 'us',
-    name: 'United States',
+    name: 'United States (entire)',
     sourceUrl: 'https://download.geofabrik.de/north-america/us-latest.osm.pbf',
-    description: 'Large extract — allow hours to download and build.',
+    description:
+        'Very large. Set JAVA_XMX=32g (or higher) in .env before import; '
+        'expect many hours to download and build.',
   ),
   RoutingRegion(
     id: 'ca',
     name: 'Canada',
     sourceUrl:
         'https://download.geofabrik.de/north-america/canada-latest.osm.pbf',
+    description: 'Large country — plan for 16 GB+ JAVA_XMX.',
   ),
   RoutingRegion(
     id: 'de',
     name: 'Germany',
     sourceUrl: 'https://download.geofabrik.de/europe/germany-latest.osm.pbf',
+    description: 'Large — plan for 8–16 GB JAVA_XMX.',
   ),
   RoutingRegion(
     id: 'fr',
     name: 'France',
     sourceUrl: 'https://download.geofabrik.de/europe/france-latest.osm.pbf',
+    description: 'Large — plan for 8–16 GB JAVA_XMX.',
   ),
   RoutingRegion(
     id: 'gb',

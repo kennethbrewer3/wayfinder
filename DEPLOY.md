@@ -147,18 +147,24 @@ curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/depl
 cp .env.example .env
 ```
 
-Edit `.env`:
+Edit `.env` **before** the first import (GraphHopper heap is fixed at container start):
 
-- **`WAYFINDER_ROUTING_DATA_PATH`** — host folder for OSM PBF + GraphHopper graph cache
-- **`JAVA_XMX`** — increase for large regions (e.g. `4g` / `8g`)
+- **`WAYFINDER_ROUTING_DATA_PATH`** — host folder for OSM PBF + GraphHopper graph cache (full US needs tens of GB of disk)
+- **`JAVA_XMX`** — **required for large extracts.** Default `2g` is only enough for tiny test regions (Monaco). Importing the **entire United States** needs **`32g` or more** and will fail with `OutOfMemoryError: Java heap space` if left at `2g`. The host must have enough free RAM for this heap.
 - **`WAYFINDER_ROUTING_SERVER_PORT`** — default `18382`
 
-Example:
+Example for a full United States import:
 
 ```env
 WAYFINDER_ROUTING_DATA_PATH=/mnt/storage/wayfinder-routing
 WAYFINDER_ROUTING_SERVER_PORT=18382
-JAVA_XMX=4g
+JAVA_XMX=32g
+```
+
+If you change `JAVA_XMX` later, recreate the container so Java picks it up:
+
+```bash
+docker compose up -d --force-recreate
 ```
 
 ### Start
@@ -175,7 +181,7 @@ curl http://localhost:18382/api/health
 docker compose ps
 ```
 
-Import a region from **Settings → Routing** in the client (start with Monaco for a quick test), then use **Route here** on a marker for A→B OSM turn-by-turn. After import, field clients only need LAN reachability to the routing host — no public internet.
+Import a region from **Settings → Routing** in the client. For a quick smoke test you can import Monaco first; for production maps covering the US, choose **United States (entire)** (Geofabrik `us-latest`) after setting `JAVA_XMX=32g` as above — expect a long download and multi-hour graph build. Then use **Route here** on a marker for A→B OSM turn-by-turn. After import, field clients only need LAN reachability to the routing host — no public internet.
 
 ## 4. Client machine
 

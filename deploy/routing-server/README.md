@@ -24,21 +24,33 @@ cp .env.example .env
 
 ## Configure `.env`
 
+Copy the example, then edit **before** the first import. GraphHopper’s Java heap is read from the environment when the container starts — changing `.env` alone is not enough until you recreate the container.
+
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `WAYFINDER_ROUTING_DATA_PATH` | Yes | Host folder for OSM PBF and graph cache |
 | `WAYFINDER_ROUTING_SERVER_PORT` | No | Default `18382` |
-| `JAVA_XMX` | No | Java heap for GraphHopper (default `2g`; increase for large regions) |
+| `JAVA_XMX` | **Yes for US / large extracts** | Java heap for GraphHopper. Default `2g` only suits tiny regions (Monaco). **Entire United States needs `32g` or more.** Host must have that much free RAM. |
 | `LOG_LEVEL` | No | Dart log level (`INFO` default). All logs go to stderr (Docker-visible). |
 | `WAYFINDER_ROUTING_SERVER_IMAGE` | No | Pin a release, e.g. `:v1.1.0` |
 
-Example:
+### Set `JAVA_XMX` for your region
+
+| Region | Suggested `JAVA_XMX` |
+|--------|----------------------|
+| Monaco / city (smoke test) | `2g` |
+| Large country (DE, FR, CA) | `8g`–`16g` |
+| **Entire United States** (`us-latest`) | **`32g`+** |
+
+Example for a full United States deployment:
 
 ```env
 WAYFINDER_ROUTING_DATA_PATH=/mnt/storage/wayfinder-routing
 WAYFINDER_ROUTING_SERVER_PORT=18382
-JAVA_XMX=4g
+JAVA_XMX=32g
 ```
+
+Then start (or recreate after changing heap):
 
 ```bash
 docker compose pull
@@ -101,7 +113,15 @@ Poll status:
 curl -s http://localhost:18382/api/routing/status
 ```
 
-The first import **downloads** the Geofabrik extract and **builds** the routing graph. Small regions (Monaco, Andorra) finish in minutes; country-sized extracts can take hours and need several GB of RAM (`JAVA_XMX`) and disk.
+The first import **downloads** the Geofabrik extract and **builds** the routing graph. Tiny regions (Monaco) finish in minutes. The **entire United States** (`United States (entire)` / `us-latest`) is a multi‑GB download and a multi‑hour build; it **requires** `JAVA_XMX=32g` (or higher) in `.env` and a host with enough RAM. Leaving the default `2g` causes `OutOfMemoryError: Java heap space` during import.
+
+If import fails with `OutOfMemoryError: Java heap space`, set `JAVA_XMX=32g` (or higher) in `.env`, then:
+
+```bash
+docker compose up -d --force-recreate
+```
+
+and start the import again.
 
 When `ready` is `true`, request a route:
 
@@ -130,7 +150,8 @@ NOMAD overview: [deploy/project-nomad/README.md](../project-nomad/README.md).
 | Issue | Fix |
 |-------|-----|
 | `ready: false` after start | Normal before first import — run import for a region |
-| Import fails / OOM | Increase `JAVA_XMX` and ensure enough disk |
+| Import fails / OOM | Raise `JAVA_XMX` (full US: `32g`+), ensure enough host RAM and disk, recreate the container. |
+| `OutOfMemoryError: Java heap space` | Heap exhausted during graph build (`totalMB` near your `JAVA_XMX`). For entire United States set `JAVA_XMX=32g` (or higher) in `.env`, then `docker compose up -d --force-recreate` and re-import. |
 | `GraphHopper import failed with exit code 1` | Pull the latest routing-server image. Older configs omitted GraphHopper 9.x-required `import.osm.ignored_highways` / encoded values. Check `docker compose logs -f server` for the Java stack trace, and `/data/graphhopper-import.log` inside the volume. |
 | Route returns 503 | Wait for import to finish; check `/api/routing/status` |
 | CORS errors from client | Pull the latest routing-server image |

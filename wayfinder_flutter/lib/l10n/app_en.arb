@@ -3712,6 +3712,11 @@
   "routingNotReady": "The routing server has not finished importing map data yet.",
   "routingReadyHint": "Ready for routing. LAN clients can compute routes from this host without internet access.",
   "routingRouteHereAction": "Route here",
+  "routingProfilePickerTitle": "Travel mode",
+  "routingProfilePickerDescription": "Choose how to route from your current location to this place.",
+  "routingProfileFoot": "Foot",
+  "routingProfileBike": "Bike",
+  "routingProfileCar": "Car",
   "routingRouteRequestFailed": "Route request failed: {error}",
   "@routingRouteRequestFailed": {
     "placeholders": {
@@ -3723,6 +3728,20 @@
   "routingRouteSummary": "{distance} · {duration}",
   "@routingRouteSummary": {
     "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "routingRouteSummaryWithProfile": "{profile} · {distance} · {duration}",
+  "@routingRouteSummaryWithProfile": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
       "distance": {
         "type": "String"
       },

@@ -2975,6 +2975,11 @@
   "routingNotReady": "Le serveur d'itinéraires n'a pas encore terminé l'import des données cartographiques.",
   "routingReadyHint": "Prêt pour le calcul d'itinéraires. Les clients du réseau local peuvent calculer des itinéraires depuis cet hôte sans accès internet.",
   "routingRouteHereAction": "Itinéraire vers ici",
+  "routingProfilePickerTitle": "Mode de déplacement",
+  "routingProfilePickerDescription": "Choisissez comment calculer l'itinéraire depuis votre position actuelle jusqu'à cet endroit.",
+  "routingProfileFoot": "À pied",
+  "routingProfileBike": "Vélo",
+  "routingProfileCar": "Voiture",
   "routingRouteRequestFailed": "La demande d'itinéraire a échoué : {error}",
   "@routingRouteRequestFailed": {
     "placeholders": {
@@ -2986,6 +2991,20 @@
   "routingRouteSummary": "{distance} · {duration}",
   "@routingRouteSummary": {
     "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "routingRouteSummaryWithProfile": "{profile} · {distance} · {duration}",
+  "@routingRouteSummaryWithProfile": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
       "distance": {
         "type": "String"
       },

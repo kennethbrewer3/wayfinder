@@ -2936,6 +2936,11 @@
   "routingNotReady": "El servidor de rutas aún no ha terminado de importar los datos del mapa.",
   "routingReadyHint": "Listo para calcular rutas. Los clientes de la red local pueden calcular rutas desde este host sin acceso a internet.",
   "routingRouteHereAction": "Ruta hasta aquí",
+  "routingProfilePickerTitle": "Modo de viaje",
+  "routingProfilePickerDescription": "Elige cómo calcular la ruta desde tu ubicación actual hasta este lugar.",
+  "routingProfileFoot": "A pie",
+  "routingProfileBike": "Bicicleta",
+  "routingProfileCar": "Coche",
   "routingRouteRequestFailed": "Error en la solicitud de ruta: {error}",
   "@routingRouteRequestFailed": {
     "placeholders": {
@@ -2947,6 +2952,20 @@
   "routingRouteSummary": "{distance} · {duration}",
   "@routingRouteSummary": {
     "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "routingRouteSummaryWithProfile": "{profile} · {distance} · {duration}",
+  "@routingRouteSummaryWithProfile": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
       "distance": {
         "type": "String"
       },

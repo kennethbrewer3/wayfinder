@@ -6369,6 +6369,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get routingRouteHereAction => 'Itinéraire vers ici';
 
   @override
+  String get routingProfilePickerTitle => 'Mode de déplacement';
+
+  @override
+  String get routingProfilePickerDescription =>
+      'Choisissez comment calculer l\'itinéraire depuis votre position actuelle jusqu\'à cet endroit.';
+
+  @override
+  String get routingProfileFoot => 'À pied';
+
+  @override
+  String get routingProfileBike => 'Vélo';
+
+  @override
+  String get routingProfileCar => 'Voiture';
+
+  @override
   String routingRouteRequestFailed(String error) {
     return 'La demande d\'itinéraire a échoué : $error';
   }
@@ -6376,6 +6392,15 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String routingRouteSummary(String distance, String duration) {
     return '$distance · $duration';
+  }
+
+  @override
+  String routingRouteSummaryWithProfile(
+    String profile,
+    String distance,
+    String duration,
+  ) {
+    return '$profile · $distance · $duration';
   }
 
   @override

@@ -6293,6 +6293,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routingRouteHereAction => 'Route here';
 
   @override
+  String get routingProfilePickerTitle => 'Travel mode';
+
+  @override
+  String get routingProfilePickerDescription =>
+      'Choose how to route from your current location to this place.';
+
+  @override
+  String get routingProfileFoot => 'Foot';
+
+  @override
+  String get routingProfileBike => 'Bike';
+
+  @override
+  String get routingProfileCar => 'Car';
+
+  @override
   String routingRouteRequestFailed(String error) {
     return 'Route request failed: $error';
   }
@@ -6300,6 +6316,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String routingRouteSummary(String distance, String duration) {
     return '$distance · $duration';
+  }
+
+  @override
+  String routingRouteSummaryWithProfile(
+    String profile,
+    String distance,
+    String duration,
+  ) {
+    return '$profile · $distance · $duration';
   }
 
   @override

@@ -14,11 +14,14 @@ import '../data/routing_repository.dart';
 import '../models/routing_models.dart';
 import '../providers/routing_session_provider.dart';
 import '../utils/routing_named_instructions.dart';
+import 'routing_profile_picker.dart';
 
-/// Computes an on-foot route from the device's current GPS fix to
+/// Computes a route from the device's current GPS fix to
 /// ([latitude], [longitude]) using the configured routing server, stores it
 /// in [routingSessionProvider] for the map overlay, and offers to start
 /// route-follow guidance via a snackbar action.
+///
+/// Asks for foot / bike / car before routing, remembering the last choice.
 ///
 /// Mirrors [startRouteFollowFromDetails]: captures [messenger]/[l10n] before
 /// popping the details dialog, then only touches those captured references
@@ -33,7 +36,6 @@ Future<void> routeToMapPoint({
   final l10n = AppLocalizations.of(context)!;
   final messenger = ScaffoldMessenger.of(context);
   final units = ref.read(measurementUnitsProvider);
-  Navigator.of(context).pop();
 
   final repository = ref.read(routingRepositoryProvider);
   if (!repository.isConfigured) {
@@ -67,6 +69,21 @@ Future<void> routeToMapPoint({
     return;
   }
 
+  final preferred = await loadPreferredRoutingProfile();
+  if (!context.mounted) {
+    return;
+  }
+  final profile = await showRoutingProfilePicker(
+    context: context,
+    initial: preferred,
+  );
+  if (profile == null || !context.mounted) {
+    return;
+  }
+  unawaited(savePreferredRoutingProfile(profile));
+
+  Navigator.of(context).pop();
+
   var position = ref.read(deviceLocationProvider).position;
   if (position == null) {
     await ref.read(deviceLocationProvider.notifier).locateAndFollow();
@@ -79,7 +96,6 @@ Future<void> routeToMapPoint({
     return;
   }
 
-  const profile = RoutingProfile.foot;
   try {
     final result = await repository.route(
       from: RoutingPoint(lat: position.latitude, lon: position.longitude),
@@ -98,7 +114,12 @@ Future<void> routeToMapPoint({
     final durationText = formatEvacDuration(
       Duration(milliseconds: result.timeMs),
     );
-    final summary = l10n.routingRouteSummary(distanceText, durationText);
+    final profileText = routingProfileLabel(l10n, profile);
+    final summary = l10n.routingRouteSummaryWithProfile(
+      profileText,
+      distanceText,
+      durationText,
+    );
 
     messenger.showSnackBar(
       SnackBar(

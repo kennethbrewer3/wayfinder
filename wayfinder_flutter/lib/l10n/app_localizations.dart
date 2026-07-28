@@ -10959,6 +10959,36 @@ abstract class AppLocalizations {
   /// **'Route here'**
   String get routingRouteHereAction;
 
+  /// No description provided for @routingProfilePickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel mode'**
+  String get routingProfilePickerTitle;
+
+  /// No description provided for @routingProfilePickerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how to route from your current location to this place.'**
+  String get routingProfilePickerDescription;
+
+  /// No description provided for @routingProfileFoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Foot'**
+  String get routingProfileFoot;
+
+  /// No description provided for @routingProfileBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike'**
+  String get routingProfileBike;
+
+  /// No description provided for @routingProfileCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get routingProfileCar;
+
   /// No description provided for @routingRouteRequestFailed.
   ///
   /// In en, this message translates to:
@@ -10970,6 +11000,16 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{distance} · {duration}'**
   String routingRouteSummary(String distance, String duration);
+
+  /// No description provided for @routingRouteSummaryWithProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} · {distance} · {duration}'**
+  String routingRouteSummaryWithProfile(
+    String profile,
+    String distance,
+    String duration,
+  );
 
   /// No description provided for @routingClearRouteAction.
   ///

@@ -6352,6 +6352,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routingRouteHereAction => 'Ruta hasta aquí';
 
   @override
+  String get routingProfilePickerTitle => 'Modo de viaje';
+
+  @override
+  String get routingProfilePickerDescription =>
+      'Elige cómo calcular la ruta desde tu ubicación actual hasta este lugar.';
+
+  @override
+  String get routingProfileFoot => 'A pie';
+
+  @override
+  String get routingProfileBike => 'Bicicleta';
+
+  @override
+  String get routingProfileCar => 'Coche';
+
+  @override
   String routingRouteRequestFailed(String error) {
     return 'Error en la solicitud de ruta: $error';
   }
@@ -6359,6 +6375,15 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String routingRouteSummary(String distance, String duration) {
     return '$distance · $duration';
+  }
+
+  @override
+  String routingRouteSummaryWithProfile(
+    String profile,
+    String distance,
+    String duration,
+  ) {
+    return '$profile · $distance · $duration';
   }
 
   @override

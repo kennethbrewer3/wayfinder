@@ -58,6 +58,10 @@ class ImportService {
       'Import requested (regionId=${matched?.id ?? regionId ?? 'custom'}, '
       'regionName=$displayName, sourceUrl=$resolvedUrl)',
     );
+    routingConsole(
+      'IMPORT REQUESTED region=$displayName '
+      'regionId=${matched?.id ?? regionId ?? 'custom'} url=$resolvedUrl',
+    );
     _importInProgress = true;
     _cancelRequested = false;
     _activeRegionId = matched?.id;

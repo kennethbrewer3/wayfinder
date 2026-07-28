@@ -29,7 +29,7 @@ cp .env.example .env
 | `WAYFINDER_ROUTING_DATA_PATH` | Yes | Host folder for OSM PBF and graph cache |
 | `WAYFINDER_ROUTING_SERVER_PORT` | No | Default `18382` |
 | `JAVA_XMX` | No | Java heap for GraphHopper (default `2g`; increase for large regions) |
-| `LOG_LEVEL` | No | Dart log level (`INFO` default; use `FINE` for HTTP request lines) |
+| `LOG_LEVEL` | No | Dart log level (`INFO` default). All logs go to stderr (Docker-visible). |
 | `WAYFINDER_ROUTING_SERVER_IMAGE` | No | Pin a release, e.g. `:v1.1.0` |
 
 Example:
@@ -39,6 +39,25 @@ WAYFINDER_ROUTING_DATA_PATH=/mnt/storage/wayfinder-routing
 WAYFINDER_ROUTING_SERVER_PORT=18382
 JAVA_XMX=4g
 ```
+
+```bash
+docker compose pull
+docker compose up -d --force-recreate
+```
+
+### Confirm you are on the new image
+
+Startup logs must include `buildSha=<git sha>` (not the old line
+`Wayfinder routing server listening…` with no build stamp).
+
+```bash
+curl -sS http://127.0.0.1:18382/api/health
+# Expect: "buildSha":"<40-char commit sha>" matching github.com/.../wayfinder/commits/main
+docker compose logs --tail=50 server
+# Expect lines like: [INFO] wayfinder.routing: … and [graphhopper-import] …
+```
+
+If `buildSha` is missing or `"unknown"`, Compose is still running a cached old image — pull again and `--force-recreate`.
 
 ## Start and stop
 

@@ -6,7 +6,9 @@
 #   curl -fsSLO https://raw.githubusercontent.com/kennethbrewer3/wayfinder/main/deploy/routing-server/.env.example
 #   cp .env.example .env
 #   docker compose pull
-#   docker compose up -d
+#   docker compose up -d --force-recreate
+#   curl -sS http://127.0.0.1:18382/api/health
+#   # Expect buildSha to match the latest commit on main (not "unknown")
 
 name: wayfinder-routing-server
 

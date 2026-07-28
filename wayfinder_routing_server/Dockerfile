@@ -32,6 +32,11 @@ COPY wayfinder_routing_server/config/config.yml /app/config/config.yml
 COPY wayfinder_routing_server/scripts/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
+ARG WAYFINDER_BUILD_SHA=unknown
+ARG WAYFINDER_BUILD_TIME=unknown
+ENV WAYFINDER_BUILD_SHA=$WAYFINDER_BUILD_SHA
+ENV WAYFINDER_BUILD_TIME=$WAYFINDER_BUILD_TIME
+
 ENV LD_LIBRARY_PATH=/dart-runtime/lib
 ENV PORT=18382
 ENV DATA_DIR=/data
@@ -40,6 +45,7 @@ ENV GRAPHHOPPER_JAR=/app/graphhopper-web.jar
 ENV GRAPHHOPPER_CONFIG=/app/config/config.yml
 ENV JAVA_BIN=java
 ENV JAVA_XMX=2g
+ENV LOG_LEVEL=INFO
 
 EXPOSE 18382
 VOLUME /data

@@ -8,6 +8,11 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:wayfinder_routing_server/routing_server.dart';
 
 Future<void> main(List<String> arguments) async {
+  // First line must appear even if logging setup fails later.
+  routingConsole(
+    'wayfinder-routing-server starting '
+    '(buildSha=$routingBuildSha buildTime=$routingBuildTime)',
+  );
   configureRoutingLogging();
 
   final parser = ArgParser()..addOption('port', defaultsTo: '18382');
@@ -19,7 +24,8 @@ Future<void> main(List<String> arguments) async {
     'Starting routing server '
     '(port=${config.port}, dataDir=${config.dataDir}, '
     'javaXmx=${config.javaXmx}, graphHopperUrl=${config.graphHopperUrl}, '
-    'jar=${config.graphHopperJar}, config=${config.configYmlPath})',
+    'jar=${config.graphHopperJar}, config=${config.configYmlPath}, '
+    'buildSha=$routingBuildSha)',
   );
 
   final statusStore = StatusStore(config);
@@ -98,6 +104,10 @@ Future<void> main(List<String> arguments) async {
   final server = await io.serve(handler, InternetAddress.anyIPv4, config.port);
   routingLog.info(
     'Listening on http://${server.address.host}:${server.port} '
-    '(LOG_LEVEL=${Logger.root.level.name})',
+    '(LOG_LEVEL=${Logger.root.level.name}, buildSha=$routingBuildSha)',
+  );
+  routingConsole(
+    'wayfinder-routing-server ready on '
+    'http://${server.address.host}:${server.port} buildSha=$routingBuildSha',
   );
 }

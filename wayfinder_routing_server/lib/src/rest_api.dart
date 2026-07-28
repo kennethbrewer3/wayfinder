@@ -28,6 +28,8 @@ Handler createRestHandler({
         'service': 'wayfinder-routing',
         'ready': snapshot.ready && ghHealthy,
         'graphhopper': ghHealthy,
+        'buildSha': routingBuildSha,
+        'buildTime': routingBuildTime,
       },
     );
   });

@@ -43,9 +43,10 @@ class GraphHopperClient {
       'points_encoded': false,
       'locale': 'en',
       // Existing graphs may only have CH prepared for `car` (older config).
-      // Disable CH so foot/bike work immediately; flexible mode is fine for
-      // regional extracts. New imports prepare CH for car/foot/bike.
-      'ch': {'disable': true},
+      // Flat `ch.disable` is the GraphHopper JSON API form; nested
+      // `ch: {disable}` is ignored. Flexible mode is fine for regional
+      // extracts. New imports prepare CH for car/foot/bike.
+      'ch.disable': true,
     });
 
     routingLog.info(
@@ -113,8 +114,22 @@ Map<String, dynamic> translateGraphHopperRoute(Map<String, dynamic> gh) {
   final rawPoints = path['points'];
   final points = <Map<String, double>>[];
 
+  // GH returns either:
+  // - encoded polyline string (`points_encoded: true`)
+  // - [[lon,lat], ...] list
+  // - GeoJSON LineString `{type, coordinates: [[lon,lat], ...]}`
+  final List<dynamic>? coordinateList;
   if (rawPoints is List) {
-    for (final coordinate in rawPoints) {
+    coordinateList = rawPoints;
+  } else if (rawPoints is Map) {
+    final coordinates = rawPoints['coordinates'];
+    coordinateList = coordinates is List ? coordinates : null;
+  } else {
+    coordinateList = null;
+  }
+
+  if (coordinateList != null) {
+    for (final coordinate in coordinateList) {
       if (coordinate is List && coordinate.length >= 2) {
         points.add({
           'lat': (coordinate[1] as num).toDouble(),
@@ -122,7 +137,7 @@ Map<String, dynamic> translateGraphHopperRoute(Map<String, dynamic> gh) {
         });
       }
     }
-  } else if (rawPoints is String && pointsEncoded) {
+  } else if (rawPoints is String && (pointsEncoded || rawPoints.isNotEmpty)) {
     for (final pair in decodePolyline(rawPoints)) {
       points.add({'lat': pair[0], 'lon': pair[1]});
     }

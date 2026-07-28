@@ -2,19 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/providers/device_location_provider.dart';
-import '../../route_follow/providers/route_follow_provider.dart';
 import '../data/routing_repository.dart';
 import '../models/routing_models.dart';
 import '../providers/routing_session_provider.dart';
-import '../utils/routing_named_instructions.dart';
 import 'routing_profile_picker.dart';
+import 'start_routing_follow.dart';
 
 /// Computes a route from the device's current GPS fix to
 /// ([latitude], [longitude]) using the configured routing server, stores it
@@ -128,22 +126,7 @@ Future<void> routeToMapPoint({
         action: SnackBarAction(
           label: l10n.routeFollowButton,
           onPressed: () {
-            final path = [
-              for (final point in result.points) LatLng(point.lat, point.lon),
-            ];
-            final namedInstructions = buildRouteFollowNamedInstructions(
-              instructions: result.instructions,
-              path: path,
-            );
-            unawaited(
-              ref
-                  .read(routeFollowProvider.notifier)
-                  .start(
-                    routeName: destinationLabel,
-                    path: path,
-                    namedInstructions: namedInstructions,
-                  ),
-            );
+            unawaited(startFollowFromRoutingSession(ref));
           },
         ),
       ),

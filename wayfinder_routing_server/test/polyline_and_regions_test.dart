@@ -134,6 +134,31 @@ void main() {
       expect(instructions.first['streetName'], 'Main St');
       expect(instructions.first['sign'], 2);
     });
+
+    test('maps GeoJSON LineString points from GraphHopper', () {
+      final route = translateGraphHopperRoute({
+        'paths': [
+          {
+            'distance': 50,
+            'time': 1000,
+            'points_encoded': false,
+            'points': {
+              'type': 'LineString',
+              'coordinates': [
+                [7.424, 43.738],
+                [7.420, 43.735],
+              ],
+            },
+            'instructions': const <Map<String, dynamic>>[],
+          },
+        ],
+      });
+
+      expect(route['points'], [
+        {'lat': 43.738, 'lon': 7.424},
+        {'lat': 43.735, 'lon': 7.420},
+      ]);
+    });
   });
 
   group('normalizeRoutingProfile', () {

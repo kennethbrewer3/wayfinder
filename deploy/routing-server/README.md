@@ -209,6 +209,8 @@ NOMAD overview: [deploy/project-nomad/README.md](../project-nomad/README.md).
 | Exit code `-9` or `137` | Process killed by SIGKILL (usually the OS/Docker **OOM killer**). `JAVA_XMX` is larger than available memory, or Docker’s memory limit is too low. Lower `JAVA_XMX` or give the host/VM more RAM. |
 | `GraphHopper import failed with exit code 1` | Pull the latest routing-server image. Older configs omitted GraphHopper 9.x-required `import.osm.ignored_highways` / encoded values. Check `docker compose logs -f server` for the Java stack trace, and `/data/graphhopper-import.log` inside the volume. |
 | Route returns 503 | Wait for import to finish; check `/api/routing/status` |
+| Foot/bike fail with `Cannot find CH preparation` (car works) | Pull the latest image and `docker compose up -d --force-recreate`. Status/health must include a real `buildSha` (not missing/`unknown`). Older images omit GraphHopper’s `ch.disable=true` on route requests. No re-import needed. |
+| Route has distance/instructions but empty `points` / no map line | Pull the latest image (GeoJSON LineString geometry was not parsed). Recreate the container; no re-import needed. |
 | CORS errors from client | Pull the latest routing-server image |
 
 More detail: [DEPLOY.md](../../DEPLOY.md).

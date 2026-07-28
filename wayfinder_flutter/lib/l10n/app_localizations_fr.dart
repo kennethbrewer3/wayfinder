@@ -6270,7 +6270,52 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get routingImportDescription =>
-      'Téléchargez un extrait OSM et construisez le graphe d\'itinéraires hors ligne. Cela peut prendre du temps selon la taille de la région et le matériel du serveur.';
+      'Importez une ou plusieurs régions OSM et construisez le graphe hors ligne. Préférez des États américains ; sélectionnez plusieurs États frontaliers (ex. Virginie + Virginie-Occidentale) pour les fusionner en un seul graphe.';
+
+  @override
+  String get routingMultiStateHint =>
+      'Recherchez et ajoutez des États un par un. Plusieurs États sont téléchargés, fusionnés avec Osmium, puis construits en un seul graphe — inutile d\'importer tous les États-Unis.';
+
+  @override
+  String get routingSelectedStatesLabel => 'États sélectionnés';
+
+  @override
+  String routingMultiStateMergeHint(int count) {
+    return '$count États seront fusionnés en un seul graphe.';
+  }
+
+  @override
+  String routingImportMultiAction(int count) {
+    return 'Importer $count États';
+  }
+
+  @override
+  String get routingRegionSearchHint => 'Rechercher un État ou une région…';
+
+  @override
+  String get routingLocalOsmHint =>
+      'Pour les gros extraits nationaux, téléchargez ailleurs puis copiez osm.pbf dans le dossier de données du serveur, ou téléversez-le ici. Le graphe est stocké sur le disque de ce serveur (MMAP) — pas de base Postgres.';
+
+  @override
+  String routingOsmOnServerHint(String size) {
+    return 'Extrait OSM sur le serveur : $size';
+  }
+
+  @override
+  String get routingUploadOsmAction => 'Téléverser un fichier OSM';
+
+  @override
+  String get routingBuildFromLocalAction =>
+      'Construire depuis le fichier serveur';
+
+  @override
+  String get routingOsmUploadStarted =>
+      'Téléversement OSM démarré ; la construction du graphe suivra.';
+
+  @override
+  String routingOsmUploadFailed(String error) {
+    return 'Échec du téléversement OSM : $error';
+  }
 
   @override
   String get routingRegionLabel => 'Région';
@@ -6283,7 +6328,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get routingRegionOrUrlRequired =>
-      'Choisissez une région ou saisissez une URL d\'extrait OSM personnalisée.';
+      'Choisissez une ou plusieurs régions, ou saisissez une URL d\'extrait OSM personnalisée.';
 
   @override
   String get routingImportAction => 'Importer la région';

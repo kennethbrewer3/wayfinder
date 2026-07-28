@@ -2907,11 +2907,50 @@
   "routingStatusFailed": "Échec",
   "routingStatusCancelled": "Annulé",
   "routingImportTitle": "Importer les données cartographiques",
-  "routingImportDescription": "Téléchargez un extrait OSM et construisez le graphe d'itinéraires hors ligne. Cela peut prendre du temps selon la taille de la région et le matériel du serveur.",
+  "routingImportDescription": "Importez une ou plusieurs régions OSM et construisez le graphe hors ligne. Préférez des États américains ; sélectionnez plusieurs États frontaliers (ex. Virginie + Virginie-Occidentale) pour les fusionner en un seul graphe.",
+  "routingMultiStateHint": "Recherchez et ajoutez des États un par un. Plusieurs États sont téléchargés, fusionnés avec Osmium, puis construits en un seul graphe — inutile d'importer tous les États-Unis.",
+  "routingSelectedStatesLabel": "États sélectionnés",
+  "routingMultiStateMergeHint": "{count} États seront fusionnés en un seul graphe.",
+  "@routingMultiStateMergeHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routingImportMultiAction": "Importer {count} États",
+  "@routingImportMultiAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routingRegionSearchHint": "Rechercher un État ou une région…",
+  "routingLocalOsmHint": "Pour les gros extraits nationaux, téléchargez ailleurs puis copiez osm.pbf dans le dossier de données du serveur, ou téléversez-le ici. Le graphe est stocké sur le disque de ce serveur (MMAP) — pas de base Postgres.",
+  "routingOsmOnServerHint": "Extrait OSM sur le serveur : {size}",
+  "@routingOsmOnServerHint": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "routingUploadOsmAction": "Téléverser un fichier OSM",
+  "routingBuildFromLocalAction": "Construire depuis le fichier serveur",
+  "routingOsmUploadStarted": "Téléversement OSM démarré ; la construction du graphe suivra.",
+  "routingOsmUploadFailed": "Échec du téléversement OSM : {error}",
+  "@routingOsmUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "routingRegionLabel": "Région",
   "routingCustomRegionLabel": "Région personnalisée",
   "routingCustomUrlLabel": "URL d'extrait OSM personnalisée",
-  "routingRegionOrUrlRequired": "Choisissez une région ou saisissez une URL d'extrait OSM personnalisée.",
+  "routingRegionOrUrlRequired": "Choisissez une ou plusieurs régions, ou saisissez une URL d'extrait OSM personnalisée.",
   "routingImportAction": "Importer la région",
   "routingCancelImport": "Annuler l'import",
   "routingImportStarted": "Import d'itinéraires démarré.",

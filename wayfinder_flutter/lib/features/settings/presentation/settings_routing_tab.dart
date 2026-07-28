@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/app_globals.dart';
-import '../../../core/logging/app_logger.dart';
+import '../../../core/logging/app_logger.dart' show AppLogger, formatBytes;
 import '../../../core/server_config.dart';
 import '../../../core/server_config_storage.dart';
 import '../../../core/widgets/http_url_field.dart';
@@ -29,11 +31,14 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
   late final TextEditingController _routingServerUrlController;
   final _customUrlController = TextEditingController();
 
-  /// Selected preset region id, or null for custom URL.
-  String? _selectedRegionId;
+  /// Selected region ids. Multiple US states are merged into one graph.
+  /// Empty with custom URL mode uses [_customUrlController].
+  final List<String> _selectedRegionIds = [];
+  bool _customRegionMode = false;
   bool _isSavingRoutingServerUrl = false;
   bool _isStartingImport = false;
   bool _isCancellingImport = false;
+  bool _isUploadingOsm = false;
   Timer? _pollTimer;
 
   @override
@@ -102,9 +107,8 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
 
   Future<void> _startImport() async {
     final l10n = AppLocalizations.of(context)!;
-    final regionId = _selectedRegionId;
     final customUrl = _customUrlController.text.trim();
-    if (regionId == null && customUrl.isEmpty) {
+    if (_selectedRegionIds.isEmpty && customUrl.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.routingRegionOrUrlRequired)),
       );
@@ -114,10 +118,13 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
     setState(() => _isStartingImport = true);
     try {
       final repository = ref.read(routingRepositoryProvider);
-      await repository.startImport(
-        regionId: regionId,
-        sourceUrl: regionId == null ? customUrl : null,
-      );
+      if (_selectedRegionIds.length > 1) {
+        await repository.startImport(regionIds: List.of(_selectedRegionIds));
+      } else if (_selectedRegionIds.length == 1) {
+        await repository.startImport(regionId: _selectedRegionIds.single);
+      } else {
+        await repository.startImport(sourceUrl: customUrl);
+      }
       refreshRouting(ref);
       _schedulePolling(importInProgress: true);
       if (!mounted) return;
@@ -141,6 +148,144 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
     } finally {
       if (mounted) {
         setState(() => _isStartingImport = false);
+      }
+    }
+  }
+
+  bool _isUsStateRegion(RoutingRegion region) =>
+      region.id.startsWith('us-') &&
+      region.id != 'us' &&
+      (region.sourceUrl?.trim().isNotEmpty ?? false);
+
+  void _selectRegion(String? value, List<RoutingRegion> selectable) {
+    if (value == null || value == '__custom__') {
+      setState(() {
+        _selectedRegionIds.clear();
+        _customRegionMode = true;
+      });
+      return;
+    }
+    final region = selectable.where((r) => r.id == value).firstOrNull;
+    if (region == null) {
+      return;
+    }
+    setState(() {
+      _customRegionMode = false;
+      if (_isUsStateRegion(region)) {
+        if (_selectedRegionIds.any((id) => !_isUsStateId(id))) {
+          _selectedRegionIds.clear();
+        }
+        if (!_selectedRegionIds.contains(value)) {
+          _selectedRegionIds.add(value);
+        }
+      } else {
+        _selectedRegionIds
+          ..clear()
+          ..add(value);
+      }
+    });
+  }
+
+  bool _isUsStateId(String id) => id.startsWith('us-') && id != 'us';
+
+  List<String> _parseRegionIds(String? regionId) {
+    if (regionId == null || regionId.trim().isEmpty) {
+      return const [];
+    }
+    if (!regionId.contains('+')) {
+      return [regionId.trim()];
+    }
+    return [
+      for (final part in regionId.split('+'))
+        if (part.trim().isNotEmpty) part.trim(),
+    ];
+  }
+
+  Future<void> _startLocalBuild() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isStartingImport = true);
+    try {
+      final repository = ref.read(routingRepositoryProvider);
+      await repository.startImport(useLocalPbf: true);
+      refreshRouting(ref);
+      _schedulePolling(importInProgress: true);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.routingImportStarted)),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🧭 Routing local build start failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.routingImportFailed(error.toString())),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isStartingImport = false);
+      }
+    }
+  }
+
+  Future<void> _uploadOsmFile() async {
+    final l10n = AppLocalizations.of(context)!;
+    final picked = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const ['pbf'],
+      withData: kIsWeb,
+      withReadStream: !kIsWeb,
+    );
+    if (picked == null || picked.files.isEmpty) {
+      return;
+    }
+    final file = picked.files.single;
+    final stream = kIsWeb
+        ? Stream<List<int>>.fromIterable([
+            if (file.bytes != null) file.bytes!,
+          ])
+        : file.readStream;
+    if (stream == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.routingOsmUploadFailed('No file data'))),
+      );
+      return;
+    }
+
+    setState(() => _isUploadingOsm = true);
+    try {
+      final repository = ref.read(routingRepositoryProvider);
+      await repository.uploadOsmPbf(
+        bytes: stream,
+        filename: file.name,
+        contentLength: file.size > 0 ? file.size : null,
+      );
+      refreshRouting(ref);
+      _schedulePolling(importInProgress: true);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.routingOsmUploadStarted)),
+      );
+    } catch (error, stackTrace) {
+      _log.error(
+        '🧭 OSM upload failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.routingOsmUploadFailed(error.toString())),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isUploadingOsm = false);
       }
     }
   }
@@ -183,25 +328,31 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
     };
   }
 
-  /// Region id shown in the dropdown (`null` = custom). During an active
-  /// import, prefer the server's reported region so the field does not go blank
-  /// when the regions list is re-fetched (new object identities).
-  String? _displayedRegionId(
+  /// Primary selection shown in the region menu. During an active import,
+  /// prefer the server's reported region so the field does not go blank.
+  String? _menuSelectionId(
     RoutingStatus status,
     List<RoutingRegion> regions,
   ) {
     if (status.importInProgress ||
         status.status == RoutingImportStatus.downloading ||
         status.status == RoutingImportStatus.building) {
-      final regionId = status.regionId;
-      if (regionId != null &&
-          regionId.isNotEmpty &&
-          regionId != 'custom' &&
-          regions.any((region) => region.id == regionId)) {
-        return regionId;
+      final parts = _parseRegionIds(status.regionId);
+      if (parts.length == 1 &&
+          regions.any((region) => region.id == parts.single)) {
+        return parts.single;
+      }
+      if (parts.length > 1) {
+        // Multi-state merge — menu stays on last added / first part.
+        return parts.firstWhere(
+          (id) => regions.any((region) => region.id == id),
+          orElse: () => parts.first,
+        );
       }
       final sourceUrl = status.sourceUrl?.trim();
-      if (sourceUrl != null && sourceUrl.isNotEmpty) {
+      if (sourceUrl != null &&
+          sourceUrl.isNotEmpty &&
+          !sourceUrl.startsWith('merge://')) {
         for (final region in regions) {
           if (region.id == 'custom') {
             continue;
@@ -211,12 +362,26 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
           }
         }
       }
-      // Known import in progress but not a preset → show Custom region.
       if (status.sourceUrl != null && status.sourceUrl!.trim().isNotEmpty) {
-        return null;
+        return '__custom__';
       }
     }
-    return _selectedRegionId;
+    if (_customRegionMode || _selectedRegionIds.isEmpty) {
+      return '__custom__';
+    }
+    return _selectedRegionIds.last;
+  }
+
+  List<String> _effectiveSelectedIds(RoutingStatus status) {
+    if (status.importInProgress ||
+        status.status == RoutingImportStatus.downloading ||
+        status.status == RoutingImportStatus.building) {
+      final parts = _parseRegionIds(status.regionId);
+      if (parts.isNotEmpty) {
+        return parts;
+      }
+    }
+    return List.of(_selectedRegionIds);
   }
 
   List<RoutingRegion> _selectableRegions(List<RoutingRegion> regions) {
@@ -333,6 +498,15 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
+        if (status.osmPbfPresent) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.routingOsmOnServerHint(formatBytes(status.osmPbfBytes)),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+          ),
+        ],
         if (status.error != null && status.error!.isNotEmpty) ...[
           const SizedBox(height: 8),
           Text(
@@ -363,10 +537,19 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
     RoutingStatus status,
     List<RoutingRegion> regions,
   ) {
-    final controlsEnabled = !status.importInProgress && !_isStartingImport;
+    final controlsEnabled =
+        !status.importInProgress && !_isStartingImport && !_isUploadingOsm;
     final selectable = _selectableRegions(regions);
-    final displayedRegionId = _displayedRegionId(status, selectable);
-    final showCustomUrl = selectable.isEmpty || displayedRegionId == null;
+    final menuSelectionId = _menuSelectionId(status, selectable);
+    final selectedIds = _effectiveSelectedIds(status);
+    final showCustomUrl =
+        selectable.isEmpty || (_customRegionMode && selectedIds.isEmpty);
+    final selectedUsStates = [
+      for (final id in selectedIds)
+        if (_isUsStateId(id))
+          selectable.where((region) => region.id == id).firstOrNull,
+    ].whereType<RoutingRegion>().toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -379,54 +562,90 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
           l10n.routingImportDescription,
           style: Theme.of(context).textTheme.bodySmall,
         ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.routingMultiStateHint,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.routingLocalOsmHint,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
         const SizedBox(height: 12),
         if (selectable.isNotEmpty)
-          DropdownButtonFormField<String?>(
-            key: ValueKey(
-              'routing-region-$displayedRegionId-'
-              '${status.importInProgress}',
-            ),
-            initialValue: displayedRegionId,
-            decoration: InputDecoration(
-              labelText: l10n.routingRegionLabel,
-              border: const OutlineInputBorder(),
-            ),
-            items: [
-              for (final region in selectable)
-                DropdownMenuItem(
-                  value: region.id,
-                  child: Text(region.name),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return DropdownMenu<String>(
+                key: ValueKey(
+                  'routing-region-$menuSelectionId-'
+                  '${selectedIds.join('+')}-'
+                  '${status.importInProgress}',
                 ),
-              DropdownMenuItem(
-                value: null,
-                child: Text(l10n.routingCustomRegionLabel),
-              ),
-            ],
-            onChanged: controlsEnabled
-                ? (value) => setState(() => _selectedRegionId = value)
-                : null,
-          ),
-        if (displayedRegionId != null) ...[
-          Builder(
-            builder: (context) {
-              final selected = selectable
-                  .where((region) => region.id == displayedRegionId)
-                  .firstOrNull;
-              final description = selected?.description;
-              if (description == null || description.isEmpty) {
-                return const SizedBox.shrink();
-              }
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  description,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
+                width: constraints.maxWidth,
+                initialSelection: menuSelectionId,
+                enabled: controlsEnabled,
+                enableFilter: true,
+                requestFocusOnTap: true,
+                label: Text(l10n.routingRegionLabel),
+                hintText: l10n.routingRegionSearchHint,
+                leadingIcon: const Icon(Icons.search),
+                onSelected: controlsEnabled
+                    ? (value) => _selectRegion(value, selectable)
+                    : null,
+                dropdownMenuEntries: [
+                  for (final region in selectable)
+                    DropdownMenuEntry<String>(
+                      value: region.id,
+                      label: region.name,
+                    ),
+                  DropdownMenuEntry<String>(
+                    value: '__custom__',
+                    label: l10n.routingCustomRegionLabel,
                   ),
-                ),
+                ],
               );
             },
           ),
+        if (selectedUsStates.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            l10n.routingSelectedStatesLabel,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final region in selectedUsStates)
+                InputChip(
+                  label: Text(region.name),
+                  onDeleted: controlsEnabled
+                      ? () => setState(() {
+                          _selectedRegionIds.remove(region.id);
+                          if (_selectedRegionIds.isEmpty) {
+                            _customRegionMode = false;
+                          }
+                        })
+                      : null,
+                ),
+            ],
+          ),
+          if (selectedUsStates.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                l10n.routingMultiStateMergeHint(selectedUsStates.length),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ),
         ],
         if (showCustomUrl) ...[
           const SizedBox(height: 12),
@@ -450,8 +669,29 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.cloud_download_outlined),
-              label: Text(l10n.routingImportAction),
+              label: Text(
+                selectedIds.length > 1
+                    ? l10n.routingImportMultiAction(selectedIds.length)
+                    : l10n.routingImportAction,
+              ),
             ),
+            OutlinedButton.icon(
+              onPressed: controlsEnabled ? _uploadOsmFile : null,
+              icon: _isUploadingOsm
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.upload_file_outlined),
+              label: Text(l10n.routingUploadOsmAction),
+            ),
+            if (status.osmPbfPresent)
+              OutlinedButton.icon(
+                onPressed: controlsEnabled ? _startLocalBuild : null,
+                icon: const Icon(Icons.storage_outlined),
+                label: Text(l10n.routingBuildFromLocalAction),
+              ),
             if (status.importInProgress)
               OutlinedButton.icon(
                 onPressed: _isCancellingImport ? null : _cancelImport,

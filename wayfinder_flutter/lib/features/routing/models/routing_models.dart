@@ -34,6 +34,9 @@ class RoutingStatus {
     this.regionId,
     this.regionName,
     this.error,
+    this.osmPbfPresent = false,
+    this.osmPbfBytes = 0,
+    this.graphCachePresent = false,
   });
 
   final RoutingImportStatus status;
@@ -49,6 +52,13 @@ class RoutingStatus {
   final String? regionId;
   final String? regionName;
   final String? error;
+
+  /// True when `/data/osm.pbf` (or configured data dir) has a non-empty extract.
+  final bool osmPbfPresent;
+  final int osmPbfBytes;
+
+  /// True when GraphHopper's on-disk graph cache directory has content.
+  final bool graphCachePresent;
 
   static const unconfigured = RoutingStatus(
     status: RoutingImportStatus.idle,
@@ -70,6 +80,9 @@ class RoutingStatus {
       regionId: json['regionId'] as String?,
       regionName: json['regionName'] as String?,
       error: json['error'] as String?,
+      osmPbfPresent: json['osmPbfPresent'] as bool? ?? false,
+      osmPbfBytes: (json['osmPbfBytes'] as num?)?.toInt() ?? 0,
+      graphCachePresent: json['graphCachePresent'] as bool? ?? false,
     );
   }
 }

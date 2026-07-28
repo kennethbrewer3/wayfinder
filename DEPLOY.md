@@ -150,7 +150,7 @@ cp .env.example .env
 Edit `.env` **before** the first import (GraphHopper heap is fixed at container start):
 
 - **`WAYFINDER_ROUTING_DATA_PATH`** — host folder for OSM PBF + GraphHopper graph cache (full US needs tens of GB of disk)
-- **`JAVA_XMX`** — **required for large extracts.** Default `2g` is only enough for tiny test regions (Monaco). Importing the **entire United States** needs **`32g` or more** and will fail with `OutOfMemoryError: Java heap space` if left at `2g`. The host must have enough free RAM for this heap.
+- **`JAVA_XMX`** — heap for GraphHopper **import** (the graph itself uses **MMAP** on disk under `graph-cache/`). Default `2g` is only enough for tiny test regions (Monaco). For the **entire United States**, start with **`8g`** (raise toward `16g` if import OOMs). Keep `JAVA_XMX` under ~50% of host RAM so the OS is not forced to SIGKILL the JVM (exit **`-9` / `137`**).
 - **`WAYFINDER_ROUTING_SERVER_PORT`** — default `18382`
 
 Example for a full United States import:
@@ -158,7 +158,7 @@ Example for a full United States import:
 ```env
 WAYFINDER_ROUTING_DATA_PATH=/mnt/storage/wayfinder-routing
 WAYFINDER_ROUTING_SERVER_PORT=18382
-JAVA_XMX=32g
+JAVA_XMX=8g
 ```
 
 If you change `JAVA_XMX` later, recreate the container so Java picks it up:
@@ -167,6 +167,7 @@ If you change `JAVA_XMX` later, recreate the container so Java picks it up:
 docker compose up -d --force-recreate
 ```
 
+If the OSM download already finished but the graph build failed (for example out of memory), recreating with a larger heap **resumes the graph build from the cached extract** — it does not download the United States PBF again. Re-importing the same region from Settings → Routing also skips the download.
 ### Start
 
 ```bash
@@ -181,7 +182,9 @@ curl http://localhost:18382/api/health
 docker compose ps
 ```
 
-Import a region from **Settings → Routing** in the client. For a quick smoke test you can import Monaco first; for production maps covering the US, choose **United States (entire)** (Geofabrik `us-latest`) after setting `JAVA_XMX=32g` as above — expect a long download and multi-hour graph build. Then use **Route here** on a marker for A→B OSM turn-by-turn. After import, field clients only need LAN reachability to the routing host — no public internet.
+Import a region from **Settings → Routing** in the client. Prefer **US state** extracts (searchable). For cross-border routes (e.g. Virginia ↔ West Virginia), select **both** states — the server downloads each extract, merges them with Osmium, and builds one graph. Only one graph is active at a time. For a quick smoke test, import Monaco. Alternatively download/merge `.osm.pbf` files yourself, copy to `WAYFINDER_ROUTING_DATA_PATH/osm.pbf`, then use **Build from file on server**.
+
+The routing graph is stored on the routing server’s **disk volume** (`graph-cache/` under the data path, MMAP). There is **no Postgres** dependency. Then use **Route here** on a marker for A→B OSM turn-by-turn. After import, field clients only need LAN reachability to the routing host — no public internet.
 
 ## 4. Client machine
 

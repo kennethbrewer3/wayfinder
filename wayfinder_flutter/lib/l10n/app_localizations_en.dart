@@ -6195,7 +6195,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingImportDescription =>
-      'Download an OSM extract and build the offline routing graph. This can take a while depending on the region size and server hardware.';
+      'Import OSM region(s) and build the offline routing graph. Prefer US state extracts; select multiple bordering states (e.g. Virginia + West Virginia) to merge them into one graph for cross-border routes.';
+
+  @override
+  String get routingMultiStateHint =>
+      'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph — no need for the entire United States.';
+
+  @override
+  String get routingSelectedStatesLabel => 'Selected states';
+
+  @override
+  String routingMultiStateMergeHint(int count) {
+    return '$count states will be merged into one graph.';
+  }
+
+  @override
+  String routingImportMultiAction(int count) {
+    return 'Import $count states';
+  }
+
+  @override
+  String get routingRegionSearchHint => 'Search for a state or region…';
+
+  @override
+  String get routingLocalOsmHint =>
+      'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) — there is no Postgres database.';
+
+  @override
+  String routingOsmOnServerHint(String size) {
+    return 'OSM extract on server: $size';
+  }
+
+  @override
+  String get routingUploadOsmAction => 'Upload OSM file';
+
+  @override
+  String get routingBuildFromLocalAction => 'Build from file on server';
+
+  @override
+  String get routingOsmUploadStarted =>
+      'OSM file upload started; graph build will follow.';
+
+  @override
+  String routingOsmUploadFailed(String error) {
+    return 'OSM upload failed: $error';
+  }
 
   @override
   String get routingRegionLabel => 'Region';
@@ -6208,7 +6252,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingRegionOrUrlRequired =>
-      'Choose a region or enter a custom OSM extract URL.';
+      'Choose one or more regions, or enter a custom OSM extract URL.';
 
   @override
   String get routingImportAction => 'Import region';

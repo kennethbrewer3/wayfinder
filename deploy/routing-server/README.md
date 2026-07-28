@@ -30,24 +30,26 @@ Copy the example, then edit **before** the first import. GraphHopper’s Java he
 |----------|----------|-------------|
 | `WAYFINDER_ROUTING_DATA_PATH` | Yes | Host folder for OSM PBF and graph cache |
 | `WAYFINDER_ROUTING_SERVER_PORT` | No | Default `18382` |
-| `JAVA_XMX` | **Yes for US / large extracts** | Java heap for GraphHopper. Default `2g` only suits tiny regions (Monaco). **Entire United States needs `32g` or more.** Host must have that much free RAM. |
+| `JAVA_XMX` | **Yes for US / large extracts** | Java heap for GraphHopper **import scratch** (graph storage uses **MMAP** on disk). Default `2g` suits Monaco. **Entire United States: try `8g`–`16g`**, keep under ~50% of host RAM. If heap > available RAM, the OS kills GraphHopper with exit `-9` / `137`. |
 | `LOG_LEVEL` | No | Dart log level (`INFO` default). All logs go to stderr (Docker-visible). |
 | `WAYFINDER_ROUTING_SERVER_IMAGE` | No | Pin a release, e.g. `:v1.1.0` |
 
 ### Set `JAVA_XMX` for your region
 
-| Region | Suggested `JAVA_XMX` |
-|--------|----------------------|
+GraphHopper is configured with `graph.dataaccess.default_type: MMAP` — the routing graph lives on disk under `graph-cache/` and is memory-mapped, so it does **not** need to fit entirely in the Java heap. Heap is still required while parsing OSM and preparing the graph.
+
+| Region | Suggested `JAVA_XMX` (with MMAP) |
+|--------|----------------------------------|
 | Monaco / city (smoke test) | `2g` |
-| Large country (DE, FR, CA) | `8g`–`16g` |
-| **Entire United States** (`us-latest`) | **`32g`+** |
+| Large country (DE, FR, CA) | `4g`–`8g` |
+| **Entire United States** (`us-latest`) | **`8g`–`16g`** |
 
 Example for a full United States deployment:
 
 ```env
 WAYFINDER_ROUTING_DATA_PATH=/mnt/storage/wayfinder-routing
 WAYFINDER_ROUTING_SERVER_PORT=18382
-JAVA_XMX=32g
+JAVA_XMX=8g
 ```
 
 Then start (or recreate after changing heap):
@@ -99,7 +101,57 @@ Expected health response before the first import:
 
 ## First import
 
-After the container is running, trigger an OSM import from the Wayfinder client (**Settings → Routing**) or via API:
+After the container is running, trigger an OSM import from the Wayfinder client (**Settings → Routing**) or via API.
+
+### Prefer US state extracts (optionally several)
+
+GraphHopper keeps **one** routing graph active. For normal operations, import one or more **US states** from Settings → Routing (searchable). Selecting **Virginia** then **West Virginia** downloads both Geofabrik extracts, **merges them with Osmium**, and builds a single graph that can route across the state line — without importing the entire United States.
+
+Switching to a different set of states means importing again (the previous graph is replaced).
+
+Use **United States (entire)** only when you truly need nationwide coverage in one graph.
+
+The routing server does **not** use Postgres. Everything lives on the data volume (`WAYFINDER_ROUTING_DATA_PATH`, mounted at `/data`):
+
+| Path | Contents |
+|------|----------|
+| `osm.pbf` | OSM extract used as GraphHopper input |
+| `osm.pbf.sourceUrl` | Sidecar recording where that extract came from |
+| `graph-cache/` | Built routing graph (GraphHopper files) |
+| `status.json` | Import/build status for the UI |
+
+### Download on another computer
+
+For multi‑GB extracts (especially the entire United States), download the `.osm.pbf` elsewhere, then either:
+
+**A. Copy onto the server data volume (recommended for large files)**
+
+```bash
+# On the routing host — place the file as osm.pbf in the data path:
+cp /path/to/us-latest.osm.pbf "$WAYFINDER_ROUTING_DATA_PATH/osm.pbf"
+# or: scp us-latest.osm.pbf host:/mnt/storage/wayfinder-routing/osm.pbf
+```
+
+Then build from Settings → Routing → **Build from file on server**, or:
+
+```bash
+curl -s -X POST http://localhost:18382/api/routing/import \
+  -H 'Content-Type: application/json' \
+  -d '{"useLocalPbf":true}'
+```
+
+**B. Upload through the API / client**
+
+```bash
+curl -s -X POST 'http://localhost:18382/api/routing/osm?build=true' \
+  -H 'Content-Type: application/octet-stream' \
+  -H 'X-Wayfinder-Osm-Filename: us-latest.osm.pbf' \
+  --data-binary @us-latest.osm.pbf
+```
+
+Or use **Upload OSM file** in Settings → Routing. Prefer volume copy for very large files (browser/desktop HTTP uploads of 10+ GB are fragile).
+
+### Download from Geofabrik on the server
 
 ```bash
 curl -s -X POST http://localhost:18382/api/routing/import \
@@ -113,15 +165,17 @@ Poll status:
 curl -s http://localhost:18382/api/routing/status
 ```
 
-The first import **downloads** the Geofabrik extract and **builds** the routing graph. Tiny regions (Monaco) finish in minutes. The **entire United States** (`United States (entire)` / `us-latest`) is a multi‑GB download and a multi‑hour build; it **requires** `JAVA_XMX=32g` (or higher) in `.env` and a host with enough RAM. Leaving the default `2g` causes `OutOfMemoryError: Java heap space` during import.
+The first Geofabrik import **downloads** the extract and **builds** the routing graph on disk (`graph-cache/`, memory-mapped via MMAP). Tiny regions (Monaco) finish in minutes. The **entire United States** is a multi‑GB download and a long build; set `JAVA_XMX=8g` (or higher if import OOMs) and ensure the host has free RAM above that heap. Leaving `2g` often fails during OSM parse.
 
-If import fails with `OutOfMemoryError: Java heap space`, set `JAVA_XMX=32g` (or higher) in `.env`, then:
+If the OSM download finished but the graph build failed (for example OOM), the extract stays on disk under the data volume. Raise `JAVA_XMX`, recreate the container, and the server **resumes building without re-downloading**. Re-importing the same region from the client also skips the download unless you pass `"forceRedownload": true` in the import API body.
+
+If import fails with `OutOfMemoryError: Java heap space`, raise `JAVA_XMX` (e.g. `12g` or `16g`) in `.env`, then:
 
 ```bash
 docker compose up -d --force-recreate
 ```
 
-and start the import again.
+and wait for the resumed graph build (or re-trigger import for the same region / **Build from file on server**).
 
 When `ready` is `true`, request a route:
 
@@ -150,8 +204,9 @@ NOMAD overview: [deploy/project-nomad/README.md](../project-nomad/README.md).
 | Issue | Fix |
 |-------|-----|
 | `ready: false` after start | Normal before first import — run import for a region |
-| Import fails / OOM | Raise `JAVA_XMX` (full US: `32g`+), ensure enough host RAM and disk, recreate the container. |
-| `OutOfMemoryError: Java heap space` | Heap exhausted during graph build (`totalMB` near your `JAVA_XMX`). For entire United States set `JAVA_XMX=32g` (or higher) in `.env`, then `docker compose up -d --force-recreate` and re-import. |
+| Import fails / OOM | Raise `JAVA_XMX` (full US with MMAP: try `8g`→`16g`), ensure host free RAM exceeds the heap, recreate the container. Cached OSM is reused. |
+| `OutOfMemoryError: Java heap space` | JVM heap exhausted during OSM parse/prepare. Raise `JAVA_XMX` if the host has spare RAM. |
+| Exit code `-9` or `137` | Process killed by SIGKILL (usually the OS/Docker **OOM killer**). `JAVA_XMX` is larger than available memory, or Docker’s memory limit is too low. Lower `JAVA_XMX` or give the host/VM more RAM. |
 | `GraphHopper import failed with exit code 1` | Pull the latest routing-server image. Older configs omitted GraphHopper 9.x-required `import.osm.ignored_highways` / encoded values. Check `docker compose logs -f server` for the Java stack trace, and `/data/graphhopper-import.log` inside the volume. |
 | Route returns 503 | Wait for import to finish; check `/api/routing/status` |
 | CORS errors from client | Pull the latest routing-server image |

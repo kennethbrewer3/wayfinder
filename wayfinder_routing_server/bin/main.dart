@@ -69,12 +69,21 @@ Future<void> main(List<String> arguments) async {
   } else if (loaded.ready && !cacheExists) {
     routingLog.warning(
       'Status says ready but graph cache is missing; '
-      're-import required before routing works',
+      'attempting resume from cached OSM PBF…',
     );
+    final resumed = await importService.tryResumeBuildFromCachedPbf();
+    if (!resumed) {
+      routingLog.warning(
+        'Could not resume — re-import a region before routing works',
+      );
+    }
   } else {
-    routingLog.info(
-      'No ready graph yet — import a region before routing requests succeed',
-    );
+    final resumed = await importService.tryResumeBuildFromCachedPbf();
+    if (!resumed) {
+      routingLog.info(
+        'No ready graph yet — import a region before routing requests succeed',
+      );
+    }
   }
 
   final handler = Pipeline()

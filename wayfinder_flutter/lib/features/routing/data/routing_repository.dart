@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../core/app_globals.dart';
 import '../../../core/logging/app_logger.dart';
@@ -84,14 +85,20 @@ class RoutingRepository {
 
   Future<RoutingStatus> startImport({
     String? regionId,
+    List<String>? regionIds,
     String? sourceUrl,
+    bool useLocalPbf = false,
+    bool forceRedownload = false,
   }) async {
     final response = await loggedHttpPost(
       Uri.parse('$baseUrl/api/routing/import'),
       headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
         if (regionId != null && regionId.isNotEmpty) 'regionId': regionId,
+        if (regionIds != null && regionIds.isNotEmpty) 'regionIds': regionIds,
         if (sourceUrl != null && sourceUrl.isNotEmpty) 'sourceUrl': sourceUrl,
+        if (useLocalPbf) 'useLocalPbf': true,
+        if (forceRedownload) 'forceRedownload': true,
       }),
     );
     if (response.statusCode != 200) {
@@ -100,6 +107,47 @@ class RoutingRepository {
       );
     }
     return getStatus();
+  }
+
+  /// Stream a local `.osm.pbf` to the routing server and start the graph build.
+  ///
+  /// Prefer copying multi‑GB extracts onto the server data volume with
+  /// `scp`/`rsync`, then [startImport] with `useLocalPbf: true`.
+  Future<RoutingStatus> uploadOsmPbf({
+    required Stream<List<int>> bytes,
+    String? filename,
+    bool startBuild = true,
+    int? contentLength,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/routing/osm').replace(
+      queryParameters: {'build': startBuild ? 'true' : 'false'},
+    );
+    final request = http.StreamedRequest('POST', uri);
+    request.headers['Content-Type'] = 'application/octet-stream';
+    if (filename != null && filename.trim().isNotEmpty) {
+      request.headers['X-Wayfinder-Osm-Filename'] = filename.trim();
+    }
+    if (contentLength != null && contentLength > 0) {
+      request.contentLength = contentLength;
+    }
+
+    final client = LoggingHttpClient(logger: _log);
+    try {
+      final responseFuture = client.send(request);
+      await request.sink.addStream(bytes);
+      await request.sink.close();
+      final streamed = await responseFuture;
+      final response = await http.Response.fromStream(streamed);
+      if (response.statusCode != 200) {
+        throw Exception(
+          'POST /api/routing/osm returned ${response.statusCode}: '
+          '${response.body}',
+        );
+      }
+      return getStatus();
+    } finally {
+      client.close();
+    }
   }
 
   Future<RoutingStatus> cancelImport() async {

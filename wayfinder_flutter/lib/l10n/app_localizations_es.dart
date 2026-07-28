@@ -6257,6 +6257,50 @@ class AppLocalizationsEs extends AppLocalizations {
       'Descarga un extracto de OSM y construye el grafo de rutas sin conexión. Esto puede tardar según el tamaño de la región y el hardware del servidor.';
 
   @override
+  String get routingMultiStateHint =>
+      'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph — no need for the entire United States.';
+
+  @override
+  String get routingSelectedStatesLabel => 'Selected states';
+
+  @override
+  String routingMultiStateMergeHint(int count) {
+    return '$count states will be merged into one graph.';
+  }
+
+  @override
+  String routingImportMultiAction(int count) {
+    return 'Import $count states';
+  }
+
+  @override
+  String get routingRegionSearchHint => 'Search for a state or region…';
+
+  @override
+  String get routingLocalOsmHint =>
+      'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) — there is no Postgres database.';
+
+  @override
+  String routingOsmOnServerHint(String size) {
+    return 'OSM extract on server: $size';
+  }
+
+  @override
+  String get routingUploadOsmAction => 'Upload OSM file';
+
+  @override
+  String get routingBuildFromLocalAction => 'Build from file on server';
+
+  @override
+  String get routingOsmUploadStarted =>
+      'OSM file upload started; graph build will follow.';
+
+  @override
+  String routingOsmUploadFailed(String error) {
+    return 'OSM upload failed: $error';
+  }
+
+  @override
   String get routingRegionLabel => 'Región';
 
   @override

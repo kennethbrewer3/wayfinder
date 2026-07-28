@@ -24,7 +24,12 @@ graphhopper:
 
   prepare.min_network_size: 200
   prepare.subnetworks.threads: 1
-  graph.dataaccess.default_type: RAM_STORE
+
+  # Memory-map the graph from disk instead of loading it entirely into the Java
+  # heap (RAM_STORE). Uses far less heap for large extracts (e.g. United States);
+  # import and queries are slower. The graph is still written under graph.location.
+  # After changing this, clear/rebuild graph-cache (Wayfinder rebuild already does).
+  graph.dataaccess.default_type: MMAP
 
 server:
   application_connectors:

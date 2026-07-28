@@ -12,6 +12,7 @@ class RoutingConfig {
     required this.javaBin,
     required this.javaXmx,
     required this.configYmlPath,
+    this.osmiumBin = 'osmium',
   });
 
   final int port;
@@ -21,10 +22,18 @@ class RoutingConfig {
   final String javaBin;
   final String javaXmx;
   final String configYmlPath;
+  final String osmiumBin;
 
   String get statusFilePath => p.join(dataDir, 'status.json');
 
   String get osmPbfPath => p.join(dataDir, 'osm.pbf');
+
+  /// Sidecar recording which URL produced [osmPbfPath], so imports can skip
+  /// re-download when the same extract is already on disk.
+  String get osmSourceUrlPath => p.join(dataDir, 'osm.pbf.sourceUrl');
+
+  /// Staging directory for per-region downloads before an Osmium merge.
+  String get osmPartsDir => p.join(dataDir, 'osm-parts');
 
   String get graphCachePath => p.join(dataDir, 'graph-cache');
 
@@ -44,6 +53,7 @@ class RoutingConfig {
       javaBin: Platform.environment['JAVA_BIN'] ?? 'java',
       javaXmx: Platform.environment['JAVA_XMX'] ?? '2g',
       configYmlPath: configYml,
+      osmiumBin: Platform.environment['OSMIUM_BIN'] ?? 'osmium',
     );
   }
 

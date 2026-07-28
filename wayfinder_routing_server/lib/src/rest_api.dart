@@ -37,10 +37,15 @@ Handler createRestHandler({
   router.get('/api/routing/status', (Request request) async {
     final ghHealthy = await graphHopperClient.checkHealth();
     final snapshot = statusStore.current;
+    final osm = await importService.localOsmInventory();
+    final graphCachePresent = await graphHopperProcess.graphCacheExists();
     return _jsonResponse({
       ...snapshot.toJson(),
       'graphhopperUp': ghHealthy,
       'importInProgress': importService.isImporting,
+      'osmPbfPresent': osm.present,
+      'osmPbfBytes': osm.bytes,
+      'graphCachePresent': graphCachePresent,
     });
   });
 
@@ -62,19 +67,36 @@ Handler createRestHandler({
     final body = await _readJsonBody(request);
     final regionId = body['regionId'] as String?;
     final sourceUrl = body['sourceUrl'] as String?;
+    final forceRedownload = body['forceRedownload'] == true;
+    final useLocalPbf = body['useLocalPbf'] == true;
+    final regionIdsRaw = body['regionIds'];
+    final regionIds = <String>[];
+    if (regionIdsRaw is List) {
+      for (final item in regionIdsRaw) {
+        if (item is String && item.trim().isNotEmpty) {
+          regionIds.add(item.trim());
+        }
+      }
+    }
     routingLog.info(
       'POST /api/routing/import body='
-      '{regionId: ${regionId ?? 'null'}, sourceUrl: ${sourceUrl ?? 'null'}}',
+      '{regionId: ${regionId ?? 'null'}, regionIds: $regionIds, '
+      'sourceUrl: ${sourceUrl ?? 'null'}, '
+      'forceRedownload: $forceRedownload, useLocalPbf: $useLocalPbf}',
     );
 
     try {
       await importService.startImport(
         regionId: regionId,
+        regionIds: regionIds.isEmpty ? null : regionIds,
         sourceUrl: sourceUrl,
+        forceRedownload: forceRedownload,
+        useLocalPbf: useLocalPbf,
       );
       routingLog.info(
         'Import accepted (regionId=${regionId ?? 'none'}, '
-        'sourceUrl=${sourceUrl ?? 'from region'})',
+        'regionIds=$regionIds, '
+        'sourceUrl=${sourceUrl ?? 'from region'}, useLocalPbf=$useLocalPbf)',
       );
       return _jsonResponse({'started': true});
     } on ArgumentError catch (error) {
@@ -83,6 +105,59 @@ Handler createRestHandler({
     } on StateError catch (error) {
       routingLog.warning('Import rejected: ${error.message}');
       return _jsonResponse({'error': error.message}, statusCode: 409);
+    }
+  });
+
+  /// Upload / install a local `.osm.pbf` (raw body stream).
+  ///
+  /// Prefer copying multi‑GB extracts onto the host data volume with
+  /// `scp`/`rsync`, then POST `/api/routing/import` with `useLocalPbf: true`.
+  /// This endpoint is for when the client can stream the file to the server.
+  ///
+  /// Headers:
+  /// - `Content-Type: application/octet-stream` (recommended)
+  /// - `X-Wayfinder-Osm-Filename: us-latest.osm.pbf` (optional label)
+  /// Query: `?build=true` (default) or `?build=false` to only store the file.
+  router.post('/api/routing/osm', (Request request) async {
+    if (importService.isImporting) {
+      routingLog.warning('Rejected OSM upload: import already in progress');
+      return _jsonResponse(
+        {'error': 'Import already in progress'},
+        statusCode: 409,
+      );
+    }
+
+    final buildParam = request.url.queryParameters['build'];
+    final startBuild = buildParam != 'false' && buildParam != '0';
+    final filename =
+        request.headers['x-wayfinder-osm-filename'] ??
+        request.headers['x-filename'];
+
+    routingLog.info(
+      'POST /api/routing/osm startBuild=$startBuild '
+      'filename=${filename ?? 'osm.pbf'}',
+    );
+
+    try {
+      final result = await importService.installLocalPbf(
+        bytes: request.read(),
+        filename: filename,
+        startBuild: startBuild,
+      );
+      return _jsonResponse({
+        'uploaded': true,
+        'bytes': result.bytes,
+        'path': result.path,
+        'sourceUrl': result.sourceUrl,
+        'buildStarted': result.buildStarted,
+      });
+    } on ArgumentError catch (error) {
+      return _jsonResponse({'error': error.message}, statusCode: 400);
+    } on StateError catch (error) {
+      return _jsonResponse({'error': error.message}, statusCode: 409);
+    } on Object catch (error, stackTrace) {
+      routingLog.severe('OSM upload failed', error, stackTrace);
+      return _jsonResponse({'error': error.toString()}, statusCode: 500);
     }
   });
 
@@ -154,6 +229,7 @@ Response _indexHandler(Request request) {
       'GET /api/routing/status',
       'GET /api/routing/regions',
       'POST /api/routing/import',
+      'POST /api/routing/osm',
       'POST /api/routing/import/cancel',
       'POST /api/routing/route',
     ],

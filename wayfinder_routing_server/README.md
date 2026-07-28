@@ -6,8 +6,9 @@ Optional OSM turn-by-turn appliance for Wayfinder (Phase B). Mirrors the geocodi
 
 [GraphHopper](https://www.graphhopper.com/) (web JAR) managed as a child process. The Dart API:
 
-- Downloads Geofabrik (or custom) `.osm.pbf` extracts
-- Builds/loads the graph cache under `/data`
+- Downloads Geofabrik (or custom) `.osm.pbf` extracts, **or** accepts a local/uploaded PBF
+- Merges multiple US state extracts with **Osmium** into one graph for cross-border routing
+- Builds/loads the graph cache under `/data` using **MMAP** (disk-backed; **no Postgres**)
 - Proxies route requests and returns Wayfinder-shaped JSON with named instructions
 
 ## Local run (dev)

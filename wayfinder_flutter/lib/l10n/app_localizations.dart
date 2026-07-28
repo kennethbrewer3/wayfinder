@@ -10806,8 +10806,74 @@ abstract class AppLocalizations {
   /// No description provided for @routingImportDescription.
   ///
   /// In en, this message translates to:
-  /// **'Download an OSM extract and build the offline routing graph. This can take a while depending on the region size and server hardware.'**
+  /// **'Import OSM region(s) and build the offline routing graph. Prefer US state extracts; select multiple bordering states (e.g. Virginia + West Virginia) to merge them into one graph for cross-border routes.'**
   String get routingImportDescription;
+
+  /// No description provided for @routingMultiStateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph — no need for the entire United States.'**
+  String get routingMultiStateHint;
+
+  /// No description provided for @routingSelectedStatesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected states'**
+  String get routingSelectedStatesLabel;
+
+  /// No description provided for @routingMultiStateMergeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} states will be merged into one graph.'**
+  String routingMultiStateMergeHint(int count);
+
+  /// No description provided for @routingImportMultiAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {count} states'**
+  String routingImportMultiAction(int count);
+
+  /// No description provided for @routingRegionSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a state or region…'**
+  String get routingRegionSearchHint;
+
+  /// No description provided for @routingLocalOsmHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) — there is no Postgres database.'**
+  String get routingLocalOsmHint;
+
+  /// No description provided for @routingOsmOnServerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'OSM extract on server: {size}'**
+  String routingOsmOnServerHint(String size);
+
+  /// No description provided for @routingUploadOsmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload OSM file'**
+  String get routingUploadOsmAction;
+
+  /// No description provided for @routingBuildFromLocalAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Build from file on server'**
+  String get routingBuildFromLocalAction;
+
+  /// No description provided for @routingOsmUploadStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'OSM file upload started; graph build will follow.'**
+  String get routingOsmUploadStarted;
+
+  /// No description provided for @routingOsmUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'OSM upload failed: {error}'**
+  String routingOsmUploadFailed(String error);
 
   /// No description provided for @routingRegionLabel.
   ///
@@ -10830,7 +10896,7 @@ abstract class AppLocalizations {
   /// No description provided for @routingRegionOrUrlRequired.
   ///
   /// In en, this message translates to:
-  /// **'Choose a region or enter a custom OSM extract URL.'**
+  /// **'Choose one or more regions, or enter a custom OSM extract URL.'**
   String get routingRegionOrUrlRequired;
 
   /// No description provided for @routingImportAction.

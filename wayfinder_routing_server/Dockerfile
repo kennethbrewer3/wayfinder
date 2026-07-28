@@ -16,7 +16,7 @@ RUN dart compile exe bin/main.dart -o bin/server
 FROM eclipse-temurin:21-jre-jammy
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl \
+  && apt-get install -y --no-install-recommends ca-certificates curl osmium-tool \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

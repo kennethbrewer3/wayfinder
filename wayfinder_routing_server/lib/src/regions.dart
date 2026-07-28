@@ -20,7 +20,82 @@ class RoutingRegion {
   };
 }
 
-const presetRoutingRegions = <RoutingRegion>[
+/// Geofabrik slug → display name for US state / territory extracts.
+/// Prefer these over [us] (entire country) for normal field use.
+const _usStateExtracts = <String, String>{
+  'alabama': 'Alabama',
+  'alaska': 'Alaska',
+  'arizona': 'Arizona',
+  'arkansas': 'Arkansas',
+  'california': 'California',
+  'colorado': 'Colorado',
+  'connecticut': 'Connecticut',
+  'delaware': 'Delaware',
+  'district-of-columbia': 'District of Columbia',
+  'florida': 'Florida',
+  'georgia': 'Georgia',
+  'hawaii': 'Hawaii',
+  'idaho': 'Idaho',
+  'illinois': 'Illinois',
+  'indiana': 'Indiana',
+  'iowa': 'Iowa',
+  'kansas': 'Kansas',
+  'kentucky': 'Kentucky',
+  'louisiana': 'Louisiana',
+  'maine': 'Maine',
+  'maryland': 'Maryland',
+  'massachusetts': 'Massachusetts',
+  'michigan': 'Michigan',
+  'minnesota': 'Minnesota',
+  'mississippi': 'Mississippi',
+  'missouri': 'Missouri',
+  'montana': 'Montana',
+  'nebraska': 'Nebraska',
+  'nevada': 'Nevada',
+  'new-hampshire': 'New Hampshire',
+  'new-jersey': 'New Jersey',
+  'new-mexico': 'New Mexico',
+  'new-york': 'New York',
+  'north-carolina': 'North Carolina',
+  'north-dakota': 'North Dakota',
+  'ohio': 'Ohio',
+  'oklahoma': 'Oklahoma',
+  'oregon': 'Oregon',
+  'pennsylvania': 'Pennsylvania',
+  'puerto-rico': 'Puerto Rico',
+  'rhode-island': 'Rhode Island',
+  'south-carolina': 'South Carolina',
+  'south-dakota': 'South Dakota',
+  'tennessee': 'Tennessee',
+  'texas': 'Texas',
+  'utah': 'Utah',
+  'vermont': 'Vermont',
+  'virginia': 'Virginia',
+  'washington': 'Washington',
+  'west-virginia': 'West Virginia',
+  'wisconsin': 'Wisconsin',
+  'wyoming': 'Wyoming',
+};
+
+RoutingRegion _usStateRegion(String slug, String name) {
+  final large = slug == 'california' || slug == 'texas';
+  return RoutingRegion(
+    id: 'us-$slug',
+    name: '$name (US)',
+    sourceUrl:
+        'https://download.geofabrik.de/north-america/us/$slug-latest.osm.pbf',
+    description: large
+        ? 'Large state — plan for roughly 4–8 GB JAVA_XMX (MMAP).'
+        : 'US state extract. Usually 2–4 GB JAVA_XMX (MMAP) is enough.',
+  );
+}
+
+final List<RoutingRegion> _usStateRegions = [
+  for (final entry in _usStateExtracts.entries)
+    _usStateRegion(entry.key, entry.value),
+];
+
+final List<RoutingRegion> presetRoutingRegions = [
   RoutingRegion(
     id: 'monaco',
     name: 'Monaco',
@@ -38,92 +113,34 @@ const presetRoutingRegions = <RoutingRegion>[
     sourceUrl:
         'https://download.geofabrik.de/europe/liechtenstein-latest.osm.pbf',
   ),
-  // Prefer state extracts — full US needs tens of GB of Java heap to import.
-  RoutingRegion(
-    id: 'us-virginia',
-    name: 'Virginia (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/virginia-latest.osm.pbf',
-    description:
-        'Recommended for Virginia maps. Needs roughly 4–8 GB JAVA_XMX.',
-  ),
-  RoutingRegion(
-    id: 'us-maryland',
-    name: 'Maryland (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/maryland-latest.osm.pbf',
-  ),
-  RoutingRegion(
-    id: 'us-district-of-columbia',
-    name: 'District of Columbia (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/district-of-columbia-latest.osm.pbf',
-    description: 'Small extract; good for DC-area testing.',
-  ),
-  RoutingRegion(
-    id: 'us-pennsylvania',
-    name: 'Pennsylvania (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/pennsylvania-latest.osm.pbf',
-  ),
-  RoutingRegion(
-    id: 'us-west-virginia',
-    name: 'West Virginia (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/west-virginia-latest.osm.pbf',
-  ),
-  RoutingRegion(
-    id: 'us-north-carolina',
-    name: 'North Carolina (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/north-carolina-latest.osm.pbf',
-  ),
-  RoutingRegion(
-    id: 'us-california',
-    name: 'California (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/california-latest.osm.pbf',
-    description: 'Large state — plan for 8–16 GB JAVA_XMX.',
-  ),
-  RoutingRegion(
-    id: 'us-texas',
-    name: 'Texas (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/texas-latest.osm.pbf',
-    description: 'Large state — plan for 8–16 GB JAVA_XMX.',
-  ),
-  RoutingRegion(
-    id: 'us-new-york',
-    name: 'New York (US)',
-    sourceUrl:
-        'https://download.geofabrik.de/north-america/us/new-york-latest.osm.pbf',
-  ),
+  // One GraphHopper graph at a time — import the state(s) you operate in.
+  ..._usStateRegions,
   RoutingRegion(
     id: 'us',
     name: 'United States (entire)',
     sourceUrl: 'https://download.geofabrik.de/north-america/us-latest.osm.pbf',
     description:
-        'Very large. Set JAVA_XMX=32g (or higher) in .env before import; '
-        'expect many hours to download and build.',
+        'Only for cross-country coverage. Prefer a single US state extract '
+        'above. Entire US is multi‑GB, multi‑hour, and needs high JAVA_XMX.',
   ),
   RoutingRegion(
     id: 'ca',
     name: 'Canada',
     sourceUrl:
         'https://download.geofabrik.de/north-america/canada-latest.osm.pbf',
-    description: 'Large country — plan for 16 GB+ JAVA_XMX.',
+    description: 'Large country — plan for 8 GB+ JAVA_XMX (MMAP).',
   ),
   RoutingRegion(
     id: 'de',
     name: 'Germany',
     sourceUrl: 'https://download.geofabrik.de/europe/germany-latest.osm.pbf',
-    description: 'Large — plan for 8–16 GB JAVA_XMX.',
+    description: 'Large — plan for 4–8 GB JAVA_XMX (MMAP).',
   ),
   RoutingRegion(
     id: 'fr',
     name: 'France',
     sourceUrl: 'https://download.geofabrik.de/europe/france-latest.osm.pbf',
-    description: 'Large — plan for 8–16 GB JAVA_XMX.',
+    description: 'Large — plan for 4–8 GB JAVA_XMX (MMAP).',
   ),
   RoutingRegion(
     id: 'gb',
@@ -208,4 +225,51 @@ String? resolveSourceUrl({String? regionId, String? sourceUrl}) {
     return null;
   }
   return regionById(regionId)?.sourceUrl;
+}
+
+/// True for Geofabrik US state/territory presets (`us-virginia`), not `us`.
+bool isUsStateRegionId(String id) =>
+    id.startsWith('us-') && id != 'us' && regionById(id)?.sourceUrl != null;
+
+/// Stable merge marker so the same state set reuses the on-disk PBF.
+String mergeSourceUrl(Iterable<String> regionIds) {
+  final sorted =
+      regionIds.map((id) => id.trim()).where((id) => id.isNotEmpty).toList()
+        ..sort();
+  return 'merge://${sorted.join('+')}';
+}
+
+String combinedRegionId(Iterable<String> regionIds) {
+  final sorted =
+      regionIds.map((id) => id.trim()).where((id) => id.isNotEmpty).toList()
+        ..sort();
+  return sorted.join('+');
+}
+
+String combinedDisplayName(Iterable<String> regionIds) {
+  final names = <String>[];
+  for (final id in regionIds) {
+    final trimmed = id.trim();
+    if (trimmed.isEmpty) {
+      continue;
+    }
+    names.add(regionById(trimmed)?.name ?? trimmed);
+  }
+  if (names.isEmpty) {
+    return 'custom region';
+  }
+  return names.join(' + ');
+}
+
+List<String> parseCombinedRegionId(String? regionId) {
+  if (regionId == null || regionId.trim().isEmpty) {
+    return const [];
+  }
+  if (!regionId.contains('+')) {
+    return [regionId.trim()];
+  }
+  return [
+    for (final part in regionId.split('+'))
+      if (part.trim().isNotEmpty) part.trim(),
+  ];
 }

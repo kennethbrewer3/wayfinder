@@ -178,7 +178,8 @@ class RoutingRepository {
     );
     if (response.statusCode != 200) {
       throw Exception(
-        'POST /api/routing/route returned ${response.statusCode}',
+        'POST /api/routing/route returned ${response.statusCode}: '
+        '${response.body}',
       );
     }
     return RoutingResult.fromJson(

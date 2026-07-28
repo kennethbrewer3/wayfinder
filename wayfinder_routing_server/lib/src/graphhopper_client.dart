@@ -42,6 +42,10 @@ class GraphHopperClient {
       'instructions': true,
       'points_encoded': false,
       'locale': 'en',
+      // Existing graphs may only have CH prepared for `car` (older config).
+      // Disable CH so foot/bike work immediately; flexible mode is fine for
+      // regional extracts. New imports prepare CH for car/foot/bike.
+      'ch': {'disable': true},
     });
 
     routingLog.info(

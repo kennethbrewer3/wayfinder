@@ -17,6 +17,8 @@ graphhopper:
 
   profiles_ch:
     - profile: car
+    - profile: foot
+    - profile: bike
 
   # Encoded values required by the built-in custom models above (GH 9.x lists
   # the full set when any are missing — keep this in sync with foot/bike/car).

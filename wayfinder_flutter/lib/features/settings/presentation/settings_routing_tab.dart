@@ -580,6 +580,15 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
         if (selectable.isNotEmpty)
           LayoutBuilder(
             builder: (context, constraints) {
+              final selectedLabels = <String>{
+                for (final id in selectedIds)
+                  if (selectable.any((region) => region.id == id))
+                    selectable
+                        .firstWhere((region) => region.id == id)
+                        .name
+                        .toLowerCase(),
+                if (showCustomUrl) l10n.routingCustomRegionLabel.toLowerCase(),
+              };
               return DropdownMenu<String>(
                 key: ValueKey(
                   'routing-region-$menuSelectionId-'
@@ -594,6 +603,19 @@ class _SettingsRoutingTabState extends ConsumerState<SettingsRoutingTab> {
                 label: Text(l10n.routingRegionLabel),
                 hintText: l10n.routingRegionSearchHint,
                 leadingIcon: const Icon(Icons.search),
+                // DropdownMenu writes the selected label into the text field.
+                // Without this, opening the menu filters to only that label
+                // (e.g. only "United States (entire)").
+                filterCallback: (entries, filter) {
+                  final query = filter.trim().toLowerCase();
+                  if (query.isEmpty || selectedLabels.contains(query)) {
+                    return entries;
+                  }
+                  return [
+                    for (final entry in entries)
+                      if (entry.label.toLowerCase().contains(query)) entry,
+                  ];
+                },
                 onSelected: controlsEnabled
                     ? (value) => _selectRegion(value, selectable)
                     : null,

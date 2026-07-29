@@ -1636,6 +1636,26 @@ class AppLocalizationsEs extends AppLocalizations {
       'Incluir lista de marcadores en cada hoja';
 
   @override
+  String get mapAtlasIncludeActiveRoute =>
+      'Dibujar la ruta activa en las hojas del mapa';
+
+  @override
+  String get mapAtlasIncludeDirectionsList =>
+      'Incluir página de indicaciones paso a paso';
+
+  @override
+  String get mapAtlasCoverageActiveRoute => 'Ajustar a la ruta activa';
+
+  @override
+  String get mapAtlasDirectionsStepColumn => 'Paso';
+
+  @override
+  String get mapAtlasDirectionsInstructionColumn => 'Indicación';
+
+  @override
+  String get mapAtlasDirectionsDistanceColumn => 'Distancia';
+
+  @override
   String get mapAtlasSheetCountHint => 'Hojas';
 
   @override
@@ -6388,4 +6408,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routingClearRouteAction => 'Borrar ruta';
+
+  @override
+  String get routingDirectionsTitle => 'Indicaciones';
+
+  @override
+  String get routingDirectionsEmpty =>
+      'Esta ruta no devolvió pasos de navegación.';
 }

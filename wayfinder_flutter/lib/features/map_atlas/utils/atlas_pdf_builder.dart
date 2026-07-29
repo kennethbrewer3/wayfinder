@@ -26,7 +26,40 @@ const _mgrsLabelColor = PdfColor.fromInt(0xFFB71C1C);
 
 enum AtlasPageSize { letterLandscape, a4Landscape }
 
-enum AtlasCoverageMode { currentMapView, fitMarkers }
+enum AtlasCoverageMode { currentMapView, fitMarkers, fitActiveRoute }
+
+/// Optional active Route here geometry + turn-by-turn for printable atlases.
+class AtlasRouteExport {
+  const AtlasRouteExport({
+    required this.points,
+    required this.steps,
+    required this.summaryLine,
+    this.destinationLabel,
+    this.directionsTitle = 'Directions',
+    this.stepColumnLabel = 'Step',
+    this.instructionColumnLabel = 'Instruction',
+    this.distanceColumnLabel = 'Distance',
+  });
+
+  final List<LatLng> points;
+  final List<AtlasDirectionStep> steps;
+  final String summaryLine;
+  final String? destinationLabel;
+  final String directionsTitle;
+  final String stepColumnLabel;
+  final String instructionColumnLabel;
+  final String distanceColumnLabel;
+}
+
+class AtlasDirectionStep {
+  const AtlasDirectionStep({
+    required this.text,
+    required this.distanceLabel,
+  });
+
+  final String text;
+  final String distanceLabel;
+}
 
 class AtlasExportOptions {
   const AtlasExportOptions({
@@ -36,6 +69,8 @@ class AtlasExportOptions {
     required this.rows,
     required this.pageSize,
     this.includeMarkerIndex = true,
+    this.includeActiveRoute = false,
+    this.includeDirectionsList = false,
   });
 
   final String title;
@@ -44,6 +79,8 @@ class AtlasExportOptions {
   final int rows;
   final AtlasPageSize pageSize;
   final bool includeMarkerIndex;
+  final bool includeActiveRoute;
+  final bool includeDirectionsList;
 }
 
 PdfPageFormat _pdfFormat(AtlasPageSize size) {
@@ -60,6 +97,7 @@ Future<Uint8List> buildAtlasPdf({
   required List<MapZone> zones,
   List<PmtilesArchiveEntry> enabledPmtiles = const [],
   bool includeMgrsGrid = false,
+  AtlasRouteExport? route,
 }) async {
   final sheets = tileAtlasBounds(
     coverage: coverage,
@@ -72,6 +110,9 @@ Future<Uint8List> buildAtlasPdf({
 
   final visibleMarkers = markers.where((marker) => marker.visible).toList();
   final visibleZones = zones.where((zone) => zone.visible).toList();
+  final drawRoute =
+      options.includeActiveRoute && route != null && route.points.length >= 2;
+  final routePoints = drawRoute ? route.points : const <LatLng>[];
   final basemapBySheetId = <String, Uint8List>{};
   if (enabledPmtiles.isNotEmpty) {
     for (final sheet in sheets) {
@@ -105,6 +146,11 @@ Future<Uint8List> buildAtlasPdf({
         zoneCount: visibleZones.length,
         hasBasemap: hasBasemap,
         includeMgrsGrid: includeMgrsGrid,
+        hasRoute: drawRoute,
+        hasDirections:
+            options.includeDirectionsList &&
+            route != null &&
+            route.steps.isNotEmpty,
       ),
     ),
   );
@@ -143,7 +189,69 @@ Future<Uint8List> buildAtlasPdf({
           includeMarkerIndex: options.includeMarkerIndex,
           basemapPng: basemapBySheetId[sheet.id],
           mgrsGeometry: mgrsGeometry,
+          routePoints: routePoints,
         ),
+      ),
+    );
+  }
+
+  if (options.includeDirectionsList &&
+      route != null &&
+      route.steps.isNotEmpty) {
+    doc.addPage(
+      pw.MultiPage(
+        pageFormat: format,
+        margin: const pw.EdgeInsets.all(28),
+        build: (context) => [
+          pw.Text(
+            route.directionsTitle,
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 4),
+          if (route.destinationLabel != null &&
+              route.destinationLabel!.trim().isNotEmpty)
+            pw.Text(
+              route.destinationLabel!,
+              style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold),
+            ),
+          pw.Text(
+            route.summaryLine,
+            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+          ),
+          pw.SizedBox(height: 12),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              route.stepColumnLabel,
+              route.instructionColumnLabel,
+              route.distanceColumnLabel,
+            ],
+            data: [
+              for (var i = 0; i < route.steps.length; i++)
+                [
+                  '${i + 1}',
+                  route.steps[i].text,
+                  route.steps[i].distanceLabel,
+                ],
+            ],
+            headerStyle: pw.TextStyle(
+              fontSize: 9,
+              fontWeight: pw.FontWeight.bold,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 8),
+            cellAlignment: pw.Alignment.centerLeft,
+            columnWidths: {
+              0: const pw.FixedColumnWidth(36),
+              1: const pw.FlexColumnWidth(4),
+              2: const pw.FixedColumnWidth(72),
+            },
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
+            border: pw.TableBorder.all(color: PdfColors.grey500, width: 0.4),
+            cellPadding: const pw.EdgeInsets.symmetric(
+              horizontal: 4,
+              vertical: 3,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -160,6 +268,8 @@ class _IndexPage extends pw.StatelessWidget {
     required this.zoneCount,
     required this.hasBasemap,
     required this.includeMgrsGrid,
+    this.hasRoute = false,
+    this.hasDirections = false,
   });
 
   final String title;
@@ -169,6 +279,8 @@ class _IndexPage extends pw.StatelessWidget {
   final int zoneCount;
   final bool hasBasemap;
   final bool includeMgrsGrid;
+  final bool hasRoute;
+  final bool hasDirections;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -194,7 +306,9 @@ class _IndexPage extends pw.StatelessWidget {
           style: const pw.TextStyle(fontSize: 10),
         ),
         pw.Text(
-          '${sheets.length} sheets · $markerCount markers · $zoneCount zones',
+          '${sheets.length} sheets · $markerCount markers · $zoneCount zones'
+          '${hasRoute ? ' · active route' : ''}'
+          '${hasDirections ? ' · turn-by-turn list' : ''}',
           style: const pw.TextStyle(fontSize: 10),
         ),
         pw.SizedBox(height: 12),
@@ -227,6 +341,10 @@ class _IndexPage extends pw.StatelessWidget {
                   'full basemap.',
             if (includeMgrsGrid)
               'MGRS grid is included because it was enabled on the map.',
+            if (hasRoute)
+              'The active Route here path is drawn in blue on map sheets.',
+            if (hasDirections)
+              'A turn-by-turn directions page follows the map sheets.',
             'Edge sheets overlap slightly. Center MGRS labels are approximate.',
           ].join(' '),
           style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
@@ -245,6 +363,7 @@ class _SheetPage extends pw.StatelessWidget {
     required this.includeMarkerIndex,
     this.basemapPng,
     this.mgrsGeometry = MgrsGridGeometry.empty,
+    this.routePoints = const [],
   });
 
   final String title;
@@ -254,6 +373,7 @@ class _SheetPage extends pw.StatelessWidget {
   final bool includeMarkerIndex;
   final Uint8List? basemapPng;
   final MgrsGridGeometry mgrsGeometry;
+  final List<LatLng> routePoints;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -322,6 +442,7 @@ class _SheetPage extends pw.StatelessWidget {
                 widthMeters: widthMeters,
                 basemap: basemapImage,
                 mgrsGeometry: mgrsGeometry,
+                routePoints: routePoints,
               ),
             ),
           ),
@@ -422,6 +543,7 @@ void _paintSheetMap({
   required double widthMeters,
   PdfImage? basemap,
   MgrsGridGeometry mgrsGeometry = MgrsGridGeometry.empty,
+  List<LatLng> routePoints = const [],
 }) {
   final font = canvas.defaultFont;
   final margin = 10.0;
@@ -487,6 +609,17 @@ void _paintSheetMap({
 
   for (final zone in zones) {
     _paintZone(canvas, plotMap, zone);
+  }
+
+  if (routePoints.length >= 2) {
+    // Match on-map routing session overlay (Material blue 600).
+    _paintPolyline(
+      canvas,
+      plotMap,
+      routePoints,
+      const PdfColor.fromInt(0xFF1E88E5),
+      strokeWidth: 2.4,
+    );
   }
 
   for (final marker in markers) {
@@ -647,14 +780,15 @@ void _paintPolyline(
   PdfGraphics canvas,
   _SheetProjector map,
   List<LatLng> points,
-  PdfColor color,
-) {
+  PdfColor color, {
+  double strokeWidth = 1.1,
+}) {
   if (points.length < 2) {
     return;
   }
   canvas
     ..setStrokeColor(color)
-    ..setLineWidth(1.1);
+    ..setLineWidth(strokeWidth);
   for (var i = 0; i < points.length - 1; i++) {
     final a = map.project(points[i]);
     final b = map.project(points[i + 1]);

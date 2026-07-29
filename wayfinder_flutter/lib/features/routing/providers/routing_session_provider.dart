@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../map/providers/map_providers.dart';
 import '../../route_follow/providers/route_follow_provider.dart';
 import '../models/routing_models.dart';
 
@@ -42,6 +43,8 @@ class RoutingSessionNotifier extends StateNotifier<RoutingSessionState> {
       profile: profile,
       destinationLabel: destinationLabel,
     );
+    // Surface directions in the panel immediately after Route here.
+    _ref.read(sidebarProvider.notifier).setExpanded(true);
   }
 
   void clear() {

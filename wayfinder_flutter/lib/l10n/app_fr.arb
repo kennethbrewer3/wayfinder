@@ -622,6 +622,12 @@
   "mapAtlasPageLetter": "Letter US paysage",
   "mapAtlasPageA4": "A4 paysage",
   "mapAtlasIncludeMarkerIndex": "Inclure la liste des marqueurs sur chaque feuille",
+  "mapAtlasIncludeActiveRoute": "Dessiner l'itinéraire actif sur les feuilles",
+  "mapAtlasIncludeDirectionsList": "Inclure une page d'instructions pas à pas",
+  "mapAtlasCoverageActiveRoute": "Ajuster à l'itinéraire actif",
+  "mapAtlasDirectionsStepColumn": "Étape",
+  "mapAtlasDirectionsInstructionColumn": "Instruction",
+  "mapAtlasDirectionsDistanceColumn": "Distance",
   "mapAtlasSheetCountHint": "Feuilles",
   "mapAtlasExportSuccess": "PDF de l'atlas imprimable enregistré.",
   "mapAtlasExportFailed": "Échec de l'export de l'atlas : {error}",
@@ -3013,5 +3019,7 @@
       }
     }
   },
-  "routingClearRouteAction": "Effacer l'itinéraire"
+  "routingClearRouteAction": "Effacer l'itinéraire",
+  "routingDirectionsTitle": "Itinéraire",
+  "routingDirectionsEmpty": "Aucune instruction pas à pas n'a été renvoyée pour cet itinéraire."
 }

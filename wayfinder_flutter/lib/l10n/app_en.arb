@@ -967,6 +967,12 @@
   "mapAtlasPageLetter": "US Letter landscape",
   "mapAtlasPageA4": "A4 landscape",
   "mapAtlasIncludeMarkerIndex": "Include marker list on each sheet",
+  "mapAtlasIncludeActiveRoute": "Draw active route on map sheets",
+  "mapAtlasIncludeDirectionsList": "Include turn-by-turn directions page",
+  "mapAtlasCoverageActiveRoute": "Fit active route",
+  "mapAtlasDirectionsStepColumn": "Step",
+  "mapAtlasDirectionsInstructionColumn": "Instruction",
+  "mapAtlasDirectionsDistanceColumn": "Distance",
   "mapAtlasSheetCountHint": "Sheets",
   "mapAtlasExportSuccess": "Printable atlas PDF saved.",
   "mapAtlasExportFailed": "Atlas export failed: {error}",
@@ -3750,5 +3756,7 @@
       }
     }
   },
-  "routingClearRouteAction": "Clear route"
+  "routingClearRouteAction": "Clear route",
+  "routingDirectionsTitle": "Directions",
+  "routingDirectionsEmpty": "No turn-by-turn steps were returned for this route."
 }

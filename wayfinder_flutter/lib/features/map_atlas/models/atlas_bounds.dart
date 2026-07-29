@@ -79,4 +79,39 @@ class AtlasBounds {
       east: east,
     ).padded(0.08);
   }
+
+  /// Bounding box for an active routing path (e.g. Route here → marker).
+  static AtlasBounds? fromLatLngs(Iterable<LatLng> points) {
+    final list = points.toList();
+    if (list.length < 2) {
+      return null;
+    }
+
+    var south = list.first.latitude;
+    var north = list.first.latitude;
+    var west = list.first.longitude;
+    var east = list.first.longitude;
+    for (final point in list.skip(1)) {
+      south = math.min(south, point.latitude);
+      north = math.max(north, point.latitude);
+      west = math.min(west, point.longitude);
+      east = math.max(east, point.longitude);
+    }
+
+    if ((north - south).abs() < 1e-5) {
+      south -= 0.01;
+      north += 0.01;
+    }
+    if ((east - west).abs() < 1e-5) {
+      west -= 0.01;
+      east += 0.01;
+    }
+
+    return AtlasBounds(
+      south: south,
+      west: west,
+      north: north,
+      east: east,
+    ).padded(0.08);
+  }
 }

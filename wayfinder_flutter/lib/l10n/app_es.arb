@@ -622,6 +622,12 @@
   "mapAtlasPageLetter": "Carta EE. UU. horizontal",
   "mapAtlasPageA4": "A4 horizontal",
   "mapAtlasIncludeMarkerIndex": "Incluir lista de marcadores en cada hoja",
+  "mapAtlasIncludeActiveRoute": "Dibujar la ruta activa en las hojas del mapa",
+  "mapAtlasIncludeDirectionsList": "Incluir página de indicaciones paso a paso",
+  "mapAtlasCoverageActiveRoute": "Ajustar a la ruta activa",
+  "mapAtlasDirectionsStepColumn": "Paso",
+  "mapAtlasDirectionsInstructionColumn": "Indicación",
+  "mapAtlasDirectionsDistanceColumn": "Distancia",
   "mapAtlasSheetCountHint": "Hojas",
   "mapAtlasExportSuccess": "PDF del atlas imprimible guardado.",
   "mapAtlasExportFailed": "Error al exportar el atlas: {error}",
@@ -2974,5 +2980,7 @@
       }
     }
   },
-  "routingClearRouteAction": "Borrar ruta"
+  "routingClearRouteAction": "Borrar ruta",
+  "routingDirectionsTitle": "Indicaciones",
+  "routingDirectionsEmpty": "Esta ruta no devolvió pasos de navegación."
 }

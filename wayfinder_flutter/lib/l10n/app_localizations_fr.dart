@@ -1639,6 +1639,26 @@ class AppLocalizationsFr extends AppLocalizations {
       'Inclure la liste des marqueurs sur chaque feuille';
 
   @override
+  String get mapAtlasIncludeActiveRoute =>
+      'Dessiner l\'itinéraire actif sur les feuilles';
+
+  @override
+  String get mapAtlasIncludeDirectionsList =>
+      'Inclure une page d\'instructions pas à pas';
+
+  @override
+  String get mapAtlasCoverageActiveRoute => 'Ajuster à l\'itinéraire actif';
+
+  @override
+  String get mapAtlasDirectionsStepColumn => 'Étape';
+
+  @override
+  String get mapAtlasDirectionsInstructionColumn => 'Instruction';
+
+  @override
+  String get mapAtlasDirectionsDistanceColumn => 'Distance';
+
+  @override
   String get mapAtlasSheetCountHint => 'Feuilles';
 
   @override
@@ -6405,4 +6425,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get routingClearRouteAction => 'Effacer l\'itinéraire';
+
+  @override
+  String get routingDirectionsTitle => 'Itinéraire';
+
+  @override
+  String get routingDirectionsEmpty =>
+      'Aucune instruction pas à pas n\'a été renvoyée pour cet itinéraire.';
 }

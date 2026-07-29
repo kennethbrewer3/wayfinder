@@ -41,6 +41,7 @@ import '../../tracks/presentation/create_track_dialog.dart';
 import '../../tracks/presentation/track_transportation_icon.dart';
 import '../../tracks/presentation/map_track_layer.dart';
 import '../../watch_log/presentation/watch_log_sidebar_section.dart';
+import '../../routing/presentation/routing_session_sidebar_section.dart';
 import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_inventory.dart';
@@ -301,6 +302,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
           ),
         ),
         const SliverToBoxAdapter(child: _PathProfileSelectionBar()),
+        const SliverToBoxAdapter(child: RoutingSessionSidebarSection()),
         SliverToBoxAdapter(child: WatchLogSidebarSection(onZoomTo: onZoomTo)),
         SliverToBoxAdapter(
           child: _SeasonalOverlaysSidebarSection(onZoomTo: onZoomTo),

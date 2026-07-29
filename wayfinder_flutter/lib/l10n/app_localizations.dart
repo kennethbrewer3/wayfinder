@@ -2863,6 +2863,42 @@ abstract class AppLocalizations {
   /// **'Include marker list on each sheet'**
   String get mapAtlasIncludeMarkerIndex;
 
+  /// No description provided for @mapAtlasIncludeActiveRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw active route on map sheets'**
+  String get mapAtlasIncludeActiveRoute;
+
+  /// No description provided for @mapAtlasIncludeDirectionsList.
+  ///
+  /// In en, this message translates to:
+  /// **'Include turn-by-turn directions page'**
+  String get mapAtlasIncludeDirectionsList;
+
+  /// No description provided for @mapAtlasCoverageActiveRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit active route'**
+  String get mapAtlasCoverageActiveRoute;
+
+  /// No description provided for @mapAtlasDirectionsStepColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Step'**
+  String get mapAtlasDirectionsStepColumn;
+
+  /// No description provided for @mapAtlasDirectionsInstructionColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Instruction'**
+  String get mapAtlasDirectionsInstructionColumn;
+
+  /// No description provided for @mapAtlasDirectionsDistanceColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get mapAtlasDirectionsDistanceColumn;
+
   /// No description provided for @mapAtlasSheetCountHint.
   ///
   /// In en, this message translates to:
@@ -11016,6 +11052,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear route'**
   String get routingClearRouteAction;
+
+  /// No description provided for @routingDirectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get routingDirectionsTitle;
+
+  /// No description provided for @routingDirectionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No turn-by-turn steps were returned for this route.'**
+  String get routingDirectionsEmpty;
 }
 
 class _AppLocalizationsDelegate

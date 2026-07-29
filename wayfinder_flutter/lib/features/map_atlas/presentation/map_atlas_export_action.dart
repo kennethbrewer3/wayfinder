@@ -44,6 +44,7 @@ Future<bool> runMapAtlasExport({
       pmtilesEnabledMetadataProvider.future,
     );
     final includeMgrsGrid = ref.read(mapMgrsGridEnabledProvider);
+    final routeExport = buildAtlasRouteExport(ref: ref, l10n: l10n);
     if (!context.mounted) {
       return false;
     }
@@ -55,6 +56,7 @@ Future<bool> runMapAtlasExport({
       zones: zones,
       enabledPmtiles: enabledPmtiles,
       includeMgrsGrid: includeMgrsGrid,
+      route: routeExport,
     );
     final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
       ':',

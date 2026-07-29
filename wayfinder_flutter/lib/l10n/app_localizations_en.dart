@@ -1619,6 +1619,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapAtlasIncludeMarkerIndex => 'Include marker list on each sheet';
 
   @override
+  String get mapAtlasIncludeActiveRoute => 'Draw active route on map sheets';
+
+  @override
+  String get mapAtlasIncludeDirectionsList =>
+      'Include turn-by-turn directions page';
+
+  @override
+  String get mapAtlasCoverageActiveRoute => 'Fit active route';
+
+  @override
+  String get mapAtlasDirectionsStepColumn => 'Step';
+
+  @override
+  String get mapAtlasDirectionsInstructionColumn => 'Instruction';
+
+  @override
+  String get mapAtlasDirectionsDistanceColumn => 'Distance';
+
+  @override
   String get mapAtlasSheetCountHint => 'Sheets';
 
   @override
@@ -6329,4 +6348,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingClearRouteAction => 'Clear route';
+
+  @override
+  String get routingDirectionsTitle => 'Directions';
+
+  @override
+  String get routingDirectionsEmpty =>
+      'No turn-by-turn steps were returned for this route.';
 }

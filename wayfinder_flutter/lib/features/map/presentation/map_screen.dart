@@ -18,6 +18,7 @@ import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/presentation/prepare_offline_pack_dialog.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../route_follow/providers/route_follow_provider.dart';
 import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
 import '../../search/providers/search_coordinate_marker_provider.dart';
@@ -274,6 +275,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _stopLocateMe() async {
+    ref.read(routeFollowProvider.notifier).stop();
     await ref.read(deviceLocationProvider.notifier).stop();
   }
 

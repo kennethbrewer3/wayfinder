@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -53,7 +51,7 @@ Future<bool> startFollowFromRoutingSession(
         namedInstructions: namedInstructions,
       );
   if (simulate) {
-    unawaited(ref.read(routeFollowProvider.notifier).startSimulation());
+    await ref.read(routeFollowProvider.notifier).startSimulation();
   }
   return ok;
 }

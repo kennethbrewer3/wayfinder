@@ -125,6 +125,8 @@ class RouteFollowNotifier extends StateNotifier<RouteFollowState> {
     if (path.length < 2) {
       return false;
     }
+    // Drop any prior simulated walk so we never keep walking an old path.
+    _ref.read(deviceLocationProvider.notifier).stopSimulation();
     final ok = await _ref
         .read(deviceLocationProvider.notifier)
         .locateAndFollow();

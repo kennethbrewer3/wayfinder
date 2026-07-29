@@ -33,7 +33,7 @@ class GraphHopperClient {
     String profile = 'foot',
   }) async {
     final uri = Uri.parse('${config.graphHopperUrl}/route');
-    final body = jsonEncode({
+    final bodyMap = <String, dynamic>{
       'points': [
         [fromLon, fromLat],
         [toLon, toLat],
@@ -42,12 +42,15 @@ class GraphHopperClient {
       'instructions': true,
       'points_encoded': false,
       'locale': 'en',
-      // Existing graphs may only have CH prepared for `car` (older config).
-      // Flat `ch.disable` is the GraphHopper JSON API form; nested
-      // `ch: {disable}` is ignored. Flexible mode is fine for regional
-      // extracts. New imports prepare CH for car/foot/bike.
-      'ch.disable': true,
-    });
+    };
+    // Existing graphs may only have CH prepared for `car` (older config).
+    // Flat `ch.disable` is required for foot/bike on those graphs. Keep CH
+    // enabled for car when available — faster and avoids flexible-mode edge
+    // cases on large extracts.
+    if (profile != 'car') {
+      bodyMap['ch.disable'] = true;
+    }
+    final body = jsonEncode(bodyMap);
 
     routingLog.info(
       'Route request profile=$profile '

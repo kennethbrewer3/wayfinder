@@ -83,9 +83,6 @@ class RoutingSessionChip extends ConsumerWidget {
             IconButton(
               tooltip: l10n.routingClearRouteAction,
               onPressed: () {
-                if (follow.active) {
-                  ref.read(routeFollowProvider.notifier).stop();
-                }
                 ref.read(routingSessionProvider.notifier).clear();
               },
               icon: const Icon(Icons.close),

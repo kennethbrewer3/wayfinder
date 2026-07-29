@@ -7,6 +7,8 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/measurement_units_provider.dart';
+import '../../routing/providers/routing_session_provider.dart';
+import '../../routing/presentation/start_routing_follow.dart';
 import '../providers/route_follow_nautical_mode_provider.dart';
 import '../providers/route_follow_provider.dart';
 import '../utils/route_follow_progress.dart';
@@ -142,6 +144,14 @@ class MapRouteFollowHud extends ConsumerWidget {
                 final notifier = ref.read(routeFollowProvider.notifier);
                 if (follow.simulating) {
                   notifier.stopSimulation();
+                  return;
+                }
+                // Prefer the latest Route here geometry when present so
+                // Simulate never keeps walking a superseded path.
+                if (ref.read(routingSessionProvider).hasRoute) {
+                  unawaited(
+                    startFollowFromRoutingSession(ref, simulate: true),
+                  );
                 } else {
                   unawaited(notifier.startSimulation());
                 }

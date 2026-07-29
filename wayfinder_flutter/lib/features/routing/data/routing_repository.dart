@@ -177,14 +177,30 @@ class RoutingRepository {
       }),
     );
     if (response.statusCode != 200) {
-      throw Exception(
-        'POST /api/routing/route returned ${response.statusCode}: '
-        '${response.body}',
-      );
+      throw Exception(_routeFailureMessage(response.statusCode, response.body));
     }
     return RoutingResult.fromJson(
       jsonDecode(response.body) as Map<String, dynamic>,
     );
+  }
+
+  static String _routeFailureMessage(int statusCode, String body) {
+    try {
+      final decoded = jsonDecode(body);
+      if (decoded is Map<String, dynamic>) {
+        final error = decoded['error'];
+        if (error is String && error.trim().isNotEmpty) {
+          return error.trim();
+        }
+      }
+    } catch (_) {
+      // Fall through to the generic status message.
+    }
+    final trimmed = body.trim();
+    if (trimmed.isNotEmpty) {
+      return 'POST /api/routing/route returned $statusCode: $trimmed';
+    }
+    return 'POST /api/routing/route returned $statusCode';
   }
 
   static String? _normalizeOptionalBaseUrl(String? input) {

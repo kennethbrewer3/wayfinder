@@ -150,7 +150,10 @@ class MapRouteFollowHud extends ConsumerWidget {
                 // Simulate never keeps walking a superseded path.
                 if (ref.read(routingSessionProvider).hasRoute) {
                   unawaited(
-                    startFollowFromRoutingSession(ref, simulate: true),
+                    startFollowFromRoutingSession(
+                      ProviderScope.containerOf(context),
+                      simulate: true,
+                    ),
                   );
                 } else {
                   unawaited(notifier.startSimulation());

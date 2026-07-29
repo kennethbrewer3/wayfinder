@@ -62,7 +62,11 @@ class RoutingSessionChip extends ConsumerWidget {
                 onPressed: !canFollow
                     ? null
                     : () {
-                        unawaited(startFollowFromRoutingSession(ref));
+                        unawaited(
+                          startFollowFromRoutingSession(
+                            ProviderScope.containerOf(context),
+                          ),
+                        );
                       },
                 icon: const Icon(Icons.navigation),
                 visualDensity: VisualDensity.compact,
@@ -73,7 +77,10 @@ class RoutingSessionChip extends ConsumerWidget {
                     ? null
                     : () {
                         unawaited(
-                          startFollowFromRoutingSession(ref, simulate: true),
+                          startFollowFromRoutingSession(
+                            ProviderScope.containerOf(context),
+                            simulate: true,
+                          ),
                         );
                       },
                 icon: const Icon(Icons.fast_forward),

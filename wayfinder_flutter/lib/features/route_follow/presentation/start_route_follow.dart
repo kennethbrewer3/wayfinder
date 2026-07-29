@@ -17,9 +17,10 @@ Future<void> startRouteFollowFromDetails({
 }) async {
   final l10n = AppLocalizations.of(context)!;
   final messenger = ScaffoldMessenger.of(context);
+  final container = ProviderScope.containerOf(context);
   Navigator.of(context).pop();
 
-  final ok = await ref
+  final ok = await container
       .read(routeFollowProvider.notifier)
       .start(
         zoneId: zoneId,
@@ -32,6 +33,8 @@ Future<void> startRouteFollowFromDetails({
       content: Text(
         ok ? l10n.routeFollowStarted(routeName) : l10n.routeFollowGpsRequired,
       ),
+      duration: const Duration(days: 365),
+      showCloseIcon: true,
     ),
   );
 }

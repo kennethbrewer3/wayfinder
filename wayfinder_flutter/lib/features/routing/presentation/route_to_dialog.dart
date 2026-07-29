@@ -14,6 +14,20 @@ import '../providers/routing_session_provider.dart';
 import 'routing_profile_picker.dart';
 import 'start_routing_follow.dart';
 
+/// Snackbars for routing stay until the user dismisses them (close icon or
+/// action). Auto-hide is too short to read GraphHopper errors.
+SnackBar _persistentRoutingSnackBar({
+  required Widget content,
+  SnackBarAction? action,
+}) {
+  return SnackBar(
+    content: content,
+    duration: const Duration(days: 365),
+    showCloseIcon: true,
+    action: action,
+  );
+}
+
 /// Computes a route from the device's current GPS fix to
 /// ([latitude], [longitude]) using the configured routing server, stores it
 /// in [routingSessionProvider] for the map overlay, and offers to start
@@ -21,49 +35,53 @@ import 'start_routing_follow.dart';
 ///
 /// Asks for foot / bike / car before routing, remembering the last choice.
 ///
-/// Mirrors [startRouteFollowFromDetails]: captures [messenger]/[l10n] before
-/// popping the details dialog, then only touches those captured references
-/// (never `context`) for the remainder of the async flow.
+/// Captures [ProviderContainer] / [messenger] / [l10n] before popping the
+/// details dialog so async work never touches a disposed [WidgetRef].
 Future<void> routeToMapPoint({
   required BuildContext context,
-  required WidgetRef ref,
   required String destinationLabel,
   required double latitude,
   required double longitude,
 }) async {
   final l10n = AppLocalizations.of(context)!;
   final messenger = ScaffoldMessenger.of(context);
-  final units = ref.read(measurementUnitsProvider);
+  // Survive dialog dispose (pop below); do not use [ref] after that.
+  final container = ProviderScope.containerOf(context);
+  final units = container.read(measurementUnitsProvider);
 
-  final repository = ref.read(routingRepositoryProvider);
+  final repository = container.read(routingRepositoryProvider);
   if (!repository.isConfigured) {
     messenger.showSnackBar(
-      SnackBar(content: Text(l10n.routingNotConfigured)),
+      _persistentRoutingSnackBar(content: Text(l10n.routingNotConfigured)),
     );
     return;
   }
 
   bool reachable;
   try {
-    reachable = await ref.read(routingServerReachableProvider.future);
+    reachable = await container.read(routingServerReachableProvider.future);
   } catch (_) {
     reachable = false;
   }
   if (!reachable) {
     messenger.showSnackBar(
-      SnackBar(content: Text(l10n.routingServerUnreachable)),
+      _persistentRoutingSnackBar(
+        content: Text(l10n.routingServerUnreachable),
+      ),
     );
     return;
   }
 
   RoutingStatus status;
   try {
-    status = await ref.read(routingStatusProvider.future);
+    status = await container.read(routingStatusProvider.future);
   } catch (_) {
     status = RoutingStatus.unconfigured;
   }
   if (!status.ready) {
-    messenger.showSnackBar(SnackBar(content: Text(l10n.routingNotReady)));
+    messenger.showSnackBar(
+      _persistentRoutingSnackBar(content: Text(l10n.routingNotReady)),
+    );
     return;
   }
 
@@ -82,14 +100,14 @@ Future<void> routeToMapPoint({
 
   Navigator.of(context).pop();
 
-  var position = ref.read(deviceLocationProvider).position;
+  var position = container.read(deviceLocationProvider).position;
   if (position == null) {
-    await ref.read(deviceLocationProvider.notifier).locateAndFollow();
-    position = ref.read(deviceLocationProvider).position;
+    await container.read(deviceLocationProvider.notifier).locateAndFollow();
+    position = container.read(deviceLocationProvider).position;
   }
   if (position == null) {
     messenger.showSnackBar(
-      SnackBar(content: Text(l10n.routeFollowGpsRequired)),
+      _persistentRoutingSnackBar(content: Text(l10n.routeFollowGpsRequired)),
     );
     return;
   }
@@ -100,7 +118,7 @@ Future<void> routeToMapPoint({
       to: RoutingPoint(lat: latitude, lon: longitude),
       profile: profile,
     );
-    ref
+    container
         .read(routingSessionProvider.notifier)
         .setRoute(
           result: result,
@@ -120,20 +138,19 @@ Future<void> routeToMapPoint({
     );
 
     messenger.showSnackBar(
-      SnackBar(
+      _persistentRoutingSnackBar(
         content: Text(summary),
-        duration: const Duration(seconds: 8),
         action: SnackBarAction(
           label: l10n.routeFollowButton,
           onPressed: () {
-            unawaited(startFollowFromRoutingSession(ref));
+            unawaited(startFollowFromRoutingSession(container));
           },
         ),
       ),
     );
   } catch (error) {
     messenger.showSnackBar(
-      SnackBar(
+      _persistentRoutingSnackBar(
         content: Text(l10n.routingRouteRequestFailed(error.toString())),
       ),
     );

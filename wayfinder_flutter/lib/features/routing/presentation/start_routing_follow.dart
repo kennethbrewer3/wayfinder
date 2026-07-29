@@ -20,12 +20,15 @@ TrackTransportationMode transportationModeForRoutingProfile(
 
 /// Starts route-follow for the active [routingSessionProvider] result.
 ///
+/// Accepts a [ProviderContainer] so callers can survive dialog dispose (do not
+/// pass a [WidgetRef] from a popped details sheet).
+///
 /// Returns `false` when there is no usable geometry (fewer than 2 points).
 Future<bool> startFollowFromRoutingSession(
-  WidgetRef ref, {
+  ProviderContainer container, {
   bool simulate = false,
 }) async {
-  final session = ref.read(routingSessionProvider);
+  final session = container.read(routingSessionProvider);
   final result = session.result;
   if (result == null) {
     return false;
@@ -42,7 +45,7 @@ Future<bool> startFollowFromRoutingSession(
     instructions: result.instructions,
     path: path,
   );
-  final ok = await ref
+  final ok = await container
       .read(routeFollowProvider.notifier)
       .start(
         routeName: session.destinationLabel ?? '',
@@ -51,7 +54,7 @@ Future<bool> startFollowFromRoutingSession(
         namedInstructions: namedInstructions,
       );
   if (simulate) {
-    await ref.read(routeFollowProvider.notifier).startSimulation();
+    await container.read(routeFollowProvider.notifier).startSimulation();
   }
   return ok;
 }

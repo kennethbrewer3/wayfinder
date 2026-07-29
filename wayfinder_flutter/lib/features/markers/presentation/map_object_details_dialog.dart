@@ -373,7 +373,6 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
             onPressed: () async {
               await routeToMapPoint(
                 context: context,
-                ref: ref,
                 destinationLabel: marker.name,
                 latitude: marker.latitude,
                 longitude: marker.longitude,

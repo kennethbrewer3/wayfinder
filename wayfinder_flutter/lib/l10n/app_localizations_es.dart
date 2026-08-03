@@ -1722,23 +1722,63 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get offlinePackPrepareDescription =>
-      'Copie capas seleccionadas y almacene en caché teselas del mapa base para la vista actual, para seguir trabajando si el servidor Wayfinder no está disponible.';
+      'Copie capas seleccionadas y almacene en caché teselas del mapa base para la vista actual. Conserve varios paquetes de AOI (casa, evacuación, coto) y active uno sin volver a construir.';
 
   @override
-  String get offlinePackPrepareAction => 'Preparar paquete sin conexión';
+  String get offlinePackPrepareAction => 'Actualizar paquete sin conexión';
+
+  @override
+  String get offlinePackPrepareNewAction => 'Crear paquete sin conexión';
 
   @override
   String get offlinePackPrepareTooltip => 'Preparar para sin conexión';
 
   @override
   String get offlinePackPrepareTooltipReady =>
-      'Paquete listo — toque para actualizar';
+      'Paquetes listos — toque para gestionar';
 
   @override
   String get offlinePackNameLabel => 'Nombre del paquete';
 
   @override
+  String get offlinePackNameHint => 'Casa, evacuación, coto…';
+
+  @override
   String get offlinePackDefaultName => 'Paquete sin conexión';
+
+  @override
+  String get offlinePackTargetLabel => 'Guardar como';
+
+  @override
+  String get offlinePackTargetNew => 'Paquete nuevo (conservar los existentes)';
+
+  @override
+  String offlinePackTargetReplace(String name) {
+    return 'Reemplazar “$name”';
+  }
+
+  @override
+  String get offlinePackSavedPacksLabel => 'Paquetes guardados';
+
+  @override
+  String get offlinePackActiveLabel => 'Activo';
+
+  @override
+  String get offlinePackInactiveLabel =>
+      'Pulse Activar para cambiar sin reconstruir';
+
+  @override
+  String get offlinePackActivateAction => 'Activar';
+
+  @override
+  String get offlinePackSwitchTooltip => 'Cambiar paquete sin conexión';
+
+  @override
+  String get offlinePackSwitchTitle => 'Cambiar paquete sin conexión';
+
+  @override
+  String get offlinePackSwitchDescription =>
+      'Elija qué paquete de AOI usar. Las teselas permanecen en caché; no hace falta reconstruir.';
 
   @override
   String get offlinePackLayersLabel => 'Capas a incluir';

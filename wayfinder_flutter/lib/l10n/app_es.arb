@@ -667,12 +667,31 @@
   "mapTilesUploadButton": "Subir archivo .pmtiles",
   "mapTilesGetMapsButton": "Obtener mapas",
   "offlinePackPrepareTitle": "Preparar para sin conexión",
-  "offlinePackPrepareDescription": "Copie capas seleccionadas y almacene en caché teselas del mapa base para la vista actual, para seguir trabajando si el servidor Wayfinder no está disponible.",
-  "offlinePackPrepareAction": "Preparar paquete sin conexión",
+  "offlinePackPrepareDescription": "Copie capas seleccionadas y almacene en caché teselas del mapa base para la vista actual. Conserve varios paquetes de AOI (casa, evacuación, coto) y active uno sin volver a construir.",
+  "offlinePackPrepareAction": "Actualizar paquete sin conexión",
+  "offlinePackPrepareNewAction": "Crear paquete sin conexión",
   "offlinePackPrepareTooltip": "Preparar para sin conexión",
-  "offlinePackPrepareTooltipReady": "Paquete listo — toque para actualizar",
+  "offlinePackPrepareTooltipReady": "Paquetes listos — toque para gestionar",
   "offlinePackNameLabel": "Nombre del paquete",
+  "offlinePackNameHint": "Casa, evacuación, coto…",
   "offlinePackDefaultName": "Paquete sin conexión",
+  "offlinePackTargetLabel": "Guardar como",
+  "offlinePackTargetNew": "Paquete nuevo (conservar los existentes)",
+  "offlinePackTargetReplace": "Reemplazar “{name}”",
+  "@offlinePackTargetReplace": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlinePackSavedPacksLabel": "Paquetes guardados",
+  "offlinePackActiveLabel": "Activo",
+  "offlinePackInactiveLabel": "Pulse Activar para cambiar sin reconstruir",
+  "offlinePackActivateAction": "Activar",
+  "offlinePackSwitchTooltip": "Cambiar paquete sin conexión",
+  "offlinePackSwitchTitle": "Cambiar paquete sin conexión",
+  "offlinePackSwitchDescription": "Elija qué paquete de AOI usar. Las teselas permanecen en caché; no hace falta reconstruir.",
   "offlinePackLayersLabel": "Capas a incluir",
   "offlinePackIncludeSeasonalOverlays": "Incluir superposiciones estacionales",
   "offlinePackIncludeSeasonalOverlaysHint": "Empaquete todas las superposiciones estacionales solo para verlas sin conexión (aparte de las capas del mapa).",

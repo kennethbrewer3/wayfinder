@@ -667,12 +667,31 @@
   "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
   "mapTilesGetMapsButton": "Obtenir des cartes",
   "offlinePackPrepareTitle": "Préparer pour le hors ligne",
-  "offlinePackPrepareDescription": "Mettez en miroir les calques choisis et mettez en cache les tuiles du fond de carte pour la vue actuelle, afin de continuer si le serveur Wayfinder est inaccessible.",
-  "offlinePackPrepareAction": "Préparer le pack hors ligne",
+  "offlinePackPrepareDescription": "Mettez en miroir les calques choisis et mettez en cache les tuiles du fond de carte pour la vue actuelle. Conservez plusieurs packs AOI (maison, repli, chasse) et activez-en un sans reconstruire.",
+  "offlinePackPrepareAction": "Mettre à jour le pack hors ligne",
+  "offlinePackPrepareNewAction": "Créer un pack hors ligne",
   "offlinePackPrepareTooltip": "Préparer pour le hors ligne",
-  "offlinePackPrepareTooltipReady": "Pack prêt — appuyez pour actualiser",
+  "offlinePackPrepareTooltipReady": "Packs prêts — appuyez pour gérer",
   "offlinePackNameLabel": "Nom du pack",
+  "offlinePackNameHint": "Maison, repli, chasse…",
   "offlinePackDefaultName": "Pack hors ligne",
+  "offlinePackTargetLabel": "Enregistrer comme",
+  "offlinePackTargetNew": "Nouveau pack (conserver les existants)",
+  "offlinePackTargetReplace": "Remplacer « {name} »",
+  "@offlinePackTargetReplace": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlinePackSavedPacksLabel": "Packs enregistrés",
+  "offlinePackActiveLabel": "Actif",
+  "offlinePackInactiveLabel": "Appuyez sur Activer pour changer sans reconstruire",
+  "offlinePackActivateAction": "Activer",
+  "offlinePackSwitchTooltip": "Changer de pack hors ligne",
+  "offlinePackSwitchTitle": "Changer de pack hors ligne",
+  "offlinePackSwitchDescription": "Choisissez le pack AOI à utiliser. Les tuiles restent en cache — aucune reconstruction nécessaire.",
   "offlinePackLayersLabel": "Calques à inclure",
   "offlinePackIncludeSeasonalOverlays": "Inclure les superpositions saisonnières",
   "offlinePackIncludeSeasonalOverlaysHint": "Inclure toutes les superpositions saisonnières en lecture seule hors ligne (séparées des calques de carte).",

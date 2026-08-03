@@ -1703,23 +1703,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlinePackPrepareDescription =>
-      'Mirror selected layers and cache basemap tiles for the current map view so clients keep working when the Wayfinder server is unreachable.';
+      'Mirror selected layers and cache basemap tiles for the current map view. Keep several AOI packs (home, bug-out, hunting lease) and activate one without rebuilding.';
 
   @override
-  String get offlinePackPrepareAction => 'Prepare offline pack';
+  String get offlinePackPrepareAction => 'Update offline pack';
+
+  @override
+  String get offlinePackPrepareNewAction => 'Create offline pack';
 
   @override
   String get offlinePackPrepareTooltip => 'Prepare for offline';
 
   @override
   String get offlinePackPrepareTooltipReady =>
-      'Offline pack ready — tap to refresh';
+      'Offline packs ready — tap to manage';
 
   @override
   String get offlinePackNameLabel => 'Pack name';
 
   @override
+  String get offlinePackNameHint => 'Home, bug-out, hunting lease…';
+
+  @override
   String get offlinePackDefaultName => 'Offline pack';
+
+  @override
+  String get offlinePackTargetLabel => 'Save as';
+
+  @override
+  String get offlinePackTargetNew => 'New pack (keep existing packs)';
+
+  @override
+  String offlinePackTargetReplace(String name) {
+    return 'Replace “$name”';
+  }
+
+  @override
+  String get offlinePackSavedPacksLabel => 'Saved packs';
+
+  @override
+  String get offlinePackActiveLabel => 'Active';
+
+  @override
+  String get offlinePackInactiveLabel =>
+      'Tap Activate to switch without rebuilding';
+
+  @override
+  String get offlinePackActivateAction => 'Activate';
+
+  @override
+  String get offlinePackSwitchTooltip => 'Switch offline pack';
+
+  @override
+  String get offlinePackSwitchTitle => 'Switch offline pack';
+
+  @override
+  String get offlinePackSwitchDescription =>
+      'Choose which AOI pack to use. Tiles stay cached — no rebuild needed.';
 
   @override
   String get offlinePackLayersLabel => 'Layers to include';

@@ -3010,14 +3010,20 @@ abstract class AppLocalizations {
   /// No description provided for @offlinePackPrepareDescription.
   ///
   /// In en, this message translates to:
-  /// **'Mirror selected layers and cache basemap tiles for the current map view so clients keep working when the Wayfinder server is unreachable.'**
+  /// **'Mirror selected layers and cache basemap tiles for the current map view. Keep several AOI packs (home, bug-out, hunting lease) and activate one without rebuilding.'**
   String get offlinePackPrepareDescription;
 
   /// No description provided for @offlinePackPrepareAction.
   ///
   /// In en, this message translates to:
-  /// **'Prepare offline pack'**
+  /// **'Update offline pack'**
   String get offlinePackPrepareAction;
+
+  /// No description provided for @offlinePackPrepareNewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create offline pack'**
+  String get offlinePackPrepareNewAction;
 
   /// No description provided for @offlinePackPrepareTooltip.
   ///
@@ -3028,7 +3034,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlinePackPrepareTooltipReady.
   ///
   /// In en, this message translates to:
-  /// **'Offline pack ready — tap to refresh'**
+  /// **'Offline packs ready — tap to manage'**
   String get offlinePackPrepareTooltipReady;
 
   /// No description provided for @offlinePackNameLabel.
@@ -3037,11 +3043,77 @@ abstract class AppLocalizations {
   /// **'Pack name'**
   String get offlinePackNameLabel;
 
+  /// No description provided for @offlinePackNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Home, bug-out, hunting lease…'**
+  String get offlinePackNameHint;
+
   /// No description provided for @offlinePackDefaultName.
   ///
   /// In en, this message translates to:
   /// **'Offline pack'**
   String get offlinePackDefaultName;
+
+  /// No description provided for @offlinePackTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as'**
+  String get offlinePackTargetLabel;
+
+  /// No description provided for @offlinePackTargetNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New pack (keep existing packs)'**
+  String get offlinePackTargetNew;
+
+  /// No description provided for @offlinePackTargetReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace “{name}”'**
+  String offlinePackTargetReplace(String name);
+
+  /// No description provided for @offlinePackSavedPacksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved packs'**
+  String get offlinePackSavedPacksLabel;
+
+  /// No description provided for @offlinePackActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get offlinePackActiveLabel;
+
+  /// No description provided for @offlinePackInactiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Activate to switch without rebuilding'**
+  String get offlinePackInactiveLabel;
+
+  /// No description provided for @offlinePackActivateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get offlinePackActivateAction;
+
+  /// No description provided for @offlinePackSwitchTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch offline pack'**
+  String get offlinePackSwitchTooltip;
+
+  /// No description provided for @offlinePackSwitchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch offline pack'**
+  String get offlinePackSwitchTitle;
+
+  /// No description provided for @offlinePackSwitchDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which AOI pack to use. Tiles stay cached — no rebuild needed.'**
+  String get offlinePackSwitchDescription;
 
   /// No description provided for @offlinePackLayersLabel.
   ///

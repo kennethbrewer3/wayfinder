@@ -35,6 +35,7 @@ class OfflinePackController {
     required String name,
     required List<UuidValue> layerIds,
     required OfflinePackRegion region,
+    String? packId,
     bool includeSeasonalOverlays = false,
     OfflinePrepareProgress? onProgress,
   }) {
@@ -46,9 +47,11 @@ class OfflinePackController {
       name: name,
       layerIds: layerIds,
       region: region,
+      packId: packId,
       includeSeasonalOverlays: includeSeasonalOverlays,
       onProgress: onProgress,
     ).then((meta) async {
+      _ref.invalidate(offlinePackIndexProvider);
       _ref.invalidate(offlinePackMetaProvider);
       _ref.invalidate(offlineSnapshotProvider);
       _ref.invalidate(seasonalOverlaysProvider);
@@ -56,9 +59,68 @@ class OfflinePackController {
     });
   }
 
-  Future<void> clearPack() async {
+  /// Switch the active AOI pack without rebuilding tiles.
+  Future<void> activatePack(String packId) async {
+    final store = _ref.read(offlinePackStoreProvider);
+    final meta = await store.loadMeta(packId);
+    if (meta == null) {
+      throw StateError('Offline pack not found: $packId');
+    }
+    await store.setActivePackId(packId);
+    _ref.read(offlineTileCacheProvider).setActivePackId(packId);
+    _ref.invalidate(offlinePackIndexProvider);
+    _ref.invalidate(offlinePackMetaProvider);
+    _ref.invalidate(offlineSnapshotProvider);
+    _ref.invalidate(offlineOutboxCountProvider);
+    _ref.invalidate(seasonalOverlaysProvider);
+    _ref.invalidate(markersProvider);
+    _ref.invalidate(layersProvider);
+    _ref.invalidate(zonesProvider);
+    _ref.invalidate(watchLogEntriesProvider);
+  }
+
+  Future<void> renamePack({
+    required String packId,
+    required String name,
+  }) async {
+    final store = _ref.read(offlinePackStoreProvider);
+    final meta = await store.loadMeta(packId);
+    if (meta == null) {
+      return;
+    }
+    final trimmed = name.trim();
+    if (trimmed.isEmpty || trimmed == meta.name) {
+      return;
+    }
+    await store.saveMeta(meta.copyWith(name: trimmed), activate: false);
+    _ref.invalidate(offlinePackIndexProvider);
+    _ref.invalidate(offlinePackMetaProvider);
+  }
+
+  /// Deletes one pack (defaults to the active pack). Sibling packs remain.
+  Future<void> clearPack({String? packId}) async {
+    final store = _ref.read(offlinePackStoreProvider);
+    final tileCache = _ref.read(offlineTileCacheProvider);
+    final id = packId ?? await store.activePackId();
+    if (id == null) {
+      return;
+    }
+    final nextActive = await store.deletePack(id);
+    await tileCache.clearPack(id);
+    tileCache.setActivePackId(nextActive);
+    _ref.invalidate(offlinePackIndexProvider);
+    _ref.invalidate(offlinePackMetaProvider);
+    _ref.invalidate(offlineSnapshotProvider);
+    _ref.invalidate(offlineOutboxCountProvider);
+    _ref.invalidate(seasonalOverlaysProvider);
+  }
+
+  /// Removes every offline pack and all cached tiles.
+  Future<void> clearAllPacks() async {
     await _ref.read(offlinePackStoreProvider).clearAll();
     await _ref.read(offlineTileCacheProvider).clear();
+    _ref.read(offlineTileCacheProvider).setActivePackId(null);
+    _ref.invalidate(offlinePackIndexProvider);
     _ref.invalidate(offlinePackMetaProvider);
     _ref.invalidate(offlineSnapshotProvider);
     _ref.invalidate(offlineOutboxCountProvider);

@@ -1012,12 +1012,31 @@
   "mapTilesUploadButton": "Upload .pmtiles file",
   "mapTilesGetMapsButton": "Get maps",
   "offlinePackPrepareTitle": "Prepare for offline",
-  "offlinePackPrepareDescription": "Mirror selected layers and cache basemap tiles for the current map view so clients keep working when the Wayfinder server is unreachable.",
-  "offlinePackPrepareAction": "Prepare offline pack",
+  "offlinePackPrepareDescription": "Mirror selected layers and cache basemap tiles for the current map view. Keep several AOI packs (home, bug-out, hunting lease) and activate one without rebuilding.",
+  "offlinePackPrepareAction": "Update offline pack",
+  "offlinePackPrepareNewAction": "Create offline pack",
   "offlinePackPrepareTooltip": "Prepare for offline",
-  "offlinePackPrepareTooltipReady": "Offline pack ready — tap to refresh",
+  "offlinePackPrepareTooltipReady": "Offline packs ready — tap to manage",
   "offlinePackNameLabel": "Pack name",
+  "offlinePackNameHint": "Home, bug-out, hunting lease…",
   "offlinePackDefaultName": "Offline pack",
+  "offlinePackTargetLabel": "Save as",
+  "offlinePackTargetNew": "New pack (keep existing packs)",
+  "offlinePackTargetReplace": "Replace “{name}”",
+  "@offlinePackTargetReplace": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlinePackSavedPacksLabel": "Saved packs",
+  "offlinePackActiveLabel": "Active",
+  "offlinePackInactiveLabel": "Tap Activate to switch without rebuilding",
+  "offlinePackActivateAction": "Activate",
+  "offlinePackSwitchTooltip": "Switch offline pack",
+  "offlinePackSwitchTitle": "Switch offline pack",
+  "offlinePackSwitchDescription": "Choose which AOI pack to use. Tiles stay cached — no rebuild needed.",
   "offlinePackLayersLabel": "Layers to include",
   "offlinePackIncludeSeasonalOverlays": "Include seasonal overlays",
   "offlinePackIncludeSeasonalOverlaysHint": "Pack all seasonal overlays for read-only viewing offline (separate from map layers).",

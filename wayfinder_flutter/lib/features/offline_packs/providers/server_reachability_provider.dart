@@ -6,6 +6,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../data/offline_pack_store.dart';
+import '../data/offline_tile_cache.dart';
 import 'force_offline_pack_provider.dart';
 
 /// Whether the Wayfinder appliance RPC is reachable.
@@ -57,8 +58,27 @@ class ServerReachableNotifier extends StateNotifier<bool> {
   }
 }
 
-/// Loaded pack metadata (null if none prepared).
+/// Registry of prepared packs + which one is active.
+final offlinePackIndexProvider = FutureProvider<OfflinePackIndex>((ref) async {
+  final store = ref.watch(offlinePackStoreProvider);
+  final tileCache = ref.read(offlineTileCacheProvider);
+  final legacyPackId = await store.ensureMigrated();
+  if (legacyPackId != null) {
+    await tileCache.migrateLegacyTilesToPack(legacyPackId);
+    await store.clearLegacyTilesPending();
+  }
+  final index = await store.loadIndex();
+  final activeId = index.activePackId;
+  if (activeId != null) {
+    tileCache.setActivePackId(activeId);
+  }
+  return index;
+});
+
+/// Loaded **active** pack metadata (null if none prepared).
 final offlinePackMetaProvider = FutureProvider((ref) async {
+  // Keep tile cache pack id in sync when the index changes.
+  ref.watch(offlinePackIndexProvider);
   return ref.watch(offlinePackStoreProvider).loadMeta();
 });
 

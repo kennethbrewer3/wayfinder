@@ -1725,23 +1725,63 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get offlinePackPrepareDescription =>
-      'Mettez en miroir les calques choisis et mettez en cache les tuiles du fond de carte pour la vue actuelle, afin de continuer si le serveur Wayfinder est inaccessible.';
+      'Mettez en miroir les calques choisis et mettez en cache les tuiles du fond de carte pour la vue actuelle. Conservez plusieurs packs AOI (maison, repli, chasse) et activez-en un sans reconstruire.';
 
   @override
-  String get offlinePackPrepareAction => 'Préparer le pack hors ligne';
+  String get offlinePackPrepareAction => 'Mettre à jour le pack hors ligne';
+
+  @override
+  String get offlinePackPrepareNewAction => 'Créer un pack hors ligne';
 
   @override
   String get offlinePackPrepareTooltip => 'Préparer pour le hors ligne';
 
   @override
   String get offlinePackPrepareTooltipReady =>
-      'Pack prêt — appuyez pour actualiser';
+      'Packs prêts — appuyez pour gérer';
 
   @override
   String get offlinePackNameLabel => 'Nom du pack';
 
   @override
+  String get offlinePackNameHint => 'Maison, repli, chasse…';
+
+  @override
   String get offlinePackDefaultName => 'Pack hors ligne';
+
+  @override
+  String get offlinePackTargetLabel => 'Enregistrer comme';
+
+  @override
+  String get offlinePackTargetNew => 'Nouveau pack (conserver les existants)';
+
+  @override
+  String offlinePackTargetReplace(String name) {
+    return 'Remplacer « $name »';
+  }
+
+  @override
+  String get offlinePackSavedPacksLabel => 'Packs enregistrés';
+
+  @override
+  String get offlinePackActiveLabel => 'Actif';
+
+  @override
+  String get offlinePackInactiveLabel =>
+      'Appuyez sur Activer pour changer sans reconstruire';
+
+  @override
+  String get offlinePackActivateAction => 'Activer';
+
+  @override
+  String get offlinePackSwitchTooltip => 'Changer de pack hors ligne';
+
+  @override
+  String get offlinePackSwitchTitle => 'Changer de pack hors ligne';
+
+  @override
+  String get offlinePackSwitchDescription =>
+      'Choisissez le pack AOI à utiliser. Les tuiles restent en cache — aucune reconstruction nécessaire.';
 
   @override
   String get offlinePackLayersLabel => 'Calques à inclure';

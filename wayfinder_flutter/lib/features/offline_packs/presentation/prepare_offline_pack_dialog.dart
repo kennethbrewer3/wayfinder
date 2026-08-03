@@ -10,10 +10,14 @@ import '../../map/models/map_viewport.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/utils/pmtiles_viewport.dart';
 import '../../settings/providers/pmtiles_providers.dart';
+import '../data/offline_pack_store.dart';
 import '../data/prepare_offline_pack.dart';
 import '../models/offline_pack.dart';
 import '../providers/offline_pack_controller.dart';
 import '../providers/server_reachability_provider.dart';
+
+/// Sentinel for “create a new pack” in the prepare target dropdown.
+const _newPackTargetId = '';
 
 Future<bool?> showPrepareOfflinePackDialog(BuildContext context) {
   return showDialog<bool>(
@@ -33,7 +37,7 @@ class PrepareOfflinePackDialog extends ConsumerStatefulWidget {
 
 class _PrepareOfflinePackDialogState
     extends ConsumerState<PrepareOfflinePackDialog> {
-  final _nameController = TextEditingController(text: 'Field pack');
+  final _nameController = TextEditingController(text: 'Home');
   final _selectedLayerIds = <UuidValue>{};
   var _includeSeasonalOverlays = false;
   var _seededFromExisting = false;
@@ -43,6 +47,9 @@ class _PrepareOfflinePackDialogState
   String? _status;
   String? _error;
   double? _progress;
+
+  /// Empty string = create new pack; otherwise replace that pack id.
+  var _targetPackId = _newPackTargetId;
 
   @override
   void dispose() {
@@ -54,7 +61,6 @@ class _PrepareOfflinePackDialogState
     final viewport =
         ref.read(mapViewportProvider).valueOrNull ??
         const MapViewport(center: LatLng(0, 0), zoom: 12);
-    // Import LatLng via map_viewport
     final bounds = expandLatLngBounds(
       approximateVisibleBounds(viewport),
       fraction: 0.25,
@@ -89,6 +95,7 @@ class _PrepareOfflinePackDialogState
 
     try {
       final region = _regionFromViewport();
+      final replaceId = _targetPackId.isEmpty ? null : _targetPackId;
       await ref
           .read(offlinePackControllerProvider)
           .prepare(
@@ -97,6 +104,7 @@ class _PrepareOfflinePackDialogState
                 : _nameController.text.trim(),
             layerIds: _selectedLayerIds.toList(),
             region: region,
+            packId: replaceId,
             includeSeasonalOverlays: _includeSeasonalOverlays,
             onProgress: (message, fraction) {
               if (!mounted) {
@@ -125,7 +133,7 @@ class _PrepareOfflinePackDialogState
     }
   }
 
-  Future<void> _clear() async {
+  Future<void> _clearActive() async {
     await ref.read(offlinePackControllerProvider).clearPack();
     if (!mounted) {
       return;
@@ -133,11 +141,36 @@ class _PrepareOfflinePackDialogState
     Navigator.of(context).pop(true);
   }
 
+  Future<void> _activate(String packId) async {
+    await ref.read(offlinePackControllerProvider).activatePack(packId);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _targetPackId = packId;
+    });
+  }
+
+  Future<void> _deletePack(String packId) async {
+    await ref.read(offlinePackControllerProvider).clearPack(packId: packId);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      if (_targetPackId == packId) {
+        _targetPackId = _newPackTargetId;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final layersAsync = ref.watch(layersProvider);
     final existing = ref.watch(offlinePackMetaProvider).valueOrNull;
+    final index =
+        ref.watch(offlinePackIndexProvider).valueOrNull ??
+        const OfflinePackIndex();
     final catalog = ref.watch(pmtilesCatalogProvider).valueOrNull ?? const [];
     final enabledCount = catalog.where((f) => f.enabledOnMap).length;
     final regionPreview = _regionFromViewport();
@@ -165,6 +198,12 @@ class _PrepareOfflinePackDialogState
             }
             _includeSeasonalOverlays =
                 existing?.includeSeasonalOverlays ?? false;
+            if (existing != null) {
+              _nameController.text = existing.name;
+              _targetPackId = existing.id;
+              _minZoom = existing.region.minZoom;
+              _maxZoom = existing.region.maxZoom;
+            }
           });
         });
       }
@@ -181,11 +220,100 @@ class _PrepareOfflinePackDialogState
             children: [
               Text(l10n.offlinePackPrepareDescription),
               const SizedBox(height: 12),
+              if (index.packs.isNotEmpty) ...[
+                Text(
+                  l10n.offlinePackSavedPacksLabel,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 4),
+                for (final pack in index.packs)
+                  ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      pack.id == index.activePackId
+                          ? Icons.check_circle
+                          : Icons.offline_pin_outlined,
+                      color: pack.id == index.activePackId
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                    title: Text(pack.name),
+                    subtitle: Text(
+                      pack.id == index.activePackId
+                          ? l10n.offlinePackActiveLabel
+                          : l10n.offlinePackInactiveLabel,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (pack.id != index.activePackId)
+                          TextButton(
+                            onPressed: _preparing
+                                ? null
+                                : () => _activate(pack.id),
+                            child: Text(l10n.offlinePackActivateAction),
+                          ),
+                        IconButton(
+                          tooltip: l10n.offlinePackClear,
+                          onPressed: _preparing
+                              ? null
+                              : () => _deletePack(pack.id),
+                          icon: const Icon(Icons.delete_outline),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 8),
+              ],
+              DropdownButtonFormField<String>(
+                key: ValueKey(
+                  'pack-target-$_targetPackId-${index.packs.length}',
+                ),
+                initialValue: _targetPackId,
+                decoration: InputDecoration(
+                  labelText: l10n.offlinePackTargetLabel,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: _newPackTargetId,
+                    child: Text(l10n.offlinePackTargetNew),
+                  ),
+                  for (final pack in index.packs)
+                    DropdownMenuItem(
+                      value: pack.id,
+                      child: Text(
+                        l10n.offlinePackTargetReplace(pack.name),
+                      ),
+                    ),
+                ],
+                onChanged: _preparing
+                    ? null
+                    : (value) {
+                        if (value == null) {
+                          return;
+                        }
+                        setState(() {
+                          _targetPackId = value;
+                          if (value.isNotEmpty) {
+                            for (final pack in index.packs) {
+                              if (pack.id == value) {
+                                _nameController.text = pack.name;
+                                break;
+                              }
+                            }
+                          }
+                        });
+                      },
+              ),
+              const SizedBox(height: 12),
               TextField(
                 controller: _nameController,
                 enabled: !_preparing,
                 decoration: InputDecoration(
                   labelText: l10n.offlinePackNameLabel,
+                  hintText: l10n.offlinePackNameHint,
                 ),
               ),
               const SizedBox(height: 12),
@@ -298,7 +426,7 @@ class _PrepareOfflinePackDialogState
       actions: [
         if (existing != null)
           TextButton(
-            onPressed: _preparing ? null : _clear,
+            onPressed: _preparing ? null : _clearActive,
             child: Text(l10n.offlinePackClear),
           ),
         TextButton(
@@ -307,7 +435,11 @@ class _PrepareOfflinePackDialogState
         ),
         FilledButton(
           onPressed: _preparing ? null : _prepare,
-          child: Text(l10n.offlinePackPrepareAction),
+          child: Text(
+            _targetPackId.isEmpty
+                ? l10n.offlinePackPrepareNewAction
+                : l10n.offlinePackPrepareAction,
+          ),
         ),
       ],
     );

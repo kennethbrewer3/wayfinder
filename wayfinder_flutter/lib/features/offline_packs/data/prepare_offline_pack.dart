@@ -49,7 +49,10 @@ int estimateOfflineTileCount({
   return total * archiveCount;
 }
 
-/// Builds an offline pack: selected-layer objects + AOI basemap tiles.
+/// Builds or rebuilds an offline pack: selected-layer objects + AOI basemap tiles.
+///
+/// Pass [packId] to replace an existing pack in place; omit to create a new one.
+/// Other packs' tiles and snapshots are left untouched.
 Future<OfflinePackMeta> prepareOfflinePack({
   required Client client,
   required PmtilesRepository pmtilesRepository,
@@ -58,11 +61,13 @@ Future<OfflinePackMeta> prepareOfflinePack({
   required String name,
   required List<UuidValue> layerIds,
   required OfflinePackRegion region,
+  String? packId,
   bool includeSeasonalOverlays = false,
   OfflinePrepareProgress? onProgress,
 }) async {
   final log = AppLogger.logMap;
   final selectedKeys = {for (final id in layerIds) id.uuid};
+  final id = packId ?? const Uuid().v4();
 
   onProgress?.call('Loading map objects…', 0.05);
   final layers = await client.mapLayer.listLayers();
@@ -114,10 +119,14 @@ Future<OfflinePackMeta> prepareOfflinePack({
     seasonalOverlays: seasonalOverlays,
     capturedAt: DateTime.now().toUtc(),
   );
-  await store.saveSnapshot(snapshot);
+  // Activate early so snapshot/outbox helpers resolve this pack id.
+  await store.setActivePackId(id);
+  tileCache.setActivePackId(id);
+  await store.clearOutbox(id);
+  await store.saveSnapshot(snapshot, packId: id);
   onProgress?.call('Caching basemap tiles…', 0.2);
 
-  await tileCache.clear();
+  await tileCache.clearPack(id);
   final files = await pmtilesRepository.listFiles();
   final enabled = [
     for (final file in files)
@@ -168,6 +177,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
               final bytes = tile.bytes();
               if (bytes.isNotEmpty) {
                 await tileCache.putTile(
+                  packId: id,
                   catalogId: file.id,
                   z: z,
                   x: x,
@@ -198,6 +208,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
   }
 
   final meta = OfflinePackMeta(
+    id: id,
     name: name,
     layerIds: layerIds,
     region: region,
@@ -213,7 +224,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
   log.success(
     'Offline pack prepared',
     data:
-        'layers=${layerIds.length} markers=${packMarkers.length} '
+        'id=$id layers=${layerIds.length} markers=${packMarkers.length} '
         'zones=${packZones.length} seasonal=${seasonalOverlays.length} '
         'tiles=$tilesCached',
   );

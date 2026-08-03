@@ -101,6 +101,7 @@ class OfflinePackBasemap {
 /// User-prepared offline pack: selected layers + tile region.
 class OfflinePackMeta {
   const OfflinePackMeta({
+    required this.id,
     required this.layerIds,
     required this.region,
     required this.preparedAt,
@@ -113,6 +114,8 @@ class OfflinePackMeta {
     this.seasonalOverlayCount = 0,
   });
 
+  /// Stable id for multi-pack storage and tile namespacing.
+  final String id;
   final String name;
   final List<UuidValue> layerIds;
   final OfflinePackRegion region;
@@ -138,6 +141,7 @@ class OfflinePackMeta {
   }
 
   Map<String, dynamic> toJson() => {
+    'id': id,
     'name': name,
     'layerIds': [for (final id in layerIds) id.uuid],
     'region': region.toJson(),
@@ -152,6 +156,7 @@ class OfflinePackMeta {
 
   factory OfflinePackMeta.fromJson(Map<String, dynamic> json) {
     return OfflinePackMeta(
+      id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? 'Offline pack',
       layerIds: [
         for (final raw in json['layerIds'] as List? ?? const [])
@@ -176,6 +181,7 @@ class OfflinePackMeta {
   }
 
   OfflinePackMeta copyWith({
+    String? id,
     String? name,
     List<UuidValue>? layerIds,
     OfflinePackRegion? region,
@@ -188,6 +194,7 @@ class OfflinePackMeta {
     int? seasonalOverlayCount,
   }) {
     return OfflinePackMeta(
+      id: id ?? this.id,
       name: name ?? this.name,
       layerIds: layerIds ?? this.layerIds,
       region: region ?? this.region,

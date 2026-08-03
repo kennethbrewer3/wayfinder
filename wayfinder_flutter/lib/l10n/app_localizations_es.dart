@@ -1774,6 +1774,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get offlinePackRenameTitle => 'Renombrar paquete sin conexión';
 
   @override
+  String get offlinePackNameDuplicate =>
+      'Ya existe un paquete con ese nombre. Elija otro nombre.';
+
+  @override
+  String offlinePackDetailsLayers(String layers) {
+    return 'Capas: $layers';
+  }
+
+  @override
+  String get offlinePackDetailsLayersEmpty => 'Capas: (ninguna registrada)';
+
+  @override
+  String offlinePackDetailsCounts(
+    int markerCount,
+    int zoneCount,
+    int tileCount,
+    int seasonalCount,
+  ) {
+    return '$markerCount marcadores · $zoneCount zonas · $tileCount teselas · $seasonalCount superposiciones estacionales';
+  }
+
+  @override
+  String offlinePackDetailsPrepared(String when) {
+    return 'Preparado $when';
+  }
+
+  @override
   String get offlinePackSwitchTooltip => 'Cambiar paquete sin conexión';
 
   @override

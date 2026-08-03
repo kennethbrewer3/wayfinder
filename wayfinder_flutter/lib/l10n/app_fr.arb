@@ -690,6 +690,29 @@
   "offlinePackInactiveLabel": "Appuyez sur Activer pour changer sans reconstruire",
   "offlinePackActivateAction": "Activer",
   "offlinePackRenameTitle": "Renommer le pack hors ligne",
+  "offlinePackNameDuplicate": "Un pack portant ce nom existe déjà. Choisissez un autre nom.",
+  "offlinePackDetailsLayers": "Calques : {layers}",
+  "@offlinePackDetailsLayers": {
+    "placeholders": {
+      "layers": { "type": "String" }
+    }
+  },
+  "offlinePackDetailsLayersEmpty": "Calques : (aucun enregistré)",
+  "offlinePackDetailsCounts": "{markerCount} marqueurs · {zoneCount} zones · {tileCount} tuiles · {seasonalCount} superpositions saisonnières",
+  "@offlinePackDetailsCounts": {
+    "placeholders": {
+      "markerCount": { "type": "int" },
+      "zoneCount": { "type": "int" },
+      "tileCount": { "type": "int" },
+      "seasonalCount": { "type": "int" }
+    }
+  },
+  "offlinePackDetailsPrepared": "Préparé {when}",
+  "@offlinePackDetailsPrepared": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
   "offlinePackSwitchTooltip": "Changer de pack hors ligne",
   "offlinePackSwitchTitle": "Changer de pack hors ligne",
   "offlinePackSwitchDescription": "Choisissez le pack AOI à utiliser. Les tuiles restent en cache — aucune reconstruction nécessaire.",

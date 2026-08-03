@@ -1035,6 +1035,29 @@
   "offlinePackInactiveLabel": "Tap Activate to switch without rebuilding",
   "offlinePackActivateAction": "Activate",
   "offlinePackRenameTitle": "Rename offline pack",
+  "offlinePackNameDuplicate": "A pack with that name already exists. Choose a different name.",
+  "offlinePackDetailsLayers": "Layers: {layers}",
+  "@offlinePackDetailsLayers": {
+    "placeholders": {
+      "layers": { "type": "String" }
+    }
+  },
+  "offlinePackDetailsLayersEmpty": "Layers: (none recorded)",
+  "offlinePackDetailsCounts": "{markerCount} markers · {zoneCount} zones · {tileCount} tiles · {seasonalCount} seasonal overlays",
+  "@offlinePackDetailsCounts": {
+    "placeholders": {
+      "markerCount": { "type": "int" },
+      "zoneCount": { "type": "int" },
+      "tileCount": { "type": "int" },
+      "seasonalCount": { "type": "int" }
+    }
+  },
+  "offlinePackDetailsPrepared": "Prepared {when}",
+  "@offlinePackDetailsPrepared": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
   "offlinePackSwitchTooltip": "Switch offline pack",
   "offlinePackSwitchTitle": "Switch offline pack",
   "offlinePackSwitchDescription": "Choose which AOI pack to use. Tiles stay cached — no rebuild needed.",

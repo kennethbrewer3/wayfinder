@@ -1777,6 +1777,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get offlinePackRenameTitle => 'Renommer le pack hors ligne';
 
   @override
+  String get offlinePackNameDuplicate =>
+      'Un pack portant ce nom existe déjà. Choisissez un autre nom.';
+
+  @override
+  String offlinePackDetailsLayers(String layers) {
+    return 'Calques : $layers';
+  }
+
+  @override
+  String get offlinePackDetailsLayersEmpty => 'Calques : (aucun enregistré)';
+
+  @override
+  String offlinePackDetailsCounts(
+    int markerCount,
+    int zoneCount,
+    int tileCount,
+    int seasonalCount,
+  ) {
+    return '$markerCount marqueurs · $zoneCount zones · $tileCount tuiles · $seasonalCount superpositions saisonnières';
+  }
+
+  @override
+  String offlinePackDetailsPrepared(String when) {
+    return 'Préparé $when';
+  }
+
+  @override
   String get offlinePackSwitchTooltip => 'Changer de pack hors ligne';
 
   @override

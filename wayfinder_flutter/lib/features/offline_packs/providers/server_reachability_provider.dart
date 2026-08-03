@@ -67,7 +67,7 @@ final offlinePackIndexProvider = FutureProvider<OfflinePackIndex>((ref) async {
     await tileCache.migrateLegacyTilesToPack(legacyPackId);
     await store.clearLegacyTilesPending();
   }
-  final index = await store.loadIndex();
+  final index = await store.enrichIndexSummaries();
   final activeId = index.activePackId;
   if (activeId != null) {
     tileCache.setActivePackId(activeId);

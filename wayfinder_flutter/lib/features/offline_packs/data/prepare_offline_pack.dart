@@ -210,6 +210,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
   final meta = OfflinePackMeta(
     id: id,
     name: name,
+    layerNames: [for (final layer in packLayers) layer.name],
     layerIds: layerIds,
     region: region,
     preparedAt: DateTime.now().toUtc(),

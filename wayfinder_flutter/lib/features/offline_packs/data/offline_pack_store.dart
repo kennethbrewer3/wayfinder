@@ -24,16 +24,31 @@ class OfflinePackIndexEntry {
     required this.id,
     required this.name,
     required this.preparedAt,
+    this.layerNames = const [],
+    this.tileCount = 0,
+    this.markerCount = 0,
+    this.zoneCount = 0,
+    this.seasonalOverlayCount = 0,
   });
 
   final String id;
   final String name;
   final DateTime preparedAt;
+  final List<String> layerNames;
+  final int tileCount;
+  final int markerCount;
+  final int zoneCount;
+  final int seasonalOverlayCount;
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
     'preparedAt': preparedAt.toIso8601String(),
+    'layerNames': layerNames,
+    'tileCount': tileCount,
+    'markerCount': markerCount,
+    'zoneCount': zoneCount,
+    'seasonalOverlayCount': seasonalOverlayCount,
   };
 
   factory OfflinePackIndexEntry.fromJson(Map<String, dynamic> json) {
@@ -44,6 +59,15 @@ class OfflinePackIndexEntry {
         json['preparedAt'] as String? ??
             DateTime.now().toUtc().toIso8601String(),
       ),
+      layerNames: [
+        for (final raw in json['layerNames'] as List? ?? const [])
+          raw as String,
+      ],
+      tileCount: (json['tileCount'] as num?)?.toInt() ?? 0,
+      markerCount: (json['markerCount'] as num?)?.toInt() ?? 0,
+      zoneCount: (json['zoneCount'] as num?)?.toInt() ?? 0,
+      seasonalOverlayCount:
+          (json['seasonalOverlayCount'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -52,6 +76,33 @@ class OfflinePackIndexEntry {
       id: meta.id,
       name: meta.name,
       preparedAt: meta.preparedAt,
+      layerNames: meta.layerNames,
+      tileCount: meta.tileCount,
+      markerCount: meta.markerCount,
+      zoneCount: meta.zoneCount,
+      seasonalOverlayCount: meta.seasonalOverlayCount,
+    );
+  }
+
+  OfflinePackIndexEntry copyWith({
+    String? id,
+    String? name,
+    DateTime? preparedAt,
+    List<String>? layerNames,
+    int? tileCount,
+    int? markerCount,
+    int? zoneCount,
+    int? seasonalOverlayCount,
+  }) {
+    return OfflinePackIndexEntry(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      preparedAt: preparedAt ?? this.preparedAt,
+      layerNames: layerNames ?? this.layerNames,
+      tileCount: tileCount ?? this.tileCount,
+      markerCount: markerCount ?? this.markerCount,
+      zoneCount: zoneCount ?? this.zoneCount,
+      seasonalOverlayCount: seasonalOverlayCount ?? this.seasonalOverlayCount,
     );
   }
 }
@@ -185,6 +236,78 @@ class OfflinePackStore {
     await ensureMigrated();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_indexKey, jsonEncode(index.toJson()));
+  }
+
+  /// Syncs index rows from pack meta, and backfills layer names from snapshots.
+  ///
+  /// Older packs only stored id/name/preparedAt in the index; this keeps the
+  /// list/rename UI useful without requiring a re-prepare.
+  Future<OfflinePackIndex> enrichIndexSummaries() async {
+    final index = await loadIndex();
+    if (index.packs.isEmpty) {
+      return index;
+    }
+
+    var indexChanged = false;
+    final packs = <OfflinePackIndexEntry>[];
+    final prefs = await SharedPreferences.getInstance();
+    for (final entry in index.packs) {
+      var meta = await loadMeta(entry.id);
+      if (meta == null) {
+        packs.add(entry);
+        continue;
+      }
+
+      if (meta.layerNames.isEmpty) {
+        final snapshot = await loadSnapshot(entry.id);
+        final layers = snapshot?.layers ?? const <MapLayer>[];
+        final layerNames = <String>[
+          for (final layer in layers) layer.name,
+        ];
+        if (layerNames.isNotEmpty) {
+          meta = meta.copyWith(layerNames: layerNames);
+          await prefs.setString(_metaKey(meta.id), jsonEncode(meta.toJson()));
+        }
+      }
+
+      final enriched = OfflinePackIndexEntry.fromMeta(meta);
+      packs.add(enriched);
+      if (!_indexEntrySummaryEquals(entry, enriched)) {
+        indexChanged = true;
+      }
+    }
+
+    if (!indexChanged) {
+      return index;
+    }
+    final enrichedIndex = OfflinePackIndex(
+      activePackId: index.activePackId,
+      packs: packs,
+    );
+    await saveIndex(enrichedIndex);
+    return enrichedIndex;
+  }
+
+  bool _indexEntrySummaryEquals(
+    OfflinePackIndexEntry a,
+    OfflinePackIndexEntry b,
+  ) {
+    if (a.id != b.id ||
+        a.name != b.name ||
+        a.preparedAt != b.preparedAt ||
+        a.tileCount != b.tileCount ||
+        a.markerCount != b.markerCount ||
+        a.zoneCount != b.zoneCount ||
+        a.seasonalOverlayCount != b.seasonalOverlayCount ||
+        a.layerNames.length != b.layerNames.length) {
+      return false;
+    }
+    for (var i = 0; i < a.layerNames.length; i++) {
+      if (a.layerNames[i] != b.layerNames[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Future<String?> activePackId() async {

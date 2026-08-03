@@ -92,6 +92,15 @@ class OfflinePackController {
     if (trimmed.isEmpty || trimmed == meta.name) {
       return;
     }
+    final index = await store.loadIndex();
+    final duplicate = index.packs.any(
+      (pack) =>
+          pack.id != packId &&
+          pack.name.trim().toLowerCase() == trimmed.toLowerCase(),
+    );
+    if (duplicate) {
+      throw StateError('An offline pack with that name already exists.');
+    }
     await store.saveMeta(meta.copyWith(name: trimmed), activate: false);
     _ref.invalidate(offlinePackIndexProvider);
     _ref.invalidate(offlinePackMetaProvider);

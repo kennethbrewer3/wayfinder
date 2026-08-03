@@ -690,6 +690,29 @@
   "offlinePackInactiveLabel": "Pulse Activar para cambiar sin reconstruir",
   "offlinePackActivateAction": "Activar",
   "offlinePackRenameTitle": "Renombrar paquete sin conexión",
+  "offlinePackNameDuplicate": "Ya existe un paquete con ese nombre. Elija otro nombre.",
+  "offlinePackDetailsLayers": "Capas: {layers}",
+  "@offlinePackDetailsLayers": {
+    "placeholders": {
+      "layers": { "type": "String" }
+    }
+  },
+  "offlinePackDetailsLayersEmpty": "Capas: (ninguna registrada)",
+  "offlinePackDetailsCounts": "{markerCount} marcadores · {zoneCount} zonas · {tileCount} teselas · {seasonalCount} superposiciones estacionales",
+  "@offlinePackDetailsCounts": {
+    "placeholders": {
+      "markerCount": { "type": "int" },
+      "zoneCount": { "type": "int" },
+      "tileCount": { "type": "int" },
+      "seasonalCount": { "type": "int" }
+    }
+  },
+  "offlinePackDetailsPrepared": "Preparado {when}",
+  "@offlinePackDetailsPrepared": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
   "offlinePackSwitchTooltip": "Cambiar paquete sin conexión",
   "offlinePackSwitchTitle": "Cambiar paquete sin conexión",
   "offlinePackSwitchDescription": "Elija qué paquete de AOI usar. Las teselas permanecen en caché; no hace falta reconstruir.",

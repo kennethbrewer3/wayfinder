@@ -1755,6 +1755,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlinePackRenameTitle => 'Rename offline pack';
 
   @override
+  String get offlinePackNameDuplicate =>
+      'A pack with that name already exists. Choose a different name.';
+
+  @override
+  String offlinePackDetailsLayers(String layers) {
+    return 'Layers: $layers';
+  }
+
+  @override
+  String get offlinePackDetailsLayersEmpty => 'Layers: (none recorded)';
+
+  @override
+  String offlinePackDetailsCounts(
+    int markerCount,
+    int zoneCount,
+    int tileCount,
+    int seasonalCount,
+  ) {
+    return '$markerCount markers · $zoneCount zones · $tileCount tiles · $seasonalCount seasonal overlays';
+  }
+
+  @override
+  String offlinePackDetailsPrepared(String when) {
+    return 'Prepared $when';
+  }
+
+  @override
   String get offlinePackSwitchTooltip => 'Switch offline pack';
 
   @override

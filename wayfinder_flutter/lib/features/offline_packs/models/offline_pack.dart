@@ -106,6 +106,7 @@ class OfflinePackMeta {
     required this.region,
     required this.preparedAt,
     required this.name,
+    this.layerNames = const [],
     this.basemaps = const [],
     this.includeSeasonalOverlays = false,
     this.tileCount = 0,
@@ -117,6 +118,9 @@ class OfflinePackMeta {
   /// Stable id for multi-pack storage and tile namespacing.
   final String id;
   final String name;
+
+  /// Display names of packed layers (captured at prepare time).
+  final List<String> layerNames;
   final List<UuidValue> layerIds;
   final OfflinePackRegion region;
   final DateTime preparedAt;
@@ -143,6 +147,7 @@ class OfflinePackMeta {
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
+    'layerNames': layerNames,
     'layerIds': [for (final id in layerIds) id.uuid],
     'region': region.toJson(),
     'preparedAt': preparedAt.toIso8601String(),
@@ -158,6 +163,10 @@ class OfflinePackMeta {
     return OfflinePackMeta(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? 'Offline pack',
+      layerNames: [
+        for (final raw in json['layerNames'] as List? ?? const [])
+          raw as String,
+      ],
       layerIds: [
         for (final raw in json['layerIds'] as List? ?? const [])
           UuidValue.fromString(raw as String),
@@ -183,6 +192,7 @@ class OfflinePackMeta {
   OfflinePackMeta copyWith({
     String? id,
     String? name,
+    List<String>? layerNames,
     List<UuidValue>? layerIds,
     OfflinePackRegion? region,
     DateTime? preparedAt,
@@ -196,6 +206,7 @@ class OfflinePackMeta {
     return OfflinePackMeta(
       id: id ?? this.id,
       name: name ?? this.name,
+      layerNames: layerNames ?? this.layerNames,
       layerIds: layerIds ?? this.layerIds,
       region: region ?? this.region,
       preparedAt: preparedAt ?? this.preparedAt,

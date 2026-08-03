@@ -3103,6 +3103,41 @@ abstract class AppLocalizations {
   /// **'Rename offline pack'**
   String get offlinePackRenameTitle;
 
+  /// No description provided for @offlinePackNameDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'A pack with that name already exists. Choose a different name.'**
+  String get offlinePackNameDuplicate;
+
+  /// No description provided for @offlinePackDetailsLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Layers: {layers}'**
+  String offlinePackDetailsLayers(String layers);
+
+  /// No description provided for @offlinePackDetailsLayersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Layers: (none recorded)'**
+  String get offlinePackDetailsLayersEmpty;
+
+  /// No description provided for @offlinePackDetailsCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{markerCount} markers · {zoneCount} zones · {tileCount} tiles · {seasonalCount} seasonal overlays'**
+  String offlinePackDetailsCounts(
+    int markerCount,
+    int zoneCount,
+    int tileCount,
+    int seasonalCount,
+  );
+
+  /// No description provided for @offlinePackDetailsPrepared.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared {when}'**
+  String offlinePackDetailsPrepared(String when);
+
   /// No description provided for @offlinePackSwitchTooltip.
   ///
   /// In en, this message translates to:

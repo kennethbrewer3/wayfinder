@@ -27,6 +27,78 @@ Future<bool?> showPrepareOfflinePackDialog(BuildContext context) {
   );
 }
 
+String _suggestNewPackName(AppLocalizations l10n, OfflinePackIndex index) {
+  final base = l10n.offlinePackDefaultName;
+  final used = {
+    for (final pack in index.packs) pack.name.trim().toLowerCase(),
+  };
+  if (!used.contains(base.toLowerCase())) {
+    return base;
+  }
+  var n = 2;
+  while (used.contains('$base $n'.toLowerCase())) {
+    n++;
+  }
+  return '$base $n';
+}
+
+bool _nameTaken(
+  OfflinePackIndex index,
+  String name, {
+  String? excludingPackId,
+}) {
+  final needle = name.trim().toLowerCase();
+  if (needle.isEmpty) {
+    return false;
+  }
+  for (final pack in index.packs) {
+    if (excludingPackId != null && pack.id == excludingPackId) {
+      continue;
+    }
+    if (pack.name.trim().toLowerCase() == needle) {
+      return true;
+    }
+  }
+  return false;
+}
+
+String _formatPreparedAt(DateTime when) {
+  final local = when.toLocal();
+  final y = local.year.toString().padLeft(4, '0');
+  final m = local.month.toString().padLeft(2, '0');
+  final d = local.day.toString().padLeft(2, '0');
+  final hh = local.hour.toString().padLeft(2, '0');
+  final mm = local.minute.toString().padLeft(2, '0');
+  return '$y-$m-$d $hh:$mm';
+}
+
+List<Widget> _packDetailLines(
+  BuildContext context,
+  AppLocalizations l10n,
+  OfflinePackIndexEntry pack,
+) {
+  final style = Theme.of(context).textTheme.bodySmall;
+  final layersLine = pack.layerNames.isEmpty
+      ? l10n.offlinePackDetailsLayersEmpty
+      : l10n.offlinePackDetailsLayers(pack.layerNames.join(', '));
+  return [
+    Text(layersLine, style: style),
+    Text(
+      l10n.offlinePackDetailsCounts(
+        pack.markerCount,
+        pack.zoneCount,
+        pack.tileCount,
+        pack.seasonalOverlayCount,
+      ),
+      style: style,
+    ),
+    Text(
+      l10n.offlinePackDetailsPrepared(_formatPreparedAt(pack.preparedAt)),
+      style: style,
+    ),
+  ];
+}
+
 class PrepareOfflinePackDialog extends ConsumerStatefulWidget {
   const PrepareOfflinePackDialog({super.key});
 
@@ -37,7 +109,7 @@ class PrepareOfflinePackDialog extends ConsumerStatefulWidget {
 
 class _PrepareOfflinePackDialogState
     extends ConsumerState<PrepareOfflinePackDialog> {
-  final _nameController = TextEditingController(text: 'Home');
+  final _nameController = TextEditingController();
   final _selectedLayerIds = <UuidValue>{};
   var _includeSeasonalOverlays = false;
   var _seededFromExisting = false;
@@ -77,12 +149,24 @@ class _PrepareOfflinePackDialogState
 
   Future<void> _prepare() async {
     final l10n = AppLocalizations.of(context)!;
+    final index =
+        ref.read(offlinePackIndexProvider).valueOrNull ??
+        const OfflinePackIndex();
     if (_selectedLayerIds.isEmpty) {
       setState(() => _error = l10n.offlinePackSelectLayersRequired);
       return;
     }
     if (_minZoom > _maxZoom) {
       setState(() => _error = l10n.offlinePackZoomRangeInvalid);
+      return;
+    }
+
+    final replaceId = _targetPackId.isEmpty ? null : _targetPackId;
+    final name = _nameController.text.trim().isEmpty
+        ? _suggestNewPackName(l10n, index)
+        : _nameController.text.trim();
+    if (_nameTaken(index, name, excludingPackId: replaceId)) {
+      setState(() => _error = l10n.offlinePackNameDuplicate);
       return;
     }
 
@@ -95,13 +179,10 @@ class _PrepareOfflinePackDialogState
 
     try {
       final region = _regionFromViewport();
-      final replaceId = _targetPackId.isEmpty ? null : _targetPackId;
       await ref
           .read(offlinePackControllerProvider)
           .prepare(
-            name: _nameController.text.trim().isEmpty
-                ? l10n.offlinePackDefaultName
-                : _nameController.text.trim(),
+            name: name,
             layerIds: _selectedLayerIds.toList(),
             region: region,
             packId: replaceId,
@@ -156,29 +237,49 @@ class _PrepareOfflinePackDialogState
     if (!mounted) {
       return;
     }
+    final index =
+        ref.read(offlinePackIndexProvider).valueOrNull ??
+        const OfflinePackIndex();
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       if (_targetPackId == packId) {
         _targetPackId = _newPackTargetId;
+        _nameController.text = _suggestNewPackName(l10n, index);
       }
     });
   }
 
   Future<void> _renamePack(OfflinePackIndexEntry pack) async {
     final l10n = AppLocalizations.of(context)!;
+    final index =
+        ref.read(offlinePackIndexProvider).valueOrNull ??
+        const OfflinePackIndex();
     final controller = TextEditingController(text: pack.name);
     final newName = await showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(l10n.offlinePackRenameTitle),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: l10n.offlinePackNameLabel,
-              hintText: l10n.offlinePackNameHint,
+          content: SizedBox(
+            width: 360,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ..._packDetailLines(context, l10n, pack),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controller,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    labelText: l10n.offlinePackNameLabel,
+                    hintText: l10n.offlinePackNameHint,
+                  ),
+                  onSubmitted: (value) =>
+                      Navigator.of(context).pop(value.trim()),
+                ),
+              ],
             ),
-            onSubmitted: (value) => Navigator.of(context).pop(value.trim()),
           ),
           actions: [
             TextButton(
@@ -198,9 +299,21 @@ class _PrepareOfflinePackDialogState
     if (newName == null || newName.isEmpty || !mounted) {
       return;
     }
-    await ref
-        .read(offlinePackControllerProvider)
-        .renamePack(packId: pack.id, name: newName);
+    if (_nameTaken(index, newName, excludingPackId: pack.id)) {
+      setState(() => _error = l10n.offlinePackNameDuplicate);
+      return;
+    }
+    try {
+      await ref
+          .read(offlinePackControllerProvider)
+          .renamePack(packId: pack.id, name: newName);
+    } on StateError {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _error = l10n.offlinePackNameDuplicate);
+      return;
+    }
     if (!mounted) {
       return;
     }
@@ -245,9 +358,11 @@ class _PrepareOfflinePackDialogState
             }
             _includeSeasonalOverlays =
                 existing?.includeSeasonalOverlays ?? false;
+            // Default to creating a new pack with a unique name so consecutive
+            // prepares do not silently reuse the previous pack's label.
+            _targetPackId = _newPackTargetId;
+            _nameController.text = _suggestNewPackName(l10n, index);
             if (existing != null) {
-              _nameController.text = existing.name;
-              _targetPackId = existing.id;
               _minZoom = existing.region.minZoom;
               _maxZoom = existing.region.maxZoom;
             }
@@ -273,27 +388,41 @@ class _PrepareOfflinePackDialogState
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
-                for (final pack in index.packs)
-                  ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      pack.id == index.activePackId
-                          ? Icons.check_circle
-                          : Icons.offline_pin_outlined,
-                      color: pack.id == index.activePackId
-                          ? Theme.of(context).colorScheme.primary
-                          : null,
-                    ),
-                    title: Text(pack.name),
-                    subtitle: Text(
-                      pack.id == index.activePackId
-                          ? l10n.offlinePackActiveLabel
-                          : l10n.offlinePackInactiveLabel,
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                for (final pack in index.packs) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2, right: 8),
+                          child: Icon(
+                            pack.id == index.activePackId
+                                ? Icons.check_circle
+                                : Icons.offline_pin_outlined,
+                            color: pack.id == index.activePackId
+                                ? Theme.of(context).colorScheme.primary
+                                : null,
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                pack.name,
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              Text(
+                                pack.id == index.activePackId
+                                    ? l10n.offlinePackActiveLabel
+                                    : l10n.offlinePackInactiveLabel,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              ..._packDetailLines(context, l10n, pack),
+                            ],
+                          ),
+                        ),
                         if (pack.id != index.activePackId)
                           TextButton(
                             onPressed: _preparing
@@ -318,6 +447,7 @@ class _PrepareOfflinePackDialogState
                       ],
                     ),
                   ),
+                ],
                 const SizedBox(height: 8),
               ],
               DropdownButtonFormField<String>(
@@ -350,7 +480,12 @@ class _PrepareOfflinePackDialogState
                         }
                         setState(() {
                           _targetPackId = value;
-                          if (value.isNotEmpty) {
+                          if (value.isEmpty) {
+                            _nameController.text = _suggestNewPackName(
+                              l10n,
+                              index,
+                            );
+                          } else {
                             for (final pack in index.packs) {
                               if (pack.id == value) {
                                 _nameController.text = pack.name;

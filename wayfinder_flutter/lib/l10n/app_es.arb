@@ -689,6 +689,7 @@
   "offlinePackActiveLabel": "Activo",
   "offlinePackInactiveLabel": "Pulse Activar para cambiar sin reconstruir",
   "offlinePackActivateAction": "Activar",
+  "offlinePackRenameTitle": "Renombrar paquete sin conexión",
   "offlinePackSwitchTooltip": "Cambiar paquete sin conexión",
   "offlinePackSwitchTitle": "Cambiar paquete sin conexión",
   "offlinePackSwitchDescription": "Elija qué paquete de AOI usar. Las teselas permanecen en caché; no hace falta reconstruir.",

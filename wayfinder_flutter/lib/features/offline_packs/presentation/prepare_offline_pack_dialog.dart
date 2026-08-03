@@ -163,6 +163,53 @@ class _PrepareOfflinePackDialogState
     });
   }
 
+  Future<void> _renamePack(OfflinePackIndexEntry pack) async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController(text: pack.name);
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.offlinePackRenameTitle),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: l10n.offlinePackNameLabel,
+              hintText: l10n.offlinePackNameHint,
+            ),
+            onSubmitted: (value) => Navigator.of(context).pop(value.trim()),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.actionCancel),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(controller.text.trim()),
+              child: Text(l10n.actionRename),
+            ),
+          ],
+        );
+      },
+    );
+    controller.dispose();
+    if (newName == null || newName.isEmpty || !mounted) {
+      return;
+    }
+    await ref
+        .read(offlinePackControllerProvider)
+        .renamePack(packId: pack.id, name: newName);
+    if (!mounted) {
+      return;
+    }
+    if (_targetPackId == pack.id ||
+        ref.read(offlinePackMetaProvider).valueOrNull?.id == pack.id) {
+      setState(() => _nameController.text = newName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -254,6 +301,13 @@ class _PrepareOfflinePackDialogState
                                 : () => _activate(pack.id),
                             child: Text(l10n.offlinePackActivateAction),
                           ),
+                        IconButton(
+                          tooltip: l10n.actionRename,
+                          onPressed: _preparing
+                              ? null
+                              : () => _renamePack(pack),
+                          icon: const Icon(Icons.drive_file_rename_outline),
+                        ),
                         IconButton(
                           tooltip: l10n.offlinePackClear,
                           onPressed: _preparing

@@ -1771,6 +1771,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get offlinePackActivateAction => 'Activar';
 
   @override
+  String get offlinePackRenameTitle => 'Renombrar paquete sin conexión';
+
+  @override
   String get offlinePackSwitchTooltip => 'Cambiar paquete sin conexión';
 
   @override

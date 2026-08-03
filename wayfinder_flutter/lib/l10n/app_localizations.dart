@@ -3097,6 +3097,12 @@ abstract class AppLocalizations {
   /// **'Activate'**
   String get offlinePackActivateAction;
 
+  /// No description provided for @offlinePackRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename offline pack'**
+  String get offlinePackRenameTitle;
+
   /// No description provided for @offlinePackSwitchTooltip.
   ///
   /// In en, this message translates to:

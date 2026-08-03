@@ -1034,6 +1034,7 @@
   "offlinePackActiveLabel": "Active",
   "offlinePackInactiveLabel": "Tap Activate to switch without rebuilding",
   "offlinePackActivateAction": "Activate",
+  "offlinePackRenameTitle": "Rename offline pack",
   "offlinePackSwitchTooltip": "Switch offline pack",
   "offlinePackSwitchTitle": "Switch offline pack",
   "offlinePackSwitchDescription": "Choose which AOI pack to use. Tiles stay cached — no rebuild needed.",

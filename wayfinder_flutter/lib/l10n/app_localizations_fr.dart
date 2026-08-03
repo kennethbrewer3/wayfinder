@@ -1774,6 +1774,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get offlinePackActivateAction => 'Activer';
 
   @override
+  String get offlinePackRenameTitle => 'Renommer le pack hors ligne';
+
+  @override
   String get offlinePackSwitchTooltip => 'Changer de pack hors ligne';
 
   @override

@@ -10,6 +10,7 @@ import '../../circles/models/circle_geometry.dart';
 import '../../comms_plan/models/comms_challenge_table.dart';
 import '../../comms_plan/models/comms_one_time_pad.dart';
 import '../../comms_plan/utils/comms_challenge_table_pdf.dart';
+import '../../comms_plan/utils/comms_one_time_pad_font.dart';
 import '../../comms_plan/utils/comms_one_time_pad_pdf.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/utils/line_distance.dart';
@@ -331,6 +332,7 @@ Future<Uint8List> buildAtlasPdf({
   if (options.includeCommsOneTimePad &&
       oneTimePad != null &&
       oneTimePad.pads.isNotEmpty) {
+    final otpMonoFont = await loadCommsOneTimePadPdfFont();
     for (final pad in oneTimePad.pads) {
       doc.addPage(
         pw.MultiPage(
@@ -342,6 +344,7 @@ Future<Uint8List> buildAtlasPdf({
             title: oneTimePad.title,
             instructions: oneTimePad.instructions,
             generatedLabel: oneTimePad.generatedLabel,
+            monoFont: otpMonoFont,
           ),
         ),
       );

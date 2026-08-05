@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/comms_one_time_pad.dart';
+import '../utils/comms_one_time_pad_font.dart';
 
 Future<void> showCommsOneTimePadPreview({
   required BuildContext context,
@@ -70,23 +71,49 @@ class CommsOneTimePadView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mono = theme.textTheme.titleSmall?.copyWith(
-      fontFamily: 'monospace',
+    final mono = TextStyle(
+      fontFamily: commsOneTimePadFontFamily,
+      fontSize: theme.textTheme.titleSmall?.fontSize ?? 14,
       fontWeight: FontWeight.w700,
+      height: 1.5,
+      letterSpacing: 0,
       fontFeatures: const [FontFeature.tabularFigures()],
-      height: 1.45,
-      letterSpacing: 0.5,
+      color: theme.colorScheme.onSurface,
     );
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        columnWidths: {
+          0: const FixedColumnWidth(28),
+          for (var c = 0; c < CommsOneTimePad.columnCount; c++)
+            c + 1: const FixedColumnWidth(64),
+        },
         children: [
           for (var r = 0; r < pad.groups.length; r++)
-            Text(
-              '${(r + 1).toString().padLeft(2)}  '
-              '${pad.groups[r].join('  ')}',
-              style: mono,
+            TableRow(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1),
+                  child: Text(
+                    (r + 1).toString().padLeft(2, '0'),
+                    style: mono,
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+                for (final group in pad.groups[r])
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1,
+                    ),
+                    child: Text(
+                      group,
+                      style: mono,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+              ],
             ),
         ],
       ),

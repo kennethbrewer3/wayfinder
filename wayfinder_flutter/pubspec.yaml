@@ -131,6 +131,8 @@ flutter:
     - assets/protomaps/fonts/NotoSans-Regular.ttf
     - assets/protomaps/fonts/NotoSans-Italic.ttf
     - assets/protomaps/fonts/NotoSans-Medium.ttf
+    - assets/fonts/NotoSansMono-Regular.ttf
+    - assets/fonts/NotoSansMono-Bold.ttf
   fonts:
     - family: Noto Sans Regular
       fonts:
@@ -142,6 +144,11 @@ flutter:
       fonts:
         - asset: assets/protomaps/fonts/NotoSans-Medium.ttf
           weight: 500
+    - family: Noto Sans Mono
+      fonts:
+        - asset: assets/fonts/NotoSansMono-Regular.ttf
+        - asset: assets/fonts/NotoSansMono-Bold.ttf
+          weight: 700
 dependency_overrides:
   flutter_secure_storage: ^10.0.0
   pmtiles: ^2.0.0

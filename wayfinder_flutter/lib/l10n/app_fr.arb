@@ -1555,6 +1555,8 @@
   "sidebarViewList": "Liste",
   "sidebarViewTree": "Arbre",
   "sidebarFilterFoodExpiring90Days": "Nourriture expirant sous 90 jours",
+  "sidebarFiltersTitle": "Filtres",
+  "sidebarFiltersActiveTooltip": "Des filtres sont appliqués",
   "sidebarFilterResourcesLabel": "Ressources",
   "markerResourceTypeLabel": "Type de ressource",
   "markerResourceTypeHelp": "Classez sources, puits, caches, carburant et cliniques pour les filtres de la carte des ressources.",

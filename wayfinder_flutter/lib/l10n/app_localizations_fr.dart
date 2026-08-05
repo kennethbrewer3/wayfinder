@@ -3542,6 +3542,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Nourriture expirant sous 90 jours';
 
   @override
+  String get sidebarFiltersTitle => 'Filtres';
+
+  @override
+  String get sidebarFiltersActiveTooltip => 'Des filtres sont appliqués';
+
+  @override
   String get sidebarFilterResourcesLabel => 'Ressources';
 
   @override

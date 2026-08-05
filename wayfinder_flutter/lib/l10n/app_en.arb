@@ -2092,6 +2092,8 @@
   "sidebarViewList": "List",
   "sidebarViewTree": "Tree",
   "sidebarFilterFoodExpiring90Days": "Food expiring in 90 days",
+  "sidebarFiltersTitle": "Filters",
+  "sidebarFiltersActiveTooltip": "Filters are applied",
   "sidebarFilterResourcesLabel": "Resources",
   "markerResourceTypeLabel": "Resource type",
   "markerResourceTypeHelp": "Classify springs, wells, caches, fuel, and clinics for resource map filters.",

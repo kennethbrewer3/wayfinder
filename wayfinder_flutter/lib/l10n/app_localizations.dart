@@ -6038,6 +6038,18 @@ abstract class AppLocalizations {
   /// **'Food expiring in 90 days'**
   String get sidebarFilterFoodExpiring90Days;
 
+  /// No description provided for @sidebarFiltersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get sidebarFiltersTitle;
+
+  /// No description provided for @sidebarFiltersActiveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters are applied'**
+  String get sidebarFiltersActiveTooltip;
+
   /// No description provided for @sidebarFilterResourcesLabel.
   ///
   /// In en, this message translates to:

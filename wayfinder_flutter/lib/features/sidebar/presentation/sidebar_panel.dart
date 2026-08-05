@@ -264,63 +264,10 @@ class _LayerOrganizedPanel extends ConsumerWidget {
           ),
         ),
         SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                FilterChip(
-                  avatar: Icon(
-                    Icons.kitchen_outlined,
-                    size: 18,
-                    color: filterFoodExpiring
-                        ? Theme.of(context).colorScheme.onSecondaryContainer
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  label: Text(l10n.sidebarFilterFoodExpiring90Days),
-                  selected: filterFoodExpiring,
-                  onSelected: (selected) {
-                    ref
-                        .read(sidebarProvider.notifier)
-                        .setFilterFoodExpiring90Days(selected);
-                  },
-                ),
-                FilterChip(
-                  avatar: Icon(
-                    Icons.cell_tower_outlined,
-                    size: 18,
-                    color: filterRadioContacts
-                        ? Theme.of(context).colorScheme.onSecondaryContainer
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  label: Text(l10n.sidebarFilterRadioContacts),
-                  selected: filterRadioContacts,
-                  onSelected: (selected) {
-                    ref
-                        .read(sidebarProvider.notifier)
-                        .setFilterRadioContacts(selected);
-                  },
-                ),
-                for (final type in MarkerResourceType.values)
-                  FilterChip(
-                    avatar: Icon(
-                      markerResourceTypeIcon(type),
-                      size: 18,
-                      color: filterResourceTypes.contains(type)
-                          ? Theme.of(context).colorScheme.onSecondaryContainer
-                          : Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    label: Text(markerResourceTypeFilterLabel(l10n, type)),
-                    selected: filterResourceTypes.contains(type),
-                    onSelected: (_) {
-                      ref
-                          .read(sidebarProvider.notifier)
-                          .toggleFilterResourceType(type);
-                    },
-                  ),
-              ],
-            ),
+          child: _SidebarFiltersExpansion(
+            filterFoodExpiring: filterFoodExpiring,
+            filterRadioContacts: filterRadioContacts,
+            filterResourceTypes: filterResourceTypes,
           ),
         ),
         const SliverToBoxAdapter(child: _PathProfileSelectionBar()),
@@ -2559,6 +2506,122 @@ class _MapObjectIconAction extends StatelessWidget {
               foregroundColor: theme.colorScheme.onSurfaceVariant,
             ),
       icon: Icon(icon, size: 20),
+    );
+  }
+}
+
+class _SidebarFiltersExpansion extends ConsumerStatefulWidget {
+  const _SidebarFiltersExpansion({
+    required this.filterFoodExpiring,
+    required this.filterRadioContacts,
+    required this.filterResourceTypes,
+  });
+
+  final bool filterFoodExpiring;
+  final bool filterRadioContacts;
+  final Set<MarkerResourceType> filterResourceTypes;
+
+  @override
+  ConsumerState<_SidebarFiltersExpansion> createState() =>
+      _SidebarFiltersExpansionState();
+}
+
+class _SidebarFiltersExpansionState
+    extends ConsumerState<_SidebarFiltersExpansion> {
+  var _expanded = false;
+
+  bool get _hasActiveFilters =>
+      widget.filterFoodExpiring ||
+      widget.filterRadioContacts ||
+      widget.filterResourceTypes.isNotEmpty;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final showActiveIcon = _hasActiveFilters && !_expanded;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: ExpansionTile(
+          initiallyExpanded: false,
+          onExpansionChanged: (expanded) {
+            setState(() => _expanded = expanded);
+          },
+          leading: showActiveIcon
+              ? Tooltip(
+                  message: l10n.sidebarFiltersActiveTooltip,
+                  child: Icon(
+                    Icons.filter_alt,
+                    color: theme.colorScheme.primary,
+                  ),
+                )
+              : const Icon(Icons.filter_list_outlined),
+          title: Text(l10n.sidebarFiltersTitle),
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  FilterChip(
+                    avatar: Icon(
+                      Icons.kitchen_outlined,
+                      size: 18,
+                      color: widget.filterFoodExpiring
+                          ? theme.colorScheme.onSecondaryContainer
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                    label: Text(l10n.sidebarFilterFoodExpiring90Days),
+                    selected: widget.filterFoodExpiring,
+                    onSelected: (selected) {
+                      ref
+                          .read(sidebarProvider.notifier)
+                          .setFilterFoodExpiring90Days(selected);
+                    },
+                  ),
+                  FilterChip(
+                    avatar: Icon(
+                      Icons.cell_tower_outlined,
+                      size: 18,
+                      color: widget.filterRadioContacts
+                          ? theme.colorScheme.onSecondaryContainer
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                    label: Text(l10n.sidebarFilterRadioContacts),
+                    selected: widget.filterRadioContacts,
+                    onSelected: (selected) {
+                      ref
+                          .read(sidebarProvider.notifier)
+                          .setFilterRadioContacts(selected);
+                    },
+                  ),
+                  for (final type in MarkerResourceType.values)
+                    FilterChip(
+                      avatar: Icon(
+                        markerResourceTypeIcon(type),
+                        size: 18,
+                        color: widget.filterResourceTypes.contains(type)
+                            ? theme.colorScheme.onSecondaryContainer
+                            : theme.colorScheme.onSurfaceVariant,
+                      ),
+                      label: Text(markerResourceTypeFilterLabel(l10n, type)),
+                      selected: widget.filterResourceTypes.contains(type),
+                      onSelected: (_) {
+                        ref
+                            .read(sidebarProvider.notifier)
+                            .toggleFilterResourceType(type);
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

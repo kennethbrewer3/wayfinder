@@ -1555,6 +1555,8 @@
   "sidebarViewList": "Lista",
   "sidebarViewTree": "Árbol",
   "sidebarFilterFoodExpiring90Days": "Comida que caduca en 90 días",
+  "sidebarFiltersTitle": "Filtros",
+  "sidebarFiltersActiveTooltip": "Hay filtros aplicados",
   "sidebarFilterResourcesLabel": "Recursos",
   "markerResourceTypeLabel": "Tipo de recurso",
   "markerResourceTypeHelp": "Clasifique manantiales, pozos, alijos, combustible y clínicas para los filtros del mapa de recursos.",

@@ -1309,7 +1309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables and one-time pads), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables, one-time pads, and cards of the day), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -1450,7 +1450,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, and one-time pads), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
+      'One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, one-time pads, and cards of the day), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
 
   @override
   String get fieldPackExportButton => 'Export field pack';
@@ -1650,6 +1650,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapAtlasCommsOneTimePadUnavailable =>
       'No one-time pads on the active comms plan. Generate some in Comms plan first.';
+
+  @override
+  String get mapAtlasIncludeCommsCardOfTheDay => 'Include cards of the day';
+
+  @override
+  String get mapAtlasIncludeCommsCardOfTheDayHint =>
+      'All cards from the active comms plan';
+
+  @override
+  String get mapAtlasCommsCardOfTheDayUnavailable =>
+      'No cards of the day on the active comms plan. Add some in Comms plan first.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Fit active route';
@@ -6881,4 +6892,121 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get commsOneTimePadBurnConfirmMessage =>
       'This permanently deletes the pad. Any unused key material on this sheet will be lost.';
+
+  @override
+  String get commsSheetPrintPdf => 'Print PDF';
+
+  @override
+  String get commsSheetPrintPdfSaved => 'PDF saved.';
+
+  @override
+  String get commsCardOfTheDayTitle => 'Cards of the day';
+
+  @override
+  String get commsCardOfTheDayCreateTitle => 'New card of the day';
+
+  @override
+  String get commsCardOfTheDayEditTitle => 'Edit card of the day';
+
+  @override
+  String get commsCardOfTheDayEditorHint =>
+      'Daily code-word card with a calendar date, category lists, and a 0–9 letter key. Burn after the day. Included in map backups and field packs with this plan.';
+
+  @override
+  String get commsCardOfTheDayAdd => 'Add card';
+
+  @override
+  String get commsCardOfTheDayEdit => 'Edit';
+
+  @override
+  String get commsCardOfTheDayBurn => 'Burn';
+
+  @override
+  String get commsCardOfTheDayView => 'View';
+
+  @override
+  String get commsCardOfTheDayMissing => 'No cards of the day yet.';
+
+  @override
+  String commsCardOfTheDayCount(int count) {
+    return '$count card(s) ready';
+  }
+
+  @override
+  String get commsCardOfTheDayInstructions =>
+      'Use the digit key to spell numbers as letters. Category tables map real places, people, objects, directions, and conditions to code words for the selected date only.';
+
+  @override
+  String get commsCardOfTheDayDateLabel => 'Card date';
+
+  @override
+  String get commsCardOfTheDayDatePrefix => 'Date';
+
+  @override
+  String commsCardOfTheDayDateValue(String when) {
+    return 'Date $when';
+  }
+
+  @override
+  String get commsCardOfTheDayLabelLabel => 'Label';
+
+  @override
+  String get commsCardOfTheDayLabelRequired => 'Enter a label for this card.';
+
+  @override
+  String get commsCardOfTheDayDigitKeyTitle => 'Digit key (0–9)';
+
+  @override
+  String get commsCardOfTheDayDigitKeyHint =>
+      'Enter one 10-letter word, or shorter words totaling exactly 10 letters, with no repeated letters. Spaces are ignored.';
+
+  @override
+  String get commsCardOfTheDayDigitKeyLabel => 'Ten unique letters';
+
+  @override
+  String get commsCardOfTheDayDigitKeyGenerate => 'Generate';
+
+  @override
+  String get commsCardOfTheDayDigitKeyInvalid =>
+      'Need exactly 10 unique A–Z letters (spaces allowed).';
+
+  @override
+  String get commsCardOfTheDayDigitKeyMissing => 'No digit key set yet.';
+
+  @override
+  String get commsCardOfTheDayItemLabel => 'Item';
+
+  @override
+  String get commsCardOfTheDayCodeWordLabel => 'Code word';
+
+  @override
+  String get commsCardOfTheDayAddEntry => 'Add';
+
+  @override
+  String get commsCardOfTheDayPlaces => 'Places';
+
+  @override
+  String get commsCardOfTheDayPeople => 'People';
+
+  @override
+  String get commsCardOfTheDayObjects => 'Objects';
+
+  @override
+  String get commsCardOfTheDayDirections => 'Directions';
+
+  @override
+  String get commsCardOfTheDayConditions => 'Conditions';
+
+  @override
+  String get commsCardOfTheDayOther => 'Other';
+
+  @override
+  String get commsCardOfTheDayCategoryEmpty => 'No entries.';
+
+  @override
+  String get commsCardOfTheDayBurnConfirmTitle => 'Burn card of the day?';
+
+  @override
+  String get commsCardOfTheDayBurnConfirmMessage =>
+      'This permanently deletes the card. Stations that still need its code words will no longer have them.';
 }

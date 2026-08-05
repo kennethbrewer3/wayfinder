@@ -2359,7 +2359,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables and one-time pads), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables, one-time pads, and cards of the day), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -2578,7 +2578,7 @@ abstract class AppLocalizations {
   /// No description provided for @fieldPackDescription.
   ///
   /// In en, this message translates to:
-  /// **'One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, and one-time pads), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
+  /// **'One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, one-time pads, and cards of the day), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
   String get fieldPackDescription;
 
   /// No description provided for @fieldPackExportButton.
@@ -2913,6 +2913,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No one-time pads on the active comms plan. Generate some in Comms plan first.'**
   String get mapAtlasCommsOneTimePadUnavailable;
+
+  /// No description provided for @mapAtlasIncludeCommsCardOfTheDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Include cards of the day'**
+  String get mapAtlasIncludeCommsCardOfTheDay;
+
+  /// No description provided for @mapAtlasIncludeCommsCardOfTheDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'All cards from the active comms plan'**
+  String get mapAtlasIncludeCommsCardOfTheDayHint;
+
+  /// No description provided for @mapAtlasCommsCardOfTheDayUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No cards of the day on the active comms plan. Add some in Comms plan first.'**
+  String get mapAtlasCommsCardOfTheDayUnavailable;
 
   /// No description provided for @mapAtlasCoverageActiveRoute.
   ///
@@ -11970,6 +11988,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This permanently deletes the pad. Any unused key material on this sheet will be lost.'**
   String get commsOneTimePadBurnConfirmMessage;
+
+  /// No description provided for @commsSheetPrintPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Print PDF'**
+  String get commsSheetPrintPdf;
+
+  /// No description provided for @commsSheetPrintPdfSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF saved.'**
+  String get commsSheetPrintPdfSaved;
+
+  /// No description provided for @commsCardOfTheDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards of the day'**
+  String get commsCardOfTheDayTitle;
+
+  /// No description provided for @commsCardOfTheDayCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New card of the day'**
+  String get commsCardOfTheDayCreateTitle;
+
+  /// No description provided for @commsCardOfTheDayEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit card of the day'**
+  String get commsCardOfTheDayEditTitle;
+
+  /// No description provided for @commsCardOfTheDayEditorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily code-word card with a calendar date, category lists, and a 0–9 letter key. Burn after the day. Included in map backups and field packs with this plan.'**
+  String get commsCardOfTheDayEditorHint;
+
+  /// No description provided for @commsCardOfTheDayAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add card'**
+  String get commsCardOfTheDayAdd;
+
+  /// No description provided for @commsCardOfTheDayEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commsCardOfTheDayEdit;
+
+  /// No description provided for @commsCardOfTheDayBurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn'**
+  String get commsCardOfTheDayBurn;
+
+  /// No description provided for @commsCardOfTheDayView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get commsCardOfTheDayView;
+
+  /// No description provided for @commsCardOfTheDayMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No cards of the day yet.'**
+  String get commsCardOfTheDayMissing;
+
+  /// No description provided for @commsCardOfTheDayCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} card(s) ready'**
+  String commsCardOfTheDayCount(int count);
+
+  /// No description provided for @commsCardOfTheDayInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the digit key to spell numbers as letters. Category tables map real places, people, objects, directions, and conditions to code words for the selected date only.'**
+  String get commsCardOfTheDayInstructions;
+
+  /// No description provided for @commsCardOfTheDayDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Card date'**
+  String get commsCardOfTheDayDateLabel;
+
+  /// No description provided for @commsCardOfTheDayDatePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get commsCardOfTheDayDatePrefix;
+
+  /// No description provided for @commsCardOfTheDayDateValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Date {when}'**
+  String commsCardOfTheDayDateValue(String when);
+
+  /// No description provided for @commsCardOfTheDayLabelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get commsCardOfTheDayLabelLabel;
+
+  /// No description provided for @commsCardOfTheDayLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a label for this card.'**
+  String get commsCardOfTheDayLabelRequired;
+
+  /// No description provided for @commsCardOfTheDayDigitKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digit key (0–9)'**
+  String get commsCardOfTheDayDigitKeyTitle;
+
+  /// No description provided for @commsCardOfTheDayDigitKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter one 10-letter word, or shorter words totaling exactly 10 letters, with no repeated letters. Spaces are ignored.'**
+  String get commsCardOfTheDayDigitKeyHint;
+
+  /// No description provided for @commsCardOfTheDayDigitKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ten unique letters'**
+  String get commsCardOfTheDayDigitKeyLabel;
+
+  /// No description provided for @commsCardOfTheDayDigitKeyGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate'**
+  String get commsCardOfTheDayDigitKeyGenerate;
+
+  /// No description provided for @commsCardOfTheDayDigitKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Need exactly 10 unique A–Z letters (spaces allowed).'**
+  String get commsCardOfTheDayDigitKeyInvalid;
+
+  /// No description provided for @commsCardOfTheDayDigitKeyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No digit key set yet.'**
+  String get commsCardOfTheDayDigitKeyMissing;
+
+  /// No description provided for @commsCardOfTheDayItemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Item'**
+  String get commsCardOfTheDayItemLabel;
+
+  /// No description provided for @commsCardOfTheDayCodeWordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code word'**
+  String get commsCardOfTheDayCodeWordLabel;
+
+  /// No description provided for @commsCardOfTheDayAddEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get commsCardOfTheDayAddEntry;
+
+  /// No description provided for @commsCardOfTheDayPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get commsCardOfTheDayPlaces;
+
+  /// No description provided for @commsCardOfTheDayPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get commsCardOfTheDayPeople;
+
+  /// No description provided for @commsCardOfTheDayObjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Objects'**
+  String get commsCardOfTheDayObjects;
+
+  /// No description provided for @commsCardOfTheDayDirections.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get commsCardOfTheDayDirections;
+
+  /// No description provided for @commsCardOfTheDayConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions'**
+  String get commsCardOfTheDayConditions;
+
+  /// No description provided for @commsCardOfTheDayOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get commsCardOfTheDayOther;
+
+  /// No description provided for @commsCardOfTheDayCategoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries.'**
+  String get commsCardOfTheDayCategoryEmpty;
+
+  /// No description provided for @commsCardOfTheDayBurnConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn card of the day?'**
+  String get commsCardOfTheDayBurnConfirmTitle;
+
+  /// No description provided for @commsCardOfTheDayBurnConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes the card. Stations that still need its code words will no longer have them.'**
+  String get commsCardOfTheDayBurnConfirmMessage;
 }
 
 class _AppLocalizationsDelegate

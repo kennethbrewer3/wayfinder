@@ -7,8 +7,10 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../circles/models/circle_geometry.dart';
+import '../../comms_plan/models/comms_card_of_the_day.dart';
 import '../../comms_plan/models/comms_challenge_table.dart';
 import '../../comms_plan/models/comms_one_time_pad.dart';
+import '../../comms_plan/utils/comms_card_of_the_day_pdf.dart';
 import '../../comms_plan/utils/comms_challenge_table_pdf.dart';
 import '../../comms_plan/utils/comms_one_time_pad_font.dart';
 import '../../comms_plan/utils/comms_one_time_pad_pdf.dart';
@@ -78,6 +80,7 @@ class AtlasExportOptions {
     this.includeDirectionsList = false,
     this.includeCommsChallengeTable = false,
     this.includeCommsOneTimePad = false,
+    this.includeCommsCardOfTheDay = false,
   });
 
   final String title;
@@ -90,6 +93,7 @@ class AtlasExportOptions {
   final bool includeDirectionsList;
   final bool includeCommsChallengeTable;
   final bool includeCommsOneTimePad;
+  final bool includeCommsCardOfTheDay;
 }
 
 /// Labels + table payload for an optional atlas authentication appendix.
@@ -126,6 +130,45 @@ class AtlasCommsOneTimePadExport {
   final String generatedLabel;
 }
 
+/// Labels + card payload for an optional atlas card-of-the-day appendix.
+class AtlasCommsCardOfTheDayExport {
+  const AtlasCommsCardOfTheDayExport({
+    required this.planName,
+    required this.cards,
+    required this.title,
+    required this.instructions,
+    required this.dateLabel,
+    required this.digitKeyTitle,
+    required this.itemColumn,
+    required this.codeWordColumn,
+    required this.placesTitle,
+    required this.peopleTitle,
+    required this.objectsTitle,
+    required this.directionsTitle,
+    required this.conditionsTitle,
+    required this.otherTitle,
+    required this.emptyCategory,
+    required this.digitKeyMissing,
+  });
+
+  final String planName;
+  final List<CommsCardOfTheDay> cards;
+  final String title;
+  final String instructions;
+  final String dateLabel;
+  final String digitKeyTitle;
+  final String itemColumn;
+  final String codeWordColumn;
+  final String placesTitle;
+  final String peopleTitle;
+  final String objectsTitle;
+  final String directionsTitle;
+  final String conditionsTitle;
+  final String otherTitle;
+  final String emptyCategory;
+  final String digitKeyMissing;
+}
+
 PdfPageFormat _pdfFormat(AtlasPageSize size) {
   return switch (size) {
     AtlasPageSize.letterLandscape => PdfPageFormat.letter.landscape,
@@ -143,6 +186,7 @@ Future<Uint8List> buildAtlasPdf({
   AtlasRouteExport? route,
   AtlasCommsChallengeExport? challengeTable,
   AtlasCommsOneTimePadExport? oneTimePad,
+  AtlasCommsCardOfTheDayExport? cardOfTheDay,
 }) async {
   final sheets = tileAtlasBounds(
     coverage: coverage,
@@ -204,6 +248,10 @@ Future<Uint8List> buildAtlasPdf({
             options.includeCommsOneTimePad &&
             oneTimePad != null &&
             oneTimePad.pads.isNotEmpty,
+        hasCardOfTheDay:
+            options.includeCommsCardOfTheDay &&
+            cardOfTheDay != null &&
+            cardOfTheDay.cards.isNotEmpty,
       ),
     ),
   );
@@ -351,6 +399,39 @@ Future<Uint8List> buildAtlasPdf({
     }
   }
 
+  if (options.includeCommsCardOfTheDay &&
+      cardOfTheDay != null &&
+      cardOfTheDay.cards.isNotEmpty) {
+    final monoFont = await loadCommsOneTimePadPdfFont();
+    for (final card in cardOfTheDay.cards) {
+      doc.addPage(
+        pw.MultiPage(
+          pageFormat: format,
+          margin: const pw.EdgeInsets.all(28),
+          build: (context) => buildCommsCardOfTheDayPdfWidgets(
+            planName: cardOfTheDay.planName,
+            card: card,
+            title: cardOfTheDay.title,
+            instructions: cardOfTheDay.instructions,
+            dateLabel: cardOfTheDay.dateLabel,
+            digitKeyTitle: cardOfTheDay.digitKeyTitle,
+            itemColumn: cardOfTheDay.itemColumn,
+            codeWordColumn: cardOfTheDay.codeWordColumn,
+            placesTitle: cardOfTheDay.placesTitle,
+            peopleTitle: cardOfTheDay.peopleTitle,
+            objectsTitle: cardOfTheDay.objectsTitle,
+            directionsTitle: cardOfTheDay.directionsTitle,
+            conditionsTitle: cardOfTheDay.conditionsTitle,
+            otherTitle: cardOfTheDay.otherTitle,
+            emptyCategory: cardOfTheDay.emptyCategory,
+            digitKeyMissing: cardOfTheDay.digitKeyMissing,
+            monoFont: monoFont,
+          ),
+        ),
+      );
+    }
+  }
+
   return doc.save();
 }
 
@@ -367,6 +448,7 @@ class _IndexPage extends pw.StatelessWidget {
     this.hasDirections = false,
     this.hasChallengeTable = false,
     this.hasOneTimePad = false,
+    this.hasCardOfTheDay = false,
   });
 
   final String title;
@@ -380,6 +462,7 @@ class _IndexPage extends pw.StatelessWidget {
   final bool hasDirections;
   final bool hasChallengeTable;
   final bool hasOneTimePad;
+  final bool hasCardOfTheDay;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -409,7 +492,8 @@ class _IndexPage extends pw.StatelessWidget {
           '${hasRoute ? ' · active route' : ''}'
           '${hasDirections ? ' · turn-by-turn list' : ''}'
           '${hasChallengeTable ? ' · radio auth sheets' : ''}'
-          '${hasOneTimePad ? ' · one-time pads' : ''}',
+          '${hasOneTimePad ? ' · one-time pads' : ''}'
+          '${hasCardOfTheDay ? ' · cards of the day' : ''}',
           style: const pw.TextStyle(fontSize: 10),
         ),
         pw.SizedBox(height: 12),
@@ -451,6 +535,8 @@ class _IndexPage extends pw.StatelessWidget {
                   'from the active comms plan.',
             if (hasOneTimePad)
               'One-time pad pages are included from the active comms plan.',
+            if (hasCardOfTheDay)
+              'Card of the day pages are included from the active comms plan.',
             'Edge sheets overlap slightly. Center MGRS labels are approximate.',
           ].join(' '),
           style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),

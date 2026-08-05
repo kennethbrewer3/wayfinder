@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/comms_challenge_table.dart';
+import '../utils/comms_challenge_table_pdf.dart';
+import '../utils/comms_sheet_pdf_export.dart';
 
 Future<void> showCommsChallengeTablePreview({
   required BuildContext context,
@@ -11,55 +13,122 @@ Future<void> showCommsChallengeTablePreview({
 }) {
   return showDialog<void>(
     context: context,
-    builder: (context) {
-      final l10n = AppLocalizations.of(context)!;
-      return AlertDialog(
-        title: Text(l10n.commsChallengeTableTitle),
-        content: SizedBox(
-          width: 520,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  planName,
-                  style: Theme.of(context).textTheme.titleSmall,
+    builder: (context) => _CommsChallengeTablePreviewDialog(
+      planName: planName,
+      table: table,
+    ),
+  );
+}
+
+class _CommsChallengeTablePreviewDialog extends StatefulWidget {
+  const _CommsChallengeTablePreviewDialog({
+    required this.planName,
+    required this.table,
+  });
+
+  final String planName;
+  final CommsChallengeTable table;
+
+  @override
+  State<_CommsChallengeTablePreviewDialog> createState() =>
+      _CommsChallengeTablePreviewDialogState();
+}
+
+class _CommsChallengeTablePreviewDialogState
+    extends State<_CommsChallengeTablePreviewDialog> {
+  var _printing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final table = widget.table;
+    return AlertDialog(
+      title: Text(l10n.commsChallengeTableTitle),
+      content: SizedBox(
+        width: 520,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.planName,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                table.label,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
-                Text(
-                  table.label,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
+              ),
+              Text(
+                l10n.commsChallengeTableGeneratedAt(
+                  DateFormat.yMMMd().add_Hm().format(
+                    table.generatedAt.toLocal(),
                   ),
                 ),
-                Text(
-                  l10n.commsChallengeTableGeneratedAt(
-                    DateFormat.yMMMd().add_Hm().format(
-                      table.generatedAt.toLocal(),
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.commsChallengeTableInstructions,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 12),
-                CommsChallengeTableView(table: table),
-              ],
-            ),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.commsChallengeTableInstructions,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              CommsChallengeTableView(table: table),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.actionClose),
-          ),
-        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: _printing ? null : () => Navigator.of(context).pop(),
+          child: Text(l10n.actionClose),
+        ),
+        FilledButton.icon(
+          onPressed: _printing ? null : _printPdf,
+          icon: _printing
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.print),
+          label: Text(l10n.commsSheetPrintPdf),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _printPdf() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _printing = true);
+    try {
+      final stamp = DateFormat('yyyyMMdd-HHmmss').format(
+        widget.table.generatedAt.toLocal(),
       );
-    },
-  );
+      final saved = await saveCommsSheetPdf(
+        fileName: 'wayfinder-auth-sheet-$stamp.pdf',
+        build: (context) => buildCommsChallengeTablePdfWidgets(
+          planName: widget.planName,
+          table: widget.table,
+          title: l10n.commsChallengeTableTitle,
+          instructions: l10n.commsChallengeTableInstructions,
+          generatedLabel: l10n.commsChallengeTableGeneratedPrefix,
+        ),
+      );
+      if (!mounted || !saved) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.commsSheetPrintPdfSaved)),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _printing = false);
+      }
+    }
+  }
 }
 
 class CommsChallengeTableView extends StatelessWidget {

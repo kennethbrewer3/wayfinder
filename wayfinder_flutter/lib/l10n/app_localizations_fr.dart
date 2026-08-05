@@ -1324,7 +1324,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d\'authentification et carnets à usage unique), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
+      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d\'authentification, carnets à usage unique et cartes du jour), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
 
   @override
   String get backupExportButton => 'Exporter les données (.zip)';
@@ -1468,7 +1468,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications, tables d\'authentification et carnets à usage unique), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu\'à mettre des tuiles en cache sur cet appareil.';
+      'Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications, tables d\'authentification, carnets à usage unique et cartes du jour), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu\'à mettre des tuiles en cache sur cet appareil.';
 
   @override
   String get fieldPackExportButton => 'Exporter le pack terrain';
@@ -1672,6 +1672,17 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get mapAtlasCommsOneTimePadUnavailable =>
       'Aucun carnet à usage unique sur le plan actif. Générez-en dans Plan de communications.';
+
+  @override
+  String get mapAtlasIncludeCommsCardOfTheDay => 'Inclure les cartes du jour';
+
+  @override
+  String get mapAtlasIncludeCommsCardOfTheDayHint =>
+      'Toutes les cartes du plan actif';
+
+  @override
+  String get mapAtlasCommsCardOfTheDayUnavailable =>
+      'Aucune carte du jour sur le plan actif. Ajoutez-en dans Plan de communications.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Ajuster à l\'itinéraire actif';
@@ -6963,4 +6974,123 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get commsOneTimePadBurnConfirmMessage =>
       'Cela supprime définitivement le carnet. Tout le matériel de clé non utilisé de cette feuille sera perdu.';
+
+  @override
+  String get commsSheetPrintPdf => 'Imprimer PDF';
+
+  @override
+  String get commsSheetPrintPdfSaved => 'PDF enregistré.';
+
+  @override
+  String get commsCardOfTheDayTitle => 'Cartes du jour';
+
+  @override
+  String get commsCardOfTheDayCreateTitle => 'Nouvelle carte du jour';
+
+  @override
+  String get commsCardOfTheDayEditTitle => 'Modifier la carte du jour';
+
+  @override
+  String get commsCardOfTheDayEditorHint =>
+      'Carte quotidienne de mots de code avec date, listes par catégorie et clé 0–9. Brûlez après la journée. Incluse dans les sauvegardes et packs terrain avec ce plan.';
+
+  @override
+  String get commsCardOfTheDayAdd => 'Ajouter une carte';
+
+  @override
+  String get commsCardOfTheDayEdit => 'Modifier';
+
+  @override
+  String get commsCardOfTheDayBurn => 'Brûler';
+
+  @override
+  String get commsCardOfTheDayView => 'Voir';
+
+  @override
+  String get commsCardOfTheDayMissing => 'Pas encore de cartes du jour.';
+
+  @override
+  String commsCardOfTheDayCount(int count) {
+    return '$count carte(s) prête(s)';
+  }
+
+  @override
+  String get commsCardOfTheDayInstructions =>
+      'Utilisez la clé des chiffres pour épeler les nombres en lettres. Les tableaux associent lieux, personnes, objets, directions et conditions à des mots de code pour la date choisie uniquement.';
+
+  @override
+  String get commsCardOfTheDayDateLabel => 'Date de la carte';
+
+  @override
+  String get commsCardOfTheDayDatePrefix => 'Date';
+
+  @override
+  String commsCardOfTheDayDateValue(String when) {
+    return 'Date $when';
+  }
+
+  @override
+  String get commsCardOfTheDayLabelLabel => 'Libellé';
+
+  @override
+  String get commsCardOfTheDayLabelRequired =>
+      'Saisissez un libellé pour cette carte.';
+
+  @override
+  String get commsCardOfTheDayDigitKeyTitle => 'Clé des chiffres (0–9)';
+
+  @override
+  String get commsCardOfTheDayDigitKeyHint =>
+      'Un mot de 10 lettres, ou des mots plus courts totalisant exactement 10 lettres, sans lettre répétée. Les espaces sont ignorés.';
+
+  @override
+  String get commsCardOfTheDayDigitKeyLabel => 'Dix lettres uniques';
+
+  @override
+  String get commsCardOfTheDayDigitKeyGenerate => 'Générer';
+
+  @override
+  String get commsCardOfTheDayDigitKeyInvalid =>
+      'Il faut exactement 10 lettres A–Z uniques (espaces autorisés).';
+
+  @override
+  String get commsCardOfTheDayDigitKeyMissing =>
+      'Aucune clé des chiffres pour l\'instant.';
+
+  @override
+  String get commsCardOfTheDayItemLabel => 'Élément';
+
+  @override
+  String get commsCardOfTheDayCodeWordLabel => 'Mot de code';
+
+  @override
+  String get commsCardOfTheDayAddEntry => 'Ajouter';
+
+  @override
+  String get commsCardOfTheDayPlaces => 'Lieux';
+
+  @override
+  String get commsCardOfTheDayPeople => 'Personnes';
+
+  @override
+  String get commsCardOfTheDayObjects => 'Objets';
+
+  @override
+  String get commsCardOfTheDayDirections => 'Directions';
+
+  @override
+  String get commsCardOfTheDayConditions => 'Conditions';
+
+  @override
+  String get commsCardOfTheDayOther => 'Autre';
+
+  @override
+  String get commsCardOfTheDayCategoryEmpty => 'Aucune entrée.';
+
+  @override
+  String get commsCardOfTheDayBurnConfirmTitle => 'Brûler la carte du jour ?';
+
+  @override
+  String get commsCardOfTheDayBurnConfirmMessage =>
+      'Cela supprime définitivement la carte. Les stations qui ont encore besoin de ses mots de code ne les auront plus.';
 }

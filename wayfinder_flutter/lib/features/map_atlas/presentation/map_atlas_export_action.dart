@@ -4,6 +4,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../comms_plan/models/comms_card_of_the_day.dart';
 import '../../comms_plan/models/comms_challenge_table.dart';
 import '../../comms_plan/models/comms_one_time_pad.dart';
 import '../../comms_plan/providers/comms_plan_provider.dart';
@@ -50,7 +51,10 @@ Future<bool> runMapAtlasExport({
     final routeExport = buildAtlasRouteExport(ref: ref, l10n: l10n);
     AtlasCommsChallengeExport? challengeExport;
     AtlasCommsOneTimePadExport? oneTimePadExport;
-    if (options.includeCommsChallengeTable || options.includeCommsOneTimePad) {
+    AtlasCommsCardOfTheDayExport? cardOfTheDayExport;
+    if (options.includeCommsChallengeTable ||
+        options.includeCommsOneTimePad ||
+        options.includeCommsCardOfTheDay) {
       final plans = ref.read(commsPlansProvider).valueOrNull ?? const [];
       final active = activeCommsPlan(plans);
       if (options.includeCommsChallengeTable) {
@@ -77,6 +81,29 @@ Future<bool> runMapAtlasExport({
           );
         }
       }
+      if (options.includeCommsCardOfTheDay) {
+        final cards = decodeCommsCardsOfTheDay(active?.cardOfTheDayJson);
+        if (active != null && cards.isNotEmpty) {
+          cardOfTheDayExport = AtlasCommsCardOfTheDayExport(
+            planName: active.name,
+            cards: cards,
+            title: l10n.commsCardOfTheDayTitle,
+            instructions: l10n.commsCardOfTheDayInstructions,
+            dateLabel: l10n.commsCardOfTheDayDatePrefix,
+            digitKeyTitle: l10n.commsCardOfTheDayDigitKeyTitle,
+            itemColumn: l10n.commsCardOfTheDayItemLabel,
+            codeWordColumn: l10n.commsCardOfTheDayCodeWordLabel,
+            placesTitle: l10n.commsCardOfTheDayPlaces,
+            peopleTitle: l10n.commsCardOfTheDayPeople,
+            objectsTitle: l10n.commsCardOfTheDayObjects,
+            directionsTitle: l10n.commsCardOfTheDayDirections,
+            conditionsTitle: l10n.commsCardOfTheDayConditions,
+            otherTitle: l10n.commsCardOfTheDayOther,
+            emptyCategory: l10n.commsCardOfTheDayCategoryEmpty,
+            digitKeyMissing: l10n.commsCardOfTheDayDigitKeyMissing,
+          );
+        }
+      }
     }
     if (!context.mounted) {
       return false;
@@ -92,6 +119,7 @@ Future<bool> runMapAtlasExport({
       route: routeExport,
       challengeTable: challengeExport,
       oneTimePad: oneTimePadExport,
+      cardOfTheDay: cardOfTheDayExport,
     );
     final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
       ':',

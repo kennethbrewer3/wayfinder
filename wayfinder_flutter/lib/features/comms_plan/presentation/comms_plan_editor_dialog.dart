@@ -10,12 +10,15 @@ import '../../markers/models/marker_radio.dart';
 import '../../markers/presentation/marker_notes_editor.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../models/comms_card_of_the_day.dart';
 import '../models/comms_challenge_table.dart';
 import '../models/comms_one_time_pad.dart';
 import '../models/comms_plan_channel.dart';
 import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_timezones.dart';
+import 'comms_card_of_the_day_editor_dialog.dart';
+import 'comms_card_of_the_day_preview.dart';
 import 'comms_challenge_table_preview.dart';
 import 'comms_one_time_pad_preview.dart';
 
@@ -50,6 +53,7 @@ class _CommsPlanEditorDialogState
   late List<CommsPlanChannel> _channels;
   late List<CommsChallengeTable> _challengeTables;
   late List<CommsOneTimePad> _oneTimePads;
+  late List<CommsCardOfTheDay> _cardsOfTheDay;
   var _saving = false;
   String? _error;
 
@@ -67,6 +71,7 @@ class _CommsPlanEditorDialogState
     _channels = decodeCommsPlanChannels(existing?.channelsJson);
     _challengeTables = decodeCommsChallengeTables(existing?.challengeTableJson);
     _oneTimePads = decodeCommsOneTimePads(existing?.oneTimePadJson);
+    _cardsOfTheDay = decodeCommsCardsOfTheDay(existing?.cardOfTheDayJson);
   }
 
   @override
@@ -334,6 +339,127 @@ class _CommsPlanEditorDialogState
                     ),
                   ),
               const SizedBox(height: 16),
+              Text(
+                l10n.commsCardOfTheDayTitle,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                l10n.commsCardOfTheDayEditorHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              FilledButton.tonalIcon(
+                onPressed: _saving
+                    ? null
+                    : () async {
+                        final created = await showCommsCardOfTheDayEditorDialog(
+                          context: context,
+                          defaultLabel: nextCardOfTheDayLabel(_cardsOfTheDay),
+                        );
+                        if (created == null || !mounted) {
+                          return;
+                        }
+                        setState(() {
+                          _cardsOfTheDay = [..._cardsOfTheDay, created];
+                        });
+                      },
+                icon: const Icon(Icons.add),
+                label: Text(l10n.commsCardOfTheDayAdd),
+              ),
+              if (_cardsOfTheDay.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    l10n.commsCardOfTheDayMissing,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              else
+                for (final card in _cardsOfTheDay)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: const Icon(Icons.today, size: 20),
+                    title: Text(card.label),
+                    subtitle: Text(
+                      l10n.commsCardOfTheDayDateValue(
+                        DateFormat.yMMMd().format(card.date.toLocal()),
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: l10n.commsCardOfTheDayEdit,
+                          icon: const Icon(Icons.edit_outlined, size: 18),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  final edited =
+                                      await showCommsCardOfTheDayEditorDialog(
+                                        context: context,
+                                        existing: card,
+                                      );
+                                  if (edited == null || !mounted) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    _cardsOfTheDay = [
+                                      for (final item in _cardsOfTheDay)
+                                        if (item.id == card.id)
+                                          edited
+                                        else
+                                          item,
+                                    ];
+                                  });
+                                },
+                        ),
+                        IconButton(
+                          tooltip: l10n.commsCardOfTheDayView,
+                          icon: const Icon(Icons.visibility_outlined, size: 18),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  await showCommsCardOfTheDayPreview(
+                                    context: context,
+                                    planName:
+                                        _nameController.text.trim().isEmpty
+                                        ? l10n.commsPlanCreateTitle
+                                        : _nameController.text.trim(),
+                                    card: card,
+                                  );
+                                },
+                        ),
+                        IconButton(
+                          tooltip: l10n.commsCardOfTheDayBurn,
+                          icon: const Icon(
+                            Icons.local_fire_department_outlined,
+                          ),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  final confirmed = await _confirmBurn(
+                                    title:
+                                        l10n.commsCardOfTheDayBurnConfirmTitle,
+                                    message: l10n
+                                        .commsCardOfTheDayBurnConfirmMessage,
+                                    burnLabel: l10n.commsCardOfTheDayBurn,
+                                  );
+                                  if (!confirmed || !mounted) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    _cardsOfTheDay = [
+                                      for (final item in _cardsOfTheDay)
+                                        if (item.id != card.id) item,
+                                    ];
+                                  });
+                                },
+                        ),
+                      ],
+                    ),
+                  ),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -499,6 +625,7 @@ class _CommsPlanEditorDialogState
                   _challengeTables,
                 ),
                 oneTimePadJson: encodeCommsOneTimePads(_oneTimePads),
+                cardOfTheDayJson: encodeCommsCardsOfTheDay(_cardsOfTheDay),
                 updatedAt: now,
               );
 

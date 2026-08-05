@@ -11,12 +11,15 @@ import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../models/comms_card_of_the_day.dart';
 import '../models/comms_challenge_table.dart';
 import '../models/comms_one_time_pad.dart';
 import '../models/comms_plan_channel.dart';
 import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_schedule.dart';
+import 'comms_card_of_the_day_editor_dialog.dart';
+import 'comms_card_of_the_day_preview.dart';
 import 'comms_challenge_table_preview.dart';
 import 'comms_one_time_pad_preview.dart';
 import 'comms_plan_editor_dialog.dart';
@@ -168,6 +171,13 @@ class CommsPlanSidebarSection extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: _OneTimePadSidebarRow(
+                    plan: active,
+                    canManage: canManage && !offline,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: _CardOfTheDaySidebarRow(
                     plan: active,
                     canManage: canManage && !offline,
                   ),
@@ -633,6 +643,162 @@ class _OneTimePadSidebarRow extends ConsumerWidget {
                               oneTimePadJson: encodeCommsOneTimePads([
                                 for (final item in pads)
                                   if (item.id != pad.id) item,
+                              ]),
+                              updatedAt: DateTime.now().toUtc(),
+                            ),
+                          );
+                    },
+                  ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _CardOfTheDaySidebarRow extends ConsumerWidget {
+  const _CardOfTheDaySidebarRow({
+    required this.plan,
+    required this.canManage,
+  });
+
+  final CommsPlan plan;
+  final bool canManage;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final cards = decodeCommsCardsOfTheDay(plan.cardOfTheDayJson);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.commsCardOfTheDayTitle,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          cards.isEmpty
+              ? l10n.commsCardOfTheDayMissing
+              : l10n.commsCardOfTheDayCount(cards.length),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        if (canManage)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () async {
+                final created = await showCommsCardOfTheDayEditorDialog(
+                  context: context,
+                  defaultLabel: nextCardOfTheDayLabel(cards),
+                );
+                if (created == null) {
+                  return;
+                }
+                await ref
+                    .read(commsPlansProvider.notifier)
+                    .updatePlan(
+                      plan.copyWith(
+                        cardOfTheDayJson: encodeCommsCardsOfTheDay([
+                          ...cards,
+                          created,
+                        ]),
+                        updatedAt: DateTime.now().toUtc(),
+                      ),
+                    );
+              },
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.commsCardOfTheDayAdd),
+            ),
+          ),
+        for (final card in cards)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: const Icon(Icons.today, size: 18),
+            title: Text(card.label),
+            subtitle: Text(
+              DateFormat.yMMMd().format(card.date.toLocal()),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (canManage)
+                  IconButton(
+                    tooltip: l10n.commsCardOfTheDayEdit,
+                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    onPressed: () async {
+                      final edited = await showCommsCardOfTheDayEditorDialog(
+                        context: context,
+                        existing: card,
+                      );
+                      if (edited == null) {
+                        return;
+                      }
+                      await ref
+                          .read(commsPlansProvider.notifier)
+                          .updatePlan(
+                            plan.copyWith(
+                              cardOfTheDayJson: encodeCommsCardsOfTheDay([
+                                for (final item in cards)
+                                  if (item.id == card.id) edited else item,
+                              ]),
+                              updatedAt: DateTime.now().toUtc(),
+                            ),
+                          );
+                    },
+                  ),
+                IconButton(
+                  tooltip: l10n.commsCardOfTheDayView,
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  onPressed: () async {
+                    await showCommsCardOfTheDayPreview(
+                      context: context,
+                      planName: plan.name,
+                      card: card,
+                    );
+                  },
+                ),
+                if (canManage)
+                  IconButton(
+                    tooltip: l10n.commsCardOfTheDayBurn,
+                    icon: const Icon(
+                      Icons.local_fire_department_outlined,
+                      size: 18,
+                    ),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(
+                            l10n.commsCardOfTheDayBurnConfirmTitle,
+                          ),
+                          content: Text(
+                            l10n.commsCardOfTheDayBurnConfirmMessage,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text(l10n.actionCancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(l10n.commsCardOfTheDayBurn),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed != true) {
+                        return;
+                      }
+                      await ref
+                          .read(commsPlansProvider.notifier)
+                          .updatePlan(
+                            plan.copyWith(
+                              cardOfTheDayJson: encodeCommsCardsOfTheDay([
+                                for (final item in cards)
+                                  if (item.id != card.id) item,
                               ]),
                               updatedAt: DateTime.now().toUtc(),
                             ),

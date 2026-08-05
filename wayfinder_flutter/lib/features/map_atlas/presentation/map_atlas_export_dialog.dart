@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../comms_plan/models/comms_card_of_the_day.dart';
 import '../../comms_plan/models/comms_challenge_table.dart';
 import '../../comms_plan/models/comms_one_time_pad.dart';
 import '../../comms_plan/providers/comms_plan_provider.dart';
@@ -31,12 +32,16 @@ Future<AtlasExportOptions?> showMapAtlasExportDialog({
   final hasOneTimePad = decodeCommsOneTimePads(
     active?.oneTimePadJson,
   ).isNotEmpty;
+  final hasCardOfTheDay = decodeCommsCardsOfTheDay(
+    active?.cardOfTheDayJson,
+  ).isNotEmpty;
   return showDialog<AtlasExportOptions>(
     context: context,
     builder: (context) => _MapAtlasExportDialog(
       hasActiveRoute: hasRoute,
       hasCommsChallengeTable: hasChallengeTable,
       hasCommsOneTimePad: hasOneTimePad,
+      hasCommsCardOfTheDay: hasCardOfTheDay,
     ),
   );
 }
@@ -125,11 +130,13 @@ class _MapAtlasExportDialog extends StatefulWidget {
     required this.hasActiveRoute,
     required this.hasCommsChallengeTable,
     required this.hasCommsOneTimePad,
+    required this.hasCommsCardOfTheDay,
   });
 
   final bool hasActiveRoute;
   final bool hasCommsChallengeTable;
   final bool hasCommsOneTimePad;
+  final bool hasCommsCardOfTheDay;
 
   @override
   State<_MapAtlasExportDialog> createState() => _MapAtlasExportDialogState();
@@ -145,6 +152,7 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
   late bool _includeDirectionsList;
   late bool _includeCommsChallengeTable;
   late bool _includeCommsOneTimePad;
+  late bool _includeCommsCardOfTheDay;
 
   @override
   void initState() {
@@ -157,6 +165,7 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
     _includeDirectionsList = widget.hasActiveRoute;
     _includeCommsChallengeTable = widget.hasCommsChallengeTable;
     _includeCommsOneTimePad = widget.hasCommsOneTimePad;
+    _includeCommsCardOfTheDay = widget.hasCommsCardOfTheDay;
   }
 
   @override
@@ -328,6 +337,25 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
+              if (widget.hasCommsCardOfTheDay)
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _includeCommsCardOfTheDay,
+                  onChanged: (value) {
+                    setState(() => _includeCommsCardOfTheDay = value ?? false);
+                  },
+                  title: Text(l10n.mapAtlasIncludeCommsCardOfTheDay),
+                  subtitle: Text(l10n.mapAtlasIncludeCommsCardOfTheDayHint),
+                  controlAffinity: ListTileControlAffinity.leading,
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    l10n.mapAtlasCommsCardOfTheDayUnavailable,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
               Text(
                 '${l10n.mapAtlasSheetCountHint}: ${grid.columns * grid.rows}',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -361,6 +389,8 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
                     _includeCommsChallengeTable,
                 includeCommsOneTimePad:
                     widget.hasCommsOneTimePad && _includeCommsOneTimePad,
+                includeCommsCardOfTheDay:
+                    widget.hasCommsCardOfTheDay && _includeCommsCardOfTheDay,
               ),
             );
           },

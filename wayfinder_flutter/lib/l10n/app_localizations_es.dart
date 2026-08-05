@@ -1323,7 +1323,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación y blocs de un solo uso), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.';
+      'Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación, blocs de un solo uso y tarjetas del día), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.';
 
   @override
   String get backupExportButton => 'Exportar datos del mapa (.zip)';
@@ -1466,7 +1466,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones, tablas de autenticación y blocs de un solo uso), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.';
+      'Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones, tablas de autenticación, blocs de un solo uso y tarjetas del día), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.';
 
   @override
   String get fieldPackExportButton => 'Exportar paquete de campo';
@@ -1668,6 +1668,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get mapAtlasCommsOneTimePadUnavailable =>
       'No hay blocs de un solo uso en el plan activo. Genere algunos en Plan de comunicaciones.';
+
+  @override
+  String get mapAtlasIncludeCommsCardOfTheDay => 'Incluir tarjetas del día';
+
+  @override
+  String get mapAtlasIncludeCommsCardOfTheDayHint =>
+      'Todas las tarjetas del plan activo';
+
+  @override
+  String get mapAtlasCommsCardOfTheDayUnavailable =>
+      'No hay tarjetas del día en el plan activo. Añada algunas en Plan de comunicaciones.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Ajustar a la ruta activa';
@@ -6942,4 +6953,122 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get commsOneTimePadBurnConfirmMessage =>
       'Esto elimina el bloc de forma permanente. Se perderá todo el material de clave no usado de esta hoja.';
+
+  @override
+  String get commsSheetPrintPdf => 'Imprimir PDF';
+
+  @override
+  String get commsSheetPrintPdfSaved => 'PDF guardado.';
+
+  @override
+  String get commsCardOfTheDayTitle => 'Tarjetas del día';
+
+  @override
+  String get commsCardOfTheDayCreateTitle => 'Nueva tarjeta del día';
+
+  @override
+  String get commsCardOfTheDayEditTitle => 'Editar tarjeta del día';
+
+  @override
+  String get commsCardOfTheDayEditorHint =>
+      'Tarjeta diaria de palabras clave con fecha, listas por categoría y clave 0–9. Queme tras el día. Se incluye en copias y paquetes de campo con este plan.';
+
+  @override
+  String get commsCardOfTheDayAdd => 'Añadir tarjeta';
+
+  @override
+  String get commsCardOfTheDayEdit => 'Editar';
+
+  @override
+  String get commsCardOfTheDayBurn => 'Quemar';
+
+  @override
+  String get commsCardOfTheDayView => 'Ver';
+
+  @override
+  String get commsCardOfTheDayMissing => 'Aún no hay tarjetas del día.';
+
+  @override
+  String commsCardOfTheDayCount(int count) {
+    return '$count tarjeta(s) lista(s)';
+  }
+
+  @override
+  String get commsCardOfTheDayInstructions =>
+      'Use la clave de dígitos para deletrear números como letras. Las tablas asignan lugares, personas, objetos, direcciones y condiciones a palabras clave solo para la fecha elegida.';
+
+  @override
+  String get commsCardOfTheDayDateLabel => 'Fecha de la tarjeta';
+
+  @override
+  String get commsCardOfTheDayDatePrefix => 'Fecha';
+
+  @override
+  String commsCardOfTheDayDateValue(String when) {
+    return 'Fecha $when';
+  }
+
+  @override
+  String get commsCardOfTheDayLabelLabel => 'Etiqueta';
+
+  @override
+  String get commsCardOfTheDayLabelRequired =>
+      'Introduzca una etiqueta para esta tarjeta.';
+
+  @override
+  String get commsCardOfTheDayDigitKeyTitle => 'Clave de dígitos (0–9)';
+
+  @override
+  String get commsCardOfTheDayDigitKeyHint =>
+      'Una palabra de 10 letras, o palabras más cortas que sumen exactamente 10 letras, sin letras repetidas. Los espacios se ignoran.';
+
+  @override
+  String get commsCardOfTheDayDigitKeyLabel => 'Diez letras únicas';
+
+  @override
+  String get commsCardOfTheDayDigitKeyGenerate => 'Generar';
+
+  @override
+  String get commsCardOfTheDayDigitKeyInvalid =>
+      'Se necesitan exactamente 10 letras A–Z únicas (se permiten espacios).';
+
+  @override
+  String get commsCardOfTheDayDigitKeyMissing => 'Aún no hay clave de dígitos.';
+
+  @override
+  String get commsCardOfTheDayItemLabel => 'Elemento';
+
+  @override
+  String get commsCardOfTheDayCodeWordLabel => 'Palabra clave';
+
+  @override
+  String get commsCardOfTheDayAddEntry => 'Añadir';
+
+  @override
+  String get commsCardOfTheDayPlaces => 'Lugares';
+
+  @override
+  String get commsCardOfTheDayPeople => 'Personas';
+
+  @override
+  String get commsCardOfTheDayObjects => 'Objetos';
+
+  @override
+  String get commsCardOfTheDayDirections => 'Direcciones';
+
+  @override
+  String get commsCardOfTheDayConditions => 'Condiciones';
+
+  @override
+  String get commsCardOfTheDayOther => 'Otros';
+
+  @override
+  String get commsCardOfTheDayCategoryEmpty => 'Sin entradas.';
+
+  @override
+  String get commsCardOfTheDayBurnConfirmTitle => '¿Quemar tarjeta del día?';
+
+  @override
+  String get commsCardOfTheDayBurnConfirmMessage =>
+      'Esto elimina la tarjeta de forma permanente. Las estaciones que aún necesiten sus palabras clave ya no las tendrán.';
 }

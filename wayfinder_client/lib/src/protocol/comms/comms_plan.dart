@@ -22,6 +22,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
     required this.channelsJson,
     this.challengeTableJson,
     this.oneTimePadJson,
+    this.cardOfTheDayJson,
     int? sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -39,6 +40,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
     required String channelsJson,
     String? challengeTableJson,
     String? oneTimePadJson,
+    String? cardOfTheDayJson,
     int? sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -58,6 +60,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
       channelsJson: jsonSerialization['channelsJson'] as String,
       challengeTableJson: jsonSerialization['challengeTableJson'] as String?,
       oneTimePadJson: jsonSerialization['oneTimePadJson'] as String?,
+      cardOfTheDayJson: jsonSerialization['cardOfTheDayJson'] as String?,
       sortOrder: jsonSerialization['sortOrder'] as int?,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
@@ -90,6 +93,9 @@ abstract class CommsPlan implements _i1.SerializableModel {
   /// JSON one-time pad sheets (29×4 groups of 5 letters), or null when none
   String? oneTimePadJson;
 
+  /// JSON card-of-the-day sheets (date + code words + digit key), or null when none
+  String? cardOfTheDayJson;
+
   int sortOrder;
 
   DateTime createdAt;
@@ -108,6 +114,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
     String? channelsJson,
     String? challengeTableJson,
     String? oneTimePadJson,
+    String? cardOfTheDayJson,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -124,6 +131,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
       'channelsJson': channelsJson,
       if (challengeTableJson != null) 'challengeTableJson': challengeTableJson,
       if (oneTimePadJson != null) 'oneTimePadJson': oneTimePadJson,
+      if (cardOfTheDayJson != null) 'cardOfTheDayJson': cardOfTheDayJson,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -148,6 +156,7 @@ class _CommsPlanImpl extends CommsPlan {
     required String channelsJson,
     String? challengeTableJson,
     String? oneTimePadJson,
+    String? cardOfTheDayJson,
     int? sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -160,6 +169,7 @@ class _CommsPlanImpl extends CommsPlan {
          channelsJson: channelsJson,
          challengeTableJson: challengeTableJson,
          oneTimePadJson: oneTimePadJson,
+         cardOfTheDayJson: cardOfTheDayJson,
          sortOrder: sortOrder,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -178,6 +188,7 @@ class _CommsPlanImpl extends CommsPlan {
     String? channelsJson,
     Object? challengeTableJson = _Undefined,
     Object? oneTimePadJson = _Undefined,
+    Object? cardOfTheDayJson = _Undefined,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -195,6 +206,9 @@ class _CommsPlanImpl extends CommsPlan {
       oneTimePadJson: oneTimePadJson is String?
           ? oneTimePadJson
           : this.oneTimePadJson,
+      cardOfTheDayJson: cardOfTheDayJson is String?
+          ? cardOfTheDayJson
+          : this.cardOfTheDayJson,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

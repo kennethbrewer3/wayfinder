@@ -12,6 +12,7 @@ import '../models/marker_icon_registry.dart';
 import '../models/marker_checklists.dart';
 import '../models/marker_inventory.dart';
 import '../models/marker_radio.dart';
+import '../models/marker_resource_type.dart';
 import 'marker_checklists_editor.dart';
 import 'marker_form_fields.dart';
 import 'marker_inventory_editor.dart';
@@ -30,6 +31,7 @@ class MarkerFormData {
     this.longitude,
     this.isTracking = false,
     this.transportationMode = TrackTransportationMode.onFoot,
+    this.resourceType,
     this.inventoryItems = const [],
     this.radioContact = const MarkerRadioContact(),
     this.checklists = const [],
@@ -45,6 +47,7 @@ class MarkerFormData {
   final double? longitude;
   final bool isTracking;
   final TrackTransportationMode transportationMode;
+  final MarkerResourceType? resourceType;
   final List<MarkerInventoryItem> inventoryItems;
   final MarkerRadioContact radioContact;
   final List<MarkerChecklist> checklists;
@@ -56,6 +59,8 @@ class MarkerFormData {
 
   String? get checklistsJson =>
       MarkerChecklists(checklists: checklists).toStorageJson();
+
+  String? get resourceTypeWire => resourceType?.wireValue;
 }
 
 Future<MarkerFormData?> showMarkerFormDialog({
@@ -78,6 +83,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
   List<MarkerInventoryItem> initialInventoryItems = const [],
   MarkerRadioContact initialRadioContact = const MarkerRadioContact(),
   List<MarkerChecklist> initialChecklists = const [],
+  MarkerResourceType? initialResourceType,
 }) {
   return showDialog<MarkerFormData>(
     context: context,
@@ -101,6 +107,7 @@ Future<MarkerFormData?> showMarkerFormDialog({
         initialInventoryItems: initialInventoryItems,
         initialRadioContact: initialRadioContact,
         initialChecklists: initialChecklists,
+        initialResourceType: initialResourceType,
       );
     },
   );
@@ -138,6 +145,7 @@ Future<MarkerFormData?> showEditMarkerDialog({
     initialChecklists: MarkerChecklists.fromMarkerChecklistsJson(
       marker.checklistsJson,
     ).checklists,
+    initialResourceType: MarkerResourceType.tryParse(marker.resourceType),
   );
 }
 
@@ -161,6 +169,7 @@ class MarkerFormDialog extends StatefulWidget {
     this.initialInventoryItems = const [],
     this.initialRadioContact = const MarkerRadioContact(),
     this.initialChecklists = const [],
+    this.initialResourceType,
   });
 
   final String title;
@@ -180,6 +189,7 @@ class MarkerFormDialog extends StatefulWidget {
   final List<MarkerInventoryItem> initialInventoryItems;
   final MarkerRadioContact initialRadioContact;
   final List<MarkerChecklist> initialChecklists;
+  final MarkerResourceType? initialResourceType;
 
   @override
   State<MarkerFormDialog> createState() => _MarkerFormDialogState();
@@ -199,6 +209,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
   late List<MarkerInventoryItem> _inventoryItems;
   late MarkerRadioContact _radioContact;
   late List<MarkerChecklist> _checklists;
+  MarkerResourceType? _resourceType;
 
   @override
   void initState() {
@@ -234,6 +245,9 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
     );
     _radioContact = widget.initialRadioContact;
     _checklists = List<MarkerChecklist>.from(widget.initialChecklists);
+    _resourceType =
+        widget.initialResourceType ??
+        resourceTypeSuggestedForIcon(widget.initialIcon);
     if (_radioContact.isEmpty && isRadioContactMarkerIcon(_selectedIcon)) {
       _radioContact = _radioContact.copyWith(
         role: suggestedRadioRoleForIcon(_selectedIcon),
@@ -319,6 +333,7 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
         longitude: coordinates?.longitude,
         isTracking: widget.allowTrackingToggle ? _isTracking : false,
         transportationMode: _transportationMode,
+        resourceType: _resourceType,
         inventoryItems: sanitizeMarkerInventoryItems(_inventoryItems),
         radioContact: _radioContact,
         checklists: sanitizeMarkerChecklists(_checklists),
@@ -376,6 +391,39 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                 onChanged: (layerId) =>
                     setState(() => _selectedLayerId = layerId),
               ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<MarkerResourceType?>(
+                key: ValueKey(_resourceType),
+                initialValue: _resourceType,
+                decoration: InputDecoration(
+                  labelText: l10n.markerResourceTypeLabel,
+                  helperText: l10n.markerResourceTypeHelp,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem<MarkerResourceType?>(
+                    value: null,
+                    child: Text(l10n.markerResourceTypeNone),
+                  ),
+                  for (final type in MarkerResourceType.values)
+                    DropdownMenuItem<MarkerResourceType?>(
+                      value: type,
+                      child: Text(markerResourceTypeLabel(l10n, type)),
+                    ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _resourceType = value;
+                    if (value != null &&
+                        (_selectedIcon == defaultMarkerIconKey ||
+                            _selectedIcon == widget.initialIcon ||
+                            resourceTypeSuggestedForIcon(_selectedIcon) !=
+                                null)) {
+                      _selectedIcon = defaultIconForResourceType(value);
+                    }
+                  });
+                },
+              ),
               if (widget.allowTrackingToggle) ...[
                 const SizedBox(height: 12),
                 SwitchListTile(
@@ -406,6 +454,10 @@ class _MarkerFormDialogState extends State<MarkerFormDialog> {
                       _radioContact = _radioContact.copyWith(
                         role: suggestedRadioRoleForIcon(icon),
                       );
+                    }
+                    final suggested = resourceTypeSuggestedForIcon(icon);
+                    if (suggested != null && _resourceType == null) {
+                      _resourceType = suggested;
                     }
                   });
                 },

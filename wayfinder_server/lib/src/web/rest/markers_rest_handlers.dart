@@ -218,6 +218,7 @@ abstract final class MarkersRestHandlers {
       inventoryJson: body['inventoryJson'] as String?,
       radioJson: body['radioJson'] as String?,
       checklistsJson: body['checklistsJson'] as String?,
+      resourceType: body['resourceType'] as String?,
       layerId: RestJson.parseOptionalUuid(body['layerId'], label: 'layerId'),
       createdByAuthUserId: actor.authUserId,
       createdByUsername: actor.username,
@@ -277,6 +278,9 @@ abstract final class MarkersRestHandlers {
       checklistsJson: body.containsKey('checklistsJson')
           ? body['checklistsJson'] as String?
           : existing.checklistsJson,
+      resourceType: body.containsKey('resourceType')
+          ? body['resourceType'] as String?
+          : existing.resourceType,
       layerId: body.containsKey('layerId')
           ? RestJson.parseOptionalUuid(body['layerId'], label: 'layerId')
           : existing.layerId,

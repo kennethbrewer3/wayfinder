@@ -1,6 +1,8 @@
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../markers/models/marker_resource_type.dart';
+
 /// Default layer seeded by the layers migration.
 final defaultMapLayerId = UuidValue.fromString(
   '00000000-0000-4000-8000-000000000001',
@@ -49,11 +51,15 @@ bool isZoneShownOnMap(
 
 List<MapMarker> filterMarkersForMap(
   List<MapMarker> markers,
-  Map<UuidValue, MapLayer> layersById,
-) {
-  return markers
-      .where((marker) => isMarkerShownOnMap(marker, layersById))
-      .toList();
+  Map<UuidValue, MapLayer> layersById, {
+  Set<MarkerResourceType> resourceTypes = const {},
+}) {
+  return [
+    for (final marker in markers)
+      if (isMarkerShownOnMap(marker, layersById) &&
+          markerMatchesResourceTypeFilter(marker, resourceTypes))
+        marker,
+  ];
 }
 
 List<MapZone> filterZonesForMap(

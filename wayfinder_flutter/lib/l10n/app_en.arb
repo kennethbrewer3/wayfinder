@@ -1725,6 +1725,11 @@
   "markerRadioNotesHint": "Net time, coverage, PL tip — short planning notes",
   "markerRadioClear": "Clear contact card",
   "sidebarFilterRadioContacts": "Radio contacts",
+  "sidebarFilterResourceSpring": "Springs",
+  "sidebarFilterResourceWell": "Wells",
+  "sidebarFilterResourceCache": "Caches",
+  "sidebarFilterResourceFuel": "Fuel",
+  "sidebarFilterResourceClinic": "Clinics",
   "markerInventoryTitle": "Cache inventory",
   "markerInventoryEmptyHelp": "Track supplies at this marker — quantity, unit, expiry, and last audit.",
   "markerInventoryItemCount": "{count, plural, =1{1 item} other{{count} items}}",
@@ -2087,6 +2092,21 @@
   "sidebarViewList": "List",
   "sidebarViewTree": "Tree",
   "sidebarFilterFoodExpiring90Days": "Food expiring in 90 days",
+  "sidebarFilterResourcesLabel": "Resources",
+  "markerResourceTypeLabel": "Resource type",
+  "markerResourceTypeHelp": "Classify springs, wells, caches, fuel, and clinics for resource map filters.",
+  "markerResourceTypeNone": "None (not a resource)",
+  "markerResourceTypeSpring": "Spring",
+  "markerResourceTypeWell": "Well",
+  "markerResourceTypeCache": "Cache",
+  "markerResourceTypeFuel": "Fuel",
+  "markerResourceTypeClinic": "Clinic",
+  "markerResourceTypeDetail": "Resource: {type}",
+  "@markerResourceTypeDetail": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
   "sidebarNoMatchingMarkers": "No matching markers",
   "sidebarNoMatchingZones": "No matching zones",
   "sidebarTryDifferentSearch": "Try a different search term.",

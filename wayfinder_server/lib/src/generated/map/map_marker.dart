@@ -30,6 +30,7 @@ abstract class MapMarker
     this.inventoryJson,
     this.radioJson,
     this.checklistsJson,
+    this.resourceType,
     this.layerId,
     this.createdByAuthUserId,
     this.createdByUsername,
@@ -60,6 +61,7 @@ abstract class MapMarker
     String? inventoryJson,
     String? radioJson,
     String? checklistsJson,
+    String? resourceType,
     _i1.UuidValue? layerId,
     _i1.UuidValue? createdByAuthUserId,
     String? createdByUsername,
@@ -97,6 +99,7 @@ abstract class MapMarker
       inventoryJson: jsonSerialization['inventoryJson'] as String?,
       radioJson: jsonSerialization['radioJson'] as String?,
       checklistsJson: jsonSerialization['checklistsJson'] as String?,
+      resourceType: jsonSerialization['resourceType'] as String?,
       layerId: jsonSerialization['layerId'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['layerId']),
@@ -166,6 +169,9 @@ abstract class MapMarker
   /// Named checklists / SOPs with checkable items (JSON)
   String? checklistsJson;
 
+  /// Resource map type: spring, well, cache, fuel, clinic (null = untyped)
+  String? resourceType;
+
   _i1.UuidValue? layerId;
 
   /// Auth user that created this marker (null for legacy / anonymous)
@@ -213,6 +219,7 @@ abstract class MapMarker
     String? inventoryJson,
     String? radioJson,
     String? checklistsJson,
+    String? resourceType,
     _i1.UuidValue? layerId,
     _i1.UuidValue? createdByAuthUserId,
     String? createdByUsername,
@@ -243,6 +250,7 @@ abstract class MapMarker
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
       if (radioJson != null) 'radioJson': radioJson,
       if (checklistsJson != null) 'checklistsJson': checklistsJson,
+      if (resourceType != null) 'resourceType': resourceType,
       if (layerId != null) 'layerId': layerId?.toJson(),
       if (createdByAuthUserId != null)
         'createdByAuthUserId': createdByAuthUserId?.toJson(),
@@ -278,6 +286,7 @@ abstract class MapMarker
       if (inventoryJson != null) 'inventoryJson': inventoryJson,
       if (radioJson != null) 'radioJson': radioJson,
       if (checklistsJson != null) 'checklistsJson': checklistsJson,
+      if (resourceType != null) 'resourceType': resourceType,
       if (layerId != null) 'layerId': layerId?.toJson(),
       if (createdByAuthUserId != null)
         'createdByAuthUserId': createdByAuthUserId?.toJson(),
@@ -343,6 +352,7 @@ class _MapMarkerImpl extends MapMarker {
     String? inventoryJson,
     String? radioJson,
     String? checklistsJson,
+    String? resourceType,
     _i1.UuidValue? layerId,
     _i1.UuidValue? createdByAuthUserId,
     String? createdByUsername,
@@ -369,6 +379,7 @@ class _MapMarkerImpl extends MapMarker {
          inventoryJson: inventoryJson,
          radioJson: radioJson,
          checklistsJson: checklistsJson,
+         resourceType: resourceType,
          layerId: layerId,
          createdByAuthUserId: createdByAuthUserId,
          createdByUsername: createdByUsername,
@@ -401,6 +412,7 @@ class _MapMarkerImpl extends MapMarker {
     Object? inventoryJson = _Undefined,
     Object? radioJson = _Undefined,
     Object? checklistsJson = _Undefined,
+    Object? resourceType = _Undefined,
     Object? layerId = _Undefined,
     Object? createdByAuthUserId = _Undefined,
     Object? createdByUsername = _Undefined,
@@ -434,6 +446,7 @@ class _MapMarkerImpl extends MapMarker {
       checklistsJson: checklistsJson is String?
           ? checklistsJson
           : this.checklistsJson,
+      resourceType: resourceType is String? ? resourceType : this.resourceType,
       layerId: layerId is _i1.UuidValue? ? layerId : this.layerId,
       createdByAuthUserId: createdByAuthUserId is _i1.UuidValue?
           ? createdByAuthUserId
@@ -534,6 +547,12 @@ class MapMarkerUpdateTable extends _i1.UpdateTable<MapMarkerTable> {
   _i1.ColumnValue<String, String> checklistsJson(String? value) =>
       _i1.ColumnValue(
         table.checklistsJson,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> resourceType(String? value) =>
+      _i1.ColumnValue(
+        table.resourceType,
         value,
       );
 
@@ -662,6 +681,10 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
       'checklistsJson',
       this,
     );
+    resourceType = _i1.ColumnString(
+      'resourceType',
+      this,
+    );
     layerId = _i1.ColumnUuid(
       'layerId',
       this,
@@ -735,6 +758,9 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
   /// Named checklists / SOPs with checkable items (JSON)
   late final _i1.ColumnString checklistsJson;
 
+  /// Resource map type: spring, well, cache, fuel, clinic (null = untyped)
+  late final _i1.ColumnString resourceType;
+
   late final _i1.ColumnUuid layerId;
 
   /// Auth user that created this marker (null for legacy / anonymous)
@@ -777,6 +803,7 @@ class MapMarkerTable extends _i1.Table<_i1.UuidValue> {
     inventoryJson,
     radioJson,
     checklistsJson,
+    resourceType,
     layerId,
     createdByAuthUserId,
     createdByUsername,

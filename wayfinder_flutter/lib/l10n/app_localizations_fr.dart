@@ -2737,6 +2737,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sidebarFilterRadioContacts => 'Contacts radio';
 
   @override
+  String get sidebarFilterResourceSpring => 'Sources';
+
+  @override
+  String get sidebarFilterResourceWell => 'Puits';
+
+  @override
+  String get sidebarFilterResourceCache => 'Caches';
+
+  @override
+  String get sidebarFilterResourceFuel => 'Carburant';
+
+  @override
+  String get sidebarFilterResourceClinic => 'Cliniques';
+
+  @override
   String get markerInventoryTitle => 'Inventaire de cache';
 
   @override
@@ -3525,6 +3540,39 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get sidebarFilterFoodExpiring90Days =>
       'Nourriture expirant sous 90 jours';
+
+  @override
+  String get sidebarFilterResourcesLabel => 'Ressources';
+
+  @override
+  String get markerResourceTypeLabel => 'Type de ressource';
+
+  @override
+  String get markerResourceTypeHelp =>
+      'Classez sources, puits, caches, carburant et cliniques pour les filtres de la carte des ressources.';
+
+  @override
+  String get markerResourceTypeNone => 'Aucun (pas une ressource)';
+
+  @override
+  String get markerResourceTypeSpring => 'Source';
+
+  @override
+  String get markerResourceTypeWell => 'Puits';
+
+  @override
+  String get markerResourceTypeCache => 'Cache';
+
+  @override
+  String get markerResourceTypeFuel => 'Carburant';
+
+  @override
+  String get markerResourceTypeClinic => 'Clinique';
+
+  @override
+  String markerResourceTypeDetail(String type) {
+    return 'Ressource : $type';
+  }
 
   @override
   String get sidebarNoMatchingMarkers => 'Aucun marqueur correspondant';

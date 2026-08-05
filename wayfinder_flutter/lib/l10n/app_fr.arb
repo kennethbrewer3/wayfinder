@@ -1199,6 +1199,11 @@
   "markerRadioNotesHint": "Heure de net, couverture, tip PL — notes brèves",
   "markerRadioClear": "Effacer la fiche contact",
   "sidebarFilterRadioContacts": "Contacts radio",
+  "sidebarFilterResourceSpring": "Sources",
+  "sidebarFilterResourceWell": "Puits",
+  "sidebarFilterResourceCache": "Caches",
+  "sidebarFilterResourceFuel": "Carburant",
+  "sidebarFilterResourceClinic": "Cliniques",
   "markerInventoryTitle": "Inventaire de cache",
   "markerInventoryEmptyHelp": "Suivez les provisions de ce marqueur — quantité, unité, expiration et dernier inventaire.",
   "markerInventoryItemCount": "{count, plural, =1{1 article} other{{count} articles}}",
@@ -1550,6 +1555,21 @@
   "sidebarViewList": "Liste",
   "sidebarViewTree": "Arbre",
   "sidebarFilterFoodExpiring90Days": "Nourriture expirant sous 90 jours",
+  "sidebarFilterResourcesLabel": "Ressources",
+  "markerResourceTypeLabel": "Type de ressource",
+  "markerResourceTypeHelp": "Classez sources, puits, caches, carburant et cliniques pour les filtres de la carte des ressources.",
+  "markerResourceTypeNone": "Aucun (pas une ressource)",
+  "markerResourceTypeSpring": "Source",
+  "markerResourceTypeWell": "Puits",
+  "markerResourceTypeCache": "Cache",
+  "markerResourceTypeFuel": "Carburant",
+  "markerResourceTypeClinic": "Clinique",
+  "markerResourceTypeDetail": "Ressource : {type}",
+  "@markerResourceTypeDetail": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
   "sidebarNoMatchingMarkers": "Aucun marqueur correspondant",
   "sidebarNoMatchingZones": "Aucune zone correspondante",
   "sidebarTryDifferentSearch": "Essayez un autre terme de recherche.",

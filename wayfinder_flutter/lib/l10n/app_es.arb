@@ -1199,6 +1199,11 @@
   "markerRadioNotesHint": "Hora de red, cobertura, tip PL — notas breves",
   "markerRadioClear": "Borrar ficha de contacto",
   "sidebarFilterRadioContacts": "Contactos de radio",
+  "sidebarFilterResourceSpring": "Manantiales",
+  "sidebarFilterResourceWell": "Pozos",
+  "sidebarFilterResourceCache": "Alijos",
+  "sidebarFilterResourceFuel": "Combustible",
+  "sidebarFilterResourceClinic": "Clínicas",
   "markerInventoryTitle": "Inventario del alijo",
   "markerInventoryEmptyHelp": "Registre suministros en este marcador: cantidad, unidad, caducidad y última auditoría.",
   "markerInventoryItemCount": "{count, plural, =1{1 artículo} other{{count} artículos}}",
@@ -1550,6 +1555,21 @@
   "sidebarViewList": "Lista",
   "sidebarViewTree": "Árbol",
   "sidebarFilterFoodExpiring90Days": "Comida que caduca en 90 días",
+  "sidebarFilterResourcesLabel": "Recursos",
+  "markerResourceTypeLabel": "Tipo de recurso",
+  "markerResourceTypeHelp": "Clasifique manantiales, pozos, alijos, combustible y clínicas para los filtros del mapa de recursos.",
+  "markerResourceTypeNone": "Ninguno (no es un recurso)",
+  "markerResourceTypeSpring": "Manantial",
+  "markerResourceTypeWell": "Pozo",
+  "markerResourceTypeCache": "Alijo",
+  "markerResourceTypeFuel": "Combustible",
+  "markerResourceTypeClinic": "Clínica",
+  "markerResourceTypeDetail": "Recurso: {type}",
+  "@markerResourceTypeDetail": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
   "sidebarNoMatchingMarkers": "No hay marcadores coincidentes",
   "sidebarNoMatchingZones": "No hay zonas coincidentes",
   "sidebarTryDifferentSearch": "Pruebe con otro término de búsqueda.",

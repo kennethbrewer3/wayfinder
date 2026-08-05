@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import 'selected_map_object_provider.dart';
+import '../../markers/models/marker_resource_type.dart';
 import '../../settings/data/app_settings_repository.dart';
 import '../data/map_viewport_storage.dart';
 import '../models/home_location.dart';
@@ -155,6 +156,7 @@ class SidebarState {
     this.layerSettings = const {},
     this.filterFoodExpiring90Days = false,
     this.filterRadioContacts = false,
+    this.filterResourceTypes = const {},
   });
 
   final String searchQuery;
@@ -172,6 +174,9 @@ class SidebarState {
   /// When true, marker lists only include markers with a radio contact card.
   final bool filterRadioContacts;
 
+  /// When non-empty, marker lists and the map only include these resource types.
+  final Set<MarkerResourceType> filterResourceTypes;
+
   LayerSidebarSettings settingsForLayer(UuidValue layerId) {
     return layerSettings[layerId] ?? const LayerSidebarSettings();
   }
@@ -184,6 +189,7 @@ class SidebarState {
     Map<UuidValue, LayerSidebarSettings>? layerSettings,
     bool? filterFoodExpiring90Days,
     bool? filterRadioContacts,
+    Set<MarkerResourceType>? filterResourceTypes,
   }) {
     return SidebarState(
       searchQuery: searchQuery ?? this.searchQuery,
@@ -194,6 +200,7 @@ class SidebarState {
       filterFoodExpiring90Days:
           filterFoodExpiring90Days ?? this.filterFoodExpiring90Days,
       filterRadioContacts: filterRadioContacts ?? this.filterRadioContacts,
+      filterResourceTypes: filterResourceTypes ?? this.filterResourceTypes,
     );
   }
 }
@@ -252,6 +259,14 @@ class SidebarNotifier extends StateNotifier<SidebarState> {
 
   void setFilterRadioContacts(bool enabled) {
     state = state.copyWith(filterRadioContacts: enabled);
+  }
+
+  void toggleFilterResourceType(MarkerResourceType type) {
+    final next = {...state.filterResourceTypes};
+    if (!next.add(type)) {
+      next.remove(type);
+    }
+    state = state.copyWith(filterResourceTypes: next);
   }
 
   void setExpanded(bool expanded) {

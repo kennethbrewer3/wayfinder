@@ -46,6 +46,7 @@ import '../../map/providers/map_providers.dart';
 import '../../markers/models/marker_color.dart';
 import '../../markers/models/marker_inventory.dart';
 import '../../markers/models/marker_radio.dart';
+import '../../markers/models/marker_resource_type.dart';
 import '../../markers/presentation/create_marker_dialog.dart';
 import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
@@ -210,6 +211,7 @@ class _LayerOrganizedPanel extends ConsumerWidget {
     final query = sidebar.searchQuery.trim().toLowerCase();
     final filterFoodExpiring = sidebar.filterFoodExpiring90Days;
     final filterRadioContacts = sidebar.filterRadioContacts;
+    final filterResourceTypes = sidebar.filterResourceTypes;
 
     bool matchesSearch(String name) =>
         query.isEmpty || name.toLowerCase().contains(query);
@@ -227,6 +229,9 @@ class _LayerOrganizedPanel extends ConsumerWidget {
         return false;
       }
       if (filterRadioContacts && radio.isEmpty) {
+        return false;
+      }
+      if (!markerMatchesResourceTypeFilter(marker, filterResourceTypes)) {
         return false;
       }
       return true;
@@ -297,6 +302,23 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                         .setFilterRadioContacts(selected);
                   },
                 ),
+                for (final type in MarkerResourceType.values)
+                  FilterChip(
+                    avatar: Icon(
+                      markerResourceTypeIcon(type),
+                      size: 18,
+                      color: filterResourceTypes.contains(type)
+                          ? Theme.of(context).colorScheme.onSecondaryContainer
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    label: Text(markerResourceTypeFilterLabel(l10n, type)),
+                    selected: filterResourceTypes.contains(type),
+                    onSelected: (_) {
+                      ref
+                          .read(sidebarProvider.notifier)
+                          .toggleFilterResourceType(type);
+                    },
+                  ),
               ],
             ),
           ),
@@ -410,7 +432,8 @@ class _LayerOrganizedPanel extends ConsumerWidget {
                             hasSearchQuery:
                                 query.isNotEmpty ||
                                 filterFoodExpiring ||
-                                filterRadioContacts,
+                                filterRadioContacts ||
+                                filterResourceTypes.isNotEmpty,
                             onZoomTo: onZoomTo,
                           ),
                       ],
@@ -1202,6 +1225,7 @@ class _MarkerListTile extends ConsumerWidget {
             if (radio.mode != MarkerRadioMode.other)
               markerRadioModeLabel(l10n, radio.mode),
           ].join(' · ');
+    final resourceType = markerResourceTypeOf(marker);
     final kiosk = ref.watch(kioskModeActiveProvider);
     final offline = ref.watch(offlineModeActiveProvider);
     final roleLocked = ref.watch(mapEditsLockedByRoleProvider);
@@ -1249,6 +1273,16 @@ class _MarkerListTile extends ConsumerWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                        if (resourceType != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            markerResourceTypeLabel(l10n, resourceType),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 4),
                         Text(
                           '${marker.latitude.toStringAsFixed(4)}, '

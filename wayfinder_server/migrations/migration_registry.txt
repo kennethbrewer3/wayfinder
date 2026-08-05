@@ -54,3 +54,4 @@
 20260723164055395-user-client-preferences
 20260723180519607-dark-map-tiles-pref
 20260723182116982-app-theme-definitions
+20260805152801722-marker-resource-type

@@ -2728,6 +2728,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sidebarFilterRadioContacts => 'Contactos de radio';
 
   @override
+  String get sidebarFilterResourceSpring => 'Manantiales';
+
+  @override
+  String get sidebarFilterResourceWell => 'Pozos';
+
+  @override
+  String get sidebarFilterResourceCache => 'Alijos';
+
+  @override
+  String get sidebarFilterResourceFuel => 'Combustible';
+
+  @override
+  String get sidebarFilterResourceClinic => 'Clínicas';
+
+  @override
   String get markerInventoryTitle => 'Inventario del alijo';
 
   @override
@@ -3515,6 +3530,39 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sidebarFilterFoodExpiring90Days => 'Comida que caduca en 90 días';
+
+  @override
+  String get sidebarFilterResourcesLabel => 'Recursos';
+
+  @override
+  String get markerResourceTypeLabel => 'Tipo de recurso';
+
+  @override
+  String get markerResourceTypeHelp =>
+      'Clasifique manantiales, pozos, alijos, combustible y clínicas para los filtros del mapa de recursos.';
+
+  @override
+  String get markerResourceTypeNone => 'Ninguno (no es un recurso)';
+
+  @override
+  String get markerResourceTypeSpring => 'Manantial';
+
+  @override
+  String get markerResourceTypeWell => 'Pozo';
+
+  @override
+  String get markerResourceTypeCache => 'Alijo';
+
+  @override
+  String get markerResourceTypeFuel => 'Combustible';
+
+  @override
+  String get markerResourceTypeClinic => 'Clínica';
+
+  @override
+  String markerResourceTypeDetail(String type) {
+    return 'Recurso: $type';
+  }
 
   @override
   String get sidebarNoMatchingMarkers => 'No hay marcadores coincidentes';

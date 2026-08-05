@@ -1166,7 +1166,11 @@ class EndpointAppTheme extends _i1.EndpointRef {
   @override
   String get name => 'appTheme';
 
-  /// Any signed-in user (or open mode) may list themes to select them.
+  /// Theme catalog is readable without auth.
+  ///
+  /// The Flutter app resolves custom themes during startup (before the auth
+  /// session is always restored on mobile). Mutations still require
+  /// [WayfinderPermission.manageThemes].
   _i2.Future<List<_i28.AppThemeDefinition>> listThemes() =>
       caller.callServerEndpoint<List<_i28.AppThemeDefinition>>(
         'appTheme',

@@ -4604,6 +4604,36 @@ abstract class AppLocalizations {
   /// **'Radio contacts'**
   String get sidebarFilterRadioContacts;
 
+  /// No description provided for @sidebarFilterResourceSpring.
+  ///
+  /// In en, this message translates to:
+  /// **'Springs'**
+  String get sidebarFilterResourceSpring;
+
+  /// No description provided for @sidebarFilterResourceWell.
+  ///
+  /// In en, this message translates to:
+  /// **'Wells'**
+  String get sidebarFilterResourceWell;
+
+  /// No description provided for @sidebarFilterResourceCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Caches'**
+  String get sidebarFilterResourceCache;
+
+  /// No description provided for @sidebarFilterResourceFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get sidebarFilterResourceFuel;
+
+  /// No description provided for @sidebarFilterResourceClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinics'**
+  String get sidebarFilterResourceClinic;
+
   /// No description provided for @markerInventoryTitle.
   ///
   /// In en, this message translates to:
@@ -6007,6 +6037,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Food expiring in 90 days'**
   String get sidebarFilterFoodExpiring90Days;
+
+  /// No description provided for @sidebarFilterResourcesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources'**
+  String get sidebarFilterResourcesLabel;
+
+  /// No description provided for @markerResourceTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource type'**
+  String get markerResourceTypeLabel;
+
+  /// No description provided for @markerResourceTypeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Classify springs, wells, caches, fuel, and clinics for resource map filters.'**
+  String get markerResourceTypeHelp;
+
+  /// No description provided for @markerResourceTypeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None (not a resource)'**
+  String get markerResourceTypeNone;
+
+  /// No description provided for @markerResourceTypeSpring.
+  ///
+  /// In en, this message translates to:
+  /// **'Spring'**
+  String get markerResourceTypeSpring;
+
+  /// No description provided for @markerResourceTypeWell.
+  ///
+  /// In en, this message translates to:
+  /// **'Well'**
+  String get markerResourceTypeWell;
+
+  /// No description provided for @markerResourceTypeCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache'**
+  String get markerResourceTypeCache;
+
+  /// No description provided for @markerResourceTypeFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get markerResourceTypeFuel;
+
+  /// No description provided for @markerResourceTypeClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic'**
+  String get markerResourceTypeClinic;
+
+  /// No description provided for @markerResourceTypeDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource: {type}'**
+  String markerResourceTypeDetail(String type);
 
   /// No description provided for @sidebarNoMatchingMarkers.
   ///

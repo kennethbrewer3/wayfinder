@@ -44,6 +44,7 @@ import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../access/providers/access_session_provider.dart';
 import '../../kiosk/providers/kiosk_mode_provider.dart';
+import '../../markers/models/marker_resource_type.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
@@ -434,6 +435,11 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
               ? localizedMarkerIconLabel(l10n, marker.icon)
               : l10n.mapObjectTypeMarker,
         ),
+        if (markerResourceTypeOf(marker) case final resourceType?)
+          _DetailRow(
+            label: l10n.markerResourceTypeLabel,
+            value: markerResourceTypeLabel(l10n, resourceType),
+          ),
         _DetailRow(
           label: l10n.mapMarkerIdLabel,
           value: marker.id.toString(),

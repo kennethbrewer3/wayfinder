@@ -2391,7 +2391,11 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     if (markers != null) {
       final markerId = hitTestMarkerAtPoint(
         point: point,
-        markers: filterMarkersForMap(markers, layersById),
+        markers: filterMarkersForMap(
+          markers,
+          layersById,
+          resourceTypes: ref.read(sidebarProvider).filterResourceTypes,
+        ),
         camera: _mapController.camera,
         width: mapMarkerRenderWidth(ref.read(mapMarkerSizeScaleProvider)),
         height: mapMarkerRenderHeight(ref.read(mapMarkerSizeScaleProvider)),
@@ -4697,11 +4701,19 @@ class _MapCanvasState extends ConsumerState<_MapCanvas> {
     final showInactiveSeasonalOverlays = ref.watch(
       showInactiveSeasonalOverlaysProvider,
     );
-    final mapObjectLayerChildren = !mapTilesDisplayed || allMarkers == null
+    final resourceTypeFilters = ref.watch(sidebarProvider).filterResourceTypes;
+    final visibleMarkers = allMarkers == null
+        ? null
+        : filterMarkersForMap(
+            allMarkers,
+            layersById,
+            resourceTypes: resourceTypeFilters,
+          );
+    final mapObjectLayerChildren = !mapTilesDisplayed || visibleMarkers == null
         ? const <Widget>[]
         : buildStackedMapLayerChildren(
             layers: layers,
-            markers: allMarkers,
+            markers: visibleMarkers,
             zones: zones,
             mapMarkerSizeScale: mapMarkerSizeScale,
             selectedLineId: selectedLine?.id,

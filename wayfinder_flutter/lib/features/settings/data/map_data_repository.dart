@@ -7,7 +7,7 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 import '../../../core/app_globals.dart';
 import '../../../core/rest_api_headers.dart';
 
-const mapDataBackupVersion = 6;
+const mapDataBackupVersion = 7;
 
 class MapDataRestoreResult {
   const MapDataRestoreResult({
@@ -16,6 +16,7 @@ class MapDataRestoreResult {
     required this.zones,
     this.seasonalOverlays = 0,
     this.watchLogEntries = 0,
+    this.commsPlans = 0,
     this.markerIconCategories = 0,
     this.markerIcons = 0,
   });
@@ -25,6 +26,7 @@ class MapDataRestoreResult {
   final int zones;
   final int seasonalOverlays;
   final int watchLogEntries;
+  final int commsPlans;
   final int markerIconCategories;
   final int markerIcons;
 }
@@ -123,6 +125,7 @@ class MapDataRepository {
         zones: summary.zones,
         seasonalOverlays: summary.seasonalOverlays,
         watchLogEntries: summary.watchLogEntries,
+        commsPlans: summary.commsPlans,
         markerIconCategories: summary.markerIconCategories,
         markerIcons: summary.markerIcons,
       );
@@ -170,6 +173,7 @@ class MapDataRepository {
         zones: summary.zones,
         seasonalOverlays: summary.seasonalOverlays,
         watchLogEntries: summary.watchLogEntries,
+        commsPlans: summary.commsPlans,
         markerIconCategories: summary.markerIconCategories,
         markerIcons: summary.markerIcons,
       );
@@ -213,6 +217,7 @@ class MapDataRepository {
       zones: restored['zones'] as int? ?? 0,
       seasonalOverlays: restored['seasonalOverlays'] as int? ?? 0,
       watchLogEntries: restored['watchLogEntries'] as int? ?? 0,
+      commsPlans: restored['commsPlans'] as int? ?? 0,
       markerIconCategories: restored['markerIconCategories'] as int? ?? 0,
       markerIcons: restored['markerIcons'] as int? ?? 0,
     );

@@ -98,6 +98,7 @@ Future<MapDataRestoreCounts> restoreMapDataFromArchive(
       zones: counts.zones,
       seasonalOverlays: counts.seasonalOverlays,
       watchLogEntries: counts.watchLogEntries,
+      commsPlans: counts.commsPlans,
       markerIconCategories: counts.markerIconCategories,
       markerIcons: counts.markerIcons,
       markerAttachments: attachmentCounts.attachments,

@@ -407,7 +407,7 @@
   "watchLogTextRequired": "Saisissez le texte de l'événement.",
   "backupTitle": "Sauvegarde des données cartographiques",
   "backupPermissionDenied": "Vous n'avez pas l'autorisation d'exporter ou de restaurer les sauvegardes cartographiques.",
-  "backupDescription": "Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.",
+  "backupDescription": "Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications, icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.",
   "backupExportButton": "Exporter les données (.zip)",
   "backupRestoreButton": "Restaurer depuis une sauvegarde",
   "backupExportSuccess": "Sauvegarde des données cartographiques enregistrée.",
@@ -420,9 +420,9 @@
     }
   },
   "backupRestoreConfirmTitle": "Restaurer les données cartographiques ?",
-  "backupRestoreConfirmMessage": "Cela remplace toutes les couches, marqueurs, zones, calques saisonniers, entrées du journal de veille et icônes personnalisées sur le serveur par le fichier sélectionné. Cette action est irréversible.",
-  "backupRestoreSuccess": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s) et {watchLogEntries} entrée(s) du journal restauré(s).",
-  "backupRestoreSuccessWithIcons": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s), {watchLogEntries} entrée(s) du journal et {icons} icône(s) personnalisée(s) restauré(s).",
+  "backupRestoreConfirmMessage": "Cela remplace toutes les couches, marqueurs, zones, calques saisonniers, entrées du journal de veille, plans de communications et icônes personnalisées sur le serveur par le fichier sélectionné. Cette action est irréversible.",
+  "backupRestoreSuccess": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s), {watchLogEntries} entrée(s) du journal et {commsPlans} plan(s) de communications restauré(s).",
+  "backupRestoreSuccessWithIcons": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s), {watchLogEntries} entrée(s) du journal, {commsPlans} plan(s) de communications et {icons} icône(s) personnalisée(s) restauré(s).",
   "@backupRestoreSuccessWithIcons": {
     "placeholders": {
       "layers": { "type": "int" },
@@ -430,6 +430,7 @@
       "zones": { "type": "int" },
       "seasonalOverlays": { "type": "int" },
       "watchLogEntries": { "type": "int" },
+      "commsPlans": { "type": "int" },
       "icons": { "type": "int" }
     }
   },
@@ -439,7 +440,8 @@
       "markers": { "type": "int" },
       "zones": { "type": "int" },
       "seasonalOverlays": { "type": "int" },
-      "watchLogEntries": { "type": "int" }
+      "watchLogEntries": { "type": "int" },
+      "commsPlans": { "type": "int" }
     }
   },
   "backupRestoreFailed": "Échec de la restauration : {error}",
@@ -522,7 +524,7 @@
   },
   "fieldPackRestoreConfirmTitle": "Restaurer le pack terrain ?",
   "fieldPackRestoreConfirmMessage": "Cela remplace toutes les données cartographiques et icônes personnalisées sur le serveur, et installe les archives PMTiles du pack (les identifiants correspondants sont écrasés). Cette action est irréversible.",
-  "fieldPackRestoreSuccess": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s), {watchLogEntries} entrée(s) du journal, {icons} icône(s) personnalisée(s) et {pmtiles} archive(s) PMTiles restauré(s).",
+  "fieldPackRestoreSuccess": "{layers} couche(s), {markers} marqueur(s), {zones} zone(s), {seasonalOverlays} calque(s) saisonnier(s), {watchLogEntries} entrée(s) du journal, {commsPlans} plan(s) de communications, {icons} icône(s) personnalisée(s) et {pmtiles} archive(s) PMTiles restauré(s).",
   "@fieldPackRestoreSuccess": {
     "placeholders": {
       "layers": {
@@ -538,6 +540,9 @@
         "type": "int"
       },
       "watchLogEntries": {
+        "type": "int"
+      },
+      "commsPlans": {
         "type": "int"
       },
       "icons": {
@@ -3113,5 +3118,104 @@
   },
   "routingClearRouteAction": "Effacer l'itinéraire",
   "routingDirectionsTitle": "Itinéraire",
-  "routingDirectionsEmpty": "Aucune instruction pas à pas n'a été renvoyée pour cet itinéraire."
+  "routingDirectionsEmpty": "Aucune instruction pas à pas n'a été renvoyée pour cet itinéraire.",
+  "commsPlanTitle": "Plan de communications",
+  "commsPlanSidebarLoading": "Chargement…",
+  "commsPlanSidebarEmpty": "Aucun plan actif",
+  "commsPlanSidebarLoadFailed": "Impossible de charger les plans",
+  "commsPlanSidebarSubtitle": "{name} · {count} canal(aux)",
+  "@commsPlanSidebarSubtitle": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "commsPlanOfflineHint": "Les plans de communications ne sont pas encore disponibles hors ligne.",
+  "commsPlanAddPlan": "Ajouter un plan",
+  "commsPlanEditPlan": "Modifier le tableau",
+  "commsPlanEmpty": "Aucun plan de communications pour l'instant. Ajoutez un tableau pour les horaires de nets, fréquences et canaux go/no-go.",
+  "commsPlanLoadFailed": "Impossible de charger les plans : {error}",
+  "@commsPlanLoadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "commsPlanBoardHeader": "{name} ({timezone})",
+  "@commsPlanBoardHeader": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "timezone": { "type": "String" }
+    }
+  },
+  "commsPlanOtherPlans": "Autres plans",
+  "commsPlanChannelsCount": "{count} canal(aux)",
+  "@commsPlanChannelsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsPlanMakeActive": "Définir comme tableau actif",
+  "commsPlanDeleteConfirmTitle": "Supprimer le plan de communications ?",
+  "commsPlanDeleteConfirmMessage": "Supprimer « {name} » ? Cette action est irréversible.",
+  "@commsPlanDeleteConfirmMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "commsPlanUnscheduled": "Non planifié",
+  "commsPlanNextNet": "Prochain {when}",
+  "@commsPlanNextNet": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsPlanCreateTitle": "Nouveau plan de communications",
+  "commsPlanEditTitle": "Modifier le plan de communications",
+  "commsPlanNameLabel": "Nom du plan",
+  "commsPlanNameRequired": "Saisissez un nom de plan.",
+  "commsPlanTimezoneLabel": "Fuseau horaire",
+  "commsPlanTimezoneHint": "Nom IANA pour les horaires (ex. America/New_York)",
+  "commsPlanActiveLabel": "Tableau actif",
+  "commsPlanActiveHint": "Afficher ce plan comme tableau opérationnel du TOC",
+  "commsPlanNotesLabel": "Notes du plan",
+  "commsPlanChannelsHeading": "Canaux",
+  "commsPlanChannelsEmpty": "Aucun canal pour l'instant.",
+  "commsPlanAddChannel": "Ajouter un canal",
+  "commsPlanSaveFailed": "Impossible d'enregistrer le plan : {error}",
+  "@commsPlanSaveFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "commsPlanChannelCreateTitle": "Ajouter un canal",
+  "commsPlanChannelEditTitle": "Modifier le canal",
+  "commsPlanChannelLabel": "Libellé du canal",
+  "commsPlanChannelLabelRequired": "Saisissez un libellé de canal.",
+  "commsPlanChannelNetName": "Nom du net",
+  "commsPlanChannelRole": "Rôle",
+  "commsPlanChannelDays": "Jours de net",
+  "commsPlanChannelDaysHint": "Laissez tout désélectionné pour tous les jours (si une heure de début est définie).",
+  "commsPlanChannelStartTime": "Début (local)",
+  "commsPlanChannelDuration": "Durée (min)",
+  "commsPlanChannelAvailability": "Go / no-go",
+  "commsPlanChannelStatusNote": "Note d'état",
+  "commsPlanChannelLinkedMarker": "Marqueur lié",
+  "commsPlanChannelNoMarker": "Aucun",
+  "commsPlanChannelNotes": "Notes",
+  "commsPlanRolePrimary": "Principal",
+  "commsPlanRoleAlternate": "Alternatif",
+  "commsPlanRoleEmergency": "Urgence",
+  "commsPlanRoleTactical": "Tactique",
+  "commsPlanRoleLiaison": "Liaison",
+  "commsPlanAvailabilityGo": "Go",
+  "commsPlanAvailabilityNoGo": "No-go",
+  "commsPlanAvailabilityConditional": "Conditionnel",
+  "commsPlanAvailabilityUnknown": "Inconnu",
+  "commsPlanWeekdayMon": "Lun",
+  "commsPlanWeekdayTue": "Mar",
+  "commsPlanWeekdayWed": "Mer",
+  "commsPlanWeekdayThu": "Jeu",
+  "commsPlanWeekdayFri": "Ven",
+  "commsPlanWeekdaySat": "Sam",
+  "commsPlanWeekdaySun": "Dim"
 }

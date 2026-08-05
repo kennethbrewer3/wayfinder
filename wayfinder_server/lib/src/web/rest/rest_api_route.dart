@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import 'app_settings_rest_handlers.dart';
 import 'categories_rest_handlers.dart';
+import 'comms_plans_rest_handlers.dart';
 import 'field_pack_rest_handlers.dart';
 import 'health_rest_handlers.dart';
 import 'status_rest_handlers.dart';
@@ -77,6 +78,12 @@ class RestApiRoute extends Route {
       ..put('/watch-log/:id', WatchLogRestHandlers.update)
       ..patch('/watch-log/:id', WatchLogRestHandlers.update)
       ..delete('/watch-log/:id', WatchLogRestHandlers.delete)
+      ..get('/comms-plans', CommsPlansRestHandlers.list)
+      ..get('/comms-plans/:id', CommsPlansRestHandlers.get)
+      ..post('/comms-plans', CommsPlansRestHandlers.create)
+      ..put('/comms-plans/:id', CommsPlansRestHandlers.update)
+      ..patch('/comms-plans/:id', CommsPlansRestHandlers.update)
+      ..delete('/comms-plans/:id', CommsPlansRestHandlers.delete)
       ..get('/map-data', MapDataRestHandlers.export)
       ..get('/map-data/backup.zip', MapDataRestHandlers.exportArchive)
       ..post('/map-data/restore', MapDataRestHandlers.restore)
@@ -183,6 +190,7 @@ class RestApiRoute extends Route {
         'layers': '/api/layers',
         'seasonalOverlays': '/api/seasonal-overlays',
         'watchLog': '/api/watch-log',
+        'commsPlans': '/api/comms-plans',
         'mapData': '/api/map-data',
         'mapDataBackupZip': '/api/map-data/backup.zip',
         'mapDataRestore': '/api/map-data/restore',

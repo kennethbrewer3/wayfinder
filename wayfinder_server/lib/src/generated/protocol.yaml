@@ -29,6 +29,13 @@ category:
   - createCategory:
   - updateCategory:
   - deleteCategory:
+commsPlan:
+  - listPlans:
+  - getPlan:
+  - createPlan:
+  - updatePlan:
+  - deletePlan:
+  - planChanges:
 greeting:
   - hello:
 mapLayer:

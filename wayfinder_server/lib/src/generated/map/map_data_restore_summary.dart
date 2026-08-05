@@ -20,10 +20,12 @@ abstract class MapDataRestoreSummary
     required this.zones,
     required this.seasonalOverlays,
     required this.watchLogEntries,
+    int? commsPlans,
     required this.markerIconCategories,
     required this.markerIcons,
     int? markerAttachments,
-  }) : markerAttachments = markerAttachments ?? 0;
+  }) : commsPlans = commsPlans ?? 0,
+       markerAttachments = markerAttachments ?? 0;
 
   factory MapDataRestoreSummary({
     required int layers,
@@ -31,6 +33,7 @@ abstract class MapDataRestoreSummary
     required int zones,
     required int seasonalOverlays,
     required int watchLogEntries,
+    int? commsPlans,
     required int markerIconCategories,
     required int markerIcons,
     int? markerAttachments,
@@ -45,6 +48,7 @@ abstract class MapDataRestoreSummary
       zones: jsonSerialization['zones'] as int,
       seasonalOverlays: jsonSerialization['seasonalOverlays'] as int,
       watchLogEntries: jsonSerialization['watchLogEntries'] as int,
+      commsPlans: jsonSerialization['commsPlans'] as int?,
       markerIconCategories: jsonSerialization['markerIconCategories'] as int,
       markerIcons: jsonSerialization['markerIcons'] as int,
       markerAttachments: jsonSerialization['markerAttachments'] as int?,
@@ -61,6 +65,8 @@ abstract class MapDataRestoreSummary
 
   int watchLogEntries;
 
+  int commsPlans;
+
   int markerIconCategories;
 
   int markerIcons;
@@ -76,6 +82,7 @@ abstract class MapDataRestoreSummary
     int? zones,
     int? seasonalOverlays,
     int? watchLogEntries,
+    int? commsPlans,
     int? markerIconCategories,
     int? markerIcons,
     int? markerAttachments,
@@ -89,6 +96,7 @@ abstract class MapDataRestoreSummary
       'zones': zones,
       'seasonalOverlays': seasonalOverlays,
       'watchLogEntries': watchLogEntries,
+      'commsPlans': commsPlans,
       'markerIconCategories': markerIconCategories,
       'markerIcons': markerIcons,
       'markerAttachments': markerAttachments,
@@ -104,6 +112,7 @@ abstract class MapDataRestoreSummary
       'zones': zones,
       'seasonalOverlays': seasonalOverlays,
       'watchLogEntries': watchLogEntries,
+      'commsPlans': commsPlans,
       'markerIconCategories': markerIconCategories,
       'markerIcons': markerIcons,
       'markerAttachments': markerAttachments,
@@ -123,6 +132,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     required int zones,
     required int seasonalOverlays,
     required int watchLogEntries,
+    int? commsPlans,
     required int markerIconCategories,
     required int markerIcons,
     int? markerAttachments,
@@ -132,6 +142,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
          zones: zones,
          seasonalOverlays: seasonalOverlays,
          watchLogEntries: watchLogEntries,
+         commsPlans: commsPlans,
          markerIconCategories: markerIconCategories,
          markerIcons: markerIcons,
          markerAttachments: markerAttachments,
@@ -147,6 +158,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
     int? zones,
     int? seasonalOverlays,
     int? watchLogEntries,
+    int? commsPlans,
     int? markerIconCategories,
     int? markerIcons,
     int? markerAttachments,
@@ -157,6 +169,7 @@ class _MapDataRestoreSummaryImpl extends MapDataRestoreSummary {
       zones: zones ?? this.zones,
       seasonalOverlays: seasonalOverlays ?? this.seasonalOverlays,
       watchLogEntries: watchLogEntries ?? this.watchLogEntries,
+      commsPlans: commsPlans ?? this.commsPlans,
       markerIconCategories: markerIconCategories ?? this.markerIconCategories,
       markerIcons: markerIcons ?? this.markerIcons,
       markerAttachments: markerAttachments ?? this.markerAttachments,

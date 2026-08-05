@@ -2359,7 +2359,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -2395,31 +2395,33 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestoreConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'This replaces all layers, markers, zones, seasonal overlays, watch log entries, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
+  /// **'This replaces all layers, markers, zones, seasonal overlays, watch log entries, comms plans, and custom marker icons on the server with the selected backup file. This cannot be undone.'**
   String get backupRestoreConfirmMessage;
 
   /// No description provided for @backupRestoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {watchLogEntries} watch log entr(y/ies).'**
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), and {commsPlans} comms plan(s).'**
   String backupRestoreSuccess(
     int layers,
     int markers,
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
   );
 
   /// No description provided for @backupRestoreSuccessWithIcons.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), and {icons} custom icon(s).'**
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {commsPlans} comms plan(s), and {icons} custom icon(s).'**
   String backupRestoreSuccessWithIcons(
     int layers,
     int markers,
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
     int icons,
   );
 
@@ -2654,13 +2656,14 @@ abstract class AppLocalizations {
   /// No description provided for @fieldPackRestoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {icons} custom icon(s), and {pmtiles} PMTiles archive(s).'**
+  /// **'Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {commsPlans} comms plan(s), {icons} custom icon(s), and {pmtiles} PMTiles archive(s).'**
   String fieldPackRestoreSuccess(
     int layers,
     int markers,
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
     int icons,
     int pmtiles,
   );
@@ -11343,6 +11346,378 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No turn-by-turn steps were returned for this route.'**
   String get routingDirectionsEmpty;
+
+  /// No description provided for @commsPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comms plan'**
+  String get commsPlanTitle;
+
+  /// No description provided for @commsPlanSidebarLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get commsPlanSidebarLoading;
+
+  /// No description provided for @commsPlanSidebarEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No active plan'**
+  String get commsPlanSidebarEmpty;
+
+  /// No description provided for @commsPlanSidebarLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load plans'**
+  String get commsPlanSidebarLoadFailed;
+
+  /// No description provided for @commsPlanSidebarSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {count} channel(s)'**
+  String commsPlanSidebarSubtitle(String name, int count);
+
+  /// No description provided for @commsPlanOfflineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Comms plans are not available offline yet.'**
+  String get commsPlanOfflineHint;
+
+  /// No description provided for @commsPlanAddPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Add plan'**
+  String get commsPlanAddPlan;
+
+  /// No description provided for @commsPlanEditPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit board'**
+  String get commsPlanEditPlan;
+
+  /// No description provided for @commsPlanEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels.'**
+  String get commsPlanEmpty;
+
+  /// No description provided for @commsPlanLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load comms plans: {error}'**
+  String commsPlanLoadFailed(String error);
+
+  /// No description provided for @commsPlanBoardHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({timezone})'**
+  String commsPlanBoardHeader(String name, String timezone);
+
+  /// No description provided for @commsPlanOtherPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Other plans'**
+  String get commsPlanOtherPlans;
+
+  /// No description provided for @commsPlanChannelsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} channel(s)'**
+  String commsPlanChannelsCount(int count);
+
+  /// No description provided for @commsPlanMakeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Make active board'**
+  String get commsPlanMakeActive;
+
+  /// No description provided for @commsPlanDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comms plan?'**
+  String get commsPlanDeleteConfirmTitle;
+
+  /// No description provided for @commsPlanDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? This cannot be undone.'**
+  String commsPlanDeleteConfirmMessage(String name);
+
+  /// No description provided for @commsPlanUnscheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Unscheduled'**
+  String get commsPlanUnscheduled;
+
+  /// No description provided for @commsPlanNextNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Next {when}'**
+  String commsPlanNextNet(String when);
+
+  /// No description provided for @commsPlanCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New comms plan'**
+  String get commsPlanCreateTitle;
+
+  /// No description provided for @commsPlanEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit comms plan'**
+  String get commsPlanEditTitle;
+
+  /// No description provided for @commsPlanNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan name'**
+  String get commsPlanNameLabel;
+
+  /// No description provided for @commsPlanNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a plan name.'**
+  String get commsPlanNameRequired;
+
+  /// No description provided for @commsPlanTimezoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Timezone'**
+  String get commsPlanTimezoneLabel;
+
+  /// No description provided for @commsPlanTimezoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'IANA name for net times (e.g. America/New_York)'**
+  String get commsPlanTimezoneHint;
+
+  /// No description provided for @commsPlanActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active board'**
+  String get commsPlanActiveLabel;
+
+  /// No description provided for @commsPlanActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this plan as the operational TOC board'**
+  String get commsPlanActiveHint;
+
+  /// No description provided for @commsPlanNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan notes'**
+  String get commsPlanNotesLabel;
+
+  /// No description provided for @commsPlanChannelsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get commsPlanChannelsHeading;
+
+  /// No description provided for @commsPlanChannelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No channels yet.'**
+  String get commsPlanChannelsEmpty;
+
+  /// No description provided for @commsPlanAddChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add channel'**
+  String get commsPlanAddChannel;
+
+  /// No description provided for @commsPlanSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save plan: {error}'**
+  String commsPlanSaveFailed(String error);
+
+  /// No description provided for @commsPlanChannelCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add channel'**
+  String get commsPlanChannelCreateTitle;
+
+  /// No description provided for @commsPlanChannelEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit channel'**
+  String get commsPlanChannelEditTitle;
+
+  /// No description provided for @commsPlanChannelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel label'**
+  String get commsPlanChannelLabel;
+
+  /// No description provided for @commsPlanChannelLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a channel label.'**
+  String get commsPlanChannelLabelRequired;
+
+  /// No description provided for @commsPlanChannelNetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Net name'**
+  String get commsPlanChannelNetName;
+
+  /// No description provided for @commsPlanChannelRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get commsPlanChannelRole;
+
+  /// No description provided for @commsPlanChannelDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Net days'**
+  String get commsPlanChannelDays;
+
+  /// No description provided for @commsPlanChannelDaysHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave all unselected for every day (when a start time is set).'**
+  String get commsPlanChannelDaysHint;
+
+  /// No description provided for @commsPlanChannelStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Start (local)'**
+  String get commsPlanChannelStartTime;
+
+  /// No description provided for @commsPlanChannelDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (min)'**
+  String get commsPlanChannelDuration;
+
+  /// No description provided for @commsPlanChannelAvailability.
+  ///
+  /// In en, this message translates to:
+  /// **'Go / no-go'**
+  String get commsPlanChannelAvailability;
+
+  /// No description provided for @commsPlanChannelStatusNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Status note'**
+  String get commsPlanChannelStatusNote;
+
+  /// No description provided for @commsPlanChannelLinkedMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked marker'**
+  String get commsPlanChannelLinkedMarker;
+
+  /// No description provided for @commsPlanChannelNoMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get commsPlanChannelNoMarker;
+
+  /// No description provided for @commsPlanChannelNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get commsPlanChannelNotes;
+
+  /// No description provided for @commsPlanRolePrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get commsPlanRolePrimary;
+
+  /// No description provided for @commsPlanRoleAlternate.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternate'**
+  String get commsPlanRoleAlternate;
+
+  /// No description provided for @commsPlanRoleEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get commsPlanRoleEmergency;
+
+  /// No description provided for @commsPlanRoleTactical.
+  ///
+  /// In en, this message translates to:
+  /// **'Tactical'**
+  String get commsPlanRoleTactical;
+
+  /// No description provided for @commsPlanRoleLiaison.
+  ///
+  /// In en, this message translates to:
+  /// **'Liaison'**
+  String get commsPlanRoleLiaison;
+
+  /// No description provided for @commsPlanAvailabilityGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Go'**
+  String get commsPlanAvailabilityGo;
+
+  /// No description provided for @commsPlanAvailabilityNoGo.
+  ///
+  /// In en, this message translates to:
+  /// **'No-go'**
+  String get commsPlanAvailabilityNoGo;
+
+  /// No description provided for @commsPlanAvailabilityConditional.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditional'**
+  String get commsPlanAvailabilityConditional;
+
+  /// No description provided for @commsPlanAvailabilityUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get commsPlanAvailabilityUnknown;
+
+  /// No description provided for @commsPlanWeekdayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get commsPlanWeekdayMon;
+
+  /// No description provided for @commsPlanWeekdayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get commsPlanWeekdayTue;
+
+  /// No description provided for @commsPlanWeekdayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get commsPlanWeekdayWed;
+
+  /// No description provided for @commsPlanWeekdayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get commsPlanWeekdayThu;
+
+  /// No description provided for @commsPlanWeekdayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get commsPlanWeekdayFri;
+
+  /// No description provided for @commsPlanWeekdaySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get commsPlanWeekdaySat;
+
+  /// No description provided for @commsPlanWeekdaySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get commsPlanWeekdaySun;
 }
 
 class _AppLocalizationsDelegate

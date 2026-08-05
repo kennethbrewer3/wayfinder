@@ -123,6 +123,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                     result.zones,
                     result.seasonalOverlays,
                     result.watchLogEntries,
+                    result.commsPlans,
                     result.markerIcons,
                   )
                 : l10n.backupRestoreSuccess(
@@ -131,6 +132,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
                     result.zones,
                     result.seasonalOverlays,
                     result.watchLogEntries,
+                    result.commsPlans,
                   ),
           ),
         ),
@@ -382,6 +384,7 @@ class _SettingsBackupTabState extends ConsumerState<SettingsBackupTab> {
               map.zones,
               map.seasonalOverlays,
               map.watchLogEntries,
+              map.commsPlans,
               map.markerIcons,
               result.pmtiles,
             ),

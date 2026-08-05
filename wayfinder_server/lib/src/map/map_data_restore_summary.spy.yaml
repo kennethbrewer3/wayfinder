@@ -5,6 +5,7 @@ fields:
   zones: int
   seasonalOverlays: int
   watchLogEntries: int
+  commsPlans: int, default=0
   markerIconCategories: int
   markerIcons: int
   markerAttachments: int, default=0

@@ -1324,7 +1324,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
+      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications, icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
 
   @override
   String get backupExportButton => 'Exporter les données (.zip)';
@@ -1347,7 +1347,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'Cela remplace toutes les couches, marqueurs, zones, calques saisonniers, entrées du journal de veille et icônes personnalisées sur le serveur par le fichier sélectionné. Cette action est irréversible.';
+      'Cela remplace toutes les couches, marqueurs, zones, calques saisonniers, entrées du journal de veille, plans de communications et icônes personnalisées sur le serveur par le fichier sélectionné. Cette action est irréversible.';
 
   @override
   String backupRestoreSuccess(
@@ -1356,8 +1356,9 @@ class AppLocalizationsFr extends AppLocalizations {
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
   ) {
-    return '$layers couche(s), $markers marqueur(s), $zones zone(s), $seasonalOverlays calque(s) saisonnier(s) et $watchLogEntries entrée(s) du journal restauré(s).';
+    return '$layers couche(s), $markers marqueur(s), $zones zone(s), $seasonalOverlays calque(s) saisonnier(s), $watchLogEntries entrée(s) du journal et $commsPlans plan(s) de communications restauré(s).';
   }
 
   @override
@@ -1367,9 +1368,10 @@ class AppLocalizationsFr extends AppLocalizations {
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
     int icons,
   ) {
-    return '$layers couche(s), $markers marqueur(s), $zones zone(s), $seasonalOverlays calque(s) saisonnier(s), $watchLogEntries entrée(s) du journal et $icons icône(s) personnalisée(s) restauré(s).';
+    return '$layers couche(s), $markers marqueur(s), $zones zone(s), $seasonalOverlays calque(s) saisonnier(s), $watchLogEntries entrée(s) du journal, $commsPlans plan(s) de communications et $icons icône(s) personnalisée(s) restauré(s).';
   }
 
   @override
@@ -1516,10 +1518,11 @@ class AppLocalizationsFr extends AppLocalizations {
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
     int icons,
     int pmtiles,
   ) {
-    return '$layers couche(s), $markers marqueur(s), $zones zone(s), $seasonalOverlays calque(s) saisonnier(s), $watchLogEntries entrée(s) du journal, $icons icône(s) personnalisée(s) et $pmtiles archive(s) PMTiles restauré(s).';
+    return '$layers couche(s), $markers marqueur(s), $zones zone(s), $seasonalOverlays calque(s) saisonnier(s), $watchLogEntries entrée(s) du journal, $commsPlans plan(s) de communications, $icons icône(s) personnalisée(s) et $pmtiles archive(s) PMTiles restauré(s).';
   }
 
   @override
@@ -6600,4 +6603,210 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get routingDirectionsEmpty =>
       'Aucune instruction pas à pas n\'a été renvoyée pour cet itinéraire.';
+
+  @override
+  String get commsPlanTitle => 'Plan de communications';
+
+  @override
+  String get commsPlanSidebarLoading => 'Chargement…';
+
+  @override
+  String get commsPlanSidebarEmpty => 'Aucun plan actif';
+
+  @override
+  String get commsPlanSidebarLoadFailed => 'Impossible de charger les plans';
+
+  @override
+  String commsPlanSidebarSubtitle(String name, int count) {
+    return '$name · $count canal(aux)';
+  }
+
+  @override
+  String get commsPlanOfflineHint =>
+      'Les plans de communications ne sont pas encore disponibles hors ligne.';
+
+  @override
+  String get commsPlanAddPlan => 'Ajouter un plan';
+
+  @override
+  String get commsPlanEditPlan => 'Modifier le tableau';
+
+  @override
+  String get commsPlanEmpty =>
+      'Aucun plan de communications pour l\'instant. Ajoutez un tableau pour les horaires de nets, fréquences et canaux go/no-go.';
+
+  @override
+  String commsPlanLoadFailed(String error) {
+    return 'Impossible de charger les plans : $error';
+  }
+
+  @override
+  String commsPlanBoardHeader(String name, String timezone) {
+    return '$name ($timezone)';
+  }
+
+  @override
+  String get commsPlanOtherPlans => 'Autres plans';
+
+  @override
+  String commsPlanChannelsCount(int count) {
+    return '$count canal(aux)';
+  }
+
+  @override
+  String get commsPlanMakeActive => 'Définir comme tableau actif';
+
+  @override
+  String get commsPlanDeleteConfirmTitle =>
+      'Supprimer le plan de communications ?';
+
+  @override
+  String commsPlanDeleteConfirmMessage(String name) {
+    return 'Supprimer « $name » ? Cette action est irréversible.';
+  }
+
+  @override
+  String get commsPlanUnscheduled => 'Non planifié';
+
+  @override
+  String commsPlanNextNet(String when) {
+    return 'Prochain $when';
+  }
+
+  @override
+  String get commsPlanCreateTitle => 'Nouveau plan de communications';
+
+  @override
+  String get commsPlanEditTitle => 'Modifier le plan de communications';
+
+  @override
+  String get commsPlanNameLabel => 'Nom du plan';
+
+  @override
+  String get commsPlanNameRequired => 'Saisissez un nom de plan.';
+
+  @override
+  String get commsPlanTimezoneLabel => 'Fuseau horaire';
+
+  @override
+  String get commsPlanTimezoneHint =>
+      'Nom IANA pour les horaires (ex. America/New_York)';
+
+  @override
+  String get commsPlanActiveLabel => 'Tableau actif';
+
+  @override
+  String get commsPlanActiveHint =>
+      'Afficher ce plan comme tableau opérationnel du TOC';
+
+  @override
+  String get commsPlanNotesLabel => 'Notes du plan';
+
+  @override
+  String get commsPlanChannelsHeading => 'Canaux';
+
+  @override
+  String get commsPlanChannelsEmpty => 'Aucun canal pour l\'instant.';
+
+  @override
+  String get commsPlanAddChannel => 'Ajouter un canal';
+
+  @override
+  String commsPlanSaveFailed(String error) {
+    return 'Impossible d\'enregistrer le plan : $error';
+  }
+
+  @override
+  String get commsPlanChannelCreateTitle => 'Ajouter un canal';
+
+  @override
+  String get commsPlanChannelEditTitle => 'Modifier le canal';
+
+  @override
+  String get commsPlanChannelLabel => 'Libellé du canal';
+
+  @override
+  String get commsPlanChannelLabelRequired => 'Saisissez un libellé de canal.';
+
+  @override
+  String get commsPlanChannelNetName => 'Nom du net';
+
+  @override
+  String get commsPlanChannelRole => 'Rôle';
+
+  @override
+  String get commsPlanChannelDays => 'Jours de net';
+
+  @override
+  String get commsPlanChannelDaysHint =>
+      'Laissez tout désélectionné pour tous les jours (si une heure de début est définie).';
+
+  @override
+  String get commsPlanChannelStartTime => 'Début (local)';
+
+  @override
+  String get commsPlanChannelDuration => 'Durée (min)';
+
+  @override
+  String get commsPlanChannelAvailability => 'Go / no-go';
+
+  @override
+  String get commsPlanChannelStatusNote => 'Note d\'état';
+
+  @override
+  String get commsPlanChannelLinkedMarker => 'Marqueur lié';
+
+  @override
+  String get commsPlanChannelNoMarker => 'Aucun';
+
+  @override
+  String get commsPlanChannelNotes => 'Notes';
+
+  @override
+  String get commsPlanRolePrimary => 'Principal';
+
+  @override
+  String get commsPlanRoleAlternate => 'Alternatif';
+
+  @override
+  String get commsPlanRoleEmergency => 'Urgence';
+
+  @override
+  String get commsPlanRoleTactical => 'Tactique';
+
+  @override
+  String get commsPlanRoleLiaison => 'Liaison';
+
+  @override
+  String get commsPlanAvailabilityGo => 'Go';
+
+  @override
+  String get commsPlanAvailabilityNoGo => 'No-go';
+
+  @override
+  String get commsPlanAvailabilityConditional => 'Conditionnel';
+
+  @override
+  String get commsPlanAvailabilityUnknown => 'Inconnu';
+
+  @override
+  String get commsPlanWeekdayMon => 'Lun';
+
+  @override
+  String get commsPlanWeekdayTue => 'Mar';
+
+  @override
+  String get commsPlanWeekdayWed => 'Mer';
+
+  @override
+  String get commsPlanWeekdayThu => 'Jeu';
+
+  @override
+  String get commsPlanWeekdayFri => 'Ven';
+
+  @override
+  String get commsPlanWeekdaySat => 'Sam';
+
+  @override
+  String get commsPlanWeekdaySun => 'Dim';
 }

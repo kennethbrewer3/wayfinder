@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:serverpod/serverpod.dart';
 
+import '../../comms/comms_plan_change_broadcast.dart';
 import '../../map/map_data_backup_archive.dart';
 import '../../map/map_data_service.dart';
 import '../../map/map_marker_change_broadcast.dart';
@@ -43,6 +44,7 @@ abstract final class MapDataRestHandlers {
       await MapZoneChangeBroadcast.bulk(session);
       await SeasonalOverlayChangeBroadcast.bulk(session);
       await WatchLogEntryChangeBroadcast.bulk(session);
+      await CommsPlanChangeBroadcast.bulk(session);
       return RestJson.ok({
         'restored': summary.toJson(),
       });
@@ -59,6 +61,7 @@ abstract final class MapDataRestHandlers {
       await MapZoneChangeBroadcast.bulk(session);
       await SeasonalOverlayChangeBroadcast.bulk(session);
       await WatchLogEntryChangeBroadcast.bulk(session);
+      await CommsPlanChangeBroadcast.bulk(session);
       return RestJson.ok({
         'restored': summary.toJson(),
       });

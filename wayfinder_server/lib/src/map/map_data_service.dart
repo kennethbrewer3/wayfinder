@@ -11,11 +11,12 @@ import '../pmtiles/pmtiles_catalog_sync.dart';
 import '../pmtiles/pmtiles_storage.dart';
 import '../web/rest/rest_json.dart';
 
-const mapDataBackupVersion = 6;
+const mapDataBackupVersion = 7;
 
-const supportedMapDataBackupVersions = {1, 2, 3, 4, 5, 6};
+const supportedMapDataBackupVersions = {1, 2, 3, 4, 5, 6, 7};
 
-/// Full map structure export (layers, markers, zones, seasonal overlays, watch log).
+/// Full map structure export (layers, markers, zones, seasonal overlays, watch
+/// log, comms plans).
 Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
   final layers = await listLayersEnsuringDefault(session);
   final markers = await MapMarker.db.find(
@@ -37,6 +38,10 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     orderBy: (t) => t.occurredAt,
     orderDescending: true,
   );
+  final commsPlans = await CommsPlan.db.find(
+    session,
+    orderBy: (t) => t.sortOrder,
+  );
 
   final markerIcons = await exportMarkerIconBackup(session);
   final markerAttachments = await exportMarkerAttachmentBackup(session);
@@ -51,6 +56,7 @@ Future<Map<String, dynamic>> exportMapDataBundle(Session session) async {
     'zones': RestJson.encodeModels(zones),
     'seasonalOverlays': RestJson.encodeModels(seasonalOverlays),
     'watchLogEntries': RestJson.encodeModels(watchLogEntries),
+    'commsPlans': RestJson.encodeModels(commsPlans),
     ...markerIcons,
     ...markerAttachments,
   };
@@ -63,6 +69,7 @@ class MapDataRestoreCounts {
     required this.zones,
     this.seasonalOverlays = 0,
     this.watchLogEntries = 0,
+    this.commsPlans = 0,
     this.markerIconCategories = 0,
     this.markerIcons = 0,
     this.markerAttachments = 0,
@@ -73,6 +80,7 @@ class MapDataRestoreCounts {
   final int zones;
   final int seasonalOverlays;
   final int watchLogEntries;
+  final int commsPlans;
   final int markerIconCategories;
   final int markerIcons;
   final int markerAttachments;
@@ -83,6 +91,7 @@ class MapDataRestoreCounts {
     'zones': zones,
     'seasonalOverlays': seasonalOverlays,
     'watchLogEntries': watchLogEntries,
+    'commsPlans': commsPlans,
     'markerIconCategories': markerIconCategories,
     'markerIcons': markerIcons,
     'markerAttachments': markerAttachments,
@@ -130,6 +139,13 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
           fromJson: WatchLogEntry.fromJson,
         )
       : const <WatchLogEntry>[];
+  final commsPlans = version >= 7
+      ? _parseModelList(
+          body['commsPlans'] ?? const <dynamic>[],
+          fieldName: 'commsPlans',
+          fromJson: CommsPlan.fromJson,
+        )
+      : const <CommsPlan>[];
 
   if (layers.isEmpty) {
     final now = DateTime.now().toUtc();
@@ -230,6 +246,18 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
       );
     }
 
+    final existingCommsPlans = await CommsPlan.db.find(
+      session,
+      transaction: transaction,
+    );
+    if (existingCommsPlans.isNotEmpty) {
+      await CommsPlan.db.delete(
+        session,
+        existingCommsPlans,
+        transaction: transaction,
+      );
+    }
+
     final existingLayers = await MapLayer.db.find(
       session,
       transaction: transaction,
@@ -265,6 +293,13 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
         transaction: transaction,
       );
     }
+    for (final plan in commsPlans) {
+      await CommsPlan.db.insertRow(
+        session,
+        plan,
+        transaction: transaction,
+      );
+    }
 
     return MapDataRestoreCounts(
       layers: layers.length,
@@ -272,6 +307,7 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
       zones: normalizedZones.length,
       seasonalOverlays: seasonalOverlays.length,
       watchLogEntries: watchLogEntries.length,
+      commsPlans: commsPlans.length,
     );
   });
 
@@ -285,6 +321,7 @@ Future<MapDataRestoreCounts> restoreMapDataBundle(
     zones: mapCounts.zones,
     seasonalOverlays: mapCounts.seasonalOverlays,
     watchLogEntries: mapCounts.watchLogEntries,
+    commsPlans: mapCounts.commsPlans,
     markerIconCategories: iconCounts.categories,
     markerIcons: iconCounts.icons,
   );

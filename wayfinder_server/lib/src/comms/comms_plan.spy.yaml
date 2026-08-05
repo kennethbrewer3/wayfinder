@@ -1,0 +1,21 @@
+class: CommsPlan
+table: comms_plan
+fields:
+  id: UuidValue, defaultModel=random
+  name: String
+  notes: String?
+  ### IANA timezone for net schedules (e.g. America/New_York)
+  timezoneIana: String, defaultModel='UTC', defaultPersist='UTC'
+  ### When true, this plan is the operational board shown in the TOC
+  active: bool, defaultModel=true, defaultPersist=true
+  ### JSON list of CommsPlanChannel objects
+  channelsJson: String
+  sortOrder: int, defaultModel=0, defaultPersist=0
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  comms_plan_sort_order_idx:
+    fields: sortOrder
+  comms_plan_active_idx:
+    fields: active

@@ -730,7 +730,7 @@
   "watchLogTextRequired": "Enter event text.",
   "backupTitle": "Map data backup",
   "backupPermissionDenied": "You do not have permission to export or restore map backups.",
-  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
+  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -743,9 +743,9 @@
     }
   },
   "backupRestoreConfirmTitle": "Restore map data?",
-  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, seasonal overlays, watch log entries, and custom marker icons on the server with the selected backup file. This cannot be undone.",
-  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), and {watchLogEntries} watch log entr(y/ies).",
-  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), and {icons} custom icon(s).",
+  "backupRestoreConfirmMessage": "This replaces all layers, markers, zones, seasonal overlays, watch log entries, comms plans, and custom marker icons on the server with the selected backup file. This cannot be undone.",
+  "backupRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), and {commsPlans} comms plan(s).",
+  "backupRestoreSuccessWithIcons": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {commsPlans} comms plan(s), and {icons} custom icon(s).",
   "@backupRestoreSuccessWithIcons": {
     "placeholders": {
       "layers": {
@@ -761,6 +761,9 @@
         "type": "int"
       },
       "watchLogEntries": {
+        "type": "int"
+      },
+      "commsPlans": {
         "type": "int"
       },
       "icons": {
@@ -783,6 +786,9 @@
         "type": "int"
       },
       "watchLogEntries": {
+        "type": "int"
+      },
+      "commsPlans": {
         "type": "int"
       }
     }
@@ -867,7 +873,7 @@
   },
   "fieldPackRestoreConfirmTitle": "Restore field pack?",
   "fieldPackRestoreConfirmMessage": "This replaces all map data and custom icons on the server, and installs the PMTiles archives from the pack (matching IDs are overwritten). This cannot be undone.",
-  "fieldPackRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {icons} custom icon(s), and {pmtiles} PMTiles archive(s).",
+  "fieldPackRestoreSuccess": "Restored {layers} layer(s), {markers} marker(s), {zones} zone(s), {seasonalOverlays} seasonal overlay(s), {watchLogEntries} watch log entr(y/ies), {commsPlans} comms plan(s), {icons} custom icon(s), and {pmtiles} PMTiles archive(s).",
   "@fieldPackRestoreSuccess": {
     "placeholders": {
       "layers": {
@@ -883,6 +889,9 @@
         "type": "int"
       },
       "watchLogEntries": {
+        "type": "int"
+      },
+      "commsPlans": {
         "type": "int"
       },
       "icons": {
@@ -3850,5 +3859,104 @@
   },
   "routingClearRouteAction": "Clear route",
   "routingDirectionsTitle": "Directions",
-  "routingDirectionsEmpty": "No turn-by-turn steps were returned for this route."
+  "routingDirectionsEmpty": "No turn-by-turn steps were returned for this route.",
+  "commsPlanTitle": "Comms plan",
+  "commsPlanSidebarLoading": "Loading…",
+  "commsPlanSidebarEmpty": "No active plan",
+  "commsPlanSidebarLoadFailed": "Could not load plans",
+  "commsPlanSidebarSubtitle": "{name} · {count} channel(s)",
+  "@commsPlanSidebarSubtitle": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "commsPlanOfflineHint": "Comms plans are not available offline yet.",
+  "commsPlanAddPlan": "Add plan",
+  "commsPlanEditPlan": "Edit board",
+  "commsPlanEmpty": "No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels.",
+  "commsPlanLoadFailed": "Could not load comms plans: {error}",
+  "@commsPlanLoadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "commsPlanBoardHeader": "{name} ({timezone})",
+  "@commsPlanBoardHeader": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "timezone": { "type": "String" }
+    }
+  },
+  "commsPlanOtherPlans": "Other plans",
+  "commsPlanChannelsCount": "{count} channel(s)",
+  "@commsPlanChannelsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsPlanMakeActive": "Make active board",
+  "commsPlanDeleteConfirmTitle": "Delete comms plan?",
+  "commsPlanDeleteConfirmMessage": "Delete \"{name}\"? This cannot be undone.",
+  "@commsPlanDeleteConfirmMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "commsPlanUnscheduled": "Unscheduled",
+  "commsPlanNextNet": "Next {when}",
+  "@commsPlanNextNet": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsPlanCreateTitle": "New comms plan",
+  "commsPlanEditTitle": "Edit comms plan",
+  "commsPlanNameLabel": "Plan name",
+  "commsPlanNameRequired": "Enter a plan name.",
+  "commsPlanTimezoneLabel": "Timezone",
+  "commsPlanTimezoneHint": "IANA name for net times (e.g. America/New_York)",
+  "commsPlanActiveLabel": "Active board",
+  "commsPlanActiveHint": "Show this plan as the operational TOC board",
+  "commsPlanNotesLabel": "Plan notes",
+  "commsPlanChannelsHeading": "Channels",
+  "commsPlanChannelsEmpty": "No channels yet.",
+  "commsPlanAddChannel": "Add channel",
+  "commsPlanSaveFailed": "Could not save plan: {error}",
+  "@commsPlanSaveFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "commsPlanChannelCreateTitle": "Add channel",
+  "commsPlanChannelEditTitle": "Edit channel",
+  "commsPlanChannelLabel": "Channel label",
+  "commsPlanChannelLabelRequired": "Enter a channel label.",
+  "commsPlanChannelNetName": "Net name",
+  "commsPlanChannelRole": "Role",
+  "commsPlanChannelDays": "Net days",
+  "commsPlanChannelDaysHint": "Leave all unselected for every day (when a start time is set).",
+  "commsPlanChannelStartTime": "Start (local)",
+  "commsPlanChannelDuration": "Duration (min)",
+  "commsPlanChannelAvailability": "Go / no-go",
+  "commsPlanChannelStatusNote": "Status note",
+  "commsPlanChannelLinkedMarker": "Linked marker",
+  "commsPlanChannelNoMarker": "None",
+  "commsPlanChannelNotes": "Notes",
+  "commsPlanRolePrimary": "Primary",
+  "commsPlanRoleAlternate": "Alternate",
+  "commsPlanRoleEmergency": "Emergency",
+  "commsPlanRoleTactical": "Tactical",
+  "commsPlanRoleLiaison": "Liaison",
+  "commsPlanAvailabilityGo": "Go",
+  "commsPlanAvailabilityNoGo": "No-go",
+  "commsPlanAvailabilityConditional": "Conditional",
+  "commsPlanAvailabilityUnknown": "Unknown",
+  "commsPlanWeekdayMon": "Mon",
+  "commsPlanWeekdayTue": "Tue",
+  "commsPlanWeekdayWed": "Wed",
+  "commsPlanWeekdayThu": "Thu",
+  "commsPlanWeekdayFri": "Fri",
+  "commsPlanWeekdaySat": "Sat",
+  "commsPlanWeekdaySun": "Sun"
 }

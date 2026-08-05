@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:serverpod/serverpod.dart';
 
 import '../access/wayfinder_permissions.dart';
+import '../comms/comms_plan_change_broadcast.dart';
 import '../core/endpoint_logging.dart';
 import '../generated/protocol.dart';
 import '../layers/map_layer_change_broadcast.dart';
@@ -50,12 +51,14 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         await MapZoneChangeBroadcast.bulk(session);
         await SeasonalOverlayChangeBroadcast.bulk(session);
         await WatchLogEntryChangeBroadcast.bulk(session);
+        await CommsPlanChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,
           zones: counts.zones,
           seasonalOverlays: counts.seasonalOverlays,
           watchLogEntries: counts.watchLogEntries,
+          commsPlans: counts.commsPlans,
           markerIconCategories: counts.markerIconCategories,
           markerIcons: counts.markerIcons,
           markerAttachments: counts.markerAttachments,
@@ -65,6 +68,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
           'seasonalOverlays=${summary.seasonalOverlays} '
           'watchLogEntries=${summary.watchLogEntries} '
+          'commsPlans=${summary.commsPlans} '
           'markerIconCategories=${summary.markerIconCategories} '
           'markerIcons=${summary.markerIcons} '
           'markerAttachments=${summary.markerAttachments}',
@@ -105,12 +109,14 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
         await MapZoneChangeBroadcast.bulk(session);
         await SeasonalOverlayChangeBroadcast.bulk(session);
         await WatchLogEntryChangeBroadcast.bulk(session);
+        await CommsPlanChangeBroadcast.bulk(session);
         return MapDataRestoreSummary(
           layers: counts.layers,
           markers: counts.markers,
           zones: counts.zones,
           seasonalOverlays: counts.seasonalOverlays,
           watchLogEntries: counts.watchLogEntries,
+          commsPlans: counts.commsPlans,
           markerIconCategories: counts.markerIconCategories,
           markerIcons: counts.markerIcons,
           markerAttachments: counts.markerAttachments,
@@ -120,6 +126,7 @@ class MapDataEndpoint extends Endpoint with EndpointLogging {
           'layers=${summary.layers} markers=${summary.markers} zones=${summary.zones} '
           'seasonalOverlays=${summary.seasonalOverlays} '
           'watchLogEntries=${summary.watchLogEntries} '
+          'commsPlans=${summary.commsPlans} '
           'markerIconCategories=${summary.markerIconCategories} '
           'markerIcons=${summary.markerIcons} '
           'markerAttachments=${summary.markerAttachments}',

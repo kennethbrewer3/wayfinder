@@ -101,6 +101,7 @@ class FieldPackRepository {
         zones: mapRaw['zones'] as int? ?? 0,
         seasonalOverlays: mapRaw['seasonalOverlays'] as int? ?? 0,
         watchLogEntries: mapRaw['watchLogEntries'] as int? ?? 0,
+        commsPlans: mapRaw['commsPlans'] as int? ?? 0,
         markerIconCategories: mapRaw['markerIconCategories'] as int? ?? 0,
         markerIcons: mapRaw['markerIcons'] as int? ?? 0,
       ),

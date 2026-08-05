@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../access/providers/access_session_provider.dart';
+import '../../comms_plan/providers/comms_plan_provider.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../seasonal_overlays/providers/seasonal_overlays_provider.dart';
@@ -33,12 +34,14 @@ class MapMarkerUpdatesListener {
   Future<void>? _zoneLoop;
   Future<void>? _layerLoop;
   Future<void>? _seasonalOverlayLoop;
+  Future<void>? _commsPlanLoop;
 
   void start() {
     _markerLoop ??= _connectMarkerLoop();
     _zoneLoop ??= _connectZoneLoop();
     _layerLoop ??= _connectLayerLoop();
     _seasonalOverlayLoop ??= _connectSeasonalOverlayLoop();
+    _commsPlanLoop ??= _connectCommsPlanLoop();
   }
 
   void dispose() {
@@ -230,6 +233,47 @@ class MapMarkerUpdatesListener {
         );
         AppLogger.logMap.debug(
           '📡 Seasonal overlay stream stack trace',
+          data: stackTrace,
+        );
+        await Future<void>.delayed(_reconnectDelay);
+      }
+    }
+  }
+
+  Future<void> _connectCommsPlanLoop() async {
+    while (!_stopped) {
+      if (!await _waitUntilSessionAllowsStreams()) {
+        return;
+      }
+      try {
+        AppLogger.logMap.debug('📡 Connecting to comms plan stream');
+        final client = _ref.read(serverClientProvider);
+        await for (final change in client.commsPlan.planChanges()) {
+          if (_stopped) {
+            break;
+          }
+          if (!_sessionAllowsStreams) {
+            break;
+          }
+          AppLogger.logMap.debug(
+            '📡 Comms plan change received',
+            data: 'type=${change.type} id=${change.planId}',
+          );
+          _ref.invalidate(commsPlansProvider);
+        }
+      } catch (error, stackTrace) {
+        if (_stopped) {
+          return;
+        }
+        if (!_sessionAllowsStreams) {
+          continue;
+        }
+        AppLogger.logMap.warn(
+          '📡 Comms plan stream disconnected; reconnecting',
+          error: error,
+        );
+        AppLogger.logMap.debug(
+          '📡 Comms plan stream stack trace',
           data: stackTrace,
         );
         await Future<void>.delayed(_reconnectDelay);

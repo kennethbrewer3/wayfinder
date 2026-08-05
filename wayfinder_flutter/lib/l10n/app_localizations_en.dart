@@ -1309,7 +1309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -1330,7 +1330,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupRestoreConfirmMessage =>
-      'This replaces all layers, markers, zones, seasonal overlays, watch log entries, and custom marker icons on the server with the selected backup file. This cannot be undone.';
+      'This replaces all layers, markers, zones, seasonal overlays, watch log entries, comms plans, and custom marker icons on the server with the selected backup file. This cannot be undone.';
 
   @override
   String backupRestoreSuccess(
@@ -1339,8 +1339,9 @@ class AppLocalizationsEn extends AppLocalizations {
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
   ) {
-    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), and $watchLogEntries watch log entr(y/ies).';
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), and $commsPlans comms plan(s).';
   }
 
   @override
@@ -1350,9 +1351,10 @@ class AppLocalizationsEn extends AppLocalizations {
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
     int icons,
   ) {
-    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), and $icons custom icon(s).';
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), $commsPlans comms plan(s), and $icons custom icon(s).';
   }
 
   @override
@@ -1498,10 +1500,11 @@ class AppLocalizationsEn extends AppLocalizations {
     int zones,
     int seasonalOverlays,
     int watchLogEntries,
+    int commsPlans,
     int icons,
     int pmtiles,
   ) {
-    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), $icons custom icon(s), and $pmtiles PMTiles archive(s).';
+    return 'Restored $layers layer(s), $markers marker(s), $zones zone(s), $seasonalOverlays seasonal overlay(s), $watchLogEntries watch log entr(y/ies), $commsPlans comms plan(s), $icons custom icon(s), and $pmtiles PMTiles archive(s).';
   }
 
   @override
@@ -6523,4 +6526,209 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get routingDirectionsEmpty =>
       'No turn-by-turn steps were returned for this route.';
+
+  @override
+  String get commsPlanTitle => 'Comms plan';
+
+  @override
+  String get commsPlanSidebarLoading => 'Loading…';
+
+  @override
+  String get commsPlanSidebarEmpty => 'No active plan';
+
+  @override
+  String get commsPlanSidebarLoadFailed => 'Could not load plans';
+
+  @override
+  String commsPlanSidebarSubtitle(String name, int count) {
+    return '$name · $count channel(s)';
+  }
+
+  @override
+  String get commsPlanOfflineHint =>
+      'Comms plans are not available offline yet.';
+
+  @override
+  String get commsPlanAddPlan => 'Add plan';
+
+  @override
+  String get commsPlanEditPlan => 'Edit board';
+
+  @override
+  String get commsPlanEmpty =>
+      'No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels.';
+
+  @override
+  String commsPlanLoadFailed(String error) {
+    return 'Could not load comms plans: $error';
+  }
+
+  @override
+  String commsPlanBoardHeader(String name, String timezone) {
+    return '$name ($timezone)';
+  }
+
+  @override
+  String get commsPlanOtherPlans => 'Other plans';
+
+  @override
+  String commsPlanChannelsCount(int count) {
+    return '$count channel(s)';
+  }
+
+  @override
+  String get commsPlanMakeActive => 'Make active board';
+
+  @override
+  String get commsPlanDeleteConfirmTitle => 'Delete comms plan?';
+
+  @override
+  String commsPlanDeleteConfirmMessage(String name) {
+    return 'Delete \"$name\"? This cannot be undone.';
+  }
+
+  @override
+  String get commsPlanUnscheduled => 'Unscheduled';
+
+  @override
+  String commsPlanNextNet(String when) {
+    return 'Next $when';
+  }
+
+  @override
+  String get commsPlanCreateTitle => 'New comms plan';
+
+  @override
+  String get commsPlanEditTitle => 'Edit comms plan';
+
+  @override
+  String get commsPlanNameLabel => 'Plan name';
+
+  @override
+  String get commsPlanNameRequired => 'Enter a plan name.';
+
+  @override
+  String get commsPlanTimezoneLabel => 'Timezone';
+
+  @override
+  String get commsPlanTimezoneHint =>
+      'IANA name for net times (e.g. America/New_York)';
+
+  @override
+  String get commsPlanActiveLabel => 'Active board';
+
+  @override
+  String get commsPlanActiveHint =>
+      'Show this plan as the operational TOC board';
+
+  @override
+  String get commsPlanNotesLabel => 'Plan notes';
+
+  @override
+  String get commsPlanChannelsHeading => 'Channels';
+
+  @override
+  String get commsPlanChannelsEmpty => 'No channels yet.';
+
+  @override
+  String get commsPlanAddChannel => 'Add channel';
+
+  @override
+  String commsPlanSaveFailed(String error) {
+    return 'Could not save plan: $error';
+  }
+
+  @override
+  String get commsPlanChannelCreateTitle => 'Add channel';
+
+  @override
+  String get commsPlanChannelEditTitle => 'Edit channel';
+
+  @override
+  String get commsPlanChannelLabel => 'Channel label';
+
+  @override
+  String get commsPlanChannelLabelRequired => 'Enter a channel label.';
+
+  @override
+  String get commsPlanChannelNetName => 'Net name';
+
+  @override
+  String get commsPlanChannelRole => 'Role';
+
+  @override
+  String get commsPlanChannelDays => 'Net days';
+
+  @override
+  String get commsPlanChannelDaysHint =>
+      'Leave all unselected for every day (when a start time is set).';
+
+  @override
+  String get commsPlanChannelStartTime => 'Start (local)';
+
+  @override
+  String get commsPlanChannelDuration => 'Duration (min)';
+
+  @override
+  String get commsPlanChannelAvailability => 'Go / no-go';
+
+  @override
+  String get commsPlanChannelStatusNote => 'Status note';
+
+  @override
+  String get commsPlanChannelLinkedMarker => 'Linked marker';
+
+  @override
+  String get commsPlanChannelNoMarker => 'None';
+
+  @override
+  String get commsPlanChannelNotes => 'Notes';
+
+  @override
+  String get commsPlanRolePrimary => 'Primary';
+
+  @override
+  String get commsPlanRoleAlternate => 'Alternate';
+
+  @override
+  String get commsPlanRoleEmergency => 'Emergency';
+
+  @override
+  String get commsPlanRoleTactical => 'Tactical';
+
+  @override
+  String get commsPlanRoleLiaison => 'Liaison';
+
+  @override
+  String get commsPlanAvailabilityGo => 'Go';
+
+  @override
+  String get commsPlanAvailabilityNoGo => 'No-go';
+
+  @override
+  String get commsPlanAvailabilityConditional => 'Conditional';
+
+  @override
+  String get commsPlanAvailabilityUnknown => 'Unknown';
+
+  @override
+  String get commsPlanWeekdayMon => 'Mon';
+
+  @override
+  String get commsPlanWeekdayTue => 'Tue';
+
+  @override
+  String get commsPlanWeekdayWed => 'Wed';
+
+  @override
+  String get commsPlanWeekdayThu => 'Thu';
+
+  @override
+  String get commsPlanWeekdayFri => 'Fri';
+
+  @override
+  String get commsPlanWeekdaySat => 'Sat';
+
+  @override
+  String get commsPlanWeekdaySun => 'Sun';
 }

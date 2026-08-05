@@ -1,0 +1,6 @@
+class: CommsPlanChange
+fields:
+  ### One of: created, updated, deleted, bulk
+  type: String
+  plan: CommsPlan?
+  planId: UuidValue?

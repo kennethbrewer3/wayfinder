@@ -10,6 +10,8 @@ fields:
   active: bool, defaultModel=true, defaultPersist=true
   ### JSON list of CommsPlanChannel objects
   channelsJson: String
+  ### JSON radio challenge authentication table (matrix), or null when none
+  challengeTableJson: String?
   sortOrder: int, defaultModel=0, defaultPersist=0
   createdAt: DateTime
   updatedAt: DateTime

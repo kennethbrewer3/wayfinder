@@ -1309,7 +1309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -1450,7 +1450,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'One archive for a spare server or laptop: map objects, custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
+      'One archive for a spare server or laptop: map objects (including comms plans and radio authentication tables), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
 
   @override
   String get fieldPackExportButton => 'Export field pack';
@@ -1627,6 +1627,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapAtlasIncludeDirectionsList =>
       'Include turn-by-turn directions page';
+
+  @override
+  String get mapAtlasIncludeCommsChallengeTable =>
+      'Include radio authentication sheets';
+
+  @override
+  String get mapAtlasIncludeCommsChallengeTableHint =>
+      'All unused sheets from the active comms plan';
+
+  @override
+  String get mapAtlasCommsChallengeTableUnavailable =>
+      'No radio authentication sheets on the active comms plan. Generate some in Comms plan first.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Fit active route';
@@ -6680,6 +6692,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commsPlanRadioServiceCb => 'CB';
 
   @override
+  String get commsPlanChannelHandleLabel => 'Handle';
+
+  @override
   String get commsPlanServiceChannelLabel => 'Permitted channel';
 
   @override
@@ -6764,4 +6779,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commsPlanWeekdaySun => 'Sun';
+
+  @override
+  String get commsChallengeTableTitle => 'Radio authentication tables';
+
+  @override
+  String get commsChallengeTableEditorHint =>
+      'Generate multiple one-time challenge/response sheets. Burn (delete) each sheet after use. Included in map backups and field packs with this plan.';
+
+  @override
+  String get commsChallengeTableGenerate => 'Generate sheet';
+
+  @override
+  String get commsChallengeTableBurn => 'Burn';
+
+  @override
+  String get commsChallengeTableView => 'View';
+
+  @override
+  String get commsChallengeTableMissing => 'No authentication sheets yet.';
+
+  @override
+  String commsChallengeTableCount(int count) {
+    return '$count sheet(s) ready';
+  }
+
+  @override
+  String get commsChallengeTableReadyHint =>
+      'Sheets ready for atlas print and field-pack transfer. Burn after use.';
+
+  @override
+  String get commsChallengeTableInstructions =>
+      'Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net — do not reuse.';
+
+  @override
+  String commsChallengeTableGeneratedAt(String when) {
+    return 'Generated $when';
+  }
+
+  @override
+  String get commsChallengeTableGeneratedPrefix => 'Generated';
+
+  @override
+  String get commsChallengeTableBurnConfirmTitle =>
+      'Burn authentication sheet?';
+
+  @override
+  String get commsChallengeTableBurnConfirmMessage =>
+      'This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it.';
 }

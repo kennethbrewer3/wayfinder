@@ -7,13 +7,16 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../access/providers/access_session_provider.dart';
 import '../../map/providers/selected_map_object_provider.dart';
+import '../../markers/presentation/map_object_markdown.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../models/comms_challenge_table.dart';
 import '../models/comms_plan_channel.dart';
 import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_schedule.dart';
+import 'comms_challenge_table_preview.dart';
 import 'comms_plan_editor_dialog.dart';
 
 class CommsPlanSidebarSection extends ConsumerWidget {
@@ -148,11 +151,18 @@ class CommsPlanSidebarSection extends ConsumerWidget {
                 if (active.notes != null && active.notes!.trim().isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                    child: Text(
-                      active.notes!,
-                      style: theme.textTheme.bodySmall,
+                    child: MapObjectMarkdownBody(
+                      markdown: active.notes!,
+                      color: theme.textTheme.bodySmall?.color,
                     ),
                   ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: _ChallengeTableSidebarRow(
+                    plan: active,
+                    canManage: canManage && !offline,
+                  ),
+                ),
                 if (channels.isEmpty)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -325,6 +335,7 @@ class _CommsChannelTile extends ConsumerWidget {
         : '${channel.frequencyMHz} ${markerRadioModeLabel(l10n, channel.mode)}';
 
     final statusNote = channel.statusNote?.trim();
+    final channelNotes = channel.notes?.trim();
     final subtitle = [
       service,
       commsChannelRoleLabel(l10n, channel.role),
@@ -333,34 +344,174 @@ class _CommsChannelTile extends ConsumerWidget {
       if (statusNote != null && statusNote.isNotEmpty) statusNote,
     ].join(' · ');
 
-    return ListTile(
-      dense: true,
-      leading: Tooltip(
-        message: commsChannelAvailabilityLabel(l10n, channel.availability),
-        child: Icon(
-          Icons.circle,
-          size: 14,
-          color: _availabilityColor(channel.availability),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ListTile(
+          dense: true,
+          leading: Tooltip(
+            message: commsChannelAvailabilityLabel(
+              l10n,
+              channel.availability,
+            ),
+            child: Icon(
+              Icons.circle,
+              size: 14,
+              color: _availabilityColor(channel.availability),
+            ),
+          ),
+          title: Text(
+            channel.netName?.trim().isNotEmpty == true
+                ? '${channel.label} — ${channel.netName}'
+                : channel.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            subtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onTap: () => _focusLinkedMarker(
+            ref: ref,
+            channel: channel,
+            markers: markers,
+            onZoomTo: onZoomTo,
+          ),
         ),
-      ),
-      title: Text(
-        channel.netName?.trim().isNotEmpty == true
-            ? '${channel.label} — ${channel.netName}'
-            : channel.label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(
-        subtitle,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onTap: () => _focusLinkedMarker(
-        ref: ref,
-        channel: channel,
-        markers: markers,
-        onZoomTo: onZoomTo,
-      ),
+        if (channelNotes != null && channelNotes.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(48, 0, 16, 8),
+            child: MapObjectMarkdownBody(
+              markdown: channelNotes,
+              color: Theme.of(context).textTheme.bodySmall?.color,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _ChallengeTableSidebarRow extends ConsumerWidget {
+  const _ChallengeTableSidebarRow({
+    required this.plan,
+    required this.canManage,
+  });
+
+  final CommsPlan plan;
+  final bool canManage;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final tables = decodeCommsChallengeTables(plan.challengeTableJson);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.commsChallengeTableTitle,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          tables.isEmpty
+              ? l10n.commsChallengeTableMissing
+              : l10n.commsChallengeTableCount(tables.length),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        if (canManage)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () async {
+                final generated = generateCommsChallengeTable(
+                  label: nextChallengeTableLabel(tables),
+                );
+                await ref
+                    .read(commsPlansProvider.notifier)
+                    .updatePlan(
+                      plan.copyWith(
+                        challengeTableJson: encodeCommsChallengeTables([
+                          ...tables,
+                          generated,
+                        ]),
+                        updatedAt: DateTime.now().toUtc(),
+                      ),
+                    );
+              },
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.commsChallengeTableGenerate),
+            ),
+          ),
+        for (final table in tables)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: const Icon(Icons.grid_on, size: 18),
+            title: Text(table.label),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: l10n.commsChallengeTableView,
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  onPressed: () async {
+                    await showCommsChallengeTablePreview(
+                      context: context,
+                      planName: plan.name,
+                      table: table,
+                    );
+                  },
+                ),
+                if (canManage)
+                  IconButton(
+                    tooltip: l10n.commsChallengeTableBurn,
+                    icon: const Icon(
+                      Icons.local_fire_department_outlined,
+                      size: 18,
+                    ),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(
+                            l10n.commsChallengeTableBurnConfirmTitle,
+                          ),
+                          content: Text(
+                            l10n.commsChallengeTableBurnConfirmMessage,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text(l10n.actionCancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(l10n.commsChallengeTableBurn),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed != true) {
+                        return;
+                      }
+                      await ref
+                          .read(commsPlansProvider.notifier)
+                          .updatePlan(
+                            plan.copyWith(
+                              challengeTableJson: encodeCommsChallengeTables([
+                                for (final item in tables)
+                                  if (item.id != table.id) item,
+                              ]),
+                              updatedAt: DateTime.now().toUtc(),
+                            ),
+                          );
+                    },
+                  ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

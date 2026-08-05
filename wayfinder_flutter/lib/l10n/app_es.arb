@@ -407,7 +407,7 @@
   "watchLogTextRequired": "Introduzca el texto del evento.",
   "backupTitle": "Copia de seguridad de datos del mapa",
   "backupPermissionDenied": "No tienes permiso para exportar o restaurar copias de seguridad del mapa.",
-  "backupDescription": "Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones, iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.",
+  "backupDescription": "Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.",
   "backupExportButton": "Exportar datos del mapa (.zip)",
   "backupRestoreButton": "Restaurar desde copia de seguridad",
   "backupExportSuccess": "Copia de seguridad de datos del mapa guardada.",
@@ -504,7 +504,7 @@
   "kioskModeSettingsLockedMessage": "Los ajustes están ocultos mientras este dispositivo está en modo kiosco / visor.",
   "kioskModeBackToMap": "Volver al mapa",
   "fieldPackTitle": "Paquete de campo",
-  "fieldPackDescription": "Un archivo para un servidor o portátil de reserva: objetos del mapa, iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.",
+  "fieldPackDescription": "Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones y tablas de autenticación), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.",
   "fieldPackExportButton": "Exportar paquete de campo",
   "fieldPackRestoreButton": "Restaurar paquete de campo",
   "fieldPackSelectPmtilesTitle": "Incluir PMTiles",
@@ -629,6 +629,9 @@
   "mapAtlasIncludeMarkerIndex": "Incluir lista de marcadores en cada hoja",
   "mapAtlasIncludeActiveRoute": "Dibujar la ruta activa en las hojas del mapa",
   "mapAtlasIncludeDirectionsList": "Incluir página de indicaciones paso a paso",
+  "mapAtlasIncludeCommsChallengeTable": "Incluir hojas de autenticación de radio",
+  "mapAtlasIncludeCommsChallengeTableHint": "Todas las hojas no usadas del plan activo",
+  "mapAtlasCommsChallengeTableUnavailable": "No hay hojas de autenticación en el plan activo. Genere algunas en Plan de comunicaciones.",
   "mapAtlasCoverageActiveRoute": "Ajustar a la ruta activa",
   "mapAtlasDirectionsStepColumn": "Paso",
   "mapAtlasDirectionsInstructionColumn": "Indicación",
@@ -3161,6 +3164,7 @@
   "commsPlanRadioServiceGmrs": "GMRS",
   "commsPlanRadioServiceFrs": "FRS",
   "commsPlanRadioServiceCb": "CB",
+  "commsPlanChannelHandleLabel": "Handle",
   "commsPlanServiceChannelLabel": "Canal permitido",
   "commsPlanServiceChannelHint": "Solo canales permitidos por la FCC para este servicio",
   "commsPlanServiceChannelRequired": "Seleccione un canal permitido.",
@@ -3188,5 +3192,28 @@
   "commsPlanWeekdayThu": "Jue",
   "commsPlanWeekdayFri": "Vie",
   "commsPlanWeekdaySat": "Sáb",
-  "commsPlanWeekdaySun": "Dom"
+  "commsPlanWeekdaySun": "Dom",
+  "commsChallengeTableTitle": "Tablas de autenticación de radio",
+  "commsChallengeTableEditorHint": "Genere varias hojas de un solo uso. Queme (elimine) cada hoja tras usarla. Se incluyen en copias y paquetes de campo con este plan.",
+  "commsChallengeTableGenerate": "Generar hoja",
+  "commsChallengeTableBurn": "Quemar",
+  "commsChallengeTableView": "Ver",
+  "commsChallengeTableMissing": "Aún no hay hojas de autenticación.",
+  "commsChallengeTableCount": "{count} hoja(s) lista(s)",
+  "@commsChallengeTableCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsChallengeTableReadyHint": "Hojas listas para atlas y paquetes de campo. Queme tras el uso.",
+  "commsChallengeTableInstructions": "El desafiante elige una celda (letra de fila + dígito de columna, p. ej. B-7). La estación responde con el digrafo. Queme esta hoja tras la red: no la reutilice.",
+  "commsChallengeTableGeneratedAt": "Generada {when}",
+  "@commsChallengeTableGeneratedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsChallengeTableGeneratedPrefix": "Generada",
+  "commsChallengeTableBurnConfirmTitle": "¿Quemar hoja de autenticación?",
+  "commsChallengeTableBurnConfirmMessage": "Esto elimina la hoja de forma permanente. Las estaciones que aún la necesiten ya no podrán autenticarse con ella."
 }

@@ -35,9 +35,13 @@ class MarkerNotesEditor extends StatelessWidget {
   const MarkerNotesEditor({
     super.key,
     required this.controller,
+    this.label,
   });
 
   final QuillController controller;
+
+  /// Defaults to [AppLocalizations.formNotesLabel] when null.
+  final String? label;
 
   static const _editorHeight = 140.0;
 
@@ -50,7 +54,7 @@ class MarkerNotesEditor extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          l10n.formNotesLabel,
+          label ?? l10n.formNotesLabel,
           style: theme.textTheme.labelLarge,
         ),
         const SizedBox(height: 8),

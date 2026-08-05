@@ -2359,7 +2359,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -2578,7 +2578,7 @@ abstract class AppLocalizations {
   /// No description provided for @fieldPackDescription.
   ///
   /// In en, this message translates to:
-  /// **'One archive for a spare server or laptop: map objects, custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
+  /// **'One archive for a spare server or laptop: map objects (including comms plans and radio authentication tables), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
   String get fieldPackDescription;
 
   /// No description provided for @fieldPackExportButton.
@@ -2877,6 +2877,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Include turn-by-turn directions page'**
   String get mapAtlasIncludeDirectionsList;
+
+  /// No description provided for @mapAtlasIncludeCommsChallengeTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Include radio authentication sheets'**
+  String get mapAtlasIncludeCommsChallengeTable;
+
+  /// No description provided for @mapAtlasIncludeCommsChallengeTableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'All unused sheets from the active comms plan'**
+  String get mapAtlasIncludeCommsChallengeTableHint;
+
+  /// No description provided for @mapAtlasCommsChallengeTableUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No radio authentication sheets on the active comms plan. Generate some in Comms plan first.'**
+  String get mapAtlasCommsChallengeTableUnavailable;
 
   /// No description provided for @mapAtlasCoverageActiveRoute.
   ///
@@ -11611,6 +11629,12 @@ abstract class AppLocalizations {
   /// **'CB'**
   String get commsPlanRadioServiceCb;
 
+  /// No description provided for @commsPlanChannelHandleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Handle'**
+  String get commsPlanChannelHandleLabel;
+
   /// No description provided for @commsPlanServiceChannelLabel.
   ///
   /// In en, this message translates to:
@@ -11778,6 +11802,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sun'**
   String get commsPlanWeekdaySun;
+
+  /// No description provided for @commsChallengeTableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio authentication tables'**
+  String get commsChallengeTableTitle;
+
+  /// No description provided for @commsChallengeTableEditorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate multiple one-time challenge/response sheets. Burn (delete) each sheet after use. Included in map backups and field packs with this plan.'**
+  String get commsChallengeTableEditorHint;
+
+  /// No description provided for @commsChallengeTableGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate sheet'**
+  String get commsChallengeTableGenerate;
+
+  /// No description provided for @commsChallengeTableBurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn'**
+  String get commsChallengeTableBurn;
+
+  /// No description provided for @commsChallengeTableView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get commsChallengeTableView;
+
+  /// No description provided for @commsChallengeTableMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No authentication sheets yet.'**
+  String get commsChallengeTableMissing;
+
+  /// No description provided for @commsChallengeTableCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sheet(s) ready'**
+  String commsChallengeTableCount(int count);
+
+  /// No description provided for @commsChallengeTableReadyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sheets ready for atlas print and field-pack transfer. Burn after use.'**
+  String get commsChallengeTableReadyHint;
+
+  /// No description provided for @commsChallengeTableInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net — do not reuse.'**
+  String get commsChallengeTableInstructions;
+
+  /// No description provided for @commsChallengeTableGeneratedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated {when}'**
+  String commsChallengeTableGeneratedAt(String when);
+
+  /// No description provided for @commsChallengeTableGeneratedPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated'**
+  String get commsChallengeTableGeneratedPrefix;
+
+  /// No description provided for @commsChallengeTableBurnConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn authentication sheet?'**
+  String get commsChallengeTableBurnConfirmTitle;
+
+  /// No description provided for @commsChallengeTableBurnConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it.'**
+  String get commsChallengeTableBurnConfirmMessage;
 }
 
 class _AppLocalizationsDelegate

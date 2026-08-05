@@ -730,7 +730,7 @@
   "watchLogTextRequired": "Enter event text.",
   "backupTitle": "Map data backup",
   "backupPermissionDenied": "You do not have permission to export or restore map backups.",
-  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans, custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
+  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -853,7 +853,7 @@
   "kioskModeSettingsLockedMessage": "Settings are hidden while this device is in kiosk / viewer mode.",
   "kioskModeBackToMap": "Back to map",
   "fieldPackTitle": "Field pack",
-  "fieldPackDescription": "One archive for a spare server or laptop: map objects, custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.",
+  "fieldPackDescription": "One archive for a spare server or laptop: map objects (including comms plans and radio authentication tables), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.",
   "fieldPackExportButton": "Export field pack",
   "fieldPackRestoreButton": "Restore field pack",
   "fieldPackSelectPmtilesTitle": "Include PMTiles",
@@ -978,6 +978,9 @@
   "mapAtlasIncludeMarkerIndex": "Include marker list on each sheet",
   "mapAtlasIncludeActiveRoute": "Draw active route on map sheets",
   "mapAtlasIncludeDirectionsList": "Include turn-by-turn directions page",
+  "mapAtlasIncludeCommsChallengeTable": "Include radio authentication sheets",
+  "mapAtlasIncludeCommsChallengeTableHint": "All unused sheets from the active comms plan",
+  "mapAtlasCommsChallengeTableUnavailable": "No radio authentication sheets on the active comms plan. Generate some in Comms plan first.",
   "mapAtlasCoverageActiveRoute": "Fit active route",
   "mapAtlasDirectionsStepColumn": "Step",
   "mapAtlasDirectionsInstructionColumn": "Instruction",
@@ -3941,6 +3944,7 @@
   "commsPlanRadioServiceGmrs": "GMRS",
   "commsPlanRadioServiceFrs": "FRS",
   "commsPlanRadioServiceCb": "CB",
+  "commsPlanChannelHandleLabel": "Handle",
   "commsPlanServiceChannelLabel": "Permitted channel",
   "commsPlanServiceChannelHint": "Only FCC-permitted channels for this service",
   "commsPlanServiceChannelRequired": "Select a permitted channel.",
@@ -3968,5 +3972,28 @@
   "commsPlanWeekdayThu": "Thu",
   "commsPlanWeekdayFri": "Fri",
   "commsPlanWeekdaySat": "Sat",
-  "commsPlanWeekdaySun": "Sun"
+  "commsPlanWeekdaySun": "Sun",
+  "commsChallengeTableTitle": "Radio authentication tables",
+  "commsChallengeTableEditorHint": "Generate multiple one-time challenge/response sheets. Burn (delete) each sheet after use. Included in map backups and field packs with this plan.",
+  "commsChallengeTableGenerate": "Generate sheet",
+  "commsChallengeTableBurn": "Burn",
+  "commsChallengeTableView": "View",
+  "commsChallengeTableMissing": "No authentication sheets yet.",
+  "commsChallengeTableCount": "{count} sheet(s) ready",
+  "@commsChallengeTableCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsChallengeTableReadyHint": "Sheets ready for atlas print and field-pack transfer. Burn after use.",
+  "commsChallengeTableInstructions": "Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net — do not reuse.",
+  "commsChallengeTableGeneratedAt": "Generated {when}",
+  "@commsChallengeTableGeneratedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsChallengeTableGeneratedPrefix": "Generated",
+  "commsChallengeTableBurnConfirmTitle": "Burn authentication sheet?",
+  "commsChallengeTableBurnConfirmMessage": "This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it."
 }

@@ -172,7 +172,9 @@ class CommsPlanChannel {
     if (toneHz != null) 'toneHz': toneHz,
     if (offsetMHz != null) 'offsetMHz': offsetMHz,
     if (callsign != null && callsign!.trim().isNotEmpty)
-      'callsign': callsign!.trim().toUpperCase(),
+      'callsign': radioService == CommsRadioService.cb
+          ? callsign!.trim()
+          : callsign!.trim().toUpperCase(),
     if (daysOfWeek.isNotEmpty) 'daysOfWeek': daysOfWeek,
     if (startLocalTime != null && startLocalTime!.trim().isNotEmpty)
       'startLocalTime': startLocalTime,

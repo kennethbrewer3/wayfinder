@@ -7,6 +7,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../circles/models/circle_geometry.dart';
+import '../../comms_plan/models/comms_challenge_table.dart';
+import '../../comms_plan/utils/comms_challenge_table_pdf.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../map/utils/mgrs_utils.dart';
@@ -71,6 +73,7 @@ class AtlasExportOptions {
     this.includeMarkerIndex = true,
     this.includeActiveRoute = false,
     this.includeDirectionsList = false,
+    this.includeCommsChallengeTable = false,
   });
 
   final String title;
@@ -81,6 +84,24 @@ class AtlasExportOptions {
   final bool includeMarkerIndex;
   final bool includeActiveRoute;
   final bool includeDirectionsList;
+  final bool includeCommsChallengeTable;
+}
+
+/// Labels + table payload for an optional atlas authentication appendix.
+class AtlasCommsChallengeExport {
+  const AtlasCommsChallengeExport({
+    required this.planName,
+    required this.tables,
+    required this.title,
+    required this.instructions,
+    required this.generatedLabel,
+  });
+
+  final String planName;
+  final List<CommsChallengeTable> tables;
+  final String title;
+  final String instructions;
+  final String generatedLabel;
 }
 
 PdfPageFormat _pdfFormat(AtlasPageSize size) {
@@ -98,6 +119,7 @@ Future<Uint8List> buildAtlasPdf({
   List<PmtilesArchiveEntry> enabledPmtiles = const [],
   bool includeMgrsGrid = false,
   AtlasRouteExport? route,
+  AtlasCommsChallengeExport? challengeTable,
 }) async {
   final sheets = tileAtlasBounds(
     coverage: coverage,
@@ -151,6 +173,10 @@ Future<Uint8List> buildAtlasPdf({
             options.includeDirectionsList &&
             route != null &&
             route.steps.isNotEmpty,
+        hasChallengeTable:
+            options.includeCommsChallengeTable &&
+            challengeTable != null &&
+            challengeTable.tables.isNotEmpty,
       ),
     ),
   );
@@ -256,6 +282,26 @@ Future<Uint8List> buildAtlasPdf({
     );
   }
 
+  if (options.includeCommsChallengeTable &&
+      challengeTable != null &&
+      challengeTable.tables.isNotEmpty) {
+    for (final table in challengeTable.tables) {
+      doc.addPage(
+        pw.MultiPage(
+          pageFormat: format,
+          margin: const pw.EdgeInsets.all(28),
+          build: (context) => buildCommsChallengeTablePdfWidgets(
+            planName: challengeTable.planName,
+            table: table,
+            title: challengeTable.title,
+            instructions: challengeTable.instructions,
+            generatedLabel: challengeTable.generatedLabel,
+          ),
+        ),
+      );
+    }
+  }
+
   return doc.save();
 }
 
@@ -270,6 +316,7 @@ class _IndexPage extends pw.StatelessWidget {
     required this.includeMgrsGrid,
     this.hasRoute = false,
     this.hasDirections = false,
+    this.hasChallengeTable = false,
   });
 
   final String title;
@@ -281,6 +328,7 @@ class _IndexPage extends pw.StatelessWidget {
   final bool includeMgrsGrid;
   final bool hasRoute;
   final bool hasDirections;
+  final bool hasChallengeTable;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -308,7 +356,8 @@ class _IndexPage extends pw.StatelessWidget {
         pw.Text(
           '${sheets.length} sheets · $markerCount markers · $zoneCount zones'
           '${hasRoute ? ' · active route' : ''}'
-          '${hasDirections ? ' · turn-by-turn list' : ''}',
+          '${hasDirections ? ' · turn-by-turn list' : ''}'
+          '${hasChallengeTable ? ' · radio auth sheets' : ''}',
           style: const pw.TextStyle(fontSize: 10),
         ),
         pw.SizedBox(height: 12),
@@ -345,6 +394,9 @@ class _IndexPage extends pw.StatelessWidget {
               'The active Route here path is drawn in blue on map sheets.',
             if (hasDirections)
               'A turn-by-turn directions page follows the map sheets.',
+            if (hasChallengeTable)
+              'Radio challenge authentication sheet pages are included '
+                  'from the active comms plan.',
             'Edge sheets overlap slightly. Center MGRS labels are approximate.',
           ].join(' '),
           style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),

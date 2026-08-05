@@ -1324,7 +1324,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications, icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
+      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d\'authentification), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
 
   @override
   String get backupExportButton => 'Exporter les données (.zip)';
@@ -1468,7 +1468,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques, icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu\'à mettre des tuiles en cache sur cet appareil.';
+      'Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications et tables d\'authentification), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu\'à mettre des tuiles en cache sur cet appareil.';
 
   @override
   String get fieldPackExportButton => 'Exporter le pack terrain';
@@ -1648,6 +1648,18 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get mapAtlasIncludeDirectionsList =>
       'Inclure une page d\'instructions pas à pas';
+
+  @override
+  String get mapAtlasIncludeCommsChallengeTable =>
+      'Inclure les feuilles d\'authentification radio';
+
+  @override
+  String get mapAtlasIncludeCommsChallengeTableHint =>
+      'Toutes les feuilles non utilisées du plan actif';
+
+  @override
+  String get mapAtlasCommsChallengeTableUnavailable =>
+      'Aucune feuille d\'authentification sur le plan actif. Générez-en dans Plan de communications.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Ajuster à l\'itinéraire actif';
@@ -6758,6 +6770,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commsPlanRadioServiceCb => 'CB';
 
   @override
+  String get commsPlanChannelHandleLabel => 'Handle';
+
+  @override
   String get commsPlanServiceChannelLabel => 'Canal autorisé';
 
   @override
@@ -6843,4 +6858,53 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get commsPlanWeekdaySun => 'Dim';
+
+  @override
+  String get commsChallengeTableTitle => 'Tables d\'authentification radio';
+
+  @override
+  String get commsChallengeTableEditorHint =>
+      'Générez plusieurs feuilles à usage unique. Brûlez (supprimez) chaque feuille après usage. Incluses dans les sauvegardes et packs terrain avec ce plan.';
+
+  @override
+  String get commsChallengeTableGenerate => 'Générer une feuille';
+
+  @override
+  String get commsChallengeTableBurn => 'Brûler';
+
+  @override
+  String get commsChallengeTableView => 'Voir';
+
+  @override
+  String get commsChallengeTableMissing =>
+      'Pas encore de feuilles d\'authentification.';
+
+  @override
+  String commsChallengeTableCount(int count) {
+    return '$count feuille(s) prête(s)';
+  }
+
+  @override
+  String get commsChallengeTableReadyHint =>
+      'Feuilles prêtes pour l\'atlas et le pack terrain. Brûlez après usage.';
+
+  @override
+  String get commsChallengeTableInstructions =>
+      'Le challengeur choisit une case (lettre de ligne + chiffre de colonne, ex. B-7). La station répond avec le digraphe. Brûlez cette feuille après le net — ne la réutilisez pas.';
+
+  @override
+  String commsChallengeTableGeneratedAt(String when) {
+    return 'Générée $when';
+  }
+
+  @override
+  String get commsChallengeTableGeneratedPrefix => 'Générée';
+
+  @override
+  String get commsChallengeTableBurnConfirmTitle =>
+      'Brûler la feuille d\'authentification ?';
+
+  @override
+  String get commsChallengeTableBurnConfirmMessage =>
+      'Cela supprime définitivement la feuille. Les stations qui en ont encore besoin ne pourront plus s\'authentifier avec elle.';
 }

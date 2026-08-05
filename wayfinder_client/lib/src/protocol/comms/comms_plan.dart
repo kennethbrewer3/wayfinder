@@ -20,6 +20,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
     String? timezoneIana,
     bool? active,
     required this.channelsJson,
+    this.challengeTableJson,
     int? sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -35,6 +36,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
     String? timezoneIana,
     bool? active,
     required String channelsJson,
+    String? challengeTableJson,
     int? sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -52,6 +54,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['active']),
       channelsJson: jsonSerialization['channelsJson'] as String,
+      challengeTableJson: jsonSerialization['challengeTableJson'] as String?,
       sortOrder: jsonSerialization['sortOrder'] as int?,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
@@ -78,6 +81,9 @@ abstract class CommsPlan implements _i1.SerializableModel {
   /// JSON list of CommsPlanChannel objects
   String channelsJson;
 
+  /// JSON radio challenge authentication table (matrix), or null when none
+  String? challengeTableJson;
+
   int sortOrder;
 
   DateTime createdAt;
@@ -94,6 +100,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
     String? timezoneIana,
     bool? active,
     String? channelsJson,
+    String? challengeTableJson,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -108,6 +115,7 @@ abstract class CommsPlan implements _i1.SerializableModel {
       'timezoneIana': timezoneIana,
       'active': active,
       'channelsJson': channelsJson,
+      if (challengeTableJson != null) 'challengeTableJson': challengeTableJson,
       'sortOrder': sortOrder,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -130,6 +138,7 @@ class _CommsPlanImpl extends CommsPlan {
     String? timezoneIana,
     bool? active,
     required String channelsJson,
+    String? challengeTableJson,
     int? sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -140,6 +149,7 @@ class _CommsPlanImpl extends CommsPlan {
          timezoneIana: timezoneIana,
          active: active,
          channelsJson: channelsJson,
+         challengeTableJson: challengeTableJson,
          sortOrder: sortOrder,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -156,6 +166,7 @@ class _CommsPlanImpl extends CommsPlan {
     String? timezoneIana,
     bool? active,
     String? channelsJson,
+    Object? challengeTableJson = _Undefined,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -167,6 +178,9 @@ class _CommsPlanImpl extends CommsPlan {
       timezoneIana: timezoneIana ?? this.timezoneIana,
       active: active ?? this.active,
       channelsJson: channelsJson ?? this.channelsJson,
+      challengeTableJson: challengeTableJson is String?
+          ? challengeTableJson
+          : this.challengeTableJson,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

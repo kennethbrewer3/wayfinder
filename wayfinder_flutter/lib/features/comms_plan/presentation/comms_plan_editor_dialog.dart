@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../markers/models/marker_radio.dart';
+import '../../markers/presentation/marker_notes_editor.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
+import '../models/comms_challenge_table.dart';
 import '../models/comms_plan_channel.dart';
 import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_timezones.dart';
+import 'comms_challenge_table_preview.dart';
 
 Future<void> showCommsPlanEditorDialog({
   required BuildContext context,
@@ -36,11 +41,12 @@ class _CommsPlanEditorDialog extends ConsumerStatefulWidget {
 class _CommsPlanEditorDialogState
     extends ConsumerState<_CommsPlanEditorDialog> {
   late final TextEditingController _nameController;
-  late final TextEditingController _notesController;
+  late final QuillController _notesController;
   late String _timezone;
   late final List<String> _timezoneOptions;
   late bool _active;
   late List<CommsPlanChannel> _channels;
+  late List<CommsChallengeTable> _challengeTables;
   var _saving = false;
   String? _error;
 
@@ -53,9 +59,10 @@ class _CommsPlanEditorDialogState
         ? existing!.timezoneIana.trim()
         : 'UTC';
     _timezoneOptions = commsPlanTimezoneOptions(current: _timezone);
-    _notesController = TextEditingController(text: existing?.notes ?? '');
+    _notesController = createMarkerNotesController(markdown: existing?.notes);
     _active = existing?.active ?? true;
     _channels = decodeCommsPlanChannels(existing?.channelsJson);
+    _challengeTables = decodeCommsChallengeTables(existing?.challengeTableJson);
   }
 
   @override
@@ -127,14 +134,101 @@ class _CommsPlanEditorDialogState
                 value: _active,
                 onChanged: (value) => setState(() => _active = value),
               ),
-              TextField(
+              MarkerNotesEditor(
                 controller: _notesController,
-                decoration: InputDecoration(
-                  labelText: l10n.commsPlanNotesLabel,
-                ),
-                minLines: 2,
-                maxLines: 4,
+                label: l10n.commsPlanNotesLabel,
               ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.commsChallengeTableTitle,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                l10n.commsChallengeTableEditorHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              FilledButton.tonalIcon(
+                onPressed: _saving
+                    ? null
+                    : () {
+                        setState(() {
+                          final label = nextChallengeTableLabel(
+                            _challengeTables,
+                          );
+                          _challengeTables = [
+                            ..._challengeTables,
+                            generateCommsChallengeTable(label: label),
+                          ];
+                        });
+                      },
+                icon: const Icon(Icons.add),
+                label: Text(l10n.commsChallengeTableGenerate),
+              ),
+              if (_challengeTables.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    l10n.commsChallengeTableMissing,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              else
+                for (final table in _challengeTables)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: const Icon(Icons.grid_on, size: 20),
+                    title: Text(table.label),
+                    subtitle: Text(
+                      l10n.commsChallengeTableGeneratedAt(
+                        DateFormat.yMMMd().add_Hm().format(
+                          table.generatedAt.toLocal(),
+                        ),
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: l10n.commsChallengeTableView,
+                          icon: const Icon(Icons.visibility_outlined, size: 18),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  await showCommsChallengeTablePreview(
+                                    context: context,
+                                    planName:
+                                        _nameController.text.trim().isEmpty
+                                        ? l10n.commsPlanCreateTitle
+                                        : _nameController.text.trim(),
+                                    table: table,
+                                  );
+                                },
+                        ),
+                        IconButton(
+                          tooltip: l10n.commsChallengeTableBurn,
+                          icon: const Icon(
+                            Icons.local_fire_department_outlined,
+                          ),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  final confirmed = await _confirmBurn(l10n);
+                                  if (!confirmed || !mounted) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    _challengeTables = [
+                                      for (final item in _challengeTables)
+                                        if (item.id != table.id) item,
+                                    ];
+                                  });
+                                },
+                        ),
+                      ],
+                    ),
+                  ),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -215,6 +309,27 @@ class _CommsPlanEditorDialogState
     );
   }
 
+  Future<bool> _confirmBurn(AppLocalizations l10n) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.commsChallengeTableBurnConfirmTitle),
+        content: Text(l10n.commsChallengeTableBurnConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.actionCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.commsChallengeTableBurn),
+          ),
+        ],
+      ),
+    );
+    return confirmed ?? false;
+  }
+
   Future<void> _addChannel() async {
     final channel = await showCommsPlanChannelEditorDialog(
       context: context,
@@ -256,6 +371,7 @@ class _CommsPlanEditorDialogState
     try {
       final now = DateTime.now().toUtc();
       final existing = widget.existing;
+      final notesMarkdown = markerNotesToMarkdown(_notesController);
       final plan =
           (existing ??
                   CommsPlan(
@@ -266,12 +382,13 @@ class _CommsPlanEditorDialogState
                   ))
               .copyWith(
                 name: name,
-                notes: _notesController.text.trim().isEmpty
-                    ? null
-                    : _notesController.text.trim(),
+                notes: notesMarkdown.isEmpty ? null : notesMarkdown,
                 timezoneIana: _timezone,
                 active: _active,
                 channelsJson: encodeCommsPlanChannels(_channels),
+                challengeTableJson: encodeCommsChallengeTables(
+                  _challengeTables,
+                ),
                 updatedAt: now,
               );
 
@@ -340,7 +457,7 @@ class _CommsPlanChannelEditorDialogState
   late final TextEditingController _startController;
   late final TextEditingController _durationController;
   late final TextEditingController _statusNoteController;
-  late final TextEditingController _notesController;
+  late final QuillController _notesController;
   late CommsChannelRole _role;
   late CommsRadioService _radioService;
   String? _serviceChannelId;
@@ -374,7 +491,7 @@ class _CommsPlanChannelEditorDialogState
     _statusNoteController = TextEditingController(
       text: existing?.statusNote ?? '',
     );
-    _notesController = TextEditingController(text: existing?.notes ?? '');
+    _notesController = createMarkerNotesController(markdown: existing?.notes);
     _role = existing?.role ?? CommsChannelRole.primary;
     _radioService = existing?.radioService ?? CommsRadioService.ham;
     _serviceChannelId = existing?.serviceChannelId;
@@ -582,9 +699,13 @@ class _CommsPlanChannelEditorDialogState
               TextField(
                 controller: _callsignController,
                 decoration: InputDecoration(
-                  labelText: l10n.markerRadioCallsignLabel,
+                  labelText: _radioService == CommsRadioService.cb
+                      ? l10n.commsPlanChannelHandleLabel
+                      : l10n.markerRadioCallsignLabel,
                 ),
-                textCapitalization: TextCapitalization.characters,
+                textCapitalization: _radioService == CommsRadioService.cb
+                    ? TextCapitalization.words
+                    : TextCapitalization.characters,
               ),
               const SizedBox(height: 12),
               Text(
@@ -686,13 +807,9 @@ class _CommsPlanChannelEditorDialogState
                 onChanged: (value) => setState(() => _markerId = value),
               ),
               const SizedBox(height: 8),
-              TextField(
+              MarkerNotesEditor(
                 controller: _notesController,
-                decoration: InputDecoration(
-                  labelText: l10n.commsPlanChannelNotes,
-                ),
-                minLines: 2,
-                maxLines: 3,
+                label: l10n.commsPlanChannelNotes,
               ),
             ],
           ),
@@ -722,6 +839,7 @@ class _CommsPlanChannelEditorDialogState
             final permitted = _radioService.usesPermittedChannels
                 ? findPermittedChannel(_radioService, _serviceChannelId)
                 : null;
+            final notesMarkdown = markerNotesToMarkdown(_notesController);
             Navigator.of(context).pop(
               CommsPlanChannel(
                 id: widget.existing?.id ?? const Uuid().v4(),
@@ -749,7 +867,7 @@ class _CommsPlanChannelEditorDialogState
                 availability: _availability,
                 statusNote: _optional(_statusNoteController.text),
                 markerId: _markerId,
-                notes: _optional(_notesController.text),
+                notes: notesMarkdown.isEmpty ? null : notesMarkdown,
               ),
             );
           },

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
+import '../../comms_plan/models/comms_challenge_table.dart';
+import '../../comms_plan/providers/comms_plan_provider.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/measurement_units_provider.dart';
@@ -20,9 +22,17 @@ Future<AtlasExportOptions?> showMapAtlasExportDialog({
   required WidgetRef ref,
 }) {
   final hasRoute = ref.read(routingSessionProvider).hasRoute;
+  final plans = ref.read(commsPlansProvider).valueOrNull ?? const [];
+  final active = activeCommsPlan(plans);
+  final hasChallengeTable = decodeCommsChallengeTables(
+    active?.challengeTableJson,
+  ).isNotEmpty;
   return showDialog<AtlasExportOptions>(
     context: context,
-    builder: (context) => _MapAtlasExportDialog(hasActiveRoute: hasRoute),
+    builder: (context) => _MapAtlasExportDialog(
+      hasActiveRoute: hasRoute,
+      hasCommsChallengeTable: hasChallengeTable,
+    ),
   );
 }
 
@@ -106,9 +116,13 @@ AtlasRouteExport? buildAtlasRouteExport({
 }
 
 class _MapAtlasExportDialog extends StatefulWidget {
-  const _MapAtlasExportDialog({required this.hasActiveRoute});
+  const _MapAtlasExportDialog({
+    required this.hasActiveRoute,
+    required this.hasCommsChallengeTable,
+  });
 
   final bool hasActiveRoute;
+  final bool hasCommsChallengeTable;
 
   @override
   State<_MapAtlasExportDialog> createState() => _MapAtlasExportDialogState();
@@ -122,6 +136,7 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
   var _includeMarkerIndex = true;
   late bool _includeActiveRoute;
   late bool _includeDirectionsList;
+  late bool _includeCommsChallengeTable;
 
   @override
   void initState() {
@@ -132,6 +147,7 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
         : AtlasCoverageMode.currentMapView;
     _includeActiveRoute = widget.hasActiveRoute;
     _includeDirectionsList = widget.hasActiveRoute;
+    _includeCommsChallengeTable = widget.hasCommsChallengeTable;
   }
 
   @override
@@ -263,6 +279,27 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
               ],
+              if (widget.hasCommsChallengeTable)
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _includeCommsChallengeTable,
+                  onChanged: (value) {
+                    setState(
+                      () => _includeCommsChallengeTable = value ?? false,
+                    );
+                  },
+                  title: Text(l10n.mapAtlasIncludeCommsChallengeTable),
+                  subtitle: Text(l10n.mapAtlasIncludeCommsChallengeTableHint),
+                  controlAffinity: ListTileControlAffinity.leading,
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    l10n.mapAtlasCommsChallengeTableUnavailable,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
               Text(
                 '${l10n.mapAtlasSheetCountHint}: ${grid.columns * grid.rows}',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -291,6 +328,9 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
                     widget.hasActiveRoute && _includeActiveRoute,
                 includeDirectionsList:
                     widget.hasActiveRoute && _includeDirectionsList,
+                includeCommsChallengeTable:
+                    widget.hasCommsChallengeTable &&
+                    _includeCommsChallengeTable,
               ),
             );
           },

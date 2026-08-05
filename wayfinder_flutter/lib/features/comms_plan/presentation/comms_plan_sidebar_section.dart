@@ -12,11 +12,13 @@ import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../models/comms_challenge_table.dart';
+import '../models/comms_one_time_pad.dart';
 import '../models/comms_plan_channel.dart';
 import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_schedule.dart';
 import 'comms_challenge_table_preview.dart';
+import 'comms_one_time_pad_preview.dart';
 import 'comms_plan_editor_dialog.dart';
 
 class CommsPlanSidebarSection extends ConsumerWidget {
@@ -159,6 +161,13 @@ class CommsPlanSidebarSection extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: _ChallengeTableSidebarRow(
+                    plan: active,
+                    canManage: canManage && !offline,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: _OneTimePadSidebarRow(
                     plan: active,
                     canManage: canManage && !offline,
                   ),
@@ -502,6 +511,128 @@ class _ChallengeTableSidebarRow extends ConsumerWidget {
                               challengeTableJson: encodeCommsChallengeTables([
                                 for (final item in tables)
                                   if (item.id != table.id) item,
+                              ]),
+                              updatedAt: DateTime.now().toUtc(),
+                            ),
+                          );
+                    },
+                  ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _OneTimePadSidebarRow extends ConsumerWidget {
+  const _OneTimePadSidebarRow({
+    required this.plan,
+    required this.canManage,
+  });
+
+  final CommsPlan plan;
+  final bool canManage;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final pads = decodeCommsOneTimePads(plan.oneTimePadJson);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.commsOneTimePadTitle,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          pads.isEmpty
+              ? l10n.commsOneTimePadMissing
+              : l10n.commsOneTimePadCount(pads.length),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        if (canManage)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () async {
+                final generated = generateCommsOneTimePad(
+                  label: nextOneTimePadLabel(pads),
+                );
+                await ref
+                    .read(commsPlansProvider.notifier)
+                    .updatePlan(
+                      plan.copyWith(
+                        oneTimePadJson: encodeCommsOneTimePads([
+                          ...pads,
+                          generated,
+                        ]),
+                        updatedAt: DateTime.now().toUtc(),
+                      ),
+                    );
+              },
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.commsOneTimePadGenerate),
+            ),
+          ),
+        for (final pad in pads)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: const Icon(Icons.password, size: 18),
+            title: Text(pad.label),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: l10n.commsOneTimePadView,
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  onPressed: () async {
+                    await showCommsOneTimePadPreview(
+                      context: context,
+                      planName: plan.name,
+                      pad: pad,
+                    );
+                  },
+                ),
+                if (canManage)
+                  IconButton(
+                    tooltip: l10n.commsOneTimePadBurn,
+                    icon: const Icon(
+                      Icons.local_fire_department_outlined,
+                      size: 18,
+                    ),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(l10n.commsOneTimePadBurnConfirmTitle),
+                          content: Text(
+                            l10n.commsOneTimePadBurnConfirmMessage,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text(l10n.actionCancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(l10n.commsOneTimePadBurn),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed != true) {
+                        return;
+                      }
+                      await ref
+                          .read(commsPlansProvider.notifier)
+                          .updatePlan(
+                            plan.copyWith(
+                              oneTimePadJson: encodeCommsOneTimePads([
+                                for (final item in pads)
+                                  if (item.id != pad.id) item,
                               ]),
                               updatedAt: DateTime.now().toUtc(),
                             ),

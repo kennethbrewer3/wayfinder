@@ -11,11 +11,13 @@ import '../../markers/presentation/marker_notes_editor.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../models/comms_challenge_table.dart';
+import '../models/comms_one_time_pad.dart';
 import '../models/comms_plan_channel.dart';
 import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_timezones.dart';
 import 'comms_challenge_table_preview.dart';
+import 'comms_one_time_pad_preview.dart';
 
 Future<void> showCommsPlanEditorDialog({
   required BuildContext context,
@@ -47,6 +49,7 @@ class _CommsPlanEditorDialogState
   late bool _active;
   late List<CommsPlanChannel> _channels;
   late List<CommsChallengeTable> _challengeTables;
+  late List<CommsOneTimePad> _oneTimePads;
   var _saving = false;
   String? _error;
 
@@ -63,6 +66,7 @@ class _CommsPlanEditorDialogState
     _active = existing?.active ?? true;
     _channels = decodeCommsPlanChannels(existing?.channelsJson);
     _challengeTables = decodeCommsChallengeTables(existing?.challengeTableJson);
+    _oneTimePads = decodeCommsOneTimePads(existing?.oneTimePadJson);
   }
 
   @override
@@ -214,7 +218,13 @@ class _CommsPlanEditorDialogState
                           onPressed: _saving
                               ? null
                               : () async {
-                                  final confirmed = await _confirmBurn(l10n);
+                                  final confirmed = await _confirmBurn(
+                                    title: l10n
+                                        .commsChallengeTableBurnConfirmTitle,
+                                    message: l10n
+                                        .commsChallengeTableBurnConfirmMessage,
+                                    burnLabel: l10n.commsChallengeTableBurn,
+                                  );
                                   if (!confirmed || !mounted) {
                                     return;
                                   }
@@ -222,6 +232,100 @@ class _CommsPlanEditorDialogState
                                     _challengeTables = [
                                       for (final item in _challengeTables)
                                         if (item.id != table.id) item,
+                                    ];
+                                  });
+                                },
+                        ),
+                      ],
+                    ),
+                  ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.commsOneTimePadTitle,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Text(
+                l10n.commsOneTimePadEditorHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              FilledButton.tonalIcon(
+                onPressed: _saving
+                    ? null
+                    : () {
+                        setState(() {
+                          final label = nextOneTimePadLabel(_oneTimePads);
+                          _oneTimePads = [
+                            ..._oneTimePads,
+                            generateCommsOneTimePad(label: label),
+                          ];
+                        });
+                      },
+                icon: const Icon(Icons.add),
+                label: Text(l10n.commsOneTimePadGenerate),
+              ),
+              if (_oneTimePads.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    l10n.commsOneTimePadMissing,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              else
+                for (final pad in _oneTimePads)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: const Icon(Icons.password, size: 20),
+                    title: Text(pad.label),
+                    subtitle: Text(
+                      l10n.commsOneTimePadGeneratedAt(
+                        DateFormat.yMMMd().add_Hm().format(
+                          pad.generatedAt.toLocal(),
+                        ),
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: l10n.commsOneTimePadView,
+                          icon: const Icon(Icons.visibility_outlined, size: 18),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  await showCommsOneTimePadPreview(
+                                    context: context,
+                                    planName:
+                                        _nameController.text.trim().isEmpty
+                                        ? l10n.commsPlanCreateTitle
+                                        : _nameController.text.trim(),
+                                    pad: pad,
+                                  );
+                                },
+                        ),
+                        IconButton(
+                          tooltip: l10n.commsOneTimePadBurn,
+                          icon: const Icon(
+                            Icons.local_fire_department_outlined,
+                          ),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  final confirmed = await _confirmBurn(
+                                    title: l10n.commsOneTimePadBurnConfirmTitle,
+                                    message:
+                                        l10n.commsOneTimePadBurnConfirmMessage,
+                                    burnLabel: l10n.commsOneTimePadBurn,
+                                  );
+                                  if (!confirmed || !mounted) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    _oneTimePads = [
+                                      for (final item in _oneTimePads)
+                                        if (item.id != pad.id) item,
                                     ];
                                   });
                                 },
@@ -309,12 +413,17 @@ class _CommsPlanEditorDialogState
     );
   }
 
-  Future<bool> _confirmBurn(AppLocalizations l10n) async {
+  Future<bool> _confirmBurn({
+    required String title,
+    required String message,
+    required String burnLabel,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.commsChallengeTableBurnConfirmTitle),
-        content: Text(l10n.commsChallengeTableBurnConfirmMessage),
+        title: Text(title),
+        content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -322,7 +431,7 @@ class _CommsPlanEditorDialogState
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.commsChallengeTableBurn),
+            child: Text(burnLabel),
           ),
         ],
       ),
@@ -389,6 +498,7 @@ class _CommsPlanEditorDialogState
                 challengeTableJson: encodeCommsChallengeTables(
                   _challengeTables,
                 ),
+                oneTimePadJson: encodeCommsOneTimePads(_oneTimePads),
                 updatedAt: now,
               );
 

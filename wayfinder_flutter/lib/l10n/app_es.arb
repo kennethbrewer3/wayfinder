@@ -407,7 +407,7 @@
   "watchLogTextRequired": "Introduzca el texto del evento.",
   "backupTitle": "Copia de seguridad de datos del mapa",
   "backupPermissionDenied": "No tienes permiso para exportar o restaurar copias de seguridad del mapa.",
-  "backupDescription": "Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.",
+  "backupDescription": "Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación y blocs de un solo uso), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.",
   "backupExportButton": "Exportar datos del mapa (.zip)",
   "backupRestoreButton": "Restaurar desde copia de seguridad",
   "backupExportSuccess": "Copia de seguridad de datos del mapa guardada.",
@@ -504,7 +504,7 @@
   "kioskModeSettingsLockedMessage": "Los ajustes están ocultos mientras este dispositivo está en modo kiosco / visor.",
   "kioskModeBackToMap": "Volver al mapa",
   "fieldPackTitle": "Paquete de campo",
-  "fieldPackDescription": "Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones y tablas de autenticación), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.",
+  "fieldPackDescription": "Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones, tablas de autenticación y blocs de un solo uso), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.",
   "fieldPackExportButton": "Exportar paquete de campo",
   "fieldPackRestoreButton": "Restaurar paquete de campo",
   "fieldPackSelectPmtilesTitle": "Incluir PMTiles",
@@ -632,6 +632,9 @@
   "mapAtlasIncludeCommsChallengeTable": "Incluir hojas de autenticación de radio",
   "mapAtlasIncludeCommsChallengeTableHint": "Todas las hojas no usadas del plan activo",
   "mapAtlasCommsChallengeTableUnavailable": "No hay hojas de autenticación en el plan activo. Genere algunas en Plan de comunicaciones.",
+  "mapAtlasIncludeCommsOneTimePad": "Incluir blocs de un solo uso",
+  "mapAtlasIncludeCommsOneTimePadHint": "Todos los blocs no usados del plan activo",
+  "mapAtlasCommsOneTimePadUnavailable": "No hay blocs de un solo uso en el plan activo. Genere algunos en Plan de comunicaciones.",
   "mapAtlasCoverageActiveRoute": "Ajustar a la ruta activa",
   "mapAtlasDirectionsStepColumn": "Paso",
   "mapAtlasDirectionsInstructionColumn": "Indicación",
@@ -3215,5 +3218,27 @@
   },
   "commsChallengeTableGeneratedPrefix": "Generada",
   "commsChallengeTableBurnConfirmTitle": "¿Quemar hoja de autenticación?",
-  "commsChallengeTableBurnConfirmMessage": "Esto elimina la hoja de forma permanente. Las estaciones que aún la necesiten ya no podrán autenticarse con ella."
+  "commsChallengeTableBurnConfirmMessage": "Esto elimina la hoja de forma permanente. Las estaciones que aún la necesiten ya no podrán autenticarse con ella.",
+  "commsOneTimePadTitle": "Blocs de un solo uso",
+  "commsOneTimePadEditorHint": "Genere blocs 29×4 de grupos de cinco letras para cifrado Vernam. Queme (elimine) cada bloc tras usarlo. Se incluyen en copias y paquetes de campo con este plan.",
+  "commsOneTimePadGenerate": "Generar bloc",
+  "commsOneTimePadBurn": "Quemar",
+  "commsOneTimePadView": "Ver",
+  "commsOneTimePadMissing": "Aún no hay blocs de un solo uso.",
+  "commsOneTimePadCount": "{count} bloc(s) listo(s)",
+  "@commsOneTimePadCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsOneTimePadInstructions": "Use los grupos de izquierda a derecha y de arriba abajo. Cada grupo de cinco letras es material de clave: no reutilice un grupo. Queme este bloc tras el tráfico que lo consumió.",
+  "commsOneTimePadGeneratedAt": "Generado {when}",
+  "@commsOneTimePadGeneratedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsOneTimePadGeneratedPrefix": "Generado",
+  "commsOneTimePadBurnConfirmTitle": "¿Quemar bloc de un solo uso?",
+  "commsOneTimePadBurnConfirmMessage": "Esto elimina el bloc de forma permanente. Se perderá todo el material de clave no usado de esta hoja."
 }

@@ -8,7 +8,9 @@ import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../circles/models/circle_geometry.dart';
 import '../../comms_plan/models/comms_challenge_table.dart';
+import '../../comms_plan/models/comms_one_time_pad.dart';
 import '../../comms_plan/utils/comms_challenge_table_pdf.dart';
+import '../../comms_plan/utils/comms_one_time_pad_pdf.dart';
 import '../../lines/models/line_geometry.dart';
 import '../../lines/utils/line_distance.dart';
 import '../../map/utils/mgrs_utils.dart';
@@ -74,6 +76,7 @@ class AtlasExportOptions {
     this.includeActiveRoute = false,
     this.includeDirectionsList = false,
     this.includeCommsChallengeTable = false,
+    this.includeCommsOneTimePad = false,
   });
 
   final String title;
@@ -85,6 +88,7 @@ class AtlasExportOptions {
   final bool includeActiveRoute;
   final bool includeDirectionsList;
   final bool includeCommsChallengeTable;
+  final bool includeCommsOneTimePad;
 }
 
 /// Labels + table payload for an optional atlas authentication appendix.
@@ -99,6 +103,23 @@ class AtlasCommsChallengeExport {
 
   final String planName;
   final List<CommsChallengeTable> tables;
+  final String title;
+  final String instructions;
+  final String generatedLabel;
+}
+
+/// Labels + pad payload for an optional atlas one-time pad appendix.
+class AtlasCommsOneTimePadExport {
+  const AtlasCommsOneTimePadExport({
+    required this.planName,
+    required this.pads,
+    required this.title,
+    required this.instructions,
+    required this.generatedLabel,
+  });
+
+  final String planName;
+  final List<CommsOneTimePad> pads;
   final String title;
   final String instructions;
   final String generatedLabel;
@@ -120,6 +141,7 @@ Future<Uint8List> buildAtlasPdf({
   bool includeMgrsGrid = false,
   AtlasRouteExport? route,
   AtlasCommsChallengeExport? challengeTable,
+  AtlasCommsOneTimePadExport? oneTimePad,
 }) async {
   final sheets = tileAtlasBounds(
     coverage: coverage,
@@ -177,6 +199,10 @@ Future<Uint8List> buildAtlasPdf({
             options.includeCommsChallengeTable &&
             challengeTable != null &&
             challengeTable.tables.isNotEmpty,
+        hasOneTimePad:
+            options.includeCommsOneTimePad &&
+            oneTimePad != null &&
+            oneTimePad.pads.isNotEmpty,
       ),
     ),
   );
@@ -302,6 +328,26 @@ Future<Uint8List> buildAtlasPdf({
     }
   }
 
+  if (options.includeCommsOneTimePad &&
+      oneTimePad != null &&
+      oneTimePad.pads.isNotEmpty) {
+    for (final pad in oneTimePad.pads) {
+      doc.addPage(
+        pw.MultiPage(
+          pageFormat: format,
+          margin: const pw.EdgeInsets.all(28),
+          build: (context) => buildCommsOneTimePadPdfWidgets(
+            planName: oneTimePad.planName,
+            pad: pad,
+            title: oneTimePad.title,
+            instructions: oneTimePad.instructions,
+            generatedLabel: oneTimePad.generatedLabel,
+          ),
+        ),
+      );
+    }
+  }
+
   return doc.save();
 }
 
@@ -317,6 +363,7 @@ class _IndexPage extends pw.StatelessWidget {
     this.hasRoute = false,
     this.hasDirections = false,
     this.hasChallengeTable = false,
+    this.hasOneTimePad = false,
   });
 
   final String title;
@@ -329,6 +376,7 @@ class _IndexPage extends pw.StatelessWidget {
   final bool hasRoute;
   final bool hasDirections;
   final bool hasChallengeTable;
+  final bool hasOneTimePad;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -357,7 +405,8 @@ class _IndexPage extends pw.StatelessWidget {
           '${sheets.length} sheets · $markerCount markers · $zoneCount zones'
           '${hasRoute ? ' · active route' : ''}'
           '${hasDirections ? ' · turn-by-turn list' : ''}'
-          '${hasChallengeTable ? ' · radio auth sheets' : ''}',
+          '${hasChallengeTable ? ' · radio auth sheets' : ''}'
+          '${hasOneTimePad ? ' · one-time pads' : ''}',
           style: const pw.TextStyle(fontSize: 10),
         ),
         pw.SizedBox(height: 12),
@@ -397,6 +446,8 @@ class _IndexPage extends pw.StatelessWidget {
             if (hasChallengeTable)
               'Radio challenge authentication sheet pages are included '
                   'from the active comms plan.',
+            if (hasOneTimePad)
+              'One-time pad pages are included from the active comms plan.',
             'Edge sheets overlap slightly. Center MGRS labels are approximate.',
           ].join(' '),
           style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),

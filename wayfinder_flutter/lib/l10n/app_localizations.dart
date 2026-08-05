@@ -2359,7 +2359,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
+  /// **'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables and one-time pads), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).'**
   String get backupDescription;
 
   /// No description provided for @backupExportButton.
@@ -2578,7 +2578,7 @@ abstract class AppLocalizations {
   /// No description provided for @fieldPackDescription.
   ///
   /// In en, this message translates to:
-  /// **'One archive for a spare server or laptop: map objects (including comms plans and radio authentication tables), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
+  /// **'One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, and one-time pads), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.'**
   String get fieldPackDescription;
 
   /// No description provided for @fieldPackExportButton.
@@ -2895,6 +2895,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No radio authentication sheets on the active comms plan. Generate some in Comms plan first.'**
   String get mapAtlasCommsChallengeTableUnavailable;
+
+  /// No description provided for @mapAtlasIncludeCommsOneTimePad.
+  ///
+  /// In en, this message translates to:
+  /// **'Include one-time pads'**
+  String get mapAtlasIncludeCommsOneTimePad;
+
+  /// No description provided for @mapAtlasIncludeCommsOneTimePadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'All unused pads from the active comms plan'**
+  String get mapAtlasIncludeCommsOneTimePadHint;
+
+  /// No description provided for @mapAtlasCommsOneTimePadUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No one-time pads on the active comms plan. Generate some in Comms plan first.'**
+  String get mapAtlasCommsOneTimePadUnavailable;
 
   /// No description provided for @mapAtlasCoverageActiveRoute.
   ///
@@ -11880,6 +11898,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it.'**
   String get commsChallengeTableBurnConfirmMessage;
+
+  /// No description provided for @commsOneTimePadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time pads'**
+  String get commsOneTimePadTitle;
+
+  /// No description provided for @commsOneTimePadEditorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate 29×4 pads of five-letter groups for Vernam encryption. Burn (delete) each pad after use. Included in map backups and field packs with this plan.'**
+  String get commsOneTimePadEditorHint;
+
+  /// No description provided for @commsOneTimePadGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate pad'**
+  String get commsOneTimePadGenerate;
+
+  /// No description provided for @commsOneTimePadBurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn'**
+  String get commsOneTimePadBurn;
+
+  /// No description provided for @commsOneTimePadView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get commsOneTimePadView;
+
+  /// No description provided for @commsOneTimePadMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No one-time pads yet.'**
+  String get commsOneTimePadMissing;
+
+  /// No description provided for @commsOneTimePadCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pad(s) ready'**
+  String commsOneTimePadCount(int count);
+
+  /// No description provided for @commsOneTimePadInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Use groups left-to-right, top-to-bottom. Each five-letter group is key material — never reuse a group. Burn this pad after the traffic that consumed it.'**
+  String get commsOneTimePadInstructions;
+
+  /// No description provided for @commsOneTimePadGeneratedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated {when}'**
+  String commsOneTimePadGeneratedAt(String when);
+
+  /// No description provided for @commsOneTimePadGeneratedPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated'**
+  String get commsOneTimePadGeneratedPrefix;
+
+  /// No description provided for @commsOneTimePadBurnConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn one-time pad?'**
+  String get commsOneTimePadBurnConfirmTitle;
+
+  /// No description provided for @commsOneTimePadBurnConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes the pad. Any unused key material on this sheet will be lost.'**
+  String get commsOneTimePadBurnConfirmMessage;
 }
 
 class _AppLocalizationsDelegate

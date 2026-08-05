@@ -1324,7 +1324,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d\'authentification), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
+      'Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d\'authentification et carnets à usage unique), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.';
 
   @override
   String get backupExportButton => 'Exporter les données (.zip)';
@@ -1468,7 +1468,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications et tables d\'authentification), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu\'à mettre des tuiles en cache sur cet appareil.';
+      'Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications, tables d\'authentification et carnets à usage unique), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu\'à mettre des tuiles en cache sur cet appareil.';
 
   @override
   String get fieldPackExportButton => 'Exporter le pack terrain';
@@ -1660,6 +1660,18 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get mapAtlasCommsChallengeTableUnavailable =>
       'Aucune feuille d\'authentification sur le plan actif. Générez-en dans Plan de communications.';
+
+  @override
+  String get mapAtlasIncludeCommsOneTimePad =>
+      'Inclure les carnets à usage unique';
+
+  @override
+  String get mapAtlasIncludeCommsOneTimePadHint =>
+      'Tous les carnets non utilisés du plan actif';
+
+  @override
+  String get mapAtlasCommsOneTimePadUnavailable =>
+      'Aucun carnet à usage unique sur le plan actif. Générez-en dans Plan de communications.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Ajuster à l\'itinéraire actif';
@@ -6907,4 +6919,48 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get commsChallengeTableBurnConfirmMessage =>
       'Cela supprime définitivement la feuille. Les stations qui en ont encore besoin ne pourront plus s\'authentifier avec elle.';
+
+  @override
+  String get commsOneTimePadTitle => 'Carnets à usage unique';
+
+  @override
+  String get commsOneTimePadEditorHint =>
+      'Générez des carnets 29×4 de groupes de cinq lettres pour le chiffrement Vernam. Brûlez (supprimez) chaque carnet après usage. Inclus dans les sauvegardes et packs terrain avec ce plan.';
+
+  @override
+  String get commsOneTimePadGenerate => 'Générer un carnet';
+
+  @override
+  String get commsOneTimePadBurn => 'Brûler';
+
+  @override
+  String get commsOneTimePadView => 'Voir';
+
+  @override
+  String get commsOneTimePadMissing => 'Pas encore de carnets à usage unique.';
+
+  @override
+  String commsOneTimePadCount(int count) {
+    return '$count carnet(s) prêt(s)';
+  }
+
+  @override
+  String get commsOneTimePadInstructions =>
+      'Utilisez les groupes de gauche à droite, de haut en bas. Chaque groupe de cinq lettres est du matériel de clé — ne réutilisez jamais un groupe. Brûlez ce carnet après le trafic qui l\'a consommé.';
+
+  @override
+  String commsOneTimePadGeneratedAt(String when) {
+    return 'Généré $when';
+  }
+
+  @override
+  String get commsOneTimePadGeneratedPrefix => 'Généré';
+
+  @override
+  String get commsOneTimePadBurnConfirmTitle =>
+      'Brûler le carnet à usage unique ?';
+
+  @override
+  String get commsOneTimePadBurnConfirmMessage =>
+      'Cela supprime définitivement le carnet. Tout le matériel de clé non utilisé de cette feuille sera perdu.';
 }

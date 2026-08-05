@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../../comms_plan/models/comms_challenge_table.dart';
+import '../../comms_plan/models/comms_one_time_pad.dart';
 import '../../comms_plan/providers/comms_plan_provider.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../lines/models/measurement_units.dart';
@@ -27,11 +28,15 @@ Future<AtlasExportOptions?> showMapAtlasExportDialog({
   final hasChallengeTable = decodeCommsChallengeTables(
     active?.challengeTableJson,
   ).isNotEmpty;
+  final hasOneTimePad = decodeCommsOneTimePads(
+    active?.oneTimePadJson,
+  ).isNotEmpty;
   return showDialog<AtlasExportOptions>(
     context: context,
     builder: (context) => _MapAtlasExportDialog(
       hasActiveRoute: hasRoute,
       hasCommsChallengeTable: hasChallengeTable,
+      hasCommsOneTimePad: hasOneTimePad,
     ),
   );
 }
@@ -119,10 +124,12 @@ class _MapAtlasExportDialog extends StatefulWidget {
   const _MapAtlasExportDialog({
     required this.hasActiveRoute,
     required this.hasCommsChallengeTable,
+    required this.hasCommsOneTimePad,
   });
 
   final bool hasActiveRoute;
   final bool hasCommsChallengeTable;
+  final bool hasCommsOneTimePad;
 
   @override
   State<_MapAtlasExportDialog> createState() => _MapAtlasExportDialogState();
@@ -137,6 +144,7 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
   late bool _includeActiveRoute;
   late bool _includeDirectionsList;
   late bool _includeCommsChallengeTable;
+  late bool _includeCommsOneTimePad;
 
   @override
   void initState() {
@@ -148,6 +156,7 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
     _includeActiveRoute = widget.hasActiveRoute;
     _includeDirectionsList = widget.hasActiveRoute;
     _includeCommsChallengeTable = widget.hasCommsChallengeTable;
+    _includeCommsOneTimePad = widget.hasCommsOneTimePad;
   }
 
   @override
@@ -300,6 +309,25 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
+              if (widget.hasCommsOneTimePad)
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _includeCommsOneTimePad,
+                  onChanged: (value) {
+                    setState(() => _includeCommsOneTimePad = value ?? false);
+                  },
+                  title: Text(l10n.mapAtlasIncludeCommsOneTimePad),
+                  subtitle: Text(l10n.mapAtlasIncludeCommsOneTimePadHint),
+                  controlAffinity: ListTileControlAffinity.leading,
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    l10n.mapAtlasCommsOneTimePadUnavailable,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
               Text(
                 '${l10n.mapAtlasSheetCountHint}: ${grid.columns * grid.rows}',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -331,6 +359,8 @@ class _MapAtlasExportDialogState extends State<_MapAtlasExportDialog> {
                 includeCommsChallengeTable:
                     widget.hasCommsChallengeTable &&
                     _includeCommsChallengeTable,
+                includeCommsOneTimePad:
+                    widget.hasCommsOneTimePad && _includeCommsOneTimePad,
               ),
             );
           },

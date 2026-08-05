@@ -407,7 +407,7 @@
   "watchLogTextRequired": "Saisissez le texte de l'événement.",
   "backupTitle": "Sauvegarde des données cartographiques",
   "backupPermissionDenied": "Vous n'avez pas l'autorisation d'exporter ou de restaurer les sauvegardes cartographiques.",
-  "backupDescription": "Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d'authentification), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.",
+  "backupDescription": "Exporter ou restaurer les données cartographiques Wayfinder : couches, marqueurs, zones, calques saisonniers, entrées du journal, plans de communications (y compris tables d'authentification et carnets à usage unique), icônes personnalisées et réglages. Les sauvegardes sont des .zip avec backup.json et marker-icons/*.svg. Les packs de marées et PMTiles ne sont pas inclus (transférez-les depuis Marées / Tuiles). Les anciennes sauvegardes .json restent prises en charge.",
   "backupExportButton": "Exporter les données (.zip)",
   "backupRestoreButton": "Restaurer depuis une sauvegarde",
   "backupExportSuccess": "Sauvegarde des données cartographiques enregistrée.",
@@ -504,7 +504,7 @@
   "kioskModeSettingsLockedMessage": "Les réglages sont masqués tant que cet appareil est en mode kiosque / visionneuse.",
   "kioskModeBackToMap": "Retour à la carte",
   "fieldPackTitle": "Pack terrain",
-  "fieldPackDescription": "Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications et tables d'authentification), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu'à mettre des tuiles en cache sur cet appareil.",
+  "fieldPackDescription": "Une archive pour un serveur ou un ordinateur portable de secours : objets cartographiques (y compris plans de communications, tables d'authentification et carnets à usage unique), icônes personnalisées et les régions PMTiles que vous sélectionnez. Proche des packs hors ligne, mais destiné à transférer une instance Wayfinder complète plutôt qu'à mettre des tuiles en cache sur cet appareil.",
   "fieldPackExportButton": "Exporter le pack terrain",
   "fieldPackRestoreButton": "Restaurer le pack terrain",
   "fieldPackSelectPmtilesTitle": "Inclure les PMTiles",
@@ -632,6 +632,9 @@
   "mapAtlasIncludeCommsChallengeTable": "Inclure les feuilles d'authentification radio",
   "mapAtlasIncludeCommsChallengeTableHint": "Toutes les feuilles non utilisées du plan actif",
   "mapAtlasCommsChallengeTableUnavailable": "Aucune feuille d'authentification sur le plan actif. Générez-en dans Plan de communications.",
+  "mapAtlasIncludeCommsOneTimePad": "Inclure les carnets à usage unique",
+  "mapAtlasIncludeCommsOneTimePadHint": "Tous les carnets non utilisés du plan actif",
+  "mapAtlasCommsOneTimePadUnavailable": "Aucun carnet à usage unique sur le plan actif. Générez-en dans Plan de communications.",
   "mapAtlasCoverageActiveRoute": "Ajuster à l'itinéraire actif",
   "mapAtlasDirectionsStepColumn": "Étape",
   "mapAtlasDirectionsInstructionColumn": "Instruction",
@@ -3254,5 +3257,27 @@
   },
   "commsChallengeTableGeneratedPrefix": "Générée",
   "commsChallengeTableBurnConfirmTitle": "Brûler la feuille d'authentification ?",
-  "commsChallengeTableBurnConfirmMessage": "Cela supprime définitivement la feuille. Les stations qui en ont encore besoin ne pourront plus s'authentifier avec elle."
+  "commsChallengeTableBurnConfirmMessage": "Cela supprime définitivement la feuille. Les stations qui en ont encore besoin ne pourront plus s'authentifier avec elle.",
+  "commsOneTimePadTitle": "Carnets à usage unique",
+  "commsOneTimePadEditorHint": "Générez des carnets 29×4 de groupes de cinq lettres pour le chiffrement Vernam. Brûlez (supprimez) chaque carnet après usage. Inclus dans les sauvegardes et packs terrain avec ce plan.",
+  "commsOneTimePadGenerate": "Générer un carnet",
+  "commsOneTimePadBurn": "Brûler",
+  "commsOneTimePadView": "Voir",
+  "commsOneTimePadMissing": "Pas encore de carnets à usage unique.",
+  "commsOneTimePadCount": "{count} carnet(s) prêt(s)",
+  "@commsOneTimePadCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsOneTimePadInstructions": "Utilisez les groupes de gauche à droite, de haut en bas. Chaque groupe de cinq lettres est du matériel de clé — ne réutilisez jamais un groupe. Brûlez ce carnet après le trafic qui l'a consommé.",
+  "commsOneTimePadGeneratedAt": "Généré {when}",
+  "@commsOneTimePadGeneratedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsOneTimePadGeneratedPrefix": "Généré",
+  "commsOneTimePadBurnConfirmTitle": "Brûler le carnet à usage unique ?",
+  "commsOneTimePadBurnConfirmMessage": "Cela supprime définitivement le carnet. Tout le matériel de clé non utilisé de cette feuille sera perdu."
 }

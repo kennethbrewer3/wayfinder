@@ -730,7 +730,7 @@
   "watchLogTextRequired": "Enter event text.",
   "backupTitle": "Map data backup",
   "backupPermissionDenied": "You do not have permission to export or restore map backups.",
-  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
+  "backupDescription": "Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables and one-time pads), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).",
   "backupExportButton": "Export map data (.zip)",
   "backupRestoreButton": "Restore from backup",
   "backupExportSuccess": "Map data backup saved.",
@@ -853,7 +853,7 @@
   "kioskModeSettingsLockedMessage": "Settings are hidden while this device is in kiosk / viewer mode.",
   "kioskModeBackToMap": "Back to map",
   "fieldPackTitle": "Field pack",
-  "fieldPackDescription": "One archive for a spare server or laptop: map objects (including comms plans and radio authentication tables), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.",
+  "fieldPackDescription": "One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, and one-time pads), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.",
   "fieldPackExportButton": "Export field pack",
   "fieldPackRestoreButton": "Restore field pack",
   "fieldPackSelectPmtilesTitle": "Include PMTiles",
@@ -981,6 +981,9 @@
   "mapAtlasIncludeCommsChallengeTable": "Include radio authentication sheets",
   "mapAtlasIncludeCommsChallengeTableHint": "All unused sheets from the active comms plan",
   "mapAtlasCommsChallengeTableUnavailable": "No radio authentication sheets on the active comms plan. Generate some in Comms plan first.",
+  "mapAtlasIncludeCommsOneTimePad": "Include one-time pads",
+  "mapAtlasIncludeCommsOneTimePadHint": "All unused pads from the active comms plan",
+  "mapAtlasCommsOneTimePadUnavailable": "No one-time pads on the active comms plan. Generate some in Comms plan first.",
   "mapAtlasCoverageActiveRoute": "Fit active route",
   "mapAtlasDirectionsStepColumn": "Step",
   "mapAtlasDirectionsInstructionColumn": "Instruction",
@@ -3995,5 +3998,27 @@
   },
   "commsChallengeTableGeneratedPrefix": "Generated",
   "commsChallengeTableBurnConfirmTitle": "Burn authentication sheet?",
-  "commsChallengeTableBurnConfirmMessage": "This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it."
+  "commsChallengeTableBurnConfirmMessage": "This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it.",
+  "commsOneTimePadTitle": "One-time pads",
+  "commsOneTimePadEditorHint": "Generate 29×4 pads of five-letter groups for Vernam encryption. Burn (delete) each pad after use. Included in map backups and field packs with this plan.",
+  "commsOneTimePadGenerate": "Generate pad",
+  "commsOneTimePadBurn": "Burn",
+  "commsOneTimePadView": "View",
+  "commsOneTimePadMissing": "No one-time pads yet.",
+  "commsOneTimePadCount": "{count} pad(s) ready",
+  "@commsOneTimePadCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commsOneTimePadInstructions": "Use groups left-to-right, top-to-bottom. Each five-letter group is key material — never reuse a group. Burn this pad after the traffic that consumed it.",
+  "commsOneTimePadGeneratedAt": "Generated {when}",
+  "@commsOneTimePadGeneratedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "commsOneTimePadGeneratedPrefix": "Generated",
+  "commsOneTimePadBurnConfirmTitle": "Burn one-time pad?",
+  "commsOneTimePadBurnConfirmMessage": "This permanently deletes the pad. Any unused key material on this sheet will be lost."
 }

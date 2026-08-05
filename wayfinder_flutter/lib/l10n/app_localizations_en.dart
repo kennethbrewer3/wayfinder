@@ -1309,7 +1309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
+      'Export or restore Wayfinder map data: layers, markers, zones, seasonal overlays, watch log entries, comms plans (including radio authentication tables and one-time pads), custom marker icons, marker photos, and app settings. Backups are a .zip with backup.json, marker-icons/*.svg, and marker-attachments/*. Tide packs and PMTiles are not included (transfer those from Tides / Map tiles, or use a field pack). Legacy .json backups can still be restored (photos require the .zip).';
 
   @override
   String get backupExportButton => 'Export map data (.zip)';
@@ -1450,7 +1450,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'One archive for a spare server or laptop: map objects (including comms plans and radio authentication tables), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
+      'One archive for a spare server or laptop: map objects (including comms plans, radio authentication tables, and one-time pads), custom marker icons, and the PMTiles regions you select. Closely related to offline packs, but meant for transferring a full Wayfinder instance rather than caching tiles on this device.';
 
   @override
   String get fieldPackExportButton => 'Export field pack';
@@ -1639,6 +1639,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapAtlasCommsChallengeTableUnavailable =>
       'No radio authentication sheets on the active comms plan. Generate some in Comms plan first.';
+
+  @override
+  String get mapAtlasIncludeCommsOneTimePad => 'Include one-time pads';
+
+  @override
+  String get mapAtlasIncludeCommsOneTimePadHint =>
+      'All unused pads from the active comms plan';
+
+  @override
+  String get mapAtlasCommsOneTimePadUnavailable =>
+      'No one-time pads on the active comms plan. Generate some in Comms plan first.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Fit active route';
@@ -6827,4 +6838,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get commsChallengeTableBurnConfirmMessage =>
       'This permanently deletes the sheet. Stations that still need it will no longer be able to authenticate with it.';
+
+  @override
+  String get commsOneTimePadTitle => 'One-time pads';
+
+  @override
+  String get commsOneTimePadEditorHint =>
+      'Generate 29×4 pads of five-letter groups for Vernam encryption. Burn (delete) each pad after use. Included in map backups and field packs with this plan.';
+
+  @override
+  String get commsOneTimePadGenerate => 'Generate pad';
+
+  @override
+  String get commsOneTimePadBurn => 'Burn';
+
+  @override
+  String get commsOneTimePadView => 'View';
+
+  @override
+  String get commsOneTimePadMissing => 'No one-time pads yet.';
+
+  @override
+  String commsOneTimePadCount(int count) {
+    return '$count pad(s) ready';
+  }
+
+  @override
+  String get commsOneTimePadInstructions =>
+      'Use groups left-to-right, top-to-bottom. Each five-letter group is key material — never reuse a group. Burn this pad after the traffic that consumed it.';
+
+  @override
+  String commsOneTimePadGeneratedAt(String when) {
+    return 'Generated $when';
+  }
+
+  @override
+  String get commsOneTimePadGeneratedPrefix => 'Generated';
+
+  @override
+  String get commsOneTimePadBurnConfirmTitle => 'Burn one-time pad?';
+
+  @override
+  String get commsOneTimePadBurnConfirmMessage =>
+      'This permanently deletes the pad. Any unused key material on this sheet will be lost.';
 }

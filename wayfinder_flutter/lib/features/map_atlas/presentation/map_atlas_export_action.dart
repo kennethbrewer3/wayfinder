@@ -5,6 +5,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/file_save.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../comms_plan/models/comms_challenge_table.dart';
+import '../../comms_plan/models/comms_one_time_pad.dart';
 import '../../comms_plan/providers/comms_plan_provider.dart';
 import '../../map/providers/map_mgrs_grid_provider.dart';
 import '../../markers/providers/markers_provider.dart';
@@ -48,18 +49,33 @@ Future<bool> runMapAtlasExport({
     final includeMgrsGrid = ref.read(mapMgrsGridEnabledProvider);
     final routeExport = buildAtlasRouteExport(ref: ref, l10n: l10n);
     AtlasCommsChallengeExport? challengeExport;
-    if (options.includeCommsChallengeTable) {
+    AtlasCommsOneTimePadExport? oneTimePadExport;
+    if (options.includeCommsChallengeTable || options.includeCommsOneTimePad) {
       final plans = ref.read(commsPlansProvider).valueOrNull ?? const [];
       final active = activeCommsPlan(plans);
-      final tables = decodeCommsChallengeTables(active?.challengeTableJson);
-      if (active != null && tables.isNotEmpty) {
-        challengeExport = AtlasCommsChallengeExport(
-          planName: active.name,
-          tables: tables,
-          title: l10n.commsChallengeTableTitle,
-          instructions: l10n.commsChallengeTableInstructions,
-          generatedLabel: l10n.commsChallengeTableGeneratedPrefix,
-        );
+      if (options.includeCommsChallengeTable) {
+        final tables = decodeCommsChallengeTables(active?.challengeTableJson);
+        if (active != null && tables.isNotEmpty) {
+          challengeExport = AtlasCommsChallengeExport(
+            planName: active.name,
+            tables: tables,
+            title: l10n.commsChallengeTableTitle,
+            instructions: l10n.commsChallengeTableInstructions,
+            generatedLabel: l10n.commsChallengeTableGeneratedPrefix,
+          );
+        }
+      }
+      if (options.includeCommsOneTimePad) {
+        final pads = decodeCommsOneTimePads(active?.oneTimePadJson);
+        if (active != null && pads.isNotEmpty) {
+          oneTimePadExport = AtlasCommsOneTimePadExport(
+            planName: active.name,
+            pads: pads,
+            title: l10n.commsOneTimePadTitle,
+            instructions: l10n.commsOneTimePadInstructions,
+            generatedLabel: l10n.commsOneTimePadGeneratedPrefix,
+          );
+        }
       }
     }
     if (!context.mounted) {
@@ -75,6 +91,7 @@ Future<bool> runMapAtlasExport({
       includeMgrsGrid: includeMgrsGrid,
       route: routeExport,
       challengeTable: challengeExport,
+      oneTimePad: oneTimePadExport,
     );
     final timestamp = DateTime.now().toUtc().toIso8601String().replaceAll(
       ':',

@@ -12,6 +12,8 @@ fields:
   channelsJson: String
   ### JSON radio challenge authentication table (matrix), or null when none
   challengeTableJson: String?
+  ### JSON one-time pad sheets (29×4 groups of 5 letters), or null when none
+  oneTimePadJson: String?
   sortOrder: int, defaultModel=0, defaultPersist=0
   createdAt: DateTime
   updatedAt: DateTime

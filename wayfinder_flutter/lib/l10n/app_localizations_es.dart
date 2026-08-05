@@ -1323,7 +1323,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.';
+      'Exporte o restaure datos del mapa Wayfinder: capas, marcadores, zonas, capas estacionales, entradas del registro, planes de comunicaciones (incl. tablas de autenticación y blocs de un solo uso), iconos personalizados y ajustes. Las copias son .zip con backup.json y marker-icons/*.svg. Los paquetes de mareas y PMTiles no se incluyen (transfiéralos desde Mareas / Azulejos). Todavía puede restaurar copias .json antiguas.';
 
   @override
   String get backupExportButton => 'Exportar datos del mapa (.zip)';
@@ -1466,7 +1466,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fieldPackDescription =>
-      'Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones y tablas de autenticación), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.';
+      'Un archivo para un servidor o portátil de reserva: objetos del mapa (incl. planes de comunicaciones, tablas de autenticación y blocs de un solo uso), iconos personalizados y las regiones PMTiles que elijas. Relacionado con los paquetes sin conexión, pero pensado para transferir una instancia completa de Wayfinder en lugar de almacenar teselas en este dispositivo.';
 
   @override
   String get fieldPackExportButton => 'Exportar paquete de campo';
@@ -1657,6 +1657,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get mapAtlasCommsChallengeTableUnavailable =>
       'No hay hojas de autenticación en el plan activo. Genere algunas en Plan de comunicaciones.';
+
+  @override
+  String get mapAtlasIncludeCommsOneTimePad => 'Incluir blocs de un solo uso';
+
+  @override
+  String get mapAtlasIncludeCommsOneTimePadHint =>
+      'Todos los blocs no usados del plan activo';
+
+  @override
+  String get mapAtlasCommsOneTimePadUnavailable =>
+      'No hay blocs de un solo uso en el plan activo. Genere algunos en Plan de comunicaciones.';
 
   @override
   String get mapAtlasCoverageActiveRoute => 'Ajustar a la ruta activa';
@@ -6888,4 +6899,47 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get commsChallengeTableBurnConfirmMessage =>
       'Esto elimina la hoja de forma permanente. Las estaciones que aún la necesiten ya no podrán autenticarse con ella.';
+
+  @override
+  String get commsOneTimePadTitle => 'Blocs de un solo uso';
+
+  @override
+  String get commsOneTimePadEditorHint =>
+      'Genere blocs 29×4 de grupos de cinco letras para cifrado Vernam. Queme (elimine) cada bloc tras usarlo. Se incluyen en copias y paquetes de campo con este plan.';
+
+  @override
+  String get commsOneTimePadGenerate => 'Generar bloc';
+
+  @override
+  String get commsOneTimePadBurn => 'Quemar';
+
+  @override
+  String get commsOneTimePadView => 'Ver';
+
+  @override
+  String get commsOneTimePadMissing => 'Aún no hay blocs de un solo uso.';
+
+  @override
+  String commsOneTimePadCount(int count) {
+    return '$count bloc(s) listo(s)';
+  }
+
+  @override
+  String get commsOneTimePadInstructions =>
+      'Use los grupos de izquierda a derecha y de arriba abajo. Cada grupo de cinco letras es material de clave: no reutilice un grupo. Queme este bloc tras el tráfico que lo consumió.';
+
+  @override
+  String commsOneTimePadGeneratedAt(String when) {
+    return 'Generado $when';
+  }
+
+  @override
+  String get commsOneTimePadGeneratedPrefix => 'Generado';
+
+  @override
+  String get commsOneTimePadBurnConfirmTitle => '¿Quemar bloc de un solo uso?';
+
+  @override
+  String get commsOneTimePadBurnConfirmMessage =>
+      'Esto elimina el bloc de forma permanente. Se perderá todo el material de clave no usado de esta hoja.';
 }

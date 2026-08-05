@@ -7042,6 +7042,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commsCardOfTheDayCodeWordLabel => 'Palabra clave';
 
   @override
+  String get commsCardOfTheDayCodeWordRandom => 'Sustantivo aleatorio';
+
+  @override
+  String get commsCardOfTheDayCodeWordExhausted =>
+      'Todos los sustantivos de la lista ya se usan en esta tarjeta.';
+
+  @override
   String get commsCardOfTheDayAddEntry => 'Añadir';
 
   @override

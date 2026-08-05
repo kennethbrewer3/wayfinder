@@ -12145,6 +12145,18 @@ abstract class AppLocalizations {
   /// **'Code word'**
   String get commsCardOfTheDayCodeWordLabel;
 
+  /// No description provided for @commsCardOfTheDayCodeWordRandom.
+  ///
+  /// In en, this message translates to:
+  /// **'Random noun'**
+  String get commsCardOfTheDayCodeWordRandom;
+
+  /// No description provided for @commsCardOfTheDayCodeWordExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'Every noun in the list is already used on this card.'**
+  String get commsCardOfTheDayCodeWordExhausted;
+
   /// No description provided for @commsCardOfTheDayAddEntry.
   ///
   /// In en, this message translates to:

@@ -6980,6 +6980,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commsCardOfTheDayCodeWordLabel => 'Code word';
 
   @override
+  String get commsCardOfTheDayCodeWordRandom => 'Random noun';
+
+  @override
+  String get commsCardOfTheDayCodeWordExhausted =>
+      'Every noun in the list is already used on this card.';
+
+  @override
   String get commsCardOfTheDayAddEntry => 'Add';
 
   @override

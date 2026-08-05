@@ -7064,6 +7064,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commsCardOfTheDayCodeWordLabel => 'Mot de code';
 
   @override
+  String get commsCardOfTheDayCodeWordRandom => 'Nom aléatoire';
+
+  @override
+  String get commsCardOfTheDayCodeWordExhausted =>
+      'Tous les noms de la liste sont déjà utilisés sur cette carte.';
+
+  @override
   String get commsCardOfTheDayAddEntry => 'Ajouter';
 
   @override

@@ -4060,6 +4060,8 @@
   "commsCardOfTheDayDigitKeyMissing": "No digit key set yet.",
   "commsCardOfTheDayItemLabel": "Item",
   "commsCardOfTheDayCodeWordLabel": "Code word",
+  "commsCardOfTheDayCodeWordRandom": "Random noun",
+  "commsCardOfTheDayCodeWordExhausted": "Every noun in the list is already used on this card.",
   "commsCardOfTheDayAddEntry": "Add",
   "commsCardOfTheDayPlaces": "Places",
   "commsCardOfTheDayPeople": "People",

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 
 import '../models/comms_card_of_the_day.dart';
+import '../utils/comms_card_of_the_day_nouns.dart';
 
 Future<CommsCardOfTheDay?> showCommsCardOfTheDayEditorDialog({
   required BuildContext context,
@@ -178,6 +179,15 @@ class _CommsCardOfTheDayEditorDialogState
                 itemLabel: l10n.commsCardOfTheDayItemLabel,
                 codeWordLabel: l10n.commsCardOfTheDayCodeWordLabel,
                 addLabel: l10n.commsCardOfTheDayAddEntry,
+                randomTooltip: l10n.commsCardOfTheDayCodeWordRandom,
+                exhaustedMessage: l10n.commsCardOfTheDayCodeWordExhausted,
+                usedElsewhere: _codeWordsFrom([
+                  _people,
+                  _objects,
+                  _directions,
+                  _conditions,
+                  _other,
+                ]),
                 onChanged: (value) => setState(() => _places = value),
               ),
               _CategoryEditor(
@@ -186,6 +196,15 @@ class _CommsCardOfTheDayEditorDialogState
                 itemLabel: l10n.commsCardOfTheDayItemLabel,
                 codeWordLabel: l10n.commsCardOfTheDayCodeWordLabel,
                 addLabel: l10n.commsCardOfTheDayAddEntry,
+                randomTooltip: l10n.commsCardOfTheDayCodeWordRandom,
+                exhaustedMessage: l10n.commsCardOfTheDayCodeWordExhausted,
+                usedElsewhere: _codeWordsFrom([
+                  _places,
+                  _objects,
+                  _directions,
+                  _conditions,
+                  _other,
+                ]),
                 onChanged: (value) => setState(() => _people = value),
               ),
               _CategoryEditor(
@@ -194,6 +213,15 @@ class _CommsCardOfTheDayEditorDialogState
                 itemLabel: l10n.commsCardOfTheDayItemLabel,
                 codeWordLabel: l10n.commsCardOfTheDayCodeWordLabel,
                 addLabel: l10n.commsCardOfTheDayAddEntry,
+                randomTooltip: l10n.commsCardOfTheDayCodeWordRandom,
+                exhaustedMessage: l10n.commsCardOfTheDayCodeWordExhausted,
+                usedElsewhere: _codeWordsFrom([
+                  _places,
+                  _people,
+                  _directions,
+                  _conditions,
+                  _other,
+                ]),
                 onChanged: (value) => setState(() => _objects = value),
               ),
               _CategoryEditor(
@@ -202,6 +230,15 @@ class _CommsCardOfTheDayEditorDialogState
                 itemLabel: l10n.commsCardOfTheDayItemLabel,
                 codeWordLabel: l10n.commsCardOfTheDayCodeWordLabel,
                 addLabel: l10n.commsCardOfTheDayAddEntry,
+                randomTooltip: l10n.commsCardOfTheDayCodeWordRandom,
+                exhaustedMessage: l10n.commsCardOfTheDayCodeWordExhausted,
+                usedElsewhere: _codeWordsFrom([
+                  _places,
+                  _people,
+                  _objects,
+                  _conditions,
+                  _other,
+                ]),
                 onChanged: (value) => setState(() => _directions = value),
               ),
               _CategoryEditor(
@@ -210,6 +247,15 @@ class _CommsCardOfTheDayEditorDialogState
                 itemLabel: l10n.commsCardOfTheDayItemLabel,
                 codeWordLabel: l10n.commsCardOfTheDayCodeWordLabel,
                 addLabel: l10n.commsCardOfTheDayAddEntry,
+                randomTooltip: l10n.commsCardOfTheDayCodeWordRandom,
+                exhaustedMessage: l10n.commsCardOfTheDayCodeWordExhausted,
+                usedElsewhere: _codeWordsFrom([
+                  _places,
+                  _people,
+                  _objects,
+                  _directions,
+                  _other,
+                ]),
                 onChanged: (value) => setState(() => _conditions = value),
               ),
               _CategoryEditor(
@@ -218,6 +264,15 @@ class _CommsCardOfTheDayEditorDialogState
                 itemLabel: l10n.commsCardOfTheDayItemLabel,
                 codeWordLabel: l10n.commsCardOfTheDayCodeWordLabel,
                 addLabel: l10n.commsCardOfTheDayAddEntry,
+                randomTooltip: l10n.commsCardOfTheDayCodeWordRandom,
+                exhaustedMessage: l10n.commsCardOfTheDayCodeWordExhausted,
+                usedElsewhere: _codeWordsFrom([
+                  _places,
+                  _people,
+                  _objects,
+                  _directions,
+                  _conditions,
+                ]),
                 onChanged: (value) => setState(() => _other = value),
               ),
               if (_error != null) ...[
@@ -242,6 +297,15 @@ class _CommsCardOfTheDayEditorDialogState
         ),
       ],
     );
+  }
+
+  Set<String> _codeWordsFrom(Iterable<List<CommsCardOfTheDayEntry>> lists) {
+    return {
+      for (final list in lists)
+        for (final entry in list)
+          if (entry.codeWord.trim().isNotEmpty)
+            entry.codeWord.trim().toUpperCase(),
+    };
   }
 
   void _save() {
@@ -330,6 +394,9 @@ class _CategoryEditor extends StatefulWidget {
     required this.itemLabel,
     required this.codeWordLabel,
     required this.addLabel,
+    required this.randomTooltip,
+    required this.exhaustedMessage,
+    required this.usedElsewhere,
     required this.onChanged,
   });
 
@@ -338,6 +405,11 @@ class _CategoryEditor extends StatefulWidget {
   final String itemLabel;
   final String codeWordLabel;
   final String addLabel;
+  final String randomTooltip;
+  final String exhaustedMessage;
+
+  /// Code words already used in other categories on this card.
+  final Set<String> usedElsewhere;
   final ValueChanged<List<CommsCardOfTheDayEntry>> onChanged;
 
   @override
@@ -450,6 +522,30 @@ class _CategoryEditorState extends State<_CategoryEditor> {
                       textCapitalization: TextCapitalization.characters,
                       onChanged: (_) => _emit(),
                     ),
+                  ),
+                  IconButton(
+                    tooltip: widget.randomTooltip,
+                    onPressed: () {
+                      final used = <String>{
+                        ...widget.usedElsewhere,
+                        for (var j = 0; j < _codeControllers.length; j++)
+                          if (j != i &&
+                              _codeControllers[j].text.trim().isNotEmpty)
+                            _codeControllers[j].text.trim().toUpperCase(),
+                      };
+                      final picked = pickRandomCardOfTheDayNoun(
+                        usedOnCard: used,
+                      );
+                      if (picked == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(widget.exhaustedMessage)),
+                        );
+                        return;
+                      }
+                      _codeControllers[i].text = picked;
+                      _emit();
+                    },
+                    icon: const Icon(Icons.casino, size: 18),
                   ),
                   IconButton(
                     tooltip: MaterialLocalizations.of(

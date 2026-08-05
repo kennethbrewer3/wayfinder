@@ -3280,6 +3280,8 @@
   "commsCardOfTheDayDigitKeyMissing": "Aún no hay clave de dígitos.",
   "commsCardOfTheDayItemLabel": "Elemento",
   "commsCardOfTheDayCodeWordLabel": "Palabra clave",
+  "commsCardOfTheDayCodeWordRandom": "Sustantivo aleatorio",
+  "commsCardOfTheDayCodeWordExhausted": "Todos los sustantivos de la lista ya se usan en esta tarjeta.",
   "commsCardOfTheDayAddEntry": "Añadir",
   "commsCardOfTheDayPlaces": "Lugares",
   "commsCardOfTheDayPeople": "Personas",

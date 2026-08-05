@@ -3319,6 +3319,8 @@
   "commsCardOfTheDayDigitKeyMissing": "Aucune clé des chiffres pour l'instant.",
   "commsCardOfTheDayItemLabel": "Élément",
   "commsCardOfTheDayCodeWordLabel": "Mot de code",
+  "commsCardOfTheDayCodeWordRandom": "Nom aléatoire",
+  "commsCardOfTheDayCodeWordExhausted": "Tous les noms de la liste sont déjà utilisés sur cette carte.",
   "commsCardOfTheDayAddEntry": "Ajouter",
   "commsCardOfTheDayPlaces": "Lieux",
   "commsCardOfTheDayPeople": "Personnes",

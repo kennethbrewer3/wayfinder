@@ -1822,6 +1822,50 @@ class AppLocalizationsEs extends AppLocalizations {
       'Empaquete todas las superposiciones estacionales solo para verlas sin conexión (aparte de las capas del mapa).';
 
   @override
+  String get offlinePackIncludePackedRoutes =>
+      'Incluir rutas OSM a los marcadores del paquete';
+
+  @override
+  String offlinePackIncludePackedRoutesHint(int maxRoutes) {
+    return 'Usa el servidor de rutas ahora para precalcular caminos a pie/bici/coche desde el origen elegido hasta cada marcador del paquete (hasta $maxRoutes). Esas rutas funcionan sin conexión.';
+  }
+
+  @override
+  String get offlinePackRouteOriginLabel => 'Origen de la ruta';
+
+  @override
+  String get offlinePackRouteOriginGps => 'Posición GPS actual';
+
+  @override
+  String get offlinePackRouteOriginMapCenter => 'Centro actual del mapa';
+
+  @override
+  String get offlinePackRouteOriginGpsUnavailable =>
+      'Aún no hay GPS — active la ubicación o elija el centro del mapa.';
+
+  @override
+  String get offlinePackRoutingNotReady =>
+      'Active un servidor de rutas listo (Ajustes → Rutas) antes de empaquetar rutas OSM.';
+
+  @override
+  String offlinePackDetailsRoutes(int routeCount) {
+    return '$routeCount ruta(s) OSM empaquetada(s)';
+  }
+
+  @override
+  String get offlinePackRouteMissing =>
+      'No hay ruta OSM empaquetada para este marcador. Vuelva a preparar el paquete con “Incluir rutas OSM” con el servidor de rutas listo.';
+
+  @override
+  String offlinePackRouteLoaded(
+    String profile,
+    String distance,
+    String duration,
+  ) {
+    return 'Ruta OSM empaquetada cargada ($profile): $distance, $duration';
+  }
+
+  @override
   String get offlinePackSeasonalOverlaysNotIncluded =>
       'No hay superposiciones estacionales en este paquete. Vuelva a prepararlo con “Incluir superposiciones estacionales” estando en línea.';
 

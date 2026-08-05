@@ -719,6 +719,33 @@
   "offlinePackLayersLabel": "Capas a incluir",
   "offlinePackIncludeSeasonalOverlays": "Incluir superposiciones estacionales",
   "offlinePackIncludeSeasonalOverlaysHint": "Empaquete todas las superposiciones estacionales solo para verlas sin conexión (aparte de las capas del mapa).",
+  "offlinePackIncludePackedRoutes": "Incluir rutas OSM a los marcadores del paquete",
+  "offlinePackIncludePackedRoutesHint": "Usa el servidor de rutas ahora para precalcular caminos a pie/bici/coche desde el origen elegido hasta cada marcador del paquete (hasta {maxRoutes}). Esas rutas funcionan sin conexión.",
+  "@offlinePackIncludePackedRoutesHint": {
+    "placeholders": {
+      "maxRoutes": { "type": "int" }
+    }
+  },
+  "offlinePackRouteOriginLabel": "Origen de la ruta",
+  "offlinePackRouteOriginGps": "Posición GPS actual",
+  "offlinePackRouteOriginMapCenter": "Centro actual del mapa",
+  "offlinePackRouteOriginGpsUnavailable": "Aún no hay GPS — active la ubicación o elija el centro del mapa.",
+  "offlinePackRoutingNotReady": "Active un servidor de rutas listo (Ajustes → Rutas) antes de empaquetar rutas OSM.",
+  "offlinePackDetailsRoutes": "{routeCount} ruta(s) OSM empaquetada(s)",
+  "@offlinePackDetailsRoutes": {
+    "placeholders": {
+      "routeCount": { "type": "int" }
+    }
+  },
+  "offlinePackRouteMissing": "No hay ruta OSM empaquetada para este marcador. Vuelva a preparar el paquete con “Incluir rutas OSM” con el servidor de rutas listo.",
+  "offlinePackRouteLoaded": "Ruta OSM empaquetada cargada ({profile}): {distance}, {duration}",
+  "@offlinePackRouteLoaded": {
+    "placeholders": {
+      "profile": { "type": "String" },
+      "distance": { "type": "String" },
+      "duration": { "type": "String" }
+    }
+  },
   "offlinePackSeasonalOverlaysNotIncluded": "No hay superposiciones estacionales en este paquete. Vuelva a prepararlo con “Incluir superposiciones estacionales” estando en línea.",
   "offlinePackNoLayers": "No hay capas de mapa disponibles.",
   "offlinePackSelectLayersRequired": "Seleccione al menos una capa.",

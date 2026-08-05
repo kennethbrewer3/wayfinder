@@ -1,5 +1,7 @@
 import 'package:wayfinder_client/wayfinder_client.dart';
 
+import 'offline_packed_route.dart';
+
 /// Cached map objects for an offline pack (selected layers + optional seasonal).
 class OfflineSnapshot {
   const OfflineSnapshot({
@@ -9,6 +11,7 @@ class OfflineSnapshot {
     required this.watchLogEntries,
     required this.capturedAt,
     this.seasonalOverlays = const [],
+    this.routes = const [],
   });
 
   final List<MapLayer> layers;
@@ -16,6 +19,9 @@ class OfflineSnapshot {
   final List<MapZone> zones;
   final List<WatchLogEntry> watchLogEntries;
   final List<SeasonalOverlay> seasonalOverlays;
+
+  /// Precomputed OSM routes (from pack origin → markers) for offline follow.
+  final List<OfflinePackedRoute> routes;
   final DateTime capturedAt;
 
   Map<String, dynamic> toJson() => {
@@ -29,6 +35,7 @@ class OfflineSnapshot {
     'seasonalOverlays': [
       for (final overlay in seasonalOverlays) overlay.toJson(),
     ],
+    'routes': [for (final route in routes) route.toJson()],
   };
 
   factory OfflineSnapshot.fromJson(Map<String, dynamic> json) {
@@ -54,6 +61,10 @@ class OfflineSnapshot {
         for (final raw in json['seasonalOverlays'] as List? ?? const [])
           SeasonalOverlay.fromJson(raw as Map<String, dynamic>),
       ],
+      routes: [
+        for (final raw in json['routes'] as List? ?? const [])
+          OfflinePackedRoute.fromJson(raw as Map<String, dynamic>),
+      ],
     );
   }
 
@@ -63,6 +74,7 @@ class OfflineSnapshot {
     List<MapZone>? zones,
     List<WatchLogEntry>? watchLogEntries,
     List<SeasonalOverlay>? seasonalOverlays,
+    List<OfflinePackedRoute>? routes,
     DateTime? capturedAt,
   }) {
     return OfflineSnapshot(
@@ -71,6 +83,7 @@ class OfflineSnapshot {
       zones: zones ?? this.zones,
       watchLogEntries: watchLogEntries ?? this.watchLogEntries,
       seasonalOverlays: seasonalOverlays ?? this.seasonalOverlays,
+      routes: routes ?? this.routes,
       capturedAt: capturedAt ?? this.capturedAt,
     );
   }

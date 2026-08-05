@@ -29,6 +29,7 @@ class OfflinePackIndexEntry {
     this.markerCount = 0,
     this.zoneCount = 0,
     this.seasonalOverlayCount = 0,
+    this.routeCount = 0,
   });
 
   final String id;
@@ -39,6 +40,7 @@ class OfflinePackIndexEntry {
   final int markerCount;
   final int zoneCount;
   final int seasonalOverlayCount;
+  final int routeCount;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -49,6 +51,7 @@ class OfflinePackIndexEntry {
     'markerCount': markerCount,
     'zoneCount': zoneCount,
     'seasonalOverlayCount': seasonalOverlayCount,
+    'routeCount': routeCount,
   };
 
   factory OfflinePackIndexEntry.fromJson(Map<String, dynamic> json) {
@@ -68,6 +71,7 @@ class OfflinePackIndexEntry {
       zoneCount: (json['zoneCount'] as num?)?.toInt() ?? 0,
       seasonalOverlayCount:
           (json['seasonalOverlayCount'] as num?)?.toInt() ?? 0,
+      routeCount: (json['routeCount'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -81,6 +85,7 @@ class OfflinePackIndexEntry {
       markerCount: meta.markerCount,
       zoneCount: meta.zoneCount,
       seasonalOverlayCount: meta.seasonalOverlayCount,
+      routeCount: meta.routeCount,
     );
   }
 
@@ -93,6 +98,7 @@ class OfflinePackIndexEntry {
     int? markerCount,
     int? zoneCount,
     int? seasonalOverlayCount,
+    int? routeCount,
   }) {
     return OfflinePackIndexEntry(
       id: id ?? this.id,
@@ -103,6 +109,7 @@ class OfflinePackIndexEntry {
       markerCount: markerCount ?? this.markerCount,
       zoneCount: zoneCount ?? this.zoneCount,
       seasonalOverlayCount: seasonalOverlayCount ?? this.seasonalOverlayCount,
+      routeCount: routeCount ?? this.routeCount,
     );
   }
 }
@@ -299,6 +306,7 @@ class OfflinePackStore {
         a.markerCount != b.markerCount ||
         a.zoneCount != b.zoneCount ||
         a.seasonalOverlayCount != b.seasonalOverlayCount ||
+        a.routeCount != b.routeCount ||
         a.layerNames.length != b.layerNames.length) {
       return false;
     }

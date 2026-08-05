@@ -160,6 +160,15 @@ class RoutingInstruction {
           : null,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'text': text,
+    'streetName': streetName,
+    'distanceMeters': distanceMeters,
+    'timeMs': timeMs,
+    'sign': sign,
+    'interval': interval,
+  };
 }
 
 class RoutingResult {
@@ -196,6 +205,15 @@ class RoutingResult {
           : const [],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'distanceMeters': distanceMeters,
+    'timeMs': timeMs,
+    'points': [for (final point in points) point.toJson()],
+    'instructions': [
+      for (final instruction in instructions) instruction.toJson(),
+    ],
+  };
 }
 
 /// Travel profile sent to POST /api/routing/route.

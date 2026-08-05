@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:latlong2/latlong.dart';
 import 'package:pmtiles/pmtiles.dart';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
@@ -8,16 +9,22 @@ import '../../elevation/utils/elevation_dem_detect.dart';
 import '../../layers/utils/map_layer_utils.dart';
 import '../../map_atlas/models/atlas_bounds.dart';
 import '../../map_atlas/utils/atlas_web_mercator.dart';
+import '../../routing/data/routing_repository.dart';
+import '../../routing/models/routing_models.dart';
 import '../../settings/data/pmtiles_loader.dart';
 import '../../settings/data/pmtiles_repository.dart';
 import '../../settings/models/pmtiles_source.dart';
 import '../models/offline_pack.dart';
+import '../models/offline_packed_route.dart';
 import '../models/offline_snapshot.dart';
 import 'offline_pack_store.dart';
 import 'offline_tile_cache.dart';
 
 typedef OfflinePrepareProgress =
     void Function(String message, double? fraction);
+
+/// Caps how many marker destinations we pre-route during pack prepare.
+const offlinePackMaxPackedRoutes = 40;
 
 bool _objectOnSelectedLayers(
   UuidValue? layerId,
@@ -53,6 +60,10 @@ int estimateOfflineTileCount({
 ///
 /// Pass [packId] to replace an existing pack in place; omit to create a new one.
 /// Other packs' tiles and snapshots are left untouched.
+///
+/// When [includePackedRoutes] is true, [routingRepository] must be configured
+/// and ready; routes are computed from [routeOrigin] to each packed marker
+/// (capped) using [routingProfile].
 Future<OfflinePackMeta> prepareOfflinePack({
   required Client client,
   required PmtilesRepository pmtilesRepository,
@@ -63,6 +74,10 @@ Future<OfflinePackMeta> prepareOfflinePack({
   required OfflinePackRegion region,
   String? packId,
   bool includeSeasonalOverlays = false,
+  bool includePackedRoutes = false,
+  RoutingRepository? routingRepository,
+  LatLng? routeOrigin,
+  RoutingProfile routingProfile = RoutingProfile.foot,
   OfflinePrepareProgress? onProgress,
 }) async {
   final log = AppLogger.logMap;
@@ -111,12 +126,72 @@ Future<OfflinePackMeta> prepareOfflinePack({
         entry,
   ];
 
+  final packedRoutes = <OfflinePackedRoute>[];
+  if (includePackedRoutes) {
+    final repository = routingRepository;
+    final origin = routeOrigin;
+    if (repository == null || !repository.isConfigured) {
+      throw StateError('Routing server is not configured for packed routes.');
+    }
+    if (origin == null) {
+      throw StateError('Route origin is required for packed routes.');
+    }
+    final status = await repository.getStatus();
+    if (!status.ready) {
+      throw StateError(
+        'Routing server is not ready. Import an OSM region before packing routes.',
+      );
+    }
+
+    final destinations = [...packMarkers]
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    final limited = destinations.take(offlinePackMaxPackedRoutes).toList();
+    final originPoint = RoutingPoint(
+      lat: origin.latitude,
+      lon: origin.longitude,
+    );
+    for (var i = 0; i < limited.length; i++) {
+      final marker = limited[i];
+      onProgress?.call(
+        'Routing to ${marker.name}…',
+        0.08 + 0.12 * ((i + 1) / limited.length.clamp(1, 999)),
+      );
+      try {
+        final result = await repository.route(
+          from: originPoint,
+          to: RoutingPoint(lat: marker.latitude, lon: marker.longitude),
+          profile: routingProfile,
+        );
+        if (result.points.isEmpty) {
+          continue;
+        }
+        packedRoutes.add(
+          OfflinePackedRoute(
+            id: const Uuid().v4(),
+            destinationLabel: marker.name,
+            destinationMarkerId: marker.id.uuid,
+            profile: routingProfile,
+            origin: originPoint,
+            result: result,
+            preparedAt: DateTime.now().toUtc(),
+          ),
+        );
+      } catch (error) {
+        log.warn(
+          'Offline pack route skipped',
+          data: 'marker=${marker.name} error=$error',
+        );
+      }
+    }
+  }
+
   final snapshot = OfflineSnapshot(
     layers: packLayers,
     markers: packMarkers,
     zones: packZones,
     watchLogEntries: packWatchLog,
     seasonalOverlays: seasonalOverlays,
+    routes: packedRoutes,
     capturedAt: DateTime.now().toUtc(),
   );
   // Activate early so snapshot/outbox helpers resolve this pack id.
@@ -220,6 +295,8 @@ Future<OfflinePackMeta> prepareOfflinePack({
     markerCount: packMarkers.length,
     zoneCount: packZones.length,
     seasonalOverlayCount: seasonalOverlays.length,
+    routeCount: packedRoutes.length,
+    includePackedRoutes: includePackedRoutes,
   );
   await store.saveMeta(meta);
   log.success(
@@ -227,7 +304,7 @@ Future<OfflinePackMeta> prepareOfflinePack({
     data:
         'id=$id layers=${layerIds.length} markers=${packMarkers.length} '
         'zones=${packZones.length} seasonal=${seasonalOverlays.length} '
-        'tiles=$tilesCached',
+        'routes=${packedRoutes.length} tiles=$tilesCached',
   );
   onProgress?.call('Offline pack ready', 1);
   return meta;

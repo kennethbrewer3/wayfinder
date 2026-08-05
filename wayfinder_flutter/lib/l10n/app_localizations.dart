@@ -3174,6 +3174,70 @@ abstract class AppLocalizations {
   /// **'Pack all seasonal overlays for read-only viewing offline (separate from map layers).'**
   String get offlinePackIncludeSeasonalOverlaysHint;
 
+  /// No description provided for @offlinePackIncludePackedRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Include OSM routes to packed markers'**
+  String get offlinePackIncludePackedRoutes;
+
+  /// No description provided for @offlinePackIncludePackedRoutesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses the routing server now to precompute foot/bike/car paths from the chosen origin to each packed marker (up to {maxRoutes}). Those routes work offline with no network.'**
+  String offlinePackIncludePackedRoutesHint(int maxRoutes);
+
+  /// No description provided for @offlinePackRouteOriginLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Route origin'**
+  String get offlinePackRouteOriginLabel;
+
+  /// No description provided for @offlinePackRouteOriginGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Current GPS position'**
+  String get offlinePackRouteOriginGps;
+
+  /// No description provided for @offlinePackRouteOriginMapCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Current map center'**
+  String get offlinePackRouteOriginMapCenter;
+
+  /// No description provided for @offlinePackRouteOriginGpsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPS fix yet — enable location or choose map center.'**
+  String get offlinePackRouteOriginGpsUnavailable;
+
+  /// No description provided for @offlinePackRoutingNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on a ready routing server (Settings → Routing) before packing OSM routes.'**
+  String get offlinePackRoutingNotReady;
+
+  /// No description provided for @offlinePackDetailsRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{routeCount} packed OSM route(s)'**
+  String offlinePackDetailsRoutes(int routeCount);
+
+  /// No description provided for @offlinePackRouteMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No packed OSM route for this marker. Re-prepare the offline pack with “Include OSM routes” while the routing server is ready.'**
+  String get offlinePackRouteMissing;
+
+  /// No description provided for @offlinePackRouteLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded packed OSM route ({profile}): {distance}, {duration}'**
+  String offlinePackRouteLoaded(
+    String profile,
+    String distance,
+    String duration,
+  );
+
   /// No description provided for @offlinePackSeasonalOverlaysNotIncluded.
   ///
   /// In en, this message translates to:

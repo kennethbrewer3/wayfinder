@@ -1802,6 +1802,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pack all seasonal overlays for read-only viewing offline (separate from map layers).';
 
   @override
+  String get offlinePackIncludePackedRoutes =>
+      'Include OSM routes to packed markers';
+
+  @override
+  String offlinePackIncludePackedRoutesHint(int maxRoutes) {
+    return 'Uses the routing server now to precompute foot/bike/car paths from the chosen origin to each packed marker (up to $maxRoutes). Those routes work offline with no network.';
+  }
+
+  @override
+  String get offlinePackRouteOriginLabel => 'Route origin';
+
+  @override
+  String get offlinePackRouteOriginGps => 'Current GPS position';
+
+  @override
+  String get offlinePackRouteOriginMapCenter => 'Current map center';
+
+  @override
+  String get offlinePackRouteOriginGpsUnavailable =>
+      'No GPS fix yet — enable location or choose map center.';
+
+  @override
+  String get offlinePackRoutingNotReady =>
+      'Turn on a ready routing server (Settings → Routing) before packing OSM routes.';
+
+  @override
+  String offlinePackDetailsRoutes(int routeCount) {
+    return '$routeCount packed OSM route(s)';
+  }
+
+  @override
+  String get offlinePackRouteMissing =>
+      'No packed OSM route for this marker. Re-prepare the offline pack with “Include OSM routes” while the routing server is ready.';
+
+  @override
+  String offlinePackRouteLoaded(
+    String profile,
+    String distance,
+    String duration,
+  ) {
+    return 'Loaded packed OSM route ($profile): $distance, $duration';
+  }
+
+  @override
   String get offlinePackSeasonalOverlaysNotIncluded =>
       'No seasonal overlays in this offline pack. Re-prepare with “Include seasonal overlays” while online.';
 

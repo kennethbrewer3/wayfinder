@@ -1825,6 +1825,50 @@ class AppLocalizationsFr extends AppLocalizations {
       'Inclure toutes les superpositions saisonnières en lecture seule hors ligne (séparées des calques de carte).';
 
   @override
+  String get offlinePackIncludePackedRoutes =>
+      'Inclure les itinéraires OSM vers les marqueurs du pack';
+
+  @override
+  String offlinePackIncludePackedRoutesHint(int maxRoutes) {
+    return 'Utilise le serveur de routage maintenant pour précalculer les trajets à pied/vélo/voiture depuis l’origine choisie vers chaque marqueur du pack (jusqu’à $maxRoutes). Ces itinéraires fonctionnent hors ligne.';
+  }
+
+  @override
+  String get offlinePackRouteOriginLabel => 'Origine de l’itinéraire';
+
+  @override
+  String get offlinePackRouteOriginGps => 'Position GPS actuelle';
+
+  @override
+  String get offlinePackRouteOriginMapCenter => 'Centre actuel de la carte';
+
+  @override
+  String get offlinePackRouteOriginGpsUnavailable =>
+      'Pas encore de GPS — activez la localisation ou choisissez le centre de la carte.';
+
+  @override
+  String get offlinePackRoutingNotReady =>
+      'Activez un serveur de routage prêt (Réglages → Routage) avant d’empaqueter des itinéraires OSM.';
+
+  @override
+  String offlinePackDetailsRoutes(int routeCount) {
+    return '$routeCount itinéraire(s) OSM empaqueté(s)';
+  }
+
+  @override
+  String get offlinePackRouteMissing =>
+      'Aucun itinéraire OSM empaqueté pour ce marqueur. Repréparez le pack avec « Inclure les itinéraires OSM » pendant que le serveur de routage est prêt.';
+
+  @override
+  String offlinePackRouteLoaded(
+    String profile,
+    String distance,
+    String duration,
+  ) {
+    return 'Itinéraire OSM empaqueté chargé ($profile) : $distance, $duration';
+  }
+
+  @override
   String get offlinePackSeasonalOverlaysNotIncluded =>
       'Aucune superposition saisonnière dans ce pack. Repréparez-le avec « Inclure les superpositions saisonnières » en ligne.';
 

@@ -1064,6 +1064,33 @@
   "offlinePackLayersLabel": "Layers to include",
   "offlinePackIncludeSeasonalOverlays": "Include seasonal overlays",
   "offlinePackIncludeSeasonalOverlaysHint": "Pack all seasonal overlays for read-only viewing offline (separate from map layers).",
+  "offlinePackIncludePackedRoutes": "Include OSM routes to packed markers",
+  "offlinePackIncludePackedRoutesHint": "Uses the routing server now to precompute foot/bike/car paths from the chosen origin to each packed marker (up to {maxRoutes}). Those routes work offline with no network.",
+  "@offlinePackIncludePackedRoutesHint": {
+    "placeholders": {
+      "maxRoutes": { "type": "int" }
+    }
+  },
+  "offlinePackRouteOriginLabel": "Route origin",
+  "offlinePackRouteOriginGps": "Current GPS position",
+  "offlinePackRouteOriginMapCenter": "Current map center",
+  "offlinePackRouteOriginGpsUnavailable": "No GPS fix yet — enable location or choose map center.",
+  "offlinePackRoutingNotReady": "Turn on a ready routing server (Settings → Routing) before packing OSM routes.",
+  "offlinePackDetailsRoutes": "{routeCount} packed OSM route(s)",
+  "@offlinePackDetailsRoutes": {
+    "placeholders": {
+      "routeCount": { "type": "int" }
+    }
+  },
+  "offlinePackRouteMissing": "No packed OSM route for this marker. Re-prepare the offline pack with “Include OSM routes” while the routing server is ready.",
+  "offlinePackRouteLoaded": "Loaded packed OSM route ({profile}): {distance}, {duration}",
+  "@offlinePackRouteLoaded": {
+    "placeholders": {
+      "profile": { "type": "String" },
+      "distance": { "type": "String" },
+      "duration": { "type": "String" }
+    }
+  },
   "offlinePackSeasonalOverlaysNotIncluded": "No seasonal overlays in this offline pack. Re-prepare with “Include seasonal overlays” while online.",
   "offlinePackNoLayers": "No map layers available.",
   "offlinePackSelectLayersRequired": "Select at least one layer.",

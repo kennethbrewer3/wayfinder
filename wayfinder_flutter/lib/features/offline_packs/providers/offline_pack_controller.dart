@@ -11,6 +11,8 @@ import '../../settings/providers/pmtiles_providers.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../../watch_log/providers/watch_log_provider.dart';
+import '../../routing/data/routing_repository.dart';
+import '../../routing/models/routing_models.dart';
 import '../data/offline_pack_store.dart';
 import '../data/offline_sync.dart';
 import '../data/offline_tile_cache.dart';
@@ -37,6 +39,9 @@ class OfflinePackController {
     required OfflinePackRegion region,
     String? packId,
     bool includeSeasonalOverlays = false,
+    bool includePackedRoutes = false,
+    LatLng? routeOrigin,
+    RoutingProfile routingProfile = RoutingProfile.foot,
     OfflinePrepareProgress? onProgress,
   }) {
     return prepareOfflinePack(
@@ -49,6 +54,12 @@ class OfflinePackController {
       region: region,
       packId: packId,
       includeSeasonalOverlays: includeSeasonalOverlays,
+      includePackedRoutes: includePackedRoutes,
+      routingRepository: includePackedRoutes
+          ? _ref.read(routingRepositoryProvider)
+          : null,
+      routeOrigin: routeOrigin,
+      routingProfile: routingProfile,
       onProgress: onProgress,
     ).then((meta) async {
       _ref.invalidate(offlinePackIndexProvider);

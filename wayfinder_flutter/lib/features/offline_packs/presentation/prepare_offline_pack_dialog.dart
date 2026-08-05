@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -7,8 +9,12 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../layers/utils/map_layer_utils.dart';
 import '../../map/models/map_viewport.dart';
+import '../../map/providers/device_location_provider.dart';
 import '../../map/providers/map_providers.dart';
 import '../../map/utils/pmtiles_viewport.dart';
+import '../../routing/data/routing_repository.dart';
+import '../../routing/models/routing_models.dart';
+import '../../routing/presentation/routing_profile_picker.dart';
 import '../../settings/providers/pmtiles_providers.dart';
 import '../data/offline_pack_store.dart';
 import '../data/prepare_offline_pack.dart';
@@ -92,6 +98,11 @@ List<Widget> _packDetailLines(
       ),
       style: style,
     ),
+    if (pack.routeCount > 0)
+      Text(
+        l10n.offlinePackDetailsRoutes(pack.routeCount),
+        style: style,
+      ),
     Text(
       l10n.offlinePackDetailsPrepared(_formatPreparedAt(pack.preparedAt)),
       style: style,
@@ -112,6 +123,9 @@ class _PrepareOfflinePackDialogState
   final _nameController = TextEditingController();
   final _selectedLayerIds = <UuidValue>{};
   var _includeSeasonalOverlays = false;
+  var _includePackedRoutes = false;
+  var _routeOriginFromGps = true;
+  var _routingProfile = RoutingProfile.foot;
   var _seededFromExisting = false;
   var _minZoom = 10;
   var _maxZoom = 15;
@@ -122,6 +136,20 @@ class _PrepareOfflinePackDialogState
 
   /// Empty string = create new pack; otherwise replace that pack id.
   var _targetPackId = _newPackTargetId;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_loadPreferredProfile());
+  }
+
+  Future<void> _loadPreferredProfile() async {
+    final preferred = await loadPreferredRoutingProfile();
+    if (!mounted) {
+      return;
+    }
+    setState(() => _routingProfile = preferred);
+  }
 
   @override
   void dispose() {
@@ -170,6 +198,28 @@ class _PrepareOfflinePackDialogState
       return;
     }
 
+    LatLng? routeOrigin;
+    if (_includePackedRoutes) {
+      final routingReady =
+          (ref.read(routingServerReachableProvider).valueOrNull ?? false) &&
+          (ref.read(routingStatusProvider).valueOrNull?.ready ?? false);
+      if (!routingReady) {
+        setState(() => _error = l10n.offlinePackRoutingNotReady);
+        return;
+      }
+      if (_routeOriginFromGps) {
+        routeOrigin = ref.read(deviceLocationProvider).position;
+        if (routeOrigin == null) {
+          setState(() => _error = l10n.offlinePackRouteOriginGpsUnavailable);
+          return;
+        }
+      } else {
+        routeOrigin =
+            ref.read(mapViewportProvider).valueOrNull?.center ??
+            const LatLng(0, 0);
+      }
+    }
+
     setState(() {
       _preparing = true;
       _error = null;
@@ -187,6 +237,9 @@ class _PrepareOfflinePackDialogState
             region: region,
             packId: replaceId,
             includeSeasonalOverlays: _includeSeasonalOverlays,
+            includePackedRoutes: _includePackedRoutes,
+            routeOrigin: routeOrigin,
+            routingProfile: _routingProfile,
             onProgress: (message, fraction) {
               if (!mounted) {
                 return;
@@ -212,14 +265,6 @@ class _PrepareOfflinePackDialogState
         _progress = null;
       });
     }
-  }
-
-  Future<void> _clearActive() async {
-    await ref.read(offlinePackControllerProvider).clearPack();
-    if (!mounted) {
-      return;
-    }
-    Navigator.of(context).pop(true);
   }
 
   Future<void> _activate(String packId) async {
@@ -358,6 +403,7 @@ class _PrepareOfflinePackDialogState
             }
             _includeSeasonalOverlays =
                 existing?.includeSeasonalOverlays ?? false;
+            _includePackedRoutes = existing?.includePackedRoutes ?? false;
             // Default to creating a new pack with a unique name so consecutive
             // prepares do not silently reuse the previous pack's label.
             _targetPackId = _newPackTargetId;
@@ -557,6 +603,76 @@ class _PrepareOfflinePackDialogState
                         });
                       },
               ),
+              CheckboxListTile(
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                value: _includePackedRoutes,
+                title: Text(l10n.offlinePackIncludePackedRoutes),
+                subtitle: Text(
+                  l10n.offlinePackIncludePackedRoutesHint(
+                    offlinePackMaxPackedRoutes,
+                  ),
+                ),
+                onChanged: _preparing
+                    ? null
+                    : (value) {
+                        setState(() {
+                          _includePackedRoutes = value ?? false;
+                        });
+                      },
+              ),
+              if (_includePackedRoutes) ...[
+                const SizedBox(height: 4),
+                DropdownButtonFormField<bool>(
+                  initialValue: _routeOriginFromGps,
+                  decoration: InputDecoration(
+                    labelText: l10n.offlinePackRouteOriginLabel,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: true,
+                      child: Text(l10n.offlinePackRouteOriginGps),
+                    ),
+                    DropdownMenuItem(
+                      value: false,
+                      child: Text(l10n.offlinePackRouteOriginMapCenter),
+                    ),
+                  ],
+                  onChanged: _preparing
+                      ? null
+                      : (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() => _routeOriginFromGps = value);
+                        },
+                ),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<RoutingProfile>(
+                  initialValue: _routingProfile,
+                  decoration: InputDecoration(
+                    labelText: l10n.routingProfilePickerTitle,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    for (final profile in RoutingProfile.values)
+                      DropdownMenuItem(
+                        value: profile,
+                        child: Text(routingProfileLabel(l10n, profile)),
+                      ),
+                  ],
+                  onChanged: _preparing
+                      ? null
+                      : (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() => _routingProfile = value);
+                          unawaited(savePreferredRoutingProfile(value));
+                        },
+                ),
+              ],
               const SizedBox(height: 8),
               Text(
                 l10n.offlinePackZoomLabel(_minZoom, _maxZoom),
@@ -613,11 +729,6 @@ class _PrepareOfflinePackDialogState
         ),
       ),
       actions: [
-        if (existing != null)
-          TextButton(
-            onPressed: _preparing ? null : _clearActive,
-            child: Text(l10n.offlinePackClear),
-          ),
         TextButton(
           onPressed: _preparing ? null : () => Navigator.of(context).pop(false),
           child: Text(l10n.actionCancel),

@@ -113,6 +113,8 @@ class OfflinePackMeta {
     this.markerCount = 0,
     this.zoneCount = 0,
     this.seasonalOverlayCount = 0,
+    this.routeCount = 0,
+    this.includePackedRoutes = false,
   });
 
   /// Stable id for multi-pack storage and tile namespacing.
@@ -130,6 +132,10 @@ class OfflinePackMeta {
   final int markerCount;
   final int zoneCount;
   final int seasonalOverlayCount;
+
+  /// Precomputed OSM routes stored in the pack snapshot.
+  final int routeCount;
+  final bool includePackedRoutes;
 
   Set<String> get layerIdKeys => {
     for (final id in layerIds) id.uuid,
@@ -157,6 +163,8 @@ class OfflinePackMeta {
     'markerCount': markerCount,
     'zoneCount': zoneCount,
     'seasonalOverlayCount': seasonalOverlayCount,
+    'routeCount': routeCount,
+    'includePackedRoutes': includePackedRoutes,
   };
 
   factory OfflinePackMeta.fromJson(Map<String, dynamic> json) {
@@ -186,6 +194,8 @@ class OfflinePackMeta {
       zoneCount: (json['zoneCount'] as num?)?.toInt() ?? 0,
       seasonalOverlayCount:
           (json['seasonalOverlayCount'] as num?)?.toInt() ?? 0,
+      routeCount: (json['routeCount'] as num?)?.toInt() ?? 0,
+      includePackedRoutes: json['includePackedRoutes'] as bool? ?? false,
     );
   }
 
@@ -202,6 +212,8 @@ class OfflinePackMeta {
     int? markerCount,
     int? zoneCount,
     int? seasonalOverlayCount,
+    int? routeCount,
+    bool? includePackedRoutes,
   }) {
     return OfflinePackMeta(
       id: id ?? this.id,
@@ -217,6 +229,8 @@ class OfflinePackMeta {
       markerCount: markerCount ?? this.markerCount,
       zoneCount: zoneCount ?? this.zoneCount,
       seasonalOverlayCount: seasonalOverlayCount ?? this.seasonalOverlayCount,
+      routeCount: routeCount ?? this.routeCount,
+      includePackedRoutes: includePackedRoutes ?? this.includePackedRoutes,
     );
   }
 }

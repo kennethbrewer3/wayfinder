@@ -22,6 +22,7 @@ import '../../evac_kits/presentation/create_evac_kit_dialog.dart';
 import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../evac_kits/utils/evac_kit_path.dart';
 import '../../route_follow/presentation/start_route_follow.dart';
+import '../../routing/data/routing_repository.dart';
 import '../../routing/presentation/route_to_dialog.dart';
 import '../../tides/presentation/create_tide_tables.dart';
 import '../../layers/presentation/layer_assignment_row.dart';
@@ -365,10 +366,16 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
       onShowQrCode: () => showMarkerQrDialog(context: context, marker: marker),
       contentWidth: isWeatherStationMarker(marker) ? 560 : 520,
       additionalActions: [
-        // Show whenever online so a stale "unreachable" cache (e.g. after
-        // routing-server recreate) cannot hide the action. routeToMapPoint
-        // already snackbars if the URL is missing or the server is down.
-        if (!offline)
+        // Online: always show (routeToMapPoint snackbars if routing is down).
+        // Offline: show when a packed OSM route exists for this marker, or when
+        // the routing appliance is still reachable on the LAN.
+        if (!offline ||
+            packedRouteForMarker(
+                  ref.watch(offlinePackedRoutesProvider),
+                  marker.id.uuid,
+                ) !=
+                null ||
+            (ref.watch(routingServerReachableProvider).valueOrNull ?? false))
           TextButton.icon(
             onPressed: () async {
               await routeToMapPoint(
@@ -376,6 +383,7 @@ class _MapObjectDetailsDialog extends ConsumerWidget {
                 destinationLabel: marker.name,
                 latitude: marker.latitude,
                 longitude: marker.longitude,
+                destinationMarkerId: marker.id.uuid,
               );
             },
             icon: const Icon(Icons.directions),

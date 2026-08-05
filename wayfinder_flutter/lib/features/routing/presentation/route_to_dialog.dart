@@ -8,6 +8,8 @@ import '../../evac_kits/utils/evac_kit_eta.dart';
 import '../../lines/models/measurement_units.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../map/providers/device_location_provider.dart';
+import '../../offline_packs/providers/offline_snapshot_provider.dart';
+import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../data/routing_repository.dart';
 import '../models/routing_models.dart';
 import '../providers/routing_session_provider.dart';
@@ -28,12 +30,36 @@ SnackBar _persistentRoutingSnackBar({
   );
 }
 
+void _offerFollowSnackbar({
+  required ScaffoldMessengerState messenger,
+  required ProviderContainer container,
+  required AppLocalizations l10n,
+  required String summary,
+}) {
+  messenger.showSnackBar(
+    _persistentRoutingSnackBar(
+      content: Text(summary),
+      action: SnackBarAction(
+        label: l10n.routeFollowButton,
+        onPressed: () {
+          unawaited(startFollowFromRoutingSession(container));
+        },
+      ),
+    ),
+  );
+}
+
 /// Computes a route from the device's current GPS fix to
 /// ([latitude], [longitude]) using the configured routing server, stores it
 /// in [routingSessionProvider] for the map overlay, and offers to start
 /// route-follow guidance via a snackbar action.
 ///
-/// Asks for foot / bike / car before routing, remembering the last choice.
+/// When the main server is offline, prefers a precomputed route from the
+/// active offline pack (matched by [destinationMarkerId]) so OSM guidance
+/// still works with no LAN. Live GraphHopper is used when the routing server
+/// is still reachable.
+///
+/// Asks for foot / bike / car before live routing, remembering the last choice.
 ///
 /// Captures [ProviderContainer] / [messenger] / [l10n] before popping the
 /// details dialog so async work never touches a disposed [WidgetRef].
@@ -42,17 +68,63 @@ Future<void> routeToMapPoint({
   required String destinationLabel,
   required double latitude,
   required double longitude,
+  String? destinationMarkerId,
 }) async {
   final l10n = AppLocalizations.of(context)!;
   final messenger = ScaffoldMessenger.of(context);
   // Survive dialog dispose (pop below); do not use [ref] after that.
   final container = ProviderScope.containerOf(context);
   final units = container.read(measurementUnitsProvider);
+  final offline = container.read(offlineModeActiveProvider);
+
+  final packed = destinationMarkerId == null
+      ? null
+      : packedRouteForMarker(
+          container.read(offlinePackedRoutesProvider),
+          destinationMarkerId,
+        );
+
+  if (offline && packed != null) {
+    if (!context.mounted) {
+      return;
+    }
+    Navigator.of(context).pop();
+    container
+        .read(routingSessionProvider.notifier)
+        .setRoute(
+          result: packed.result,
+          profile: packed.profile,
+          destinationLabel: packed.destinationLabel,
+        );
+    final distanceText = formatLineDistance(
+      packed.result.distanceMeters,
+      units,
+    );
+    final durationText = formatEvacDuration(
+      Duration(milliseconds: packed.result.timeMs),
+    );
+    final profileText = routingProfileLabel(l10n, packed.profile);
+    _offerFollowSnackbar(
+      messenger: messenger,
+      container: container,
+      l10n: l10n,
+      summary: l10n.offlinePackRouteLoaded(
+        profileText,
+        distanceText,
+        durationText,
+      ),
+    );
+    return;
+  }
 
   final repository = container.read(routingRepositoryProvider);
   if (!repository.isConfigured) {
     messenger.showSnackBar(
-      _persistentRoutingSnackBar(content: Text(l10n.routingNotConfigured)),
+      _persistentRoutingSnackBar(
+        content: Text(
+          offline ? l10n.offlinePackRouteMissing : l10n.routingNotConfigured,
+        ),
+      ),
     );
     return;
   }
@@ -65,9 +137,7 @@ Future<void> routeToMapPoint({
   }
   if (!reachable) {
     messenger.showSnackBar(
-      _persistentRoutingSnackBar(
-        content: Text(l10n.routingServerUnreachable),
-      ),
+      _permanentOfflineOrUnreachable(l10n, offline),
     );
     return;
   }
@@ -80,7 +150,11 @@ Future<void> routeToMapPoint({
   }
   if (!status.ready) {
     messenger.showSnackBar(
-      _persistentRoutingSnackBar(content: Text(l10n.routingNotReady)),
+      _persistentRoutingSnackBar(
+        content: Text(
+          offline ? l10n.offlinePackRouteMissing : l10n.routingNotReady,
+        ),
+      ),
     );
     return;
   }
@@ -137,16 +211,11 @@ Future<void> routeToMapPoint({
       durationText,
     );
 
-    messenger.showSnackBar(
-      _persistentRoutingSnackBar(
-        content: Text(summary),
-        action: SnackBarAction(
-          label: l10n.routeFollowButton,
-          onPressed: () {
-            unawaited(startFollowFromRoutingSession(container));
-          },
-        ),
-      ),
+    _offerFollowSnackbar(
+      messenger: messenger,
+      container: container,
+      l10n: l10n,
+      summary: summary,
     );
   } catch (error) {
     messenger.showSnackBar(
@@ -155,4 +224,15 @@ Future<void> routeToMapPoint({
       ),
     );
   }
+}
+
+SnackBar _permanentOfflineOrUnreachable(
+  AppLocalizations l10n,
+  bool offline,
+) {
+  return _persistentRoutingSnackBar(
+    content: Text(
+      offline ? l10n.offlinePackRouteMissing : l10n.routingServerUnreachable,
+    ),
+  );
 }

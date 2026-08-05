@@ -719,6 +719,33 @@
   "offlinePackLayersLabel": "Calques à inclure",
   "offlinePackIncludeSeasonalOverlays": "Inclure les superpositions saisonnières",
   "offlinePackIncludeSeasonalOverlaysHint": "Inclure toutes les superpositions saisonnières en lecture seule hors ligne (séparées des calques de carte).",
+  "offlinePackIncludePackedRoutes": "Inclure les itinéraires OSM vers les marqueurs du pack",
+  "offlinePackIncludePackedRoutesHint": "Utilise le serveur de routage maintenant pour précalculer les trajets à pied/vélo/voiture depuis l’origine choisie vers chaque marqueur du pack (jusqu’à {maxRoutes}). Ces itinéraires fonctionnent hors ligne.",
+  "@offlinePackIncludePackedRoutesHint": {
+    "placeholders": {
+      "maxRoutes": { "type": "int" }
+    }
+  },
+  "offlinePackRouteOriginLabel": "Origine de l’itinéraire",
+  "offlinePackRouteOriginGps": "Position GPS actuelle",
+  "offlinePackRouteOriginMapCenter": "Centre actuel de la carte",
+  "offlinePackRouteOriginGpsUnavailable": "Pas encore de GPS — activez la localisation ou choisissez le centre de la carte.",
+  "offlinePackRoutingNotReady": "Activez un serveur de routage prêt (Réglages → Routage) avant d’empaqueter des itinéraires OSM.",
+  "offlinePackDetailsRoutes": "{routeCount} itinéraire(s) OSM empaqueté(s)",
+  "@offlinePackDetailsRoutes": {
+    "placeholders": {
+      "routeCount": { "type": "int" }
+    }
+  },
+  "offlinePackRouteMissing": "Aucun itinéraire OSM empaqueté pour ce marqueur. Repréparez le pack avec « Inclure les itinéraires OSM » pendant que le serveur de routage est prêt.",
+  "offlinePackRouteLoaded": "Itinéraire OSM empaqueté chargé ({profile}) : {distance}, {duration}",
+  "@offlinePackRouteLoaded": {
+    "placeholders": {
+      "profile": { "type": "String" },
+      "distance": { "type": "String" },
+      "duration": { "type": "String" }
+    }
+  },
   "offlinePackSeasonalOverlaysNotIncluded": "Aucune superposition saisonnière dans ce pack. Repréparez-le avec « Inclure les superpositions saisonnières » en ligne.",
   "offlinePackNoLayers": "Aucun calque de carte disponible.",
   "offlinePackSelectLayersRequired": "Sélectionnez au moins un calque.",

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:wayfinder_client/wayfinder_client.dart';
 
 import '../../markers/models/marker_radio.dart';
+import 'comms_radio_service.dart';
 
 /// Operational role of a channel on the comms plan board.
 enum CommsChannelRole {
@@ -59,6 +60,8 @@ class CommsPlanChannel {
     required this.label,
     this.netName,
     this.role = CommsChannelRole.primary,
+    this.radioService = CommsRadioService.ham,
+    this.serviceChannelId,
     this.frequencyMHz,
     this.mode = MarkerRadioMode.fm,
     this.toneHz,
@@ -77,6 +80,10 @@ class CommsPlanChannel {
   final String label;
   final String? netName;
   final CommsChannelRole role;
+  final CommsRadioService radioService;
+
+  /// Permitted channel id for GMRS/FRS/CB (e.g. `19`, `15R`). Null for ham.
+  final String? serviceChannelId;
   final double? frequencyMHz;
   final MarkerRadioMode mode;
   final double? toneHz;
@@ -99,6 +106,8 @@ class CommsPlanChannel {
     String? label,
     Object? netName = _unset,
     CommsChannelRole? role,
+    CommsRadioService? radioService,
+    Object? serviceChannelId = _unset,
     Object? frequencyMHz = _unset,
     MarkerRadioMode? mode,
     Object? toneHz = _unset,
@@ -117,6 +126,10 @@ class CommsPlanChannel {
       label: label ?? this.label,
       netName: identical(netName, _unset) ? this.netName : netName as String?,
       role: role ?? this.role,
+      radioService: radioService ?? this.radioService,
+      serviceChannelId: identical(serviceChannelId, _unset)
+          ? this.serviceChannelId
+          : serviceChannelId as String?,
       frequencyMHz: identical(frequencyMHz, _unset)
           ? this.frequencyMHz
           : frequencyMHz as double?,
@@ -151,6 +164,9 @@ class CommsPlanChannel {
     'label': label,
     if (netName != null && netName!.trim().isNotEmpty) 'netName': netName,
     'role': role.storageValue,
+    'radioService': radioService.storageValue,
+    if (serviceChannelId != null && serviceChannelId!.trim().isNotEmpty)
+      'serviceChannelId': serviceChannelId,
     if (frequencyMHz != null) 'frequencyMHz': frequencyMHz,
     'mode': mode.storageValue,
     if (toneHz != null) 'toneHz': toneHz,
@@ -170,6 +186,18 @@ class CommsPlanChannel {
 
   factory CommsPlanChannel.fromJson(Map<String, dynamic> json) {
     final rawDays = json['daysOfWeek'];
+    final radioService = CommsRadioService.parse(
+      json['radioService'] as String?,
+    );
+    final frequencyMHz = (json['frequencyMHz'] as num?)?.toDouble();
+    var serviceChannelId = (json['serviceChannelId'] as String?)?.trim();
+    if (radioService.usesPermittedChannels &&
+        (serviceChannelId == null || serviceChannelId.isEmpty)) {
+      serviceChannelId = findPermittedChannelByFrequency(
+        radioService,
+        frequencyMHz,
+      )?.id;
+    }
     return CommsPlanChannel(
       id: json['id'] as String? ?? const Uuid().v4(),
       label: (json['label'] as String?)?.trim().isNotEmpty == true
@@ -177,7 +205,9 @@ class CommsPlanChannel {
           : 'Channel',
       netName: (json['netName'] as String?)?.trim(),
       role: CommsChannelRole.parse(json['role'] as String?),
-      frequencyMHz: (json['frequencyMHz'] as num?)?.toDouble(),
+      radioService: radioService,
+      serviceChannelId: serviceChannelId,
+      frequencyMHz: frequencyMHz,
       mode: MarkerRadioMode.parse(json['mode'] as String?),
       toneHz: (json['toneHz'] as num?)?.toDouble(),
       offsetMHz: (json['offsetMHz'] as num?)?.toDouble(),

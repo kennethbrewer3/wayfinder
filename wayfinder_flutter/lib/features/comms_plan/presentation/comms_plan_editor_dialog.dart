@@ -8,7 +8,9 @@ import '../../markers/models/marker_radio.dart';
 import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../models/comms_plan_channel.dart';
+import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
+import '../utils/comms_plan_timezones.dart';
 
 Future<void> showCommsPlanEditorDialog({
   required BuildContext context,
@@ -34,8 +36,9 @@ class _CommsPlanEditorDialog extends ConsumerStatefulWidget {
 class _CommsPlanEditorDialogState
     extends ConsumerState<_CommsPlanEditorDialog> {
   late final TextEditingController _nameController;
-  late final TextEditingController _timezoneController;
   late final TextEditingController _notesController;
+  late String _timezone;
+  late final List<String> _timezoneOptions;
   late bool _active;
   late List<CommsPlanChannel> _channels;
   var _saving = false;
@@ -46,9 +49,10 @@ class _CommsPlanEditorDialogState
     super.initState();
     final existing = widget.existing;
     _nameController = TextEditingController(text: existing?.name ?? '');
-    _timezoneController = TextEditingController(
-      text: existing?.timezoneIana ?? 'UTC',
-    );
+    _timezone = (existing?.timezoneIana.trim().isNotEmpty == true)
+        ? existing!.timezoneIana.trim()
+        : 'UTC';
+    _timezoneOptions = commsPlanTimezoneOptions(current: _timezone);
     _notesController = TextEditingController(text: existing?.notes ?? '');
     _active = existing?.active ?? true;
     _channels = decodeCommsPlanChannels(existing?.channelsJson);
@@ -57,7 +61,6 @@ class _CommsPlanEditorDialogState
   @override
   void dispose() {
     _nameController.dispose();
-    _timezoneController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -86,12 +89,35 @@ class _CommsPlanEditorDialogState
                 textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 12),
-              TextField(
-                controller: _timezoneController,
-                decoration: InputDecoration(
-                  labelText: l10n.commsPlanTimezoneLabel,
-                  helperText: l10n.commsPlanTimezoneHint,
-                ),
+              DropdownMenu<String>(
+                key: ValueKey('comms-plan-timezone-$_timezone'),
+                initialSelection: _timezone,
+                enableFilter: true,
+                requestFocusOnTap: true,
+                label: Text(l10n.commsPlanTimezoneLabel),
+                hintText: l10n.commsPlanTimezoneHint,
+                helperText: l10n.commsPlanTimezoneHelper,
+                leadingIcon: const Icon(Icons.public),
+                expandedInsets: EdgeInsets.zero,
+                filterCallback: (entries, filter) {
+                  final query = filter.trim().toLowerCase();
+                  if (query.isEmpty || query == _timezone.toLowerCase()) {
+                    return entries;
+                  }
+                  return [
+                    for (final entry in entries)
+                      if (entry.label.toLowerCase().contains(query)) entry,
+                  ];
+                },
+                onSelected: (value) {
+                  if (value != null) {
+                    setState(() => _timezone = value);
+                  }
+                },
+                dropdownMenuEntries: [
+                  for (final zone in _timezoneOptions)
+                    DropdownMenuEntry<String>(value: zone, label: zone),
+                ],
               ),
               const SizedBox(height: 8),
               SwitchListTile(
@@ -222,10 +248,6 @@ class _CommsPlanEditorDialogState
       setState(() => _error = l10n.commsPlanNameRequired);
       return;
     }
-    final timezone = _timezoneController.text.trim().isEmpty
-        ? 'UTC'
-        : _timezoneController.text.trim();
-
     setState(() {
       _saving = true;
       _error = null;
@@ -247,7 +269,7 @@ class _CommsPlanEditorDialogState
                 notes: _notesController.text.trim().isEmpty
                     ? null
                     : _notesController.text.trim(),
-                timezoneIana: timezone,
+                timezoneIana: _timezone,
                 active: _active,
                 channelsJson: encodeCommsPlanChannels(_channels),
                 updatedAt: now,
@@ -320,6 +342,8 @@ class _CommsPlanChannelEditorDialogState
   late final TextEditingController _statusNoteController;
   late final TextEditingController _notesController;
   late CommsChannelRole _role;
+  late CommsRadioService _radioService;
+  String? _serviceChannelId;
   late MarkerRadioMode _mode;
   late CommsChannelAvailability _availability;
   late Set<int> _days;
@@ -352,6 +376,15 @@ class _CommsPlanChannelEditorDialogState
     );
     _notesController = TextEditingController(text: existing?.notes ?? '');
     _role = existing?.role ?? CommsChannelRole.primary;
+    _radioService = existing?.radioService ?? CommsRadioService.ham;
+    _serviceChannelId = existing?.serviceChannelId;
+    if (_radioService.usesPermittedChannels) {
+      _serviceChannelId ??= findPermittedChannelByFrequency(
+        _radioService,
+        existing?.frequencyMHz,
+      )?.id;
+      _serviceChannelId ??= permittedChannelsFor(_radioService).first.id;
+    }
     _mode = existing?.mode ?? MarkerRadioMode.fm;
     _availability = existing?.availability ?? CommsChannelAvailability.unknown;
     _days = {...(existing?.daysOfWeek ?? const <int>[])};
@@ -426,66 +459,125 @@ class _CommsPlanChannelEditorDialogState
                 },
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _frequencyController,
+              DropdownButtonFormField<CommsRadioService>(
+                initialValue: _radioService,
                 decoration: InputDecoration(
-                  labelText: l10n.markerRadioFrequencyLabel,
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                ],
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<MarkerRadioMode>(
-                initialValue: _mode,
-                decoration: InputDecoration(
-                  labelText: l10n.markerRadioModeLabel,
+                  labelText: l10n.commsPlanRadioServiceLabel,
+                  helperText: l10n.commsPlanRadioServiceHint,
                 ),
                 items: [
-                  for (final mode in MarkerRadioMode.values)
+                  for (final service in CommsRadioService.values)
                     DropdownMenuItem(
-                      value: mode,
-                      child: Text(markerRadioModeLabel(l10n, mode)),
+                      value: service,
+                      child: Text(commsRadioServiceLabel(l10n, service)),
                     ),
                 ],
                 onChanged: (value) {
                   if (value != null) {
-                    setState(() => _mode = value);
+                    _onRadioServiceChanged(value);
                   }
                 },
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _toneController,
-                      decoration: InputDecoration(
-                        labelText: l10n.markerRadioToneLabel,
+              if (_radioService.usesPermittedChannels)
+                DropdownButtonFormField<String>(
+                  key: ValueKey(
+                    'service-channel-$_radioService-$_serviceChannelId',
+                  ),
+                  initialValue: _validServiceChannelId(),
+                  decoration: InputDecoration(
+                    labelText: l10n.commsPlanServiceChannelLabel,
+                    helperText: l10n.commsPlanServiceChannelHint,
+                  ),
+                  items: [
+                    for (final channel in permittedChannelsFor(_radioService))
+                      DropdownMenuItem(
+                        value: channel.id,
+                        child: Text(channel.listLabel()),
                       ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      _applyPermittedChannel(value);
+                    }
+                  },
+                )
+              else ...[
+                TextField(
+                  controller: _frequencyController,
+                  decoration: InputDecoration(
+                    labelText: l10n.markerRadioFrequencyLabel,
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<MarkerRadioMode>(
+                  key: ValueKey('ham-mode-$_mode'),
+                  initialValue: _mode,
+                  decoration: InputDecoration(
+                    labelText: l10n.markerRadioModeLabel,
+                  ),
+                  items: [
+                    for (final mode in MarkerRadioMode.values)
+                      DropdownMenuItem(
+                        value: mode,
+                        child: Text(markerRadioModeLabel(l10n, mode)),
+                      ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _mode = value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _toneController,
+                        decoration: InputDecoration(
+                          labelText: l10n.markerRadioToneLabel,
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: _offsetController,
-                      decoration: InputDecoration(
-                        labelText: l10n.markerRadioOffsetLabel,
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                        signed: true,
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: _offsetController,
+                        decoration: InputDecoration(
+                          labelText: l10n.markerRadioOffsetLabel,
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                          signed: true,
+                        ),
                       ),
                     ),
+                  ],
+                ),
+              ],
+              if (_radioService == CommsRadioService.gmrs ||
+                  _radioService == CommsRadioService.frs) ...[
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _toneController,
+                  decoration: InputDecoration(
+                    labelText: l10n.markerRadioToneLabel,
                   ),
-                ],
-              ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                ),
+              ],
               const SizedBox(height: 8),
               TextField(
                 controller: _callsignController,
@@ -620,16 +712,36 @@ class _CommsPlanChannelEditorDialogState
               );
               return;
             }
+            if (_radioService.usesPermittedChannels &&
+                _validServiceChannelId() == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.commsPlanServiceChannelRequired)),
+              );
+              return;
+            }
+            final permitted = _radioService.usesPermittedChannels
+                ? findPermittedChannel(_radioService, _serviceChannelId)
+                : null;
             Navigator.of(context).pop(
               CommsPlanChannel(
                 id: widget.existing?.id ?? const Uuid().v4(),
                 label: label,
                 netName: _optional(_netNameController.text),
                 role: _role,
-                frequencyMHz: double.tryParse(_frequencyController.text.trim()),
-                mode: _mode,
-                toneHz: double.tryParse(_toneController.text.trim()),
-                offsetMHz: double.tryParse(_offsetController.text.trim()),
+                radioService: _radioService,
+                serviceChannelId: permitted?.id,
+                frequencyMHz:
+                    permitted?.frequencyMHz ??
+                    double.tryParse(_frequencyController.text.trim()),
+                mode: permitted?.defaultMode ?? _mode,
+                toneHz: _radioService == CommsRadioService.cb
+                    ? null
+                    : double.tryParse(_toneController.text.trim()),
+                offsetMHz:
+                    permitted?.defaultOffsetMHz ??
+                    (_radioService == CommsRadioService.ham
+                        ? double.tryParse(_offsetController.text.trim())
+                        : null),
                 callsign: _optional(_callsignController.text),
                 daysOfWeek: (_days.toList()..sort()),
                 startLocalTime: _optional(_startController.text),
@@ -646,6 +758,40 @@ class _CommsPlanChannelEditorDialogState
       ],
     );
   }
+
+  String? _validServiceChannelId() {
+    return findPermittedChannel(_radioService, _serviceChannelId)?.id;
+  }
+
+  void _onRadioServiceChanged(CommsRadioService service) {
+    setState(() {
+      _radioService = service;
+      if (!service.usesPermittedChannels) {
+        _serviceChannelId = null;
+        return;
+      }
+      final channels = permittedChannelsFor(service);
+      final keep = findPermittedChannel(service, _serviceChannelId);
+      final selected = keep ?? channels.first;
+      _serviceChannelId = selected.id;
+      _frequencyController.text = selected.frequencyMHz.toString();
+      _mode = selected.defaultMode;
+      _offsetController.text = selected.defaultOffsetMHz?.toString() ?? '';
+    });
+  }
+
+  void _applyPermittedChannel(String channelId) {
+    final channel = findPermittedChannel(_radioService, channelId);
+    if (channel == null) {
+      return;
+    }
+    setState(() {
+      _serviceChannelId = channel.id;
+      _frequencyController.text = channel.frequencyMHz.toString();
+      _mode = channel.defaultMode;
+      _offsetController.text = channel.defaultOffsetMHz?.toString() ?? '';
+    });
+  }
 }
 
 String? _optional(String raw) {
@@ -654,13 +800,32 @@ String? _optional(String raw) {
 }
 
 String _channelSubtitle(AppLocalizations l10n, CommsPlanChannel channel) {
+  final permitted = findPermittedChannel(
+    channel.radioService,
+    channel.serviceChannelId,
+  );
   final parts = <String>[
+    commsRadioServiceLabel(l10n, channel.radioService),
     commsChannelRoleLabel(l10n, channel.role),
-    if (channel.frequencyMHz != null)
+    if (permitted != null)
+      'Ch ${permitted.numberLabel} · ${permitted.frequencyMHz} MHz'
+    else if (channel.frequencyMHz != null)
       '${channel.frequencyMHz} ${markerRadioModeLabel(l10n, channel.mode)}',
     commsChannelAvailabilityLabel(l10n, channel.availability),
   ];
   return parts.join(' · ');
+}
+
+String commsRadioServiceLabel(
+  AppLocalizations l10n,
+  CommsRadioService service,
+) {
+  return switch (service) {
+    CommsRadioService.ham => l10n.commsPlanRadioServiceHam,
+    CommsRadioService.gmrs => l10n.commsPlanRadioServiceGmrs,
+    CommsRadioService.frs => l10n.commsPlanRadioServiceFrs,
+    CommsRadioService.cb => l10n.commsPlanRadioServiceCb,
+  };
 }
 
 Color _availabilityColor(CommsChannelAvailability availability) {

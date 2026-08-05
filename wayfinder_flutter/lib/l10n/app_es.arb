@@ -3084,7 +3084,7 @@
   "commsPlanSidebarLoading": "Cargando…",
   "commsPlanSidebarEmpty": "Sin plan activo",
   "commsPlanSidebarLoadFailed": "No se pudieron cargar los planes",
-  "commsPlanSidebarSubtitle": "{name} · {count} canal(es)",
+  "commsPlanSidebarSubtitle": "{name} · {count} canal/frecuencia(s)",
   "@commsPlanSidebarSubtitle": {
     "placeholders": {
       "name": { "type": "String" },
@@ -3094,7 +3094,7 @@
   "commsPlanOfflineHint": "Los planes de comunicaciones aún no están disponibles sin conexión.",
   "commsPlanAddPlan": "Añadir plan",
   "commsPlanEditPlan": "Editar tablero",
-  "commsPlanEmpty": "Aún no hay planes de comunicaciones. Añada un tablero para horarios de redes, frecuencias y canales go/no-go.",
+  "commsPlanEmpty": "Aún no hay planes de comunicaciones. Añada un tablero para horarios de redes, frecuencias y canales/frecuencias go/no-go.",
   "commsPlanLoadFailed": "No se pudieron cargar los planes: {error}",
   "@commsPlanLoadFailed": {
     "placeholders": {
@@ -3109,7 +3109,7 @@
     }
   },
   "commsPlanOtherPlans": "Otros planes",
-  "commsPlanChannelsCount": "{count} canal(es)",
+  "commsPlanChannelsCount": "{count} canal/frecuencia(s)",
   "@commsPlanChannelsCount": {
     "placeholders": {
       "count": { "type": "int" }
@@ -3135,25 +3135,35 @@
   "commsPlanNameLabel": "Nombre del plan",
   "commsPlanNameRequired": "Introduzca un nombre de plan.",
   "commsPlanTimezoneLabel": "Zona horaria",
-  "commsPlanTimezoneHint": "Nombre IANA para horarios (p. ej. America/New_York)",
+  "commsPlanTimezoneHint": "Buscar zonas horarias",
+  "commsPlanTimezoneHelper": "Se usa para las horas de inicio de red en este tablero",
   "commsPlanActiveLabel": "Tablero activo",
   "commsPlanActiveHint": "Mostrar este plan como el tablero operativo del TOC",
   "commsPlanNotesLabel": "Notas del plan",
-  "commsPlanChannelsHeading": "Canales",
-  "commsPlanChannelsEmpty": "Aún no hay canales.",
-  "commsPlanAddChannel": "Añadir canal",
+  "commsPlanChannelsHeading": "Canales/frecuencias",
+  "commsPlanChannelsEmpty": "Aún no hay canales/frecuencias.",
+  "commsPlanAddChannel": "Añadir canal/frecuencia",
   "commsPlanSaveFailed": "No se pudo guardar el plan: {error}",
   "@commsPlanSaveFailed": {
     "placeholders": {
       "error": { "type": "String" }
     }
   },
-  "commsPlanChannelCreateTitle": "Añadir canal",
-  "commsPlanChannelEditTitle": "Editar canal",
-  "commsPlanChannelLabel": "Etiqueta del canal",
-  "commsPlanChannelLabelRequired": "Introduzca una etiqueta de canal.",
+  "commsPlanChannelCreateTitle": "Añadir canal/frecuencia",
+  "commsPlanChannelEditTitle": "Editar canal/frecuencia",
+  "commsPlanChannelLabel": "Etiqueta del canal/frecuencia",
+  "commsPlanChannelLabelRequired": "Introduzca una etiqueta de canal/frecuencia.",
   "commsPlanChannelNetName": "Nombre de la red",
   "commsPlanChannelRole": "Rol",
+  "commsPlanRadioServiceLabel": "Servicio de radio",
+  "commsPlanRadioServiceHint": "Ham permite cualquier frecuencia; GMRS, FRS y CB solo canales permitidos.",
+  "commsPlanRadioServiceHam": "Radioafición (ham)",
+  "commsPlanRadioServiceGmrs": "GMRS",
+  "commsPlanRadioServiceFrs": "FRS",
+  "commsPlanRadioServiceCb": "CB",
+  "commsPlanServiceChannelLabel": "Canal permitido",
+  "commsPlanServiceChannelHint": "Solo canales permitidos por la FCC para este servicio",
+  "commsPlanServiceChannelRequired": "Seleccione un canal permitido.",
   "commsPlanChannelDays": "Días de red",
   "commsPlanChannelDaysHint": "Deje todos sin seleccionar para todos los días (si hay hora de inicio).",
   "commsPlanChannelStartTime": "Inicio (local)",

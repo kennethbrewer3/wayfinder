@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wayfinder_flutter/features/comms_plan/models/comms_plan_channel.dart';
+import 'package:wayfinder_flutter/features/comms_plan/models/comms_radio_service.dart';
 import 'package:wayfinder_flutter/features/comms_plan/utils/comms_plan_schedule.dart';
 import 'package:wayfinder_flutter/features/markers/models/marker_radio.dart';
 
@@ -11,6 +12,7 @@ void main() {
         label: 'Primary VHF',
         netName: 'Ops Net',
         role: CommsChannelRole.primary,
+        radioService: CommsRadioService.ham,
         frequencyMHz: 146.52,
         mode: MarkerRadioMode.fm,
         toneHz: 123.0,
@@ -32,6 +34,7 @@ void main() {
       expect(roundTrip.label, 'Primary VHF');
       expect(roundTrip.netName, 'Ops Net');
       expect(roundTrip.role, CommsChannelRole.primary);
+      expect(roundTrip.radioService, CommsRadioService.ham);
       expect(roundTrip.frequencyMHz, 146.52);
       expect(roundTrip.mode, MarkerRadioMode.fm);
       expect(roundTrip.toneHz, 123.0);
@@ -45,6 +48,23 @@ void main() {
       expect(roundTrip.notes, 'Simplex');
     });
 
+    test('round-trips GMRS permitted channel', () {
+      const channel = CommsPlanChannel(
+        id: 'gmrs-1',
+        label: 'Neighborhood',
+        radioService: CommsRadioService.gmrs,
+        serviceChannelId: '20',
+        frequencyMHz: 462.675,
+        mode: MarkerRadioMode.fm,
+      );
+      final decoded = decodeCommsPlanChannels(
+        encodeCommsPlanChannels([channel]),
+      ).single;
+      expect(decoded.radioService, CommsRadioService.gmrs);
+      expect(decoded.serviceChannelId, '20');
+      expect(decoded.frequencyMHz, 462.675);
+    });
+
     test('parses availability aliases', () {
       expect(
         CommsChannelAvailability.parse('no-go'),
@@ -53,6 +73,35 @@ void main() {
       expect(
         CommsChannelAvailability.parse('amber'),
         CommsChannelAvailability.conditional,
+      );
+    });
+  });
+
+  group('permitted channels', () {
+    test('FRS has 22 channels and no repeater pairs', () {
+      expect(frsPermittedChannels, hasLength(22));
+      expect(frsPermittedChannels.any((c) => c.isRepeater), isFalse);
+      expect(findPermittedChannel(CommsRadioService.frs, '23'), isNull);
+    });
+
+    test('GMRS includes repeater pairs 15R-22R', () {
+      expect(gmrsPermittedChannels, hasLength(30));
+      final repeater = findPermittedChannel(CommsRadioService.gmrs, '15R');
+      expect(repeater, isNotNull);
+      expect(repeater!.isRepeater, isTrue);
+      expect(repeater.defaultOffsetMHz, 5.0);
+      expect(findPermittedChannel(CommsRadioService.frs, '15R'), isNull);
+    });
+
+    test('CB has 40 channels defaulting to AM', () {
+      expect(cbPermittedChannels, hasLength(40));
+      expect(
+        findPermittedChannel(CommsRadioService.cb, '9')?.frequencyMHz,
+        27.065,
+      );
+      expect(
+        findPermittedChannel(CommsRadioService.cb, '19')?.defaultMode,
+        MarkerRadioMode.am,
       );
     });
   });

@@ -11,6 +11,7 @@ import '../../markers/presentation/marker_radio_editor.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../models/comms_plan_channel.dart';
+import '../models/comms_radio_service.dart';
 import '../providers/comms_plan_provider.dart';
 import '../utils/comms_plan_schedule.dart';
 import 'comms_plan_editor_dialog.dart';
@@ -312,12 +313,20 @@ class _CommsChannelTile extends ConsumerWidget {
             DateFormat.E().add_Hm().format(next.toLocal()),
           );
 
-    final freq = channel.frequencyMHz == null
+    final service = commsRadioServiceLabel(l10n, channel.radioService);
+    final permitted = findPermittedChannel(
+      channel.radioService,
+      channel.serviceChannelId,
+    );
+    final freq = permitted != null
+        ? 'Ch ${permitted.numberLabel} · ${permitted.frequencyMHz} MHz'
+        : channel.frequencyMHz == null
         ? null
         : '${channel.frequencyMHz} ${markerRadioModeLabel(l10n, channel.mode)}';
 
     final statusNote = channel.statusNote?.trim();
     final subtitle = [
+      service,
       commsChannelRoleLabel(l10n, channel.role),
       ?freq,
       nextLabel,

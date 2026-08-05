@@ -6541,7 +6541,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String commsPlanSidebarSubtitle(String name, int count) {
-    return '$name · $count channel(s)';
+    return '$name · $count channel/frequency(ies)';
   }
 
   @override
@@ -6556,7 +6556,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commsPlanEmpty =>
-      'No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels.';
+      'No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels/frequencies.';
 
   @override
   String commsPlanLoadFailed(String error) {
@@ -6573,7 +6573,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String commsPlanChannelsCount(int count) {
-    return '$count channel(s)';
+    return '$count channel/frequency(ies)';
   }
 
   @override
@@ -6611,8 +6611,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commsPlanTimezoneLabel => 'Timezone';
 
   @override
-  String get commsPlanTimezoneHint =>
-      'IANA name for net times (e.g. America/New_York)';
+  String get commsPlanTimezoneHint => 'Search timezones';
+
+  @override
+  String get commsPlanTimezoneHelper =>
+      'Used for net start times on this board';
 
   @override
   String get commsPlanActiveLabel => 'Active board';
@@ -6625,13 +6628,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commsPlanNotesLabel => 'Plan notes';
 
   @override
-  String get commsPlanChannelsHeading => 'Channels';
+  String get commsPlanChannelsHeading => 'Channels/frequencies';
 
   @override
-  String get commsPlanChannelsEmpty => 'No channels yet.';
+  String get commsPlanChannelsEmpty => 'No channels/frequencies yet.';
 
   @override
-  String get commsPlanAddChannel => 'Add channel';
+  String get commsPlanAddChannel => 'Add channel/frequency';
 
   @override
   String commsPlanSaveFailed(String error) {
@@ -6639,22 +6642,52 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get commsPlanChannelCreateTitle => 'Add channel';
+  String get commsPlanChannelCreateTitle => 'Add channel/frequency';
 
   @override
-  String get commsPlanChannelEditTitle => 'Edit channel';
+  String get commsPlanChannelEditTitle => 'Edit channel/frequency';
 
   @override
-  String get commsPlanChannelLabel => 'Channel label';
+  String get commsPlanChannelLabel => 'Channel/frequency label';
 
   @override
-  String get commsPlanChannelLabelRequired => 'Enter a channel label.';
+  String get commsPlanChannelLabelRequired =>
+      'Enter a channel/frequency label.';
 
   @override
   String get commsPlanChannelNetName => 'Net name';
 
   @override
   String get commsPlanChannelRole => 'Role';
+
+  @override
+  String get commsPlanRadioServiceLabel => 'Radio service';
+
+  @override
+  String get commsPlanRadioServiceHint =>
+      'Ham allows any frequency; GMRS, FRS, and CB use permitted channels only.';
+
+  @override
+  String get commsPlanRadioServiceHam => 'Ham radio';
+
+  @override
+  String get commsPlanRadioServiceGmrs => 'GMRS';
+
+  @override
+  String get commsPlanRadioServiceFrs => 'FRS';
+
+  @override
+  String get commsPlanRadioServiceCb => 'CB';
+
+  @override
+  String get commsPlanServiceChannelLabel => 'Permitted channel';
+
+  @override
+  String get commsPlanServiceChannelHint =>
+      'Only FCC-permitted channels for this service';
+
+  @override
+  String get commsPlanServiceChannelRequired => 'Select a permitted channel.';
 
   @override
   String get commsPlanChannelDays => 'Net days';

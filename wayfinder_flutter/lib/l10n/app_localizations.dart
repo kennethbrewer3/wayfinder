@@ -11374,7 +11374,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsPlanSidebarSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'{name} · {count} channel(s)'**
+  /// **'{name} · {count} channel/frequency(ies)'**
   String commsPlanSidebarSubtitle(String name, int count);
 
   /// No description provided for @commsPlanOfflineHint.
@@ -11398,7 +11398,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsPlanEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels.'**
+  /// **'No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels/frequencies.'**
   String get commsPlanEmpty;
 
   /// No description provided for @commsPlanLoadFailed.
@@ -11422,7 +11422,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsPlanChannelsCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} channel(s)'**
+  /// **'{count} channel/frequency(ies)'**
   String commsPlanChannelsCount(int count);
 
   /// No description provided for @commsPlanMakeActive.
@@ -11488,8 +11488,14 @@ abstract class AppLocalizations {
   /// No description provided for @commsPlanTimezoneHint.
   ///
   /// In en, this message translates to:
-  /// **'IANA name for net times (e.g. America/New_York)'**
+  /// **'Search timezones'**
   String get commsPlanTimezoneHint;
+
+  /// No description provided for @commsPlanTimezoneHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Used for net start times on this board'**
+  String get commsPlanTimezoneHelper;
 
   /// No description provided for @commsPlanActiveLabel.
   ///
@@ -11512,19 +11518,19 @@ abstract class AppLocalizations {
   /// No description provided for @commsPlanChannelsHeading.
   ///
   /// In en, this message translates to:
-  /// **'Channels'**
+  /// **'Channels/frequencies'**
   String get commsPlanChannelsHeading;
 
   /// No description provided for @commsPlanChannelsEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No channels yet.'**
+  /// **'No channels/frequencies yet.'**
   String get commsPlanChannelsEmpty;
 
   /// No description provided for @commsPlanAddChannel.
   ///
   /// In en, this message translates to:
-  /// **'Add channel'**
+  /// **'Add channel/frequency'**
   String get commsPlanAddChannel;
 
   /// No description provided for @commsPlanSaveFailed.
@@ -11536,25 +11542,25 @@ abstract class AppLocalizations {
   /// No description provided for @commsPlanChannelCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add channel'**
+  /// **'Add channel/frequency'**
   String get commsPlanChannelCreateTitle;
 
   /// No description provided for @commsPlanChannelEditTitle.
   ///
   /// In en, this message translates to:
-  /// **'Edit channel'**
+  /// **'Edit channel/frequency'**
   String get commsPlanChannelEditTitle;
 
   /// No description provided for @commsPlanChannelLabel.
   ///
   /// In en, this message translates to:
-  /// **'Channel label'**
+  /// **'Channel/frequency label'**
   String get commsPlanChannelLabel;
 
   /// No description provided for @commsPlanChannelLabelRequired.
   ///
   /// In en, this message translates to:
-  /// **'Enter a channel label.'**
+  /// **'Enter a channel/frequency label.'**
   String get commsPlanChannelLabelRequired;
 
   /// No description provided for @commsPlanChannelNetName.
@@ -11568,6 +11574,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Role'**
   String get commsPlanChannelRole;
+
+  /// No description provided for @commsPlanRadioServiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio service'**
+  String get commsPlanRadioServiceLabel;
+
+  /// No description provided for @commsPlanRadioServiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ham allows any frequency; GMRS, FRS, and CB use permitted channels only.'**
+  String get commsPlanRadioServiceHint;
+
+  /// No description provided for @commsPlanRadioServiceHam.
+  ///
+  /// In en, this message translates to:
+  /// **'Ham radio'**
+  String get commsPlanRadioServiceHam;
+
+  /// No description provided for @commsPlanRadioServiceGmrs.
+  ///
+  /// In en, this message translates to:
+  /// **'GMRS'**
+  String get commsPlanRadioServiceGmrs;
+
+  /// No description provided for @commsPlanRadioServiceFrs.
+  ///
+  /// In en, this message translates to:
+  /// **'FRS'**
+  String get commsPlanRadioServiceFrs;
+
+  /// No description provided for @commsPlanRadioServiceCb.
+  ///
+  /// In en, this message translates to:
+  /// **'CB'**
+  String get commsPlanRadioServiceCb;
+
+  /// No description provided for @commsPlanServiceChannelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Permitted channel'**
+  String get commsPlanServiceChannelLabel;
+
+  /// No description provided for @commsPlanServiceChannelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only FCC-permitted channels for this service'**
+  String get commsPlanServiceChannelHint;
+
+  /// No description provided for @commsPlanServiceChannelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a permitted channel.'**
+  String get commsPlanServiceChannelRequired;
 
   /// No description provided for @commsPlanChannelDays.
   ///

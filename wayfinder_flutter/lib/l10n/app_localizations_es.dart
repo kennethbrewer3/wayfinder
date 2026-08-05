@@ -6601,7 +6601,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String commsPlanSidebarSubtitle(String name, int count) {
-    return '$name · $count canal(es)';
+    return '$name · $count canal/frecuencia(s)';
   }
 
   @override
@@ -6616,7 +6616,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commsPlanEmpty =>
-      'Aún no hay planes de comunicaciones. Añada un tablero para horarios de redes, frecuencias y canales go/no-go.';
+      'Aún no hay planes de comunicaciones. Añada un tablero para horarios de redes, frecuencias y canales/frecuencias go/no-go.';
 
   @override
   String commsPlanLoadFailed(String error) {
@@ -6633,7 +6633,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String commsPlanChannelsCount(int count) {
-    return '$count canal(es)';
+    return '$count canal/frecuencia(s)';
   }
 
   @override
@@ -6671,8 +6671,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commsPlanTimezoneLabel => 'Zona horaria';
 
   @override
-  String get commsPlanTimezoneHint =>
-      'Nombre IANA para horarios (p. ej. America/New_York)';
+  String get commsPlanTimezoneHint => 'Buscar zonas horarias';
+
+  @override
+  String get commsPlanTimezoneHelper =>
+      'Se usa para las horas de inicio de red en este tablero';
 
   @override
   String get commsPlanActiveLabel => 'Tablero activo';
@@ -6685,13 +6688,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commsPlanNotesLabel => 'Notas del plan';
 
   @override
-  String get commsPlanChannelsHeading => 'Canales';
+  String get commsPlanChannelsHeading => 'Canales/frecuencias';
 
   @override
-  String get commsPlanChannelsEmpty => 'Aún no hay canales.';
+  String get commsPlanChannelsEmpty => 'Aún no hay canales/frecuencias.';
 
   @override
-  String get commsPlanAddChannel => 'Añadir canal';
+  String get commsPlanAddChannel => 'Añadir canal/frecuencia';
 
   @override
   String commsPlanSaveFailed(String error) {
@@ -6699,23 +6702,53 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get commsPlanChannelCreateTitle => 'Añadir canal';
+  String get commsPlanChannelCreateTitle => 'Añadir canal/frecuencia';
 
   @override
-  String get commsPlanChannelEditTitle => 'Editar canal';
+  String get commsPlanChannelEditTitle => 'Editar canal/frecuencia';
 
   @override
-  String get commsPlanChannelLabel => 'Etiqueta del canal';
+  String get commsPlanChannelLabel => 'Etiqueta del canal/frecuencia';
 
   @override
   String get commsPlanChannelLabelRequired =>
-      'Introduzca una etiqueta de canal.';
+      'Introduzca una etiqueta de canal/frecuencia.';
 
   @override
   String get commsPlanChannelNetName => 'Nombre de la red';
 
   @override
   String get commsPlanChannelRole => 'Rol';
+
+  @override
+  String get commsPlanRadioServiceLabel => 'Servicio de radio';
+
+  @override
+  String get commsPlanRadioServiceHint =>
+      'Ham permite cualquier frecuencia; GMRS, FRS y CB solo canales permitidos.';
+
+  @override
+  String get commsPlanRadioServiceHam => 'Radioafición (ham)';
+
+  @override
+  String get commsPlanRadioServiceGmrs => 'GMRS';
+
+  @override
+  String get commsPlanRadioServiceFrs => 'FRS';
+
+  @override
+  String get commsPlanRadioServiceCb => 'CB';
+
+  @override
+  String get commsPlanServiceChannelLabel => 'Canal permitido';
+
+  @override
+  String get commsPlanServiceChannelHint =>
+      'Solo canales permitidos por la FCC para este servicio';
+
+  @override
+  String get commsPlanServiceChannelRequired =>
+      'Seleccione un canal permitido.';
 
   @override
   String get commsPlanChannelDays => 'Días de red';

@@ -3864,7 +3864,7 @@
   "commsPlanSidebarLoading": "Loading…",
   "commsPlanSidebarEmpty": "No active plan",
   "commsPlanSidebarLoadFailed": "Could not load plans",
-  "commsPlanSidebarSubtitle": "{name} · {count} channel(s)",
+  "commsPlanSidebarSubtitle": "{name} · {count} channel/frequency(ies)",
   "@commsPlanSidebarSubtitle": {
     "placeholders": {
       "name": { "type": "String" },
@@ -3874,7 +3874,7 @@
   "commsPlanOfflineHint": "Comms plans are not available offline yet.",
   "commsPlanAddPlan": "Add plan",
   "commsPlanEditPlan": "Edit board",
-  "commsPlanEmpty": "No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels.",
+  "commsPlanEmpty": "No comms plans yet. Add a board for net schedules, frequencies, and go/no-go channels/frequencies.",
   "commsPlanLoadFailed": "Could not load comms plans: {error}",
   "@commsPlanLoadFailed": {
     "placeholders": {
@@ -3889,7 +3889,7 @@
     }
   },
   "commsPlanOtherPlans": "Other plans",
-  "commsPlanChannelsCount": "{count} channel(s)",
+  "commsPlanChannelsCount": "{count} channel/frequency(ies)",
   "@commsPlanChannelsCount": {
     "placeholders": {
       "count": { "type": "int" }
@@ -3915,25 +3915,35 @@
   "commsPlanNameLabel": "Plan name",
   "commsPlanNameRequired": "Enter a plan name.",
   "commsPlanTimezoneLabel": "Timezone",
-  "commsPlanTimezoneHint": "IANA name for net times (e.g. America/New_York)",
+  "commsPlanTimezoneHint": "Search timezones",
+  "commsPlanTimezoneHelper": "Used for net start times on this board",
   "commsPlanActiveLabel": "Active board",
   "commsPlanActiveHint": "Show this plan as the operational TOC board",
   "commsPlanNotesLabel": "Plan notes",
-  "commsPlanChannelsHeading": "Channels",
-  "commsPlanChannelsEmpty": "No channels yet.",
-  "commsPlanAddChannel": "Add channel",
+  "commsPlanChannelsHeading": "Channels/frequencies",
+  "commsPlanChannelsEmpty": "No channels/frequencies yet.",
+  "commsPlanAddChannel": "Add channel/frequency",
   "commsPlanSaveFailed": "Could not save plan: {error}",
   "@commsPlanSaveFailed": {
     "placeholders": {
       "error": { "type": "String" }
     }
   },
-  "commsPlanChannelCreateTitle": "Add channel",
-  "commsPlanChannelEditTitle": "Edit channel",
-  "commsPlanChannelLabel": "Channel label",
-  "commsPlanChannelLabelRequired": "Enter a channel label.",
+  "commsPlanChannelCreateTitle": "Add channel/frequency",
+  "commsPlanChannelEditTitle": "Edit channel/frequency",
+  "commsPlanChannelLabel": "Channel/frequency label",
+  "commsPlanChannelLabelRequired": "Enter a channel/frequency label.",
   "commsPlanChannelNetName": "Net name",
   "commsPlanChannelRole": "Role",
+  "commsPlanRadioServiceLabel": "Radio service",
+  "commsPlanRadioServiceHint": "Ham allows any frequency; GMRS, FRS, and CB use permitted channels only.",
+  "commsPlanRadioServiceHam": "Ham radio",
+  "commsPlanRadioServiceGmrs": "GMRS",
+  "commsPlanRadioServiceFrs": "FRS",
+  "commsPlanRadioServiceCb": "CB",
+  "commsPlanServiceChannelLabel": "Permitted channel",
+  "commsPlanServiceChannelHint": "Only FCC-permitted channels for this service",
+  "commsPlanServiceChannelRequired": "Select a permitted channel.",
   "commsPlanChannelDays": "Net days",
   "commsPlanChannelDaysHint": "Leave all unselected for every day (when a start time is set).",
   "commsPlanChannelStartTime": "Start (local)",

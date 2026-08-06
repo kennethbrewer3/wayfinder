@@ -383,7 +383,9 @@ class _CommsPlanEditorDialogState
                     title: Text(card.label),
                     subtitle: Text(
                       l10n.commsCardOfTheDayDateValue(
-                        DateFormat.yMMMd().format(card.date.toLocal()),
+                        DateFormat.yMMMd().format(
+                          cardOfTheDayDisplayDate(card.date),
+                        ),
                       ),
                     ),
                     trailing: Row(

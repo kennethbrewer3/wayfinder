@@ -64,7 +64,9 @@ class _CommsCardOfTheDayPreviewDialogState
               ),
               Text(
                 l10n.commsCardOfTheDayDateValue(
-                  DateFormat.yMMMMEEEEd().format(card.date.toLocal()),
+                  DateFormat.yMMMMEEEEd().format(
+                    cardOfTheDayDisplayDate(card.date),
+                  ),
                 ),
                 style: Theme.of(context).textTheme.bodySmall,
               ),

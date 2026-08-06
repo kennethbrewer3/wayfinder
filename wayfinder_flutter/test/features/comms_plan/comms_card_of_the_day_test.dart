@@ -61,5 +61,21 @@ void main() {
         'Card of the day 2',
       );
     });
+
+    test('dateOnly keeps local calendar day and display does not shift', () {
+      final localEvening = DateTime(2026, 8, 5, 20, 30);
+      final stored = dateOnly(localEvening);
+      expect(stored, DateTime.utc(2026, 8, 5));
+      expect(cardOfTheDayDisplayDate(stored), DateTime(2026, 8, 5));
+      expect(dateOnlyIso(stored), '2026-08-05');
+
+      // Stored civil UTC midnight must not move when formatted for display.
+      final fromIso = parseDateOnly('2026-08-05')!;
+      expect(
+        cardOfTheDayDisplayDate(fromIso).day,
+        5,
+      );
+      expect(dateOnlyIso(fromIso), '2026-08-05');
+    });
   });
 }

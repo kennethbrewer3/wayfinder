@@ -2,11 +2,11 @@
 
 ### Status
 
-Draft — design only. **Not ready for implementation.**
+**Phase B in progress** — Freezed models, binary codec, chunking, loopback transport, and in-memory apply (LWW/dedupe) live under `wayfinder_flutter/lib/features/radio_sync/`. Not yet wired to Serverpod entities, outbox, or real radios.
 
 ### Version
 
-0.4
+0.5
 
 ### Related domains
 
@@ -367,7 +367,7 @@ The retreat gateway is the natural bridge: `mesh ↔ Wayfinder server ↔ ham di
 | Providers / dialogs mutating markers, zones, watch log, evac kits | Later: emit Freezed domain events into a sync controller when radio mode is enabled |
 
 **Current home (Flutter-first):**  
-`wayfinder_flutter/lib/features/radio_sync/` — Freezed domain events are present; binary codec and transports are not implemented yet. A shared Dart package can be extracted later if the server gateway needs the same models.
+`wayfinder_flutter/lib/features/radio_sync/` — Freezed domain events, binary codec, chunking, loopback transport, in-memory apply, and `RadioSyncSession`. A shared Dart package can be extracted later if the server gateway needs the same models.
 
 ---
 
@@ -395,7 +395,7 @@ The retreat gateway is the natural bridge: `mesh ↔ Wayfinder server ↔ ham di
 | Phase | Work |
 |-------|------|
 | **A** | Design lock (this document) |
-| **B** | Freezed event models (started in `wayfinder_flutter/lib/features/radio_sync/`) + binary codec + in-process loopback; unit tests for CRC, dedupe, LWW, evac route merge |
+| **B** | Freezed event models + binary codec + chunking + in-process loopback + in-memory apply (LWW/dedupe); unit tests under `wayfinder_flutter/test/features/radio_sync/` — **done for codec/loopback; Serverpod mapping deferred to C** |
 | **C** | Outbox stores binary events (and/or Freezed snapshots); flush to server when HTTP available |
 | **D** | Mesh adapter; bidirectional marker + log + evac meta/route |
 | **E** | Ham digimode adapter (chunking-heavy) |
@@ -414,18 +414,22 @@ No implementation work is implied by accepting this draft.
 - Freezed union: single sealed `RadioDomainEvent` family (see `radio_domain_event.dart`)
 - **Project-wide Freezed policy is selective** (unions + large DTOs), not “all data classes” — Serverpod remains the source for API entities
 
+**Decided for Phase B / v1 air format**
+
+1. Icon representation: fixed `uint8` dictionary (`iconId`)
+2. `revisedAt`: **seconds** (uint32)
+3. Radio deletes: **soft-only** (tombstone events; no hard purge over air)
+4. GMRS: **out of v1** adapters (voice-first / constrained; see §11)
+5. Mesh adapter priority: **Meshtastic first**, then MeshCore / ham digimode
+
 **Still open**
 
-1. Icon representation: fixed `uint8` dictionary vs short ASCII icon key  
-2. `ZoneUpsertLight` v1 scope: circle-only first vs polygon/line ≤16 points  
-3. `revisedAt` seconds vs milliseconds (seconds save space; ms reduce ties)  
-4. Evac air caps: confirm 24 waypoints / 4 routes  
-5. Route id encoding: always 16-byte UUID (current string ids are UUID strings)  
-6. Whether radio deletes are soft-only (recommended: yes)  
-7. GMRS: explicitly in or out of supported adapters for v1
+1. `ZoneUpsertLight` v1 scope: circle-only first vs polygon/line ≤16 points  
+2. Evac air caps: confirm 24 waypoints / 4 routes  
+3. Route id encoding: always 16-byte UUID (current string ids are UUID strings)
 
 ---
 
 ## 14. Summary
 
-Design Wayfinder radio sync around **versioned binary domain events** modeled in Dart with **Freezed**, encoded on the wire with a stable binary frame and CRC. Slim payloads cover markers, watch-log entries, light zones, and **first-class evacuation kit meta/route updates**, with a **transport port** so mesh and ham (and later other audio paths) are adapters. Keep field packs and rich nested marker blobs off the air. Implement only after this proposal is reviewed and the open decisions in §13 are closed.
+Design Wayfinder radio sync around **versioned binary domain events** modeled in Dart with **Freezed**, encoded on the wire with a stable binary frame and CRC. Slim payloads cover markers, watch-log entries, light zones, and **first-class evacuation kit meta/route updates**, with a **transport port** so mesh and ham (and later other audio paths) are adapters. Keep field packs and rich nested marker blobs off the air. Phase B codec/loopback is implementable against this document; map onto Serverpod and real radios in later phases.

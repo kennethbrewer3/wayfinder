@@ -24,7 +24,9 @@ List<pw.Widget> buildCommsCardOfTheDayPdfWidgets({
   required String digitKeyMissing,
   pw.Font? monoFont,
 }) {
-  final dateText = DateFormat.yMMMMEEEEd().format(card.date.toLocal());
+  final dateText = DateFormat.yMMMMEEEEd().format(
+    cardOfTheDayDisplayDate(card.date),
+  );
   final mono = pw.TextStyle(
     font: monoFont,
     fontSize: 12,

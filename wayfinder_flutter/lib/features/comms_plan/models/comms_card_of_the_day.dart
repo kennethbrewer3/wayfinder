@@ -144,7 +144,7 @@ class CommsCardOfTheDay {
       generatedAt: generatedRaw == null
           ? DateTime.now().toUtc()
           : DateTime.parse(generatedRaw).toUtc(),
-      date: parseDateOnly(json['date']) ?? dateOnly(DateTime.now().toUtc()),
+      date: parseDateOnly(json['date']) ?? dateOnly(DateTime.now()),
       digitKey: normalizeDigitKeyLetters(digitRaw),
       places: _entriesFromJson(json['places']),
       people: _entriesFromJson(json['people']),
@@ -183,10 +183,20 @@ bool isValidDigitKey(String raw) {
       letters.split('').toSet().length == CommsCardOfTheDay.digitKeyLength;
 }
 
-/// Calendar date at UTC midnight.
+/// Civil calendar date for card-of-the-day (not an instant).
+///
+/// Takes year/month/day from [value] as already interpreted by that DateTime
+/// (local components for local values such as [DateTime.now] / date pickers;
+/// UTC components for our stored `DateTime.utc(y, m, d)` form). Never call
+/// `.toLocal()` on the result for display — use [cardOfTheDayDisplayDate].
 DateTime dateOnly(DateTime value) {
-  final utc = value.toUtc();
-  return DateTime.utc(utc.year, utc.month, utc.day);
+  return DateTime.utc(value.year, value.month, value.day);
+}
+
+/// Local [DateTime] with the same Y-M-D as a stored card date (for pickers /
+/// DateFormat without shifting the calendar day).
+DateTime cardOfTheDayDisplayDate(DateTime stored) {
+  return DateTime(stored.year, stored.month, stored.day);
 }
 
 String dateOnlyIso(DateTime value) {
@@ -267,7 +277,7 @@ CommsCardOfTheDay createCommsCardOfTheDay({
         : label.trim(),
     version: CommsCardOfTheDay.currentVersion,
     generatedAt: (generatedAt ?? DateTime.now()).toUtc(),
-    date: dateOnly(date ?? DateTime.now().toUtc()),
+    date: dateOnly(date ?? DateTime.now()),
     digitKey: normalizeDigitKeyLetters(digitKey),
     places: const [],
     people: const [],

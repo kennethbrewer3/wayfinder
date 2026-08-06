@@ -104,12 +104,16 @@ class _CommsCardOfTheDayEditorDialogState
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(l10n.commsCardOfTheDayDateLabel),
-                subtitle: Text(DateFormat.yMMMMEEEEd().format(_date.toLocal())),
+                subtitle: Text(
+                  DateFormat.yMMMMEEEEd().format(
+                    cardOfTheDayDisplayDate(_date),
+                  ),
+                ),
                 trailing: const Icon(Icons.calendar_today),
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: context,
-                    initialDate: _date.toLocal(),
+                    initialDate: cardOfTheDayDisplayDate(_date),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
                   );

@@ -719,7 +719,7 @@ class _CardOfTheDaySidebarRow extends ConsumerWidget {
             leading: const Icon(Icons.today, size: 18),
             title: Text(card.label),
             subtitle: Text(
-              DateFormat.yMMMd().format(card.date.toLocal()),
+              DateFormat.yMMMd().format(cardOfTheDayDisplayDate(card.date)),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

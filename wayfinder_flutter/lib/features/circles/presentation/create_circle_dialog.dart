@@ -10,6 +10,7 @@ import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/measurement_units_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../markers/models/marker_color.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../models/circle_size_display.dart';
 import '../models/circle_geometry.dart';
 import '../models/range_ring.dart';
@@ -58,21 +59,21 @@ Future<bool> createCircleAtCenter({
     rangeRing: rangeRing,
   );
 
-  await client.mapZone.createZone(
-    MapZone(
-      name: formData.name,
-      type: circleZoneType,
-      color: formatMarkerColorHex(formData.centerMarkerColor),
-      borderColor: formatMarkerColorHex(formData.borderColor),
-      borderPattern: 'solid',
-      fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
-      visible: true,
-      geometryJson: geometry.encode(),
-      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
-      createdAt: now,
-      updatedAt: now,
-    ),
+  final zone = MapZone(
+    name: formData.name,
+    type: circleZoneType,
+    color: formatMarkerColorHex(formData.centerMarkerColor),
+    borderColor: formatMarkerColorHex(formData.borderColor),
+    borderPattern: 'solid',
+    fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
+    visible: true,
+    geometryJson: geometry.encode(),
+    layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
+    createdAt: now,
+    updatedAt: now,
   );
+  await client.mapZone.createZone(zone);
+  await ref.read(radioSyncControllerProvider).emitLightZone(zone);
   ref.read(zonesProvider.notifier).reload();
   AppLogger.logZones.success('⭕ Circle created');
   return true;
@@ -121,17 +122,17 @@ Future<bool> updateCircleFromForm({
     rangeRing: geometry.rangeRing,
   );
 
-  await client.mapZone.updateZone(
-    zone.copyWith(
-      name: formData.name,
-      color: formatMarkerColorHex(formData.centerMarkerColor),
-      borderColor: formatMarkerColorHex(formData.borderColor),
-      fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
-      geometryJson: updatedGeometry.encode(),
-      layerId: formData.layerId,
-      updatedAt: DateTime.now().toUtc(),
-    ),
+  final updatedZone = zone.copyWith(
+    name: formData.name,
+    color: formatMarkerColorHex(formData.centerMarkerColor),
+    borderColor: formatMarkerColorHex(formData.borderColor),
+    fillColor: formatMarkerColorHexWithAlpha(formData.fillColor),
+    geometryJson: updatedGeometry.encode(),
+    layerId: formData.layerId,
+    updatedAt: DateTime.now().toUtc(),
   );
+  await client.mapZone.updateZone(updatedZone);
+  await ref.read(radioSyncControllerProvider).emitLightZone(updatedZone);
   ref.read(zonesProvider.notifier).reload();
   return true;
 }

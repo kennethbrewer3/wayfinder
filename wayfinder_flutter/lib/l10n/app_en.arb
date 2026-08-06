@@ -67,7 +67,7 @@
   "mapObjectTrashPurgeAllConfirmTitle": "Delete all permanently?",
   "mapObjectTrashPurgeAllConfirmBody": "Everything in trash will be removed forever, including attachments.",
   "mapObjectTrashPermissionDenied": "You do not have permission to restore or permanently delete items from trash.",
-  "accessSignInSubtitle": "Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.",
+  "accessSignInSubtitle": "Sign in with the username your TOC administrator created for you. No email is sent - this app is designed for offline use.",
   "accessSignInRequired": "Sign in to manage users and roles.",
   "accessSignInAction": "Sign in",
   "accessSessionLoadFailed": "Could not load access session: {error}",
@@ -135,7 +135,7 @@
   "accessSignedIn": "Signed in",
   "accessUnknownRole": "No role",
   "accessUsersTitle": "Users",
-  "accessUsersHelp": "Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.",
+  "accessUsersHelp": "Create TOC accounts and assign roles. Usernames are local login IDs - Wayfinder does not send email.",
   "accessUsersPermissionDenied": "You do not have permission to manage users or roles.",
   "manageLayersPermissionDenied": "You do not have permission to manage map layers or seasonal overlays.",
   "accessUsersEmpty": "No users yet. Create an administrator or set WAYFINDER_BOOTSTRAP_ADMIN_EMAIL / PASSWORD (username + password).",
@@ -245,7 +245,7 @@
   "settingsAboutConnectionSection": "Connection",
   "settingsAboutDeploymentSection": "Deployment",
   "settingsAboutDockerImageId": "Docker image ID",
-  "settingsAboutDockerImageIdUnavailable": "Not available — recreate the container after pulling so the image ID is recorded at startup.",
+  "settingsAboutDockerImageIdUnavailable": "Not available - recreate the container after pulling so the image ID is recorded at startup.",
   "settingsAboutDockerImageRef": "Docker image reference",
   "settingsAboutContainerStarted": "Container started",
   "settingsAboutDockerImageIdHint": "The Docker image ID changes whenever you pull a new build. It should start with {imageIdPrefix} and match the IMAGE ID column from docker compose images or docker image inspect.",
@@ -358,7 +358,7 @@
       }
     }
   },
-  "settingsThemesLoadFailedServerError": "The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: {apiUrl}\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work — update/redeploy the API and apply migrations, then retry.",
+  "settingsThemesLoadFailedServerError": "The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: {apiUrl}\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work - update/redeploy the API and apply migrations, then retry.",
   "@settingsThemesLoadFailedServerError": {
     "placeholders": {
       "apiUrl": {
@@ -542,7 +542,7 @@
   "settingsMapEditingTitle": "Map editing",
   "settingsMapEditingDescription": "Snapping while editing polygon and seasonal overlay vertices. Soft snaps unlock if you keep dragging past the magnet.",
   "settingsPolygonSnapRightAnglesTitle": "Snap to right angles (90°)",
-  "settingsPolygonSnapRightAnglesDescription": "While dragging a vertex, soft-snap to square corners — including making adjacent corners 90° for cleaner rectangles.",
+  "settingsPolygonSnapRightAnglesDescription": "While dragging a vertex, soft-snap to square corners - including making adjacent corners 90° for cleaner rectangles.",
   "settingsPolygonSnap45AnglesTitle": "Snap to 45° angles",
   "settingsPolygonSnap45AnglesDescription": "Also soft-snap the dragged corner toward 45° and 135° angles.",
   "settingsMapDisplayTitle": "Map display",
@@ -550,9 +550,9 @@
   "settingsMapCompassRoseTitle": "Show compass rose",
   "settingsMapCompassRoseDescription": "Displays a compass in the bottom-left of the map (above the GPS status bar when shown). Double-tap resets rotation; long-press toggles true/magnetic north; ±5° buttons rotate the map. Variation uses WMM2025.",
   "settingsMapMgrsGridTitle": "Show MGRS grid",
-  "settingsMapMgrsGridDescription": "Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.",
+  "settingsMapMgrsGridDescription": "Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected - MGRS squares are not lat/lng rectangles.",
   "settingsDarkMapTilesTitle": "Darken map tiles in dark mode",
-  "settingsDarkMapTilesDescription": "When the app is in dark mode, apply a color filter to basemap tiles so they look darker. This is a simulated dark style on the existing tiles — not a separate dark cartography design. Turn off to keep map tiles looking as usual while the rest of the UI stays dark. Printable atlas PDFs always use normal tiles for paper readability.",
+  "settingsDarkMapTilesDescription": "When the app is in dark mode, apply a color filter to basemap tiles so they look darker. This is a simulated dark style on the existing tiles - not a separate dark cartography design. Turn off to keep map tiles looking as usual while the rest of the UI stays dark. Printable atlas PDFs always use normal tiles for paper readability.",
   "settingsMapZoomRangeTitle": "Map zoom range",
   "settingsMapZoomRangeDescription": "Shared minimum and maximum zoom for all clients. Stored on the server. Raising the maximum can hurt performance if offline tiles do not cover those levels.",
   "settingsMapZoomRangePermissionDenied": "You do not have permission to change the shared map zoom range.",
@@ -602,6 +602,27 @@
   "settingsForceOfflinePackTitle": "Use offline pack while online",
   "settingsForceOfflinePackDescription": "Use the prepared offline / field pack even when the Wayfinder server is reachable. Lets you test pack behavior without cutting internet for other apps.",
   "settingsForceOfflinePackUnavailable": "Prepare an offline pack from the map toolbar first.",
+  "settingsRadioSyncTitle": "Radio sync outbox",
+  "settingsRadioSyncDescription": "When enabled, marker, watch-log, zone, and evac-kit changes are also queued as radio-sync events and flushed to the server when it is reachable. Pair with Live radio link for mesh/ham.",
+  "settingsRadioSyncPending": "{count} radio events pending flush",
+  "@settingsRadioSyncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRadioMeshLinkTitle": "Live radio link",
+  "settingsRadioMeshLinkDescription": "Live transport for radio-sync frames. Simulated modes use in-app hubs (desk/CI). Meshtastic uses PRIVATE_APP; MeshCore uses companion channel datagrams (BLE/USB bridge required). Ham digimode uses a small-MTU adapter with optional WF1 text framing (modem bridge required).",
+  "settingsRadioMeshLinkOff": "Off (outbox / HTTP only)",
+  "settingsRadioMeshLinkSimulated": "Simulated mesh",
+  "settingsRadioMeshLinkMeshtastic": "Meshtastic",
+  "settingsRadioMeshLinkMeshCore": "MeshCore",
+  "settingsRadioMeshLinkSimulatedHam": "Simulated ham (small MTU)",
+  "settingsRadioMeshLinkHam": "Ham digimode",
+  "settingsRadioMeshLinkActive": "Live radio session active",
+  "settingsRadioMeshLinkInactive": "Live radio session idle",
+  "settingsRadioMeshLinkWebUnavailable": "Mesh radio BLE is not available in the web client.",
   "settingsSimulatedGpsWalkDelayTitle": "Simulated GPS walk delay",
   "settingsSimulatedGpsWalkDelayDescription": "Seconds between fake GPS steps when simulating a walk along a followed route. Applies the next time you start simulation.",
   "settingsSimulatedGpsWalkDelayValue": "{seconds} s",
@@ -616,7 +637,7 @@
   "settingsSimulatedGpsWalkDelayMaxLabel": "Slower",
   "mapDebugOverlayCopyTooltip": "Copy debug info",
   "mapDebugOverlayCopied": "Debug info copied to clipboard.",
-  "mapDebugOverlayCopyFailedTitle": "Copy blocked — select and copy manually",
+  "mapDebugOverlayCopyFailedTitle": "Copy blocked - select and copy manually",
   "settingsHomeLocationSaved": "Home location saved.",
   "settingsHomeLocationReset": "Home location reset to default.",
   "settingsOpenMapFirst": "Open the map first to capture its view.",
@@ -691,7 +712,7 @@
   "circleSizeToggleDiameter": "Showing diameter on map · tap for none",
   "circleSizeToggleNone": "Size hidden on map · tap for radius",
   "watchLogTitle": "Incident / watch log",
-  "watchLogSubtitle": "Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.",
+  "watchLogSubtitle": "Timestamped events for after-action review. Planning notes only - not a live CAD or radio net.",
   "watchLogPermissionDenied": "You do not have permission to view the incident / watch log.",
   "watchLogAddPermissionDenied": "You do not have permission to add or edit incident / watch log entries.",
   "watchLogObjectHint": "Entries linked to this map object.",
@@ -844,7 +865,7 @@
   "kioskModeDescription": "Turn this laptop into a TOC viewer: hide Settings and create tools, block edits, and use a quieter battery-friendly poll. Use this on spare viewer laptops pointed at your Wayfinder server. For a spare server appliance that must reject all writes, set WAYFINDER_READ_ONLY=1 on the server.",
   "kioskModeEnter": "Enter kiosk mode",
   "kioskModeExit": "Exit kiosk",
-  "kioskModeEntered": "Kiosk mode on — this device is view-only.",
+  "kioskModeEntered": "Kiosk mode on - this device is view-only.",
   "kioskModeEnterConfirmTitle": "Enter kiosk mode?",
   "kioskModeEnterConfirmMessage": "Settings and map editing will be hidden on this device until you exit kiosk mode. Other devices are not affected.",
   "kioskModeBannerTitle": "Viewer mode",
@@ -950,7 +971,7 @@
     }
   },
   "geoExchangeExportSuccess": "Geographic export saved.",
-  "geoExchangeExportEmpty": "Nothing to export — add markers or lines first.",
+  "geoExchangeExportEmpty": "Nothing to export - add markers or lines first.",
   "geoExchangeExportFailed": "Export failed: {error}",
   "@geoExchangeExportFailed": {
     "placeholders": {
@@ -1024,7 +1045,7 @@
     }
   },
   "mapTilesMapsTitle": "PMTiles Maps",
-  "mapTilesMapsDescription": "Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.",
+  "mapTilesMapsDescription": "Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles - enable them here, but they are not drawn as the basemap.",
   "mapTilesPermissionDenied": "You do not have permission to add, update, or organize map tiles.",
   "mapTilesDemBadge": "Elevation DEM",
   "mapTilesUploadButton": "Upload .pmtiles file",
@@ -1034,7 +1055,7 @@
   "offlinePackPrepareAction": "Update offline pack",
   "offlinePackPrepareNewAction": "Create offline pack",
   "offlinePackPrepareTooltip": "Prepare for offline",
-  "offlinePackPrepareTooltipReady": "Offline packs ready — tap to manage",
+  "offlinePackPrepareTooltipReady": "Offline packs ready - tap to manage",
   "offlinePackNameLabel": "Pack name",
   "offlinePackNameHint": "Home, bug-out, hunting lease…",
   "offlinePackDefaultName": "Offline pack",
@@ -1078,7 +1099,7 @@
   },
   "offlinePackSwitchTooltip": "Switch offline pack",
   "offlinePackSwitchTitle": "Switch offline pack",
-  "offlinePackSwitchDescription": "Choose which AOI pack to use. Tiles stay cached — no rebuild needed.",
+  "offlinePackSwitchDescription": "Choose which AOI pack to use. Tiles stay cached - no rebuild needed.",
   "offlinePackLayersLabel": "Layers to include",
   "offlinePackIncludeSeasonalOverlays": "Include seasonal overlays",
   "offlinePackIncludeSeasonalOverlaysHint": "Pack all seasonal overlays for read-only viewing offline (separate from map layers).",
@@ -1092,7 +1113,7 @@
   "offlinePackRouteOriginLabel": "Route origin",
   "offlinePackRouteOriginGps": "Current GPS position",
   "offlinePackRouteOriginMapCenter": "Current map center",
-  "offlinePackRouteOriginGpsUnavailable": "No GPS fix yet — enable location or choose map center.",
+  "offlinePackRouteOriginGpsUnavailable": "No GPS fix yet - enable location or choose map center.",
   "offlinePackRoutingNotReady": "Turn on a ready routing server (Settings → Routing) before packing OSM routes.",
   "offlinePackDetailsRoutes": "{routeCount} packed OSM route(s)",
   "@offlinePackDetailsRoutes": {
@@ -1143,7 +1164,7 @@
       "count": { "type": "int" }
     }
   },
-  "offlineModeBannerTitle": "Offline — {packName}",
+  "offlineModeBannerTitle": "Offline - {packName}",
   "@offlineModeBannerTitle": {
     "placeholders": {
       "packName": { "type": "String" }
@@ -1161,9 +1182,9 @@
     }
   },
   "mapTilesGetMapsTitle": "Get maps",
-  "mapTilesGetMapsDescription": "Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage — keep this dialog open until the import finishes.",
-  "mapTilesGetMapsBasemapDescription": "US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import — the server downloads it into Map tiles storage.",
-  "mapTilesGetMapsDemDescription": "US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server — keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.",
+  "mapTilesGetMapsDescription": "Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage - keep this dialog open until the import finishes.",
+  "mapTilesGetMapsBasemapDescription": "US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import - the server downloads it into Map tiles storage.",
+  "mapTilesGetMapsDemDescription": "US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server - keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.",
   "mapTilesGetMapsSearchHint": "Search states…",
   "mapTilesGetMapsImportAction": "Import",
   "mapTilesGetMapsExtractAction": "Extract",
@@ -1306,7 +1327,7 @@
       }
     }
   },
-  "elevationProfileFlatHint": "Little elevation change along this path — the chart may look nearly flat.",
+  "elevationProfileFlatHint": "Little elevation change along this path - the chart may look nearly flat.",
   "elevationProfileCombinedLegs": "Combined from {count} legs (check order; each leg may reverse to connect).",
   "@elevationProfileCombinedLegs": {
     "placeholders": {
@@ -1461,7 +1482,7 @@
   "mapTilesShowAllOnMap": "Show all on map",
   "mapTilesHideAllFromMap": "Hide all from map",
   "markerIconsTitle": "Marker icons",
-  "markerIconsDescription": "Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.",
+  "markerIconsDescription": "Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads - configure a key in Settings → About.",
   "markerIconsPermissionDenied": "You do not have permission to manage marker icon categories or custom marker icons.",
   "markerIconsAddButton": "Add custom icon",
   "markerIconsServerCatalogTitle": "Server catalog",
@@ -1601,7 +1622,7 @@
   "markerIconsEditTitle": "Edit marker icon",
   "markerIconsCategoryLabel": "Category",
   "markerIconBackgroundColorTitle": "Icon background",
-  "markerIconBackgroundColorDescription": "Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.",
+  "markerIconBackgroundColorDescription": "Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background - adjust it for better contrast with your map tiles.",
   "markerIconBackgroundColorLabel": "Background color",
   "markerIconCategoryGeneral": "General",
   "markerIconCategoryPlaces": "Places & buildings",
@@ -1709,7 +1730,7 @@
   "markerCoordinatesHelp": "Edit latitude and longitude to move the marker on the map.",
   "markerRadioTitle": "Radio net / contact card",
   "markerRadioEmptyHelp": "Optional callsign, frequency, and mode for ham shack / repeater planning (not live radio).",
-  "markerRadioStructuredHint": "Structured contact data only — Wayfinder does not transmit or tune radios.",
+  "markerRadioStructuredHint": "Structured contact data only - Wayfinder does not transmit or tune radios.",
   "markerRadioSummary": "{callsign}",
   "@markerRadioSummary": {
     "placeholders": {
@@ -1740,7 +1761,7 @@
   "markerRadioToneLabel": "Tone / CTCSS",
   "markerRadioOffsetLabel": "Offset",
   "markerRadioNotesLabel": "Radio notes",
-  "markerRadioNotesHint": "Net time, coverage, PL tip — short planning notes",
+  "markerRadioNotesHint": "Net time, coverage, PL tip - short planning notes",
   "markerRadioClear": "Clear contact card",
   "sidebarFilterRadioContacts": "Radio contacts",
   "sidebarFilterResourceSpring": "Springs",
@@ -1749,7 +1770,7 @@
   "sidebarFilterResourceFuel": "Fuel",
   "sidebarFilterResourceClinic": "Clinics",
   "markerInventoryTitle": "Cache inventory",
-  "markerInventoryEmptyHelp": "Track supplies at this marker — quantity, unit, expiry, and last audit.",
+  "markerInventoryEmptyHelp": "Track supplies at this marker - quantity, unit, expiry, and last audit.",
   "markerInventoryItemCount": "{count, plural, =1{1 item} other{{count} items}}",
   "@markerInventoryItemCount": {
     "placeholders": {
@@ -1830,7 +1851,7 @@
     }
   },
   "markerChecklistsTitle": "Checklists / SOPs",
-  "markerChecklistsEmptyHelp": "Location SOPs and audits — e.g. bug-out bag check at a retreat.",
+  "markerChecklistsEmptyHelp": "Location SOPs and audits - e.g. bug-out bag check at a retreat.",
   "markerChecklistsCount": "{count, plural, =1{1 checklist} other{{count} checklists}}",
   "@markerChecklistsCount": {
     "placeholders": {
@@ -2161,7 +2182,7 @@
   "sidebarHideZone": "Hide zone",
   "sidebarShowZone": "Show zone",
   "sidebarDeleteZone": "Delete zone",
-  "searchReadinessReadySnackBar": "Full search is ready — places and addresses.",
+  "searchReadinessReadySnackBar": "Full search is ready - places and addresses.",
   "searchReadinessCheckingTooltip": "Checking search readiness…",
   "searchReadinessUnavailableTooltip": "Search readiness unavailable",
   "searchReadinessFullReadyTooltip": "Full search ready",
@@ -2673,7 +2694,7 @@
   "mapRadialSeasonalOverlay": "Season",
   "mapRadialEvacKit": "Evac kit",
   "tidesTitle": "Tide tables",
-  "tidesSubtitle": "Nearest coastal station from packs on your Wayfinder server — for boat and water crossings.",
+  "tidesSubtitle": "Nearest coastal station from packs on your Wayfinder server - for boat and water crossings.",
   "tidesLocationLabel": "Location",
   "tidesAnchorMarker": "Marker",
   "tidesAnchorHome": "Home",
@@ -2952,9 +2973,9 @@
     }
   },
   "sunMoonMissingLocation": "Choose a location to compute.",
-  "sunMoonNotApplicable": "—",
-  "sunMoonPolarDay": "Polar day — the sun does not set on this date.",
-  "sunMoonPolarNight": "Polar night — the sun does not rise on this date.",
+  "sunMoonNotApplicable": "-",
+  "sunMoonPolarDay": "Polar day - the sun does not set on this date.",
+  "sunMoonPolarNight": "Polar night - the sun does not rise on this date.",
   "sunMoonSunSection": "Sun",
   "sunMoonSunrise": "Sunrise",
   "sunMoonSolarNoon": "Solar noon",
@@ -3002,7 +3023,7 @@
   "sunMoonMoonset": "Moonset",
   "rangeRingTitle": "Range ring",
   "coveragePlanTitle": "Coverage plan",
-  "coveragePlanSubtitle": "Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only — not live RF.",
+  "coveragePlanSubtitle": "Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only - not live RF.",
   "coveragePlanTemplateLabel": "Template",
   "coveragePlanTemplateMesh": "Mesh / LoRa",
   "coveragePlanTemplateRepeater": "VHF/UHF repeater",
@@ -3222,7 +3243,7 @@
       }
     }
   },
-  "slopeLegendHint": "Green = gentle / easier · Red = steep / costly. DEM slope only — pick Walk, Bike, or Drive.",
+  "slopeLegendHint": "Green = gentle / easier · Red = steep / costly. DEM slope only - pick Walk, Bike, or Drive.",
   "slopeLegendHintWalk": "Walk cost: green = easy footing · red = steep scramble. DEM slope only (no trails).",
   "slopeLegendHintBike": "Bike cost: green = easy spin · red = steep climb. DEM slope only (no roads/trails).",
   "slopeLegendHintDrive": "Drive cost: green = gentle grade · red = steep for vehicles. DEM slope only (no road network).",
@@ -3761,7 +3782,7 @@
   "routingStatusCancelled": "Cancelled",
   "routingImportTitle": "Import map data",
   "routingImportDescription": "Import OSM region(s) and build the offline routing graph. Prefer US state extracts; select multiple bordering states (e.g. Virginia + West Virginia) to merge them into one graph for cross-border routes.",
-  "routingMultiStateHint": "Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph — no need for the entire United States.",
+  "routingMultiStateHint": "Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph - no need for the entire United States.",
   "routingSelectedStatesLabel": "Selected states",
   "routingMultiStateMergeHint": "{count} states will be merged into one graph.",
   "@routingMultiStateMergeHint": {
@@ -3780,7 +3801,7 @@
     }
   },
   "routingRegionSearchHint": "Search for a state or region…",
-  "routingLocalOsmHint": "Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server's disk (MMAP) — there is no Postgres database.",
+  "routingLocalOsmHint": "Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server's disk (MMAP) - there is no Postgres database.",
   "routingOsmOnServerHint": "OSM extract on server: {size}",
   "@routingOsmOnServerHint": {
     "placeholders": {
@@ -3992,7 +4013,7 @@
     }
   },
   "commsChallengeTableReadyHint": "Sheets ready for atlas print and field-pack transfer. Burn after use.",
-  "commsChallengeTableInstructions": "Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net — do not reuse.",
+  "commsChallengeTableInstructions": "Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net - do not reuse.",
   "commsChallengeTableGeneratedAt": "Generated {when}",
   "@commsChallengeTableGeneratedAt": {
     "placeholders": {
@@ -4014,7 +4035,7 @@
       "count": { "type": "int" }
     }
   },
-  "commsOneTimePadInstructions": "Use groups left-to-right, top-to-bottom. Each five-letter group is key material — never reuse a group. Burn this pad after the traffic that consumed it.",
+  "commsOneTimePadInstructions": "Use groups left-to-right, top-to-bottom. Each five-letter group is key material - never reuse a group. Burn this pad after the traffic that consumed it.",
   "commsOneTimePadGeneratedAt": "Generated {when}",
   "@commsOneTimePadGeneratedAt": {
     "placeholders": {
@@ -4029,7 +4050,7 @@
   "commsCardOfTheDayTitle": "Cards of the day",
   "commsCardOfTheDayCreateTitle": "New card of the day",
   "commsCardOfTheDayEditTitle": "Edit card of the day",
-  "commsCardOfTheDayEditorHint": "Daily code-word card with a calendar date, category lists, and a 0–9 letter key. Burn after the day. Included in map backups and field packs with this plan.",
+  "commsCardOfTheDayEditorHint": "Daily code-word card with a calendar date, category lists, and a 0-9 letter key. Burn after the day. Included in map backups and field packs with this plan.",
   "commsCardOfTheDayAdd": "Add card",
   "commsCardOfTheDayEdit": "Edit",
   "commsCardOfTheDayBurn": "Burn",
@@ -4052,7 +4073,7 @@
   },
   "commsCardOfTheDayLabelLabel": "Label",
   "commsCardOfTheDayLabelRequired": "Enter a label for this card.",
-  "commsCardOfTheDayDigitKeyTitle": "Digit key (0–9)",
+  "commsCardOfTheDayDigitKeyTitle": "Digit key (0-9)",
   "commsCardOfTheDayDigitKeyHint": "Enter one 10-letter word, or shorter words totaling exactly 10 letters, with no repeated letters. Spaces are ignored.",
   "commsCardOfTheDayDigitKeyLabel": "Ten unique letters",
   "commsCardOfTheDayDigitKeyGenerate": "Generate",

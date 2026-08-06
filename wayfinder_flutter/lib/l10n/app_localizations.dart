@@ -319,7 +319,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessSignInSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.'**
+  /// **'Sign in with the username your TOC administrator created for you. No email is sent - this app is designed for offline use.'**
   String get accessSignInSubtitle;
 
   /// No description provided for @accessSignInRequired.
@@ -499,7 +499,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessUsersHelp.
   ///
   /// In en, this message translates to:
-  /// **'Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.'**
+  /// **'Create TOC accounts and assign roles. Usernames are local login IDs - Wayfinder does not send email.'**
   String get accessUsersHelp;
 
   /// No description provided for @accessUsersPermissionDenied.
@@ -781,7 +781,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAboutDockerImageIdUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'Not available — recreate the container after pulling so the image ID is recorded at startup.'**
+  /// **'Not available - recreate the container after pulling so the image ID is recorded at startup.'**
   String get settingsAboutDockerImageIdUnavailable;
 
   /// No description provided for @settingsAboutDockerImageRef.
@@ -1291,7 +1291,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsThemesLoadFailedServerError.
   ///
   /// In en, this message translates to:
-  /// **'The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: {apiUrl}\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work — update/redeploy the API and apply migrations, then retry.'**
+  /// **'The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: {apiUrl}\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work - update/redeploy the API and apply migrations, then retry.'**
   String settingsThemesLoadFailedServerError(String apiUrl);
 
   /// No description provided for @settingsThemesLoadFailedSignIn.
@@ -1705,7 +1705,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPolygonSnapRightAnglesDescription.
   ///
   /// In en, this message translates to:
-  /// **'While dragging a vertex, soft-snap to square corners — including making adjacent corners 90° for cleaner rectangles.'**
+  /// **'While dragging a vertex, soft-snap to square corners - including making adjacent corners 90° for cleaner rectangles.'**
   String get settingsPolygonSnapRightAnglesDescription;
 
   /// No description provided for @settingsPolygonSnap45AnglesTitle.
@@ -1753,7 +1753,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMapMgrsGridDescription.
   ///
   /// In en, this message translates to:
-  /// **'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected — MGRS squares are not lat/lng rectangles.'**
+  /// **'Overlays true MGRS (UTM-based) grid lines. Spacing follows zoom. Zone seams and slight curvature on the Web Mercator map are expected - MGRS squares are not lat/lng rectangles.'**
   String get settingsMapMgrsGridDescription;
 
   /// No description provided for @settingsDarkMapTilesTitle.
@@ -1765,7 +1765,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDarkMapTilesDescription.
   ///
   /// In en, this message translates to:
-  /// **'When the app is in dark mode, apply a color filter to basemap tiles so they look darker. This is a simulated dark style on the existing tiles — not a separate dark cartography design. Turn off to keep map tiles looking as usual while the rest of the UI stays dark. Printable atlas PDFs always use normal tiles for paper readability.'**
+  /// **'When the app is in dark mode, apply a color filter to basemap tiles so they look darker. This is a simulated dark style on the existing tiles - not a separate dark cartography design. Turn off to keep map tiles looking as usual while the rest of the UI stays dark. Printable atlas PDFs always use normal tiles for paper readability.'**
   String get settingsDarkMapTilesDescription;
 
   /// No description provided for @settingsMapZoomRangeTitle.
@@ -1918,6 +1918,90 @@ abstract class AppLocalizations {
   /// **'Prepare an offline pack from the map toolbar first.'**
   String get settingsForceOfflinePackUnavailable;
 
+  /// No description provided for @settingsRadioSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio sync outbox'**
+  String get settingsRadioSyncTitle;
+
+  /// No description provided for @settingsRadioSyncDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, marker, watch-log, zone, and evac-kit changes are also queued as radio-sync events and flushed to the server when it is reachable. Pair with Live radio link for mesh/ham.'**
+  String get settingsRadioSyncDescription;
+
+  /// No description provided for @settingsRadioSyncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} radio events pending flush'**
+  String settingsRadioSyncPending(int count);
+
+  /// No description provided for @settingsRadioMeshLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live radio link'**
+  String get settingsRadioMeshLinkTitle;
+
+  /// No description provided for @settingsRadioMeshLinkDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Live transport for radio-sync frames. Simulated modes use in-app hubs (desk/CI). Meshtastic uses PRIVATE_APP; MeshCore uses companion channel datagrams (BLE/USB bridge required). Ham digimode uses a small-MTU adapter with optional WF1 text framing (modem bridge required).'**
+  String get settingsRadioMeshLinkDescription;
+
+  /// No description provided for @settingsRadioMeshLinkOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off (outbox / HTTP only)'**
+  String get settingsRadioMeshLinkOff;
+
+  /// No description provided for @settingsRadioMeshLinkSimulated.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated mesh'**
+  String get settingsRadioMeshLinkSimulated;
+
+  /// No description provided for @settingsRadioMeshLinkMeshtastic.
+  ///
+  /// In en, this message translates to:
+  /// **'Meshtastic'**
+  String get settingsRadioMeshLinkMeshtastic;
+
+  /// No description provided for @settingsRadioMeshLinkMeshCore.
+  ///
+  /// In en, this message translates to:
+  /// **'MeshCore'**
+  String get settingsRadioMeshLinkMeshCore;
+
+  /// No description provided for @settingsRadioMeshLinkSimulatedHam.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated ham (small MTU)'**
+  String get settingsRadioMeshLinkSimulatedHam;
+
+  /// No description provided for @settingsRadioMeshLinkHam.
+  ///
+  /// In en, this message translates to:
+  /// **'Ham digimode'**
+  String get settingsRadioMeshLinkHam;
+
+  /// No description provided for @settingsRadioMeshLinkActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live radio session active'**
+  String get settingsRadioMeshLinkActive;
+
+  /// No description provided for @settingsRadioMeshLinkInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live radio session idle'**
+  String get settingsRadioMeshLinkInactive;
+
+  /// No description provided for @settingsRadioMeshLinkWebUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh radio BLE is not available in the web client.'**
+  String get settingsRadioMeshLinkWebUnavailable;
+
   /// No description provided for @settingsSimulatedGpsWalkDelayTitle.
   ///
   /// In en, this message translates to:
@@ -1963,7 +2047,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapDebugOverlayCopyFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Copy blocked — select and copy manually'**
+  /// **'Copy blocked - select and copy manually'**
   String get mapDebugOverlayCopyFailedTitle;
 
   /// No description provided for @settingsHomeLocationSaved.
@@ -2209,7 +2293,7 @@ abstract class AppLocalizations {
   /// No description provided for @watchLogSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Timestamped events for after-action review. Planning notes only — not a live CAD or radio net.'**
+  /// **'Timestamped events for after-action review. Planning notes only - not a live CAD or radio net.'**
   String get watchLogSubtitle;
 
   /// No description provided for @watchLogPermissionDenied.
@@ -2524,7 +2608,7 @@ abstract class AppLocalizations {
   /// No description provided for @kioskModeEntered.
   ///
   /// In en, this message translates to:
-  /// **'Kiosk mode on — this device is view-only.'**
+  /// **'Kiosk mode on - this device is view-only.'**
   String get kioskModeEntered;
 
   /// No description provided for @kioskModeEnterConfirmTitle.
@@ -2755,7 +2839,7 @@ abstract class AppLocalizations {
   /// No description provided for @geoExchangeExportEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Nothing to export — add markers or lines first.'**
+  /// **'Nothing to export - add markers or lines first.'**
   String get geoExchangeExportEmpty;
 
   /// No description provided for @geoExchangeExportFailed.
@@ -3031,7 +3115,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapTilesMapsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles — enable them here, but they are not drawn as the basemap.'**
+  /// **'Organize offline map archives into groups and choose which ones are drawn on the map. Only the best-matching enabled archive is shown at once to keep the map responsive. Elevation DEM packs (name includes dem, terrarium, terrain-rgb, or elevation) are used for spot height and path profiles - enable them here, but they are not drawn as the basemap.'**
   String get mapTilesMapsDescription;
 
   /// No description provided for @mapTilesPermissionDenied.
@@ -3091,7 +3175,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlinePackPrepareTooltipReady.
   ///
   /// In en, this message translates to:
-  /// **'Offline packs ready — tap to manage'**
+  /// **'Offline packs ready - tap to manage'**
   String get offlinePackPrepareTooltipReady;
 
   /// No description provided for @offlinePackNameLabel.
@@ -3210,7 +3294,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlinePackSwitchDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose which AOI pack to use. Tiles stay cached — no rebuild needed.'**
+  /// **'Choose which AOI pack to use. Tiles stay cached - no rebuild needed.'**
   String get offlinePackSwitchDescription;
 
   /// No description provided for @offlinePackLayersLabel.
@@ -3264,7 +3348,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlinePackRouteOriginGpsUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'No GPS fix yet — enable location or choose map center.'**
+  /// **'No GPS fix yet - enable location or choose map center.'**
   String get offlinePackRouteOriginGpsUnavailable;
 
   /// No description provided for @offlinePackRoutingNotReady.
@@ -3362,7 +3446,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlineModeBannerTitle.
   ///
   /// In en, this message translates to:
-  /// **'Offline — {packName}'**
+  /// **'Offline - {packName}'**
   String offlineModeBannerTitle(String packName);
 
   /// No description provided for @offlineModeBannerReadWriteHint.
@@ -3410,19 +3494,19 @@ abstract class AppLocalizations {
   /// No description provided for @mapTilesGetMapsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage — keep this dialog open until the import finishes.'**
+  /// **'Download regional Protomaps basemaps from Project NOMAD, or a Terrarium DEM from Mapterhorn. The Wayfinder server fetches or extracts the file into its storage - keep this dialog open until the import finishes.'**
   String get mapTilesGetMapsDescription;
 
   /// No description provided for @mapTilesGetMapsBasemapDescription.
   ///
   /// In en, this message translates to:
-  /// **'US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import — the server downloads it into Map tiles storage.'**
+  /// **'US state vector basemaps from Project NOMAD (typically a few hundred MB each). Search for your state, then Import - the server downloads it into Map tiles storage.'**
   String get mapTilesGetMapsBasemapDescription;
 
   /// No description provided for @mapTilesGetMapsDemDescription.
   ///
   /// In en, this message translates to:
-  /// **'US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server — keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.'**
+  /// **'US-state Terrarium elevation packs (Mapterhorn). Import runs a regional extract on the Wayfinder server - keep this dialog open; large states can take several minutes. Prefer a state over the full-planet option at the bottom of the list.'**
   String get mapTilesGetMapsDemDescription;
 
   /// No description provided for @mapTilesGetMapsSearchHint.
@@ -3668,7 +3752,7 @@ abstract class AppLocalizations {
   /// No description provided for @elevationProfileFlatHint.
   ///
   /// In en, this message translates to:
-  /// **'Little elevation change along this path — the chart may look nearly flat.'**
+  /// **'Little elevation change along this path - the chart may look nearly flat.'**
   String get elevationProfileFlatHint;
 
   /// No description provided for @elevationProfileCombinedLegs.
@@ -3932,7 +4016,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads — configure a key in Settings → About.'**
+  /// **'Upload SVG marker icons to the server. Clients load them at runtime so icons can be added or updated without redeploying the app. REST API authentication may be required for uploads - configure a key in Settings → About.'**
   String get markerIconsDescription;
 
   /// No description provided for @markerIconsPermissionDenied.
@@ -4166,7 +4250,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerIconBackgroundColorDescription.
   ///
   /// In en, this message translates to:
-  /// **'Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background — adjust it for better contrast with your map tiles.'**
+  /// **'Set the fill color behind this icon on the map. Transparent SVG artwork sits on this background - adjust it for better contrast with your map tiles.'**
   String get markerIconBackgroundColorDescription;
 
   /// No description provided for @markerIconBackgroundColorLabel.
@@ -4502,7 +4586,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerRadioStructuredHint.
   ///
   /// In en, this message translates to:
-  /// **'Structured contact data only — Wayfinder does not transmit or tune radios.'**
+  /// **'Structured contact data only - Wayfinder does not transmit or tune radios.'**
   String get markerRadioStructuredHint;
 
   /// No description provided for @markerRadioSummary.
@@ -4646,7 +4730,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerRadioNotesHint.
   ///
   /// In en, this message translates to:
-  /// **'Net time, coverage, PL tip — short planning notes'**
+  /// **'Net time, coverage, PL tip - short planning notes'**
   String get markerRadioNotesHint;
 
   /// No description provided for @markerRadioClear.
@@ -4700,7 +4784,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerInventoryEmptyHelp.
   ///
   /// In en, this message translates to:
-  /// **'Track supplies at this marker — quantity, unit, expiry, and last audit.'**
+  /// **'Track supplies at this marker - quantity, unit, expiry, and last audit.'**
   String get markerInventoryEmptyHelp;
 
   /// No description provided for @markerInventoryItemCount.
@@ -4874,7 +4958,7 @@ abstract class AppLocalizations {
   /// No description provided for @markerChecklistsEmptyHelp.
   ///
   /// In en, this message translates to:
-  /// **'Location SOPs and audits — e.g. bug-out bag check at a retreat.'**
+  /// **'Location SOPs and audits - e.g. bug-out bag check at a retreat.'**
   String get markerChecklistsEmptyHelp;
 
   /// No description provided for @markerChecklistsCount.
@@ -6374,7 +6458,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchReadinessReadySnackBar.
   ///
   /// In en, this message translates to:
-  /// **'Full search is ready — places and addresses.'**
+  /// **'Full search is ready - places and addresses.'**
   String get searchReadinessReadySnackBar;
 
   /// No description provided for @searchReadinessCheckingTooltip.
@@ -7766,7 +7850,7 @@ abstract class AppLocalizations {
   /// No description provided for @tidesSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Nearest coastal station from packs on your Wayfinder server — for boat and water crossings.'**
+  /// **'Nearest coastal station from packs on your Wayfinder server - for boat and water crossings.'**
   String get tidesSubtitle;
 
   /// No description provided for @tidesLocationLabel.
@@ -8244,19 +8328,19 @@ abstract class AppLocalizations {
   /// No description provided for @sunMoonNotApplicable.
   ///
   /// In en, this message translates to:
-  /// **'—'**
+  /// **'-'**
   String get sunMoonNotApplicable;
 
   /// No description provided for @sunMoonPolarDay.
   ///
   /// In en, this message translates to:
-  /// **'Polar day — the sun does not set on this date.'**
+  /// **'Polar day - the sun does not set on this date.'**
   String get sunMoonPolarDay;
 
   /// No description provided for @sunMoonPolarNight.
   ///
   /// In en, this message translates to:
-  /// **'Polar night — the sun does not rise on this date.'**
+  /// **'Polar night - the sun does not rise on this date.'**
   String get sunMoonPolarNight;
 
   /// No description provided for @sunMoonSunSection.
@@ -8460,7 +8544,7 @@ abstract class AppLocalizations {
   /// No description provided for @coveragePlanSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only — not live RF.'**
+  /// **'Place suggested repeater or mesh sites with overlapping range circles. Optionally run viewshed (LOS) on the seed site. Planning geometry only - not live RF.'**
   String get coveragePlanSubtitle;
 
   /// No description provided for @coveragePlanTemplateLabel.
@@ -8940,7 +9024,7 @@ abstract class AppLocalizations {
   /// No description provided for @slopeLegendHint.
   ///
   /// In en, this message translates to:
-  /// **'Green = gentle / easier · Red = steep / costly. DEM slope only — pick Walk, Bike, or Drive.'**
+  /// **'Green = gentle / easier · Red = steep / costly. DEM slope only - pick Walk, Bike, or Drive.'**
   String get slopeLegendHint;
 
   /// No description provided for @slopeLegendHintWalk.
@@ -11184,7 +11268,7 @@ abstract class AppLocalizations {
   /// No description provided for @routingMultiStateHint.
   ///
   /// In en, this message translates to:
-  /// **'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph — no need for the entire United States.'**
+  /// **'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph - no need for the entire United States.'**
   String get routingMultiStateHint;
 
   /// No description provided for @routingSelectedStatesLabel.
@@ -11214,7 +11298,7 @@ abstract class AppLocalizations {
   /// No description provided for @routingLocalOsmHint.
   ///
   /// In en, this message translates to:
-  /// **'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) — there is no Postgres database.'**
+  /// **'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) - there is no Postgres database.'**
   String get routingLocalOsmHint;
 
   /// No description provided for @routingOsmOnServerHint.
@@ -11890,7 +11974,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsChallengeTableInstructions.
   ///
   /// In en, this message translates to:
-  /// **'Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net — do not reuse.'**
+  /// **'Challenger picks a cell (row letter + column digit, e.g. B-7). Station replies with the digraph in that cell. Burn this sheet after the net - do not reuse.'**
   String get commsChallengeTableInstructions;
 
   /// No description provided for @commsChallengeTableGeneratedAt.
@@ -11962,7 +12046,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsOneTimePadInstructions.
   ///
   /// In en, this message translates to:
-  /// **'Use groups left-to-right, top-to-bottom. Each five-letter group is key material — never reuse a group. Burn this pad after the traffic that consumed it.'**
+  /// **'Use groups left-to-right, top-to-bottom. Each five-letter group is key material - never reuse a group. Burn this pad after the traffic that consumed it.'**
   String get commsOneTimePadInstructions;
 
   /// No description provided for @commsOneTimePadGeneratedAt.
@@ -12022,7 +12106,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsCardOfTheDayEditorHint.
   ///
   /// In en, this message translates to:
-  /// **'Daily code-word card with a calendar date, category lists, and a 0–9 letter key. Burn after the day. Included in map backups and field packs with this plan.'**
+  /// **'Daily code-word card with a calendar date, category lists, and a 0-9 letter key. Burn after the day. Included in map backups and field packs with this plan.'**
   String get commsCardOfTheDayEditorHint;
 
   /// No description provided for @commsCardOfTheDayAdd.
@@ -12100,7 +12184,7 @@ abstract class AppLocalizations {
   /// No description provided for @commsCardOfTheDayDigitKeyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Digit key (0–9)'**
+  /// **'Digit key (0-9)'**
   String get commsCardOfTheDayDigitKeyTitle;
 
   /// No description provided for @commsCardOfTheDayDigitKeyHint.

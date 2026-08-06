@@ -7,6 +7,7 @@ import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../data/watch_log_repository.dart';
 
 enum WatchLogSeverity {
@@ -77,12 +78,14 @@ class WatchLogEntriesNotifier extends AsyncNotifier<List<WatchLogEntry>> {
     }
     if (ref.read(offlineModeActiveProvider)) {
       await ref.read(offlinePackControllerProvider).enqueueWatchLog(entry);
+      await ref.read(radioSyncControllerProvider).emitLogAppend(entry);
       await reload();
       return entry;
     }
     final created = await ref
         .read(watchLogRepositoryProvider)
         .createEntry(entry);
+    await ref.read(radioSyncControllerProvider).emitLogAppend(created);
     await reload();
     return created;
   }

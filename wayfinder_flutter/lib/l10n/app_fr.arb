@@ -74,7 +74,7 @@
   "settingsAboutConnectionSection": "Connexion",
   "settingsAboutDeploymentSection": "Déploiement",
   "settingsAboutDockerImageId": "ID d'image Docker",
-  "settingsAboutDockerImageIdUnavailable": "Non disponible — recréez le conteneur après un pull pour enregistrer l'ID d'image au démarrage.",
+  "settingsAboutDockerImageIdUnavailable": "Non disponible - recréez le conteneur après un pull pour enregistrer l'ID d'image au démarrage.",
   "settingsAboutDockerImageRef": "Référence d'image Docker",
   "settingsAboutContainerStarted": "Conteneur démarré",
   "settingsAboutDockerImageIdHint": "L'ID d'image Docker change à chaque nouveau pull. Il devrait commencer par {imageIdPrefix} et correspondre à la colonne IMAGE ID de docker compose images ou docker image inspect.",
@@ -243,7 +243,7 @@
   "settingsMapEditingTitle": "Édition de la carte",
   "settingsMapEditingDescription": "Accrochage lors de l'édition des sommets de polygones et de calques saisonniers. L'aimant se libère si vous continuez à glisser au-delà.",
   "settingsPolygonSnapRightAnglesTitle": "Accrocher aux angles droits (90°)",
-  "settingsPolygonSnapRightAnglesDescription": "En faisant glisser un sommet, accroche doucement aux coins carrés — y compris pour rendre les coins adjacents à 90° pour de meilleurs rectangles.",
+  "settingsPolygonSnapRightAnglesDescription": "En faisant glisser un sommet, accroche doucement aux coins carrés - y compris pour rendre les coins adjacents à 90° pour de meilleurs rectangles.",
   "settingsPolygonSnap45AnglesTitle": "Accrocher aux angles de 45°",
   "settingsPolygonSnap45AnglesDescription": "Accroche aussi le coin déplacé vers des angles de 45° et 135°.",
   "settingsMapDisplayTitle": "Affichage de la carte",
@@ -251,9 +251,9 @@
   "settingsMapCompassRoseTitle": "Afficher la rose des vents",
   "settingsMapCompassRoseDescription": "Affiche une boussole en bas à gauche de la carte (au-dessus de la barre d'état GPS si elle est visible). Double frappe : réinitialiser la rotation ; appui long : basculer nord vrai/magnétique ; boutons ±5° pour tourner la carte. Variation WMM2025.",
   "settingsMapMgrsGridTitle": "Afficher la grille MGRS",
-  "settingsMapMgrsGridDescription": "Superpose une vraie grille MGRS (basée sur l'UTM). L'espacement suit le zoom. Les joints de zone et une légère courbure sur la carte Web Mercator sont attendus — les carrés MGRS ne sont pas des rectangles lat/lng.",
+  "settingsMapMgrsGridDescription": "Superpose une vraie grille MGRS (basée sur l'UTM). L'espacement suit le zoom. Les joints de zone et une légère courbure sur la carte Web Mercator sont attendus - les carrés MGRS ne sont pas des rectangles lat/lng.",
   "settingsDarkMapTilesTitle": "Assombrir les tuiles en mode sombre",
-  "settingsDarkMapTilesDescription": "Lorsque l'application est en mode sombre, applique un filtre de couleur aux tuiles du fond de carte pour les assombrir. C'est un style sombre simulé sur les tuiles existantes — pas une cartographie sombre distincte. Désactivez pour conserver l'apparence habituelle des tuiles pendant que le reste de l'interface reste sombre. Les PDF d'atlas imprimable utilisent toujours des tuiles normales pour rester lisibles sur papier.",
+  "settingsDarkMapTilesDescription": "Lorsque l'application est en mode sombre, applique un filtre de couleur aux tuiles du fond de carte pour les assombrir. C'est un style sombre simulé sur les tuiles existantes - pas une cartographie sombre distincte. Désactivez pour conserver l'apparence habituelle des tuiles pendant que le reste de l'interface reste sombre. Les PDF d'atlas imprimable utilisent toujours des tuiles normales pour rester lisibles sur papier.",
   "settingsMapZoomRangeTitle": "Plage de zoom de la carte",
   "settingsMapZoomRangeDescription": "Zoom minimum et maximum partagés pour tous les clients. Enregistré sur le serveur. Augmenter le maximum peut nuire aux performances si les tuiles hors ligne ne couvrent pas ces niveaux.",
   "settingsMapZoomRangePermissionDenied": "Vous n'avez pas l'autorisation de modifier la plage de zoom partagée de la carte.",
@@ -279,6 +279,27 @@
   "settingsForceOfflinePackTitle": "Utiliser le pack hors ligne en ligne",
   "settingsForceOfflinePackDescription": "Utilise le pack hors ligne / de terrain préparé même si le serveur Wayfinder est joignable. Permet de tester le pack sans couper Internet pour les autres applications.",
   "settingsForceOfflinePackUnavailable": "Préparez d'abord un pack hors ligne depuis la barre d'outils de la carte.",
+  "settingsRadioSyncTitle": "File de sync radio",
+  "settingsRadioSyncDescription": "Une fois activé, les modifications de marqueurs, journal de veille, zones et kits d'évacuation sont aussi mises en file comme événements radio-sync et envoyées au serveur dès qu'il est joignable. À combiner avec le lien radio en direct pour mesh/ham.",
+  "settingsRadioSyncPending": "{count} événements radio en attente d'envoi",
+  "@settingsRadioSyncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRadioMeshLinkTitle": "Lien radio temps réel",
+  "settingsRadioMeshLinkDescription": "Transport temps réel pour les trames radio-sync. Les modes simulés utilisent des hubs in-app (bureau/CI). Meshtastic utilise PRIVATE_APP ; MeshCore utilise des datagrammes de canal companion (pont BLE/USB requis). Ham digimode utilise un petit MTU avec cadrage texte WF1 optionnel (modem requis).",
+  "settingsRadioMeshLinkOff": "Désactivé (file / HTTP seulement)",
+  "settingsRadioMeshLinkSimulated": "Mesh simulé",
+  "settingsRadioMeshLinkMeshtastic": "Meshtastic",
+  "settingsRadioMeshLinkMeshCore": "MeshCore",
+  "settingsRadioMeshLinkSimulatedHam": "Ham simulé (petit MTU)",
+  "settingsRadioMeshLinkHam": "Ham digimode",
+  "settingsRadioMeshLinkActive": "Session radio temps réel active",
+  "settingsRadioMeshLinkInactive": "Session radio temps réel inactive",
+  "settingsRadioMeshLinkWebUnavailable": "La radio mesh BLE n'est pas disponible dans le client web.",
   "settingsSimulatedGpsWalkDelayTitle": "Délai de marche GPS simulée",
   "settingsSimulatedGpsWalkDelayDescription": "Secondes entre les positions GPS fictives lors de la simulation d'une marche sur un itinéraire suivi. S'applique au prochain démarrage de la simulation.",
   "settingsSimulatedGpsWalkDelayValue": "{seconds} s",
@@ -293,7 +314,7 @@
   "settingsSimulatedGpsWalkDelayMaxLabel": "Plus lent",
   "mapDebugOverlayCopyTooltip": "Copier les infos de débogage",
   "mapDebugOverlayCopied": "Infos de débogage copiées dans le presse-papiers.",
-  "mapDebugOverlayCopyFailedTitle": "Copie bloquée — sélectionnez et copiez manuellement",
+  "mapDebugOverlayCopyFailedTitle": "Copie bloquée - sélectionnez et copiez manuellement",
   "settingsHomeLocationSaved": "Point d'accueil enregistré.",
   "settingsHomeLocationReset": "Point d'accueil réinitialisé par défaut.",
   "settingsOpenMapFirst": "Ouvrez d'abord la carte pour capturer sa vue.",
@@ -495,7 +516,7 @@
   "kioskModeDescription": "Transformez ce portable en visionneuse TOC : masquez Réglages et outils de création, bloquez les modifications et utilisez une interrogation plus douce pour la batterie. À utiliser sur les portables de secours pointés vers votre serveur Wayfinder. Pour un serveur de secours qui doit refuser toutes les écritures, définissez WAYFINDER_READ_ONLY=1 sur le serveur.",
   "kioskModeEnter": "Entrer en mode kiosque",
   "kioskModeExit": "Quitter le kiosque",
-  "kioskModeEntered": "Mode kiosque activé — cet appareil est en lecture seule.",
+  "kioskModeEntered": "Mode kiosque activé - cet appareil est en lecture seule.",
   "kioskModeEnterConfirmTitle": "Entrer en mode kiosque ?",
   "kioskModeEnterConfirmMessage": "Les réglages et l'édition de la carte seront masqués sur cet appareil jusqu'à ce que vous quittiez le mode kiosque. Les autres appareils ne sont pas affectés.",
   "kioskModeBannerTitle": "Mode visionneuse",
@@ -601,7 +622,7 @@
     }
   },
   "geoExchangeExportSuccess": "Export géographique enregistré.",
-  "geoExchangeExportEmpty": "Rien à exporter — ajoutez d'abord des marqueurs ou des lignes.",
+  "geoExchangeExportEmpty": "Rien à exporter - ajoutez d'abord des marqueurs ou des lignes.",
   "geoExchangeExportFailed": "Échec de l'exportation : {error}",
   "@geoExchangeExportFailed": {
     "placeholders": {
@@ -675,7 +696,7 @@
     }
   },
   "mapTilesMapsTitle": "Cartes PMTiles",
-  "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils — activez-les ici, mais ils ne sont pas dessinés comme fond de carte.",
+  "mapTilesMapsDescription": "Organisez les archives cartographiques hors ligne en groupes et choisissez lesquelles sont affichées sur la carte. Les packs DEM d'élévation (nom contenant dem, terrarium, terrain-rgb ou elevation) servent à la hauteur ponctuelle et aux profils - activez-les ici, mais ils ne sont pas dessinés comme fond de carte.",
   "mapTilesPermissionDenied": "Vous n'avez pas l'autorisation d'ajouter, de mettre à jour ou d'organiser les tuiles cartographiques.",
   "mapTilesDemBadge": "DEM d'élévation",
   "mapTilesUploadButton": "Téléverser un fichier .pmtiles",
@@ -685,7 +706,7 @@
   "offlinePackPrepareAction": "Mettre à jour le pack hors ligne",
   "offlinePackPrepareNewAction": "Créer un pack hors ligne",
   "offlinePackPrepareTooltip": "Préparer pour le hors ligne",
-  "offlinePackPrepareTooltipReady": "Packs prêts — appuyez pour gérer",
+  "offlinePackPrepareTooltipReady": "Packs prêts - appuyez pour gérer",
   "offlinePackNameLabel": "Nom du pack",
   "offlinePackNameHint": "Maison, repli, chasse…",
   "offlinePackDefaultName": "Pack hors ligne",
@@ -729,7 +750,7 @@
   },
   "offlinePackSwitchTooltip": "Changer de pack hors ligne",
   "offlinePackSwitchTitle": "Changer de pack hors ligne",
-  "offlinePackSwitchDescription": "Choisissez le pack AOI à utiliser. Les tuiles restent en cache — aucune reconstruction nécessaire.",
+  "offlinePackSwitchDescription": "Choisissez le pack AOI à utiliser. Les tuiles restent en cache - aucune reconstruction nécessaire.",
   "offlinePackLayersLabel": "Calques à inclure",
   "offlinePackIncludeSeasonalOverlays": "Inclure les superpositions saisonnières",
   "offlinePackIncludeSeasonalOverlaysHint": "Inclure toutes les superpositions saisonnières en lecture seule hors ligne (séparées des calques de carte).",
@@ -743,7 +764,7 @@
   "offlinePackRouteOriginLabel": "Origine de l’itinéraire",
   "offlinePackRouteOriginGps": "Position GPS actuelle",
   "offlinePackRouteOriginMapCenter": "Centre actuel de la carte",
-  "offlinePackRouteOriginGpsUnavailable": "Pas encore de GPS — activez la localisation ou choisissez le centre de la carte.",
+  "offlinePackRouteOriginGpsUnavailable": "Pas encore de GPS - activez la localisation ou choisissez le centre de la carte.",
   "offlinePackRoutingNotReady": "Activez un serveur de routage prêt (Réglages → Routage) avant d’empaqueter des itinéraires OSM.",
   "offlinePackDetailsRoutes": "{routeCount} itinéraire(s) OSM empaqueté(s)",
   "@offlinePackDetailsRoutes": {
@@ -770,7 +791,7 @@
   "offlinePackPreparing": "Préparation du pack hors ligne…",
   "offlinePackClear": "Effacer le pack",
   "offlinePackSynced": "{count} modification(s) hors ligne synchronisée(s) avec le serveur.",
-  "offlineModeBannerTitle": "Hors ligne — {packName}",
+  "offlineModeBannerTitle": "Hors ligne - {packName}",
   "offlineModeBannerReadWriteHint": "Affichage des calques du pack. Vous pouvez ajouter des marqueurs, changer leur calque, supprimer les marqueurs non synchronisés, enregistrer des traces GPS et ajouter des entrées du journal de veille.",
   "offlineModeBannerForcedHint": "Pack hors ligne forcé (serveur toujours joignable). Désactivez dans Paramètres → Général → Débogage de la carte une fois les tests terminés.",
   "offlineDeleteUnsyncedMarker": "Supprimer le marqueur non synchronisé",
@@ -778,9 +799,9 @@
   "offlineGeocodingUnavailable": "Les contributions de géocodage sont indisponibles hors ligne.",
   "offlineModeBannerPending": "{count} modification(s) en attente de synchronisation.",
   "mapTilesGetMapsTitle": "Obtenir des cartes",
-  "mapTilesGetMapsDescription": "Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder télécharge ou extrait le fichier — gardez cette boîte de dialogue ouverte jusqu'à la fin.",
-  "mapTilesGetMapsBasemapDescription": "Basemaps vectoriels par État américain (Project NOMAD, quelques centaines de Mo). Cherchez votre État puis Importer — le serveur le télécharge dans le stockage des tuiles.",
-  "mapTilesGetMapsDemDescription": "DEM Terrarium par État américain (Mapterhorn). Extraire lance un découpage régional sur le serveur Wayfinder — gardez la boîte ouverte (les grands États peuvent prendre plusieurs minutes). Préférez un État à l'option planète en bas de liste.",
+  "mapTilesGetMapsDescription": "Téléchargez des basemaps Protomaps régionaux depuis Project NOMAD, ou un DEM Terrarium depuis Mapterhorn. Le serveur Wayfinder télécharge ou extrait le fichier - gardez cette boîte de dialogue ouverte jusqu'à la fin.",
+  "mapTilesGetMapsBasemapDescription": "Basemaps vectoriels par État américain (Project NOMAD, quelques centaines de Mo). Cherchez votre État puis Importer - le serveur le télécharge dans le stockage des tuiles.",
+  "mapTilesGetMapsDemDescription": "DEM Terrarium par État américain (Mapterhorn). Extraire lance un découpage régional sur le serveur Wayfinder - gardez la boîte ouverte (les grands États peuvent prendre plusieurs minutes). Préférez un État à l'option planète en bas de liste.",
   "mapTilesGetMapsSearchHint": "Rechercher un État…",
   "mapTilesGetMapsImportAction": "Importer",
   "mapTilesGetMapsExtractAction": "Extraire",
@@ -923,7 +944,7 @@
       }
     }
   },
-  "elevationProfileFlatHint": "Peu de dénivelé sur ce parcours — le graphique peut paraître presque plat.",
+  "elevationProfileFlatHint": "Peu de dénivelé sur ce parcours - le graphique peut paraître presque plat.",
   "elevationProfileCombinedLegs": "Combiné à partir de {count} segments (ordre de sélection ; chaque segment peut être inversé pour se connecter).",
   "@elevationProfileCombinedLegs": {
     "placeholders": {
@@ -1078,7 +1099,7 @@
   "mapTilesShowAllOnMap": "Tout afficher sur la carte",
   "mapTilesHideAllFromMap": "Tout masquer sur la carte",
   "markerIconsTitle": "Icônes de marqueurs",
-  "markerIconsDescription": "Téléversez des icônes SVG de marqueurs sur le serveur. Les clients les chargent à l'exécution pour ajouter ou mettre à jour des icônes sans redéployer l'application. L'authentification REST peut être requise — configurez une clé dans Paramètres → À propos.",
+  "markerIconsDescription": "Téléversez des icônes SVG de marqueurs sur le serveur. Les clients les chargent à l'exécution pour ajouter ou mettre à jour des icônes sans redéployer l'application. L'authentification REST peut être requise - configurez une clé dans Paramètres → À propos.",
   "markerIconsPermissionDenied": "Vous n'avez pas l'autorisation de gérer les catégories d'icônes ni les icônes de marqueurs personnalisées.",
   "markerIconsAddButton": "Ajouter une icône personnalisée",
   "markerIconsServerCatalogTitle": "Catalogue serveur",
@@ -1117,7 +1138,7 @@
   "markerIconsEditTitle": "Modifier l'icône de marqueur",
   "markerIconsCategoryLabel": "Catégorie",
   "markerIconBackgroundColorTitle": "Arrière-plan de l'icône",
-  "markerIconBackgroundColorDescription": "Choisissez la couleur de remplissage derrière les icônes de marqueur sur la carte. Les SVG transparents s'affichent sur cet arrière-plan — ajustez-le pour un meilleur contraste avec vos fonds de carte.",
+  "markerIconBackgroundColorDescription": "Choisissez la couleur de remplissage derrière les icônes de marqueur sur la carte. Les SVG transparents s'affichent sur cet arrière-plan - ajustez-le pour un meilleur contraste avec vos fonds de carte.",
   "markerIconBackgroundColorLabel": "Couleur d'arrière-plan",
   "markerIconCategoryGeneral": "Général",
   "markerIconCategoryPlaces": "Lieux et bâtiments",
@@ -1179,7 +1200,7 @@
   "markerDefaultName": "Nouveau marqueur",
   "markerRadioTitle": "Réseau radio / fiche contact",
   "markerRadioEmptyHelp": "Indicatif, fréquence et mode optionnels pour shack / relais (pas de radio en direct).",
-  "markerRadioStructuredHint": "Données structurées uniquement — Wayfinder n'émet ni ne règle les radios.",
+  "markerRadioStructuredHint": "Données structurées uniquement - Wayfinder n'émet ni ne règle les radios.",
   "markerRadioSummary": "{callsign}",
   "@markerRadioSummary": {
     "placeholders": {
@@ -1210,7 +1231,7 @@
   "markerRadioToneLabel": "Tonalité / CTCSS",
   "markerRadioOffsetLabel": "Décalage",
   "markerRadioNotesLabel": "Notes radio",
-  "markerRadioNotesHint": "Heure de net, couverture, tip PL — notes brèves",
+  "markerRadioNotesHint": "Heure de net, couverture, tip PL - notes brèves",
   "markerRadioClear": "Effacer la fiche contact",
   "sidebarFilterRadioContacts": "Contacts radio",
   "sidebarFilterResourceSpring": "Sources",
@@ -1219,7 +1240,7 @@
   "sidebarFilterResourceFuel": "Carburant",
   "sidebarFilterResourceClinic": "Cliniques",
   "markerInventoryTitle": "Inventaire de cache",
-  "markerInventoryEmptyHelp": "Suivez les provisions de ce marqueur — quantité, unité, expiration et dernier inventaire.",
+  "markerInventoryEmptyHelp": "Suivez les provisions de ce marqueur - quantité, unité, expiration et dernier inventaire.",
   "markerInventoryItemCount": "{count, plural, =1{1 article} other{{count} articles}}",
   "@markerInventoryItemCount": {
     "placeholders": {
@@ -1300,7 +1321,7 @@
     }
   },
   "markerChecklistsTitle": "Listes de contrôle / SOP",
-  "markerChecklistsEmptyHelp": "SOP et audits du lieu — p. ex. vérification du sac d'évacuation au refuge.",
+  "markerChecklistsEmptyHelp": "SOP et audits du lieu - p. ex. vérification du sac d'évacuation au refuge.",
   "markerChecklistsCount": "{count, plural, =1{1 liste} other{{count} listes}}",
   "@markerChecklistsCount": {
     "placeholders": {
@@ -1620,7 +1641,7 @@
   "sidebarHideZone": "Masquer la zone",
   "sidebarShowZone": "Afficher la zone",
   "sidebarDeleteZone": "Supprimer la zone",
-  "searchReadinessReadySnackBar": "Recherche complète prête — lieux et adresses.",
+  "searchReadinessReadySnackBar": "Recherche complète prête - lieux et adresses.",
   "searchReadinessCheckingTooltip": "Vérification de la disponibilité de la recherche…",
   "searchReadinessUnavailableTooltip": "Disponibilité de la recherche indisponible",
   "searchReadinessFullReadyTooltip": "Recherche complète prête",
@@ -2026,7 +2047,7 @@
   "mapRadialTides": "Marées",
   "mapRadialEvacKit": "Kit d'évacuation",
   "tidesTitle": "Tables des marées",
-  "tidesSubtitle": "Station côtière la plus proche depuis les packs sur votre serveur Wayfinder — pour passages en bateau.",
+  "tidesSubtitle": "Station côtière la plus proche depuis les packs sur votre serveur Wayfinder - pour passages en bateau.",
   "tidesLocationLabel": "Lieu",
   "tidesAnchorMarker": "Repère",
   "tidesAnchorHome": "Accueil",
@@ -2304,9 +2325,9 @@
     }
   },
   "sunMoonMissingLocation": "Choisissez un lieu pour calculer.",
-  "sunMoonNotApplicable": "—",
-  "sunMoonPolarDay": "Jour polaire — le soleil ne se couche pas à cette date.",
-  "sunMoonPolarNight": "Nuit polaire — le soleil ne se lève pas à cette date.",
+  "sunMoonNotApplicable": "-",
+  "sunMoonPolarDay": "Jour polaire - le soleil ne se couche pas à cette date.",
+  "sunMoonPolarNight": "Nuit polaire - le soleil ne se lève pas à cette date.",
   "sunMoonSunSection": "Soleil",
   "sunMoonSunrise": "Lever du soleil",
   "sunMoonSolarNoon": "Midi solaire",
@@ -2353,7 +2374,7 @@
   "sunMoonMoonrise": "Lever de la lune",
   "sunMoonMoonset": "Coucher de la lune",
   "coveragePlanTitle": "Plan de couverture",
-  "coveragePlanSubtitle": "Placez des sites relais ou mesh suggérés avec des cercles de portée. Optionnellement calculez la vue (LOS) sur le site graine. Géométrie de planification uniquement — pas de RF en direct.",
+  "coveragePlanSubtitle": "Placez des sites relais ou mesh suggérés avec des cercles de portée. Optionnellement calculez la vue (LOS) sur le site graine. Géométrie de planification uniquement - pas de RF en direct.",
   "coveragePlanTemplateLabel": "Modèle",
   "coveragePlanTemplateMesh": "Mesh / LoRa",
   "coveragePlanTemplateRepeater": "Relais VHF/UHF",
@@ -2573,7 +2594,7 @@
       }
     }
   },
-  "slopeLegendHint": "Vert = doux / plus facile · Rouge = raide / coûteux. Pente DEM seulement — choisissez Marche, Vélo ou Voiture.",
+  "slopeLegendHint": "Vert = doux / plus facile · Rouge = raide / coûteux. Pente DEM seulement - choisissez Marche, Vélo ou Voiture.",
   "slopeLegendHintWalk": "Coût à pied : vert = facile · rouge = raide. Pente DEM seulement (pas de sentiers).",
   "slopeLegendHintBike": "Coût vélo : vert = facile · rouge = montée raide. Pente DEM seulement (pas de routes).",
   "slopeLegendHintDrive": "Coût voiture : vert = pente douce · rouge = raide pour véhicules. Pente DEM seulement (pas de réseau routier).",
@@ -3020,7 +3041,7 @@
   "routingStatusCancelled": "Annulé",
   "routingImportTitle": "Importer les données cartographiques",
   "routingImportDescription": "Importez une ou plusieurs régions OSM et construisez le graphe hors ligne. Préférez des États américains ; sélectionnez plusieurs États frontaliers (ex. Virginie + Virginie-Occidentale) pour les fusionner en un seul graphe.",
-  "routingMultiStateHint": "Recherchez et ajoutez des États un par un. Plusieurs États sont téléchargés, fusionnés avec Osmium, puis construits en un seul graphe — inutile d'importer tous les États-Unis.",
+  "routingMultiStateHint": "Recherchez et ajoutez des États un par un. Plusieurs États sont téléchargés, fusionnés avec Osmium, puis construits en un seul graphe - inutile d'importer tous les États-Unis.",
   "routingSelectedStatesLabel": "États sélectionnés",
   "routingMultiStateMergeHint": "{count} États seront fusionnés en un seul graphe.",
   "@routingMultiStateMergeHint": {
@@ -3039,7 +3060,7 @@
     }
   },
   "routingRegionSearchHint": "Rechercher un État ou une région…",
-  "routingLocalOsmHint": "Pour les gros extraits nationaux, téléchargez ailleurs puis copiez osm.pbf dans le dossier de données du serveur, ou téléversez-le ici. Le graphe est stocké sur le disque de ce serveur (MMAP) — pas de base Postgres.",
+  "routingLocalOsmHint": "Pour les gros extraits nationaux, téléchargez ailleurs puis copiez osm.pbf dans le dossier de données du serveur, ou téléversez-le ici. Le graphe est stocké sur le disque de ce serveur (MMAP) - pas de base Postgres.",
   "routingOsmOnServerHint": "Extrait OSM sur le serveur : {size}",
   "@routingOsmOnServerHint": {
     "placeholders": {
@@ -3251,7 +3272,7 @@
     }
   },
   "commsChallengeTableReadyHint": "Feuilles prêtes pour l'atlas et le pack terrain. Brûlez après usage.",
-  "commsChallengeTableInstructions": "Le challengeur choisit une case (lettre de ligne + chiffre de colonne, ex. B-7). La station répond avec le digraphe. Brûlez cette feuille après le net — ne la réutilisez pas.",
+  "commsChallengeTableInstructions": "Le challengeur choisit une case (lettre de ligne + chiffre de colonne, ex. B-7). La station répond avec le digraphe. Brûlez cette feuille après le net - ne la réutilisez pas.",
   "commsChallengeTableGeneratedAt": "Générée {when}",
   "@commsChallengeTableGeneratedAt": {
     "placeholders": {
@@ -3273,7 +3294,7 @@
       "count": { "type": "int" }
     }
   },
-  "commsOneTimePadInstructions": "Utilisez les groupes de gauche à droite, de haut en bas. Chaque groupe de cinq lettres est du matériel de clé — ne réutilisez jamais un groupe. Brûlez ce carnet après le trafic qui l'a consommé.",
+  "commsOneTimePadInstructions": "Utilisez les groupes de gauche à droite, de haut en bas. Chaque groupe de cinq lettres est du matériel de clé - ne réutilisez jamais un groupe. Brûlez ce carnet après le trafic qui l'a consommé.",
   "commsOneTimePadGeneratedAt": "Généré {when}",
   "@commsOneTimePadGeneratedAt": {
     "placeholders": {
@@ -3288,7 +3309,7 @@
   "commsCardOfTheDayTitle": "Cartes du jour",
   "commsCardOfTheDayCreateTitle": "Nouvelle carte du jour",
   "commsCardOfTheDayEditTitle": "Modifier la carte du jour",
-  "commsCardOfTheDayEditorHint": "Carte quotidienne de mots de code avec date, listes par catégorie et clé 0–9. Brûlez après la journée. Incluse dans les sauvegardes et packs terrain avec ce plan.",
+  "commsCardOfTheDayEditorHint": "Carte quotidienne de mots de code avec date, listes par catégorie et clé 0-9. Brûlez après la journée. Incluse dans les sauvegardes et packs terrain avec ce plan.",
   "commsCardOfTheDayAdd": "Ajouter une carte",
   "commsCardOfTheDayEdit": "Modifier",
   "commsCardOfTheDayBurn": "Brûler",
@@ -3311,7 +3332,7 @@
   },
   "commsCardOfTheDayLabelLabel": "Libellé",
   "commsCardOfTheDayLabelRequired": "Saisissez un libellé pour cette carte.",
-  "commsCardOfTheDayDigitKeyTitle": "Clé des chiffres (0–9)",
+  "commsCardOfTheDayDigitKeyTitle": "Clé des chiffres (0-9)",
   "commsCardOfTheDayDigitKeyHint": "Un mot de 10 lettres, ou des mots plus courts totalisant exactement 10 lettres, sans lettre répétée. Les espaces sont ignorés.",
   "commsCardOfTheDayDigitKeyLabel": "Dix lettres uniques",
   "commsCardOfTheDayDigitKeyGenerate": "Générer",

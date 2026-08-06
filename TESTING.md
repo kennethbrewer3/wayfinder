@@ -61,7 +61,7 @@ Goldens use a pixel tolerance (3.5%) so macOS vs Linux AA / font raster differen
 - Deterministic **unit** tests for models, codecs, pure helpers, permissions, and config
 - **Widget + golden** coverage for AuthGate, kiosk banner, map-object status, marker editors
 - Offline outbox / preferences / geometry / authz helpers
-- Radio sync: Freezed `msgType`, binary codec CRC/round-trip, chunk reassembly, LWW/dedupe apply, loopback session (`test/features/radio_sync/`)
+- Radio sync: codec/chunking, LWW/dedupe, FakeMeshHub + FakeHamHub, MeshCore framing, light zones, text framing, mappers, outbox (`test/features/radio_sync/`)
 
 ## Adding unit tests
 

@@ -6,6 +6,7 @@ import 'package:wayfinder_flutter/l10n/app_localizations.dart';
 import '../../../core/serverpod_client.dart';
 import '../../markers/providers/markers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 
 /// Soft-deletes a marker and offers an Undo snackbar.
 Future<bool> softDeleteMarkerWithUndo({
@@ -20,6 +21,7 @@ Future<bool> softDeleteMarkerWithUndo({
   if (!deleted) {
     return false;
   }
+  await ref.read(radioSyncControllerProvider).emitMarkerDelete(markerId);
   ref.invalidate(markersProvider);
   if (!context.mounted) {
     return true;
@@ -54,10 +56,17 @@ Future<bool> softDeleteZoneWithUndo({
 }) async {
   final l10n = AppLocalizations.of(context)!;
   final client = ref.read(serverClientProvider);
+  final existing = await client.mapZone.getZone(zoneId);
   final deleted = await client.mapZone.deleteZone(zoneId);
   if (!deleted) {
     return false;
   }
+  await ref
+      .read(radioSyncControllerProvider)
+      .emitZoneDelete(
+        zoneId,
+        zoneType: existing?.type ?? '',
+      );
   ref.read(zonesProvider.notifier).reload();
   if (!context.mounted) {
     return true;

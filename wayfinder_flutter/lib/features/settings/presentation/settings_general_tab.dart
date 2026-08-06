@@ -47,6 +47,9 @@ import '../../markers/presentation/map_marker_icon.dart';
 import '../../markers/providers/map_marker_size_provider.dart';
 import '../../offline_packs/providers/force_offline_pack_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
+import '../../radio_sync/providers/radio_mesh_link_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
+import '../../radio_sync/providers/radio_sync_enabled_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
 import '../../polygons/providers/polygon_angle_snap_provider.dart';
 import '../../routing/data/routing_repository.dart';
@@ -1153,6 +1156,99 @@ class _SettingsGeneralTabState extends ConsumerState<SettingsGeneralTab> {
                 }
               : null,
         ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsRadioSyncTitle),
+          subtitle: Text(l10n.settingsRadioSyncDescription),
+          value: ref.watch(radioSyncEnabledProvider),
+          onChanged: (enabled) async {
+            await ref
+                .read(radioSyncEnabledProvider.notifier)
+                .setEnabled(enabled);
+            if (enabled) {
+              await ref.read(radioSyncControllerProvider).flushIfNeeded();
+            }
+          },
+        ),
+        if (ref.watch(radioSyncEnabledProvider)) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              l10n.settingsRadioSyncPending(
+                ref.watch(radioOutboxPendingCountProvider).valueOrNull ?? 0,
+              ),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          Text(
+            l10n.settingsRadioMeshLinkTitle,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          Text(
+            l10n.settingsRadioMeshLinkDescription,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<RadioMeshLinkMode>(
+            key: ValueKey(
+              'radio-mesh-${ref.watch(radioMeshLinkModeProvider).name}',
+            ),
+            initialValue: ref.watch(radioMeshLinkModeProvider),
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              isDense: true,
+            ),
+            items: [
+              DropdownMenuItem(
+                value: RadioMeshLinkMode.off,
+                child: Text(l10n.settingsRadioMeshLinkOff),
+              ),
+              DropdownMenuItem(
+                value: RadioMeshLinkMode.simulated,
+                child: Text(l10n.settingsRadioMeshLinkSimulated),
+              ),
+              DropdownMenuItem(
+                value: RadioMeshLinkMode.meshtastic,
+                enabled: !kIsWeb,
+                child: Text(
+                  kIsWeb
+                      ? l10n.settingsRadioMeshLinkWebUnavailable
+                      : l10n.settingsRadioMeshLinkMeshtastic,
+                ),
+              ),
+              DropdownMenuItem(
+                value: RadioMeshLinkMode.meshcore,
+                enabled: !kIsWeb,
+                child: Text(
+                  kIsWeb
+                      ? l10n.settingsRadioMeshLinkWebUnavailable
+                      : l10n.settingsRadioMeshLinkMeshCore,
+                ),
+              ),
+              DropdownMenuItem(
+                value: RadioMeshLinkMode.simulatedHam,
+                child: Text(l10n.settingsRadioMeshLinkSimulatedHam),
+              ),
+              DropdownMenuItem(
+                value: RadioMeshLinkMode.hamDigimode,
+                child: Text(l10n.settingsRadioMeshLinkHam),
+              ),
+            ],
+            onChanged: (mode) async {
+              if (mode == null) {
+                return;
+              }
+              await ref.read(radioMeshLinkModeProvider.notifier).setMode(mode);
+            },
+          ),
+          const SizedBox(height: 4),
+          Text(
+            ref.watch(radioMeshSessionActiveProvider)
+                ? l10n.settingsRadioMeshLinkActive
+                : l10n.settingsRadioMeshLinkInactive,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
         const SizedBox(height: 16),
         Text(
           l10n.settingsSimulatedGpsWalkDelayTitle,

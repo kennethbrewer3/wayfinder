@@ -450,8 +450,8 @@ class EvacKitGeometry {
   }
 }
 
-String newEvacRouteId() =>
-    'route_${DateTime.now().toUtc().microsecondsSinceEpoch}';
+/// UUID string so routes can ride radio-sync frames (16-byte route ids).
+String newEvacRouteId() => const Uuid().v4();
 
 LatLng? evacKitZoneCenter(MapZone zone) {
   return EvacKitGeometry.fromZone(zone)?.labelPoint;

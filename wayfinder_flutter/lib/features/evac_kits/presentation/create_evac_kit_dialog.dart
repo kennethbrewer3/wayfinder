@@ -14,6 +14,7 @@ import '../../lines/providers/zones_provider.dart';
 import '../../map/providers/selected_map_object_provider.dart';
 import '../../markers/models/marker_color.dart';
 import '../../polygons/providers/polygon_drawing_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../../rectangles/providers/rectangle_drawing_provider.dart';
 import '../../slope/providers/slope_provider.dart';
 import '../../viewshed/providers/viewshed_provider.dart';
@@ -132,23 +133,23 @@ Future<bool> createEvacKitFromWaypoints({
   final client = ref.read(serverClientProvider);
   final now = DateTime.now().toUtc();
   final colorHex = formatMarkerColorHex(formData.color);
-  await client.mapZone.createZone(
-    MapZone(
-      name: formData.name,
-      type: evacKitZoneType,
-      color: colorHex,
-      borderColor: colorHex,
-      borderPattern: 'solid',
-      fillColor: formatMarkerColorHexWithAlpha(
-        formData.color.withValues(alpha: 0.15),
-      ),
-      visible: true,
-      geometryJson: geometry.encode(),
-      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
-      createdAt: now,
-      updatedAt: now,
+  final zone = MapZone(
+    name: formData.name,
+    type: evacKitZoneType,
+    color: colorHex,
+    borderColor: colorHex,
+    borderPattern: 'solid',
+    fillColor: formatMarkerColorHexWithAlpha(
+      formData.color.withValues(alpha: 0.15),
     ),
+    visible: true,
+    geometryJson: geometry.encode(),
+    layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
+    createdAt: now,
+    updatedAt: now,
   );
+  await client.mapZone.createZone(zone);
+  await ref.read(radioSyncControllerProvider).emitEvacKit(zone);
   ref.read(zonesProvider.notifier).reload();
   AppLogger.logZones.success('🛟 Evac kit created');
   return true;
@@ -220,9 +221,9 @@ Future<bool> addEvacKitAlternateRoute({
   );
   final updated = geometry.withRoute(alternate);
   final client = ref.read(serverClientProvider);
-  await client.mapZone.updateZone(
-    updateZoneEvacKitGeometry(zone, updated),
-  );
+  final updatedZone = updateZoneEvacKitGeometry(zone, updated);
+  await client.mapZone.updateZone(updatedZone);
+  await ref.read(radioSyncControllerProvider).emitEvacKit(updatedZone);
   ref.read(zonesProvider.notifier).reload();
   return true;
 }
@@ -270,19 +271,19 @@ Future<bool> updateEvacKitFromForm({
 
   final colorHex = formatMarkerColorHex(formData.color);
   final client = ref.read(serverClientProvider);
-  await client.mapZone.updateZone(
-    zone.copyWith(
-      name: formData.name,
-      color: colorHex,
-      borderColor: colorHex,
-      fillColor: formatMarkerColorHexWithAlpha(
-        formData.color.withValues(alpha: 0.15),
-      ),
-      layerId: formData.layerId,
-      geometryJson: updatedGeometry.encode(),
-      updatedAt: DateTime.now().toUtc(),
+  final updatedZone = zone.copyWith(
+    name: formData.name,
+    color: colorHex,
+    borderColor: colorHex,
+    fillColor: formatMarkerColorHexWithAlpha(
+      formData.color.withValues(alpha: 0.15),
     ),
+    layerId: formData.layerId,
+    geometryJson: updatedGeometry.encode(),
+    updatedAt: DateTime.now().toUtc(),
   );
+  await client.mapZone.updateZone(updatedZone);
+  await ref.read(radioSyncControllerProvider).emitEvacKit(updatedZone);
   ref.read(zonesProvider.notifier).reload();
   return true;
 }

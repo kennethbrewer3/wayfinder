@@ -12,6 +12,7 @@ import '../../layers/providers/layers_provider.dart';
 import '../../lines/providers/zones_provider.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../../tracks/models/track_geometry.dart';
 import '../../tracks/models/track_transportation_mode.dart';
 import '../../tracks/providers/gps_track_binding_provider.dart';
@@ -113,6 +114,7 @@ Future<bool> createMarkerAtPoint({
             marker: draft,
             transportationMode: formData.transportationMode,
           );
+      await ref.read(radioSyncControllerProvider).emitMarkerUpsert(created);
       AppLogger.logMarkers.success('📍 Tracking marker queued offline');
       if (context.mounted) {
         _offerGpsTrailRecording(
@@ -123,6 +125,7 @@ Future<bool> createMarkerAtPoint({
       }
     } else {
       await ref.read(offlinePackControllerProvider).enqueueMarker(draft);
+      await ref.read(radioSyncControllerProvider).emitMarkerUpsert(draft);
       AppLogger.logMarkers.success('📍 Marker queued offline');
     }
     return true;
@@ -140,6 +143,7 @@ Future<bool> createMarkerAtPoint({
       mode: formData.transportationMode,
     );
   }
+  await ref.read(radioSyncControllerProvider).emitMarkerUpsert(created);
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();
   AppLogger.logMarkers.success('📍 Marker created');
@@ -221,6 +225,7 @@ Future<bool> updateMarkerFromForm({
     // Tracking turned off — stop binding this device's GPS to it.
     ref.read(gpsTrackBindingProvider.notifier).clear();
   }
+  await ref.read(radioSyncControllerProvider).emitMarkerUpsert(updated);
   ref.invalidate(markersProvider);
   ref.read(zonesProvider.notifier).reload();
   return true;

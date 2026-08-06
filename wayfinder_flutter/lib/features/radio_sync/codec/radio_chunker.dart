@@ -7,6 +7,9 @@ import 'radio_frame.dart';
 /// On-wire overhead for a chunk envelope: header (43) + CRC (4).
 const radioChunkFrameOverhead = radioFrameHeaderLength + 4;
 
+/// Minimum [maxFrameBytes] that can carry a chunk envelope (header + ≥1 data).
+const radioMinChunkMaxFrameBytes = radioChunkFrameOverhead + 21;
+
 /// Split a complete logical frame into MTU-sized chunk envelopes.
 ///
 /// [maxFrameBytes] is the largest complete on-wire frame the transport accepts

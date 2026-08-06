@@ -18,6 +18,7 @@ import '../../kiosk/providers/kiosk_mode_provider.dart';
 import '../../offline_packs/presentation/prepare_offline_pack_dialog.dart';
 import '../../offline_packs/providers/offline_pack_controller.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../../route_follow/providers/route_follow_provider.dart';
 import '../../search/providers/search_query_provider.dart';
 import '../../search/models/search_result.dart';
@@ -607,6 +608,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           final flushed = await ref
               .read(offlinePackControllerProvider)
               .syncIfNeeded();
+          await ref.read(radioSyncControllerProvider).flushIfNeeded();
           if (!mounted || flushed <= 0) {
             return;
           }

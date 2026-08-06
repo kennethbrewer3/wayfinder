@@ -8,6 +8,7 @@ import '../../circles/models/circle_size_display.dart';
 import '../../evac_kits/models/evac_kit_geometry.dart';
 import '../../offline_packs/providers/offline_snapshot_provider.dart';
 import '../../offline_packs/providers/server_reachability_provider.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../../polygons/models/polygon_geometry.dart';
 import '../../rectangles/models/rectangle_geometry.dart';
 import '../../rectangles/models/rectangle_size_display.dart';
@@ -183,6 +184,7 @@ class ZonesNotifier extends AsyncNotifier<List<MapZone>> {
     try {
       final client = ref.read(serverClientProvider);
       await client.mapZone.updateZone(updatedZone);
+      await ref.read(radioSyncControllerProvider).emitEvacKit(updatedZone);
     } catch (error, stackTrace) {
       AppLogger.logZones.error(
         '📡 Failed to update evac kit geometry',

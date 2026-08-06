@@ -130,7 +130,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessSignInSubtitle =>
-      'Sign in with the username your TOC administrator created for you. No email is sent — this app is designed for offline use.';
+      'Sign in with the username your TOC administrator created for you. No email is sent - this app is designed for offline use.';
 
   @override
   String get accessSignInRequired => 'Sign in to manage users and roles.';
@@ -238,7 +238,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessUsersHelp =>
-      'Create TOC accounts and assign roles. Usernames are local login IDs — Wayfinder does not send email.';
+      'Create TOC accounts and assign roles. Usernames are local login IDs - Wayfinder does not send email.';
 
   @override
   String get accessUsersPermissionDenied =>
@@ -412,7 +412,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAboutDockerImageIdUnavailable =>
-      'No disponible — recree el contenedor después de hacer pull para registrar el ID de imagen al iniciar.';
+      'No disponible - recree el contenedor después de hacer pull para registrar el ID de imagen al iniciar.';
 
   @override
   String get settingsAboutDockerImageRef => 'Referencia de imagen Docker';
@@ -687,7 +687,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String settingsThemesLoadFailedServerError(String apiUrl) {
-    return 'The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: $apiUrl\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work — update/redeploy the API and apply migrations, then retry.';
+    return 'The API server returned an error (HTTP 500) while listing custom themes.\n\nAPI: $apiUrl\n\nCustom themes are loaded from the Wayfinder API (not the web/PMTiles URL). This usually means the API is outdated or missing the app_theme_definition database migration. Built-in themes above still work - update/redeploy the API and apply migrations, then retry.';
   }
 
   @override
@@ -939,7 +939,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsPolygonSnapRightAnglesDescription =>
-      'Al arrastrar un vértice, ajusta suavemente a esquinas cuadradas — también puede cuadrar las esquinas adyacentes para rectángulos más limpios.';
+      'Al arrastrar un vértice, ajusta suavemente a esquinas cuadradas - también puede cuadrar las esquinas adyacentes para rectángulos más limpios.';
 
   @override
   String get settingsPolygonSnap45AnglesTitle => 'Ajustar a ángulos de 45°';
@@ -1071,6 +1071,54 @@ class AppLocalizationsEs extends AppLocalizations {
       'Prepare primero un paquete sin conexión desde la barra del mapa.';
 
   @override
+  String get settingsRadioSyncTitle => 'Bandeja de sincronización por radio';
+
+  @override
+  String get settingsRadioSyncDescription =>
+      'Si está activado, los cambios de marcadores, diario de vigilancia, zonas y kits de evacuación también se encolan como eventos radio-sync y se envían al servidor cuando esté disponible. Combínalo con el enlace de radio en vivo para mesh/ham.';
+
+  @override
+  String settingsRadioSyncPending(int count) {
+    return '$count eventos de radio pendientes de enviar';
+  }
+
+  @override
+  String get settingsRadioMeshLinkTitle => 'Enlace de radio en vivo';
+
+  @override
+  String get settingsRadioMeshLinkDescription =>
+      'Transporte en vivo para tramas radio-sync. Los modos simulados usan hubs en la app (escritorio/CI). Meshtastic usa PRIVATE_APP; MeshCore usa datagramas de canal companion (hace falta BLE/USB). Ham digimode usa MTU pequeño con trama de texto WF1 opcional (hace falta módem).';
+
+  @override
+  String get settingsRadioMeshLinkOff => 'Apagado (solo bandeja / HTTP)';
+
+  @override
+  String get settingsRadioMeshLinkSimulated => 'Mesh simulado';
+
+  @override
+  String get settingsRadioMeshLinkMeshtastic => 'Meshtastic';
+
+  @override
+  String get settingsRadioMeshLinkMeshCore => 'MeshCore';
+
+  @override
+  String get settingsRadioMeshLinkSimulatedHam => 'Ham simulado (MTU pequeño)';
+
+  @override
+  String get settingsRadioMeshLinkHam => 'Ham digimode';
+
+  @override
+  String get settingsRadioMeshLinkActive => 'Sesión de radio en vivo activa';
+
+  @override
+  String get settingsRadioMeshLinkInactive =>
+      'Sesión de radio en vivo inactiva';
+
+  @override
+  String get settingsRadioMeshLinkWebUnavailable =>
+      'La radio mesh BLE no está disponible en el cliente web.';
+
+  @override
   String get settingsSimulatedGpsWalkDelayTitle =>
       'Retraso de caminata GPS simulada';
 
@@ -1098,7 +1146,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapDebugOverlayCopyFailedTitle =>
-      'Copia bloqueada — seleccione y copie manualmente';
+      'Copia bloqueada - seleccione y copie manualmente';
 
   @override
   String get settingsHomeLocationSaved => 'Ubicación de inicio guardada.';
@@ -1577,7 +1625,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get geoExchangeExportEmpty =>
-      'Nada que exportar — añada marcadores o líneas primero.';
+      'Nada que exportar - añada marcadores o líneas primero.';
 
   @override
   String geoExchangeExportFailed(String error) {
@@ -1739,7 +1787,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapTilesMapsDescription =>
-      'Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles — actívelos aquí, pero no se dibujan como basemap.';
+      'Organice archivos cartográficos sin conexión en grupos y elija cuáles se dibujan en el mapa. Los DEM de elevación (nombre con dem, terrarium, terrain-rgb o elevation) se usan para altura puntual y perfiles - actívelos aquí, pero no se dibujan como basemap.';
 
   @override
   String get mapTilesPermissionDenied =>
@@ -1772,7 +1820,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get offlinePackPrepareTooltipReady =>
-      'Paquetes listos — toque para gestionar';
+      'Paquetes listos - toque para gestionar';
 
   @override
   String get offlinePackNameLabel => 'Nombre del paquete';
@@ -1878,7 +1926,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get offlinePackRouteOriginGpsUnavailable =>
-      'Aún no hay GPS — active la ubicación o elija el centro del mapa.';
+      'Aún no hay GPS - active la ubicación o elija el centro del mapa.';
 
   @override
   String get offlinePackRoutingNotReady =>
@@ -1948,7 +1996,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String offlineModeBannerTitle(String packName) {
-    return 'Sin conexión — $packName';
+    return 'Sin conexión - $packName';
   }
 
   @override
@@ -2325,7 +2373,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerIconsDescription =>
-      'Sube iconos SVG de marcadores al servidor. Los clientes los cargan en tiempo de ejecución para poder añadir o actualizar iconos sin volver a desplegar la app. Las subidas pueden requerir autenticación REST — configure una clave en Configuración → Acerca de.';
+      'Sube iconos SVG de marcadores al servidor. Los clientes los cargan en tiempo de ejecución para poder añadir o actualizar iconos sin volver a desplegar la app. Las subidas pueden requerir autenticación REST - configure una clave en Configuración → Acerca de.';
 
   @override
   String get markerIconsPermissionDenied =>
@@ -2482,7 +2530,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerIconBackgroundColorDescription =>
-      'Elige el color de relleno detrás de los iconos de marcador en el mapa. Los SVG transparentes se muestran sobre este fondo — ajústalo para mejorar el contraste con tus capas del mapa.';
+      'Elige el color de relleno detrás de los iconos de marcador en el mapa. Los SVG transparentes se muestran sobre este fondo - ajústalo para mejorar el contraste con tus capas del mapa.';
 
   @override
   String get markerIconBackgroundColorLabel => 'Color de fondo';
@@ -2681,7 +2729,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerRadioStructuredHint =>
-      'Solo datos estructurados — Wayfinder no transmite ni sintoniza radios.';
+      'Solo datos estructurados - Wayfinder no transmite ni sintoniza radios.';
 
   @override
   String markerRadioSummary(String callsign) {
@@ -2756,7 +2804,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerRadioNotesHint =>
-      'Hora de red, cobertura, tip PL — notas breves';
+      'Hora de red, cobertura, tip PL - notas breves';
 
   @override
   String get markerRadioClear => 'Borrar ficha de contacto';
@@ -2892,7 +2940,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get markerChecklistsEmptyHelp =>
-      'SOP y auditorías del lugar — p. ej. revisión de la mochila de emergencia en el refugio.';
+      'SOP y auditorías del lugar - p. ej. revisión de la mochila de emergencia en el refugio.';
 
   @override
   String markerChecklistsCount(int count) {
@@ -3714,7 +3762,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get searchReadinessReadySnackBar =>
-      'Búsqueda completa lista — lugares y direcciones.';
+      'Búsqueda completa lista - lugares y direcciones.';
 
   @override
   String get searchReadinessCheckingTooltip =>
@@ -4571,7 +4619,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tidesSubtitle =>
-      'Estación costera más cercana desde los paquetes en tu servidor Wayfinder — para cruces en barco.';
+      'Estación costera más cercana desde los paquetes en tu servidor Wayfinder - para cruces en barco.';
 
   @override
   String get tidesLocationLabel => 'Ubicación';
@@ -4873,7 +4921,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sunMoonMissingLocation => 'Elige una ubicación para calcular.';
 
   @override
-  String get sunMoonNotApplicable => '—';
+  String get sunMoonNotApplicable => '-';
 
   @override
   String get sunMoonPolarDay => 'Día polar: el sol no se pone en esta fecha.';
@@ -4987,7 +5035,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get coveragePlanSubtitle =>
-      'Coloque sitios sugeridos de repetidor o malla con círculos de alcance. Opcionalmente calcule la cuenca visual (LOS) en la semilla. Solo geometría de planificación — no es RF en vivo.';
+      'Coloque sitios sugeridos de repetidor o malla con círculos de alcance. Opcionalmente calcule la cuenca visual (LOS) en la semilla. Solo geometría de planificación - no es RF en vivo.';
 
   @override
   String get coveragePlanTemplateLabel => 'Plantilla';
@@ -5280,7 +5328,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get slopeLegendHint =>
-      'Verde = suave / más fácil · Rojo = empinado / costoso. Solo pendiente DEM — elige A pie, Bici o Coche.';
+      'Verde = suave / más fácil · Rojo = empinado / costoso. Solo pendiente DEM - elige A pie, Bici o Coche.';
 
   @override
   String get slopeLegendHintWalk =>
@@ -6483,7 +6531,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routingMultiStateHint =>
-      'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph — no need for the entire United States.';
+      'Search and add US states one at a time. Multiple states are downloaded, merged with Osmium, and built as a single routing graph - no need for the entire United States.';
 
   @override
   String get routingSelectedStatesLabel => 'Selected states';
@@ -6503,7 +6551,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routingLocalOsmHint =>
-      'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) — there is no Postgres database.';
+      'Large country extracts are best downloaded elsewhere and copied into the routing server data folder as osm.pbf, or uploaded here. The routing graph is stored on that server\'s disk (MMAP) - there is no Postgres database.';
 
   @override
   String routingOsmOnServerHint(String size) {
@@ -6971,7 +7019,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commsCardOfTheDayEditorHint =>
-      'Tarjeta diaria de palabras clave con fecha, listas por categoría y clave 0–9. Queme tras el día. Se incluye en copias y paquetes de campo con este plan.';
+      'Tarjeta diaria de palabras clave con fecha, listas por categoría y clave 0-9. Queme tras el día. Se incluye en copias y paquetes de campo con este plan.';
 
   @override
   String get commsCardOfTheDayAdd => 'Añadir tarjeta';
@@ -7016,7 +7064,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Introduzca una etiqueta para esta tarjeta.';
 
   @override
-  String get commsCardOfTheDayDigitKeyTitle => 'Clave de dígitos (0–9)';
+  String get commsCardOfTheDayDigitKeyTitle => 'Clave de dígitos (0-9)';
 
   @override
   String get commsCardOfTheDayDigitKeyHint =>

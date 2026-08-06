@@ -2,11 +2,11 @@
 
 ### Status
 
-**Phase B in progress** — Freezed models, binary codec, chunking, loopback transport, and in-memory apply (LWW/dedupe) live under `wayfinder_flutter/lib/features/radio_sync/`. Not yet wired to Serverpod entities, outbox, or real radios.
+**Phases A–F implemented in Flutter** (`wayfinder_flutter/lib/features/radio_sync/`). Binary codec, outbox/HTTP flush, Meshtastic-first mesh + ham digimode adapters (simulated hubs + device/modem stubs), light zones (circle/line/polygon ≤16 pts), and gateway rebroadcast. Real Meshtastic BLE and ham modem I/O still plug into the stub channels.
 
 ### Version
 
-0.5
+1.0
 
 ### Related domains
 
@@ -201,7 +201,7 @@ Air payloads are **operational subsets**, not full Serverpod `toJson()` document
 **`ZoneUpsertLight`:** name, type, colors, visibility, optional `layerId`, compact geometry:
 
 - Circle: center e7 + `radiusMeters`
-- Polygon / line: capped point list (e.g. ≤16 points in v1)
+- Polygon / line: capped point list (**≤16 points** — locked for v1)
 
 Do **not** use `ZoneUpsertLight` for `evac_kit` zones.
 
@@ -340,7 +340,7 @@ capabilities() -> { maxPayload, reliable, bidirectional, mtu }
 |---------|------|
 | `ServerBridgeTransport` | Online: map events ↔ create/update APIs and/or change streams |
 | `MeshTransport` | Meshtastic / MeshCore raw packets |
-| `HamAudioTransport` | Digimode modem frames (same bytes; smaller MTU, more chunking) |
+| `HamAudioTransport` | Digimode modem frames (same bytes; default 80-byte MTU, more chunking; optional `WF1:` Base64URL text framing) |
 | `LocalOutboxTransport` | Persist unsent events (evolution of today’s offline outbox) |
 | `GmrsAudioTransport` | Optional; only if legally and technically validated |
 
@@ -367,7 +367,7 @@ The retreat gateway is the natural bridge: `mesh ↔ Wayfinder server ↔ ham di
 | Providers / dialogs mutating markers, zones, watch log, evac kits | Later: emit Freezed domain events into a sync controller when radio mode is enabled |
 
 **Current home (Flutter-first):**  
-`wayfinder_flutter/lib/features/radio_sync/` — Freezed domain events, binary codec, chunking, loopback transport, in-memory apply, and `RadioSyncSession`. A shared Dart package can be extracted later if the server gateway needs the same models.
+`wayfinder_flutter/lib/features/radio_sync/` — Full A–F stack: Freezed events, binary codec/chunking, loopback, `FakeMeshHub` / Meshtastic stub, `FakeHamHub` / ham digimode stub + text framing, in-memory apply, mappers, outbox flush, gateway rebroadcast, and `RadioSyncController`. A shared Dart package can be extracted later if the server gateway needs the same models.
 
 ---
 
@@ -394,14 +394,12 @@ The retreat gateway is the natural bridge: `mesh ↔ Wayfinder server ↔ ham di
 
 | Phase | Work |
 |-------|------|
-| **A** | Design lock (this document) |
-| **B** | Freezed event models + binary codec + chunking + in-process loopback + in-memory apply (LWW/dedupe); unit tests under `wayfinder_flutter/test/features/radio_sync/` — **done for codec/loopback; Serverpod mapping deferred to C** |
-| **C** | Outbox stores binary events (and/or Freezed snapshots); flush to server when HTTP available |
-| **D** | Mesh adapter; bidirectional marker + log + evac meta/route |
-| **E** | Ham digimode adapter (chunking-heavy) |
-| **F** | `ZoneUpsertLight` + gateway rebroadcast polish |
-
-No implementation work is implied by accepting this draft.
+| **A** | Design lock (this document) — **done** |
+| **B** | Freezed event models + binary codec + chunking + loopback + in-memory apply — **done** |
+| **C** | Radio outbox + Serverpod mappers + HTTP flush + Settings toggle / emit hooks — **done** |
+| **D** | Mesh adapter (`FakeMeshHub` + Meshtastic PRIVATE_APP stub) + inbound apply — **done** (BLE bridge deferred) |
+| **E** | Ham digimode adapter (80-byte MTU, `WF1:` text framing, simulated hub + modem stub) — **done** (modem bridge deferred) |
+| **F** | `ZoneUpsertLight` circle/line/polygon ≤16 + gateway rebroadcast — **done** |
 
 ---
 
@@ -420,16 +418,22 @@ No implementation work is implied by accepting this draft.
 2. `revisedAt`: **seconds** (uint32)
 3. Radio deletes: **soft-only** (tombstone events; no hard purge over air)
 4. GMRS: **out of v1** adapters (voice-first / constrained; see §11)
-5. Mesh adapter priority: **Meshtastic first**, then MeshCore / ham digimode
+5. Mesh adapter priority: **Meshtastic first**, then MeshCore / ham digimode (MeshCore Settings + companion framing stub landed; BLE/USB bridge deferred)
 
-**Still open**
+**Also decided (Phases E/F)**
 
-1. `ZoneUpsertLight` v1 scope: circle-only first vs polygon/line ≤16 points  
-2. Evac air caps: confirm 24 waypoints / 4 routes  
-3. Route id encoding: always 16-byte UUID (current string ids are UUID strings)
+1. `ZoneUpsertLight` v1: circle + line/polygon ≤16 points  
+2. New evac route ids are UUIDs; legacy non-UUID route ids skip route air events  
+3. Gateway rebroadcast after inbound server apply and after outbox flush (Hello/Ack excluded)
+
+**Still deferred (device I/O)**
+
+1. Meshtastic BLE/serial `MeshByteChannel` implementation  
+2. MeshCore companion BLE/USB `MeshByteChannel` (framing helpers + Settings mode landed; bridge deferred)  
+3. Ham modem/TNC `MeshByteChannel` implementation
 
 ---
 
 ## 14. Summary
 
-Design Wayfinder radio sync around **versioned binary domain events** modeled in Dart with **Freezed**, encoded on the wire with a stable binary frame and CRC. Slim payloads cover markers, watch-log entries, light zones, and **first-class evacuation kit meta/route updates**, with a **transport port** so mesh and ham (and later other audio paths) are adapters. Keep field packs and rich nested marker blobs off the air. Phase B codec/loopback is implementable against this document; map onto Serverpod and real radios in later phases.
+Wayfinder radio sync uses **versioned binary domain events** (Freezed in-app), CRC frames, chunking, outbox/HTTP gateway flush, and live **mesh/ham** transports with gateway rebroadcast. Slim payloads cover markers, watch-log entries, light zones, and first-class evacuation kit meta/route updates. Hardware BLE/modem bridges remain the last mile.

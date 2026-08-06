@@ -8,6 +8,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/serverpod_client.dart';
 import '../../layers/providers/layers_provider.dart';
 import '../../markers/models/marker_color.dart';
+import '../../radio_sync/providers/radio_sync_controller.dart';
 import '../providers/zones_provider.dart';
 import '../models/line_geometry.dart';
 import '../providers/measurement_units_provider.dart';
@@ -48,21 +49,21 @@ Future<bool> createLineBetweenPoints({
     notes: formData.notes,
   );
 
-  await client.mapZone.createZone(
-    MapZone(
-      name: formData.name,
-      type: lineZoneType,
-      color: colorHex,
-      borderColor: colorHex,
-      borderPattern: formData.borderPattern.storageValue,
-      fillColor: colorHex,
-      visible: true,
-      geometryJson: geometry.encode(),
-      layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
-      createdAt: now,
-      updatedAt: now,
-    ),
+  final zone = MapZone(
+    name: formData.name,
+    type: lineZoneType,
+    color: colorHex,
+    borderColor: colorHex,
+    borderPattern: formData.borderPattern.storageValue,
+    fillColor: colorHex,
+    visible: true,
+    geometryJson: geometry.encode(),
+    layerId: formData.layerId ?? selectedLayerIdForCreate(ref),
+    createdAt: now,
+    updatedAt: now,
   );
+  await client.mapZone.createZone(zone);
+  await ref.read(radioSyncControllerProvider).emitLightZone(zone);
   ref.read(zonesProvider.notifier).reload();
   AppLogger.logZones.success('📏 Line created');
   return true;
@@ -114,18 +115,18 @@ Future<bool> updateLineFromForm({
     showNameLabel: geometry.showNameLabel,
   );
 
-  await client.mapZone.updateZone(
-    zone.copyWith(
-      name: formData.name,
-      color: colorHex,
-      borderColor: colorHex,
-      borderPattern: formData.borderPattern.storageValue,
-      fillColor: colorHex,
-      geometryJson: updatedGeometry.encode(),
-      layerId: formData.layerId,
-      updatedAt: DateTime.now().toUtc(),
-    ),
+  final updatedZone = zone.copyWith(
+    name: formData.name,
+    color: colorHex,
+    borderColor: colorHex,
+    borderPattern: formData.borderPattern.storageValue,
+    fillColor: colorHex,
+    geometryJson: updatedGeometry.encode(),
+    layerId: formData.layerId,
+    updatedAt: DateTime.now().toUtc(),
   );
+  await client.mapZone.updateZone(updatedZone);
+  await ref.read(radioSyncControllerProvider).emitLightZone(updatedZone);
   ref.read(zonesProvider.notifier).reload();
   return true;
 }
